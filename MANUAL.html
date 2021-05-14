@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Lennart Oelschläger" />
+
+<meta name="date" content="2021-05-14" />
+
+<title>Introduction to RprobitB</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to RprobitB</h1>
+<h4 class="author">Lennart Oelschläger</h4>
+<h4 class="date">2021-05-14</h4>
+
+
+
+<p><strong>RprobitB</strong> is an R package that can be used to fit <em><a href="#lcmmnp-model">latent class mixed multinomial probit (LCMMNP) models</a></em> to simulated or empirical data. <strong>RprobitB</strong> is licensed under the GNU General Public License v3.0.</p>
+<p>The package name <strong>RprobitB</strong> is a portmanteau, combining <em>R</em> (the programming language), <em>probit</em> (the model name) and <em>B</em> (for Bayes, the estimation method).</p>
+<p><strong>RprobitB</strong> is able to</p>
+<ul>
+<li>estimate probit models on discrete choice panel data,</li>
+<li>approximate any underlying mixing distributions through a mixture of normal distributions,</li>
+<li><em><a href="#latent-class-updating-scheme">update the number of latent classes</a></em> within the algorithm on a weight-based strategy,</li>
+<li>perform estimation in a Bayesian framework via Gibbs sampling, thereby avoiding numerical maximization or approximation of the model’s likelihood.</li>
+</ul>
+<p>At this point, you may ask yourself one of the following questions:</p>
+<ol style="list-style-type: decimal">
+<li><a href="#installing-rprobitb">How to install RprobitB?</a></li>
+<li><a href="#using-rprobitb">How to use RprobitB?</a></li>
+<li><a href="#lcmmnp-model">How is the LCMMNP model defined?</a></li>
+<li><a href="#latent-class-updating-scheme">How does the latent class updating scheme work?</a></li>
+<li><a href="#specifying-a-lcmmnp-model-in-rprobitb">How to specify a LCMMNP model in RprobitB?</a></li>
+</ol>
+<p>Do you found a bug or request a feature? Please tell us: <a href="mailto:lennart.oelschlaeger@uni-bielefeld.de">lennart.oelschlaeger@uni-bielefeld.de</a>.</p>
+<div id="installing-rprobitb" class="section level2">
+<h2>Installing RprobitB</h2>
+<p>To install the latest version of <strong>RprobitB</strong>, run <code>install.packages(&quot;RprobitB&quot;)</code> in your R console.</p>
+</div>
+<div id="using-rprobitb" class="section level2">
+<h2>Using RprobitB</h2>
+<p>To use <strong>RprobitB</strong>, follow these steps:</p>
+<ol style="list-style-type: decimal">
+<li>Specify the model, see <em><a href="#specifying-a-lcmmnp-model-in-rprobitb">below</a></em> for details.</li>
+<li>Run <code>RprobitB::rpb(&lt;list of model specifications&gt;)</code>.</li>
+<li>You get <em><a href="#on-screen-information">on-screen information</a></em> and <em><a href="#model-results">model results</a></em> in an output folder.</li>
+</ol>
+</div>
+<div id="lcmmnp-model" class="section level2">
+<h2>LCMMNP model</h2>
+<p>Assume that we observe the choices of <span class="math inline">\(N\)</span> decision makers which decide between <span class="math inline">\(J\)</span> alternatives at each of <span class="math inline">\(T\)</span> choice occasions.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Specific to each decision maker, alternative and choice occasion, we furthermore observe <span class="math inline">\(P_f+P_r\)</span> choice attributes that we use to explain the choices. The first <span class="math inline">\(P_f\)</span> attributes are connected to fixed coefficients, the other <span class="math inline">\(P_r\)</span> attributes to random coefficients following a joint distribution mixed across decision makers. Person <span class="math inline">\(n\)</span>’s utility <span class="math inline">\(\tilde{U}_{ntj}\)</span> for alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span> is modelled as <span class="math display">\[\begin{equation}
+\tilde{U}_{ntj} = \tilde{W}_{ntj}&#39;\alpha + \tilde{X}_{ntj}&#39;\beta_n + \tilde{\epsilon}_{ntj}
+\end{equation}\]</span> for <span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J\)</span>, where</p>
+<ul>
+<li><span class="math inline">\(\tilde{W}_{ntj}\)</span> is a vector of <span class="math inline">\(P_f\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span> corresponding to the fixed coefficient vector <span class="math inline">\(\alpha \in {\mathbb R}^{P_f}\)</span>,</li>
+<li><span class="math inline">\(\tilde{X}_{ntj}\)</span> is a vector of <span class="math inline">\(P_r\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span> corresponding to the random, decision maker-specific coefficient vector <span class="math inline">\(\beta_n \in {\mathbb R}^{P_r}\)</span>, where <span class="math inline">\(\beta_n\)</span> is distributed according to some <span class="math inline">\(P_r\)</span>-variate distribution <span class="math inline">\(g_{P_r}\)</span>,</li>
+<li>and <span class="math inline">\((\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},\dots,\tilde{\epsilon}_{ntJ})&#39; \sim \text{MVN}_{J} (0,\tilde{\Sigma})\)</span> is the models’ error term vector for <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span>, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix <span class="math inline">\(\tilde{\Sigma}\)</span>.</li>
+</ul>
+<p>As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified. Therefore, we consider the transformed model <span class="math display">\[\begin{equation}
+U_{ntj} = W_{ntj}&#39;\alpha + X_{ntj}&#39;\beta_n + \epsilon_{ntj},
+\end{equation}\]</span> <span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J-1\)</span>, where (choosing <span class="math inline">\(J\)</span> as the reference alternative) <span class="math inline">\(U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}\)</span>, <span class="math inline">\(W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}\)</span>, <span class="math inline">\(X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}\)</span> and <span class="math inline">\(\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}\)</span>, where <span class="math inline">\((\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})&#39; \sim \text{MVN}_{J-1} (0,\Sigma)\)</span> and <span class="math inline">\(\Sigma\)</span> denotes a covariance matrix with the top-left element restricted to one. While taking utility differences in order to normalize the model with respect to level is a standard procedure, alternatives to fixing an error term variance in order to normalize with respect to scale exist, for example fixing an element of <span class="math inline">\(\alpha\)</span>.</p>
+<p>Let <span class="math inline">\(y_{nt}=j\)</span> denote the event that decision maker <span class="math inline">\(n\)</span> chooses alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span>. Assuming utility maximizing behaviour of the decision makers, the decisions are linked to the utilities via <span class="math display">\[\begin{equation}
+y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + J \cdot 1\left (U_{ntj}&lt;0 ~\text{for all}~j\right), 
+\end{equation}\]</span> where <span class="math inline">\(1(A)\)</span> equals <span class="math inline">\(1\)</span> if condition <span class="math inline">\(A\)</span> is true and <span class="math inline">\(0\)</span> else.</p>
+<p>We approximate the mixing distribution <span class="math inline">\(g_{P_r}\)</span> for the random coefficients <span class="math inline">\(\beta=(\beta_n)_{n}\)</span> by a mixture of <span class="math inline">\(P_r\)</span>-variate normal densities <span class="math inline">\(\phi_{P_r}\)</span> with mean vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span> using <span class="math inline">\(C\)</span> components, i.e. <span class="math display">\[\begin{equation}
+\beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c),
+\end{equation}\]</span> where <span class="math inline">\((s_c)_{c}\)</span> are weights satisfying <span class="math inline">\(0 &lt; s_c\leq 1\)</span> for <span class="math inline">\(c=1,\dots,C\)</span> and <span class="math inline">\(\sum_c s_c=1\)</span>. One interpretation of the latent class model is obtained by introducing variables <span class="math inline">\(z=(z_n)_n\)</span> allocating each decision maker <span class="math inline">\(n\)</span> to class <span class="math inline">\(c\)</span> with probability <span class="math inline">\(s_c\)</span>, i.e. <span class="math display">\[\begin{equation}
+\text{Prob}(z_n=c)=s_c \quad \text{and} \quad \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
+\end{equation}\]</span> We call this model the <em>latent class mixed multinomial probit</em> (LCMMNP) model.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+</div>
+<div id="latent-class-updating-scheme" class="section level2">
+<h2>Latent class updating scheme</h2>
+<p>Updating the number <span class="math inline">\(C\)</span> of latent classes is done within the algorithm by executing the following weight-based updating scheme.</p>
+<ul>
+<li>Class <span class="math inline">\(c\)</span> is removed, if <span class="math inline">\(s_c&lt;\epsilon_{\text{min}}\)</span>, i.e. if the class weight <span class="math inline">\(s_c\)</span> drops below some threshold <span class="math inline">\(\epsilon_{\text{min}}\)</span>. This case indicates that class <span class="math inline">\(c\)</span> has a negligible impact on the mixing distribution.</li>
+<li>Class <span class="math inline">\(c\)</span> is splitted into two classes <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span>, if <span class="math inline">\(s_c&gt;\epsilon_\text{max}\)</span>. This case indicates that class <span class="math inline">\(c\)</span> has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means <span class="math inline">\(b_{c_1}\)</span> and <span class="math inline">\(b_{c_2}\)</span> of the new classes <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span> are shifted in opposite directions from the class mean <span class="math inline">\(b_c\)</span> of the old class <span class="math inline">\(c\)</span> in the direction of the highest variance.</li>
+<li>Two classes <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span> are joined to one class <span class="math inline">\(c\)</span>, if <span class="math inline">\(\lVert b_{c_1} - b_{c_2} \rVert&lt;\epsilon_{\text{distmin}}\)</span>, i.e. if the euclidean distance between the class means <span class="math inline">\(b_{c_1}\)</span> and <span class="math inline">\(b_{c_2}\)</span> drops below some threshold <span class="math inline">\(\epsilon_{\text{distmin}}\)</span>. This case indicates location redundancy which should be repealed. The parameters of <span class="math inline">\(c\)</span> are assigned by adding the values of <span class="math inline">\(s\)</span> from <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span> and averaging the values for <span class="math inline">\(b\)</span> and <span class="math inline">\(\Omega\)</span>.</li>
+</ul>
+</div>
+<div id="specifying-a-lcmmnp-model-in-rprobitb" class="section level2">
+<h2>Specifying a LCMMNP model in RprobitB</h2>
+<p><strong>RprobitB</strong> specifications are grouped in the named lists</p>
+<ul>
+<li><code>model</code> (model information),</li>
+<li><code>data</code> (data information),</li>
+<li><code>parm</code> (true parameter values),</li>
+<li><code>lcus</code> (latent class updating scheme parameters),</li>
+<li><code>init</code> (initial values for the Gibbs sampler),</li>
+<li><code>prior</code> (prior parameters),</li>
+<li><code>mcmc</code> (Markov chain Monte Carlo parameters),</li>
+<li><code>norm</code> (normalization information),</li>
+<li><code>out</code> (output settings).</li>
+</ul>
+<p>You can either specify none, all, or selected parameters. Unspecified parameters are set to <em><a href="#default-specifications-of-rprobitb">default values</a></em>.</p>
+<div id="model" class="section level3">
+<h3><code>model</code></h3>
+<ul>
+<li><code>N</code>, the number (greater or equal one) of decision makers</li>
+<li><code>T</code>, the number (greater or equal one) or vector (of length <code>N</code>) of choice occasions for each decision maker</li>
+<li><code>J</code>, the number (greater or equal two) of choice alternatives (fixed across decision makers and choice occasions)</li>
+<li><code>P_f</code>, the number of attributes that are connected to fixed coefficients (can be zero)</li>
+<li><code>P_r</code>, the number of attributes that are connected to random, decision maker specific coefficients (can be zero)</li>
+<li><code>C</code>, the number of latent classes (ignored if <code>P_r = 0</code>)</li>
+</ul>
+</div>
+<div id="data" class="section level3">
+<h3><code>data</code></h3>
+<p>If <code>data = NULL</code>, data is simulated from the model defined by <code>model</code> and <code>parm</code>.</p>
+<p>To model empirical data, specify</p>
+<ul>
+<li><code>data_raw</code>, the data frame of choice data in wide format<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, must contain columns named “id” (unique identifier for each decision maker) and “choice” (the chosen alternatives)</li>
+<li><code>cov_col</code>, a numeric vector specifying the columns of <code>data_raw</code> with covariates</li>
+<li><code>cov_ord</code>, a character vector specifying the order of the covariates, where fixed-coefficient covariates come first (required for specifying random coefficients and interpretation of the model results)</li>
+<li><code>cov_zst</code>, a boolean determining whether covariates get z-standardized</li>
+</ul>
+</div>
+<div id="parm" class="section level3">
+<h3><code>parm</code></h3>
+<ul>
+<li><code>alpha</code>, the fixed coefficient vector (of length <code>model[[&quot;P_f&quot;]]</code>)</li>
+<li><code>s</code>, the vector of class weights (of length <code>model[[&quot;C&quot;]]</code>)</li>
+<li><code>b</code>, the matrix of class means as columns (of dimension <code>model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;C&quot;]]</code>)</li>
+<li><code>Omega</code>, the matrix of class covariance matrices as columns (of dimension <code>model[[&quot;P_r&quot;]]*model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;C&quot;]]</code>)</li>
+<li><code>Sigma</code>, the error term covariance matrix (of dimension <code>model[[&quot;J&quot;]]-1</code> x <code>model[[&quot;J&quot;]]-1</code>)</li>
+</ul>
+</div>
+<div id="lcus" class="section level3">
+<h3><code>lcus</code></h3>
+<ul>
+<li><code>do_lcus</code>, a boolean determining whether to update the number of latent classes</li>
+<li><code>C0</code>, the initial number of latent classes</li>
+<li><code>Cmax</code>, the maximal number of latent classes (greater or equal <code>lcus[[&quot;C0&quot;]]</code>)</li>
+<li><code>buffer</code>, the buffer for the updating (number of iterations to wait before the next update)</li>
+<li><code>epsmin</code>, the threshold weight for removing latent classes (between 0 and 1)</li>
+<li><code>epsmax</code>, the threshold weight for splitting latent classes (between 0 and 1)</li>
+<li><code>distmin</code>, the threshold for joining latent classes (greater 0)</li>
+</ul>
+</div>
+<div id="init" class="section level3">
+<h3><code>init</code></h3>
+<ul>
+<li><code>at_true</code>, a boolean determining whether to initialize at the true parameter values (only for simulated data)</li>
+<li><code>alpha0</code>, the initial fixed coefficient vector (of length <code>model[[&quot;P_f&quot;]]</code>)</li>
+<li><code>b0</code>, the initial matrix of the class means as columns (of dimension <code>model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;C&quot;]]</code>)</li>
+<li><code>Omega0</code>, the inital matrix of the class covariance matrices as columns (of dimension <code>model[[&quot;P_r&quot;]]*model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;C&quot;]]</code>)</li>
+<li><code>Sigma0</code>, the initial error term covariance matrix (of dimension <code>model[[&quot;J&quot;]]-1</code> x <code>model[[&quot;J&quot;]]-1</code>)</li>
+<li><code>U0</code>, the initial matrix of utilities (of dimension <code>model[[&quot;J&quot;]]-1</code> x <code>model[[&quot;N&quot;]]*max(model[[&quot;T&quot;]])</code>)</li>
+<li><code>beta0</code>, the initial matrix of random coefficients (of dimension <code>model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;N&quot;]]</code>)</li>
+<li><code>m0</code>, the initial vector of class sizes (of length <code>model[[&quot;C&quot;]]</code>)</li>
+</ul>
+</div>
+<div id="prior" class="section level3">
+<h3><code>prior</code></h3>
+<p>A priori, <code>parm[[&quot;alpha&quot;]]</code> ~ Normal(<code>eta</code>,<code>Psi</code>) with</p>
+<ul>
+<li><code>eta</code>, the expectation vector (of length <code>model[[&quot;P_f&quot;]]</code>)</li>
+<li><code>Psi</code>, the covariance matrix (of dimension <code>model[[&quot;P_f&quot;]]</code> x <code>model[[&quot;P_f&quot;]]</code>)</li>
+</ul>
+<p>A priori, <code>parm[[&quot;s&quot;]]</code> ~ Dirichlet(<code>delta</code>) with</p>
+<ul>
+<li><code>delta</code>, the concentration parameter (of length 1)</li>
+</ul>
+<p>A priori, <code>parm[[&quot;b&quot;]][,c]</code> ~ Normal(<code>xi</code>,<code>D</code>) with</p>
+<ul>
+<li><code>xi</code>, the expectation vector (of length <code>model[[&quot;P_r&quot;]]</code>)</li>
+<li><code>D</code>, the covariance matrix (of dimension <code>model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;P_r&quot;]]</code>)</li>
+</ul>
+<p>A priori, <code>matrix(parm[[&quot;Omega&quot;]][,c],nrow=model[[&quot;P_r&quot;]],ncol=model[[&quot;P_r&quot;]])</code> ~ Inverse_Wishart(<code>nu</code>,<code>Theta</code>) with</p>
+<ul>
+<li><code>nu</code>, the degrees of freedom (greater than <code>model[[&quot;P_r&quot;]]</code>)</li>
+<li><code>Theta</code>, the scale matrix (of dimension <code>model[[&quot;P_r&quot;]]</code> x <code>model[[&quot;P_r&quot;]]</code>)</li>
+</ul>
+<p>A priori, <code>parm[[&quot;Sigma&quot;]]</code> ~ Inverse_Wishart(<code>kappa</code>,<code>E</code>) with</p>
+<ul>
+<li><code>kappa</code>, the degrees of freedom (greater than <code>model[[&quot;J&quot;]]-1</code>)</li>
+<li><code>E</code>, the scale matrix (of dimension <code>model[[&quot;J&quot;]]-1</code> x <code>model[[&quot;J&quot;]]-1</code>)</li>
+</ul>
+</div>
+<div id="mcmc" class="section level3">
+<h3><code>mcmc</code></h3>
+<ul>
+<li><code>R</code>: the number of iterations</li>
+<li><code>B</code>: the length of the burn-in period</li>
+<li><code>Q</code>: the thinning parameter</li>
+<li><code>nprint</code>: the step number for printing the sampling progress</li>
+</ul>
+</div>
+<div id="norm" class="section level3">
+<h3><code>norm</code></h3>
+<p><strong>RprobitB</strong> automatically normalizes with respect to level by computing utility differences, where <code>model[[&quot;J&quot;]]</code> is the base alternative. The normalization with respect to scale can be specified:</p>
+<ul>
+<li><code>parameter</code>: the normalized parameter (either <code>&quot;a&quot;</code> for a fixed non-random linear coefficient or <code>&quot;s&quot;</code> for an error-term variance)</li>
+<li><code>index</code>: the index of the parameter (between 1 and <code>model[[&quot;P_f&quot;]]</code> or 1 and <code>model[[&quot;J&quot;]]-1</code>, respectively)</li>
+<li><code>value</code>: the value for the fixed parameter (greater 0 if <code>parameter = &quot;s&quot;</code>)</li>
+</ul>
+</div>
+<div id="out" class="section level3">
+<h3><code>out</code></h3>
+<ul>
+<li><code>id</code>: a character, identifying the model</li>
+<li><code>rdir</code>: a character, defining the (relative) path of the folder with the model results</li>
+<li><code>pp</code>: a boolean, determining whether progress plots should be created (in any case only if <code>model$P_r=2</code>)</li>
+<li><code>results</code>: a boolean, determining whether estimated parameters should be returned by the function <code>rpb</code>.</li>
+<li><code>waic</code>: a boolean, determining whether to compute the widely applicable information criterion (WAIC)</li>
+</ul>
+</div>
+</div>
+<div id="default-specifications-of-rprobitb" class="section level2">
+<h2>Default specifications of RprobitB</h2>
+<div id="model-1" class="section level3">
+<h3><code>model</code></h3>
+<ul>
+<li><code>N = 100</code></li>
+<li><code>T = 10</code></li>
+<li><code>J = 2</code></li>
+<li><code>P_f = 1</code></li>
+<li><code>P_r = 0</code></li>
+<li><code>C = NA</code></li>
+</ul>
+</div>
+<div id="data-1" class="section level3">
+<h3><code>data</code></h3>
+<p><code>NULL</code></p>
+</div>
+<div id="parm-1" class="section level3">
+<h3><code>parm</code></h3>
+<p>Per default, parameters are randomly drawn.</p>
+</div>
+<div id="lcus-1" class="section level3">
+<h3><code>lcus</code></h3>
+<ul>
+<li><code>do_lcus = FALSE</code></li>
+<li><code>C0 = 5</code></li>
+<li><code>Cmax = 10</code></li>
+<li><code>buffer = 100</code></li>
+<li><code>epsmin = 0.01</code></li>
+<li><code>epsmax = 0.99</code></li>
+<li><code>distmin = 0.1</code></li>
+</ul>
+</div>
+<div id="init-1" class="section level3">
+<h3><code>init</code></h3>
+<ul>
+<li><code>at_true = FALSE</code></li>
+<li><code>alpha0</code>: zero vector</li>
+<li><code>b0</code>: zero matrices for each latent class</li>
+<li><code>Omega0</code>: unity matrices for each latent class</li>
+<li><code>Sigma0</code>: unity matrix</li>
+<li><code>U0</code>: zero matrix</li>
+<li><code>beta0</code>: zero matrix</li>
+<li><code>m0</code>: each latent class has twice the membership than the previous one</li>
+</ul>
+</div>
+<div id="prior-1" class="section level3">
+<h3><code>prior</code></h3>
+<ul>
+<li><code>eta = numeric(model[[&quot;P_f&quot;]])</code></li>
+<li><code>Psi = matrix(1,model[[&quot;P_f&quot;]],model[[&quot;P_f&quot;]]); diag(Psi) = 5</code></li>
+<li><code>delta = 1</code></li>
+<li><code>xi = numeric(model[[&quot;P_r&quot;]])</code></li>
+<li><code>D = matrix(1,model[[&quot;P_r&quot;]],model[[&quot;P_r&quot;]]); diag(D) = 5</code></li>
+<li><code>nu = model[[&quot;P_r&quot;]]+2</code></li>
+<li><code>Theta = matrix(1,model[[&quot;P_r&quot;]],model[[&quot;P_r&quot;]]); diag(Theta) = 5</code></li>
+<li><code>kappa = model[[&quot;J&quot;]]+1</code></li>
+<li><code>E = matrix(1,model[[&quot;J&quot;]]-1,model[[&quot;J&quot;]]-1); diag(E) = 5</code></li>
+</ul>
+</div>
+<div id="mcmc-1" class="section level3">
+<h3><code>mcmc</code></h3>
+<ul>
+<li><code>R = 10000</code></li>
+<li><code>B = R/2</code></li>
+<li><code>Q = 100</code></li>
+<li><code>nprint = floor(R/10)</code></li>
+</ul>
+</div>
+<div id="norm-1" class="section level3">
+<h3><code>norm</code></h3>
+<ul>
+<li><code>parameter = &quot;s&quot;</code></li>
+<li><code>index = &quot;1&quot;</code></li>
+<li><code>value = &quot;1&quot;</code></li>
+</ul>
+</div>
+<div id="out-1" class="section level3">
+<h3><code>out</code></h3>
+<ul>
+<li><code>id = test</code></li>
+<li><code>rdir = tempdir()</code></li>
+<li><code>pp = FALSE</code></li>
+<li><code>return = FALSE</code></li>
+<li><code>waic = FALSE</code></li>
+</ul>
+</div>
+</div>
+<div id="example-simulated-data" class="section level2">
+<h2>Example: Simulated data</h2>
+<p>The code below fits a mixed multinomial probit model with</p>
+<ul>
+<li><code>P_f = 1</code> fixed<br />
+</li>
+<li>and <code>P_r = 2</code> random coefficients</li>
+</ul>
+<p>to simulated data with</p>
+<ul>
+<li><code>N = 100</code> decision makers,</li>
+<li>variable choice occasions between <code>T = 10</code> and <code>T = 20</code>,</li>
+<li><code>J = 3</code> choice alternatives,</li>
+<li>and <code>C = 2</code> true latent classes.</li>
+</ul>
+<p>The number of latent classes is updated, because <code>do_lcus = TRUE</code> is set. The Gibbs sampler draws <code>R = 20000</code> samples. By default, the model is named <code>id = &quot;test&quot;</code> and results are saved in <code>rdir = &quot;tempdir()&quot;</code> (the path of the per-session temporary directory).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">### model specification</span></a>
+<a class="sourceLine" id="cb1-4" title="4">model =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;N&quot;</span> =<span class="st"> </span><span class="dv">100</span>, <span class="st">&quot;T&quot;</span> =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">10</span><span class="op">:</span><span class="dv">20</span>,<span class="dv">100</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>), <span class="st">&quot;J&quot;</span> =<span class="st"> </span><span class="dv">3</span>, <span class="st">&quot;P_f&quot;</span> =<span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;P_r&quot;</span> =<span class="st"> </span><span class="dv">2</span>, <span class="st">&quot;C&quot;</span> =<span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-5" title="5">lcus  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;do_lcus&quot;</span> =<span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-6" title="6">mcmc  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;R&quot;</span> =<span class="st"> </span><span class="dv">20000</span>)</a>
+<a class="sourceLine" id="cb1-7" title="7"></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co">### start estimation (about 3 minutes computation time)</span></a>
+<a class="sourceLine" id="cb1-9" title="9">RprobitB<span class="op">::</span><span class="kw">rpb</span>(<span class="st">&quot;model&quot;</span> =<span class="st"> </span>model, <span class="st">&quot;lcus&quot;</span> =<span class="st"> </span>lcus, <span class="st">&quot;mcmc&quot;</span> =<span class="st"> </span>mcmc)</a></code></pre></div>
+</div>
+<div id="example-empirical-data" class="section level2">
+<h2>Example: Empirical data</h2>
+<p>The code below fits a mixed multinomial probit model with <code>P_f = 2</code> fixed and <code>P_r = 2</code> random coefficients to the <em><a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">“Train” dataset of the mlogit package</a></em> with</p>
+<ul>
+<li>covariates in the columns <code>&quot;cov_col&quot; = 4:11</code>,</li>
+<li>“price” and “comfort” linked to fixed and “time” and “change” linked to random coefficients via <code>&quot;cov_ord&quot; = c(&quot;price&quot;,&quot;comfort&quot;,&quot;time&quot;,&quot;change&quot;)</code> (remember that fixed coefficients come first),</li>
+<li>and z-standardized covariates (<code>&quot;cov_zst&quot; = TRUE</code>).</li>
+</ul>
+<p>For normalization, the price coefficient (<code>&quot;parameter&quot; = &quot;a&quot;, &quot;index&quot; = 1</code>) is fixed to <code>&quot;value&quot; = -1</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co">### load Train data</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">data</span>(<span class="st">&quot;Train&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;mlogit&quot;</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co">### model specification</span></a>
+<a class="sourceLine" id="cb2-5" title="5">model =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;P_f&quot;</span> =<span class="st"> </span><span class="dv">2</span>, <span class="st">&quot;P_r&quot;</span> =<span class="st"> </span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">data  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;data_raw&quot;</span> =<span class="st"> </span>Train, <span class="st">&quot;cov_col&quot;</span> =<span class="st"> </span><span class="dv">4</span><span class="op">:</span><span class="dv">11</span>, <span class="st">&quot;cov_ord&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;price&quot;</span>,<span class="st">&quot;comfort&quot;</span>,<span class="st">&quot;time&quot;</span>,<span class="st">&quot;change&quot;</span>), <span class="st">&quot;cov_zst&quot;</span> =<span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-7" title="7">lcus  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;do_lcus&quot;</span> =<span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-8" title="8">mcmc  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;R&quot;</span> =<span class="st"> </span><span class="fl">1e5</span>)</a>
+<a class="sourceLine" id="cb2-9" title="9">norm  =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;parameter&quot;</span> =<span class="st"> &quot;a&quot;</span>, <span class="st">&quot;index&quot;</span> =<span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;value&quot;</span> =<span class="st"> </span><span class="dv">-1</span>)</a>
+<a class="sourceLine" id="cb2-10" title="10">out   =<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;id&quot;</span> =<span class="st"> &quot;train&quot;</span>, <span class="st">&quot;pp&quot;</span> =<span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-11" title="11"></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="co">### start estimation (about 20 minutes computation time)</span></a>
+<a class="sourceLine" id="cb2-13" title="13">RprobitB<span class="op">::</span><span class="kw">rpb</span>(<span class="st">&quot;model&quot;</span> =<span class="st"> </span>model, <span class="st">&quot;data&quot;</span> =<span class="st"> </span>data, <span class="st">&quot;lcus&quot;</span> =<span class="st"> </span>lcus, <span class="st">&quot;mcmc&quot;</span> =<span class="st"> </span>mcmc, <span class="st">&quot;norm&quot;</span> =<span class="st"> </span>norm, <span class="st">&quot;out&quot;</span> =<span class="st"> </span>out)</a></code></pre></div>
+</div>
+<div id="on-screen-information" class="section level2">
+<h2>On-screen information</h2>
+<p>During estimation, you get the following on-screen information:</p>
+<ul>
+<li>a summary of the model, normalization, and Gibbs sampler settings, and (if <code>lcus[[&quot;do_lcus&quot;]]=TRUE</code>) the latent class updating scheme parameters</li>
+<li>the sampling progress with expected time for completion (ETA)</li>
+<li>a summary of the posterior distribution (where <em>x.</em> denotes latent class number <em>x</em> in case of <code>lcus[[&quot;do_lcus&quot;]]=TRUE</code>) with
+<ul>
+<li>the true parameter values (only for simulated data)</li>
+<li>the posterior mean</li>
+<li>the posterior standard deviation</li>
+<li>the 5% and 95% quantile of the posterior</li>
+<li>the <em><a href="https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html#gelman-rubin-statistic">Gelman-Rubin statistic</a></em> (R^)</li>
+</ul></li>
+<li>the model’s WAIC value (if <code>out[[&quot;waic&quot;]]=TRUE</code>)</li>
+<li>the path to the model results</li>
+</ul>
+</div>
+<div id="model-results" class="section level2">
+<h2>Model results</h2>
+<p>In the output folder <code>out[[&quot;rdir&quot;]]/out[[&quot;id&quot;]]</code>, you can find the files</p>
+<ul>
+<li><em>protocol.txt</em>, a copy of the on-screen information,</li>
+<li><em>several .rds-files</em> of inputs and outputs,</li>
+<li>and different model visualizations:
+<ul>
+<li><em>acf.pdf</em>, the autocorrelation of the Gibbs samples with the <em><a href="https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html">effective sample size</a></em>,</li>
+<li><em>marginal.pdf</em>, estimated marginal distributions,</li>
+<li><em>trace.pdf</em>, plots of the traces of the Gibbs samples,</li>
+<li>and, if <code>model[[&quot;P_r&quot;]] &gt; 0</code>, <em>contour.pdf</em>, contour plot and progress contour plots (only if <code>out[[&quot;pp&quot;]] = TRUE</code>) of the Gibbs samples.</li>
+</ul></li>
+</ul>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-Albert:93">
+<p>Albert, James H., and Siddhartha Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88.</p>
+</div>
+<div id="ref-Allenby:98">
+<p>Allenby, Greg M., and Peter Rossi. 1998. “Marketing Models of Consumer Heterogeneity.” <em>Journal of Econometrics</em> 89.</p>
+</div>
+<div id="ref-Bauer:19">
+<p>Bauer, Dietmar, Sebastian Büscher, and Manuel Batram. 2019. “Non-Parameteric Estiation of Mixed Discrete Choice Models.” <em>Second International Choice Modelling Conference in Kobe</em>.</p>
+</div>
+<div id="ref-mlogit">
+<p>Croissant, Yves. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11">https://doi.org/10.18637/jss.v095.i11</a>.</p>
+</div>
+<div id="ref-Geweke:98">
+<p>Geweke, John. 1998. “Efficient Simulation from the Multivariate Normal and Student-T Distributions Subject to Linear Constraints and the Evaluation of Constraint Probabilities.” <em>Comput. Sci. Statist.</em> 23.</p>
+</div>
+<div id="ref-Imai:05">
+<p>Imai, Kosuke, and David A. van Dyk. 2005. “A Bayesian Analysis of the Multinomial Probit Model Using Marginal Data Augmentation.” <em>Journal of Econometrics</em> 124.</p>
+</div>
+<div id="ref-McCulloch:94">
+<p>McCulloch, Robert, and Peter Rossi. 1994. “An Exact Likelihood Analysis of the Multinomial Probit Model.” <em>Journal of Econometrics</em> 64.</p>
+</div>
+<div id="ref-Mori:14">
+<p>Mori, Harunori. 2014. “Bayes Estimation in the Hierarchical Multinomial Probit Model.” <em>Journal of the Japan Statistical Society</em> 44.</p>
+</div>
+<div id="ref-Nobile:98">
+<p>Nobile, Agostino. 1998. “A Hybrid Markov Chain for the Bayesian Analysis of the Multinomial Probit Model.” <em>Statistics and Computing</em> 8.</p>
+</div>
+<div id="ref-Oel:20">
+<p>Oelschläger, Lennart, and Dietmar Bauer. 2020. “Bayes Estimation of Latent Class Mixed Multinomial Probit Models.” <em>TRB Annual Meeting 2021</em>.</p>
+</div>
+<div id="ref-bayesm">
+<p>Rossi, Peter. 2019. “Bayesm: Bayesian Inference for Marketing/Micro-Econometrics.” <a href="https://CRAN.R-project.org/package=bayesm">https://CRAN.R-project.org/package=bayesm</a>.</p>
+</div>
+<div id="ref-Scaccia:10">
+<p>Scaccia, Luisa, and Edoardo Marcucci. 2010. “Bayesian Flexible Modelling of Mixed Logit Models.” <em>Proceedings from the 19th International Conference on Computational Statistics</em>.</p>
+</div>
+<div id="ref-Train:09">
+<p>Train, Kenneth. 2009. <em>Discrete Choice Methods with Simulation</em>. 2. ed. Cambridge Univ. Press.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>For notational simplicity, the number of choice occasions <span class="math inline">\(T\)</span> is assumend to be the same for each decision maker here. However, <strong>RprobitB</strong> allows for a different number of choice occasions for each decision maker.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>We note that the model collapses to the (normally) mixed multinomial probit model if <span class="math inline">\(P_r&gt;0\)</span> and <span class="math inline">\(C=1\)</span> and to the basic multinomial probit model if <span class="math inline">\(P_r=0\)</span>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>The <em>wide</em> data format presents each different covariate in a separate column. See the <em><a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">vignette of the mlogit package</a></em> for an example.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
