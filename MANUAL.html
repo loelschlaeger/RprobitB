@@ -322,16 +322,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p><strong>RprobitB</strong> is an R package that can be used to fit <em><a href="#lcmmnp-model">latent class mixed multinomial probit (LCMMNP) models</a></em> to simulated or empirical data. <strong>RprobitB</strong> is licensed under the GNU General Public License v3.0.</p>
+<p><strong>RprobitB</strong> is an R package that can be used to fit <a href="#lcmmnp-model">latent class mixed multinomial probit (LCMMNP) models</a> to simulated or empirical data. <strong>RprobitB</strong> is licensed under the GNU General Public License v3.0.</p>
+<p>Do you found a bug or request a feature? Please <a href="https://github.com/loelschlaeger/RprobitB/issues">tell us</a>!</p>
 <p>The package name <strong>RprobitB</strong> is a portmanteau, combining <em>R</em> (the programming language), <em>probit</em> (the model name) and <em>B</em> (for Bayes, the estimation method).</p>
 <p><strong>RprobitB</strong> is able to</p>
 <ul>
 <li>estimate probit models on discrete choice panel data,</li>
 <li>approximate any underlying mixing distributions through a mixture of normal distributions,</li>
-<li><em><a href="#latent-class-updating-scheme">update the number of latent classes</a></em> within the algorithm on a weight-based strategy,</li>
+<li><a href="#latent-class-updating-scheme">update the number of latent classes</a> within the algorithm on a weight-based strategy,</li>
 <li>perform estimation in a Bayesian framework via Gibbs sampling, thereby avoiding numerical maximization or approximation of the model’s likelihood.</li>
 </ul>
-<p>At this point, you may ask yourself one of the following questions:</p>
+<p>At this point, you may ask yourself:</p>
 <ol style="list-style-type: decimal">
 <li><a href="#installing-rprobitb">How to install RprobitB?</a></li>
 <li><a href="#using-rprobitb">How to use RprobitB?</a></li>
@@ -339,7 +340,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#latent-class-updating-scheme">How does the latent class updating scheme work?</a></li>
 <li><a href="#specifying-a-lcmmnp-model-in-rprobitb">How to specify a LCMMNP model in RprobitB?</a></li>
 </ol>
-<p>Do you found a bug or request a feature? Please <a href="https://github.com/loelschlaeger/RprobitB/issues">tell us</a>!</p>
 <div id="installing-rprobitb" class="section level2">
 <h2>Installing RprobitB</h2>
 <p>To install the latest version of <strong>RprobitB</strong>, run <code>install.packages(&quot;RprobitB&quot;)</code> in your R console.</p>
@@ -348,9 +348,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Using RprobitB</h2>
 <p>To use <strong>RprobitB</strong>, follow these steps:</p>
 <ol style="list-style-type: decimal">
-<li>Specify the model, see <em><a href="#specifying-a-lcmmnp-model-in-rprobitb">below</a></em> for details.</li>
+<li>Specify the model, see <a href="#specifying-a-lcmmnp-model-in-rprobitb">below</a> for details.</li>
 <li>Run <code>RprobitB::rpb(&lt;list of model specifications&gt;)</code>.</li>
-<li>You get <em><a href="#on-screen-information">on-screen information</a></em> and <em><a href="#model-results">model results</a></em> in an output folder.</li>
+<li>You get <a href="#on-screen-information">on-screen information</a> and <a href="#model-results">model results</a> in an output folder.</li>
 </ol>
 </div>
 <div id="lcmmnp-model" class="section level2">
@@ -398,7 +398,7 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 <li><code>norm</code> (normalization information),</li>
 <li><code>out</code> (output settings).</li>
 </ul>
-<p>You can either specify none, all, or selected parameters. Unspecified parameters are set to <em><a href="#default-specifications-of-rprobitb">default values</a></em>.</p>
+<p>You can either specify none, all, or selected parameters. Unspecified parameters are set to <a href="#default-specifications-of-rprobitb">default values</a>.</p>
 <div id="model" class="section level3">
 <h3><code>model</code></h3>
 <ul>
@@ -628,7 +628,7 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 </div>
 <div id="example-empirical-data" class="section level2">
 <h2>Example: Empirical data</h2>
-<p>The code below fits a mixed multinomial probit model with <code>P_f = 2</code> fixed and <code>P_r = 2</code> random coefficients to the <em><a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">“Train” dataset of the mlogit package</a></em> with</p>
+<p>The code below fits a mixed multinomial probit model with <code>P_f = 2</code> fixed and <code>P_r = 2</code> random coefficients to the <a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">“Train” dataset of the mlogit package</a> with</p>
 <ul>
 <li>covariates in the columns <code>&quot;cov_col&quot; = 4:11</code>,</li>
 <li>“price” and “comfort” linked to fixed and “time” and “change” linked to random coefficients via <code>&quot;cov_ord&quot; = c(&quot;price&quot;,&quot;comfort&quot;,&quot;time&quot;,&quot;change&quot;)</code> (remember that fixed coefficients come first),</li>
@@ -661,7 +661,7 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 <li>the posterior mean</li>
 <li>the posterior standard deviation</li>
 <li>the 5% and 95% quantile of the posterior</li>
-<li>the <em><a href="https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html#gelman-rubin-statistic">Gelman-Rubin statistic</a></em> (R^)</li>
+<li>the <a href="https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html#gelman-rubin-statistic">Gelman-Rubin statistic</a> (R^)</li>
 </ul></li>
 <li>the model’s WAIC value (if <code>out[[&quot;waic&quot;]]=TRUE</code>)</li>
 <li>the path to the model results</li>
@@ -675,7 +675,7 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 <li><em>several .rds-files</em> of inputs and outputs,</li>
 <li>and different model visualizations:
 <ul>
-<li><em>acf.pdf</em>, the autocorrelation of the Gibbs samples with the <em><a href="https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html">effective sample size</a></em>,</li>
+<li><em>acf.pdf</em>, the autocorrelation of the Gibbs samples with the <a href="https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html">effective sample size</a>,</li>
 <li><em>marginal.pdf</em>, estimated marginal distributions,</li>
 <li><em>trace.pdf</em>, plots of the traces of the Gibbs samples,</li>
 <li>and, if <code>model[[&quot;P_r&quot;]] &gt; 0</code>, <em>contour.pdf</em>, contour plot and progress contour plots (only if <code>out[[&quot;pp&quot;]] = TRUE</code>) of the Gibbs samples.</li>
@@ -731,7 +731,7 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 <ol>
 <li id="fn1"><p>For notational simplicity, the number of choice occasions <span class="math inline">\(T\)</span> is assumend to be the same for each decision maker here. However, <strong>RprobitB</strong> allows for a different number of choice occasions for each decision maker.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>We note that the model collapses to the (normally) mixed multinomial probit model if <span class="math inline">\(P_r&gt;0\)</span> and <span class="math inline">\(C=1\)</span> and to the basic multinomial probit model if <span class="math inline">\(P_r=0\)</span>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p>The <em>wide</em> data format presents each different covariate in a separate column. See the <em><a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">vignette of the mlogit package</a></em> for an example.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>The <em>wide</em> data format presents each different covariate in a separate column. See the <a href="https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format">vignette of the mlogit package</a> for an example.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 

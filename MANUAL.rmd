@@ -11,7 +11,9 @@ bibliography: ref.bib
 nocite: '@*'
 ---
 
-**RprobitB** is an R package that can be used to fit *[latent class mixed multinomial probit (LCMMNP) models](#lcmmnp-model)* to simulated or empirical data. **RprobitB** is licensed under the GNU General Public License v3.0. 
+**RprobitB** is an R package that can be used to fit [latent class mixed multinomial probit (LCMMNP) models](#lcmmnp-model) to simulated or empirical data. **RprobitB** is licensed under the GNU General Public License v3.0. 
+
+Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
 The package name **RprobitB** is a portmanteau, combining *R* (the programming language), *probit* (the model name) and *B* (for Bayes, the estimation method).
 
@@ -19,18 +21,16 @@ The package name **RprobitB** is a portmanteau, combining *R* (the programming l
 
 - estimate probit models on discrete choice panel data,
 - approximate any underlying mixing distributions through a mixture of normal distributions,
-- *[update the number of latent classes](#latent-class-updating-scheme)* within the algorithm on a weight-based strategy,
+- [update the number of latent classes](#latent-class-updating-scheme) within the algorithm on a weight-based strategy,
 - perform estimation in a Bayesian framework via Gibbs sampling, thereby avoiding numerical maximization or approximation of the model's likelihood.
 
-At this point, you may ask yourself one of the following questions:
+At this point, you may ask yourself:
 
 1. [How to install RprobitB?](#installing-rprobitb)
 2. [How to use RprobitB?](#using-rprobitb)
 3. [How is the LCMMNP model defined?](#lcmmnp-model)
 4. [How does the latent class updating scheme work?](#latent-class-updating-scheme)
 5. [How to specify a LCMMNP model in RprobitB?](#specifying-a-lcmmnp-model-in-rprobitb)
-
-Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
 ## Installing RprobitB
 
@@ -40,9 +40,9 @@ To install the latest version of **RprobitB**, run `install.packages("RprobitB")
 
 To use **RprobitB**, follow these steps:
 
-1. Specify the model, see *[below](#specifying-a-lcmmnp-model-in-rprobitb)* for details.
+1. Specify the model, see [below](#specifying-a-lcmmnp-model-in-rprobitb) for details.
 2. Run `RprobitB::rpb(<list of model specifications>)`.
-3. You get *[on-screen information](#on-screen-information)* and *[model results](#model-results)* in an output folder. 
+3. You get [on-screen information](#on-screen-information) and [model results](#model-results) in an output folder. 
 
 ## LCMMNP model
 Assume that we observe the choices of $N$ decision makers which decide between $J$ alternatives at each of $T$ choice occasions.[^1] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P_f+P_r$ choice attributes that we use to explain the choices. The first $P_f$ attributes are connected to fixed coefficients, the other $P_r$ attributes to random coefficients following a joint  distribution mixed across decision makers. Person $n$'s utility $\tilde{U}_{ntj}$ for alternative $j$ at choice occasion $t$ is modelled as
@@ -102,7 +102,7 @@ Updating the number $C$ of latent classes is done within the algorithm by execut
 - `norm` (normalization information),
 - `out` (output settings).
 
-You can either specify none, all, or selected parameters. Unspecified parameters are set to *[default values](#default-specifications-of-rprobitb)*.
+You can either specify none, all, or selected parameters. Unspecified parameters are set to [default values](#default-specifications-of-rprobitb).
 
 ### `model` 
 
@@ -124,7 +124,7 @@ To model empirical data, specify
 - `cov_ord`, a character vector specifying the order of the covariates, where fixed-coefficient covariates come first (required for specifying random coefficients and interpretation of the model results)
 - `cov_zst`, a boolean determining whether covariates get z-standardized
 
-[^3]: The *wide* data format presents each different covariate in a separate column. See the *[vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format)* for an example.
+[^3]: The *wide* data format presents each different covariate in a separate column. See the [vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) for an example.
 
 ### `parm`
 
@@ -305,7 +305,7 @@ RprobitB::rpb("model" = model, "lcus" = lcus, "mcmc" = mcmc)
 
 ## Example: Empirical data
 
-The code below fits a mixed multinomial probit model with `P_f = 2` fixed  and `P_r = 2` random coefficients to the *["Train" dataset of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format)* with
+The code below fits a mixed multinomial probit model with `P_f = 2` fixed  and `P_r = 2` random coefficients to the ["Train" dataset of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) with
 
 - covariates in the columns `"cov_col" = 4:11`,
 - "price" and "comfort" linked to fixed and "time" and "change" linked to random coefficients via `"cov_ord" = c("price","comfort","time","change")` (remember that fixed coefficients come first),
@@ -340,7 +340,7 @@ During estimation, you get the following on-screen information:
    - the posterior mean
    - the posterior standard deviation
    - the 5% and 95% quantile of the posterior
-   - the *[Gelman-Rubin statistic](https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html#gelman-rubin-statistic)* (R^)
+   - the [Gelman-Rubin statistic](https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html#gelman-rubin-statistic) (R^)
 - the model's WAIC value (if `out[["waic"]]=TRUE`)
 - the path to the model results
 
@@ -350,7 +350,7 @@ In the output folder `out[["rdir"]]/out[["id"]]`, you can find the files
 - *protocol.txt*, a copy of the on-screen information,
 - *several .rds-files* of inputs and outputs,
 - and different model visualizations:
-   - *acf.pdf*, the autocorrelation of the Gibbs samples with the *[effective sample size](https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html)*,
+   - *acf.pdf*, the autocorrelation of the Gibbs samples with the [effective sample size](https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html),
    - *marginal.pdf*, estimated marginal distributions,
    - *trace.pdf*, plots of the traces of the Gibbs samples,
    - and, if `model[["P_r"]] > 0`, *contour.pdf*, contour plot and progress contour plots (only if `out[["pp"]] = TRUE`) of the Gibbs samples.
