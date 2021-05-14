@@ -30,7 +30,7 @@ At this point, you may ask yourself one of the following questions:
 4. [How does the latent class updating scheme work?](#latent-class-updating-scheme)
 5. [How to specify a LCMMNP model in RprobitB?](#specifying-a-lcmmnp-model-in-rprobitb)
 
-Do you found a bug or request a feature? Please tell us: [lennart.oelschlaeger@uni-bielefeld.de](mailto:lennart.oelschlaeger@uni-bielefeld.de).
+Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
 ## Installing RprobitB
 
