@@ -14,9 +14,9 @@ To install the latest version of RprobitB, run `install.packages("RprobitB")` in
 
 ## Using RprobitB
 
-To use **RprobitB**, follow these steps:
+To use RprobitB, follow these steps:
 
-1. Specify the model, see *[below](#specifying-a-lcmmnp-model-in-rprobitb)* for details.
+1. Specify the model, see [below](#specifying-a-lcmmnp-model-in-rprobitb) for details.
 2. Run `RprobitB::rpb(<list of model specifications>)`.
 3. You get on-screen information and model results in an output folder, see the package vignette for details.
 
@@ -34,7 +34,7 @@ RprobitB specifications are grouped in the named lists
 - `norm` (normalization information),
 - `out` (output settings).
 
-You can either specify none, all, or selected parameters. Unspecified parameters are set to *[default values](#default-specifications-of-rprobitb)*.
+You can either specify none, all, or selected parameters. Unspecified parameters are set to [default values](#default-specifications-of-rprobitb).
 
 ### `model` 
 
