@@ -1,0 +1,6 @@
+WAIC = c(4897.0345,6609.4864,7882.3254,6822.9890,4905.9534,6488.2732,6557.0752)
+order = order(WAIC)
+WAIC = sort(WAIC)
+dWAIC = WAIC - min(WAIC)
+weight = exp(-0.5*dWAIC) / sum(exp(-0.5*dWAIC))
+data.frame(order,WAIC,dWAIC,weight)

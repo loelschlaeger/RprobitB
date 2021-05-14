@@ -1,0 +1,27 @@
+Package: RprobitB
+Type: Package
+Title: Bayes Estimation of Latent Class Mixed Multinomial Probit Models
+Version: 0.1.0
+Date: 2021-05-11
+Authors@R: c(
+    person("Lennart", "Oelschl\u00e4ger", email = "lennart.oelschlaeger@uni-bielefeld.de", role = c("aut", "cre")),
+    person("Dietmar", "Bauer", email = "dietmar.bauer@uni-bielefeld.de", role = "aut"),
+    person("Sebastian", "B\u00fcscher", email = "sebastian.buescher@uni-bielefeld.de", role = "ctb"),
+    person("Manuel", "Batram", email = "manuel.batram@uni-bielefeld.de", role = "ctb"))
+Description: 
+    Fitting latent class mixed multinomial probit (LCMMNP) models
+    to simulated or empirical data. Estimation takes place in a Bayesian framework using a Gibbs sampler. 
+    The number of latent classes can be updated within the algorithm on a weight-based strategy. 
+    For a reference, see Oelschl\u00e4ger and Bauer (2021) <https://trid.trb.org/view/1759753>.
+License: GPL-3
+Encoding: UTF-8
+Imports:
+    Rcpp,
+    mvtnorm,
+    viridis
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
+Depends: R (>= 3.5.0)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

@@ -1,0 +1,7 @@
+useDynLib(RprobitB, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
+importFrom("grDevices", "dev.list", "dev.off", "pdf", "rgb")
+importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par", "points", "title")
+importFrom("stats", "acf", "dnorm", "plot.ts", "quantile", "rnorm", "runif", "sd", "var")
+importFrom("utils", "head", "tail")
