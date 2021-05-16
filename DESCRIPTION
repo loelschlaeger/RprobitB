@@ -9,10 +9,10 @@ Authors@R: c(
     person("Sebastian", "B\u00fcscher", email = "sebastian.buescher@uni-bielefeld.de", role = "ctb"),
     person("Manuel", "Batram", email = "manuel.batram@uni-bielefeld.de", role = "ctb"))
 Description: 
-    Fitting latent class mixed multinomial probit (LCMMNP) models
-    to simulated or empirical data. Estimation takes place in a Bayesian framework using a Gibbs sampler. 
+    Fitting latent class mixed multinomial probit (LCMMNP) models to simulated or empirical data. 
+    Estimation takes place in a Bayesian framework using a Gibbs sampler. 
     The number of latent classes can be updated within the algorithm on a weight-based strategy. 
-    For a reference, see Oelschl\u00e4ger and Bauer (2021) <https://trid.trb.org/view/1759753>.
+    For a referenceon the method, see Oelschläger and Bauer (2021) <https://trid.trb.org/view/1759753>.
 License: GPL-3
 Encoding: UTF-8
 Imports:
