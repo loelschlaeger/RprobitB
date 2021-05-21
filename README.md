@@ -1,4 +1,6 @@
-# RprobitB <img src='sticker/sticker.png' align="right" height="136" />
+# fHMM <img src='sticker/StickerShadesOfBlue.png' align="right" height="136" />
+[![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 
 RprobitB is an R package that can be used to fit latent class mixed multinomial probit (LCMMNP) models to simulated or empirical data. 
 
