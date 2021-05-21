@@ -7,7 +7,7 @@ RprobitB is licensed under the GNU General Public License v3.0.
 
 ## Contact
 
-Author and Maintainer: [Lennart Oelschläger](mailto:lennart.oelschlaeger@uni-bielefeld.de)
+Maintainer: [Lennart Oelschläger](mailto:lennart.oelschlaeger@uni-bielefeld.de)
 
 Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
