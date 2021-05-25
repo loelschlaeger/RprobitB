@@ -13,7 +13,7 @@ Description:
     Estimation takes place in a Bayesian framework using a Gibbs sampler. 
     The number of latent classes can be updated within the algorithm on a weight-based strategy. 
     For a reference on the method see Oelschl\"ager and Bauer (2021) <https://trid.trb.org/view/1759753>.
-License: GPL-3 + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Imports:
     Rcpp,
