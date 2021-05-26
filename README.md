@@ -1,4 +1,6 @@
 # RprobitB <img src='sticker/sticker.png' align="right" height="136" />
+[![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 
 RprobitB is an R package that can be used to fit latent class mixed multinomial probit (LCMMNP) models to simulated or empirical data. 
 
@@ -7,7 +9,7 @@ RprobitB is licensed under the GNU General Public License v3.0.
 
 ## Contact
 
-Author and Maintainer: [Lennart Oelschläger](mailto:lennart.oelschlaeger@uni-bielefeld.de)
+Maintainer: [Lennart Oelschläger](mailto:lennart.oelschlaeger@uni-bielefeld.de)
 
 Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
