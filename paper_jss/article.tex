@@ -30,20 +30,20 @@
 %% - \title{} in title case
 %% - \Plaintitle{} without LaTeX markup (if any)
 %% - \Shorttitle{} with LaTeX markup (if any), used as running title
-\title{RprobitB: Bayes Estimation of Latent Class Mixed Multinomial Probit Models}
-\Plaintitle{RprobitB: Bayes Estimation of Latent Class Mixed Multinomial Probit Models}
+\title{RprobitB: Bayes Estimation of Probit Models in \proglang{R}}
+\Plaintitle{RprobitB: Bayes Estimation of Probit Models in R}
 \Shorttitle{RprobitB}
 
 %% - \Abstract{} almost as usual
 \Abstract{
-Discrete choice models lie at the heart of many transportation models. This holds true for mode choice models as well   as for models of vehicle purchase decisions, to name just a few applications. Individual heterogeneity in preferences for different decision makers has been modelled by imposing mixing   distributions on the coefficients. However, the literature does not provide much guidance so far for the specification of the mixing distributions apart from trial and error procedures using several standard parametric distributions. We propose an approach that is capable of approximating any underlying mixing distribution. The approach uses a Bayesian framework for estimating a latent class mixed multinomial probit model where the number of latent classes is updated within the algorithm on a weight-based strategy. Presenting simulation results, we demonstrate that the approach is suitable for guiding the specification of mixing distributions in empirical applications.
+\pkg{RprobitB} is an \proglang{R} package for Bayes estimation of multinomial probit models on discrete choice panel data. Its strength lies in modeling heterogenous choices, because it is capable to approximate any underlying mixing distributions through a mixture of normal distributions. The number of latent classes do not need to be prespecified but can be updated within the algorithm on a weight-based strategy. Furthermore, the package provides great numerical stability since it does not require initialization nor approximation or maximization of any likelihood function. In this paper, we show how to estimate (mixed) probit models using \pkg{RprobitB} and make a comparision to other \proglang{R} packages that estimate probit models.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
 %% - \Plainkeywords{} without LaTeX markup (if necessary)
 %% - Should be comma-separated and in sentence case.
-\Keywords{Mixed multinomial probit models, Bayesian analysis, unobserved heterogeneity, \proglang{R}}
-\Plainkeywords{Mixed multinomial probit models, Bayesian analysis, unobserved heterogeneity, R}
+\Keywords{Mixed multinomial probit models, Bayesian analysis, unobserved heterogeneity}
+\Plainkeywords{Mixed multinomial probit models, Bayesian analysis, unobserved heterogeneity}
 
 %% - \Address{} of at least one author
 %% - May contain multiple affiliations for each author
@@ -75,7 +75,13 @@ Discrete choice models lie at the heart of many transportation models. This hold
 %%   of Statistical Software" above) they should be in sentence case (like
 %%   "generalized linear models" below).
 
-\section[Introduction: Count data regression in R]{Introduction: Count data regression in \proglang{R}} \label{sec:intro}
+\section[Introduction]{Introduction} \label{sec:intro}
+In this paper, we explain the \prolang{R} package \pkg{RprobitB) (Oelschläger, Bauer, Büscher and Batram 2021), available from the Comprehensive R Archive Network (CRAN) at https://CRAN.R-project.org/package=RprobitB.
+
+
+
+The remainder of this paper is organized as follows.
+
 
 \begin{leftbar}
 The introduction is in principle ``as usual''. However, it should usually embed
@@ -119,7 +125,7 @@ diagnostics and inference. The manuscript that this document is based on
 count models in the functions \fct{hurdle} and \fct{zeroinfl} in the \pkg{pscl}
 package \citep{Jackman:2015}. Of course, much more software could be discussed
 here, including (but not limited to) generalized additive models for count data
-as available in the \proglang{R} packages \pkg{mgcv} \cite{Wood:2006}, 
+as available in the \proglang{R} packages \pkg{mgcv} \cite{Wood:2006},
 \pkg{gamlss} \citep{Stasinopoulos+Rigby:2007}, or \pkg{VGAM} \citep{Yee:2009}.
 
 
@@ -316,34 +322,34 @@ R> summary(m_nbin)
 \end{Sinput}
 \begin{Soutput}
 Call:
-glm.nb(formula = Days ~ (Eth + Sex + Age + Lrn)^2, data = quine, 
+glm.nb(formula = Days ~ (Eth + Sex + Age + Lrn)^2, data = quine,
     init.theta = 1.60364105, link = log)
 
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--3.0857  -0.8306  -0.2620   0.4282   2.0898  
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-3.0857  -0.8306  -0.2620   0.4282   2.0898
 
 Coefficients: (1 not defined because of singularities)
-            Estimate Std. Error z value Pr(>|z|)    
+            Estimate Std. Error z value Pr(>|z|)
 (Intercept)  3.00155    0.33709   8.904  < 2e-16 ***
-EthN        -0.24591    0.39135  -0.628  0.52977    
-SexM        -0.77181    0.38021  -2.030  0.04236 *  
-AgeF1       -0.02546    0.41615  -0.061  0.95121    
-AgeF2       -0.54884    0.54393  -1.009  0.31296    
-AgeF3       -0.25735    0.40558  -0.635  0.52574    
-LrnSL        0.38919    0.48421   0.804  0.42153    
-EthN:SexM    0.36240    0.29430   1.231  0.21818    
-EthN:AgeF1  -0.70000    0.43646  -1.604  0.10876    
-EthN:AgeF2  -1.23283    0.42962  -2.870  0.00411 ** 
-EthN:AgeF3   0.04721    0.44883   0.105  0.91622    
-EthN:LrnSL   0.06847    0.34040   0.201  0.84059    
-SexM:AgeF1   0.02257    0.47360   0.048  0.96198    
-SexM:AgeF2   1.55330    0.51325   3.026  0.00247 ** 
-SexM:AgeF3   1.25227    0.45539   2.750  0.00596 ** 
-SexM:LrnSL   0.07187    0.40805   0.176  0.86019    
-AgeF1:LrnSL -0.43101    0.47948  -0.899  0.36870    
-AgeF2:LrnSL  0.52074    0.48567   1.072  0.28363    
-AgeF3:LrnSL       NA         NA      NA       NA    
+EthN        -0.24591    0.39135  -0.628  0.52977
+SexM        -0.77181    0.38021  -2.030  0.04236 *
+AgeF1       -0.02546    0.41615  -0.061  0.95121
+AgeF2       -0.54884    0.54393  -1.009  0.31296
+AgeF3       -0.25735    0.40558  -0.635  0.52574
+LrnSL        0.38919    0.48421   0.804  0.42153
+EthN:SexM    0.36240    0.29430   1.231  0.21818
+EthN:AgeF1  -0.70000    0.43646  -1.604  0.10876
+EthN:AgeF2  -1.23283    0.42962  -2.870  0.00411 **
+EthN:AgeF3   0.04721    0.44883   0.105  0.91622
+EthN:LrnSL   0.06847    0.34040   0.201  0.84059
+SexM:AgeF1   0.02257    0.47360   0.048  0.96198
+SexM:AgeF2   1.55330    0.51325   3.026  0.00247 **
+SexM:AgeF3   1.25227    0.45539   2.750  0.00596 **
+SexM:LrnSL   0.07187    0.40805   0.176  0.86019
+AgeF1:LrnSL -0.43101    0.47948  -0.899  0.36870
+AgeF2:LrnSL  0.52074    0.48567   1.072  0.28363
+AgeF3:LrnSL       NA         NA      NA       NA
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -356,10 +362,10 @@ AIC: 1100.5
 Number of Fisher Scoring iterations: 1
 
 
-              Theta:  1.604 
-          Std. Err.:  0.214 
+              Theta:  1.604
+          Std. Err.:  0.214
 
- 2 x log-likelihood:  -1062.546 
+ 2 x log-likelihood:  -1062.546
 \end{Soutput}
 \end{Schunk}
 

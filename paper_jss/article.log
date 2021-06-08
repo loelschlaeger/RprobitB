@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.14)  8 JUN 2021 14:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.14)  8 JUN 2021 15:27
 entering extended mode
-**C:/Users/Lennart/Projekte/RprobitB/paper_jss/article.tex
-(C:/Users/Lennart/Projekte/RprobitB/paper_jss/article.tex
+**./article.tex
+(article.tex
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 75 language(s) loaded.
 (jss.cls
@@ -73,33 +73,36 @@ or.cfg"
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 147.
-) ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ae\ae.sty"
+)
+("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ae\ae.sty"
 Package: ae 2001/02/12 1.3 Almost European Computer Modern
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.sty
 "
 Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
-("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
+ ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
 File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
 )
 LaTeX Font Info:    Try loading font information for T1+aer on input line 105.
-("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ae\t1aer.fd"
+ ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ae\t1aer.fd"
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
 )))
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\fancyvrb\fancyvr
 b.sty"
 Package: fancyvrb 2019/01/15
-Style option: `fancyvrb' v3.2a <2019/01/15> (tvz)
+ Style option: `fancyvrb' v3.2a <2019/01/15> (tvz)
 \FV@CodeLineNo=\count88
 \FV@InFile=\read1
 \FV@TabBox=\box26
 \c@FancyVerbLine=\count89
 \FV@StepNumber=\count90
 \FV@OutFile=\write3
-) ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.s
-ty"
+)
+("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.sty
+"
 Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
-("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
+ ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
 File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
 ))
@@ -123,6 +126,7 @@ Package textcomp Info: Sub-encoding information:
 (textcomp)             Family '?' is the default used for unknown fonts.
 (textcomp)             See the documentation for details.
 Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ts1enc.def"
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 )
@@ -189,8 +193,8 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
-)) ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\lmodern.st
-y"
+))
+("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\lmodern.sty"
 Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -319,6 +323,7 @@ Package hyperref Info: Backreferencing OFF on input line 4518.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4751.
 \c@Hy@tempcnt=\count95
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\url\url.sty"
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
@@ -366,6 +371,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 \postMskip=\skip51
 \postSskip=\skip52
 
+
 Package hyperref Warning: Option `hyperindex' has already been used,
 (hyperref)                setting the option has no effect on input line 445.
 
@@ -376,6 +382,7 @@ Package hyperref Info: Option `plainpages' set `false' on input line 445.
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\generic\thumbpdf\thumb
 pdf.sty"
 Package: thumbpdf 2014/07/15 v3.16 Inclusion of thumbnails (HO)
+
 
 Package thumbpdf Warning: Thumbnail data file `article.tpt' not found.
 
@@ -405,6 +412,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
 LaTeX Font Info:    ... okay on input line 61.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 61.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 61.
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
@@ -461,9 +469,10 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 61.
 LaTeX Info: Redefining \pageref on input line 61.
 LaTeX Info: Redefining \nameref on input line 61.
-(article.out) (article.out)
+ (article.out) (article.out)
 \@outlinefile=\write4
 \openout4 = `article.out'.
+
 
 
 Package hyperref Warning: Composite letter `\textasciidieresis+g'
@@ -472,29 +481,37 @@ Package hyperref Warning: Composite letter `\textasciidieresis+g'
 
 <jsslogo.jpg, id=27, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
-<use jsslogo.jpg>
+ <use jsslogo.jpg>
 Package pdftex.def Info: jsslogo.jpg used on input line 61.
 (pdftex.def)             Requested size: 89.80768pt x 65.43607pt.
 LaTeX Font Info:    Try loading font information for T1+pzc on input line 61.
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\t1pzc.fd"
 File: t1pzc.fd 2001/06/04 font definitions for T1/pzc.
 )
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <28> not available
 (Font)              Font shape `T1/pzc/mb/it' tried instead on input line 61.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 61.
+ ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\t1lmss.fd"
+File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
 LaTeX Font Info:    Try loading font information for OT1+lmr on input line 61.
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Try loading font information for OML+lmm on input line 61.
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 61.
 
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Try loading font information for OMX+lmex on input line 61.
+
 
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -505,19 +522,18 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <8> on input line 61.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 61.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 61.
-("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\t1lmss.fd"
-File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
 LaTeX Font Info:    Try loading font information for T1+lmtt on input line 86.
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [1
+)
+[1
 
 {C:/Users/Lennart/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./jsslogo
 .jpg>]
 LaTeX Font Info:    Try loading font information for OT1+lmss on input line 143
 .
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ot1lmss.fd"
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -542,6 +558,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [3] <article-visualization.pdf, id=106, 505.89pt x 375.4025pt>
 File: article-visualization.pdf Graphic file (type pdf)
+
 <use article-visualization.pdf>
 Package pdftex.def Info: article-visualization.pdf used on input line 272.
 (pdftex.def)             Requested size: 354.12434pt x 262.78568pt.
@@ -553,6 +570,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [4 <./article-visualization.pdf>]
 LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 348
 .
+
 ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -563,6 +581,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [5] (article.bbl
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 19.
+
 
 LaTeX Font Warning: Font shape `T1/lmr/b/it' in size <10.95> not available
 (Font)              Font shape `T1/lmr/b/sl' tried instead on input line 25.
@@ -580,7 +599,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [7]
 LaTeX Font Info:    Try loading font information for TS1+lmr on input line 437.
 
-("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ts1lmr.fd"
+ ("C:\Users\Lennart\AppData\Local\Programs\MiKTeX 2.9\tex\latex\lm\ts1lmr.fd"
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
@@ -605,24 +624,25 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [9]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 477.
-(article.aux)
+ (article.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 477.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 477.
 Package rerunfilecheck Info: File `article.out' has not changed.
-(rerunfilecheck)             Checksum: CD2B114D783A2ED080D1409F126857EC;489.
+(rerunfilecheck)             Checksum: 0688B34663E695C1BB6C3F6E9FDEE6C7;433.
+
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 477.
  ) 
 Here is how much of TeX's memory you used:
- 7161 strings out of 493323
- 109573 string characters out of 3129147
- 188014 words of memory out of 3000000
- 10531 multiletter control sequences out of 15000+200000
- 88831 words of font info for 56 fonts, out of 3000000 for 9000
+ 7162 strings out of 493323
+ 109395 string characters out of 3129147
+ 186700 words of memory out of 3000000
+ 10533 multiletter control sequences out of 15000+200000
+ 94603 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,10n,34p,1044b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,10n,34p,763b,473s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1
 .enc}{C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-
 ec.enc}{C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/l
@@ -650,7 +670,7 @@ onts/type1/public/lm/lmsy10.pfb><C:/Users/Lennart/AppData/Local/Programs/MiKTeX
 iKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Users/Lennart/AppData/Local/Prog
 rams/MiKTeX 2.9/fonts/type1/public/lm/lmtto10.pfb><C:/Users/Lennart/AppData/Loc
 al/Programs/MiKTeX 2.9/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (9 pages, 429141 bytes).
+Output written on article.pdf (9 pages, 429383 bytes).
 PDF statistics:
  238 PDF objects out of 1000 (max. 8388607)
  36 named destinations out of 1000 (max. 500000)
