@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.14)  18 MAY 2021 15:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.8.14)  8 JUN 2021 14:49
 entering extended mode
-**"C:/Users/Lennart/sciebo/Paper/JSS 2021/article.tex"
-("C:/Users/Lennart/sciebo/Paper/JSS 2021/article.tex"
+**C:/Users/Lennart/Projekte/RprobitB/paper_jss/article.tex
+(C:/Users/Lennart/Projekte/RprobitB/paper_jss/article.tex
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 75 language(s) loaded.
 (jss.cls
@@ -617,12 +617,12 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 477.
  ) 
 Here is how much of TeX's memory you used:
  7161 strings out of 493323
- 109557 string characters out of 3129147
+ 109573 string characters out of 3129147
  188014 words of memory out of 3000000
  10531 multiletter control sequences out of 15000+200000
  88831 words of font info for 56 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,10n,34p,1040b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,10n,34p,1044b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1
 .enc}{C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/lm-
 ec.enc}{C:/Users/Lennart/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/lm/l
