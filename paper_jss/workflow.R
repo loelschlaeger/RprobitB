@@ -1,4 +1,5 @@
 try(setwd("paper_jss"),silent=TRUE)
-Sweave("article.Rnw")
-tools::texi2pdf("article.tex")
-Stangle("article.Rnw")
+Sweave("rprobitb_oelschlaeger_bauer_jss_2021.Rnw")
+tools::texi2pdf("rprobitb_oelschlaeger_bauer_jss_2021.tex")
+Stangle("rprobitb_oelschlaeger_bauer_jss_2021.Rnw")
+

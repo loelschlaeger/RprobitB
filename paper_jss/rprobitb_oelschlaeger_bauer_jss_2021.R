@@ -1,10 +1,10 @@
-### R code from vignette source 'article.Rnw'
+### R code from vignette source 'rprobitb_oelschlaeger_bauer_jss_2021.Rnw'
 
 ###################################################
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-library("MASS")
+library("RprobitB")
 
 
 ###################################################
