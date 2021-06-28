@@ -1,0 +1,59 @@
+---
+title: "How to work with empirical choice data?"
+author: "Lennart Oelschläger"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to work with empirical choice data?}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ref.bib  
+nocite: '@*'
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+If `data = NULL`, data is simulated from the model defined by `model` and `parm`.
+
+To model empirical data, specify 
+
+- `data_raw`, the data frame of choice data in wide format[^3], must contain columns named "id" (unique identifier for each decision maker) and "choice" (the chosen alternatives)
+- `cov_col`, a numeric vector specifying the columns of `data_raw` with covariates
+- `cov_ord`, a character vector specifying the order of the covariates, where fixed-coefficient covariates come first (required for specifying random coefficients and interpretation of the model results)
+- `cov_zst`, a boolean determining whether covariates get z-standardized
+
+[^1]: The *wide* data format presents each different covariate in a separate column. See the [vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) for an example.
+
+
+## Example: Empirical data
+
+The code below fits a mixed multinomial probit model with `P_f = 2` fixed  and `P_r = 2` random coefficients to the ["Train" dataset of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) with
+
+- covariates in the columns `"cov_col" = 4:11`,
+- "price" and "comfort" linked to fixed and "time" and "change" linked to random coefficients via `"cov_ord" = c("price","comfort","time","change")` (remember that fixed coefficients come first),
+- and z-standardized covariates (`"cov_zst" = TRUE`).
+
+For normalization, the price coefficient (`"parameter" = "a", "index" = 1`) is fixed to `"value" = -1`.
+
+```r
+### load Train data
+data("Train", package = "mlogit")
+
+### model specification
+model = list("P_f" = 2, "P_r" = 2)
+data  = list("data_raw" = Train, "cov_col" = 4:11, "cov_ord" = c("price","comfort","time","change"), "cov_zst" = TRUE)
+lcus  = list("do_lcus" = TRUE)
+mcmc  = list("R" = 1e5)
+norm  = list("parameter" = "a", "index" = 1, "value" = -1)
+out   = list("id" = "train", "pp" = TRUE)
+
+### start estimation (about 20 minutes computation time)
+RprobitB::rpb("model" = model, "data" = data, "lcus" = lcus, "mcmc" = mcmc, "norm" = norm, "out" = out)
+
+```
+

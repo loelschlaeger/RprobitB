@@ -18,10 +18,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, include = FALSE}
-library(RprobitB)
-```
-
 **RprobitB** is an R package that can be used to fit [latent class mixed multinomial probit (LCMMNP) models](#lcmmnp-model) to simulated or empirical data. **RprobitB** is licensed under the GNU General Public License v3.0. 
 
 Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
@@ -52,7 +48,7 @@ To install the latest version of **RprobitB**, run `install.packages("RprobitB")
 To use **RprobitB**, follow these steps:
 
 1. Specify the model, see [below](#specifying-a-lcmmnp-model-in-rprobitb) for details.
-2. Run `RprobitB::rpb(<list of model specifications>)`.
+2. Run `RprobitB::fit_mnp(<list of model specifications>)`.
 3. You get [on-screen information](#on-screen-information) and [model results](#model-results) in an output folder. 
 
 ## LCMMNP model
@@ -104,7 +100,7 @@ Updating the number $C$ of latent classes is done within the algorithm by execut
 **RprobitB** specifications are grouped in the named lists 
 
 - `model` (model information),
-- `data` (data information),
+- `data` (empirical data),
 - `parm` (true parameter values),
 - `lcus` (latent class updating scheme parameters),
 - `init` (initial values for the Gibbs sampler),
@@ -128,14 +124,7 @@ You can either specify none, all, or selected parameters. Unspecified parameters
 
 If `data = NULL`, data is simulated from the model defined by `model` and `parm`.
 
-To model empirical data, specify 
-
-- `data_raw`, the data frame of choice data in wide format[^3], must contain columns named "id" (unique identifier for each decision maker) and "choice" (the chosen alternatives)
-- `cov_col`, a numeric vector specifying the columns of `data_raw` with covariates
-- `cov_ord`, a character vector specifying the order of the covariates, where fixed-coefficient covariates come first (required for specifying random coefficients and interpretation of the model results)
-- `cov_zst`, a boolean determining whether covariates get z-standardized
-
-[^3]: The *wide* data format presents each different covariate in a separate column. See the [vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) for an example.
+To model empirical data, prepare your data using the **RprobitB** function `prepare_data()`. See the vignette *"How to work with empirical choice data?"* for details.
 
 ### `parm`
 
@@ -285,7 +274,7 @@ Per default, parameters are randomly drawn.
 - `return = FALSE`
 - `waic = FALSE`
 
-## Example: Simulated data
+## Example
 
 The code below fits a mixed multinomial probit model with
 
@@ -311,34 +300,7 @@ lcus  = list("do_lcus" = TRUE)
 mcmc  = list("R" = 20000)
 
 ### start estimation (about 3 minutes computation time)
-RprobitB::rpb("model" = model, "lcus" = lcus, "mcmc" = mcmc)
-```
-
-## Example: Empirical data
-
-The code below fits a mixed multinomial probit model with `P_f = 2` fixed  and `P_r = 2` random coefficients to the ["Train" dataset of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format) with
-
-- covariates in the columns `"cov_col" = 4:11`,
-- "price" and "comfort" linked to fixed and "time" and "change" linked to random coefficients via `"cov_ord" = c("price","comfort","time","change")` (remember that fixed coefficients come first),
-- and z-standardized covariates (`"cov_zst" = TRUE`).
-
-For normalization, the price coefficient (`"parameter" = "a", "index" = 1`) is fixed to `"value" = -1`.
-
-```r
-### load Train data
-data("Train", package = "mlogit")
-
-### model specification
-model = list("P_f" = 2, "P_r" = 2)
-data  = list("data_raw" = Train, "cov_col" = 4:11, "cov_ord" = c("price","comfort","time","change"), "cov_zst" = TRUE)
-lcus  = list("do_lcus" = TRUE)
-mcmc  = list("R" = 1e5)
-norm  = list("parameter" = "a", "index" = 1, "value" = -1)
-out   = list("id" = "train", "pp" = TRUE)
-
-### start estimation (about 20 minutes computation time)
-RprobitB::rpb("model" = model, "data" = data, "lcus" = lcus, "mcmc" = mcmc, "norm" = norm, "out" = out)
-
+RprobitB::fit_mnp("model" = model, "lcus" = lcus, "mcmc" = mcmc)
 ```
 
 ## On-screen information
