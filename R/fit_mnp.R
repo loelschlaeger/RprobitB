@@ -1,27 +1,37 @@
 #' Estimation of latent class mixed multinomial probit models via Gibbs sampling
-#' @description Function that performs Gibbs sampling and returns model results.
-#' @details The model specifications are ordered in named lists.
-#'   You can either specify none, all, or only selected parameters.
-#'   Unspecified parameters are set to default values.
-#'   See the README file for details.
-#' @param model A list of model information.
-#' @param data Empirical data, must be the output of \link[RprobitB]{prepare_data}.
-#' @param parm A list of true parameter values.
-#' @param lcus A list of latent class updating scheme parameters.
-#' @param init A list of initial values for the Gibbs sampler.
-#' @param prior A list of prior parameters.
-#' @param mcmc A list of Markov chain Monte Carlo parameters.
-#' @param norm A list of normalization information.
-#' @param out A list of output settings.
-#' @return No return value by default.
-#'   Function returns a list of estimates if \code{out[["return"]] = TRUE}.
-#'   Results saved in folder "\code{out[["rdir"]]/out[["id"]]}".
+#' @description
+#' Function that fits a latent class mixed multinomial probit model via Gibbs sampling and returns the results.
+#' @details
+#' The model specifications are ordered in named lists.
+#' You can either specify none, all, or only selected parameters.
+#' Unspecified parameters are set to default values.
+#' Please see the vignette "Introduction to RprobitB" for more details.
+#' @param model
+#' A list of model information.
+#' @param data
+#' A list of empirical data, must be the output of \link[RprobitB]{prepare_data}.
+#' @param parm
+#' A list of true parameter values.
+#' @param lcus
+#' A list of latent class updating scheme parameters.
+#' @param init
+#' A list of initial values for the Gibbs sampler.
+#' @param prior
+#' A list of prior parameters.
+#' @param mcmc
+#' A list of Markov chain Monte Carlo parameters.
+#' @param norm
+#' A list of normalization information.
+#' @param out
+#' A list of output settings.
+#' @return
+#' No return value by default.
+#' Function returns a list of estimates if \code{out[["return"]] = TRUE}.
+#' Results are saved in folder "\code{out[["rdir"]]/out[["id"]]}".
 #' @examples
-#' \dontrun{
 #' ### fit a multinomial probit model to simulated data with default parameters
 #' ### computation time: < 1 min
 #' fit_mnp()
-#' }
 #' @export
 
 fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
