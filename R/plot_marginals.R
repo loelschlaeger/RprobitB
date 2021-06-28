@@ -8,7 +8,7 @@
 #' @param out A list of output settings.
 #' @return No return value. Creates pdf-file "marginal.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
-gibbs_marginals = function(gibbs_samples,model,estimates,parm,out){
+plot_marginals = function(gibbs_samples,model,estimates,parm,out){
   if(model$P_r>0){
 
     s_est = estimates$s_est$mean
@@ -62,8 +62,8 @@ gibbs_marginals = function(gibbs_samples,model,estimates,parm,out){
         } else {
           ymax = max(rowSums(est_mixture))
         }
-        oldpar = par(no.readonly = TRUE)    
-        on.exit(par(oldpar))            
+        oldpar = par(no.readonly = TRUE)
+        on.exit(par(oldpar))
         par(las = 1)
         plot(0, xlim = c(min(x),max(x)), ylim = c(0,ymax),
              type = "n", main = "", xlab = "", ylab = "")

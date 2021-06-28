@@ -6,7 +6,7 @@
 #' @param out A list of output settings.
 #' @return No return value. Creates pdf-file "trace.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
-gibbs_trace = function(gibbs_samples,model,mcmc,out){
+plot_trace = function(gibbs_samples,model,mcmc,out){
   labels = make_labels(gibbs_samples,model,symm=FALSE)
   make_trace = function(samples,thinned,name,legend){
     col = viridis::magma(n=ncol(samples),begin=0.1,end=0.9, alpha=0.6)

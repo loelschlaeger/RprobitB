@@ -7,7 +7,7 @@
 #' @param out A list of output settings.
 #' @return No return value. Creates pdf-file "acf.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
-gibbs_acf = function(gibbs_samples,model,mcmc,out){
+plot_acf = function(gibbs_samples,model,mcmc,out){
 
   ### get coefficient labels
   labels = make_labels(gibbs_samples,model,symm=FALSE)

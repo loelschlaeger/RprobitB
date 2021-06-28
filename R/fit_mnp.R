@@ -5,7 +5,7 @@
 #'   Unspecified parameters are set to default values.
 #'   See the README file for details.
 #' @param model A list of model information.
-#' @param data A list of data information.
+#' @param data Empirical data, must be the output of \link[RprobitB]{prepare_data}.
 #' @param parm A list of true parameter values.
 #' @param lcus A list of latent class updating scheme parameters.
 #' @param init A list of initial values for the Gibbs sampler.
@@ -20,31 +20,32 @@
 #' \dontrun{
 #' ### fit a multinomial probit model to simulated data with default parameters
 #' ### computation time: < 1 min
-#' rpb()
+#' fit_mnp()
 #' }
 #' @export
 
-rpb = function(model = NULL,
-               data  = NULL,
-               parm  = NULL,
-               lcus  = NULL,
-               init  = NULL,
-               prior = NULL,
-               mcmc  = NULL,
-               norm  = NULL,
-               out   = NULL) {
+fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
   tryCatch(
     {
 
+    ### specify missing inputs
+    if(missing(model)) model = NULL
+    if(missing(data)) data  = NULL
+    if(missing(parm)) parm  = NULL
+    if(missing(lcus)) lcus  = NULL
+    if(missing(init)) init  = NULL
+    if(missing(prior)) prior = NULL
+    if(missing(mcmc)) mcmc  = NULL
+    if(missing(norm)) norm  = NULL
+    if(missing(out)) out   = NULL
+
     ### transform empirical data
-    ### sim (boolean) determines whether data is simulated or empirical
     if(!is.null(data)){
       data = transform_data(data_raw = data$data_raw,
                              cov_col = data$cov_col,
                              cov_ord = data$cov_ord,
                              cov_zst = data$cov_zst)
-      sim = FALSE
     }
 
     ### perform pre-checks
@@ -86,10 +87,10 @@ rpb = function(model = NULL,
                                   lcus,suff_statistics,prior,init)
 
       ### normalize, burn and thin Gibbs samples
-      gibbs_samples = gibbs_transform(gibbs_loop_out,model,mcmc,norm)
+      gibbs_samples = transform_samples(gibbs_loop_out,model,mcmc,norm)
 
       ### compute point estimates and standard deviations
-      estimates = gibbs_estimates(gibbs_samples,model,parm)
+      estimates = print_estimates(gibbs_samples,model,parm)
 
     sink()
 
@@ -107,10 +108,10 @@ rpb = function(model = NULL,
 
     ### make plots
     cat("Visualising...\r")
-      gibbs_trace(gibbs_samples,model,mcmc,out)
-      gibbs_acf(gibbs_samples,model,mcmc,out)
-      gibbs_marginals(gibbs_samples,model,estimates,parm,out)
-      gibbs_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
+      plot_trace(gibbs_samples,model,mcmc,out)
+      plot_acf(gibbs_samples,model,mcmc,out)
+      plot_marginals(gibbs_samples,model,estimates,parm,out)
+      plot_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
 
     if(out$rdir=="."){
       cat("Results folder: current directory")

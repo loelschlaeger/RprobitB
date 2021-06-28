@@ -1,5 +1,5 @@
-#' Data transformation
-#' @description Function that transforms empricial data for estimation.
+#' Prepare data
+#' @description Function that prepares empirical choice data for estimation.
 #' @details \code{data_raw} must contain columns named "id" (unique identifier for each decision maker)
 #'  and "choice" (the chosen alternatives).
 #' @param data_raw A data frame of choice data in "wide" format.
@@ -7,8 +7,9 @@
 #' @param cov_ord A character vector, order of covariates, where fixed-coefficient covariates come first.
 #' @param cov_zst A boolean, if \code{TRUE} covariates get z-standardized.
 #' @return A list of transformed data.
+#' @export
 
-transform_data = function(data_raw,cov_col,cov_ord,cov_zst) {
+prepare_data = function(data_raw,cov_col,cov_ord,cov_zst) {
 
   ### check input
   stopifnot(is.data.frame(data_raw))

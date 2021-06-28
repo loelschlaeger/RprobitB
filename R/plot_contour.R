@@ -10,7 +10,7 @@
 #' @param out A list of output settings.
 #' @return No return value. Creates pdf-files "contour.pdf" and "contour_progress.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
-gibbs_contour = function(gibbs_samples,model,estimates,parm,mcmc,lcus,out){
+plot_contour = function(gibbs_samples,model,estimates,parm,mcmc,lcus,out){
   if(model$P_r==2){
     make_contour = function(C,s,b,Omega,limits=NULL,main_add=NULL){
       if(is.null(parm$beta)){
