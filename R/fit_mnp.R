@@ -121,9 +121,9 @@ fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
       plot_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
 
     if(out$rdir=="."){
-      cat("Results folder: current directory")
+      cat("Results folder:\nthe current directory")
     } else {
-      cat(paste0("Results folder: ",out$rdir))
+      cat(paste0("Results folder:\n",out$rdir))
     }
 
     if(out$return){
