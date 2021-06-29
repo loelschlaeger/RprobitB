@@ -50,13 +50,10 @@ fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
     if(missing(norm)) norm  = NULL
     if(missing(out)) out   = NULL
 
-    ### transform empirical data
-    if(!is.null(data)){
-      data = transform_data(data_raw = data$data_raw,
-                             cov_col = data$cov_col,
-                             cov_ord = data$cov_ord,
-                             cov_zst = data$cov_zst)
-    }
+    ### check for empirical data
+    if(!is.null(data))
+      if(!"RprobitB_data" %in% names(attributes(data)) || !attributes(data)[["RprobitB_data"]])
+        stop("'data' must be the output of 'RprobitB::prepare_data()'.")
 
     ### perform pre-checks
     model = check_model(model,data)
