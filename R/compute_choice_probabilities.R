@@ -43,10 +43,10 @@
 #' Omega = matrix(c(as.numeric(diag(2)),as.numeric(diag(2))),4,2)
 #' Sigma = diag(J-1)
 #' ### compute choice probability
-#' prob = choice_probability(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma)
+#' prob = compute_choice_probabilities(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma)
 #' @export
 
-choice_probability = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
+compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
 
   ### function that checks if input is an integer
   is.int = function(x) return(!is.na(x) & !is.nan(x) & x%%1==0 & x>=0)
