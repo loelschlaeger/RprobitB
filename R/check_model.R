@@ -1,7 +1,7 @@
 #' Check \code{model}
 #' @description Function that checks the input \code{model} and sets default values.
 #' @param model A list of model information.
-#' @param data A list data information.
+#' @param data A list of empirical data, must be the output of \link[RprobitB]{prepare_data}.
 #' @return \code{model}
 
 check_model = function(model,data){
@@ -26,6 +26,8 @@ check_model = function(model,data){
     model$N = length(data)
     model$T = unlist(lapply(data,function(x) length(x$y)))
     model$J = NROW(data[[1]]$X[[1]])
+    model$P_f = length(attributes(data)$cov_fixed)
+    model$P_r = length(attributes(data)$cov_random)
     if(is.null(model$C)) model$C=NA
   }
 
