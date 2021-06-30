@@ -9,7 +9,7 @@
 #' @param model
 #' A list of model information.
 #' @param data
-#' A list of empirical data, must be the output of \link[RprobitB]{prepare_data}.
+#' A list of empirical data, must be the output of \link[RprobitB]{prepare}.
 #' @param parm
 #' A list of true parameter values.
 #' @param lcus
@@ -31,10 +31,10 @@
 #' @examples
 #' ### fit a multinomial probit model to simulated data with default parameters
 #' ### computation time: < 1 min
-#' fit_mnp()
+#' fit()
 #' @export
 
-fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
+fit = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
   tryCatch(
     {
@@ -52,7 +52,7 @@ fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
     ### check for empirical data
     if(!is.null(data))
-      if(!"RprobitB_data" %in% names(attributes(data)) || !attributes(data)[["RprobitB_data"]])
+      if(class(data)!="RprobitB_data")
         stop("'data' must be the output of 'RprobitB::prepare_data()'.")
 
     ### perform pre-checks
@@ -68,16 +68,16 @@ fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
     mcmc  = check_mcmc(mcmc)
     out   = check_out(out)
 
-    ### save model parameters
-    check_saving(out,list("model" = model,
-                          "data"  = data,
-                          "parm"  = parm,
-                          "lcus"  = lcus,
-                          "init"  = init,
-                          "prior" = prior,
-                          "mcmc"  = mcmc,
-                          "norm"  = norm,
-                          "out"   = out))
+    ### prepare output
+    output = list("model" = model,
+                  "data"  = data,
+                  "parm"  = parm,
+                  "lcus"  = lcus,
+                  "init"  = init,
+                  "prior" = prior,
+                  "mcmc"  = mcmc,
+                  "norm"  = norm,
+                  "out"   = out)
 
     ### compute sufficient statistics
     suff_statistics = compute_suff_statistics(model,data)
@@ -101,35 +101,31 @@ fit_mnp = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
     sink()
 
-    ### save model results
-    check_saving(out,list("gibbs_loop_out" = gibbs_loop_out,
-                          "gibbs_samples"  = gibbs_samples,
-                          "estimates"      = estimates))
-
-    ### compute WAIC
-    if(out$waic){
-      WAIC = compute_waic(model,gibbs_samples,data)
-      write(sprintf("WAIC: %.4f",WAIC),
-            file=paste0(out$rdir,"/",out$id,"/protocol.txt"),append=TRUE)
-    }
+    ### fill and save output
+    output = c(output, list("gibbs_loop_out" = gibbs_loop_out,
+                            "gibbs_samples"  = gibbs_samples,
+                            "estimates"      = estimates))
+    saveRDS(output, file=paste0(out$rdir,"/",out$id,"/",out$id,".rds"))
 
     ### make plots
-    cat("Visualising...\r")
-      plot_trace(gibbs_samples,model,mcmc,out)
-      plot_acf(gibbs_samples,model,mcmc,out)
-      plot_marginals(gibbs_samples,model,estimates,parm,out)
-      plot_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
+    cat("Visualizing...\r")
+    plot_trace(gibbs_samples,model,mcmc,out)
+    plot_acf(gibbs_samples,model,mcmc,out)
+    plot_marginals(gibbs_samples,model,estimates,parm,out)
+    plot_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
 
+    ### info about output folder
     if(out$rdir=="."){
-      cat("Results folder:\nthe current directory")
+      cat("Output folder: the current directory\n")
     } else {
-      cat(paste0("Results folder:\n",out$rdir))
+      cat(paste("Output folder:",out$rdir,"\n"))
     }
+    seperator = paste0(rep("-",42),collapse="")
+    cat(seperator,"\n")
 
-    if(out$return){
-      ### return estimates
-      return(estimates)
-    }
+    ### return model
+    attr(output,"class") = "RprobitB_model"
+    return(invisible(output))
 
     },
 

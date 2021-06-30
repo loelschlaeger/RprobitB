@@ -34,10 +34,10 @@
 #' form = choice ~ cost | income | travel_time
 #' re = c("cost","ASC")
 #' standardize = c("cost","income","travel_time")
-#' data = prepare_data(data_raw = data_raw, form = form, re = re, standardize = standardize)
+#' data = prepare(data_raw = data_raw, form = form, re = re, standardize = standardize)
 #' @export
 
-prepare_data = function(data_raw, form, re, standardize = NULL) {
+prepare = function(data_raw, form, re, standardize = NULL) {
 
   ### initialization message
   seperator = paste0(rep("-",42),collapse="")
@@ -210,7 +210,7 @@ prepare_data = function(data_raw, form, re, standardize = NULL) {
   }
 
   ### add attributes to data
-  attr(data,"RprobitB_data") = TRUE
+  attr(data,"class") = "RprobitB_data"
   split =
     length(intersect(re,vars[[1]])) * 1 +
     length(intersect(re,vars[[2]])) * length(alternatives) +
