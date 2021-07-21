@@ -1,76 +1,74 @@
 #' Prepare empirical choice data
 #' @description
-#' Function that prepares empirical choice data for estimation.
+#' Function that prepares empirical choice data for the RprobitB package.
 #' @details
 #' Please see the vignette "How to work with empirical choice data?" for more
-#' details on how the specify \code{data_raw} and \code{form}.
-#' @param data_raw
-#' A data frame of choice data in "wide" format.
-#' Must contain columns named "id" (a unique identifier for each decision maker)
-#' and "choice" (the chosen alternatives).
-#' @param form
-#' A formula object that is used to specify the probit model.
-#' The structure is \code{choice ~ A | B | C}, where
-#' \code{A} are alternative (and choice situation) specific covariates with a generic coefficient,
-#' \code{B} are choice situation specific covariates with alternative specific coefficients,
-#' and \code{C} are alternative and choice situation specific covariates with alternative specific coefficients.
-#' By default, alternative specific constants are added to the model. They can be removed by adding \code{+0} in the second spot.
+#' details.
+#' @param choice_data
+#' A data frame of choice data in "wide" format (i.e. one row for each choice
+#' situation).
+#' It must contain columns named "id" (a unique identifier for each decision
+#' maker) and "choice" (the chosen alternatives).
+#' For each alternative specific covariate *p* in \code{form} and each choice
+#' alternative *j* (i.e. each unique element in \code{choice_data[,"choice"]}),
+#' \code{choice_data} must contain a column named *p_j*.
+#' For each covariate *q* that is constant across covariates, \code{choice_data}
+#' must contain a column named *q*.
 #' @param re
-#' A character vector of variable names of \code{form} which are considered to have random effects.
-#' @param standardize
-#' A character vector of variable names of \code{form} that get standardized.
+#' A character vector of variable names of \code{form} which are considered to
+#' have random effects. To have random effects for the alternative specific
+#' constants, include \code{"ASC"} in \code{re}.
+#' @inheritParams RprobitB_data
 #' @return
-#' A list of transformed data, ready to be submitted to \link[RprobitB]{fit_mnp}.
+#' An object of class "RprobitB_data", ready to be submitted to
+#' \link[RprobitB]{fit}.
 #' @examples
-#' data_raw = data.frame(id = rep(1:10,each=10),
-#'                       choice = sample(c("car","bike","train"),size=100,replace=TRUE),
-#'                       cost_car = runif(100),
-#'                       cost_bike = runif(100),
-#'                       cost_train = runif(100),
-#'                       income = runif(100),
-#'                       travel_time_car = runif(100),
-#'                       travel_time_bike = runif(100),
-#'                       travel_time_train = runif(100))
 #' form = choice ~ cost | income | travel_time
+#' choice_data = data.frame("id" = paste("decider",rep(1:10,each=10),sep="_"),
+#'                          "choice" = sample(c("car","bike","train"),size=100,
+#'                                            replace=TRUE),
+#'                          "cost_car" = runif(100),
+#'                          "cost_bike" = runif(100),
+#'                          "cost_train" = runif(100),
+#'                          "income" = runif(100),
+#'                          "travel_time_car" = runif(100),
+#'                          "travel_time_bike" = runif(100),
+#'                          "travel_time_train" = runif(100))
 #' re = c("cost","ASC")
 #' standardize = c("cost","income","travel_time")
-#' data = prepare(data_raw = data_raw, form = form, re = re, standardize = standardize)
+#' data = prepare(form = form, choice_data = choice_data, re = re,
+#'                standardize = standardize)
 #' @export
 
-prepare = function(data_raw, form, re, standardize = NULL) {
-
-  ### initialization message
-  seperator = paste0(rep("-",42),collapse="")
-  cat(seperator,"\n")
-  cat("Prepare data for RprobitB::fit_mnp().\n")
-  cat(seperator,"\n")
+prepare = function(form, choice_data, re, standardize = NULL) {
 
   ### check input
-  if(!is.data.frame(data_raw))
-    stop("'data_raw' must be a data.frame.")
-  if(is.null(data_raw[["id"]]))
-    stop("Column 'id' not found in 'data_raw'.")
-  if(is.null(data_raw[["choice"]]))
-    stop("Column 'choice' not found in 'data_raw'.")
   if(!inherits(form,"formula"))
-    stop("'form' must be a formula.")
+    stop("'form' must be of class 'formula'.")
+  if(!is.data.frame(choice_data))
+    stop("'choice_data' must be a data frame.")
+  if(!"id" %in% colnames(choice_data))
+    stop("Column 'id' not found in 'choice_data'.")
+  if(!"choice" %in% colnames(choice_data))
+    stop("Column 'choice' not found in 'choice_data'.")
   if(!is.character(re))
     stop("'re' must be a character (vector).")
   if(!is.character(standardize))
     stop("'standardize' must be a character (vector).")
 
   ### check if any data point is NA or infinite
-  for(col in 1:ncol(data_raw))
-    if(any(is.na(data_raw[,col])|is.infinite(data_raw[,col])))
-      stop(paste0("Please remove NAs or infinite values in column '",colnames(data_raw)[col],"'."))
+  for(col in 1:ncol(choice_data))
+    if(any(is.na(choice_data[,col]) | is.infinite(choice_data[,col]) |
+           is.nan(choice_data[,col])))
+      stop(paste0("Please remove NAs, NaNs or infinite values in column '",
+                  colnames(choice_data)[col],"'."))
+
+  ### convert decision maker ids to numeric
+  choice_data[,"id"] = as.numeric(as.factor(choice_data[,"id"]))
 
   ### compute number of decision makers and choice occasions
-  N = length(unique(data_raw$id))
-  T = as.numeric(table(data_raw$id))
-  cat("observations:","\n-",N,ifelse(N==1,"decision maker","decision makers"),"\n")
-  if(length(unique(T))==1) cat("-",T[1],ifelse(unique(T)==1,"choice occasion","choice occasions"),ifelse(N==1,"","each"),"\n")
-  if(length(unique(T))>1) cat("-",min(T),"to",max(T),"choice occasions",ifelse(N==1,"","each"),"\n")
-  cat(seperator,"\n")
+  N = length(unique(choice_data[,"id"]))
+  T = as.numeric(table(choice_data[,"id"]))
 
   ### read formula
   vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
@@ -78,72 +76,60 @@ prepare = function(data_raw, form, re, standardize = NULL) {
   vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
   ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
   for(i in 1:3) vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
-  cat("covariates:\n")
-  for(type in 1:3){
-    for(var in vars[[type]]){
-      cat("-",var)
-      cat(" (")
-      cat(paste(c(paste0("t",type),if(var %in% re){"re"},if(var %in% standardize){"z"}),collapse=", "))
-      cat(")\n")
-    }
-  }
-  if(ASC){
-    cat("- ASC",if("ASC" %in% re){"(re)\n"})
-  }
-  cat(seperator,"\n")
 
-  ### check formula
+  ### check elements of form, re and standardize
   if(!all.vars(form)[1]=="choice")
     stop("The dependent variable in 'form' must be named 'choice'.")
   if(!all(re %in% c("ASC",unlist(vars))))
-    stop("The following elements in 're' are no columns in 'data_raw': ", paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
+    stop("The following elements in 're' are not part of 'form': ",
+         paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
+  if(!all(standardize %in% unlist(vars)))
+    stop("The following elements in 'standardize' are not part of 'form': ",
+         paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
 
   ### identify, sort and transform alternatives
-  alternatives = unique(data_raw[["choice"]])
+  alternatives = unique(choice_data[["choice"]])
   alternatives = sort(alternatives)
-  cat("alternatives:","\n")
-  for(i in 1:length(alternatives)){
-    cat("-",alternatives[i],paste(c("(",i,")"),collapse=""),"\n")
-    data_raw[["choice"]][data_raw[["choice"]]==alternatives[i]] = i
-  }
-  data_raw[["choice"]] = as.numeric(data_raw[["choice"]])
-  cat(seperator,"\n")
+  J = length(alternatives)
 
-  ### check data_raw
+  ### check choice_data
   for(var in vars[[2]])
-    if(!var %in% names(data_raw))
-      stop(paste0("Column '",var,"' not found in data_raw."))
+    if(!var %in% names(choice_data))
+      stop(paste0("Column '",var,"' not found in choice_data."))
   for(var in c(vars[[1]],vars[[3]]))
     for(alternative in alternatives)
-      if(!paste0(var,"_",alternative) %in% names(data_raw))
-        stop(paste0("Column '",paste0(var,"_",alternative),"' not found in 'data_raw'."))
+      if(!paste0(var,"_",alternative) %in% names(choice_data))
+        stop(paste0("Column '",paste0(var,"_",alternative),"' not found in
+                    'choice_data'."))
 
   ### standardize covariates
   for(var in vars[[2]])
     if(var %in% standardize)
-      data_raw[,var] = (data_raw[,var] - mean(data_raw[,var])) / sd(data_raw[,var])
+      choice_data[,var] = scale(choice_data[,var])
   for(var in c(vars[[1]],vars[[3]]))
     if(var %in% standardize)
       for(alternative in alternatives)
-        data_raw[,paste0(var,"_",alternative)] =
-          (data_raw[,paste0(var,"_",alternative)] - mean(unlist(data_raw[,paste0(var,"_",alternatives)]))) / sd(unlist(data_raw[,paste0(var,"_",alternatives)]))
+        choice_data[,paste0(var,"_",alternative)] =
+          (choice_data[,paste0(var,"_",alternative)] -
+             mean(unlist(choice_data[,paste0(var,"_",alternatives)]))) /
+               sd(unlist(choice_data[,paste0(var,"_",alternatives)]))
 
-  ### transform data
+  ### transform choice_data in list format
   data = list()
   for(n in 1:N){
     data[[n]] = list()
-    data_n = data_raw[data_raw$id == n,]
+    data_n = choice_data[choice_data[,"id"] == n,]
     X_n = list()
 
-    for(t in 1:nrow(data_n)){
+    for(t in 1:T[n]){
       data_nt = data_n[t,]
-      X_nt = matrix(NA, nrow = length(alternatives), ncol = 0)
+      X_nt = matrix(NA, nrow = J, ncol = 0)
 
       ### type-1 covariates
       for(var in vars[[1]]){
         old_names = colnames(X_nt)
-        col = numeric(length(alternatives))
-        for(alternative in 1:length(alternatives))
+        col = numeric(J)
+        for(alternative in 1:J)
           col[alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
         ### put covariates with random effects at the end
         if(var %in% re){
@@ -158,8 +144,8 @@ prepare = function(data_raw, form, re, standardize = NULL) {
       ### type-2 covariates
       for(var in vars[[2]]){
         old_names = colnames(X_nt)
-        mat = matrix(0,length(alternatives),length(alternatives))
-        for(alternative in 1:length(alternatives))
+        mat = matrix(0,J,J)
+        for(alternative in 1:J)
           mat[alternative,alternative] = data_nt[,var]
         ### put covariates with random effects at the end
         if(var %in% re){
@@ -174,8 +160,8 @@ prepare = function(data_raw, form, re, standardize = NULL) {
       ### type-3 covariates
       for(var in vars[[3]]){
         old_names = colnames(X_nt)
-        mat = matrix(0,length(alternatives),length(alternatives))
-        for(alternative in 1:length(alternatives))
+        mat = matrix(0,J,J)
+        for(alternative in 1:J)
           mat[alternative,alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
         ### put covariates with random effects at the end
         if(var %in% re){
@@ -190,14 +176,14 @@ prepare = function(data_raw, form, re, standardize = NULL) {
       ### ASC (for all but the last alternative)
       if(ASC){
         old_names = colnames(X_nt)
-        mat = diag(length(alternatives))[,-length(alternatives)]
+        mat = diag(J)[,-J]
         ### put covariates with random effects at the end
         if("ASC" %in% re){
           X_nt = cbind(X_nt,mat)
-          colnames(X_nt) = c(old_names,paste0("ASC_",alternatives[-length(alternatives)]))
+          colnames(X_nt) = c(old_names,paste0("ASC_",alternatives[-J]))
         } else {
           X_nt = cbind(mat,X_nt)
-          colnames(X_nt) = c(paste0("ASC_",alternatives[-length(alternatives)]),old_names)
+          colnames(X_nt) = c(paste0("ASC_",alternatives[-J]),old_names)
         }
       }
 
@@ -209,17 +195,28 @@ prepare = function(data_raw, form, re, standardize = NULL) {
     data[[n]][["y"]] = data_n[["choice"]]
   }
 
-  ### add attributes to data
-  attr(data,"class") = "RprobitB_data"
-  split =
-    length(intersect(re,vars[[1]])) * 1 +
-    length(intersect(re,vars[[2]])) * length(alternatives) +
-    length(intersect(re,vars[[3]])) * length(alternatives) +
-    ("ASC" %in% re) * (length(alternatives) - 1)
+  ### create cov_fix and cov_random
   cov_names = colnames(data[[1]][["X"]][[1]])
-  attr(data,"cov_fixed") = cov_names[seq_len(length(cov_names)-split)]
-  attr(data,"cov_random") = tail(cov_names,split)
+  cov_fix = cov_names[which(!gsub("_.*$","",cov_names) %in% re)]
+  cov_random = cov_names[which(gsub("_.*$","",cov_names) %in% re)]
+
+  ### create RprobitB_data object
+  out = RprobitB_data(data        = data,
+                      N           = N,
+                      T           = T,
+                      J           = J,
+                      P_f         = length(cov_fix),
+                      P_r         = length(cov_random),
+                      cov_fix     = cov_fix,
+                      cov_random  = cov_random,
+                      form        = form,
+                      standardize = standardize,
+                      parm        = NULL,
+                      distr       = NULL)
+
+  ### print information
+  print(out)
 
   ### return transformed data
-  return(data)
+  return(out)
 }
