@@ -1,0 +1,8 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  data: data.html
+  introduction: introduction.html
+last_built: 2021-07-23T23:46Z
+
