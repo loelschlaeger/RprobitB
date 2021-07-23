@@ -1,6 +1,7 @@
 #' Estimation of latent class mixed multinomial probit models via Gibbs sampling
 #' @description
-#' Function that fits a latent class mixed multinomial probit model via Gibbs sampling and returns the results.
+#' Function that fits a latent class mixed multinomial probit model via Gibbs
+#' sampling and returns the results.
 #' @details
 #' The model specifications are ordered in named lists.
 #' You can either specify none, all, or only selected parameters.
@@ -41,19 +42,19 @@ fit = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
     ### specify missing inputs
     if(missing(model)) model = NULL
-    if(missing(data)) data  = NULL
-    if(missing(parm)) parm  = NULL
-    if(missing(lcus)) lcus  = NULL
-    if(missing(init)) init  = NULL
+    if(missing(data))  data  = NULL
+    if(missing(parm))  parm  = NULL
+    if(missing(lcus))  lcus  = NULL
+    if(missing(init))  init  = NULL
     if(missing(prior)) prior = NULL
-    if(missing(mcmc)) mcmc  = NULL
-    if(missing(norm)) norm  = NULL
-    if(missing(out)) out   = NULL
+    if(missing(mcmc))  mcmc  = NULL
+    if(missing(norm))  norm  = NULL
+    if(missing(out))   out   = NULL
 
-    ### check for empirical data
-    if(!is.null(data))
-      if(class(data)!="RprobitB_data")
-        stop("'data' must be the output of 'RprobitB::prepare_data()'.")
+    ### check if data was supplied
+    if(!is.null(data)) if(class(data) != "RprobitB_data")
+      stop("'data' must be the output of
+           'RprobitB::prepare()' or 'RprobitB::simulate()'.")
 
     ### perform pre-checks
     model = check_model(model,data)
@@ -131,10 +132,7 @@ fit = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
 
   error = function(cond) message(paste0(cond),appendLF=FALSE),
 
-  finally = {
-    for(i in seq_len(sink.number())) sink()
-    while(!is.null(dev.list())) dev.off()
-  }
+  finally = { for(i in seq_len(sink.number())) sink() }
 
   )
 
