@@ -1,39 +1,76 @@
 #' Simulate choice data
 #' @description
-#' Function that simulates choice data for RprobitB.
+#' Function that simulates choice data for the RprobitB package.
 #' @details
-#' Please see the vignette "How to simulate choice data?" for more details.
-#' @inheritParams check_model
+#' For more details see the vignette "How to simulate choice data?":
+#' \code{vignette("How to simulate choice data?", package = "RprobitB")}
+#' @inheritParams RprobitB_data
 #' @inheritParams check_parm
-#' @inheritParams prepare
 #' @param distr
-#' See https://stackoverflow.com/questions/68452845/how-to-submit-a-vector-of-distributions-to-a-function-in-r
-#' @return
-#' A list of
-#' \itemie{
-#'   \item \code{data}
-#'   \item \code{parm}
+#' A list of number generation functions from which the covariates
+#' are drawn. Each element of \code{distr} must be of the form
+#' \code{"name" = list(pars)}, where \code{"name"} is the name of the number
+#' generation function and \code{pars} are required parameters.
+#' Possible number generation functions are
+#' \itemize{
+#'   \item functions of the type \code{r*} from base R (e.g. \code{rnorm}) where
+#'         all required parameters (except for \code{n}) must be specified,
+#'   \item the function \code{sample}, where all required parameters
+#'         (except for \code{size}) must be specified.
 #' }
+#' The order is the same as in \code{form}, i.e. the first element of
+#' \code{distr} draws the first covariate of \code{form}.
+#' If \code{distr} is not specified, all covariates are drawn from a
+#' standard normal distribution.
+#' If \code{distr} is specified, the length of \code{distr} must equal the
+#' number of covariates.
+#' @return
+#' An object of class \code{RprobitB_data}, ready to be submitted to
+#' \link[RprobitB]{fit}.
 #' @examples
-#' form = choice ~ cost | income | travel_time
-#' re = c("cost","ASC")
-#' model = c("N" = 100, "T" = 10, "J" = 3, "P_f" = 2, "P_r" = 2, "C" = 1)
-#' distr = c()
-#' standardize = FALSE
+#' form = choice ~ var1 | var2
+#' N = 10
+#' T = 1:10
+#' J = 3
+#' C = 2
+#' re = c("ASC")
+#' alternatives = c("A","B")
+#' distr = list("rgamma" = list(mean = 0, sd = 1),
+#'              "sample" = list(x = 1:10, replace = TRUE))
+#' data = simulate(form = form, N = N, T = T, J = J, C = C, re = re,
+#'                 alternatives = alternatives, distr = distr,
+#'                 standardize = standardize)
 #' @export
 
-simulate = function(form, model, parm, distr, standardize = FALSE) {
+simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
+                    parm = NULL, distr = NULL, standardize = NULL) {
 
+  ### check input
+  if(!inherits(form,"formula"))
+    stop("'form' must be of class 'formula'.")
+  if(!is.natural.number(N))
+    stop("'N' must be a non-negative number.")
+  if(!is.natural.number(T))
+    stop("'T' must be a non-negative number.")
+  if(!is.natural.number(J))
+    stop("'J' must be a non-negative number.")
+  if(!is.natural.number(C))
+    stop("'C' must be a non-negative number.")
+  if(!is.null(re))
+    if(!is.character(re))
+      stop("'re' must be a character (vector).")
+  if(!is.null(alternatives))
+    if(length(alternatives) != J || !is.character(alternatives))
+      stop("'alternatives' must be a character (vector) of length 'J'.")
+  parm = check_parm(parm)
+  if(!is.null(distr))
+    if(!is.list(distr))
+      stop("")
+  if(!is.null(standardize))
+    if(!is.character(standardize))
+      stop("'standardize' must be a character (vector).")
 
-
-
-
-  N = model$N
-  T = if(length(model$T)==1) rep(model$T,N) else model$T
-  J = model$J
-  P_f = model$P_f
-  P_r = model$P_r
-  C = model$C
+  ### read parm
   alpha = parm$alpha
   s = parm$s
   b = parm$b

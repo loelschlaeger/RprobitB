@@ -1,36 +1,40 @@
-print.RprobitB_data = function(RprobitB_data){
+#' @export
 
-  if(!is.RprobitB_data(RprobitB_data)) stop()
+print.RprobitB_data = function(x, ...){
 
-  cat(separator(),"\n")
-  cat("N=",RprobitB_data$N)
-  cat(separator(),"\n")
+  if(!is.RprobitB_data(x)) stop("wrong class")
 
-  # cat(separator(),"\n")
-  #
-  # cat("observations:","\n-",N,ifelse(N==1,"decision maker","decision makers"),"\n")
-  # if(length(unique(T))==1) cat("-",T[1],ifelse(unique(T)==1,"choice occasion","choice occasions"),ifelse(N==1,"","each"),"\n")
-  # if(length(unique(T))>1) cat("-",min(T),"to",max(T),"choice occasions",ifelse(N==1,"","each"),"\n")
-  #
-  # cat("covariates:\n")
-  # for(type in 1:3){
-  #   for(var in vars[[type]]){
-  #     cat("-",var)
-  #     cat(" (")
-  #     cat(paste(c(paste0("t",type),if(var %in% re){"re"},if(var %in% standardize){"z"}),collapse=", "))
-  #     cat(")\n")
-  #   }
-  # }
-  # if(ASC){
-  #   cat("- ASC",if("ASC" %in% re){"(re)\n"})
-  # }
-  #
-  # cat("alternatives:","\n")
-  # for(i in 1:length(alternatives)){
-  #   cat("-",alternatives[i],paste(c("(",i,")"),collapse=""),"\n")
-  #   choice_data[["choice"]][choice_data[["choice"]]==alternatives[i]] = i
-  # }
-  # choice_data[["choice"]] = as.numeric(choice_data[["choice"]])
-  # cat(seperator,"\n")
+  cat(ifelse(x$simulated,"Simulated","Empirical"),"choice data\n")
+  cat("\n")
+
+  cat("observations:\n")
+  cat("-",x$N,ifelse(x$N==1,"decision maker","decision makers"),"\n")
+  if(length(unique(x$T))==1)
+    cat("-",x$T[1],
+        ifelse(unique(x$T)==1,"choice occasion","choice occasions"),
+        ifelse(x$N==1,"","each"),"\n")
+  if(length(unique(x$T))>1)
+    cat("-",min(x$T),"to",max(x$T),"choice occasions",
+        ifelse(x$N==1,"","each"),"\n")
+  cat("\n")
+
+  cat("covariates:\n")
+  for(type in 1:3){
+    for(var in x$vars[[type]]){
+      cat("-",var)
+      cat(" (")
+      cat(paste(c(paste0("type ",type),
+                  if(var %in% unique(gsub("_.*$","",x$cov_random))){"re"},
+                  if(var %in% standardize){"scaled"}), collapse=", "))
+      cat(")\n")
+    }
+  }
+  if(ASC) cat("- ASC",if("ASC" %in% re){"(re)\n"})
+  cat("\n")
+
+  cat("alternatives (occurence):","\n")
+  for(i in 1:x$J)
+    cat(paste0(i,"."),x$alternatives[i],
+        paste0("(",sum(unlist(lapply(x$data,function(x)x$y))==i),")"),"\n")
 
 }
