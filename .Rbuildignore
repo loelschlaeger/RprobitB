@@ -7,3 +7,7 @@ paper_jss/
 load_code.R
 README.html
 LICENSE
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

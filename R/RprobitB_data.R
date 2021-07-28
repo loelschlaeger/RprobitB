@@ -14,18 +14,25 @@
 #' @param N
 #' The non-negative number of decision makers.
 #' @param T
-#' The non-negative number of choice occasions.
+#' The non-negative number of choice occasions or a vector of choice occasions
+#' of length \code{N} (i.e. a decision maker specific number).
 #' @param J
 #' The non-negative number of choice alternatives.
 #' @param P_f
 #' The non-negative number of covariates connected to a fixed coefficient.
 #' @param P_r
 #' The non-negative number of covariates connected to a random coefficient.
+#' @param C
+#' The non-negative number of latent classes of decision makers. We assume
+#' homogeneous preferences inside a latent class. If \code{P_r = 0}, then
+#' always \code{C = 1}.
+#' @param alternatives
+#' A character vector of length \code{J} with the names of the alternatives.
 #' @param cov_fix
-#' A character vector with the names of covariates that are connected to a
+#' A character vector with the names of the covariates that are connected to a
 #' fixed coefficient.
 #' @param cov_random
-#' A character vector with the names of covariates that are connected to a
+#' A character vector with the names of the covariates that are connected to a
 #' random coefficient.
 #' @param form
 #' A formula object that is used to specify the probit model.
@@ -39,54 +46,55 @@
 #' By default, alternative specific constants are added to the model (for all
 #' except for the last alternative).
 #' They can be removed by adding \code{+0} in the second spot.
+#' @param vars
+#' A list of length three, containing the three different covariate types of
+#' \code{form}.
 #' @param standardize
 #' A character vector of variable names of \code{form} that get standardized.
+#' @param simulated
+#' A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
+#' \code{data} is empirical.
 #' @inheritParams check_parm
-#' @param distr
-#' A character vector of number generation functions from which the covariates
-#' are drawn. Possible inputs are
-#' \itemize{
-#'   \item functions of the type \code{r*} from base R (e.g. \code{rnorm})
-#'         where all required inputs (except for \code{n}) must be specified,
-#'   \item the function \code{sample}, where all required inputs
-#'         (except for \code{size}) must be specified.
-#' }
-#' The order is the same as in \code{form}, i.e. the first element of
-#' \code{distr} draws the first covariate of \code{form}.
-#' If \code{distr} is not specified, all covariates are drawn from a
-#' standard normal distribution.
-#' If \code{distr} is specified, the length of \code{distr} must equal the
-#' number of covariates.
+#' @inheritParams simulate
 #' @return
 #' An object of class "RprobitB_data", i.e. a list with the arguments of this
 #' function as elements.
 #' In case of empirical data, the elements \code{parm} and \code{distr} equal
 #' \code{NULL}.
 
-RprobitB_data = function(data, N, T, J, P_f, P_r, cov_fix, cov_random, form,
-                         standardize, parm, distr){
+RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
+                         cov_random, form, vars, standardize, simulated,
+                         parm, distr){
 
   ### check input types
   stopifnot(is.list(data))
+  stopifnot(is.list(vars) || length(vars)==3)
   stopifnot(is.list(parm) || is.null(parm))
   stopifnot(is.list(distr) || is.null(distr))
   stopifnot(Vectorize(is.natural.number)(c(N,T,J,P_f,P_r)))
+  stopifnot(is.na(C) || is.natural.number(C))
   stopifnot(Vectorize(is.character)(c(cov_fix,cov_random,standardize)))
+  stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))
+  stopifnot(is.logical(simulated))
 
   ### create object of class "RprobitB_data"
-  out = list("data"        = data,
-             "N"           = N,
-             "T"           = T,
-             "J"           = J,
-             "P_f"         = P_f,
-             "P_r"         = P_r,
-             "cov_fix"     = cov_fix,
-             "cov_random"  = cov_random,
-             "form"        = form,
-             "standardize" = standardize,
-             "parm"        = parm,
-             "distr"       = distr)
+  out = list("data"         = data,
+             "N"            = N,
+             "T"            = T,
+             "J"            = J,
+             "P_f"          = P_f,
+             "P_r"          = P_r,
+             "C"            = C,
+             "alternatives" = alternatives,
+             "cov_fix"      = cov_fix,
+             "cov_random"   = cov_random,
+             "form"         = form,
+             "vars"         = vars,
+             "standardize"  = standardize,
+             "simulated"    = simulated,
+             "parm"         = parm,
+             "distr"        = distr)
   class(out) = "RprobitB_data"
 
   ### return object
