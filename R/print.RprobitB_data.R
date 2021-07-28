@@ -29,7 +29,7 @@ print.RprobitB_data = function(x, ...){
       cat(")\n")
     }
   }
-  if(ASC) cat("- ASC",if("ASC" %in% re){"(re)\n"})
+  if(x$ASC) cat("- ASC",if("ASC" %in% re){"(re)\n"})
   cat("\n")
 
   cat("alternatives (occurence):","\n")

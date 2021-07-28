@@ -49,6 +49,8 @@
 #' @param vars
 #' A list of length three, containing the three different covariate types of
 #' \code{form}.
+#' @param ASC
+#' A boolean, determining whether alternative specific constants are included.
 #' @param standardize
 #' A character vector of variable names of \code{form} that get standardized.
 #' @param simulated
@@ -63,7 +65,7 @@
 #' \code{NULL}.
 
 RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
-                         cov_random, form, vars, standardize, simulated,
+                         cov_random, form, vars, ASC, standardize, simulated,
                          parm, distr){
 
   ### check input types
@@ -77,6 +79,7 @@ RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
   stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))
   stopifnot(is.logical(simulated))
+  stopifnot(is.logical(ASC))
 
   ### create object of class "RprobitB_data"
   out = list("data"         = data,
@@ -91,6 +94,7 @@ RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
              "cov_random"   = cov_random,
              "form"         = form,
              "vars"         = vars,
+             "ASC"          = ASC,
              "standardize"  = standardize,
              "simulated"    = simulated,
              "parm"         = parm,

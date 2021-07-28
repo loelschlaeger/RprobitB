@@ -25,8 +25,7 @@
 #' unique identifier for each decision maker. The default is \code{"id"}.
 #' @inheritParams RprobitB_data
 #' @return
-#' An object of class \code{RprobitB_data}, ready to be submitted to
-#' \link[RprobitB]{fit}.
+#' An object of class \code{RprobitB_data}
 #' @examples
 #' form = choice ~ cost | income | travel_time
 #' choice_data = data.frame("id" = paste("decider", rep(1:10,each=10), sep="_"),
@@ -156,16 +155,16 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
       ### type-2 covariates
       for(var in vars[[2]]){
         old_names = colnames(X_nt)
-        mat = matrix(0,J,J)
-        for(alternative in 1:J)
+        mat = matrix(0,J,J)[,-J]
+        for(alternative in 1:(J-1))
           mat[alternative,alternative] = data_nt[,var]
         ### put covariates with random effects at the end
         if(var %in% re){
           X_nt = cbind(X_nt,mat)
-          colnames(X_nt) = c(old_names,paste0(var,"_",alternatives))
+          colnames(X_nt) = c(old_names,paste0(var,"_",alternatives[1:(J-1)]))
         } else {
           X_nt = cbind(mat,X_nt)
-          colnames(X_nt) = c(paste0(var,"_",alternatives),old_names)
+          colnames(X_nt) = c(paste0(var,"_",alternatives[1:(J-1)]),old_names)
         }
       }
 
@@ -225,11 +224,12 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
                       cov_random   = cov_random,
                       form         = form,
                       vars         = vars,
+                      ASC          = ASC,
                       standardize  = standardize,
                       simulated    = FALSE,
                       parm         = NULL,
                       distr        = NULL)
 
-  ### return transformed data
+  ### return RprobitB_data object
   return(out)
 }
