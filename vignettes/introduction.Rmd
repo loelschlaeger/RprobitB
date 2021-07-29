@@ -138,7 +138,7 @@ To model empirical data, prepare your data using the **RprobitB** function `prep
 
 - `do_lcus`, a boolean determining whether to update the number of latent classes
 - `C0`, the initial number of latent classes
-- `Cmax`, the maximal number of latent classes (greater or equal `lcus[["C0"]]`)
+- `Cmax`, the maximum number of latent classes (greater or equal `lcus[["C0"]]`)
 - `buffer`, the buffer for the updating (number of iterations to wait before the next update)
 - `epsmin`, the threshold weight for removing latent classes (between 0 and 1)
 - `epsmax`, the threshold weight for splitting latent classes (between 0 and 1)

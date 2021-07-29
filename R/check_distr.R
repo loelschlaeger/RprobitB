@@ -22,8 +22,12 @@
 #' number of covariates.
 #' @param no_cov
 #' The non-negative number of covariates.
+#' @examples
+#' check_distr(distr = list("rgamma" = list(shape = 1),
+#'                          "sample" = list(x = 1:10, replace = TRUE)),
+#'             no_cov = 2)
 #' @return
-#' \code{distr}
+#' The checked input \code{distr}
 
 check_distr = function(distr, no_cov) {
 

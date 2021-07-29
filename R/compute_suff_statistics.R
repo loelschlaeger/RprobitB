@@ -1,25 +1,91 @@
-#' Sufficient statistics
-#' @description Function that computes sufficient statistics for estimation.
-#' @param model A list of model identifications.
-#' @param data A list of data information.
-#' @return A list of sufficient statistics.
+#' Compute sufficient statistics
+#' @description
+#' Function that computes sufficient statistics for estimation.
+#' @param data
+#' An object of class \code{RprobitB_data}, which can be obtained from
+#' \code{\link{simulate}} or \code{\link{prepare}}.
+#' @param level
+#' The number of choice alternative (or \code{"last"} for the last alternative)
+#' chosen as the base alternative for utility differences to normalize for the
+#' utility level.
+#' @param scale
+#' A list of three elements, determining the normalization with respect to
+#' utility scale:
+#' \itemize{
+#'   \item \code{parameter}:
+#'   either \code{"a"} (for a linear coefficient in \code{"alpha"}) or
+#'   \code{"s"} (for a variance in the error-term covariance matrix
+#'   \code{"Sigma"})
+#'   \item \code{index}:
+#'   the index of the parameter that gets fixed
+#'   \item \code{value}:
+#'   the value for the fixed parameter
+#' }
+#' @examples
+#' compute_suff_statistics(data = simulate(form = choice ~ var, N = 10, T = 10,
+#'                                         J = 3, re = "ASC"))
+#' @return
+#' A list of sufficient statistics
 
-compute_suff_statistics = function(model,data){
-  N = model$N
-  T = if(length(model$T)==1) rep(model$T,N) else model$T
-  J = model$J
-  P_r = model$P_r
-  P_f = model$P_f
-  
-  ### utility differences wrt last alternative
-  if(model$P_f > 0 || model$P_r > 0){
-    Delta_J = diag(J)[-J,,drop=FALSE]; Delta_J[,J] = -1
-    for(n in 1:N) data[[n]][["X"]] = lapply(data[[n]][["X"]], function(X_nt) Delta_J %*% X_nt)
+compute_suff_statistics = function(data, level = "last",
+                                   scale = list("parameter" = "s", "index" = 1,
+                                                "value" = 1)){
+
+  ### check input
+  if(!is.RprobitB_data(data))
+    stop("'data' must be of class 'RprobitB_data'.")
+  if(level == "last")
+    level = data[["J"]]
+  if(!is.natural.number(level) || level > data[["J"]])
+    stop(paste("'level' must be a non-negative number between 1 and",
+               data[["J"]]))
+  if(!is.list(scale))
+    stop("'scale' must be a list")
+  if(is.null(scale[["parameter"]]))
+    scale[["parameter"]] = "s"
+  if(!scale[["parameter"]] %in% c("s","a"))
+    stop("'scale$parameter' must be one of 'a' or 's'.")
+  if(is.null(scale[["index"]]))
+    scale[["index"]] = 1
+  if(scale[["parameter"]] == "a" &&
+     !scale[["index"]] %in% seq_len(data[["P_f"]]))
+    stop("'scale$index' is out of bound.")
+  if(scale[["parameter"]] == "s" &&
+     !scale[["index"]] %in% seq_len(data[["J"]]))
+    stop("'scale$index' is out of bound.")
+  if(is.null(scale[["value"]]))
+    scale[["value"]] = 1
+  if(!is.numeric(scale[["value"]]) || length(scale[["value"]])!=1 ||
+     scale[["value"]] == 0)
+    stop("'scale$value' must be a single numeric value not equal to zero.")
+  if(scale[["parameter"]] == "s" && scale[["value"]] < 0)
+    stop("'scale$value' must be non-negative.")
+
+  ### extract parameters
+  N = data$N
+  T = if(length(data$T)==1) rep(data$T,N) else data$T
+  J = data$J
+  P_r = data$P_r
+  P_f = data$P_f
+
+  ### define difference operator (computes differences wrt alternative i)
+  Delta = function(i){
+    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
+    return(Delta)
   }
-    
+
+  ### normalize 'data$data'
+  for(n in seq_len(N)){
+    for(t in seq_len(T[n])){
+      data$data[[n]]$X[[t]] =
+        Delta(level) %*% data$data[[n]]$X[[t]]
+    }
+  }
+
+  ### 'compute suff_statistics'
   y = matrix(0,nrow=N,ncol=max(T))
   for(n in 1:N){
-    y_n = data[[n]][[2]]
+    y_n = data$data[[n]][[2]]
     y[n,] = c(y_n,rep(NA,max(T)-length(y_n)))
   }
   W = list()
@@ -27,8 +93,8 @@ compute_suff_statistics = function(model,data){
   if(P_f>0 & P_r>0){
     for(n in seq_len(N)){
       for(t in seq_len(T[n])){
-        W[[sum(T[seq_len(n-1)])+t]] = data[[n]][[1]][[t]][,seq_len(P_f),drop=FALSE]
-        X[[sum(T[seq_len(n-1)])+t]] = data[[n]][[1]][[t]][,-seq_len(P_f),drop=FALSE]
+        W[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]][,seq_len(P_f),drop=FALSE]
+        X[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]][,-seq_len(P_f),drop=FALSE]
       }
     }
   }
@@ -36,7 +102,7 @@ compute_suff_statistics = function(model,data){
     X = NA
     for(n in seq_len(N)){
       for(t in seq_len(T[n])){
-        W[[sum(T[seq_len(n-1)])+t]] = data[[n]][[1]][[t]]
+        W[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]]
       }
     }
   }
@@ -44,11 +110,10 @@ compute_suff_statistics = function(model,data){
     W = NA
     for(n in seq_len(N)){
       for(t in seq_len(T[n])){
-        X[[sum(T[seq_len(n-1)])+t]] = data[[n]][[1]][[t]]
+        X[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]]
       }
     }
   }
-  
   XkX = NA
   if(P_r>0){
     XkX = list()
@@ -60,7 +125,6 @@ compute_suff_statistics = function(model,data){
       XkX[[n]] = XnkXn
     }
   }
-  
   WkW = NA
   if(P_f>0){
     WkW = matrix(0,nrow=P_f^2,ncol=(J-1)^2)
@@ -70,13 +134,15 @@ compute_suff_statistics = function(model,data){
       }
     }
   }
-  
   suff_statistics = list("Tvec"   = T,
-                         "csTvec" = cumsum(T)-T, 
+                         "csTvec" = cumsum(T)-T,
                          "W"      = W,
-                         "X"      = X, 
-                         "y"      = y, 
-                         "XkX"    = XkX, 
+                         "X"      = X,
+                         "y"      = y,
+                         "XkX"    = XkX,
                          "WkW"    = WkW)
+
+  ### return 'suff_statistics'
   return(suff_statistics)
+
 }

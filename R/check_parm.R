@@ -17,8 +17,10 @@
 #'   the error term covariance matrix of dimension \code{J} x \code{J}
 #' }
 #' @inheritParams RprobitB_data
+#' @examples
+#' check_parm(parm = list("alpha" = 1:3), P_f = 3, P_r = 1, J = 2, C = 1)
 #' @return
-#' \code{parm}
+#' The checked input \code{parm}
 
 check_parm = function(parm, P_f, P_r, J, C){
 

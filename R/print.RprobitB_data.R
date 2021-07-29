@@ -25,11 +25,12 @@ print.RprobitB_data = function(x, ...){
       cat(" (")
       cat(paste(c(paste0("type ",type),
                   if(var %in% unique(gsub("_.*$","",x$cov_random))){"re"},
-                  if(var %in% standardize){"scaled"}), collapse=", "))
+                  if(var %in% x$standardize){"scaled"}), collapse=", "))
       cat(")\n")
     }
   }
-  if(x$ASC) cat("- ASC",if("ASC" %in% re){"(re)\n"})
+  if(x$ASC)
+    cat("- ASC",if("ASC" %in% x$re){"(re)"},"\n")
   cat("\n")
 
   cat("alternatives (occurence):","\n")

@@ -34,8 +34,11 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
     stop("'form' must be of class 'formula'.")
   if(!is.natural.number(N))
     stop("'N' must be a non-negative number.")
+  if(length(T)==1)
+    T = rep(T,N)
   if(!is.natural.number(T))
-    stop("'T' must be a non-negative number.")
+    stop("'T' must be a non-negative number or a vector of non-negative
+         numbers.")
   if(!is.natural.number(J))
     stop("'J' must be a non-negative number.")
   if(!is.natural.number(C))

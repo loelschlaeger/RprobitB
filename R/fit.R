@@ -1,139 +1,77 @@
-#' Estimation of latent class mixed multinomial probit models via Gibbs sampling
+#' Fit a (latent class) (mixed) (multinomial) probit model
 #' @description
-#' Function that fits a latent class mixed multinomial probit model via Gibbs
-#' sampling and returns the results.
+#' Function that fits a (latent class) (mixed) (multinomial) probit model via
+#' Bayesian estimation.
 #' @details
-#' The model specifications are ordered in named lists.
-#' You can either specify none, all, or only selected parameters.
-#' Unspecified parameters are set to default values.
-#' Please see the vignette "Introduction to RprobitB" for more details.
-#' @param model
-#' A list of model information.
-#' @param data
-#' A list of empirical data, must be the output of \link[RprobitB]{prepare}.
-#' @param parm
-#' A list of true parameter values.
-#' @param lcus
-#' A list of latent class updating scheme parameters.
-#' @param init
-#' A list of initial values for the Gibbs sampler.
-#' @param prior
-#' A list of prior parameters.
-#' @param mcmc
-#' A list of Markov chain Monte Carlo parameters.
-#' @param norm
-#' A list of normalization information.
-#' @param out
-#' A list of output settings.
+#' For more details see the vignette "How to fit a probit model?":
+#' \code{vignette("How to fit the probit model?", package = "RprobitB")}
+#' @inheritParams compute_suff_statistics
+#' @param R
+#' The number of Gibbs sampler iterations.
+#' @param B
+#' The length of the burn-in period, i.e. a non-negative number of samples to
+#' be discarded.
+#' @param Q
+#' The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
+#' sample is kept.
+#' @param print_progress
+#' A boolean, determining whether to print the progress.
+#' @inheritParams check_lcus
+#' @inheritParams check_prior
 #' @return
-#' No return value by default.
-#' Function returns a list of estimates if \code{out[["return"]] = TRUE}.
-#' Results are saved in folder "\code{out[["rdir"]]/out[["id"]]}".
+#' An object of class \code{RprobitB_model}
 #' @examples
-#' ### fit a multinomial probit model to simulated data with default parameters
-#' ### computation time: < 1 min
-#' fit()
 #' @export
 
-fit = function(model, data, parm, lcus, init, prior, mcmc, norm, out) {
+fit = function(data, level = "last",
+               scale = list("parameter" = "s", "index" = 1, "value" = 1),
+               R = 1e4, B = R/2, Q = 10, print_progress = TRUE, lcus = NULL,
+               prior = NULL) {
 
-  tryCatch(
-    {
+  ### check inputs
+  if(!inherits(data,"RprobitB_data"))
+    stop("'data' must an object of class 'RprobitB_data', i.e. the output of
+         'RprobitB::prepare()' or 'RprobitB::simulate()'.")
+  if(!is.natural.number(R) || !R>0)
+    stop("'R' must be a positive integer.")
+  if(!is.natural.number(B) || !B>0 || !B<R)
+    stop("'B' must be a positive integer smaller than 'R'.")
+  if(!is.natural.number(Q) || !Q>0 || !Q<R)
+    stop("'Q' must be a positive integer smaller than 'R'.")
+  if(!is.logical(print_progress))
+    stop("'progress' must be a boolean.")
+  if(data$P_r==0){
+    lcus = list("do_lcus" = FALSE)
+  } else {
+    lcus = check_lcus(lcus = lcus)
+  }
+  prior = check_prior(prior = prior, level = level, scale = scale,
+                      P_f = data$P_f, P_r = data$P_r, J = data$J)
 
-    ### specify missing inputs
-    if(missing(model)) model = NULL
-    if(missing(data))  data  = NULL
-    if(missing(parm))  parm  = NULL
-    if(missing(lcus))  lcus  = NULL
-    if(missing(init))  init  = NULL
-    if(missing(prior)) prior = NULL
-    if(missing(mcmc))  mcmc  = NULL
-    if(missing(norm))  norm  = NULL
-    if(missing(out))   out   = NULL
+  ### compute sufficient statistics
+  suff_statistics = compute_suff_statistics(data = data, level = level,
+                                            scale = scale)
 
-    ### check if data was supplied
-    if(!is.null(data)) if(class(data) != "RprobitB_data")
-      stop("'data' must be the output of
-           'RprobitB::prepare()' or 'RprobitB::simulate()'.")
+  ### set initial values for the Gibbs
+  init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
+                  P_r = data$P_r, C = data$C, lcus = lcus)
 
-    ### perform pre-checks
-    model = check_model(model,data)
-    norm  = check_norm(norm,model)
-    parm  = check_parm(parm,model,data,norm)
-    check_data_out  = check_data(data,model,parm,norm)
-    data  = check_data_out$data
-    parm  = check_data_out$parm
-    lcus  = check_lcus(lcus,model)
-    init  = check_init(init,model,parm,lcus)
-    prior = check_prior(prior,model)
-    mcmc  = check_mcmc(mcmc)
-    out   = check_out(out)
+  ### perform Gibbs sampling
+  gibbs_loop_out = gibbs_loop(mcmc$R,mcmc$B,mcmc$nprint,
+                              model$N,model$J-1,model$P_f,model$P_r,model$C,
+                              lcus,suff_statistics,prior,
+                              init = init)
 
-    ### prepare output
-    output = list("model" = model,
-                  "data"  = data,
-                  "parm"  = parm,
-                  "lcus"  = lcus,
-                  "init"  = init,
-                  "prior" = prior,
-                  "mcmc"  = mcmc,
-                  "norm"  = norm,
-                  "out"   = out)
+  ### normalize, burn and thin Gibbs samples
+  gibbs_samples = transform_samples(gibbs_loop_out,model,mcmc,norm)
 
-    ### compute sufficient statistics
-    suff_statistics = compute_suff_statistics(model,data)
+  ### compute estimates
+  estimates = print_estimates(gibbs_samples,model,parm)
 
-    ### start collecting prints
-    sink(paste0(out$rdir,"/",out$id,"/protocol.txt"),split = TRUE)
+  ### build RprobitB_model
+  out = RprobitB_model
 
-      ### print model settings
-      print_settings(model,lcus,init,mcmc,norm,out)
-
-      ### perform Gibbs sampling
-      gibbs_loop_out = gibbs_loop(mcmc$R,mcmc$B,mcmc$nprint,
-                                  model$N,model$J-1,model$P_f,model$P_r,model$C,
-                                  lcus,suff_statistics,prior,init)
-
-      ### normalize, burn and thin Gibbs samples
-      gibbs_samples = transform_samples(gibbs_loop_out,model,mcmc,norm)
-
-      ### compute point estimates and standard deviations
-      estimates = print_estimates(gibbs_samples,model,parm)
-
-    sink()
-
-    ### fill and save output
-    output = c(output, list("gibbs_loop_out" = gibbs_loop_out,
-                            "gibbs_samples"  = gibbs_samples,
-                            "estimates"      = estimates))
-    saveRDS(output, file=paste0(out$rdir,"/",out$id,"/",out$id,".rds"))
-
-    ### make plots
-    cat("Visualizing...\r")
-    plot_trace(gibbs_samples,model,mcmc,out)
-    plot_acf(gibbs_samples,model,mcmc,out)
-    plot_marginals(gibbs_samples,model,estimates,parm,out)
-    plot_contour(gibbs_samples,model,estimates,parm,mcmc,lcus,out)
-
-    ### info about output folder
-    if(out$rdir=="."){
-      cat("Output folder: the current directory\n")
-    } else {
-      cat(paste("Output folder:",out$rdir,"\n"))
-    }
-    seperator = paste0(rep("-",42),collapse="")
-    cat(seperator,"\n")
-
-    ### return model
-    attr(output,"class") = "RprobitB_model"
-    return(invisible(output))
-
-    },
-
-  error = function(cond) message(paste0(cond),appendLF=FALSE),
-
-  finally = { for(i in seq_len(sink.number())) sink() }
-
-  )
+  ### return RprobitB_model
+  return(out)
 
 }
