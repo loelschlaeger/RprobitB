@@ -4,7 +4,7 @@ applications/
 validation/
 sticker/
 paper_jss/
-load_code.R
+load_RprobitB.R
 README.html
 LICENSE
 ^\.github$
