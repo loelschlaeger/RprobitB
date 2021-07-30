@@ -4,13 +4,9 @@
 #' @param data
 #' An object of class \code{RprobitB_data}, which can be obtained from
 #' \code{\link{simulate}} or \code{\link{prepare}}.
-#' @param level
-#' The number of choice alternative (or \code{"last"} for the last alternative)
-#' chosen as the base alternative for utility differences to normalize for the
-#' utility level.
 #' @param scale
-#' A list of three elements, determining the normalization with respect to
-#' utility scale:
+#' A list of three elements, determining the parameter normalization with
+#' respect to the scale of utility:
 #' \itemize{
 #'   \item \code{parameter}:
 #'   either \code{"a"} (for a linear coefficient in \code{"alpha"}) or
@@ -27,18 +23,13 @@
 #' @return
 #' A list of sufficient statistics
 
-compute_suff_statistics = function(data, level = "last",
-                                   scale = list("parameter" = "s", "index" = 1,
-                                                "value" = 1)){
+compute_suff_statistics = function(data, scale = list("parameter" = "s",
+                                                      "index" = 1,
+                                                      "value" = 1)){
 
   ### check input
   if(!is.RprobitB_data(data))
     stop("'data' must be of class 'RprobitB_data'.")
-  if(level == "last")
-    level = data[["J"]]
-  if(!is.natural.number(level) || level > data[["J"]])
-    stop(paste("'level' must be a non-negative number between 1 and",
-               data[["J"]]))
   if(!is.list(scale))
     stop("'scale' must be a list")
   if(is.null(scale[["parameter"]]))
@@ -78,7 +69,7 @@ compute_suff_statistics = function(data, level = "last",
   for(n in seq_len(N)){
     for(t in seq_len(T[n])){
       data$data[[n]]$X[[t]] =
-        Delta(level) %*% data$data[[n]]$X[[t]]
+        Delta(J) %*% data$data[[n]]$X[[t]]
     }
   }
 

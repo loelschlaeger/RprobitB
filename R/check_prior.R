@@ -122,6 +122,9 @@ check_prior = function(prior, P_f, P_r, J){
      any(dim(prior$E)!=c(J-1,J-1)))
     stop("'prior$E' must be a numeric matrix of dimension 'J-1' x 'J-1'.")
 
+  ### add class to 'prior'
+  class(prior) = "RprobitB_prior"
+
   ### return prior
   return(prior)
 }

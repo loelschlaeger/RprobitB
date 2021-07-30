@@ -93,6 +93,9 @@ check_parm = function(parm, P_f, P_r, J, C){
   ### check if 'parm' contains all required parameters
   stopifnot(c("alpha","s","b","Omega","Sigma") %in% names(parm))
 
+  ### add class to 'parm'
+  class(lcus) = "RprobitB_parm"
+
   ### return 'parm'
   return(parm)
 }

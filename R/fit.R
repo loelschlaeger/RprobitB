@@ -21,10 +21,10 @@
 #' @return
 #' An object of class \code{RprobitB_model}
 #' @examples
+#' fit(data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC"))
 #' @export
 
-fit = function(data, level = "last",
-               scale = list("parameter" = "s", "index" = 1, "value" = 1),
+fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
                R = 1e4, B = R/2, Q = 10, print_progress = TRUE, lcus = NULL,
                prior = NULL) {
 
@@ -45,31 +45,40 @@ fit = function(data, level = "last",
   } else {
     lcus = check_lcus(lcus = lcus)
   }
-  prior = check_prior(prior = prior, level = level, scale = scale,
-                      P_f = data$P_f, P_r = data$P_r, J = data$J)
+  prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics
-  suff_statistics = compute_suff_statistics(data = data, level = level,
-                                            scale = scale)
+  suff_statistics = compute_suff_statistics(data = data, scale = scale)
 
-  ### set initial values for the Gibbs
+  ### set initial values for the Gibbs sampler
   init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
                   P_r = data$P_r, C = data$C, lcus = lcus)
 
   ### perform Gibbs sampling
-  gibbs_loop_out = gibbs_loop(mcmc$R,mcmc$B,mcmc$nprint,
-                              model$N,model$J-1,model$P_f,model$P_r,model$C,
-                              lcus,suff_statistics,prior,
-                              init = init)
+  gibbs_samples_raw = gibbs_sampling(
+    R = R, B = B, print_progress = print_progress, N = data$N, Jm1 = data$J-1,
+    P_f = data$P_f, P_r = data$P_r, C = data$C, lcus = lcus,
+    suff_statistics = suff_statistics, prior = prior, init = init)
 
   ### normalize, burn and thin Gibbs samples
-  gibbs_samples = transform_samples(gibbs_loop_out,model,mcmc,norm)
+  gibbs_samples = transform_gibbs_samples(
+    gibbs_samples_raw = gibbs_samples_raw, R = R, B = B, Q = Q, scale = scale)
 
-  ### compute estimates
-  estimates = print_estimates(gibbs_samples,model,parm)
+  ### compute statistics from Gibbs samples
+  statistics = compute_statistics(
+    gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
+    C = data$C)
 
   ### build RprobitB_model
-  out = RprobitB_model
+  out = RprobitB_model(RprobitB_data = data,
+                       scale         = scale,
+                       R             = R,
+                       B             = B,
+                       Q             = Q,
+                       lcus          = lcus,
+                       prior         = prior,
+                       gibbs_samples = gibbs_samples,
+                       statistics    = statistics)
 
   ### return RprobitB_model
   return(out)

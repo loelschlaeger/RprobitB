@@ -11,30 +11,15 @@ using namespace Rcpp;
 // TRACK COMPUTATION TIME
 time_t itime;
 
-//' Routine to initialize the timer for Gibbs sampling
-//'
-//' @return No return value, called for on-screen information.
-//'
-// [[Rcpp::export]]
 void start_timer() {
-  // oelschlaeger 04/2020
-  // routine to initialize the timer for Gibbs sampling
+  // Function to initialize the timer for Gibbs sampling
   itime = time(NULL);
   Rcout << "Iteration Event                  ETA (min)\n";
   Rcout << "        0 started sampling                \n";
 }
 
-//' Routine to update the timer for Gibbs sampling
-//'
-//' @param rep An integer, current iteration
-//' @param R An integer, total number of iterations
-//'
-//' @return No return value, called for on-screen information.
-//'
-// [[Rcpp::export]]
 void update_timer(int rep, int R) {
-  // oelschlaeger 04/2020
-  // routine to update the timer for Gibbs sampling
+  // Function to update the timer for Gibbs sampling
   time_t ctime = time(NULL);
   char buf[50];
   double time_to_end = difftime(ctime, itime) / 60.0 * (R - rep - 1) / (rep+1);
@@ -42,19 +27,12 @@ void update_timer(int rep, int R) {
   Rcout <<  buf;
 }
 
-//' Routine to terminate the timer for Gibbs sampling
-//'
-//' @param R An integer, total number of iterations
-//'
-//' @return No return value, called for on-screen information.
-//'
-// [[Rcpp::export]]
 void end_timer(int R) {
-  // oelschlaeger 04/2020
-  // routine to terminate the timer for Gibbs sampling
+  // Function to terminate the timer for Gibbs sampling
   time_t ctime = time(NULL);
   char buf[50];
-  sprintf(buf, "%9d done, total time: %.0f min\n", R, ceil(difftime(ctime, itime)/60.0));
+  sprintf(buf, "%9d done, total time: %.0f min\n", R,
+          ceil(difftime(ctime, itime)/60.0));
   Rcout << buf;
   itime = 0;
 }
@@ -62,7 +40,7 @@ void end_timer(int R) {
 // DRAW FROM TRUNCATED NORMAL
 double dexpr(double const& a) {
   // rossi 10/2016
-  // routine to draw from a truncated normal using rejection sampling
+  // Function to draw from a truncated normal using rejection sampling
   double x,e,e1;
   int success;
   success=0;
@@ -79,7 +57,7 @@ double dexpr(double const& a) {
 
 double invCdfNorm(double const& a) {
   // rossi 10/2016
-  // routine to draw from a normal truncated below using inverse CDF method
+  // Function to draw from a normal truncated below using inverse CDF method
   double Phia,unif,arg,z;
   Phia = R::pnorm(a,0.0,1.0,1,0);
   unif = runif(1)[0];
@@ -90,7 +68,8 @@ double invCdfNorm(double const& a) {
 
 double dnr(double const& a) {
   // rossi 10/2016
-  // routine to draw from a standard normal truncated below using rejection sampling
+  // Function to draw from a standard normal truncated below using rejection
+  // sampling
   double candz,z;
   int success;
   success=0;
@@ -106,7 +85,7 @@ double dnr(double const& a) {
 
 double trunNormBelow(double const& a){
   // rossi 10/2016
-  // routine to draw from standard normal truncated below
+  // Function to draw from standard normal truncated below
   double z;
   if (a > 4){
     // tail sampling using exponential rejection
@@ -125,7 +104,7 @@ double trunNormBelow(double const& a){
 
 double trunNorm(double mu, double sig, double trunpt, bool above){
   // rossi 10/2016
-  // routine to draw draw from truncated normal
+  // Function to draw draw from truncated normal
   double a,z,draw;
   if(!above){
     a=(trunpt-mu)/sig;
@@ -141,9 +120,10 @@ double trunNorm(double mu, double sig, double trunpt, bool above){
 }
 
 // MULTIVARIATE NORMAL COMPUTATION
-double mvnpdf(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma) {
+double mvnpdf(arma::vec const& x, arma::vec const& mean,
+              arma::mat const& Sigma) {
   // oelschlaeger 04/2020
-  // routine to compute the PDF of a multivariate normal
+  // Function to compute the PDF of a multivariate normal
   int n = x.size();
   double sqrt2pi = sqrt(2*M_PI);
   mat quadform  = trans(x-mean) * solve(Sigma,eye(n,n)) * (x-mean);
@@ -165,19 +145,23 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
   }
 }
 
-//' Routine to compute the density of a multivariate normal
+//' Function to compute the density of a multivariate normal
 //'
-//' @param x A matrix, the arguments
-//' @param mean A vector, the mean
-//' @param sigma A matrix, the covariance matrix
-//' @param logd A boolean, wheter to apply the logarithm
+//' @param x
+//' A matrix, the arguments
+//' @param mean
+//' A vector, the mean
+//' @param sigma
+//' A matrix, the covariance matrix
+//' @param logd
+//' A boolean, whether to apply the logarithm
 //'
 //' @return A vector, the computed multivariate normal densities
 //'
 // [[Rcpp::export]]
-arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean, arma::mat const &sigma, bool const logd = false) {
+arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
+                         arma::mat const &sigma, bool const logd = false) {
   // oelschlaeger 04/2020
-  // routine to compute the density of a multivariate normal
   using arma::uword;
   uword const n = x.n_rows,
     xdim = x.n_cols;
@@ -199,16 +183,17 @@ arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean, arma::mat co
 
 // DRAW FROM DIRICHLET
 
-//' Routine to draw from Dirichlet
+//' Function to draw from Dirichlet
 //'
-//' @param alpha A vector, the concentration parameter
+//' @param alpha
+//' A vector, the concentration parameter
 //'
-//' @return A vector, the sample from the Dirichlet distribution
+//' @return
+//' A vector, the sample from the Dirichlet distribution
 //'
 // [[Rcpp::export]]
 arma::vec rdirichlet(arma::vec alpha) {
   // oelschlaeger 04/2020
-  // routine to draw from Dirichlet
   int n = alpha.n_elem;
   arma::vec draw = zeros(n);
   double sum_term = 0;
@@ -225,17 +210,20 @@ arma::vec rdirichlet(arma::vec alpha) {
 
 //DRAW FROM WISHART
 
-//' Routine to draw from Wishart and inverted Wishart
+//' Function to draw from Wishart and inverted Wishart
 //'
-//' @param nu A double, the degrees of freedom
-//' @param V A matrix, the scale matrix
+//' @param nu
+//' A double, the degrees of freedom
+//' @param V
+//' A matrix, the scale matrix
 //'
-//' @return A list, the draw from the Wishart (W), inverted Wishart (IW), and Cholesky decompositions (C and CI)
+//' @return
+//' A list, the draw from the Wishart (W), inverted Wishart (IW), and
+//' corresponding Cholesky decomposition (C and CI)
 //'
 // [[Rcpp::export]]
 List rwishart(double nu, arma::mat const& V){
   // Wayne Taylor 7/2015
-  // routine to draw from Wishart and inverted Wishart
   int m = V.n_rows;
   mat T = zeros(m,m);
   for(int i = 0; i < m; i++) {
@@ -256,9 +244,10 @@ List rwishart(double nu, arma::mat const& V){
 }
 
 // HELPER FUNCTIONS
-vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P, int Jm1) {
+vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P,
+              int Jm1) {
   // oelschlaeger 04/2020
-  // routine to draw from posterior of linear regression
+  // Function to draw from posterior of linear regression
   mat B1 = arma::inv(Omega_c_inv+foo_B1);
   vec b1 = B1*(Omega_c_inv*b_c+foo_b1);
   return (b1+trans(chol(B1))*vec(rnorm(P)));
@@ -266,13 +255,15 @@ vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P, int Jm1) 
 
 vec cond_utility (vec U, vec mu, mat Sigmainv, int Jm1, int j) {
   // oelschlaeger 04/2020
-  // routine to compute conditional utility mean and standard deviation
+  // Function to compute conditional utility mean and standard deviation
   vec out(2);
   int jm1 = j-1;
   int ind = Jm1*jm1;
   double tau_j = 1/Sigmainv(ind+jm1);
   double m = 0.0;
-  for(int i = 0; i<Jm1; i++) if (i!=jm1) m += - tau_j*Sigmainv(ind+i)*(U[i]-mu[i]);
+  for(int i = 0; i<Jm1; i++)
+    if (i!=jm1)
+      m += - tau_j*Sigmainv(ind+i)*(U[i]-mu[i]);
   out[0] = mu[jm1]+m;
   out[1] = sqrt(tau_j);
   return (out);
@@ -280,7 +271,7 @@ vec cond_utility (vec U, vec mu, mat Sigmainv, int Jm1, int j) {
 
 vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
   // oelschlaeger 04/2020
-  // routine to draw the utility vector
+  // Function to draw the utility vector
   bool above;
   double bound;
   vec out_U_nt = U;
@@ -296,7 +287,8 @@ vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
       above = false;
     else
       above = true;
-    vec CMout = cond_utility(out_U_nt,mu,Sigmainv,Jm1,i+1); //CMout[1] is mean, CMout[2] is sd
+    //CMout[1] is mean, CMout[2] is sd
+    vec CMout = cond_utility(out_U_nt,mu,Sigmainv,Jm1,i+1);
     out_U_nt[i] = trunNorm(CMout[0],CMout[1],bound,above);
   }
   return (out_U_nt);
@@ -304,7 +296,7 @@ vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
 
 double euc_dist (vec a, vec b){
   // oelschlaeger 04/2020
-  // routine to compute the euclidean distance
+  // Function to compute the euclidean distance
   int N = a.size();
   double euc_dist = 0;
   for(int n=0; n<N; n++){
@@ -313,9 +305,10 @@ double euc_dist (vec a, vec b){
   return sqrt(euc_dist);
 }
 
-List update_classes (int rep, int Cmax, double epsmin, double epsmax, double distmin, vec s, vec m, mat b, mat Omega) {
+List update_classes (int rep, int Cmax, double epsmin, double epsmax,
+                     double distmin, vec s, vec m, mat b, mat Omega) {
   // oelschlaeger 04/2020
-  // routine to perform the class updating scheme
+  // Function to perform the class updating scheme
   char buf[50];
   bool flag = false;
   int C = b.n_cols;
@@ -359,8 +352,10 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax, double dis
     closest_classes(0) = std::numeric_limits<int>::max();
     for(int c1=0; c1<C; c1++){
       for(int c2=0; c2<c1; c2++){
-        if(euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2))<closest_classes(0)){
-          closest_classes(0) = euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2));
+        if(euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2)) <
+          closest_classes(0)) {
+          closest_classes(0) =
+            euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2));
           closest_classes(1) = c1;
           closest_classes(2) = c2;
         }
@@ -397,29 +392,40 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax, double dis
 
 // GIBBS SAMPLER
 
-//' Routine to perform Gibbs sampling for the LCMMNP model
+//' Function to perform Gibbs sampling for the LCMMNP model
 //'
-//' @param R An integer, the number of iterations
-//' @param B An integer, the length of the burn-in period
-//' @param nprint An integer, the step number for printing the sampling progress
-//' @param N An integer, the number (greater or equal one) of decision makers
-//' @param Jm1 An integer, one minus the number of choice alternatives (fixed across decision makers and choice occasions)
-//' @param P_f An integer, the number of attributes that are connected to fixed coefficients (can be zero)
-//' @param P_r An integer, the number of attributes that are connected to random, decision maker specific coefficients (can be zero)
-//' @param C An integer, the number of latent classes (ignored if P_r = 0)
-//' @param lcus A list, latent class updating scheme parameters
-//' @param suff_statistics A list, sufficient statistics
-//' @param prior A list, prior parameters
-//' @param init A list, initial values for the Gibbs sampler
+//' @param R
+//' An integer, the number of iterations
+//' @param B
+//' An integer, the length of the burn-in period
+//' @param N
+//' An integer, the number of decision makers
+//' @param Jm1
+//' An integer, one minus the number of choice alternatives
+//' @param P_f
+//' An integer, the number of attributes that are connected to fixed
+//' coefficients (can be zero)
+//' @param P_r
+//' An integer, the number of attributes that are connected to random, decision
+//' maker specific coefficients (can be zero)
+//' @param C
+//' An integer, the number of latent classes (ignored if P_r = 0)
+//' @param lcus
+//' A list, latent class updating scheme parameters
+//' @param suff_statistics
+//' A list, sufficient statistics
+//' @param prior
+//' A list, prior parameters
+//' @param init
+//' A list, initial values for the Gibbs sampler
 //'
-//' @return A list of Gibbs samples
+//' @return
+//' A list of Gibbs samples
 //'
 // [[Rcpp::export]]
-List gibbs_loop (int R, int B, int nprint,
-                 int N, int Jm1, int P_f, int P_r, int C,
-                 List lcus, List suff_statistics, List prior, List init) {
-  // oelschlaeger 04/2020
-  // routine to perform Gibbs sampling for the LCMMNP model
+List gibbs_sampling (int R, int B, bool print_progress,
+                     int N, int Jm1, int P_f, int P_r, int C,
+                     List lcus, List suff_statistics, List prior, List init) {
 
   // extract 'lcus' parameters
   int Cmax = 10;
@@ -514,6 +520,7 @@ List gibbs_loop (int R, int B, int nprint,
   int ind;
   char buf[50];
   bool flag = false;
+  int nprint = round(R/10);
 
   // allocate space for draws
   mat alpha_draws = zeros<mat>(R,P_f);
@@ -536,7 +543,7 @@ List gibbs_loop (int R, int B, int nprint,
   mat Sigmainv = Sigma0inv;
 
   // start loop
-  start_timer();
+  if(print_progress) start_timer();
   for(int rep = 0; rep<R; rep++) {
 
     if(P_r>0){
@@ -549,7 +556,9 @@ List gibbs_loop (int R, int B, int nprint,
       prob_z = zeros<vec>(C);
       for(int n = 0; n<N; n++){
         for(int c = 0; c<C; c++){
-          prob_z[c] = s[c]*mvnpdf(beta(span::all,n),b(span::all,c),reshape(Omega(span::all,c),P_r,P_r));
+          prob_z[c] =
+            s[c]*mvnpdf(beta(span::all,n),b(span::all,c),
+                        reshape(Omega(span::all,c),P_r,P_r));
         }
         z[n] = as<int>(sample(seq(0,C-1),1,false,prob_z));
       }
@@ -573,16 +582,21 @@ List gibbs_loop (int R, int B, int nprint,
       // draw b
       for(int c = 0; c<C; c++){
         Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
-        b(span::all,c) = arma::inv(Dinv+m[c]*Omega_c_inv) * (Dinv*xi+m[c]*Omega_c_inv*b_bar(span::all,c)) + trans(chol(arma::inv(Dinv+m[c]*Omega_c_inv))) * vec(rnorm(P_r));
+        b(span::all,c) = arma::inv(Dinv+m[c]*Omega_c_inv) *
+          (Dinv*xi+m[c]*Omega_c_inv*b_bar(span::all,c)) +
+          trans(chol(arma::inv(Dinv+m[c]*Omega_c_inv))) * vec(rnorm(P_r));
       }
 
       // draw Omega
       for(int c = 0; c<C; c++){
         foo_Omega = zeros<mat>(P_r,P_r);
         for(int n = 0; n<N; n++){
-          if(z[n]==c) foo_Omega += (beta(span::all,n)-b(span::all,c)) * trans(beta(span::all,n)-b(span::all,c));
+          if(z[n]==c)
+            foo_Omega += (beta(span::all,n)-b(span::all,c)) *
+              trans(beta(span::all,n)-b(span::all,c));
         }
-        Omega_draw = as<mat>(rwishart(nu+m[c],arma::inv(Theta+foo_Omega))["IW"]);
+        Omega_draw =
+          as<mat>(rwishart(nu+m[c],arma::inv(Theta+foo_Omega))["IW"]);
         Omega(span::all,c) = reshape(Omega_draw,P_r*P_r,1);
       }
 
@@ -594,12 +608,16 @@ List gibbs_loop (int R, int B, int nprint,
             b_c = b(span::all,c);
           }
         }
-        mat foo_B1 = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
+        mat foo_B1 =
+          reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
         vec foo_b1 = zeros<vec>(P_r);
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
-          if(P_f==0) foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
-          if(P_f>0) foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
+          if(P_f==0)
+            foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
+          if(P_f>0)
+            foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-
+              trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
         }
         beta(span::all,n) = draw_reg(foo_B1,foo_b1,b_c,Omega_c_inv,P_r,Jm1);
       }
@@ -610,7 +628,8 @@ List gibbs_loop (int R, int B, int nprint,
           sprintf(buf, "%9d started class updating\n", rep+1);
           Rcout << buf;
         }
-        List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,Omega);
+        List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,
+                                           Omega);
         C = as<int>(class_update["C"]);
         s = as<vec>(class_update["s"]);
         m = as<vec>(class_update["m"]);
@@ -634,8 +653,11 @@ List gibbs_loop (int R, int B, int nprint,
       for(int n = 0; n<N; n++){
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
-          if(P_r==0) foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
-          if(P_r>0) foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+          if(P_r==0)
+            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
+          if(P_r>0)
+            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-
+              as<mat>(X[ind])*beta(span::all,n));
         }
       }
       alpha = draw_reg(foo_A1,foo_a1,eta,Psiinv,P_f,Jm1);
@@ -645,12 +667,20 @@ List gibbs_loop (int R, int B, int nprint,
     for(int n = 0; n<N; n++){
       for(int t = 0; t<Tvec[n]; t++){
         ind = csTvec[n]+t;
-        if(P_f>0 && P_r>0) U(span::all,ind) = draw_utility(U(span::all,ind), as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv, Jm1, y(n,t));
-        if(P_f>0 && P_r==0) U(span::all,ind) = draw_utility(U(span::all,ind), as<mat>(W[ind])*alpha, Sigmainv, Jm1, y(n,t));
-        if(P_f==0 && P_r>0) U(span::all,ind) = draw_utility(U(span::all,ind), as<mat>(X[ind])*beta(span::all,n), Sigmainv, Jm1, y(n,t));
+        if(P_f>0 && P_r>0)
+          U(span::all,ind) = draw_utility(U(span::all,ind),
+            as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv,
+            Jm1, y(n,t));
+        if(P_f>0 && P_r==0)
+          U(span::all,ind) = draw_utility(U(span::all,ind),
+            as<mat>(W[ind])*alpha, Sigmainv, Jm1, y(n,t));
+        if(P_f==0 && P_r>0)
+          U(span::all,ind) = draw_utility(U(span::all,ind),
+            as<mat>(X[ind])*beta(span::all,n), Sigmainv, Jm1, y(n,t));
         if(P_f==0 && P_r==0){
           vec mu_null(Jm1);
-          U(span::all,ind) = draw_utility(U(span::all,ind),mu_null, Sigmainv, Jm1, y(n,t));
+          U(span::all,ind) = draw_utility(U(span::all,ind),mu_null, Sigmainv,
+            Jm1, y(n,t));
         };
       }
     }
@@ -660,10 +690,15 @@ List gibbs_loop (int R, int B, int nprint,
     for(int n = 0; n<N; n++){
       for(int t = 0; t<Tvec[n]; t++){
         ind = csTvec[n]+t;
-        if(P_f>0 && P_r>0) eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f>0 && P_r==0) eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
-        if(P_f==0 && P_r>0) eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f==0 && P_r==0) eps = U(span::all,ind);
+        if(P_f>0 && P_r>0)
+          eps = U(span::all,ind) - as<mat>(W[ind])*alpha -
+            as<mat>(X[ind])*beta(span::all,n);
+        if(P_f>0 && P_r==0)
+          eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
+        if(P_f==0 && P_r>0)
+          eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
+        if(P_f==0 && P_r==0)
+          eps = U(span::all,ind);
         S += eps * trans(eps);
       }
     }
@@ -677,16 +712,19 @@ List gibbs_loop (int R, int B, int nprint,
       vec vectorise_b = vectorise(b);
       b_draws(rep,span(0,vectorise_b.size()-1)) = trans(vectorise_b);
       vec vectorise_Omega = vectorise(Omega);
-      Omega_draws(rep,span(0,vectorise_Omega.size()-1)) = trans(vectorise_Omega);
+      Omega_draws(rep,span(0,vectorise_Omega.size()-1)) =
+        trans(vectorise_Omega);
     }
     IW = as<mat>(Wish["IW"]);
     Sigma_draws(rep,span::all) = trans(vectorise(IW));
 
     // print time to completion
-    if(nprint>0) if((rep+1)%nprint==0) update_timer(rep, R);
+    if(print_progress)
+      if((rep+1)%nprint==0)
+        update_timer(rep, R);
   }
 
-  end_timer(R);
+  if(print_progress) end_timer(R);
 
   return List::create(Named("s_draws") = s_draws,
                       Named("alpha_draws") = alpha_draws,

@@ -1,6 +1,6 @@
-#' Construct object of class "RprobitB_data"
+#' Construct object of class \code{RprobitB_data}
 #' @description
-#' Function that constructs an object of class "RprobitB_data".
+#' Function that constructs an object of class \code{RprobitB_data}.
 #' @param data
 #' A list with the choice data.
 #' The list has \code{N} elements.
@@ -59,8 +59,8 @@
 #' @inheritParams check_parm
 #' @inheritParams simulate
 #' @return
-#' An object of class "RprobitB_data", i.e. a list with the arguments of this
-#' function as elements.
+#' An object of class \code{RprobitB_data}, i.e. a list with the arguments of
+#' this function as elements.
 #' In case of empirical data, the elements \code{parm} and \code{distr} equal
 #' \code{NULL}.
 
@@ -68,11 +68,11 @@ RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
                          cov_random, form, vars, ASC, standardize, simulated,
                          parm, distr){
 
-  ### check input types
+  ### check inputs
   stopifnot(is.list(data))
   stopifnot(is.list(vars) || length(vars)==3)
-  stopifnot(is.list(parm) || is.null(parm))
-  stopifnot(is.list(distr) || is.null(distr))
+  stopifnot(is.null(parm) || inherits(parm,"RprobitB_parm"))
+  stopifnot(is.null(distr) || inherits(distr,"RprobitB_distr"))
   stopifnot(Vectorize(is.natural.number)(c(N,T,J,P_f,P_r)))
   stopifnot(is.na(C) || is.natural.number(C))
   stopifnot(Vectorize(is.character)(c(cov_fix,cov_random,standardize)))

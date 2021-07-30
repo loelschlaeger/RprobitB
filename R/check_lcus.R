@@ -73,6 +73,9 @@ check_lcus = function(lcus){
       stop("'lcus$distmin' must be a non-negative numeric value.")
   }
 
+  ### add class to 'lcus'
+  class(lcus) = "RprobitB_lcus"
+
   ### return lcus
   return(lcus)
 }

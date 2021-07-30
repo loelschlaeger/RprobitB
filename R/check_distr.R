@@ -56,6 +56,9 @@ check_distr = function(distr, no_cov) {
       stop(paste("Could not interpret element number",i,"in 'distr'."))
   }
 
+  ### add class to 'distr'
+  class(lcus) = "RprobitB_distr"
+
   ### return checked 'distr'
   return(distr)
 
