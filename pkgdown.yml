@@ -2,7 +2,11 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  data: data.html
-  introduction: introduction.html
-last_built: 2021-07-30T17:38Z
+  data_management: data_management.html
+  introduction_to_RprobitB: introduction_to_RprobitB.html
+  model_comparison: model_comparison.html
+  model_fitting: model_fitting.html
+  model_results: model_results.html
+  prediction: prediction.html
+last_built: 2021-08-02T17:52Z
 
