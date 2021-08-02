@@ -57,7 +57,7 @@ check_distr = function(distr, no_cov) {
   }
 
   ### add class to 'distr'
-  class(lcus) = "RprobitB_distr"
+  class(distr) = "RprobitB_distr"
 
   ### return checked 'distr'
   return(distr)

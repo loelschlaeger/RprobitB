@@ -94,7 +94,7 @@ check_parm = function(parm, P_f, P_r, J, C){
   stopifnot(c("alpha","s","b","Omega","Sigma") %in% names(parm))
 
   ### add class to 'parm'
-  class(lcus) = "RprobitB_parm"
+  class(parm) = "RprobitB_parm"
 
   ### return 'parm'
   return(parm)
