@@ -2,9 +2,8 @@
 #' @description
 #' Function that prepares empirical choice data for the RprobitB package.
 #' @details
-#' For more details see the vignette "How to work with empirical choice data?":
-#' \code{vignette("How to work with empirical choice data?",
-#' package = "RprobitB")}
+#' For more details see the vignette "Data management":
+#' \code{vignette("data_management", package = "RprobitB")}
 #' @param choice_data
 #' A data frame of choice data in "wide" format (i.e. one row for each choice
 #' situation).

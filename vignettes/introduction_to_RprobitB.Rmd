@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library("RprobitB")
 ```
 
 **RprobitB** is an R package that can be used to fit [latent class mixed multinomial probit (LCMMNP) models](#lcmmnp-model) to simulated or empirical data. **RprobitB** is licensed under the GNU General Public License v3.0. 

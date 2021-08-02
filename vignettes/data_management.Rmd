@@ -1,10 +1,10 @@
 ---
-title: "How to work with empirical choice data?"
+title: "1. Data management"
 author: "Lennart Oelschläger"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{How to work with empirical choice data?}
+  %\VignetteIndexEntry{1. Data management}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: ref.bib  
@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library("RprobitB")
 ```
 
 If `data = NULL`, data is simulated from the model defined by `model` and `parm`.

@@ -3,8 +3,8 @@
 #' Function that fits a (latent class) (mixed) (multinomial) probit model via
 #' Bayesian estimation.
 #' @details
-#' For more details see the vignette "How to fit a probit model?":
-#' \code{vignette("How to fit the probit model?", package = "RprobitB")}
+#' For more details see the vignette "Model fitting":
+#' \code{vignette("model_fitting", package = "RprobitB")}
 #' @inheritParams compute_suff_statistics
 #' @param R
 #' The number of Gibbs sampler iterations.

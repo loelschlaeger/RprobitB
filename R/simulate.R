@@ -2,8 +2,8 @@
 #' @description
 #' Function that simulates choice data for the RprobitB package.
 #' @details
-#' For more details see the vignette "How to simulate choice data?":
-#' \code{vignette("How to simulate choice data?", package = "RprobitB")}
+#' For more details see the vignette "Data management":
+#' \code{vignette("data_management", package = "RprobitB")}
 #' @inheritParams RprobitB_data
 #' @inheritParams check_parm
 #' @inheritParams check_distr

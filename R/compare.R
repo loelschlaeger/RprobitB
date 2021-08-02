@@ -2,6 +2,9 @@
 #' @description
 #' Function that compares RprobitB models based on their
 #' Widely Applicable Information Criterion (WAIC) value.
+#' @details
+#' For more details see the vignette "Model comparison":
+#' \code{vignette("model_comparison", package = "RprobitB")}
 #' @param ...
 #' Models from \link[RprobitB]{fit}.
 #' @return
