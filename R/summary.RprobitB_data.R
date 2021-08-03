@@ -6,8 +6,7 @@ summary.RprobitB_data = function(object, ...){
     stop("Not of class 'RprobitB_data'.")
 
   ### summary of covariates
-  cov_colnames = c("type", "re", "scaled", "min", "mean",
-                   "median", "max", "sd")
+  cov_colnames = c("type", "re", "min", "mean", "median", "max", "sd")
   cov = data.frame(matrix(NA, nrow = 0, ncol = length(cov_colnames)))
   colnames(cov) = cov_colnames
   for(type in 1:3){
@@ -22,7 +21,6 @@ summary.RprobitB_data = function(object, ...){
         cov[nrow(cov)+1,] =
           c(type,
             var %in% object$cov_random,
-            var %in% object$standardize,
             min(var_alt_dat),
             mean(var_alt_dat),
             median(var_alt_dat),
@@ -33,37 +31,28 @@ summary.RprobitB_data = function(object, ...){
     }
   }
   cov[,c("re")] = as.logical(cov[,c("re")])
-  cov[,c("scaled")] = as.logical(cov[,c("scaled")])
   cov[,c("min", "mean", "median", "max", "sd")] =
     round(cov[,c("min", "mean", "median", "max", "sd")], 2)
 
-
-
-
-
-      var_dat = object$choice_data[,grepl(paste0(var,".*$"),
-                                          colnames(object$choice_data))]
-      cov[nrow(cov)+1,] =
-        c(type,
-          var %in% unique(gsub("_.*$","",object$cov_random)),
-          var %in% object$standardize,
-          min(var_dat),
-          mean(var_dat),
-          median(var_dat),
-          max(var_dat),
-          sd(var_dat))
-      rownames(cov)[nrow(cov)] = var
-    }
-  }
-  cov[,c("re")] = as.logical(cov[,c("re")])
-  cov[,c("standardized")] = as.logical(cov[,c("standardized")])
-
   ### summary of alternatives
-  for(i in 1:object$J)
-    cat(paste0(i,"."),object$alternatives[i],
-        paste0("(",sum(unlist(lapply(object$data,function(object)object$y))==i),")"),"\n")
+  alt_colnames = c("freq")
+  alt = data.frame(matrix(NA, nrow = 0, ncol = length(alt_colnames)))
+  colnames(alt) = alt_colnames
+  for(i in 1:object$J){
+    alt[nrow(alt)+1,] =
+      sum(unlist(lapply(object$data,function(object)object$y))==i)
+    rownames(alt)[nrow(alt)] = object$alternatives[i]
+
+  }
 
   ### build 'summary.RprobitB_data' object
-  res = list("covariates" = cov)
-  class(res) = "summary.RprobitB_data"
+  out = list("simulated" = object$simulated,
+             "N" = object$N,
+             "T" = object$T,
+             "covariates" = cov,
+             "alternatives" = alt)
+  class(out) = "summary.RprobitB_data"
+
+  ### return 'summary.RprobitB_data' object
+  return(out)
 }

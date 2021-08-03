@@ -79,7 +79,8 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
   distr = check_distr(distr = distr, no_cov = length(unlist(vars)))
 
   ### determine numbers P_f and P_r
-  P_f_plus_P_r = length(vars[[1]]) + (length(vars[[2]]) + ASC) * (J-1) + length(vars[[3]]) * J
+  P_f_plus_P_r = length(vars[[1]]) + (length(vars[[2]]) + ASC) * (J-1) +
+    length(vars[[3]]) * J
   P_r = sum(re %in% vars[[1]]) +
     (sum(re %in% vars[[2]]) + "ASC" %in% re) * (J-1) +
     sum(re %in% vars[[3]]) * J
@@ -105,6 +106,7 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
       choice_data[,paste(var,alternative,sep="_")] =
         replicate(do.call(names(distr)[distr_i], distr[[distr_i]]), n = sum(T))
   }
+
   ### add ASCs (for all but the last alternative)
   if(ASC){
     vars[[2]] = c(vars[[2]],"ASC")
@@ -184,7 +186,8 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
           old_names = colnames(X_nt)
           col = numeric(J)
           for(alternative in 1:J)
-            col[alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
+            col[alternative] =
+            data_nt[,paste0(var,"_",alternatives[alternative])]
           ### put covariates with random effects at the end
           if(var %in% re){
             X_nt = cbind(X_nt,col)
@@ -216,7 +219,8 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
           old_names = colnames(X_nt)
           mat = matrix(0,J,J)
           for(alternative in 1:J)
-            mat[alternative,alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
+            mat[alternative,alternative] =
+            data_nt[,paste0(var,"_",alternatives[alternative])]
           ### put covariates with random effects at the end
           if(var %in% re){
             X_nt = cbind(X_nt,mat)
@@ -224,20 +228,6 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
           } else {
             X_nt = cbind(mat,X_nt)
             colnames(X_nt) = c(paste0(var,"_",alternatives),old_names)
-          }
-        }
-
-        ### ASC (for all but the last alternative)
-        if(ASC){
-          old_names = colnames(X_nt)
-          mat = diag(J)[,-J]
-          ### put covariates with random effects at the end
-          if("ASC" %in% re){
-            X_nt = cbind(X_nt,mat)
-            colnames(X_nt) = c(old_names,paste0("ASC_",alternatives[-J]))
-          } else {
-            X_nt = cbind(mat,X_nt)
-            colnames(X_nt) = c(paste0("ASC_",alternatives[-J]),old_names)
           }
         }
 

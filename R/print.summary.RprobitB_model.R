@@ -1,6 +1,6 @@
 #' @export
 
-print.RprobitB_model = function(x, ...){
+print.summary.RprobitB_model = function(x, ...) {
   cat("Fitted probit model\n")
   return(invisible(x))
 }

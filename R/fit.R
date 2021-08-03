@@ -21,7 +21,8 @@
 #' @return
 #' An object of class \code{RprobitB_model}
 #' @examples
-#' fit(data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC"))
+#' model = fit(data = simulate(form = choice ~ var, N = 10, T = 10, J = 3,
+#'                             re = "ASC"))
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
@@ -82,5 +83,4 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### return RprobitB_model
   return(out)
-
 }

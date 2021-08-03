@@ -182,7 +182,8 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
         old_names = colnames(X_nt)
         mat = matrix(0,J,J)
         for(alternative in 1:J)
-          mat[alternative,alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
+          mat[alternative,alternative] =
+          data_nt[,paste0(var,"_",alternatives[alternative])]
         ### put covariates with random effects at the end
         if(var %in% re){
           X_nt = cbind(X_nt,mat)
