@@ -56,6 +56,7 @@
 #' @param simulated
 #' A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 #' \code{data} is empirical.
+#' @inheritParams prepare
 #' @inheritParams check_parm
 #' @inheritParams simulate
 #' @return
@@ -64,9 +65,9 @@
 #' In case of empirical data, the elements \code{parm} and \code{distr} equal
 #' \code{NULL}.
 
-RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
-                         cov_random, form, vars, ASC, standardize, simulated,
-                         parm, distr){
+RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, C, alternatives,
+                         cov_fix, cov_random, form, vars, ASC, standardize,
+                         simulated, parm, distr){
 
   ### check inputs
   stopifnot(is.list(data))
@@ -83,6 +84,7 @@ RprobitB_data = function(data, N, T, J, P_f, P_r, C, alternatives, cov_fix,
 
   ### create object of class "RprobitB_data"
   out = list("data"         = data,
+             "choice_data"  = choice_data,
              "N"            = N,
              "T"            = T,
              "J"            = J,

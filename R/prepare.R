@@ -88,7 +88,7 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
   if(!all(re %in% c("ASC",unlist(vars))))
     stop("The following elements in 're' are not part of 'form': ",
          paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
-  if(!all(standardize %in% unlist(vars)))
+  if(!all(standardize %in% c("ASC",unlist(vars))))
     stop("The following elements in 'standardize' are not part of 'form': ",
          paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
 
@@ -102,6 +102,16 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
     choice_data[[choice]][choice_data[[choice]]==alternatives[i]] = i
   choice_data[[choice]] = as.numeric(choice_data[[choice]])
 
+  ### add ASCs (for all but the last alternative)
+  if(ASC){
+    vars[[2]] = c(vars[[2]],"ASC")
+    choice_data$ASC = 1
+  }
+
+  ### ASCs do not get standardized
+  if("ASC" %in% standardize)
+    standardize = standardize[-which(standardize == "ASC")]
+
   ### check choice_data
   for(var in vars[[2]])
     if(!var %in% names(choice_data))
@@ -114,7 +124,7 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
 
   ### standardize covariates
   for(var in vars[[2]])
-    if(var %in% standardize)
+    if(var %in% standardize && var != "ASC")
       choice_data[,var] = scale(choice_data[,var])
   for(var in c(vars[[1]],vars[[3]]))
     if(var %in% standardize)
@@ -183,20 +193,6 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
         }
       }
 
-      ### ASC (for all but the last alternative)
-      if(ASC){
-        old_names = colnames(X_nt)
-        mat = diag(J)[,-J]
-        ### put covariates with random effects at the end
-        if("ASC" %in% re){
-          X_nt = cbind(X_nt,mat)
-          colnames(X_nt) = c(old_names,paste0("ASC_",alternatives[-J]))
-        } else {
-          X_nt = cbind(mat,X_nt)
-          colnames(X_nt) = c(paste0("ASC_",alternatives[-J]),old_names)
-        }
-      }
-
       ### save in list
       X_n[[t]] = X_nt
     }
@@ -212,6 +208,7 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
 
   ### create RprobitB_data object
   out = RprobitB_data(data         = data,
+                      choice_data  = choice_data,
                       N            = N,
                       T            = T,
                       J            = J,

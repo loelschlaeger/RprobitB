@@ -105,10 +105,19 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
       choice_data[,paste(var,alternative,sep="_")] =
         replicate(do.call(names(distr)[distr_i], distr[[distr_i]]), n = sum(T))
   }
+  ### add ASCs (for all but the last alternative)
+  if(ASC){
+    vars[[2]] = c(vars[[2]],"ASC")
+    choice_data$ASC = 1
+  }
+
+  ### ASCs do not get standardized
+  if("ASC" %in% standardize)
+    standardize = standardize[-which(standardize == "ASC")]
 
   ### standardize covariates
   for(var in vars[[2]])
-    if(var %in% standardize)
+    if(var %in% standardize && var != "ASC")
       choice_data[,var] = scale(choice_data[,var])
   for(var in c(vars[[1]],vars[[3]]))
     if(var %in% standardize)
@@ -268,6 +277,7 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
 
   ### create RprobitB_data object
   out = RprobitB_data(data         = data,
+                      choice_data  = choice_data,
                       N            = N,
                       T            = T,
                       J            = J,
