@@ -12,22 +12,18 @@
 #' \code{y} is a vector of length \code{T} and contains the labels for the
 #' chosen alternatives.
 #' @param N
-#' The non-negative number of decision makers.
+#' The number (greater or equal 1) of decision makers.
 #' @param T
-#' The non-negative number of choice occasions or a vector of choice occasions
-#' of length \code{N} (i.e. a decision maker specific number).
+#' The number (greater or equal 1) of choice occasions or a vector of choice
+#' occasions of length \code{N} (i.e. a decision maker specific number).
 #' @param J
-#' The non-negative number of choice alternatives.
+#' The number (greater or equal 2) of choice alternatives.
 #' @param P_f
-#' The non-negative number of covariates connected to a fixed coefficient.
+#' The number of covariates connected to a fixed coefficient (can be 0).
 #' @param P_r
-#' The non-negative number of covariates connected to a random coefficient.
-#' @param C
-#' The non-negative number of latent classes of decision makers. We assume
-#' homogeneous preferences inside a latent class. If \code{P_r = 0}, then
-#' always \code{C = 1}.
+#' The number of covariates connected to a random coefficient (can be 0).
 #' @param alternatives
-#' A character vector of length \code{J} with the names of the alternatives.
+#' A character vector with the names of the choice alternatives.
 #' @param cov_fix
 #' A character vector with the names of the covariates that are connected to a
 #' fixed coefficient.
@@ -37,15 +33,21 @@
 #' @param form
 #' A formula object that is used to specify the probit model.
 #' The structure is \code{choice ~ A | B | C}, where
-#' \code{A} are alternative and choice situation specific covariates with a
-#' generic coefficient,
-#' \code{B} are choice situation specific covariates with alternative specific
-#' coefficients,
-#' and \code{C} are alternative and choice situation specific covariates with
-#' alternative specific coefficients.
+#' \itemize{
+#'   \item \code{A} are alternative and choice situation specific covariates
+#'   with a generic coefficient,
+#'   \item \code{B} are choice situation specific covariates with alternative
+#'   specific coefficients,
+#'   \item and \code{C} are alternative and choice situation specific covariates
+#'   with alternative specific coefficients.
+#' }
 #' By default, alternative specific constants are added to the model (for all
 #' except for the last alternative).
 #' They can be removed by adding \code{+0} in the second spot.
+#' @param re
+#' A character vector of variable names of \code{form} with random effects.
+#' To have random effects for the alternative specific constants, include
+#' \code{"ASC"} in \code{re}.
 #' @param vars
 #' A list of length three, containing the three different covariate types of
 #' \code{form}.
@@ -65,20 +67,18 @@
 #' In case of empirical data, the elements \code{parm} and \code{distr} equal
 #' \code{NULL}.
 
-RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, C, alternatives,
-                         cov_fix, cov_random, form, vars, ASC, standardize,
+RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
+                         cov_fix, cov_random, form, re, vars, ASC, standardize,
                          simulated, parm, distr){
 
   ### check inputs
   stopifnot(is.list(data))
   stopifnot(is.list(vars) || length(vars)==3)
-  stopifnot(is.null(parm) || inherits(parm,"RprobitB_parm"))
-  stopifnot(is.null(distr) || inherits(distr,"RprobitB_distr"))
   stopifnot(Vectorize(is.natural.number)(c(N,T,J,P_f,P_r)))
-  stopifnot(is.na(C) || is.natural.number(C))
   stopifnot(Vectorize(is.character)(c(cov_fix,cov_random,standardize)))
   stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))
+  stopifnot(is.null(re) || is.character(re))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(ASC))
 
@@ -90,11 +90,11 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, C, alternatives,
              "J"            = J,
              "P_f"          = P_f,
              "P_r"          = P_r,
-             "C"            = C,
              "alternatives" = alternatives,
              "cov_fix"      = cov_fix,
              "cov_random"   = cov_random,
              "form"         = form,
+             "re"           = re,
              "vars"         = vars,
              "ASC"          = ASC,
              "standardize"  = standardize,

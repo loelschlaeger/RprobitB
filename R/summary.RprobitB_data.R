@@ -20,7 +20,7 @@ summary.RprobitB_data = function(object, ...){
         var_alt_dat = object$choice_data[,var_alt]
         cov[nrow(cov)+1,] =
           c(type,
-            var %in% object$cov_random,
+            var %in% object$re,
             min(var_alt_dat),
             mean(var_alt_dat),
             median(var_alt_dat),

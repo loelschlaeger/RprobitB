@@ -10,23 +10,24 @@
 #' @return
 #' An object of class \code{RprobitB_data}
 #' @examples
-#' form = choice ~ var1 | var2
-#' N = 10
-#' T = 1:10
+#' form = choice ~ cost | income | travel_time
+#' re = "cost"
+#' N = 100
+#' T = 10
 #' J = 3
-#' C = 2
-#' re = c("ASC")
-#' alternatives = c("A","B","C")
-#' parm = list("s" = c(0.5,0.5))
-#' distr = list("rgamma" = list(shape = 1),
-#'              "sample" = list(x = 1:10, replace = TRUE))
-#' standardize = "var1"
-#' data = simulate(form = form, N = N, T = T, J = J, C = C, re = re,
-#'                 alternatives = alternatives, distr = distr,
+#' alternatives = c("car", "bus", "train")
+#' parm = list("C" = 2, "s" = c(0.5,0.5))
+#' distr = list("cost" = list("name" = "rnorm", sd = 3),
+#'              "income" = list("name" = "sample", x = (1:10)*1e3, replace = TRUE),
+#'              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
+#'              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
+#' standardize = c("cost", "income", "travel_time")
+#' data = simulate(form = form, N = N, T = T, J = J, re = re,
+#'                 alternatives = alternatives, parm = parm, distr = distr,
 #'                 standardize = standardize)
 #' @export
 
-simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
+simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
                     parm = NULL, distr = NULL, standardize = NULL) {
 
   ### check input
@@ -41,8 +42,6 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
          numbers.")
   if(!is.natural.number(J))
     stop("'J' must be a non-negative number.")
-  if(!is.natural.number(C))
-    stop("'C' must be a non-negative number.")
   if(!is.null(re))
     if(!is.character(re))
       stop("'re' must be a character (vector).")
@@ -76,7 +75,7 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
          paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
 
   ### check distr
-  distr = check_distr(distr = distr, no_cov = length(unlist(vars)))
+  distr = check_distr(distr = distr)
 
   ### determine numbers P_f and P_r
   P_f_plus_P_r = length(vars[[1]]) + (length(vars[[2]]) + ASC) * (J-1) +
@@ -88,23 +87,40 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
 
   ### draw covariates
   choice_data = data.frame("id" = rep(1:N,times=T))
-  distr_i = 0
-  for(var in vars[[1]]){
-    distr_i = distr_i + 1
-    for(alternative in alternatives)
-      choice_data[,paste(var,alternative,sep="_")] =
-    replicate(do.call(names(distr)[distr_i], distr[[distr_i]]), n = sum(T))
+  for(var in c(vars[[1]],vars[[3]])){
+    if(var %in% names(distr)){
+      distr_i = distr[[which(names(distr) == var)]]
+      cov = matrix(replicate(do.call(what = distr_i[["name"]],
+                                     args = distr_i[names(distr_i) != "name"]),
+                             n = sum(T)*J),
+                   nrow = sum(T), ncol = J)
+    } else {
+      cov = matrix(rnorm(n = sum(T)*J), nrow = sum(T), ncol = J)
+    }
+    colnames(cov) = paste(var,alternatives,sep="_")
+    for(alternative in alternatives){
+      if(paste(var,alternative,sep="_") %in% names(distr)){
+        distr_i = distr[[which(names(distr) == paste(var,alternative,sep="_"))]]
+        cov[,paste(var,alternative,sep="_")] =
+          replicate(do.call(what = distr_i[["name"]],
+                            args = distr_i[names(distr_i) != "name"]),
+                    n = sum(T))
+      }
+    }
+    choice_data = cbind(choice_data, cov)
   }
   for(var in vars[[2]]){
-    distr_i = distr_i + 1
-    choice_data[,var] =
-      replicate(do.call(names(distr)[distr_i], distr[[distr_i]]), n = sum(T))
-  }
-  for(var in vars[[3]]){
-    distr_i = distr_i + 1
-    for(alternative in alternatives)
-      choice_data[,paste(var,alternative,sep="_")] =
-        replicate(do.call(names(distr)[distr_i], distr[[distr_i]]), n = sum(T))
+    if(var %in% names(distr)){
+      distr_i = distr[[which(names(distr) == var)]]
+      cov = matrix(replicate(do.call(what = distr_i[["name"]],
+                                     args = distr_i[names(distr_i) != "name"]),
+                             n = sum(T)),
+                   nrow = sum(T), ncol = 1)
+    } else {
+      cov = matrix(rnorm(n = sum(T)), nrow = sum(T), ncol = 1)
+    }
+    colnames(cov) = var
+    choice_data = cbind(choice_data, cov)
   }
 
   ### add ASCs (for all but the last alternative)
@@ -130,13 +146,13 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
     sd(unlist(choice_data[,paste0(var,"_",alternatives)]))
 
   ### check and read parm
-  parm = check_parm(parm = parm, P_f = P_f, P_r = P_r, J = J, C = C)
+  parm = check_parm(parm = parm, P_f = P_f, P_r = P_r, J = J)
 
   ### draw additional model parameters and save them in 'parm'
   if(P_r>0){
 
     ### draw allocation variable
-    z = sample(1:C,N,prob=parm$s,replace=TRUE)
+    z = sample(1:parm$C,N,prob=parm$s,replace=TRUE)
 
     ### compute class sizes
     m = as.numeric(table(z))
@@ -273,11 +289,11 @@ simulate = function(form, N, T, J, C = 1, re = NULL, alternatives = NULL,
                       J            = J,
                       P_f          = P_f,
                       P_r          = P_r,
-                      C            = C,
                       alternatives = alternatives,
                       cov_fix      = cov_fix,
                       cov_random   = cov_random,
                       form         = form,
+                      re           = re,
                       vars         = vars,
                       ASC          = ASC,
                       standardize  = standardize,

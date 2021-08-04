@@ -21,8 +21,8 @@
 #' @return
 #' An object of class \code{RprobitB_model}
 #' @examples
-#' model = fit(data = simulate(form = choice ~ var, N = 10, T = 10, J = 3,
-#'                             re = "ASC"))
+#' data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
+#' model = fit(data = data)
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
@@ -80,6 +80,9 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
                        prior         = prior,
                        gibbs_samples = gibbs_samples,
                        statistics    = statistics)
+
+  ### normalize true parameters in 'RprobitB_data' based on 'scale'
+  out = transform(RprobitB_model = out, scale = scale)
 
   ### return RprobitB_model
   return(out)

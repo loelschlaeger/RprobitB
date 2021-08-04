@@ -84,8 +84,10 @@ compute_suff_statistics = function(data, scale = list("parameter" = "s",
   if(P_f>0 & P_r>0){
     for(n in seq_len(N)){
       for(t in seq_len(T[n])){
-        W[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]][,seq_len(P_f),drop=FALSE]
-        X[[sum(T[seq_len(n-1)])+t]] = data$data[[n]][[1]][[t]][,-seq_len(P_f),drop=FALSE]
+        W[[sum(T[seq_len(n-1)])+t]] =
+          data$data[[n]][[1]][[t]][,seq_len(P_f),drop=FALSE]
+        X[[sum(T[seq_len(n-1)])+t]] =
+          data$data[[n]][[1]][[t]][,-seq_len(P_f),drop=FALSE]
       }
     }
   }
@@ -111,7 +113,9 @@ compute_suff_statistics = function(data, scale = list("parameter" = "s",
     for(n in seq_len(N)){
       XnkXn = 0
       for(t in seq_len(T[n])){
-        XnkXn = XnkXn + kronecker(t(X[[sum(T[seq_len(n-1)])+t]]),t(X[[sum(T[seq_len(n-1)])+t]]))
+        XnkXn = XnkXn +
+          kronecker(t(X[[sum(T[seq_len(n-1)])+t]]),
+                    t(X[[sum(T[seq_len(n-1)])+t]]))
       }
       XkX[[n]] = XnkXn
     }
@@ -121,7 +125,9 @@ compute_suff_statistics = function(data, scale = list("parameter" = "s",
     WkW = matrix(0,nrow=P_f^2,ncol=(J-1)^2)
     for(n in seq_len(N)){
       for(t in seq_len(T[n])){
-        WkW = WkW + kronecker(t(W[[sum(T[seq_len(n-1)])+t]]),t(W[[sum(T[seq_len(n-1)])+t]]))
+        WkW = WkW +
+          kronecker(t(W[[sum(T[seq_len(n-1)])+t]]),
+                    t(W[[sum(T[seq_len(n-1)])+t]]))
       }
     }
   }

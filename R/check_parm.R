@@ -2,10 +2,13 @@
 #' @description
 #' Function that checks \code{parm} and draws missing parameter values.
 #' @param parm
-#' A list of true parameter values.
+#' A named list of true parameter values.
 #' \itemize{
 #'   \item \code{alpha}:
 #'   the fixed coefficient vector of length \code{P_f}
+#'   \item \code{C:}
+#'   the number (greater or equal 1) of latent classes of decision makers
+#'   (if \code{P_r = 0}, then then \code{C} is ignored)
 #'   \item \code{s}:
 #'   the vector of class weights of length \code{C}
 #'   \item \code{b}:
@@ -22,7 +25,7 @@
 #' @return
 #' The checked input \code{parm}
 
-check_parm = function(parm, P_f, P_r, J, C){
+check_parm = function(parm, P_f, P_r, J){
 
   ### check if parm is a list
   if(!is.null(parm)){
@@ -44,6 +47,18 @@ check_parm = function(parm, P_f, P_r, J, C){
     }
   }
 
+  ### C
+  if(P_r==0){
+    parm$C = NA
+  } else {
+    if(!is.null(parm$C)){
+      if(!is.natural.number(parm$C) || !parm$C>0)
+        stop("'C' must be a number greater or equal 1.")
+    } else {
+      parm$C = 1
+    }
+  }
+
   ### s, b, Omega
   if(P_r==0){
     parm$s = NA
@@ -53,30 +68,30 @@ check_parm = function(parm, P_f, P_r, J, C){
 
     ### s
     if(is.null(parm$s))
-      parm$s = round(sort(as.vector(rdirichlet(rep(1,C)))),2)
-    if(length(parm$s)!=C || !is.numeric(parm$s) || sum(parm$s)!=1)
+      parm$s = round(sort(as.vector(rdirichlet(rep(1,parm$C)))),2)
+    if(length(parm$s)!=parm$C || !is.numeric(parm$s) || sum(parm$s)!=1)
       stop("'s' must be a numeric vector of length 'C' which sums up to 1.")
 
     ### b
     if(is.null(parm$b)){
-      parm$b = matrix(0,nrow=P_r,ncol=C)
-      for(c in 1:C) parm$b[,c] = round(runif(P_r,-3,3),1)
+      parm$b = matrix(0,nrow=P_r,ncol=parm$C)
+      for(c in 1:parm$C) parm$b[,c] = round(runif(P_r,-3,3),1)
     }
     parm$b = as.matrix(parm$b)
-    if(!is.numeric(parm$b) || nrow(parm$b)!=P_r || ncol(parm$b)!=C)
+    if(!is.numeric(parm$b) || nrow(parm$b)!=P_r || ncol(parm$b)!=parm$C)
       stop("'b' must be a numeric matrix of dimension P_r x C.")
 
     ### Omega
     if(is.null(parm$Omega)){
-      parm$Omega = matrix(0,nrow=P_r*P_r,ncol=C)
-      for(c in 1:C)
+      parm$Omega = matrix(0,nrow=P_r*P_r,ncol=parm$C)
+      for(c in 1:parm$C)
         parm$Omega[,c] = as.vector(rwishart(P_r,diag(P_r))$W)
     }
     parm$Omega = as.matrix(parm$Omega)
     if(!is.numeric(parm$Omega) || nrow(parm$Omega)!=P_r*P_r ||
-       ncol(parm$Omega)!=C)
+       ncol(parm$Omega)!=parm$C)
       stop("'Omega' must be a numeric matrix of dimension P_r*P_r x C.")
-    for(c in 1:C)
+    for(c in 1:parm$C)
       if(!is.covariance.matrix(matrix(parm$Omega[,c],nrow=P_r,ncol=P_r)))
         stop(paste("Column",c,"in 'Omega' builds no covariance matrix."))
   }
@@ -91,10 +106,7 @@ check_parm = function(parm, P_f, P_r, J, C){
     stop("'Sigma' builds is no covariance matrix.")
 
   ### check if 'parm' contains all required parameters
-  stopifnot(c("alpha","s","b","Omega","Sigma") %in% names(parm))
-
-  ### add class to 'parm'
-  class(parm) = "RprobitB_parm"
+  stopifnot(c("alpha","C","s","b","Omega","Sigma") %in% names(parm))
 
   ### return 'parm'
   return(parm)

@@ -12,7 +12,7 @@
 #' @inheritParams fit
 #' @inheritParams compute_suff_statistics
 
-transform = function(RprobitB_model, B, Q, scale) {
+transform = function(RprobitB_model, B = NULL, Q = NULL, scale = NULL) {
 
 
 

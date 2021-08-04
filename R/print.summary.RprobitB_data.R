@@ -10,6 +10,7 @@ print.summary.RprobitB_data = function(x, ...) {
   if(length(unique(x$T))>1)
     cat(min(x$T),"to",max(x$T),"choice occasions",
         ifelse(x$N==1,"","each"),"\n")
+  cat(sum(x$T),"choices in total\n")
   cat("\n")
   cat("Alternatives\n")
   print(x$alternatives)

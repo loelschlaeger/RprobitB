@@ -5,20 +5,18 @@
 #' For more details see the vignette "Data management":
 #' \code{vignette("data_management", package = "RprobitB")}
 #' @param choice_data
-#' A data frame of choice data in "wide" format (i.e. one row for each choice
-#' situation).
-#' It must contain columns named \code{id} (a unique identifier for each
-#' decision maker) and \code{choice} (the chosen alternatives), where
-#' \code{choice} is the name of the dependent variable in \code{form}.
-#' For each alternative specific covariate *p* in \code{form} and each choice
-#' alternative *j* (i.e. each unique element in \code{choice_data[,choice]}),
-#' \code{choice_data} must contain a column named *p_j*.
-#' For each covariate *q* that is constant across covariates, \code{choice_data}
-#' must contain a column named *q*.
-#' @param re
-#' A character vector of variable names of \code{form} which are considered to
-#' have random effects. To have random effects for the alternative specific
-#' constants, include \code{"ASC"} in \code{re}.
+#' A data frame of choice data in "wide" format (i.e. each row represents
+#' one choice occasion) with the following requirements:
+#' \itemize{
+#'   \item It must contain columns named \code{id} (a unique identifier for each
+#'         decision maker) and \code{choice} (the chosen alternatives), where
+#'         \code{choice} is the name of the dependent variable in \code{form}.
+#'   \item For each alternative specific covariate *p* (covariate of type 1 or
+#'         3) in \code{form} and each choice alternative *j*, \code{choice_data}
+#'         must contain a column named *p_j*.
+#'   \item For each covariate *q* that is constant across covariates (covariate
+#'         of type 2), \code{choice_data} must contain a column named *q*.
+#' }
 #' @param id
 #' A character, the name of the column in \code{choice_data} that contains
 #' unique identifier for each decision maker. The default is \code{"id"}.
@@ -26,24 +24,14 @@
 #' @return
 #' An object of class \code{RprobitB_data}
 #' @examples
-#' form = choice ~ cost | income | travel_time
-#' choice_data = data.frame("id" = paste("decider", rep(1:10,each=10), sep="_"),
-#'                          "choice" = sample(c("car","bike","train"), size=100,
-#'                                            replace=TRUE),
-#'                          "cost_car" = runif(n=100, min=5, max=8),
-#'                          "cost_bike" = runif(n=100, min=0, max=1),
-#'                          "cost_train" = runif(n=100, min=2, max=10),
-#'                          "income" = rep(sample(10)*1e4,each=10),
-#'                          "travel_time_car" = runif(n=100, min=10, max=30),
-#'                          "travel_time_bike" = runif(n=100, min=20, max=40),
-#'                          "travel_time_train" = runif(n=100, min=5, max=20))
-#' re = c("cost","ASC")
-#' standardize = c("cost","income","travel_time")
-#' data = prepare(form = form, choice_data = choice_data, re = re,
-#'                standardize = standardize)
+#' data("Train", package = "mlogit")
+#' data = prepare(form = choice ~ price | 0 | time + comfort + change,
+#'                choice_data = Train,
+#'                re = c("price","time"))
 #' @export
 
-prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
+prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
+                   standardize = NULL){
 
   ### check input
   if(!inherits(form,"formula"))
@@ -55,6 +43,9 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
     stop(paste0("Identification column '",id,"' not found in 'choice_data'."))
   if(!choice %in% colnames(choice_data))
     stop(paste0("Choice column '",choice,"' not found in 'choice_data'."))
+  if(!is.null(alternatives))
+    if(!is.character(alternatives))
+      stop("'alternatives' must be a character (vector).")
   if(!is.null(re))
     if(!is.character(re))
       stop("'re' must be a character (vector).")
@@ -92,12 +83,21 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
     stop("The following elements in 'standardize' are not part of 'form': ",
          paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
 
-  ### identify, sort and transform alternatives
-  alternatives = unique(choice_data[[choice]])
+  ### identify / filter, sort and count alternatives
+  if(is.null(alternatives)){
+    alternatives = as.character(unique(choice_data[[choice]]))
+  } else {
+    choice_data = choice_data[choice_data[[choice]] %in% alternatives,]
+    if(nrow(choice_data)==0)
+      stop(paste("No choices for", paste(alternatives, collapse=", "),"found."))
+  }
   alternatives = sort(alternatives)
   J = length(alternatives)
+  if(J <= 1)
+    stop("At least two alternatives are required.")
 
-  ### decode alternatives to numerics (sorted alphabetically)
+  ### decode choices to numeric (sorted alphabetically)
+  choice_data[[choice]] = as.character(choice_data[[choice]])
   for(i in 1:J)
     choice_data[[choice]][choice_data[[choice]]==alternatives[i]] = i
   choice_data[[choice]] = as.numeric(choice_data[[choice]])
@@ -164,7 +164,7 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
       ### type-2 covariates
       for(var in vars[[2]]){
         old_names = colnames(X_nt)
-        mat = matrix(0,J,J)[,-J]
+        mat = matrix(0,J,J)[,-J,drop=FALSE]
         for(alternative in 1:(J-1))
           mat[alternative,alternative] = data_nt[,var]
         ### put covariates with random effects at the end
@@ -215,11 +215,11 @@ prepare = function(form, choice_data, re = NULL, id = "id", standardize = NULL){
                       J            = J,
                       P_f          = length(cov_fix),
                       P_r          = length(cov_random),
-                      C            = NA,
                       alternatives = alternatives,
                       cov_fix      = cov_fix,
                       cov_random   = cov_random,
                       form         = form,
+                      re           = re,
                       vars         = vars,
                       ASC          = ASC,
                       standardize  = standardize,
