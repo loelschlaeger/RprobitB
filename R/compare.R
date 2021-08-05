@@ -11,11 +11,6 @@
 #' WAIC value (numeric).
 #' @examples
 #' ### compare the same model with different number of Gibbs samples
-#' set.seed(1)
-#' m1 = fit(mcmc=list(R=1e4))
-#' set.seed(1)
-#' m2 = fit(mcmc=list(R=1e3))
-#' compare(m1,m2)
 #' @export
 
 compare = function(...){

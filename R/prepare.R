@@ -27,7 +27,8 @@
 #' data("Train", package = "mlogit")
 #' data = prepare(form = choice ~ price | 0 | time + comfort + change,
 #'                choice_data = Train,
-#'                re = c("price","time"))
+#'                re = c("price","time"),
+#'                standardize = "all")
 #' @export
 
 prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
@@ -68,20 +69,15 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   N = length(unique(choice_data[,id]))
   T = as.numeric(table(choice_data[,id]))
 
-  ### read formula
+  ### read 'form' and check 're'
   vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
   while(length(vars)<3) vars = c(vars,NA)
   vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
   ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
   for(i in 1:3) vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
-
-  ### check elements of form, re and standardize
   if(!all(re %in% c("ASC",unlist(vars))))
     stop("The following elements in 're' are not part of 'form': ",
          paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
-  if(!all(standardize %in% c("ASC",unlist(vars))))
-    stop("The following elements in 'standardize' are not part of 'form': ",
-         paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
 
   ### identify / filter, sort and count alternatives
   if(is.null(alternatives)){
@@ -103,10 +99,15 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   choice_data[[choice]] = as.numeric(choice_data[[choice]])
 
   ### add ASCs (for all but the last alternative)
-  if(ASC){
-    vars[[2]] = c(vars[[2]],"ASC")
-    choice_data$ASC = 1
-  }
+  if(ASC) choice_data$ASC = 1
+
+  ### if 'standardize = all', add all covariates
+  if(length(standardize) == 1)
+    if(standardize == "all")
+      standardize =
+    c(apply(expand.grid(vars[[1]], alternatives), 1, paste, collapse="_"),
+      vars[[2]],
+      apply(expand.grid(vars[[3]], alternatives), 1, paste, collapse="_"))
 
   ### ASCs do not get standardized
   if("ASC" %in% standardize)
@@ -124,15 +125,16 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
 
   ### standardize covariates
   for(var in vars[[2]])
-    if(var %in% standardize && var != "ASC")
-      choice_data[,var] = scale(choice_data[,var])
-  for(var in c(vars[[1]],vars[[3]]))
     if(var %in% standardize)
-      for(alternative in alternatives)
-        choice_data[,paste0(var,"_",alternative)] =
-          (choice_data[,paste0(var,"_",alternative)] -
-             mean(unlist(choice_data[,paste0(var,"_",alternatives)]))) /
-               sd(unlist(choice_data[,paste0(var,"_",alternatives)]))
+      choice_data[,var] = scale(choice_data[,var])
+  for(var in c(vars[[1]],vars[[3]])){
+    for(alternative in alternatives){
+      var_alt = paste0(var,"_",alternative)
+      if(var_alt %in% standardize){
+        choice_data[,var_alt] = scale(choice_data[,var_alt])
+      }
+    }
+  }
 
   ### transform choice_data in list format
   data = list()
@@ -162,7 +164,7 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
       }
 
       ### type-2 covariates
-      for(var in vars[[2]]){
+      for(var in c(vars[[2]],if(ASC)"ASC")){
         old_names = colnames(X_nt)
         mat = matrix(0,J,J)[,-J,drop=FALSE]
         for(alternative in 1:(J-1))

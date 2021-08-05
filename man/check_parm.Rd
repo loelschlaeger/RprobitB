@@ -4,20 +4,39 @@
 \alias{check_parm}
 \title{Check \code{parm}}
 \usage{
-check_parm(parm, model, data, norm)
+check_parm(parm, P_f, P_r, J)
 }
 \arguments{
-\item{parm}{A list of true parameter values.}
+\item{parm}{A named list of true parameter values.
+\itemize{
+\item \code{alpha}:
+the fixed coefficient vector of length \code{P_f}
+\item \code{C:}
+the number (greater or equal 1) of latent classes of decision makers
+(if \code{P_r = 0}, then then \code{C} is ignored)
+\item \code{s}:
+the vector of class weights of length \code{C}
+\item \code{b}:
+the matrix of class means as columns of dimension \code{P_r} x \code{C}
+\item \code{Omega}:
+the matrix of class covariance matrices as columns of dimension
+\code{P_r*P_r} x \code{C}
+\item \code{Sigma}:
+the error term covariance matrix of dimension \code{J} x \code{J}
+}}
 
-\item{model}{A list of model information.}
+\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
 
-\item{data}{A list of data information.}
+\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
-\item{norm}{A list of normalization information.}
+\item{J}{The number (greater or equal 2) of choice alternatives.}
 }
 \value{
-\code{parm}
+The checked input \code{parm}
 }
 \description{
-Function that checks the input \code{parm} and draws missing parameter values.
+Function that checks \code{parm} and draws missing parameter values.
+}
+\examples{
+check_parm(parm = list("alpha" = 1:3), P_f = 3, P_r = 1, J = 2)
 }

@@ -7,7 +7,7 @@
 #' @return No return value. Creates pdf-file "trace.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
 plot_trace = function(gibbs_samples,model,mcmc,out){
-  labels = make_labels(gibbs_samples,model,symm=FALSE)
+  labels = create_labels(gibbs_samples,model,symmetric=FALSE)
   make_trace = function(samples,thinned,name,legend){
     col = viridis::magma(n=ncol(samples),begin=0.1,end=0.9, alpha=0.6)
     plot.ts(samples,

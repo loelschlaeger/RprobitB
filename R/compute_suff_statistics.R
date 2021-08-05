@@ -28,7 +28,7 @@ compute_suff_statistics = function(data, scale = list("parameter" = "s",
                                                       "value" = 1)){
 
   ### check input
-  if(!is.RprobitB_data(data))
+  if(!inherits(data, "RprobitB_data"))
     stop("'data' must be of class 'RprobitB_data'.")
   if(!is.list(scale))
     stop("'scale' must be a list")

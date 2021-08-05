@@ -145,17 +145,17 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
   }
 }
 
-//' Function to compute the density of a multivariate normal
-//'
+//' Multivariate normal density
+//' @description
+//' Function to compute the density of a multivariate normal distribution.
 //' @param x
-//' A matrix, the arguments
+//' A matrix, the arguments.
 //' @param mean
-//' A vector, the mean
+//' A vector, the mean.
 //' @param sigma
-//' A matrix, the covariance matrix
+//' A matrix, the covariance matrix.
 //' @param logd
-//' A boolean, whether to apply the logarithm
-//'
+//' A boolean, whether to apply the logarithm.
 //' @return A vector, the computed multivariate normal densities
 //'
 // [[Rcpp::export]]
@@ -181,15 +181,13 @@ arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
   return exp(out);
 }
 
-// DRAW FROM DIRICHLET
-
-//' Function to draw from Dirichlet
-//'
+//' Draw from Dirichlet
+//' @description
+//' Function to draw from a Dirichlet distribution.
 //' @param alpha
-//' A vector, the concentration parameter
-//'
+//' A vector, the concentration parameter.
 //' @return
-//' A vector, the sample from the Dirichlet distribution
+//' A vector, the sample from the Dirichlet distribution.
 //'
 // [[Rcpp::export]]
 arma::vec rdirichlet(arma::vec alpha) {
@@ -208,15 +206,13 @@ arma::vec rdirichlet(arma::vec alpha) {
   return(draw);
 }
 
-//DRAW FROM WISHART
-
-//' Function to draw from Wishart and inverted Wishart
-//'
+//' Draw from a Wishart
+//' @description
+//' Function to draw from Wishart and inverted Wishart distribution.
 //' @param nu
-//' A double, the degrees of freedom
+//' A double, the degrees of freedom.
 //' @param V
-//' A matrix, the scale matrix
-//'
+//' A matrix, the scale matrix.
 //' @return
 //' A list, the draw from the Wishart (W), inverted Wishart (IW), and
 //' corresponding Cholesky decomposition (C and CI)
@@ -390,62 +386,42 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
                       Named("flag") = flag);
 }
 
-// GIBBS SAMPLER
-
+//' Gibbs sampler
+//' @description
 //' Function to perform Gibbs sampling for the LCMMNP model
-//'
-//' @param R
-//' An integer, the number of iterations
-//' @param B
-//' An integer, the length of the burn-in period
-//' @param N
-//' An integer, the number of decision makers
-//' @param Jm1
-//' An integer, one minus the number of choice alternatives
-//' @param P_f
-//' An integer, the number of attributes that are connected to fixed
-//' coefficients (can be zero)
-//' @param P_r
-//' An integer, the number of attributes that are connected to random, decision
-//' maker specific coefficients (can be zero)
-//' @param C
-//' An integer, the number of latent classes (ignored if P_r = 0)
-//' @param lcus
-//' A list, latent class updating scheme parameters
+//' @inheritParams fit
+//' @inheritParams RprobitB_data
 //' @param suff_statistics
-//' A list, sufficient statistics
-//' @param prior
-//' A list, prior parameters
+//' The output of \code{\link{compute_suff_statistics}}.
 //' @param init
-//' A list, initial values for the Gibbs sampler
-//'
+//' The output of \code{\link{set_init}}.
 //' @return
 //' A list of Gibbs samples
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,
-                     int N, int Jm1, int P_f, int P_r, int C,
-                     List lcus, List suff_statistics, List prior, List init) {
+                     int N, int J, int P_f, int P_r, List latent_classes,
+                     List suff_statistics, List prior, List init) {
 
-  // extract 'lcus' parameters
+  // extract 'latent_classes' parameters
+  int C = as<int>(latent_classes["C"]);
   int Cmax = 10;
   int Cdrawsize;
   int buffer = 50;
   double epsmin = 0.01;
-  double epsmax = 0.7;
+  double epsmax = 0.99;
   double distmin = 0.1;
-  bool do_lcus = as<bool>(lcus["do_lcus"]);
-  if(do_lcus==false){
+  bool update = as<bool>(latent_classes["update"]);
+  if(update==false){
     Cdrawsize = C;
   }
   else{
-    C = as<int>(lcus["C0"]);
-    Cmax = as<int>(lcus["Cmax"]);
+    Cmax = as<int>(latent_classes["Cmax"]);
     Cdrawsize = Cmax;
-    buffer = as<int>(lcus["buffer"]);
-    epsmin = as<double>(lcus["epsmin"]);
-    epsmax = as<double>(lcus["epsmax"]);
-    distmin = as<double>(lcus["distmin"]);
+    buffer = as<int>(latent_classes["buffer"]);
+    epsmin = as<double>(latent_classes["epsmin"]);
+    epsmax = as<double>(latent_classes["epsmax"]);
+    distmin = as<double>(latent_classes["distmin"]);
   }
 
   // extract 'suff_statistics' parameters
@@ -521,6 +497,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
   char buf[50];
   bool flag = false;
   int nprint = round(R/10);
+  int Jm1 = J - 1;
 
   // allocate space for draws
   mat alpha_draws = zeros<mat>(R,P_f);
@@ -623,7 +600,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
       }
 
       // update classes
-      if(do_lcus==true && (rep+1)>=(B/2) && (rep+1)<=B && (rep+1)%buffer==0){
+      if(update==true && (rep+1)>=(B/2) && (rep+1)<=B && (rep+1)%buffer==0){
         if(rep+1==B/2){
           sprintf(buf, "%9d started class updating\n", rep+1);
           Rcout << buf;

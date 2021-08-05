@@ -51,12 +51,6 @@
 compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
 
   ### check inputs
-  if(!is.natural.number(J))
-    stop("'J' must be an integer.")
-  if(!is.natural.number(P_f))
-    stop("'P_f' must be an integer.")
-  if(!is.natural.number(P_r))
-    stop("'P_r' must be an integer.")
   if(P_f>0 || P_r>0){
     if(!is.matrix(X))
       stop("'X' must be a matrix.")
@@ -77,8 +71,6 @@ compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
     b = NULL
     Omega = NULL
   } else {
-    if(!is.natural.number(C))
-      stop("'C' must be an integer.")
     if(length(s)!=C || !is.numeric(s))
       stop("'s' must be a numeric vector of length 'C'.")
     if(!is.matrix(b) || any(dim(b)!=c(P_r,C)) || !is.numeric(b))

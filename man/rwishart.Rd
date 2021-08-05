@@ -2,18 +2,19 @@
 % Please edit documentation in R/RcppExports.R
 \name{rwishart}
 \alias{rwishart}
-\title{Routine to draw from Wishart and inverted Wishart}
+\title{Draw from a Wishart}
 \usage{
 rwishart(nu, V)
 }
 \arguments{
-\item{nu}{A double, the degrees of freedom}
+\item{nu}{A double, the degrees of freedom.}
 
-\item{V}{A matrix, the scale matrix}
+\item{V}{A matrix, the scale matrix.}
 }
 \value{
-A list, the draw from the Wishart (W), inverted Wishart (IW), and Cholesky decompositions (C and CI)
+A list, the draw from the Wishart (W), inverted Wishart (IW), and
+corresponding Cholesky decomposition (C and CI)
 }
 \description{
-Routine to draw from Wishart and inverted Wishart
+Function to draw from Wishart and inverted Wishart distribution.
 }

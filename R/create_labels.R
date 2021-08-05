@@ -2,8 +2,10 @@
 #' @description
 #' Function that creates labels for the model coefficients.
 #' @inheritParams RprobitB_data
+#' @param C
+#' The number (greater or equal 1) of latent classes.
 #' @param C_est
-#' An integer, the estimated number of latent classes.
+#' The estimated number (greater or equal 1) of latent classes.
 #' @param symmetric
 #' A boolean, determining whether labels for symmetric matrix elements should be
 #' created.

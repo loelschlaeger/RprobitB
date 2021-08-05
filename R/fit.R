@@ -16,7 +16,7 @@
 #' sample is kept.
 #' @param print_progress
 #' A boolean, determining whether to print the progress.
-#' @inheritParams check_lcus
+#' @inheritParams check_latent_classes
 #' @inheritParams check_prior
 #' @return
 #' An object of class \code{RprobitB_model}
@@ -26,25 +26,25 @@
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
-               R = 1e4, B = R/2, Q = 10, print_progress = TRUE, lcus = NULL,
-               prior = NULL) {
+               R = 1e4, B = R/2, Q = 10, print_progress = TRUE,
+               latent_classes = NULL, prior = NULL) {
 
   ### check inputs
   if(!inherits(data,"RprobitB_data"))
     stop("'data' must an object of class 'RprobitB_data', i.e. the output of
          'RprobitB::prepare()' or 'RprobitB::simulate()'.")
-  if(!is.natural.number(R) || !R>0)
+  if(!is.numeric(R) || !R%%1 == 0 || !R>0)
     stop("'R' must be a positive integer.")
-  if(!is.natural.number(B) || !B>0 || !B<R)
+  if(!is.numeric(B) || !B%%1 == 0 || !B>0 || !B<R)
     stop("'B' must be a positive integer smaller than 'R'.")
-  if(!is.natural.number(Q) || !Q>0 || !Q<R)
+  if(!is.numeric(Q) || !Q%%1 == 0 || !Q>0 || !Q<R)
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(!is.logical(print_progress))
     stop("'progress' must be a boolean.")
   if(data$P_r==0){
-    lcus = list("do_lcus" = FALSE)
+    latent_classes = list("C" = 1, "update" = FALSE)
   } else {
-    lcus = check_lcus(lcus = lcus)
+    latent_classes = check_latent_classes(latent_classes = latent_classes)
   }
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
@@ -53,12 +53,12 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### set initial values for the Gibbs sampler
   init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
-                  P_r = data$P_r, C = data$C, lcus = lcus)
+                  P_r = data$P_r, C = latent_classes$C)
 
   ### perform Gibbs sampling
   gibbs_samples_raw = gibbs_sampling(
-    R = R, B = B, print_progress = print_progress, N = data$N, Jm1 = data$J-1,
-    P_f = data$P_f, P_r = data$P_r, C = data$C, lcus = lcus,
+    R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
+    P_f = data$P_f, P_r = data$P_r, latent_classes = latent_classes,
     suff_statistics = suff_statistics, prior = prior, init = init)
 
   ### normalize, burn and thin Gibbs samples
@@ -68,18 +68,18 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   ### compute statistics from Gibbs samples
   statistics = compute_statistics(
     gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
-    C = data$C)
+    C = latent_classes$C)
 
   ### build RprobitB_model
-  out = RprobitB_model(RprobitB_data = data,
-                       scale         = scale,
-                       R             = R,
-                       B             = B,
-                       Q             = Q,
-                       lcus          = lcus,
-                       prior         = prior,
-                       gibbs_samples = gibbs_samples,
-                       statistics    = statistics)
+  out = RprobitB_model(RprobitB_data  = data,
+                       scale          = scale,
+                       R              = R,
+                       B              = B,
+                       Q              = Q,
+                       latent_classes = latent_classes,
+                       prior          = prior,
+                       gibbs_samples  = gibbs_samples,
+                       statistics     = statistics)
 
   ### normalize true parameters in 'RprobitB_data' based on 'scale'
   out = transform(RprobitB_model = out, scale = scale)

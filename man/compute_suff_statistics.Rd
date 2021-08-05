@@ -2,18 +2,37 @@
 % Please edit documentation in R/compute_suff_statistics.R
 \name{compute_suff_statistics}
 \alias{compute_suff_statistics}
-\title{Sufficient statistics}
+\title{Compute sufficient statistics}
 \usage{
-compute_suff_statistics(model, data)
+compute_suff_statistics(
+  data,
+  scale = list(parameter = "s", index = 1, value = 1)
+)
 }
 \arguments{
-\item{model}{A list of model identifications.}
+\item{data}{An object of class \code{RprobitB_data}, which can be obtained from
+\code{\link{simulate}} or \code{\link{prepare}}.}
 
-\item{data}{A list of data information.}
+\item{scale}{A list of three elements, determining the parameter normalization with
+respect to the scale of utility:
+\itemize{
+\item \code{parameter}:
+either \code{"a"} (for a linear coefficient in \code{"alpha"}) or
+\code{"s"} (for a variance in the error-term covariance matrix
+\code{"Sigma"})
+\item \code{index}:
+the index of the parameter that gets fixed
+\item \code{value}:
+the value for the fixed parameter
+}}
 }
 \value{
-A list of sufficient statistics.
+A list of sufficient statistics
 }
 \description{
 Function that computes sufficient statistics for estimation.
+}
+\examples{
+compute_suff_statistics(data = simulate(form = choice ~ var, N = 10, T = 10,
+                                        J = 3, re = "ASC"))
 }

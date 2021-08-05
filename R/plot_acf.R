@@ -10,7 +10,7 @@
 plot_acf = function(gibbs_samples,model,mcmc,out){
 
   ### get coefficient labels
-  labels = make_labels(gibbs_samples,model,symm=FALSE)
+  labels = create_labels(gibbs_samples,model,symmetric=FALSE)
 
   make_acf = function(name,draws_nb,draws_nbt,labels){
     for(c in seq_len(ncol(draws_nb))){

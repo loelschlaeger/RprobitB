@@ -2,16 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{rdirichlet}
 \alias{rdirichlet}
-\title{Routine to draw from Dirichlet}
+\title{Draw from Dirichlet}
 \usage{
 rdirichlet(alpha)
 }
 \arguments{
-\item{alpha}{A vector, the concentration parameter}
+\item{alpha}{A vector, the concentration parameter.}
 }
 \value{
-A vector, the sample from the Dirichlet distribution
+A vector, the sample from the Dirichlet distribution.
 }
 \description{
-Routine to draw from Dirichlet
+Function to draw from a Dirichlet distribution.
 }

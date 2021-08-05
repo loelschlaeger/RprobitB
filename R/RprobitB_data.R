@@ -54,7 +54,10 @@
 #' @param ASC
 #' A boolean, determining whether alternative specific constants are included.
 #' @param standardize
-#' A character vector of variable names of \code{form} that get standardized.
+#' A character vector of names of covariates that get standardized.
+#' Covariates of type 1 or 3 have to be addressed by
+#' \code{covariate_alternative}.
+#' If \code{standardize = "all"}, all covariates get standardized.
 #' @param simulated
 #' A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 #' \code{data} is empirical.
@@ -73,8 +76,12 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
 
   ### check inputs
   stopifnot(is.list(data))
-  stopifnot(is.list(vars) || length(vars)==3)
-  stopifnot(Vectorize(is.natural.number)(c(N,T,J,P_f,P_r)))
+  stopifnot(is.list(vars), length(vars)==3)
+  stopifnot(is.numeric(N), N%%1 == 0)
+  stopifnot(is.numeric(T), T%%1 == 0)
+  stopifnot(is.numeric(J), J%%1 == 0)
+  stopifnot(is.numeric(P_f), P_f%%1 == 0)
+  stopifnot(is.numeric(P_r), P_r%%1 == 0)
   stopifnot(Vectorize(is.character)(c(cov_fix,cov_random,standardize)))
   stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))

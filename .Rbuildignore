@@ -3,7 +3,7 @@
 applications/
 validation/
 sticker/
-paper_jss/
+jss/
 load_RprobitB.R
 README.html
 LICENSE

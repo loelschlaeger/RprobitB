@@ -5,14 +5,18 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{1. Data management}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 6, 
+  fig.height = 6
 )
 library("RprobitB")
 ```
@@ -65,13 +69,13 @@ Say we want to explain the `choice` of transportation means by the variables `co
 
 Therefore, we specify:
 
-```r
+```{r}
 form = choice ~ cost | income | travel_time
 ```
 
 We typically would expect heterogeneity in preferences regarding spending money on a transportation means, therefore we impose a random effect on `cost`:
 
-```r
+```{r}
 re = "cost"
 ```
 
@@ -98,7 +102,7 @@ Say we have a data set with empirical choice data, let's call it `choice_data`. 
 
 To prepare `choice_data` for estimation, we must call
 
-```r
+```{r, eval = FALSE}
 data = prepare(form = form, choice_data = choice_data)
 ```
 
@@ -116,7 +120,7 @@ The function `prepare()` has the following optional arguments:
 
 Let's prepare the "Train" data set of the mlogit package[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^4]. We consider all alternatives, therefore `alternatives` does not have to be specified.
 
-```r
+```{r}
 data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change, 
                choice_data = Train,
@@ -134,7 +138,7 @@ This section explains how to simulate choice data using the function `simulate()
 
 If we want to simulate the choices of `N` deciders in `T` choice occasions[^5] among `J` alternatives from our model formulation `form`, we have to call
 
-```r
+```{r, eval = FALSE}
 data = simulate(form = form, N = N, T = T, J = J)
 ```
 
@@ -176,14 +180,14 @@ The function `simulate()` has the following optional arguments:
 
 We revisit our example of the simulated choice of transportation means, where we already specified:
 
-```r
+```{r}
 form = choice ~ cost | income | travel_time
 re = "cost"
 ```
 
 Let us now simulate the choices of `N = 100` decision makers in `T = 10` choice occasions on the `J = 3` alternatives "car", "bus" and "train". We want `C = 2` true latent classes with equal weights and specific distributions[^7] for our covariates:
 
-```r
+```{r}
 N = 100
 T = 10
 J = 3
@@ -203,14 +207,19 @@ data = simulate(form = form, N = N, T = T, J = J, re = re,
 
 ## Standardize covariates
 
-Both `simulate()` and `prepare()` have the optional input `standardize`, which we can use to standardize covariates, i.e. normalize the covariate to mean 0 and standard deviation 1.
+Both `simulate()` and `prepare()` have the optional input `standardize`, which is a character vector of names of covariates that get standardized, i.e. normalize to mean 0 and standard deviation 1. If `standardize = "all"`, all covariates get standardized.
 
-For covariates of type 1 oder 3, this can be done alternative ... (the same as for `distr`, compare to footnote [^6]).
+Covariates of type 1 or 3 have to be addressed by `covariate_alternative`.
+
+If `standardize = "all"`, all covariates get standardized.
 
 ### Example: Simulated choice of transportation means
 
-```
-standardize = c("cost", "income", "travel_time")
+In our example of the simulated choice of transportation means, scaling the `income` is reasonable and can improve model fitting. For demonstration purpose, we also standardize `travel_time` for each alternative:
+
+```{r}
+standardize = c("income", "travel_time_car", "travel_time_bus",
+                "travel_time_train")
 data = simulate(form = form, N = N, T = T, J = J, re = re,
                 alternatives = alternatives, parm = parm, distr = distr,
                 standardize = standardize)
@@ -218,5 +227,11 @@ data = simulate(form = form, N = N, T = T, J = J, re = re,
 
 ## Data summary
 
-Call `summary(data)` to ...
+We can check if the data preparation or simulation worked as expected using the `summary()` function. The columns `z` and `re` indicate standardized and random effect covariates, respectively. The rest of the output is self-explanatory.
+
+```{r}
+summary(data)
+```
+
+
 

@@ -21,11 +21,16 @@
 #' }
 #' @inheritParams RprobitB_data
 #' @examples
-#' check_parm(parm = list("alpha" = 1:3), P_f = 3, P_r = 1, J = 2, C = 1)
+#' check_parm(parm = list("alpha" = 1:3), P_f = 3, P_r = 1, J = 2)
 #' @return
 #' The checked input \code{parm}
 
 check_parm = function(parm, P_f, P_r, J){
+
+  ### define function that checks if input is a proper covariance matrix
+  is.covariance.matrix = function(x){
+    is.matrix(x) && ncol(x)==nrow(x) && isSymmetric(x) && all(eigen(x)$value>=0)
+  }
 
   ### check if parm is a list
   if(!is.null(parm)){
@@ -52,7 +57,7 @@ check_parm = function(parm, P_f, P_r, J){
     parm$C = NA
   } else {
     if(!is.null(parm$C)){
-      if(!is.natural.number(parm$C) || !parm$C>0)
+      if(!is.numeric(parm$C) || !parm$C%%1 == 0 || !parm$C>0)
         stop("'C' must be a number greater or equal 1.")
     } else {
       parm$C = 1

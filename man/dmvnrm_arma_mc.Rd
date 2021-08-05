@@ -2,22 +2,22 @@
 % Please edit documentation in R/RcppExports.R
 \name{dmvnrm_arma_mc}
 \alias{dmvnrm_arma_mc}
-\title{Routine to compute the density of a multivariate normal}
+\title{Multivariate normal density}
 \usage{
 dmvnrm_arma_mc(x, mean, sigma, logd = FALSE)
 }
 \arguments{
-\item{x}{A matrix, the arguments}
+\item{x}{A matrix, the arguments.}
 
-\item{mean}{A vector, the mean}
+\item{mean}{A vector, the mean.}
 
-\item{sigma}{A matrix, the covariance matrix}
+\item{sigma}{A matrix, the covariance matrix.}
 
-\item{logd}{A boolean, wheter to apply the logarithm}
+\item{logd}{A boolean, whether to apply the logarithm.}
 }
 \value{
 A vector, the computed multivariate normal densities
 }
 \description{
-Routine to compute the density of a multivariate normal
+Function to compute the density of a multivariate normal distribution.
 }

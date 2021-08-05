@@ -1,9 +1,15 @@
+#' Summary method for \code{RprobitB_model}
+#' @param object
+#' description
 #' @param digits
+#' description
+#' @param ...
+#' description
 #' @export
 
 summary.RprobitB_model = function(object, digits = 2, ... ) {
 
-  if(!is.RprobitB_model(object))
+  if(!inherits(object, "RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
 
   ### extract parameters

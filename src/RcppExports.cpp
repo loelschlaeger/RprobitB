@@ -6,36 +6,6 @@
 
 using namespace Rcpp;
 
-// start_timer
-void start_timer();
-RcppExport SEXP _RprobitB_start_timer() {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    start_timer();
-    return R_NilValue;
-END_RCPP
-}
-// update_timer
-void update_timer(int rep, int R);
-RcppExport SEXP _RprobitB_update_timer(SEXP repSEXP, SEXP RSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type rep(repSEXP);
-    Rcpp::traits::input_parameter< int >::type R(RSEXP);
-    update_timer(rep, R);
-    return R_NilValue;
-END_RCPP
-}
-// end_timer
-void end_timer(int R);
-RcppExport SEXP _RprobitB_end_timer(SEXP RSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type R(RSEXP);
-    end_timer(R);
-    return R_NilValue;
-END_RCPP
-}
 // dmvnrm_arma_mc
 arma::vec dmvnrm_arma_mc(arma::mat const& x, arma::vec const& mean, arma::mat const& sigma, bool const logd);
 RcppExport SEXP _RprobitB_dmvnrm_arma_mc(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
@@ -73,37 +43,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gibbs_loop
-List gibbs_loop(int R, int B, int nprint, int N, int Jm1, int P_f, int P_r, int C, List lcus, List suff_statistics, List prior, List init);
-RcppExport SEXP _RprobitB_gibbs_loop(SEXP RSEXP, SEXP BSEXP, SEXP nprintSEXP, SEXP NSEXP, SEXP Jm1SEXP, SEXP P_fSEXP, SEXP P_rSEXP, SEXP CSEXP, SEXP lcusSEXP, SEXP suff_statisticsSEXP, SEXP priorSEXP, SEXP initSEXP) {
+// gibbs_sampling
+List gibbs_sampling(int R, int B, bool print_progress, int N, int J, int P_f, int P_r, List latent_classes, List suff_statistics, List prior, List init);
+RcppExport SEXP _RprobitB_gibbs_sampling(SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP NSEXP, SEXP JSEXP, SEXP P_fSEXP, SEXP P_rSEXP, SEXP latent_classesSEXP, SEXP suff_statisticsSEXP, SEXP priorSEXP, SEXP initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type R(RSEXP);
     Rcpp::traits::input_parameter< int >::type B(BSEXP);
-    Rcpp::traits::input_parameter< int >::type nprint(nprintSEXP);
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type Jm1(Jm1SEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
     Rcpp::traits::input_parameter< int >::type P_f(P_fSEXP);
     Rcpp::traits::input_parameter< int >::type P_r(P_rSEXP);
-    Rcpp::traits::input_parameter< int >::type C(CSEXP);
-    Rcpp::traits::input_parameter< List >::type lcus(lcusSEXP);
+    Rcpp::traits::input_parameter< List >::type latent_classes(latent_classesSEXP);
     Rcpp::traits::input_parameter< List >::type suff_statistics(suff_statisticsSEXP);
     Rcpp::traits::input_parameter< List >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< List >::type init(initSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_loop(R, B, nprint, N, Jm1, P_f, P_r, C, lcus, suff_statistics, prior, init));
+    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(R, B, print_progress, N, J, P_f, P_r, latent_classes, suff_statistics, prior, init));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_RprobitB_start_timer", (DL_FUNC) &_RprobitB_start_timer, 0},
-    {"_RprobitB_update_timer", (DL_FUNC) &_RprobitB_update_timer, 2},
-    {"_RprobitB_end_timer", (DL_FUNC) &_RprobitB_end_timer, 1},
     {"_RprobitB_dmvnrm_arma_mc", (DL_FUNC) &_RprobitB_dmvnrm_arma_mc, 4},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
-    {"_RprobitB_gibbs_loop", (DL_FUNC) &_RprobitB_gibbs_loop, 12},
+    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 11},
     {NULL, NULL, 0}
 };
 

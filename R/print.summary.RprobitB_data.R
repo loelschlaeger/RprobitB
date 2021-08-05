@@ -17,5 +17,12 @@ print.summary.RprobitB_data = function(x, ...) {
   cat("\n")
   cat("Covariates\n")
   print(x$covariates)
+  if(!is.null(x$asc_alt)){
+    cat("\n")
+    message = ifelse(length(x$asc_alt)==1,
+                     "ASC added for alternative",
+                     "ASCs added for alternatives")
+    cat(message,paste(x$asc_alt,collapse=", "),"\n")
+  }
   return(invisible(x))
 }

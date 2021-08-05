@@ -4,7 +4,7 @@
 #' @param distr
 #' A named list of number generation functions from which the covariates are
 #' drawn. Each element of \code{distr} must be of the form
-#' \code{"cov" = list("name" = <name of the number generation function>", ...)},
+#' \code{"cov" = list("name" = "<name of the number generation function>", ...)},
 #' where \code{cov} is the name of the covariate and \code{...} are required
 #' parameters for the number generation function.
 #' Covariates for which no distribution is specified are drawn from a standard
@@ -26,7 +26,8 @@
 check_distr = function(distr) {
 
   ### check if 'distr' is a list
-  stopifnot(is.list(distr))
+  if(!is.list(distr))
+    stop("'distr' must be a list.")
 
   ### check if 'distr' has proper elements
   for(i in seq_len(length(distr))){

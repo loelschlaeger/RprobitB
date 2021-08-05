@@ -1,4 +1,6 @@
-plot.RprobitB_model = function(RprobitB_model, type, pars, ...) {
+#' @export
+
+plot.RprobitB_model = function(x, type, pars, ...) {
 
 
 

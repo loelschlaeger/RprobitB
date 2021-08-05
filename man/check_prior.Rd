@@ -4,16 +4,58 @@
 \alias{check_prior}
 \title{Check \code{prior}}
 \usage{
-check_prior(prior, model)
+check_prior(prior, P_f, P_r, J)
 }
 \arguments{
-\item{prior}{A list of prior parameters.}
+\item{prior}{A list of parameters for the prior distributions of the normalized
+parameters:
+\itemize{
+\item \code{eta}:
+The mean vector of length \code{P_f} of the normal prior for
+\code{alpha}.
+\item \code{Psi}:
+The covariance matrix of dimension \code{P_f} x \code{P_f} of the
+normal prior for \code{alpha}.
+\item \code{delta}:
+The concentration parameter of length 1 of the Dirichlet prior for
+\code{s}.
+\item \code{xi}:
+The mean vector of length \code{P_r} of the normal prior for each
+\code{b_c}.
+\item \code{D}:
+The covariance matrix of dimension \code{P_r} x \code{P_r} of the
+normal prior for each \code{b_c}.
+\item \code{nu}:
+The degrees of freedom (a natural number greater than \code{P_r}) of
+the Inverse Wishart prior for each \code{Omega_c}.
+\item \code{Theta}:
+The scale matrix of dimension \code{P_r} x \code{P_r} of the
+Inverse Wishart prior for each \code{Omega_c}.
+\item \code{kappa}:
+The degrees of freedom (a natural number greater than \code{J-1}) of
+the Inverse Wishart prior for \code{Sigma}.
+\item \code{E}:
+The scale matrix of dimension \code{J-1} x \code{J-1} of the
+Inverse Wishart prior for \code{Sigma}.
+}}
 
-\item{model}{A list of model information.}
+\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
+
+\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+
+\item{J}{The number (greater or equal 2) of choice alternatives.}
 }
 \value{
-\code{prior}
+The checked input \code{prior}
 }
 \description{
-Function that checks the input \code{prior} and sets default values.
+Function that checks the input \code{prior} and sets missing values to
+default values.
+}
+\details{
+The elements of \code{prior} are parameters for the prior distributions
+of the normalized parameters.
+}
+\examples{
+check_prior(prior = NULL, P_f = 1, P_r = 1, J = 2)
 }

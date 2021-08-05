@@ -10,7 +10,9 @@
 #' For more details see the vignette "Model fitting":
 #' \code{vignette("model_fitting", package = "RprobitB")}
 #' @inheritParams fit
-#' @inheritParams compute_suff_statistics
+#' @param RprobitB_model
+#' The output of \code{\link{fit}}.
+#' @export
 
 transform = function(RprobitB_model, B = NULL, Q = NULL, scale = NULL) {
 

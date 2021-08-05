@@ -5,6 +5,8 @@
 #' An object of class \code{RprobitB_gibbs_samples}, i.e. the output of
 #' \code{\link{transform_gibbs_samples}}.
 #' @inheritParams RprobitB_data
+#' @param C
+#' The number (greater or equal 1) of latent classes.
 #' @return
 #' A list of statistics from the Gibbs samples for each model parameter
 #' \code{alpha}, \code{s}, \code{b}, \code{Omega}, \code{Sigma} with:
@@ -18,10 +20,6 @@
 #' }
 
 compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
-
-  ### check inputs
-  stopifnot(inherits(gibbs_samples,"RprobitB_gibbs_samples"))
-  stopifnot(Vectorize(is.natural.number)(c(P_f,P_r,J,C)))
 
   ### determine estimated number of latent classes
   last_s_draw =

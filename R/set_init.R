@@ -2,17 +2,21 @@
 #' @description
 #' Function that provides initial values for the Gibbs sampler.
 #' @inheritParams RprobitB_data
-#' @inheritParams check_lcus
+#' @param C
+#' The number (greater or equal 1) of latent classes.
 #' @examples
-#' set_init(N = 10, T = 10, J = 3, P_f = 1, P_r = 1, C = 2,
-#'          lcus = check_lcus(lcus = NULL))
+#' set_init(N = 10, T = 10, J = 3, P_f = 1, P_r = 1, C = 2)
 #' @return
 #' A list of initial values for the Gibbs sampler
 
-set_init = function(N,T,J,P_f,P_r,C,lcus){
+set_init = function(N, T, J, P_f, P_r, C){
 
-  ### determine initial number of latent classes
-  C  = ifelse(lcus$do_lcus,lcus$C0,C)
+  ### check inputs
+  stopifnot(is.numeric(N), N%%1 == 0, N>0)
+  stopifnot(is.numeric(T), T%%1 == 0, T>0)
+  stopifnot(is.numeric(P_f), P_f%%1 == 0, P_f>=0)
+  stopifnot(is.numeric(P_r), P_r%%1 == 0, P_r>=0)
+  stopifnot(is.numeric(C), C%%1 == 0, C>0)
 
   ### define initial values
   alpha0 = if(P_f>0) numeric(P_f) else NA

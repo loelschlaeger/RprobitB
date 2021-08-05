@@ -18,10 +18,12 @@
 #' alternatives = c("car", "bus", "train")
 #' parm = list("C" = 2, "s" = c(0.5,0.5))
 #' distr = list("cost" = list("name" = "rnorm", sd = 3),
-#'              "income" = list("name" = "sample", x = (1:10)*1e3, replace = TRUE),
+#'              "income" = list("name" = "sample", x = (1:10)*1e3,
+#'                              replace = TRUE),
 #'              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
 #'              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
-#' standardize = c("cost", "income", "travel_time")
+#' standardize = c("income", "travel_time_car", "travel_time_bus",
+#'                 "travel_time_train")
 #' data = simulate(form = form, N = N, T = T, J = J, re = re,
 #'                 alternatives = alternatives, parm = parm, distr = distr,
 #'                 standardize = standardize)
@@ -33,14 +35,13 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   ### check input
   if(!inherits(form,"formula"))
     stop("'form' must be of class 'formula'.")
-  if(!is.natural.number(N))
+  if(!is.numeric(N) || N%%1!=0)
     stop("'N' must be a non-negative number.")
-  if(length(T)==1)
-    T = rep(T,N)
-  if(!is.natural.number(T))
+  if(length(T)==1) T = rep(T,N)
+  if(any(!is.numeric(T)) || any(T%%1!=0))
     stop("'T' must be a non-negative number or a vector of non-negative
          numbers.")
-  if(!is.natural.number(J))
+  if(!is.numeric(J) || J%%1!=0)
     stop("'J' must be a non-negative number.")
   if(!is.null(re))
     if(!is.character(re))
@@ -53,29 +54,20 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     if(!is.list(parm))
       stop("'parm' must be a list.")
   if(!is.null(distr))
-    if(!is.list(distr))
-      stop("'distr' must be a list.")
+    distr = check_distr(distr = distr)
   if(!is.null(standardize))
     if(!is.character(standardize))
       stop("'standardize' must be a character (vector).")
 
-  ### read formula
+  ### read formula and check 're'
   vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
   while(length(vars)<3) vars = c(vars,NA)
   vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
   ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
   for(i in 1:3) vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
-
-  ### check elements of form, re and standardize
   if(!all(re %in% c("ASC",unlist(vars))))
     stop("The following elements in 're' are not part of 'form': ",
          paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
-  if(!all(standardize %in% unlist(vars)))
-    stop("The following elements in 'standardize' are not part of 'form': ",
-         paste(standardize[!(standardize %in% unlist(vars))],collapse = ", "))
-
-  ### check distr
-  distr = check_distr(distr = distr)
 
   ### determine numbers P_f and P_r
   P_f_plus_P_r = length(vars[[1]]) + (length(vars[[2]]) + ASC) * (J-1) +
@@ -124,10 +116,15 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### add ASCs (for all but the last alternative)
-  if(ASC){
-    vars[[2]] = c(vars[[2]],"ASC")
-    choice_data$ASC = 1
-  }
+  if(ASC) choice_data$ASC = 1
+
+  ### if 'standardize = all', add all covariates
+  if(length(standardize) == 1)
+    if(standardize == "all")
+      standardize =
+    c(apply(expand.grid(vars[[1]], alternatives), 1, paste, collapse="_"),
+      vars[[2]],
+      apply(expand.grid(vars[[3]], alternatives), 1, paste, collapse="_"))
 
   ### ASCs do not get standardized
   if("ASC" %in% standardize)
@@ -135,15 +132,16 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### standardize covariates
   for(var in vars[[2]])
-    if(var %in% standardize && var != "ASC")
-      choice_data[,var] = scale(choice_data[,var])
-  for(var in c(vars[[1]],vars[[3]]))
     if(var %in% standardize)
-      for(alternative in alternatives)
-        choice_data[,paste0(var,"_",alternative)] =
-    (choice_data[,paste0(var,"_",alternative)] -
-       mean(unlist(choice_data[,paste0(var,"_",alternatives)]))) /
-    sd(unlist(choice_data[,paste0(var,"_",alternatives)]))
+      choice_data[,var] = scale(choice_data[,var])
+  for(var in c(vars[[1]],vars[[3]])){
+      for(alternative in alternatives){
+        var_alt = paste0(var,"_",alternative)
+        if(var_alt %in% standardize){
+          choice_data[,var_alt] = scale(choice_data[,var_alt])
+        }
+      }
+  }
 
   ### check and read parm
   parm = check_parm(parm = parm, P_f = P_f, P_r = P_r, J = J)
@@ -215,7 +213,7 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
         }
 
         ### type-2 covariates
-        for(var in vars[[2]]){
+        for(var in c(vars[[2]],if(ASC)"ASC")){
           old_names = colnames(X_nt)
           mat = matrix(0,J,J)[,-J]
           for(alternative in 1:(J-1))
