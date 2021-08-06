@@ -2,28 +2,22 @@
 [![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 
-RprobitB is an R package that can be used to fit latent class mixed multinomial probit (LCMMNP) models to simulated or empirical data. 
-
-## License
-RprobitB is licensed under the GNU General Public License v3.0. 
-
-## Contact
-
-Maintainer: [Lennart Oelschläger](mailto:lennart.oelschlaeger@uni-bielefeld.de)
+**RprobitB** is an R package that can be used to fit (latent class) (mixed) (multinomial) probit models to simulated or empirical data. 
 
 Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
 
-## Installing RprobitB
+## Using RprobitB
 
-To install the latest version of RprobitB, run `install.packages("RprobitB")` in your R console.
+To install the latest version of **RprobitB**, run `install.packages("RprobitB")` in your R console.
 
 ## Using RprobitB
 
 To use RprobitB, follow these steps:
 
-1. Specify the model, see the vignette *Introduction to RprobitB* for details.
-2. Run `RprobitB::fit_mnp(<list of model specifications>)`.
-3. You get on-screen information and model results in an output folder, see the package vignette for details.
+1. Run `install.packages("RprobitB")` in your R console to install the latest version of **RprobitB**.
+2. Specify the model, see the vignette **Introduction to RprobitB** for details.
+3. Run `RprobitB::fit_mnp(<list of model specifications>)`.
+4. You get on-screen information and model results in an output folder, see the package vignette for details.
 
 ## Example
 
