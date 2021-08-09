@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check parm — check_parm • RprobitB</title>
+<title>Construct object of class RprobitB_data — RprobitB_data • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Check parm — check_parm" />
-<meta property="og:description" content="Function that checks parm and draws missing parameter values." />
+<meta property="og:title" content="Construct object of class RprobitB_data — RprobitB_data" />
+<meta property="og:description" content="Function that constructs an object of class RprobitB_data." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -138,20 +138,141 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check <code>parm</code></h1>
+    <h1>Construct object of class <code>RprobitB_data</code></h1>
     
-    <div class="hidden name"><code>check_parm.Rd</code></div>
+    <div class="hidden name"><code>RprobitB_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that checks <code>parm</code> and draws missing parameter values.</p>
+    <p>Function that constructs an object of class <code>RprobitB_data</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_parm</span><span class='op'>(</span><span class='va'>parm</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RprobitB_data</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>choice_data</span>,
+  <span class='va'>N</span>,
+  <span class='cn'>T</span>,
+  <span class='va'>J</span>,
+  <span class='va'>P_f</span>,
+  <span class='va'>P_r</span>,
+  <span class='va'>alternatives</span>,
+  <span class='va'>cov_fix</span>,
+  <span class='va'>cov_random</span>,
+  <span class='va'>form</span>,
+  <span class='va'>re</span>,
+  <span class='va'>vars</span>,
+  <span class='va'>ASC</span>,
+  <span class='va'>standardize</span>,
+  <span class='va'>simulated</span>,
+  <span class='va'>parm</span>,
+  <span class='va'>distr</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>A list with the choice data.
+The list has <code>N</code> elements.
+Each element is a list with two elements, <code>X</code> and <code>y</code>, which are
+the covariates and decisions for a decision maker. More precisely,
+<code>X</code> is a list of <code>T</code> elements, where each element is a matrix of
+dimension <code>J</code>x(<code>P_f</code>+<code>P_r</code>) and contains the characteristics
+for one choice occasion.
+<code>y</code> is a vector of length <code>T</code> and contains the labels for the
+chosen alternatives.</p></td>
+    </tr>
+    <tr>
+      <th>choice_data</th>
+      <td><p>A data frame of choice data in "wide" format (i.e. each row represents
+one choice occasion) with the following requirements:</p><ul>
+<li><p>It must contain columns named <code>id</code> (a unique identifier for each
+decision maker) and <code>choice</code> (the chosen alternatives), where
+<code>choice</code> is the name of the dependent variable in <code>form</code>.</p></li>
+<li><p>For each alternative specific covariate <em>p</em> (covariate of type 1 or
+3) in <code>form</code> and each choice alternative <em>j</em>, <code>choice_data</code>
+must contain a column named <em>p_j</em>.</p></li>
+<li><p>For each covariate <em>q</em> that is constant across covariates (covariate
+of type 2), <code>choice_data</code> must contain a column named <em>q</em>.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>N</th>
+      <td><p>The number (greater or equal 1) of decision makers.</p></td>
+    </tr>
+    <tr>
+      <th>T</th>
+      <td><p>The number (greater or equal 1) of choice occasions or a vector of choice
+occasions of length <code>N</code> (i.e. a decision maker specific number).</p></td>
+    </tr>
+    <tr>
+      <th>J</th>
+      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
+    </tr>
+    <tr>
+      <th>P_f</th>
+      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
+    </tr>
+    <tr>
+      <th>P_r</th>
+      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
+    </tr>
+    <tr>
+      <th>alternatives</th>
+      <td><p>A character vector with the names of the choice alternatives.</p></td>
+    </tr>
+    <tr>
+      <th>cov_fix</th>
+      <td><p>A character vector with the names of the covariates that are connected to a
+fixed coefficient.</p></td>
+    </tr>
+    <tr>
+      <th>cov_random</th>
+      <td><p>A character vector with the names of the covariates that are connected to a
+random coefficient.</p></td>
+    </tr>
+    <tr>
+      <th>form</th>
+      <td><p>A formula object that is used to specify the probit model.
+The structure is <code>choice ~ A | B | C</code>, where</p><ul>
+<li><p><code>A</code> are alternative and choice situation specific covariates
+with a generic coefficient,</p></li>
+<li><p><code>B</code> are choice situation specific covariates with alternative
+specific coefficients,</p></li>
+<li><p>and <code>C</code> are alternative and choice situation specific covariates
+with alternative specific coefficients.</p></li>
+</ul><p>By default, alternative specific constants are added to the model (for all
+except for the last alternative).
+They can be removed by adding <code>+0</code> in the second spot.</p></td>
+    </tr>
+    <tr>
+      <th>re</th>
+      <td><p>A character vector of variable names of <code>form</code> with random effects.
+To have random effects for the alternative specific constants, include
+<code>"ASC"</code> in <code>re</code>.</p></td>
+    </tr>
+    <tr>
+      <th>vars</th>
+      <td><p>A list of length three, containing the three different covariate types of
+<code>form</code>.</p></td>
+    </tr>
+    <tr>
+      <th>ASC</th>
+      <td><p>A boolean, determining whether alternative specific constants are included.</p></td>
+    </tr>
+    <tr>
+      <th>standardize</th>
+      <td><p>A character vector of names of covariates that get standardized.
+Covariates of type 1 or 3 have to be addressed by
+<code>covariate_alternative</code>.
+If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
+    </tr>
+    <tr>
+      <th>simulated</th>
+      <td><p>A boolean, if <code>TRUE</code> then <code>data</code> is simulated, otherwise
+<code>data</code> is empirical.</p></td>
+    </tr>
     <tr>
       <th>parm</th>
       <td><p>A named list of true parameter values:</p><ul>
@@ -175,26 +296,30 @@ Internally, <code>Sigma</code> gets differenced with respect to alternative
 </ul></td>
     </tr>
     <tr>
-      <th>P_f</th>
-      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>P_r</th>
-      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>J</th>
-      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
+      <th>distr</th>
+      <td><p>A named list of number generation functions from which the covariates are
+drawn. Each element of <code>distr</code> must be of the form
+<code>"cov" = list("name" = "&lt;name of the number generation function&gt;", ...)</code>,
+where <code>cov</code> is the name of the covariate and <code>...</code> are required
+parameters for the number generation function.
+Covariates for which no distribution is specified are drawn from a standard
+normal distribution.
+Possible number generation functions are</p><ul>
+<li><p>functions of the type <code>r*</code> from base R (e.g. <code>rnorm</code>) where
+all required parameters (except for <code>n</code>) must be specified,</p></li>
+<li><p>the function <code>sample</code>, where all required parameters
+(except for <code>size</code>) must be specified.</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>parm</code></p>
+    <p>An object of class <code>RprobitB_data</code>, i.e. a list with the arguments of
+this function as elements.
+In case of empirical data, the elements <code>parm</code> and <code>distr</code> equal
+<code>NULL</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>check_parm</span><span class='op'>(</span>parm <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"alpha"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>, P_f <span class='op'>=</span> <span class='fl'>3</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, parm$C)): object '_RprobitB_rdirichlet' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

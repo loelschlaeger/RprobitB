@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check prior — check_prior • RprobitB</title>
+<title>Transformation of true parameter values — transform_parm • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Check prior — check_prior" />
-<meta property="og:description" content="Function that checks the input prior and sets missing values to
-default values." />
+<meta property="og:title" content="Transformation of true parameter values — transform_parm" />
+<meta property="og:description" content="Function that transforms parm based on scale." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -139,111 +138,67 @@ default values." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check <code>prior</code></h1>
+    <h1>Transformation of true parameter values</h1>
     
-    <div class="hidden name"><code>check_prior.Rd</code></div>
+    <div class="hidden name"><code>transform_parm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>prior</code> and sets missing values to
-default values.</p>
+    <p>Function that transforms <code>parm</code> based on scale.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_prior</span><span class='op'>(</span><span class='va'>prior</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>transform_parm</span><span class='op'>(</span>parm <span class='op'>=</span> <span class='va'>parm</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>prior</th>
-      <td><p>A list of parameters for the prior distributions of the normalized
-parameters:</p><ul>
-<li><p><code>eta</code>:
-The mean vector of length <code>P_f</code> of the normal prior for
-<code>alpha</code>.</p></li>
-<li><p><code>Psi</code>:
-The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
-normal prior for <code>alpha</code>.</p></li>
-<li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for
-<code>s</code>.</p></li>
-<li><p><code>xi</code>:
-The mean vector of length <code>P_r</code> of the normal prior for each
-<code>b_c</code>.</p></li>
-<li><p><code>D</code>:
-The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>nu</code>:
-The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>:
-The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>:
-The degrees of freedom (a natural number greater than <code>J-1</code>) of
-the Inverse Wishart prior for <code>Sigma</code>.</p></li>
-<li><p><code>E</code>:
-The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
-Inverse Wishart prior for <code>Sigma</code>.</p></li>
+      <th>parm</th>
+      <td><p>A named list of true parameter values:</p><ul>
+<li><p><code>alpha</code>:
+The fixed coefficient vector of length <code>P_f</code>.</p></li>
+<li><p><code>C:</code>
+The number (greater or equal 1) of latent classes of decision makers.
+If <code>P_r = 0</code>, then <code>C</code> is ignored.</p></li>
+<li><p><code>s</code>:
+The vector of class weights of length <code>C</code>.</p></li>
+<li><p><code>b</code>:
+The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.</p></li>
+<li><p><code>Omega</code>:
+The matrix of class covariance matrices as columns of dimension
+<code>P_r*P_r</code> x <code>C</code>.</p></li>
+<li><p><code>Sigma</code>:
+The error term covariance matrix of dimension <code>J</code> x <code>J</code>.
+Internally, <code>Sigma</code> gets differenced with respect to alternative
+<code>J</code>, so it becomes a covariance matrix of dimension
+<code>J-1</code> x <code>J-1</code>.</p></li>
 </ul></td>
     </tr>
     <tr>
-      <th>P_f</th>
-      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>P_r</th>
-      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>J</th>
-      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
+      <th>scale</th>
+      <td><p>A list of three elements, determining the parameter normalization with
+respect to the scale of utility:</p><ul>
+<li><p><code>parameter</code>:
+either <code>"a"</code> (for a linear coefficient of <code>"alpha"</code>) or
+<code>"s"</code> (for a variance of the error-term covariance matrix
+<code>"Sigma"</code>)</p></li>
+<li><p><code>index</code>:
+the index of the parameter that gets fixed</p></li>
+<li><p><code>value</code>:
+the value for the fixed parameter</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>prior</code></p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The elements of <code>prior</code> are parameters for the prior distributions
-of the normalized parameters.</p>
+    <p>The transformed version of <code>parm</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>check_prior</span><span class='op'>(</span>prior <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $eta
-#&gt; [1] 0
-#&gt; 
-#&gt; $Psi
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $delta
-#&gt; [1] 1
-#&gt; 
-#&gt; $xi
-#&gt; [1] 0
-#&gt; 
-#&gt; $D
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $nu
-#&gt; [1] 3
-#&gt; 
-#&gt; $Theta
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $kappa
-#&gt; [1] 3
-#&gt; 
-#&gt; $E
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "RprobitB_prior"</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>parm</span> <span class='op'>=</span> <span class='fu'><a href='check_parm.html'>check_parm</a></span><span class='op'>(</span>parm <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>2</span>, P_r <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, parm$C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'><span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='check_scale.html'>check_scale</a></span><span class='op'>(</span>scale <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'>transform_parm</span><span class='op'>(</span>parm <span class='op'>=</span> <span class='va'>parm</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in transform_parm(parm = parm, scale = scale): object 'parm' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
