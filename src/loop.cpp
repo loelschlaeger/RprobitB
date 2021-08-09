@@ -157,6 +157,7 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
 //' @param logd
 //' A boolean, whether to apply the logarithm.
 //' @return A vector, the computed multivariate normal densities
+//' @export
 //'
 // [[Rcpp::export]]
 arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
@@ -188,6 +189,7 @@ arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
 //' A vector, the concentration parameter.
 //' @return
 //' A vector, the sample from the Dirichlet distribution.
+//' @export
 //'
 // [[Rcpp::export]]
 arma::vec rdirichlet(arma::vec alpha) {
@@ -216,6 +218,7 @@ arma::vec rdirichlet(arma::vec alpha) {
 //' @return
 //' A list, the draw from the Wishart (W), inverted Wishart (IW), and
 //' corresponding Cholesky decomposition (C and CI)
+//' @export
 //'
 // [[Rcpp::export]]
 List rwishart(double nu, arma::mat const& V){
