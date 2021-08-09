@@ -4,10 +4,7 @@
 \alias{compute_suff_statistics}
 \title{Compute sufficient statistics}
 \usage{
-compute_suff_statistics(
-  data,
-  scale = list(parameter = "s", index = 1, value = 1)
-)
+compute_suff_statistics(data, scale)
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}, which can be obtained from
@@ -17,8 +14,8 @@ compute_suff_statistics(
 respect to the scale of utility:
 \itemize{
 \item \code{parameter}:
-either \code{"a"} (for a linear coefficient in \code{"alpha"}) or
-\code{"s"} (for a variance in the error-term covariance matrix
+either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
+\code{"s"} (for a variance of the error-term covariance matrix
 \code{"Sigma"})
 \item \code{index}:
 the index of the parameter that gets fixed
@@ -33,6 +30,7 @@ A list of sufficient statistics
 Function that computes sufficient statistics for estimation.
 }
 \examples{
-compute_suff_statistics(data = simulate(form = choice ~ var, N = 10, T = 10,
-                                        J = 3, re = "ASC"))
+data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
+scale = check_scale(scale = NULL, P_f = 2, J = 3)
+compute_suff_statistics(data = data, scale = scale)
 }

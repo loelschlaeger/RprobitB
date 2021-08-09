@@ -99,22 +99,25 @@ If \code{standardize = "all"}, all covariates get standardized.}
 \item{simulated}{A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 \code{data} is empirical.}
 
-\item{parm}{A named list of true parameter values.
+\item{parm}{A named list of true parameter values:
 \itemize{
 \item \code{alpha}:
-the fixed coefficient vector of length \code{P_f}
+The fixed coefficient vector of length \code{P_f}.
 \item \code{C:}
-the number (greater or equal 1) of latent classes of decision makers
-(if \code{P_r = 0}, then then \code{C} is ignored)
+The number (greater or equal 1) of latent classes of decision makers.
+If \code{P_r = 0}, then \code{C} is ignored.
 \item \code{s}:
-the vector of class weights of length \code{C}
+The vector of class weights of length \code{C}.
 \item \code{b}:
-the matrix of class means as columns of dimension \code{P_r} x \code{C}
+The matrix of class means as columns of dimension \code{P_r} x \code{C}.
 \item \code{Omega}:
-the matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}
+The matrix of class covariance matrices as columns of dimension
+\code{P_r*P_r} x \code{C}.
 \item \code{Sigma}:
-the error term covariance matrix of dimension \code{J} x \code{J}
+The error term covariance matrix of dimension \code{J} x \code{J}.
+Internally, \code{Sigma} gets differenced with respect to alternative
+\code{J}, so it becomes a covariance matrix of dimension
+\code{J-1} x \code{J-1}.
 }}
 
 \item{distr}{A named list of number generation functions from which the covariates are

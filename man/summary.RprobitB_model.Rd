@@ -4,14 +4,12 @@
 \alias{summary.RprobitB_model}
 \title{Summary method for \code{RprobitB_model}}
 \usage{
-\method{summary}{RprobitB_model}(object, digits = 2, ...)
+\method{summary}{RprobitB_model}(object, ...)
 }
 \arguments{
-\item{object}{description}
+\item{object}{An object of class \code{RprobitB_model}}
 
-\item{digits}{description}
-
-\item{...}{description}
+\item{...}{ignored}
 }
 \description{
 Summary method for \code{RprobitB_model}

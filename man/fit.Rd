@@ -23,8 +23,8 @@ fit(
 respect to the scale of utility:
 \itemize{
 \item \code{parameter}:
-either \code{"a"} (for a linear coefficient in \code{"alpha"}) or
-\code{"s"} (for a variance in the error-term covariance matrix
+either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
+\code{"s"} (for a variance of the error-term covariance matrix
 \code{"Sigma"})
 \item \code{index}:
 the index of the parameter that gets fixed
@@ -109,6 +109,6 @@ For more details see the vignette "Model fitting":
 \code{vignette("model_fitting", package = "RprobitB")}
 }
 \examples{
-data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
+data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
 model = fit(data = data)
 }
