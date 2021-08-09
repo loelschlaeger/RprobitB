@@ -13,6 +13,7 @@
 #' @param logd
 #' A boolean, whether to apply the logarithm.
 #' @return A vector, the computed multivariate normal densities
+#' @export
 #'
 dmvnrm_arma_mc <- function(x, mean, sigma, logd = FALSE) {
     .Call(`_RprobitB_dmvnrm_arma_mc`, x, mean, sigma, logd)
@@ -25,6 +26,7 @@ dmvnrm_arma_mc <- function(x, mean, sigma, logd = FALSE) {
 #' A vector, the concentration parameter.
 #' @return
 #' A vector, the sample from the Dirichlet distribution.
+#' @export
 #'
 rdirichlet <- function(alpha) {
     .Call(`_RprobitB_rdirichlet`, alpha)
@@ -40,6 +42,7 @@ rdirichlet <- function(alpha) {
 #' @return
 #' A list, the draw from the Wishart (W), inverted Wishart (IW), and
 #' corresponding Cholesky decomposition (C and CI)
+#' @export
 #'
 rwishart <- function(nu, V) {
     .Call(`_RprobitB_rwishart`, nu, V)
