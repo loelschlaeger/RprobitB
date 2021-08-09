@@ -28,12 +28,14 @@ transform = function(RprobitB_model, B = NULL, Q = NULL, scale = NULL) {
 
   ### normalize, burn and thin Gibbs samples
   gibbs_samples = transform_gibbs_samples(
-    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, scale = scale)
+    gibbs_samples = gibbs_samples, R = RprobitB_model$R, B = B, Q = Q,
+    scale = scale)
 
   ### compute statistics from Gibbs samples
   statistics = compute_statistics(
-    gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
-    C = latent_classes$C)
+    gibbs_samples = gibbs_samples, P_f = RprobitB_model$RprobitB_data$P_f,
+    P_r = RprobitB_model$RprobitB_data$P_r, J = RprobitB_model$RprobitB_data$J,
+    C = RprobitB_model$latent_classes$C)
 
   ### scale true parameters
   parm = transform_parm(parm = parm, scale = scale)

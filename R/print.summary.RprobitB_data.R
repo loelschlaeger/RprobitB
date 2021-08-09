@@ -1,3 +1,8 @@
+#' Print method for the summary of \code{RprobitB_data}
+#' @param x
+#' An object of class \code{summary.RprobitB_data}
+#' @param ...
+#' ignored
 #' @export
 
 print.summary.RprobitB_data = function(x, ...) {
