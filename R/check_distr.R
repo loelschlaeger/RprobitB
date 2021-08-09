@@ -52,6 +52,9 @@ check_distr = function(distr) {
                   "' in 'distr'."))
   }
 
+  ### add class to 'distr'
+  class(distr) = "RprobitB_distr"
+
   ### return checked 'distr'
   return(distr)
 
