@@ -8,6 +8,13 @@
 
 <title>Check prior — check_prior • RprobitB</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,7 +47,9 @@
 
 
 <meta property="og:title" content="Check prior — check_prior" />
-<meta property="og:description" content="Function that checks the input prior and sets default values." />
+<meta property="og:description" content="Function that checks the input prior and sets missing values to
+default values." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -95,10 +104,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/data.html">How to work with empirical choice data?</a>
+      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">0. Introduction to RprobitB and model formulation</a>
     </li>
     <li>
-      <a href="../articles/introduction.html">Introduction to RprobitB</a>
+      <a href="../articles/model_comparison.html">4. Model comparison</a>
+    </li>
+    <li>
+      <a href="../articles/model_fitting.html">2. Model fitting</a>
+    </li>
+    <li>
+      <a href="../articles/model_results.html">3. Model results</a>
+    </li>
+    <li>
+      <a href="../articles/prediction.html">5. Prediction</a>
     </li>
   </ul>
 </li>
@@ -127,28 +145,74 @@
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>prior</code> and sets default values.</p>
+    <p>Function that checks the input <code>prior</code> and sets missing values to
+default values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_prior</span><span class='op'>(</span><span class='va'>prior</span>, <span class='va'>model</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_prior</span><span class='op'>(</span><span class='va'>prior</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>prior</th>
-      <td><p>A list of prior parameters.</p></td>
+      <td><p>A list of parameters for the prior distributions of the normalized
+parameters:</p><ul>
+<li><p><code>eta</code>:
+The mean vector of length <code>P_f</code> of the normal prior for
+<code>alpha</code>.</p></li>
+<li><p><code>Psi</code>:
+The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
+normal prior for <code>alpha</code>.</p></li>
+<li><p><code>delta</code>:
+The concentration parameter of length 1 of the Dirichlet prior for
+<code>s</code>.</p></li>
+<li><p><code>xi</code>:
+The mean vector of length <code>P_r</code> of the normal prior for each
+<code>b_c</code>.</p></li>
+<li><p><code>D</code>:
+The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
+normal prior for each <code>b_c</code>.</p></li>
+<li><p><code>nu</code>:
+The degrees of freedom (a natural number greater than <code>P_r</code>) of
+the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
+<li><p><code>Theta</code>:
+The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
+Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
+<li><p><code>kappa</code>:
+The degrees of freedom (a natural number greater than <code>J-1</code>) of
+the Inverse Wishart prior for <code>Sigma</code>.</p></li>
+<li><p><code>E</code>:
+The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
+Inverse Wishart prior for <code>Sigma</code>.</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>A list of model information.</p></td>
+      <th>P_f</th>
+      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
+    </tr>
+    <tr>
+      <th>P_r</th>
+      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
+    </tr>
+    <tr>
+      <th>J</th>
+      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>prior</code></p>
+    <p>The checked input <code>prior</code></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>The elements of <code>prior</code> are parameters for the prior distributions
+of the normalized parameters.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='fu'>check_prior</span><span class='op'>(</span>prior <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in check_prior(prior = NULL, P_f = 1, P_r = 1, J = 2)</span> unbenutzte Argumente (P_f = 1, P_r = 1, J = 2)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

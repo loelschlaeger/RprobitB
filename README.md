@@ -1,4 +1,4 @@
-# RprobitB <img src='sticker/sticker.png' align="right" height="136" />
+# RprobitB <img src="man/figures/logo.png" align="right" height=136 />
 [![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 
