@@ -6,8 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Routine to compute the density of a multivariate normal — dmvnrm_arma_mc • RprobitB</title>
+<title>Multivariate normal density — dmvnrm_arma_mc • RprobitB</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -39,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Routine to compute the density of a multivariate normal — dmvnrm_arma_mc" />
-<meta property="og:description" content="Routine to compute the density of a multivariate normal" />
+<meta property="og:title" content="Multivariate normal density — dmvnrm_arma_mc" />
+<meta property="og:description" content="Function to compute the density of a multivariate normal distribution." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -95,10 +103,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/data_management.html">1. Data management</a>
-    </li>
-    <li>
-      <a href="../articles/introduction_to_RprobitB.html">Introduction to RprobitB</a>
+      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">0. Introduction to RprobitB and model formulation</a>
     </li>
     <li>
       <a href="../articles/model_comparison.html">4. Model comparison</a>
@@ -133,13 +138,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Routine to compute the density of a multivariate normal</h1>
+    <h1>Multivariate normal density</h1>
     
     <div class="hidden name"><code>dmvnrm_arma_mc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Routine to compute the density of a multivariate normal</p>
+    <p>Function to compute the density of a multivariate normal distribution.</p>
     </div>
 
     <pre class="usage"><span class='fu'>dmvnrm_arma_mc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>mean</span>, <span class='va'>sigma</span>, logd <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -149,19 +154,19 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A matrix, the arguments</p></td>
+      <td><p>A matrix, the arguments.</p></td>
     </tr>
     <tr>
       <th>mean</th>
-      <td><p>A vector, the mean</p></td>
+      <td><p>A vector, the mean.</p></td>
     </tr>
     <tr>
       <th>sigma</th>
-      <td><p>A matrix, the covariance matrix</p></td>
+      <td><p>A matrix, the covariance matrix.</p></td>
     </tr>
     <tr>
       <th>logd</th>
-      <td><p>A boolean, wheter to apply the logarithm</p></td>
+      <td><p>A boolean, whether to apply the logarithm.</p></td>
     </tr>
     </table>
 

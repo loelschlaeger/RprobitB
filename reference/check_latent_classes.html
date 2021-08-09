@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check prior — check_prior • RprobitB</title>
+<title>Check latent_classes — check_latent_classes • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Check prior — check_prior" />
-<meta property="og:description" content="Function that checks the input prior and sets missing values to
-default values." />
+<meta property="og:title" content="Check latent_classes — check_latent_classes" />
+<meta property="og:description" content="Function that checks the input latent_classes and sets missing values
+to default values." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -139,111 +139,87 @@ default values." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check <code>prior</code></h1>
+    <h1>Check <code>latent_classes</code></h1>
     
-    <div class="hidden name"><code>check_prior.Rd</code></div>
+    <div class="hidden name"><code>check_latent_classes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>prior</code> and sets missing values to
-default values.</p>
+    <p>Function that checks the input <code>latent_classes</code> and sets missing values
+to default values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_prior</span><span class='op'>(</span><span class='va'>prior</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_latent_classes</span><span class='op'>(</span><span class='va'>latent_classes</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>prior</th>
-      <td><p>A list of parameters for the prior distributions of the normalized
-parameters:</p><ul>
-<li><p><code>eta</code>:
-The mean vector of length <code>P_f</code> of the normal prior for
-<code>alpha</code>.</p></li>
-<li><p><code>Psi</code>:
-The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
-normal prior for <code>alpha</code>.</p></li>
-<li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for
-<code>s</code>.</p></li>
-<li><p><code>xi</code>:
-The mean vector of length <code>P_r</code> of the normal prior for each
-<code>b_c</code>.</p></li>
-<li><p><code>D</code>:
-The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>nu</code>:
-The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>:
-The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>:
-The degrees of freedom (a natural number greater than <code>J-1</code>) of
-the Inverse Wishart prior for <code>Sigma</code>.</p></li>
-<li><p><code>E</code>:
-The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
-Inverse Wishart prior for <code>Sigma</code>.</p></li>
+      <th>latent_classes</th>
+      <td><p>A list of parameters specifying the number and updating scheme of latent
+classes:</p><ul>
+<li><p><code>C</code>:
+The number (greater or equal 1) of latent classes. Set to 1 per default.</p></li>
+<li><p><code>update</code>:
+A boolean, determining whether to update <code>C</code>.</p></li>
+<li><p><code>Cmax</code>:
+The maximum number of latent classes. Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>buffer</code>:
+The updating buffer (number of iterations to wait before the next update).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>epsmin</code>:
+The threshold weight for removing latent classes (between 0 and 1).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>epsmax</code>:
+The threshold weight for splitting latent classes (between 0 and 1).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>distmin</code>:
+The threshold difference in means for joining latent classes
+(non-negative). Ignored if <code>update = FALSE</code>.</p></li>
 </ul></td>
-    </tr>
-    <tr>
-      <th>P_f</th>
-      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>P_r</th>
-      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>J</th>
-      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>prior</code></p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The elements of <code>prior</code> are parameters for the prior distributions
-of the normalized parameters.</p>
+    <p>The checked input <code>latent_classes</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>check_prior</span><span class='op'>(</span>prior <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $eta
-#&gt; [1] 0
-#&gt; 
-#&gt; $Psi
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $delta
+    <pre class="examples"><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $C
 #&gt; [1] 1
 #&gt; 
-#&gt; $xi
-#&gt; [1] 0
-#&gt; 
-#&gt; $D
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $nu
-#&gt; [1] 3
-#&gt; 
-#&gt; $Theta
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $kappa
-#&gt; [1] 3
-#&gt; 
-#&gt; $E
-#&gt;      [,1]
-#&gt; [1,]    1
+#&gt; $update
+#&gt; [1] FALSE
 #&gt; 
 #&gt; attr(,"class")
-#&gt; [1] "RprobitB_prior"</div></pre>
+#&gt; [1] "RprobitB_latent_classes"</div><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"C"</span> <span class='op'>=</span> <span class='fl'>2</span>, <span class='st'>"update"</span> <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                                           <span class='st'>"Cmax"</span> <span class='op'>=</span> <span class='fl'>10</span>, <span class='st'>"buffer"</span> <span class='op'>=</span> <span class='fl'>100</span>,
+                                           <span class='st'>"epsmin"</span> <span class='op'>=</span> <span class='fl'>0.01</span>, <span class='st'>"epsmax"</span> <span class='op'>=</span> <span class='fl'>0.99</span>,
+                                           <span class='st'>"distmin"</span> <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $C
+#&gt; [1] 2
+#&gt; 
+#&gt; $update
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $Cmax
+#&gt; [1] 10
+#&gt; 
+#&gt; $buffer
+#&gt; [1] 100
+#&gt; 
+#&gt; $epsmin
+#&gt; [1] 0.01
+#&gt; 
+#&gt; $epsmax
+#&gt; [1] 0.99
+#&gt; 
+#&gt; $distmin
+#&gt; [1] 0.1
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "RprobitB_latent_classes"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

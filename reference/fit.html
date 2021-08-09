@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check prior — check_prior • RprobitB</title>
+<title>Fit a (latent class) (mixed) (multinomial) probit model — fit • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Check prior — check_prior" />
-<meta property="og:description" content="Function that checks the input prior and sets missing values to
-default values." />
+<meta property="og:title" content="Fit a (latent class) (mixed) (multinomial) probit model — fit" />
+<meta property="og:description" content="Function that fits a (latent class) (mixed) (multinomial) probit model via
+Bayesian estimation." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -139,21 +139,91 @@ default values." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check <code>prior</code></h1>
+    <h1>Fit a (latent class) (mixed) (multinomial) probit model</h1>
     
-    <div class="hidden name"><code>check_prior.Rd</code></div>
+    <div class="hidden name"><code>fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>prior</code> and sets missing values to
-default values.</p>
+    <p>Function that fits a (latent class) (mixed) (multinomial) probit model via
+Bayesian estimation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_prior</span><span class='op'>(</span><span class='va'>prior</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  scale <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>parameter <span class='op'>=</span> <span class='st'>"s"</span>, index <span class='op'>=</span> <span class='fl'>1</span>, value <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
+  R <span class='op'>=</span> <span class='fl'>10000</span>,
+  B <span class='op'>=</span> <span class='va'>R</span><span class='op'>/</span><span class='fl'>2</span>,
+  Q <span class='op'>=</span> <span class='fl'>10</span>,
+  print_progress <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  latent_classes <span class='op'>=</span> <span class='cn'>NULL</span>,
+  prior <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>An object of class <code>RprobitB_data</code>, which can be obtained from
+<code><a href='simulate.html'>simulate</a></code> or <code><a href='prepare.html'>prepare</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>A list of three elements, determining the parameter normalization with
+respect to the scale of utility:</p><ul>
+<li><p><code>parameter</code>:
+either <code>"a"</code> (for a linear coefficient of <code>"alpha"</code>) or
+<code>"s"</code> (for a variance of the error-term covariance matrix
+<code>"Sigma"</code>)</p></li>
+<li><p><code>index</code>:
+the index of the parameter that gets fixed</p></li>
+<li><p><code>value</code>:
+the value for the fixed parameter</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td><p>The number of Gibbs sampler iterations.</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>The length of the burn-in period, i.e. a non-negative number of samples to
+be discarded.</p></td>
+    </tr>
+    <tr>
+      <th>Q</th>
+      <td><p>The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th
+sample is kept.</p></td>
+    </tr>
+    <tr>
+      <th>print_progress</th>
+      <td><p>A boolean, determining whether to print the progress.</p></td>
+    </tr>
+    <tr>
+      <th>latent_classes</th>
+      <td><p>A list of parameters specifying the number and updating scheme of latent
+classes:</p><ul>
+<li><p><code>C</code>:
+The number (greater or equal 1) of latent classes. Set to 1 per default.</p></li>
+<li><p><code>update</code>:
+A boolean, determining whether to update <code>C</code>.</p></li>
+<li><p><code>Cmax</code>:
+The maximum number of latent classes. Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>buffer</code>:
+The updating buffer (number of iterations to wait before the next update).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>epsmin</code>:
+The threshold weight for removing latent classes (between 0 and 1).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>epsmax</code>:
+The threshold weight for splitting latent classes (between 0 and 1).
+Ignored if <code>update = FALSE</code>.</p></li>
+<li><p><code>distmin</code>:
+The threshold difference in means for joining latent classes
+(non-negative). Ignored if <code>update = FALSE</code>.</p></li>
+</ul></td>
+    </tr>
     <tr>
       <th>prior</th>
       <td><p>A list of parameters for the prior distributions of the normalized
@@ -187,63 +257,21 @@ The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
 Inverse Wishart prior for <code>Sigma</code>.</p></li>
 </ul></td>
     </tr>
-    <tr>
-      <th>P_f</th>
-      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>P_r</th>
-      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
-    </tr>
-    <tr>
-      <th>J</th>
-      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>prior</code></p>
+    <p>An object of class <code>RprobitB_model</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The elements of <code>prior</code> are parameters for the prior distributions
-of the normalized parameters.</p>
+    <p>For more details see the vignette "Model fitting":
+<code><a href='../articles/model_fitting.html'>vignette("model_fitting", package = "RprobitB")</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>check_prior</span><span class='op'>(</span>prior <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $eta
-#&gt; [1] 0
-#&gt; 
-#&gt; $Psi
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $delta
-#&gt; [1] 1
-#&gt; 
-#&gt; $xi
-#&gt; [1] 0
-#&gt; 
-#&gt; $D
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $nu
-#&gt; [1] 3
-#&gt; 
-#&gt; $Theta
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; $kappa
-#&gt; [1] 3
-#&gt; 
-#&gt; $E
-#&gt;      [,1]
-#&gt; [1,]    1
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "RprobitB_prior"</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span> <span class='op'>|</span> <span class='fl'>0</span>, N <span class='op'>=</span> <span class='fl'>100</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in rwishart(J, diag(J)): object '_RprobitB_rwishart' not found</span></div><div class='input'><span class='va'>model</span> <span class='op'>=</span> <span class='fu'>fit</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in fit(data = data): 'data' must an object of class 'RprobitB_data', i.e. the output of</span>
+#&gt; <span class='error'>         'RprobitB::prepare()' or 'RprobitB::simulate()'.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
