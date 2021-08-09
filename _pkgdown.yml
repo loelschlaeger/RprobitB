@@ -1,0 +1,26 @@
+navbar:
+  type: default
+  left:
+  - text: Get started
+    href: articles/introduction_to_RprobitB_and_model_formulation.html
+  - text: References
+    href: reference/index.html
+  - text: Vignettes
+    menu:
+    - text: Introduction and model formulation
+      href: articles/introduction_to_RprobitB_and_model_formulation.html
+    - text: Data management
+      href: articles/data_management.html
+    - text: Model fitting
+      href: articles/model_fitting.html
+    - text: Model results
+      href: articles/model_results.html
+    - text: Model checking and model selection
+      href: articles/model_checking_and_model_selection.html
+    - text: Prediction
+      href: articles/prediction.html
+  - text: Updates
+    href: news/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/loelschlaeger/RprobitB
