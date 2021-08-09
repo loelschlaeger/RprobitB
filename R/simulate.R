@@ -215,7 +215,7 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
         ### type-2 covariates
         for(var in c(vars[[2]],if(ASC)"ASC")){
           old_names = colnames(X_nt)
-          mat = matrix(0,J,J)[,-J]
+          mat = matrix(0,J,J)[,-J,drop=FALSE]
           for(alternative in 1:(J-1))
             mat[alternative,alternative] = data_nt[,var]
           ### put covariates with random effects at the end
