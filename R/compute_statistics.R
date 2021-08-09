@@ -18,6 +18,7 @@
 #'         upper-hinge \code{q.75}, maximum \code{max}), Gelman-Rubin
 #'         statistic \code{R_hat} as columns
 #' }
+#' Appended is the element \code{C_est}, the estimated number of latent classes.
 
 compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
@@ -47,8 +48,8 @@ compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
     return(R_hat)
   }
 
-  ### function that computes statistics
-  compute_statistics = function(samples_nbt, samples_nb, labels){
+  ### function that computes statistic values
+  compute_statistic_values = function(samples_nbt, samples_nb, labels){
     out = matrix(NA,nrow=length(labels),ncol=8)
     out[,1] = apply(samples_nbt,2,mean)
     out[,2] = apply(samples_nbt,2,sd)
@@ -61,12 +62,18 @@ compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
   ### generate statistics for each parameter
   statistics = list()
-  for(par in c("alpha","s","b","Omega","Sigma")){
-    statistics[[par]] = compute_statistics(
+  par_names = c("Sigma")
+  if(P_f>0) par_names = c(par_names, "alpha")
+  if(P_r>0) par_names = c(par_names, "s","b","Omega")
+  for(par in par_names){
+    statistics[[par]] = compute_statistic_values(
       samples_nbt = gibbs_samples$gibbs_samples_nbt[[par]],
       samples_nb = gibbs_samples$gibbs_samples_nb[[par]],
       labels = labels[[par]])
   }
+
+  ### append 'C_est'
+  statistics[["C_est"]] = C_est
 
   ### add class to 'statistics'
   class(statistics) = "RprobitB_statistics"
