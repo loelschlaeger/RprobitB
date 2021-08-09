@@ -1,8 +1,11 @@
 #' @export
 
 print.summary.RprobitB_data = function(x, ...) {
-  cat(ifelse(x$simulated,"Simulated","Empirical"),"choice data\n")
-  cat("\n")
+
+  cat("Summary of",ifelse(x$simulated,"simulated","empirical"),
+      "choice data\n\n")
+
+  ### summary of decision makers
   cat(x$N, paste0("decision maker",ifelse(x$N==1,"","s")),"\n")
   if(length(unique(x$T))==1)
     cat(x$T[1], paste0("choice occasion",ifelse(unique(x$T)==1,"","s")),
@@ -12,9 +15,13 @@ print.summary.RprobitB_data = function(x, ...) {
         ifelse(x$N==1,"","each"),"\n")
   cat(sum(x$T),"choices in total\n")
   cat("\n")
+
+  ### summary of alternatives
   cat("Alternatives\n")
   print(x$alternatives)
   cat("\n")
+
+  ### summary of covariates
   cat("Covariates\n")
   print(x$covariates)
   if(!is.null(x$asc_alt)){
