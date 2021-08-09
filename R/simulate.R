@@ -274,6 +274,15 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   parm$U = U
   parm$beta = beta
 
+  ### define difference operator (computes differences wrt alternative i)
+  Delta = function(i){
+    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
+    return(Delta)
+  }
+
+  ### difference 'Sigma' in 'parm'
+  parm$Sigma = Delta(J) %*% parm$Sigma %*% t(Delta(J))
+
   ### create cov_fix and cov_random
   cov_names = colnames(data[[1]][["X"]][[1]])
   cov_fix = cov_names[which(!gsub("_.*$","",cov_names) %in% re)]
