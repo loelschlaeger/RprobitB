@@ -1,8 +1,8 @@
 #' Transformation of Gibbs samples
 #' @description
 #' Function that normalizes, burns and thins the Gibbs samples.
-#' @param gibbs_samples_raw
-#' The output of \code{\link{gibbs_sampling}}, i.e. a list of raw Gibbs samples.
+#' @param gibbs_samples
+#' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples.
 #' @inheritParams RprobitB_data
 #' @inheritParams fit
 #' @inheritParams compute_suff_statistics
@@ -11,8 +11,8 @@
 #' Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and
 #' \code{Sigma} (if available):
 #' \itemize{
-#'   \item \code{gibbs_samples_raw}:
-#'   The function input \code{gibbs_samples_raw}
+#'   \item \code{gibbs_samples}:
+#'   The function input \code{gibbs_samples}
 #'   \item \code{gibbs_samples_n}:
 #'   A list of normalized samples based on \code{scale}
 #'   \item \code{gibbs_samples_nb}:
@@ -24,31 +24,35 @@
 #'   \code{B} and \code{Q}
 #' }
 
-transform_gibbs_samples = function(gibbs_samples_raw, R, B, Q, scale) {
+transform_gibbs_samples = function(gibbs_samples, R, B, Q, scale) {
+
+  ### check inputs
+  if(!inherits(scale, "RprobitB_scale"))
+    stop("'scale' must be of class 'RprobitB_scale'.")
 
   ### determine estimated number of latent classes
-  last_s_draw = gibbs_samples_raw$s_draws[nrow(gibbs_samples_raw$s_draws),]
+  last_s_draw = gibbs_samples$s_draws[nrow(gibbs_samples$s_draws),]
   C_est = length(last_s_draw[last_s_draw!=0])
 
   ### function to normalize the samples
   normalize = function(par, factor) if(any(is.na(par))) NA else par * factor
 
   ### normalization of samples
-  s_draws_n = normalize(gibbs_samples_raw$s_draws, 1)
+  s_draws_n = normalize(gibbs_samples$s_draws, 1)
   if(scale$parameter=="a"){
-    factor = scale$value / gibbs_samples_raw$alpha_draws[,scale$index]
-    alpha_draws_n = normalize(gibbs_samples_raw$alpha_draws, factor)
-    b_draws_n = normalize(gibbs_samples_raw$b_draws, factor)
-    Omega_draws_n = normalize(gibbs_samples_raw$Omega_draws, factor^2)
-    Sigma_draws_n = normalize(gibbs_samples_raw$Sigma_draws, factor^2)
+    factor = scale$value / gibbs_samples$alpha_draws[,scale$index]
+    alpha_draws_n = normalize(gibbs_samples$alpha_draws, factor)
+    b_draws_n = normalize(gibbs_samples$b_draws, factor)
+    Omega_draws_n = normalize(gibbs_samples$Omega_draws, factor^2)
+    Sigma_draws_n = normalize(gibbs_samples$Sigma_draws, factor^2)
   }
   if(scale$parameter=="s"){
-    Jm1 = sqrt(length(gibbs_samples_raw$Sigma_draws[1,]))
-    factor = gibbs_samples_raw$Sigma_draws[,(Jm1)*(scale$index-1)+scale$index]
-    alpha_draws_n = normalize(gibbs_samples_raw$alpha_draws, sqrt(factor))
-    b_draws_n = normalize(gibbs_samples_raw$b_draws, sqrt(factor))
-    Omega_draws_n = normalize(gibbs_samples_raw$Omega_draws, factor)
-    Sigma_draws_n = normalize(gibbs_samples_raw$Sigma_draws, factor)
+    Jm1 = sqrt(length(gibbs_samples$Sigma_draws[1,]))
+    factor = scale$value / gibbs_samples$Sigma_draws[,(Jm1)*(scale$index-1)+scale$index]
+    alpha_draws_n = normalize(gibbs_samples$alpha_draws, sqrt(factor))
+    b_draws_n = normalize(gibbs_samples$b_draws, sqrt(factor))
+    Omega_draws_n = normalize(gibbs_samples$Omega_draws, factor)
+    Sigma_draws_n = normalize(gibbs_samples$Sigma_draws, factor)
   }
   gibbs_samples_n = list("s"     = s_draws_n,
                          "alpha" = alpha_draws_n,
@@ -101,7 +105,7 @@ transform_gibbs_samples = function(gibbs_samples_raw, R, B, Q, scale) {
                            "Sigma" = Sigma_draws_nbt)
 
   ### build and add class to 'gibbs_samples'
-  gibbs_samples = list("gibbs_samples_raw" = gibbs_samples_raw,
+  gibbs_samples = list("gibbs_samples"     = gibbs_samples,
                        "gibbs_samples_n"   = gibbs_samples_n,
                        "gibbs_samples_nb"  = gibbs_samples_nb,
                        "gibbs_samples_nt"  = gibbs_samples_nt,
