@@ -16,9 +16,35 @@ print.summary.RprobitB_model = function(x, ...) {
   cat("- Q:",x$Q,"\n")
   cat("\n")
 
-  ### legend of covariates
-  cat("Legend of covariates:\n")
+  ### summary of normalization
+  cat("Normalization:\n")
+  norm_level = paste0(x$J," (",x$alternatives[x$J],")")
+  cat("- Differenced with respect to alternative",norm_level,"\n")
+  if(x$scale$parameter=="a")
+    norm_scale = paste0(x$cov_fix[x$scale$index]," (alpha_",x$scale$index,")")
+  if(x$scale$parameter=="s")
+    norm_scale = paste0("the ",x$scale$index,". error term variance in Sigma")
+  cat("- Coefficient of",norm_scale,"fixed to",x$scale$value,"\n")
   cat("\n")
+
+  ### legend of alternatives
+  cat("Legend of alternatives:\n")
+  for(i in seq_len(x$J)) cat("-",paste0(i,":"),x$alternatives[i],"\n")
+  cat("\n")
+
+  ### legend of covariates with fixed coefficients
+  if(x$P_f>0){
+    cat("Covariates with fixed coefficients (alpha):\n")
+    for(i in seq_len(x$P_f)) cat("-",paste0(i,":"),x$cov_fix[i],"\n")
+    cat("\n")
+  }
+
+  ### legend of covariates with random coefficients
+  if(x$P_r>0){
+    cat("Random effects (b, Omega):\n")
+    for(i in seq_len(x$P_r)) cat("-",paste0(i,":"),x$cov_random[i],"\n")
+    cat("\n")
+  }
 
   ### get coefficient labels
   labels = create_labels(P_f = x$P_f, P_r = x$P_r, J = x$J,
@@ -38,7 +64,7 @@ print.summary.RprobitB_model = function(x, ...) {
     print(statistics)
   }
 
-  cat("Posterior:\n")
+  cat("Estimates:\n")
   cat(paste(sprintf("%6s"," "),
             if(x$simulated) sprintf("%6s","true"),
             sprintf("%6s","mean"),

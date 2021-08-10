@@ -50,7 +50,7 @@ summary.RprobitB_data = function(object, ...){
   }
 
   ### summary of alternatives
-  alt_colnames = c("freq")
+  alt_colnames = c("frequency")
   alt = data.frame(matrix(NA, nrow = 0, ncol = length(alt_colnames)))
   colnames(alt) = alt_colnames
   for(i in 1:object$J){
