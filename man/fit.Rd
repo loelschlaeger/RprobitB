@@ -109,6 +109,27 @@ For more details see the vignette "Model fitting":
 \code{vignette("model_fitting", package = "RprobitB")}
 }
 \examples{
+\dontrun{
+### covariates with fixed effects
 data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
 model = fit(data = data)
+summary(model)
+
+### random effects
+data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var")
+model = fit(data = data)
+summary(model)
+
+### latent classes
+data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
+                parm = list("C" = 2))
+model = fit(data = data, latent_classes = list("C" = 2))
+summary(model)
+
+### update of latent classes
+data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
+                parm = list("C" = 2))
+model = fit(data = data, latent_classes = list("update" = TRUE))
+summary(model)
+}
 }

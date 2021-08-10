@@ -1,10 +1,10 @@
 ---
-title: "0. Introduction to RprobitB and model formulation"
+title: "Introduction to RprobitB and model formulation"
 author: "Lennart Oelschläger"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{0. Introduction to RprobitB and model formulation}
+  %\VignetteIndexEntry{Introduction to RprobitB and model formulation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: ref.bib  

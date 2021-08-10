@@ -3,7 +3,7 @@ navbar:
   left:
   - text: Get started
     href: articles/introduction_to_RprobitB_and_model_formulation.html
-  - text: References
+  - text: Reference
     href: reference/index.html
   - text: Vignettes
     menu:
@@ -19,8 +19,28 @@ navbar:
       href: articles/model_checking_and_model_selection.html
     - text: Prediction
       href: articles/prediction.html
-  - text: Updates
+  - text: Changelog
     href: news/index.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/loelschlaeger/RprobitB
+
+reference:
+- title: Data
+  desc: Use these functions to prepare or simulate choice data.
+- contents:
+  - prepare
+  - simulate
+  - summary.RprobitB_data
+- title: Model
+  desc: Use these function to estimate a choice model.
+- contents:
+  - fit
+  - transform
+- title: Evaluation
+  desc: Use these functions to evaluate your model.
+- contents:
+  - summary.RprobitB_model
+  - compare
+  - predict
+  - plot.RprobitB_model

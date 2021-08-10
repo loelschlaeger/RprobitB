@@ -1,10 +1,10 @@
 ---
-title: "1. Data management"
+title: "Data management"
 author: "Lennart Oelschläger"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{1. Data management}
+  %\VignetteIndexEntry{Data management}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

@@ -1,10 +1,10 @@
 ---
-title: "2. Model fitting"
+title: "Model fitting"
 author: "Lennart Oelschläger"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2. Model fitting}
+  %\VignetteIndexEntry{Model fitting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
