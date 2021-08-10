@@ -24,7 +24,7 @@ compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
   ### determine estimated number of latent classes
   last_s_draw =
-    gibbs_samples$gibbs_samples_raw$
+    gibbs_samples$gibbs_samples$
     s_draws[nrow(gibbs_samples$gibbs_samples_raw$s_draws),]
   C_est = length(last_s_draw[last_s_draw!=0])
 
@@ -53,7 +53,7 @@ compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
     out = matrix(NA,nrow=length(labels),ncol=8)
     out[,1] = apply(samples_nbt,2,mean)
     out[,2] = apply(samples_nbt,2,sd)
-    out[,3:7] = apply(samples_nbt,2,fivenum)
+    out[,3:7] = t(apply(samples_nbt,2,fivenum))
     out[,8] = apply(samples_nb,2,compute_R_hat)
     rownames(out) = labels
     colnames(out) = c("mean","sd","min","q.25","median","q.75","max","R^")
