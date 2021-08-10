@@ -8,10 +8,6 @@ Do you found a bug or request a feature? Please [tell us](https://github.com/loe
 
 ## Using RprobitB
 
-To install the latest version of **RprobitB**, run `install.packages("RprobitB")` in your R console.
-
-## Using RprobitB
-
 To use RprobitB, follow these steps:
 
 1. Run `install.packages("RprobitB")` in your R console to install the latest version of **RprobitB**.
