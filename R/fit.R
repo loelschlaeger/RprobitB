@@ -21,8 +21,29 @@
 #' @return
 #' An object of class \code{RprobitB_model}
 #' @examples
+#' \dontrun{
+#' ### covariates with fixed effects
 #' data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
 #' model = fit(data = data)
+#' summary(model)
+#'
+#' ### random effects
+#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var")
+#' model = fit(data = data)
+#' summary(model)
+#'
+#' ### latent classes
+#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
+#'                 parm = list("C" = 2))
+#' model = fit(data = data, latent_classes = list("C" = 2))
+#' summary(model)
+#'
+#' ### update of latent classes
+#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
+#'                 parm = list("C" = 2))
+#' model = fit(data = data, latent_classes = list("update" = TRUE))
+#' summary(model)
+#' }
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
