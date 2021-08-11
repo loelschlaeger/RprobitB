@@ -112,10 +112,9 @@ The function `prepare()` has the following optional arguments:
 
 ### Example: "Train" data set of the mlogit package
 
-Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit)[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^4]. We consider all alternatives, therefore `alternatives` does not have to be specified.
+Let's prepare the *Train* data set of the[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^4]. We consider all alternatives, therefore `alternatives` does not have to be specified.
 
 ```{r, eval = FALSE}
-data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change, 
                choice_data = Train,
                re = c("price","time"))
