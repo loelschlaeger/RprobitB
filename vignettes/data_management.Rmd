@@ -54,5 +54,62 @@ To have random effects for specific variables, we need to define a character vec
 
 [^1]: Alternative specific constants can be interpreted as covariates of type 2. Due to the dummy variable trap, we cannot estimate alternative specific constants for all the alternatives. Therefore, they are added for all except for the last alternative.
 
+### Example: Simulated choice of transportation means
+
+Say we want to explain the `choice` of transportation means by the variables `cost`, `income`, and `travel_time`. We furthermore want to add alternative specific constants.
+
+- The `cost` of an alternative is obviously alternative specific. However, we can argue that it does not matter for which alternative we spend our money. Therefore, we want to estimate a generic coefficient for `cost`.
+
+- The `income` of a decision maker is constant across alternatives, but can have a different influence on the alternatives. It is therefore a covariate of type 2.
+
+- The `travel_time` is a covariate of type 3: It is alternative specific but in contrast to the `cost`, we can imagine that spending time in public transportation means is different from spending time in ones own car.
+
+Therefore, we specify:
+
+```{r, eval = FALSE}
+form = choice ~ cost | income | travel_time
+```
+
+We typically would expect heterogeneity in preferences regarding spending money on a transportation means, therefore we impose a random effect on `cost`:
+
+```{r, eval = FALSE}
+re = "cost"
+```
+
+## Empirical data
+
+This section explains how to prepare empirical data for estimation using the function `prepare()`.
+
+Say we have a data set with empirical choice data, let's call it `choice_data`. It must meet the following requirements:
+
+1. It must be a data frame.
+
+2. It must be in wide format, that means each row represents one choice occasion.
+
+3. It must contain a column named `id`, which contains a unique identifier for each decision maker.
+
+4. It must contain a column named `choice`, where `choice` must match the name of the dependent variable in `form`.
+
+5. For each alternative specific covariate `p` in `form` and each choice alternative `j`, `choice_data` must contain a column named `p_j`.
+
+6. For each covariate `q` that is constant across covariates (covariate of type 2), `choice_data` must contain a column named `q`. 
+
+To prepare `choice_data` for estimation, we must call
+
+```{r, eval = FALSE}
+data = prepare(form = form, choice_data = choice_data)
+```
+
+The function `prepare()` has the following optional arguments:
+
+- `alternatives`: We may not want to consider all alternatives in `choice_data`. In that case, we can specify a character vector `alternatives` with selected names of alternatives.
+
+- `re`: The character vector of variable names of `form` with random effects.
+
+- `id`: A character, the name of the column in `choice_data` that contains a unique identifier for each decision maker. The default is `"id"`. 
+
+- `standardize`: A character vector of variable names of `form` that get standardized, see [below](#standardize-covariates).
+
+
 
 
