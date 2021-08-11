@@ -96,30 +96,6 @@ to default values." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">0. Introduction to RprobitB and model formulation</a>
-    </li>
-    <li>
-      <a href="../articles/model_comparison.html">4. Model comparison</a>
-    </li>
-    <li>
-      <a href="../articles/model_fitting.html">2. Model fitting</a>
-    </li>
-    <li>
-      <a href="../articles/model_results.html">3. Model results</a>
-    </li>
-    <li>
-      <a href="../articles/prediction.html">5. Prediction</a>
-    </li>
-  </ul>
-</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -156,26 +132,26 @@ to default values.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>latent_classes</th>
-      <td><p>A list of parameters specifying the number and updating scheme of latent
+      <td><p>A list of parameters specifying the number and the updating scheme of latent
 classes:</p><ul>
 <li><p><code>C</code>:
-The number (greater or equal 1) of latent classes. Set to 1 per default.</p></li>
+The number (greater or equal 1) of latent classes. Set to 1 per default
+and is ignored if <code>P_r = 0</code>.</p></li>
 <li><p><code>update</code>:
-A boolean, determining whether to update <code>C</code>.</p></li>
+A boolean, determining whether to update <code>C</code>. Ignored if
+<code>P_r = 0</code>. If <code>update = FALSE</code>, all of the following elements are
+ignored.</p></li>
 <li><p><code>Cmax</code>:
-The maximum number of latent classes. Ignored if <code>update = FALSE</code>.</p></li>
+The maximum number of latent classes.</p></li>
 <li><p><code>buffer</code>:
-The updating buffer (number of iterations to wait before the next update).
-Ignored if <code>update = FALSE</code>.</p></li>
+The updating buffer (number of iterations to wait before the next update).</p></li>
 <li><p><code>epsmin</code>:
-The threshold weight for removing latent classes (between 0 and 1).
-Ignored if <code>update = FALSE</code>.</p></li>
+The threshold weight for removing latent classes (between 0 and 1).</p></li>
 <li><p><code>epsmax</code>:
-The threshold weight for splitting latent classes (between 0 and 1).
-Ignored if <code>update = FALSE</code>.</p></li>
+The threshold weight for splitting latent classes (between 0 and 1).</p></li>
 <li><p><code>distmin</code>:
 The threshold difference in means for joining latent classes
-(non-negative). Ignored if <code>update = FALSE</code>.</p></li>
+(non-negative).</p></li>
 </ul></td>
     </tr>
     </table>
