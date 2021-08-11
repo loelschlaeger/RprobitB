@@ -5,20 +5,20 @@
 #' Per default, the first error-term variance is fixed to \code{1}, i.e.
 #' \code{scale = list("parameter" = "s", "index" = 1, "value" = 1)}. Note that
 #' you can set \code{"parameter" = "a"} only if the model has parameters with a
-#' fixed coefficient (i.e. \code{P_f}>0).
+#' fixed coefficient (i.e. \code{P_f>0}).
 #' @inheritParams RprobitB_data
 #' @param scale
-#' A list of three elements, determining the parameter normalization with
-#' respect to the scale of utility:
+#' A named list of three elements, determining the parameter normalization with
+#' respect to the utility scale:
 #' \itemize{
 #'   \item \code{parameter}:
-#'   either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
+#'   Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
 #'   \code{"s"} (for a variance of the error-term covariance matrix
-#'   \code{"Sigma"})
+#'   \code{"Sigma"}).
 #'   \item \code{index}:
-#'   the index of the parameter that gets fixed
+#'   The index of the parameter that gets fixed.
 #'   \item \code{value}:
-#'   the value for the fixed parameter
+#'   The value for the fixed parameter.
 #' }
 #' @examples
 #' check_scale(scale = NULL, P_f = 2, J = 3)

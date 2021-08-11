@@ -3,27 +3,27 @@
 #' Function that checks the input \code{latent_classes} and sets missing values
 #' to default values.
 #' @param latent_classes
-#' A list of parameters specifying the number and updating scheme of latent
+#' A list of parameters specifying the number and the updating scheme of latent
 #' classes:
 #' \itemize{
 #'   \item \code{C}:
-#'   The number (greater or equal 1) of latent classes. Set to 1 per default.
+#'   The number (greater or equal 1) of latent classes. Set to 1 per default
+#'   and is ignored if \code{P_r = 0}.
 #'   \item \code{update}:
-#'   A boolean, determining whether to update \code{C}.
+#'   A boolean, determining whether to update \code{C}. Ignored if
+#'   \code{P_r = 0}. If \code{update = FALSE}, all of the following elements are
+#'   ignored.
 #'   \item \code{Cmax}:
-#'   The maximum number of latent classes. Ignored if \code{update = FALSE}.
+#'   The maximum number of latent classes.
 #'   \item \code{buffer}:
 #'   The updating buffer (number of iterations to wait before the next update).
-#'   Ignored if \code{update = FALSE}.
 #'   \item \code{epsmin}:
 #'   The threshold weight for removing latent classes (between 0 and 1).
-#'   Ignored if \code{update = FALSE}.
 #'   \item \code{epsmax}:
 #'   The threshold weight for splitting latent classes (between 0 and 1).
-#'   Ignored if \code{update = FALSE}.
 #'   \item \code{distmin}:
 #'   The threshold difference in means for joining latent classes
-#'   (non-negative). Ignored if \code{update = FALSE}.
+#'   (non-negative).
 #' }
 #' @examples
 #' check_latent_classes(latent_classes = NULL)
@@ -87,8 +87,8 @@ check_latent_classes = function(latent_classes){
     if(!is.numeric(latent_classes$epsmax) || !latent_classes$epsmax <= 1 ||
        !latent_classes$epsmax >= 0 ||
        !latent_classes$epsmin < latent_classes$epsmax)
-      stop("'latent_classes$epsmax' must be a numeric between 0 and 1 and greater
-           than 'latent_classes$epsmin'.")
+      stop("'latent_classes$epsmax' must be a numeric between 0 and 1 and
+           greater than 'latent_classes$epsmin'.")
     if(!is.numeric(latent_classes$distmin) || !0<=latent_classes$distmin)
       stop("'latent_classes$distmin' must be a non-negative numeric value.")
   }

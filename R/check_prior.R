@@ -2,11 +2,8 @@
 #' @description
 #' Function that checks the input \code{prior} and sets missing values to
 #' default values.
-#' @details
-#' The elements of \code{prior} are parameters for the prior distributions
-#' of the normalized parameters.
 #' @param prior
-#' A list of parameters for the prior distributions of the normalized
+#' A named list of parameters for the prior distributions of the normalized
 #' parameters:
 #' \itemize{
 #'   \item \code{eta}:

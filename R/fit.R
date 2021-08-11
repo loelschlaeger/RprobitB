@@ -7,7 +7,7 @@
 #' \code{vignette("model_fitting", package = "RprobitB")}
 #' @inheritParams compute_suff_statistics
 #' @param R
-#' The number of Gibbs sampler iterations.
+#' The number of iterations of the Gibbs sampler.
 #' @param B
 #' The length of the burn-in period, i.e. a non-negative number of samples to
 #' be discarded.
@@ -15,40 +15,39 @@
 #' The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 #' sample is kept.
 #' @param print_progress
-#' A boolean, determining whether to print the progress.
+#' A boolean, determining whether to print the Gibbs sampler progress and the
+#' estimated remaining computation time.
 #' @inheritParams check_latent_classes
 #' @inheritParams check_prior
 #' @return
 #' An object of class \code{RprobitB_model}
 #' @examples
 #' \dontrun{
-#' ### covariates with fixed effects
-#' data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-#' model = fit(data = data)
-#' summary(model)
+#' ### probit model
+#' p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
+#' m1 = fit(data = p)
 #'
-#' ### random effects
-#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var")
-#' model = fit(data = data)
-#' summary(model)
+#' ### multinomial probit model
+#' mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3)
+#' m2 = fit(data = mnp)
 #'
-#' ### latent classes
-#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
-#'                 parm = list("C" = 2))
-#' model = fit(data = data, latent_classes = list("C" = 2))
-#' summary(model)
+#' ### mixed multinomial probit model
+#' mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
+#' m3 = fit(data = mmnp)
+#'
+#' ### latent classes mixed multinomial probit model
+#' lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
+#'                   parm = list("C" = 2))
+#' m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
 #'
 #' ### update of latent classes
-#' data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
-#'                 parm = list("C" = 2))
-#' model = fit(data = data, latent_classes = list("update" = TRUE))
-#' summary(model)
+#' m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE))
 #' }
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
-               R = 1e4, B = R/2, Q = 10, print_progress = TRUE,
-               latent_classes = NULL, prior = NULL) {
+               R = 1e4, B = R/2, Q = 10, print_progress = TRUE, prior = NULL,
+               latent_classes = NULL) {
 
   ### check inputs
   if(!inherits(data,"RprobitB_data"))

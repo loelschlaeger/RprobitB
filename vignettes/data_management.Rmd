@@ -7,8 +7,6 @@ vignette: >
   %\VignetteIndexEntry{Data management}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -21,9 +19,9 @@ knitr::opts_chunk$set(
 library("RprobitB")
 ```
 
-This vignette explains how to manage choice data with **RprobitB**. We can either
+This vignette explains how to provide choice data for **RprobitB**. We can either
 
-1. [provide an empirical data set](#empirical-data) or
+1. [use empirical data](#empirical-data) or
 
 2. [simulate data](#simulated-data).
 
@@ -36,12 +34,14 @@ The model formula is specified using a formula object, let's call it `form`.
 
 The structure of `form` is `choice ~ A | B | C`, where
 
-- `A` are alternative and choice situation specific covariates with a generic coefficient (covariates of type 1),
+- `choice` is the discrete choice we aim to explain,
 
-- `B` are choice situation specific covariates with alternative specific coefficients (covariates of type 2),
+- `A` are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),
+
+- `B` are choice situation specific covariates with alternative specific coefficients (we call them covariates of type 2),
 
 - and `C` are alternative and choice situation specific covariates with
-alternative specific coefficients (covariates of type 3).
+alternative specific coefficients (we call them covariates of type 3).
 
 Keep the following rules in mind:
 
@@ -53,7 +53,7 @@ Keep the following rules in mind:
 
 - If we don't want to include any covariates of the second category but we want to estimate alternative specific constants, add `1` in the second spot, e.g. `choice ~ A | 1`. The expression `choice ~ A | 0` is interpreted as no covariates of the second category and no alternative specific constants.
 
-To have random effects for specific variables, we need to define a character vector `re` of the corresponding variable name. To have random effects for the alternative specific constants, include `"ASC"` in `re`.
+To have random effects for specific variables, we need to define a character vector `re` of the corresponding variable names. To have random effects for the alternative specific constants, include `"ASC"` in `re`.
 
 [^1]: Alternative specific constants can be interpreted as covariates of type 2. Due to the dummy variable trap, we cannot estimate alternative specific constants for all the alternatives. Therefore, they are added for all except for the last alternative.
 
@@ -88,7 +88,7 @@ Say we have a data set with empirical choice data, let's call it `choice_data`. 
 
 1. It must be a data frame.
 
-2. It must be in "wide" format[^2], that means each row represents one choice occasion.
+2. It must be in wide format, that means each row represents one choice occasion.
 
 3. It must contain a column named `id`, which contains a unique identifier for each decision maker.
 
@@ -97,8 +97,6 @@ Say we have a data set with empirical choice data, let's call it `choice_data`. 
 5. For each alternative specific covariate `p` in `form` and each choice alternative `j`, `choice_data` must contain a column named `p_j`.
 
 6. For each covariate `q` that is constant across covariates (covariate of type 2), `choice_data` must contain a column named `q`. 
-
-[^2]: The "wide" format is also used in the [mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c2.formula.data.html#wide-format).
 
 To prepare `choice_data` for estimation, we must call
 
@@ -118,7 +116,7 @@ The function `prepare()` has the following optional arguments:
 
 ### Example: "Train" data set of the mlogit package
 
-Let's prepare the "Train" data set of the mlogit package[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^4]. We consider all alternatives, therefore `alternatives` does not have to be specified.
+Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit)[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^4]. We consider all alternatives, therefore `alternatives` does not have to be specified.
 
 ```{r, eval = FALSE}
 data("Train", package = "mlogit")

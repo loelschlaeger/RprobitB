@@ -7,17 +7,17 @@ vignette: >
   %\VignetteIndexEntry{Introduction to RprobitB and model formulation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib  
-nocite: '@*'
 ---
 
-This vignette introduces the R package **RprobitB**[^1] and formulates the underlying model.
+Welcome to **RprobitB**! This vignette introduces the R package and defines the underlying model.
 
-With **RprobitB** you can 
+## Introdution
+
+With **RprobitB**[^1] you can 
 
 1. analyze choices made by deciders among a discrete set of alternatives,
 
-2. estimate (multinomial) probit models in a Bayesian framework,
+2. estimate [(latent class) (mixed) (multinomial) probit models](#levels-of-model-complexity) in a Bayesian framework,
 
 3. model heterogeneity by approximating any underlying mixing distributions through a mixture of normal distributions,
 
@@ -25,23 +25,35 @@ With **RprobitB** you can
 
 Run `install.packages("RprobitB")` in your R console to install the latest version of **RprobitB**.
 
-[^1]: The package name **RprobitB** is a portmanteau, combining *R* (the programming language), *probit* (the model name) and *B* (for Bayes, the estimation method).
+[^1]: The package name **RprobitB** is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).
 
-## Introduction to RprobitB
+## Levels of model complexity
 
-We provide several vignettes that explain each phase of the modelling in detail:
+Why the notation **(latent class) (mixed) (multinomial) probit model**? Because **RprobitB** can fit probit models of increasing complexity:
 
-1. For data preparation and data simulation, see *1. Data management*.
+- Most basic, modelling the choice between two alternatives (the **probit model**).
 
-2. For the model fitting, see *2. Model fitting*.
+- Considering more than two alternatives leads to the **multinomial probit model**.
 
-3. For interpreting the model results, see *3. Model results*.
+- If we incorporate random effects, the model gets the prefix *mixed*.
 
-4. For model checking and model selection, see *4. Model checking and model selection*.
+- The most general model is the **latent class mixed multinomial probit model**, which approximates the mixing distribution through a mixiture of normal distributions.
 
-5. For making predictions, see *5. Prediction*.
+## Outline of the vignettes
 
-## The model formulation
+1. [How is the model defined?](#the-model)
+
+2. [How to prepare or simulate choice data?](data_management.html)
+
+3. [How to fit a model?](model_fitting.html)
+
+4. [How to check and select a model?](model_checking_and_model_selection.html)
+
+5. [How to interprete the model results?](model_results.html)
+
+6. [How to make choice predictions?](prediction.html)
+
+## The model 
 
 Assume that we observe the choices of $N$ decision makers which decide between $J$ alternatives at each of $T$ choice occasions.[^2] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P_f+P_r$ choice attributes that we use to explain the choices. The first $P_f$ attributes are connected to fixed coefficients, the other $P_r$ attributes to random coefficients following a joint distribution mixed across decision makers. 
 
@@ -58,13 +70,17 @@ for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$, where
 
 - and $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},\dots,\tilde{\epsilon}_{ntJ})' \sim \text{MVN}_{J} (0,\tilde{\Sigma})$ is the models' error term vector for $n$ at $t$, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix $\tilde{\Sigma}$.
 
+### Normalization
+
 As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified. Therefore, we consider the transformed model
 
 \begin{equation}
 U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
 \end{equation}
 
-$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the reference alternative) $U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}$, $W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}$, $X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}$ and $\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}$, where $(\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})'  \sim \text{MVN}_{J-1} (0,\Sigma)$ and $\Sigma$ denotes a covariance matrix with the top-left element restricted to one. While taking utility differences in order to normalize the model with respect to level is a standard procedure, **RprobitB** provides an alternative to fixing an error term variance in order to normalize with respect to scale exist by fixing an element of $\alpha$.
+$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the reference alternative) $U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}$, $W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}$, $X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}$ and $\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}$, where $(\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})'  \sim \text{MVN}_{J-1} (0,\Sigma)$ and $\Sigma$ denotes a covariance matrix with the top-left element restricted to one.[^3]
+
+### Linking the latent utility to the choices
 
 Let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers, the decisions are linked to the utilities via
 \begin{equation}
@@ -72,28 +88,29 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}>0 \right) + J \
 \end{equation}
 where $1(A)$ equals $1$ if condition $A$ is true and $0$ else.
 
-We approximate the mixing distribution $g_{P_r}$ for the random coefficients\footnote{Here and below we use the abbreviation $(\beta_n)_n$ as a shortcut to $(\beta_n)_{n =1,...,N}$ the collection of vectors $\beta_n,n=1,...,N$.} $\beta=(\beta_n)_{n}$ by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components, i.e.
+### Approximating the mixing distribution
+
+We approximate the mixing distribution $g_{P_r}$ for the random coefficients[^4] $\beta=(\beta_n)_{n}$ by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components, i.e.
 \begin{equation}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c),
 \end{equation}
 where $(s_c)_{c}$ are weights satisfying $0 < s_c\leq 1$ for $c=1,\dots,C$ and $\sum_c s_c=1$. 
+
+### Interpreting the latent classes
+
 One interpretation of the latent class model is obtained by introducing variables $z=(z_n)_n$ allocating each decision maker $n$ to class $c$ with probability $s_c$, i.e.
 \begin{equation}
 \text{Prob}(z_n=c)=s_c \quad \text{and} \quad \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
 \end{equation}
 
-We call this model the *latent class mixed multinomial probit* (LCMMNP) model.[^3]
+We call this model the **latent class mixed multinomial probit** model.[^5]
 
 [^2]: For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, **RprobitB** allows for a different number of choice occasions for each decision maker.
 
-[^3]: Note that the model collapses to the (normally) mixed multinomial probit model if $P_r>0$ and $C=1$, to the multinomial probit model if $P_r=0$ and to the basic probit model if additionally $J=2$.
+[^3]: **RprobitB** provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of $\alpha$.
 
-Updating the number $C$ of latent classes can be done within the algorithm by executing the following weight-based updating scheme.
+[^4]: We use the abbreviation $(\beta_n)_n$ as a shortcut to $(\beta_n)_{n =1,...,N}$ the collection of vectors $\beta_n,n=1,...,N$.
 
-- Class $c$ is removed, if $s_c<\epsilon_{\text{min}}$, i.e. if the class weight $s_c$ drops below some threshold $\epsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
-- Class $c$ is splitted into two classes $c_1$ and $c_2$, if $s_c>\epsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the highest variance.
-- Two classes $c_1$ and $c_2$ are joined to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\epsilon_{\text{distmin}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\epsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
-
-## References
+[^5]: Note that the model collapses to the (normally) mixed multinomial probit model if $P_r>0$ and $C=1$, to the multinomial probit model if $P_r=0$ and to the basic probit model if additionally $J=2$.
 
 
