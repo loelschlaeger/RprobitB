@@ -1,11 +1,6 @@
 pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
-articles:
-  introduction_to_RprobitB_and_model_formulation: introduction_to_RprobitB_and_model_formulation.html
-  model_comparison: model_comparison.html
-  model_fitting: model_fitting.html
-  model_results: model_results.html
-  prediction: prediction.html
-last_built: 2021-08-09T16:04Z
+articles: {}
+last_built: 2021-08-11T16:17Z
 
