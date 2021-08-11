@@ -3,4 +3,4 @@
 * Fixed a typo in the DESCRIPTION file.
 
 ## RprobitB 0.1.0
-* The initial version
+* The initial version.
