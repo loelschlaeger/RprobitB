@@ -7,8 +7,6 @@ template:
 navbar:
   type: default
   left:
-  - text: Get started
-    href: articles/introduction_to_RprobitB_and_model_formulation.html
   - text: Reference
     href: reference/index.html
   - text: Vignettes
