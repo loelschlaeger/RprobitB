@@ -1,9 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-applications/
-validation/
 sticker/
-jss/
 load_RprobitB.R
 README.html
 LICENSE
