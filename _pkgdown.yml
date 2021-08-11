@@ -2,7 +2,7 @@ url: https://loelschlaeger.github.io/RprobitB/
 
 template:
   params:
-    bootswatch: cerulean
+    bootswatch: sketchy
 
 navbar:
   type: default
