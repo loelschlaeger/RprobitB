@@ -109,12 +109,45 @@
 
     
     
-
+<p>This vignette explains how to provide choice data for <strong>RprobitB</strong>. We can either</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="#empirical-data">use empirical data</a> or</p></li>
+<li><p><a href="#simulated-data">simulate data</a>.</p></li>
+</ol>
+<p>As a first step, we recommend to <a href="#specify-the-model-formula">specify the model formula</a>.</p>
+<div id="specify-the-model-formula" class="section level2">
+<h2 class="hasAnchor">
+<a href="#specify-the-model-formula" class="anchor"></a>Specify the model formula</h2>
+<p>The model formula is specified using a formula object, let’s call it <code>form</code>.</p>
+<p>The structure of <code>form</code> is <code>choice ~ A | B | C</code>, where</p>
+<ul>
+<li><p><code>choice</code> is the discrete choice we aim to explain,</p></li>
+<li><p><code>A</code> are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),</p></li>
+<li><p><code>B</code> are choice situation specific covariates with alternative specific coefficients (we call them covariates of type 2),</p></li>
+<li><p>and <code>C</code> are alternative and choice situation specific covariates with alternative specific coefficients (we call them covariates of type 3).</p></li>
+</ul>
+<p>Keep the following rules in mind:</p>
+<ul>
+<li><p>By default, alternative specific constants are added to the model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. They can be removed by adding <code>+0</code> in the second spot, e.g. <code>choice ~ A | B + 0</code>.</p></li>
+<li><p>To exclude covariates of the backmost categories, use either <code>0</code>, e.g. <code>choice ~ A | B | 0</code> or just leave this part out and write <code>choice ~ A | B</code>. However, to exclude covariates of front categories, we have to use <code>0</code>, e.g. <code>choice ~ A | 0 | C</code>.</p></li>
+<li><p>To include more than one covariate of the same category, use <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>, e.g. <code>choice ~ A1 + A2 | B</code>.</p></li>
+<li><p>If we don’t want to include any covariates of the second category but we want to estimate alternative specific constants, add <code>1</code> in the second spot, e.g. <code>choice ~ A | 1</code>. The expression <code>choice ~ A | 0</code> is interpreted as no covariates of the second category and no alternative specific constants.</p></li>
+</ul>
+<p>To have random effects for specific variables, we need to define a character vector <code>re</code> of the corresponding variable names. To have random effects for the alternative specific constants, include <code>"ASC"</code> in <code>re</code>.</p>
+</div>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Alternative specific constants can be interpreted as covariates of type 2. Due to the dummy variable trap, we cannot estimate alternative specific constants for all the alternatives. Therefore, they are added for all except for the last alternative.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
