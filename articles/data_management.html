@@ -134,6 +134,46 @@
 <li><p>If we don’t want to include any covariates of the second category but we want to estimate alternative specific constants, add <code>1</code> in the second spot, e.g. <code>choice ~ A | 1</code>. The expression <code>choice ~ A | 0</code> is interpreted as no covariates of the second category and no alternative specific constants.</p></li>
 </ul>
 <p>To have random effects for specific variables, we need to define a character vector <code>re</code> of the corresponding variable names. To have random effects for the alternative specific constants, include <code>"ASC"</code> in <code>re</code>.</p>
+<div id="example-simulated-choice-of-transportation-means" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example-simulated-choice-of-transportation-means" class="anchor"></a>Example: Simulated choice of transportation means</h3>
+<p>Say we want to explain the <code>choice</code> of transportation means by the variables <code>cost</code>, <code>income</code>, and <code>travel_time</code>. We furthermore want to add alternative specific constants.</p>
+<ul>
+<li><p>The <code>cost</code> of an alternative is obviously alternative specific. However, we can argue that it does not matter for which alternative we spend our money. Therefore, we want to estimate a generic coefficient for <code>cost</code>.</p></li>
+<li><p>The <code>income</code> of a decision maker is constant across alternatives, but can have a different influence on the alternatives. It is therefore a covariate of type 2.</p></li>
+<li><p>The <code>travel_time</code> is a covariate of type 3: It is alternative specific but in contrast to the <code>cost</code>, we can imagine that spending time in public transportation means is different from spending time in ones own car.</p></li>
+</ul>
+<p>Therefore, we specify:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">form</span> <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">cost</span> <span class="op">|</span> <span class="va">income</span> <span class="op">|</span> <span class="va">travel_time</span></code></pre></div>
+<p>We typically would expect heterogeneity in preferences regarding spending money on a transportation means, therefore we impose a random effect on <code>cost</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">re</span> <span class="op">=</span> <span class="st">"cost"</span></code></pre></div>
+</div>
+</div>
+<div id="empirical-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#empirical-data" class="anchor"></a>Empirical data</h2>
+<p>This section explains how to prepare empirical data for estimation using the function <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
+<p>Say we have a data set with empirical choice data, let’s call it <code>choice_data</code>. It must meet the following requirements:</p>
+<ol style="list-style-type: decimal">
+<li><p>It must be a data frame.</p></li>
+<li><p>It must be in wide format, that means each row represents one choice occasion.</p></li>
+<li><p>It must contain a column named <code>id</code>, which contains a unique identifier for each decision maker.</p></li>
+<li><p>It must contain a column named <code>choice</code>, where <code>choice</code> must match the name of the dependent variable in <code>form</code>.</p></li>
+<li><p>For each alternative specific covariate <code>p</code> in <code>form</code> and each choice alternative <code>j</code>, <code>choice_data</code> must contain a column named <code>p_j</code>.</p></li>
+<li><p>For each covariate <code>q</code> that is constant across covariates (covariate of type 2), <code>choice_data</code> must contain a column named <code>q</code>.</p></li>
+</ol>
+<p>To prepare <code>choice_data</code> for estimation, we must call</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></code></pre></div>
+<p>The function <code><a href="../reference/prepare.html">prepare()</a></code> has the following optional arguments:</p>
+<ul>
+<li><p><code>alternatives</code>: We may not want to consider all alternatives in <code>choice_data</code>. In that case, we can specify a character vector <code>alternatives</code> with selected names of alternatives.</p></li>
+<li><p><code>re</code>: The character vector of variable names of <code>form</code> with random effects.</p></li>
+<li><p><code>id</code>: A character, the name of the column in <code>choice_data</code> that contains a unique identifier for each decision maker. The default is <code>"id"</code>.</p></li>
+<li><p><code>standardize</code>: A character vector of variable names of <code>form</code> that get standardized, see <a href="#standardize-covariates">below</a>.</p></li>
+</ul>
 </div>
 <div class="footnotes">
 <hr>
