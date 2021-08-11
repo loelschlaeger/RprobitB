@@ -107,40 +107,30 @@ The Bayesian analysis of the (latent class) (mixed) (multinomial) probit model b
 
 Gibbs sampling from the joint posterior distribution of a latent class mixed multinomial probit model proceeds by iteratively drawing and updating each model parameter conditional on the other parameters. 
 
-### Updating $s$ 
-
-The class weights are drawn from the Dirichlet distribution
+- The class weights are drawn from the Dirichlet distribution
 \begin{equation}
 (s_1,\dots,s_C)\mid \delta,z \sim D_C(\delta_1+m_1,\dots,\delta_C+m_C),
 \end{equation}
 where for $c=1,\dots,C$, $m_c=\#\{n:z_n=c\}$ denotes the current absolute class size. Mind that the model is invariant to permutations of the class labels $1,\dots,C$. For that reason, we accept an update only if the ordering $s_1<\dots<s_C$ holds, thereby ensuring a unique labeling of the classes.
 
-### Updating $z$
-
-Independently for all $n$, we update the allocation variables $(z_n)_n$ from their conditional distribution
+- Independently for all $n$, we update the allocation variables $(z_n)_n$ from their conditional distribution
 \begin{equation}
 \text{Prob}(z_n=c\mid s,\beta,b,\Omega )=\frac{s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}{\sum_c s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}.
 \end{equation}
 
-### Updating $b$ 
-
-The class means $(b_c)_c$ are updated independently for all $c$ via
+- The class means $(b_c)_c$ are updated independently for all $c$ via
 \begin{equation}
 b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
 \end{equation}
 where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)$, $\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}$, $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
 
-### Updating $\Omega$
-
-The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
+- The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
 \begin{equation}
 \Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
 \end{equation}
 where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
 
-### Updating $U$
-
-Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of \trbcite{Geweke:98}:
+- Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of \trbcite{Geweke:98}:
 \begin{equation}
 U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta 
 \sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
@@ -154,25 +144,19 @@ where $U_{nt(-j)}$ denotes the vector $(U_{nt:})$ without the element $U_{ntj}$,
 \end{equation}
 where $(\Sigma^{-1})_{jj}$ denotes the $(j,j)$th element of $\Sigma^{-1}$, $(\Sigma^{-1})_{j(-j)}$ the $j$th row without the $j$th entry, $W_{nt(-j)}$ and $X_{nt(-j)}$ the coefficient matrices $W_{nt}$ and $X_{nt}$, respectively, without the $j$th column.
 
-### Updating $\alpha$ 
-
-Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
+- Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
 \begin{equation}
 \alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}{P_f}(\mu_\alpha,\Sigma_\alpha),
 \end{equation}
 where $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ and $\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
 
-### Updating $\beta$ 
-
-Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via 
+- Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via 
 \begin{equation}
 \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
 \end{equation}
 where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
 
-### Updating $\Sigma$
-
-The error term covariance matrix $\Sigma$ is updated by means of 
+- The error term covariance matrix $\Sigma$ is updated by means of 
 \begin{equation}
 \Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
 \end{equation}
