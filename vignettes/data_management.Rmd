@@ -112,7 +112,9 @@ The function `prepare()` has the following optional arguments:
 
 ### Example: Train data set of the mlogit package
 
-Let's prepare the *Train* data set of the for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects. We consider all alternatives, therefore `alternatives` does not have to be specified.
+Let's prepare the *Train* data set of the[^3] for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects. We consider all alternatives, therefore `alternatives` does not have to be specified.
+
+[^3]: Call `help(mlogit::Train)` for details.
 
 
 
