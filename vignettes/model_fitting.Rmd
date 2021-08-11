@@ -198,7 +198,7 @@ Alternatively, the samples can be normalized such that any variance of $\Sigma$ 
 
 The normalization of a fitted model can be changed afterwards via
 
-```r
+```{r, eval = FALSE}
 model = transform(model = model, scale = scale)
 ``` 
 
