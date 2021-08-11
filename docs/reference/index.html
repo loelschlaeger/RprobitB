@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Function reference" />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -86,32 +86,35 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">Get started</a>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Vignettes
+    Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction and model formulation</a>
+      <a href="../articles/data_management.html">Data management</a>
     </li>
     <li>
-      <a href="../articles/data_management.html">Data management</a>
+      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
+    </li>
+    <li>
+      <a href="../articles/model_checking_and_model_selection.html">Model checking and model selection</a>
     </li>
     <li>
       <a href="../articles/model_fitting.html">Model fitting</a>
     </li>
     <li>
       <a href="../articles/model_results.html">Model results</a>
-    </li>
-    <li>
-      <a href="../articles/model_checking_and_model_selection.html">Model checking and model selection</a>
     </li>
     <li>
       <a href="../articles/prediction.html">Prediction</a>
@@ -123,12 +126,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/loelschlaeger/RprobitB">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -156,8 +154,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
-          <p class="section-desc"><p>Use these functions to prepare or simulate choice data.</p></p>
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
         </th>
       </tr>
       
@@ -168,9 +166,183 @@
       <tr>
         
         <td>
+          <p><code><a href="check_distr.html">check_distr()</a></code> </p>
+        </td>
+        <td><p>Check <code>distr</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_latent_classes.html">check_latent_classes()</a></code> </p>
+        </td>
+        <td><p>Check <code>latent_classes</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_parm.html">check_parm()</a></code> </p>
+        </td>
+        <td><p>Check <code>parm</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_prior.html">check_prior()</a></code> </p>
+        </td>
+        <td><p>Check <code>prior</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_scale.html">check_scale()</a></code> </p>
+        </td>
+        <td><p>Check <code>scale</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compare.html">compare()</a></code> </p>
+        </td>
+        <td><p>Compare RprobitB models</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_choice_probabilities.html">compute_choice_probabilities()</a></code> </p>
+        </td>
+        <td><p>Compute probit choice probabilities</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_statistics.html">compute_statistics()</a></code> </p>
+        </td>
+        <td><p>Compute statistics</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_suff_statistics.html">compute_suff_statistics()</a></code> </p>
+        </td>
+        <td><p>Compute sufficient statistics</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_waic.html">compute_WAIC()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_labels.html">create_labels()</a></code> </p>
+        </td>
+        <td><p>Create coefficient labels</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dmvnrm_arma_mc.html">dmvnrm_arma_mc()</a></code> </p>
+        </td>
+        <td><p>Multivariate normal density</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fit.html">fit()</a></code> </p>
+        </td>
+        <td><p>Fit a (latent class) (mixed) (multinomial) probit model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="gibbs_sampling.html">gibbs_sampling()</a></code> </p>
+        </td>
+        <td><p>Gibbs sampler</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.RprobitB_model.html">plot(<i>&lt;RprobitB_model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot method for an <code>RprobitB_model</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_acf.html">plot_acf()</a></code> </p>
+        </td>
+        <td><p>Autocorrelation plots</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_contour.html">plot_contour()</a></code> </p>
+        </td>
+        <td><p>Contour plots</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_marginals.html">plot_marginals()</a></code> </p>
+        </td>
+        <td><p>Marginal mixing distributions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_trace.html">plot_trace()</a></code> </p>
+        </td>
+        <td><p>Trace plots</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="predict.html">predict()</a></code> </p>
+        </td>
+        <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="prepare.html">prepare()</a></code> </p>
         </td>
         <td><p>Prepare empirical choice data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.RprobitB_data.html">print(<i>&lt;RprobitB_data&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print method for <code>RprobitB_data</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.RprobitB_model.html">print(<i>&lt;RprobitB_model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print method for <code>RprobitB_model</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.summary.RprobitB_data.html">print(<i>&lt;summary.RprobitB_data&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print method for the summary of <code>RprobitB_data</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.summary.RprobitB_model.html">print(<i>&lt;summary.RprobitB_model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print method for the summary of <code>RprobitB_model</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rdirichlet.html">rdirichlet()</a></code> </p>
+        </td>
+        <td><p>Draw from Dirichlet</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="RprobitB_data.html">RprobitB_data()</a></code> </p>
+        </td>
+        <td><p>Construct object of class <code>RprobitB_data</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="RprobitB_model.html">RprobitB_model()</a></code> </p>
+        </td>
+        <td><p>Construct object of class <code>RprobitB_model</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rwishart.html">rwishart()</a></code> </p>
+        </td>
+        <td><p>Draw from a Wishart</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="set_init.html">set_init()</a></code> </p>
+        </td>
+        <td><p>Provide initial values for the Gibbs sampler</p></td>
       </tr><tr>
         
         <td>
@@ -183,45 +355,7 @@
           <p><code><a href="summary.RprobitB_data.html">summary(<i>&lt;RprobitB_data&gt;</i>)</a></code> </p>
         </td>
         <td><p>Summary method for <code>RprobitB_data</code></p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-model" class="hasAnchor"><a href="#section-model" class="anchor"></a>Model</h2>
-          <p class="section-desc"><p>Use these function to estimate a choice model.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="fit.html">fit()</a></code> </p>
-        </td>
-        <td><p>Fit a (latent class) (mixed) (multinomial) probit model</p></td>
       </tr><tr>
-        
-        <td>
-          <p><code><a href="transform.html">transform()</a></code> </p>
-        </td>
-        <td><p>Transform fitted <code>RprobitB_model</code></p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-evaluation" class="hasAnchor"><a href="#section-evaluation" class="anchor"></a>Evaluation</h2>
-          <p class="section-desc"><p>Use these functions to evaluate your model.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
         
         <td>
           <p><code><a href="summary.RprobitB_model.html">summary(<i>&lt;RprobitB_model&gt;</i>)</a></code> </p>
@@ -230,21 +364,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="compare.html">compare()</a></code> </p>
+          <p><code><a href="transform.html">transform()</a></code> </p>
         </td>
-        <td><p>Compare RprobitB models</p></td>
+        <td><p>Transform fitted <code>RprobitB_model</code></p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="predict.html">predict()</a></code> </p>
+          <p><code><a href="transform_gibbs_samples.html">transform_gibbs_samples()</a></code> </p>
         </td>
-        <td><p>Title</p></td>
+        <td><p>Transformation of Gibbs samples</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot.RprobitB_model.html">plot(<i>&lt;RprobitB_model&gt;</i>)</a></code> </p>
+          <p><code><a href="transform_parm.html">transform_parm()</a></code> </p>
         </td>
-        <td><p>Plot method for an <code>RprobitB_model</code></p></td>
+        <td><p>Transformation of true parameter values</p></td>
       </tr>
     </tbody>
     </table>
