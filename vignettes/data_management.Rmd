@@ -113,7 +113,7 @@ The function `prepare()` has the following optional arguments:
 
 ### Example: "Train" data set of the mlogit package
 
-Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit) for estimation. You can call `help(mlogit::Train)` for details on the data set. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^3]. We consider all alternatives, therefore `alternatives` does not have to be specified.
+Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit) for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects. We consider all alternatives, therefore `alternatives` does not have to be specified.
 
 ```{r, eval = FALSE}
 data("Train", package = "mlogit")
@@ -121,110 +121,5 @@ data = prepare(form = choice ~ price | 0 | time + comfort + change,
                choice_data = Train,
                re = c("price","time"))
 ```
-
-[^3]: Note that alternative specific constants are excluded here.
-
-
-## Simulated data
-
-This section explains how to simulate choice data using the function `simulate()`.
-
-If we want to simulate the choices of `N` deciders in `T` choice occasions[^4] among `J` alternatives from our model formulation `form`, we have to call
-
-```{r, eval = FALSE}
-data = simulate(form = form, N = N, T = T, J = J)
-```
-
-The function `simulate()` has the following optional arguments:
-
-- `C`: The number of true latent classes. If `re = NULL`, `C` is ignored. 
-
-- `re`: The character vector of variable names of `form` with random effects.
-
-- `alternatives`: A character vector with the names of the choice alternatives with length `J`.
-
-- `parm`: A list of true parameter values:
-
-  - `alpha`, the fixed coefficient vector
-  
-  - `C`, the number (greater or equal 1) of latent classes of decision makers
-  
-  - `s`, the vector of class weights
-  
-  - `b`, the matrix of class means as columns
-  
-  - `Omega`, the matrix of class covariance matrices as columns
-  
-  - `Sigma`, the differenced error term covariance matrix
-
-- `distr`: A named list of number generation functions from which the covariates are drawn. Each element of `distr` must be of the form `"cov" = list("name" = "<name of the number generation function>", ...)`, where `cov` is the name of the covariate[^5] and `...` are required parameters for the number generation function. Covariates for which no distribution is specified are drawn from a standard normal distribution. Possible number generation functions are
-
-  - functions of the type `r*` from base R (e.g. `rnorm`) where all required parameters (except for `n`) must be specified,
-
-  - the function `sample`, where all required parameters except for `size`) must be specified.
-
-- `standardize`: A character vector of variable names of `form` that get standardized, see [below](#standardize-covariates).
-
-[^4]: `T` can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length `N`, i.e. a decision maker specific number of choice occasions.
-
-[^5]: For a covariate `cov` of type 1 or 3, you can either choose `"name" = cov` (to draw the covariate for all alternatives from the same distribution) or `"name" = cov_alternative` (to draw the covariate for a specific alternative from a specific distribution).
-
-### Example: Simulated choice of transportation means
-
-We revisit our example of the simulated choice of transportation means, where we already specified:
-
-```{r, eval = FALSE}
-form = choice ~ cost | income | travel_time
-re = "cost"
-```
-
-Let us now simulate the choices of `N = 100` decision makers in `T = 10` choice occasions on the `J = 3` alternatives "car", "bus" and "train". We want `C = 2` true latent classes with equal weights and specific distributions[^6] for our covariates:
-
-```{r, eval = FALSE}
-N = 100
-T = 10
-J = 3
-alternatives = c("car", "bus", "train")
-parm = list("C" = 2, "s" = c(0.5,0.5))
-distr = list("cost" = list("name" = "rnorm", sd = 3),
-             "income" = list("name" =  "sample", x = (1:10)*1e3, 
-                             replace = TRUE),
-             "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
-             "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
-data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, parm = parm, distr = distr)
-```
-
-[^6]: Note that the `cost` covariate for all alternatives is drawn from the same distribution. Also note that since we did not specify a distribution for `travel_time_bus`, this covariate is drawn from a standard normal distribution.
-
-
-## Standardize covariates
-
-Both `simulate()` and `prepare()` have the optional input `standardize`, which is a character vector of names of covariates that get standardized, i.e. normalize to mean 0 and standard deviation 1. If `standardize = "all"`, all covariates get standardized.
-
-Covariates of type 1 or 3 have to be addressed by `covariate_alternative`.
-
-If `standardize = "all"`, all covariates get standardized.
-
-### Example: Simulated choice of transportation means
-
-In our example of the simulated choice of transportation means, scaling the `income` is reasonable and can improve model fitting. For demonstration purpose, we also standardize `travel_time` for each alternative:
-
-```{r, eval = FALSE}
-standardize = c("income", "travel_time_car", "travel_time_bus",
-                "travel_time_train")
-data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, parm = parm, distr = distr,
-                standardize = standardize)
-```
-
-## Data summary
-
-We can check if the data preparation or simulation worked as expected using the `summary()` function. The columns `z` and `re` indicate standardized and random effect covariates, respectively. The rest of the output is self-explanatory.
-
-```{r, eval = FALSE}
-summary(data)
-```
-
 
 
