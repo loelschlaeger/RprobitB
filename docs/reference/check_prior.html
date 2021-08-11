@@ -159,7 +159,7 @@ default values.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>prior</th>
-      <td><p>A list of parameters for the prior distributions of the normalized
+      <td><p>A named list of parameters for the prior distributions of the normalized
 parameters:</p><ul>
 <li><p><code>eta</code>:
 The mean vector of length <code>P_f</code> of the normal prior for
@@ -207,10 +207,6 @@ Inverse Wishart prior for <code>Sigma</code>.</p></li>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The checked input <code>prior</code></p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The elements of <code>prior</code> are parameters for the prior distributions
-of the normalized parameters.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'>check_prior</span><span class='op'>(</span>prior <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>1</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>

@@ -1,13 +1,14 @@
-#' Title
+#' Compute WAIC value
 #' @description
-#' Function that...
+#' Function that computes WAIC value
 #' @param gibbs_samples
-#' description
+#' A list of gibbs samples
 #' @return
-#' return value
+#' The WAIC value
 
-compute_WAIC = function(gibbs_samples) {
+compute_waic = function(gibbs_samples) {
 
+  return(NULL)
 
 
 }

@@ -10,17 +10,17 @@ compute_suff_statistics(data, scale)
 \item{data}{An object of class \code{RprobitB_data}, which can be obtained from
 \code{\link{simulate}} or \code{\link{prepare}}.}
 
-\item{scale}{A list of three elements, determining the parameter normalization with
-respect to the scale of utility:
+\item{scale}{A named list of three elements, determining the parameter normalization with
+respect to the utility scale:
 \itemize{
 \item \code{parameter}:
-either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
+Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
 \code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"})
+\code{"Sigma"}).
 \item \code{index}:
-the index of the parameter that gets fixed
+The index of the parameter that gets fixed.
 \item \code{value}:
-the value for the fixed parameter
+The value for the fixed parameter.
 }}
 }
 \value{

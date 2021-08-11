@@ -7,7 +7,7 @@
 check_prior(prior, P_f, P_r, J)
 }
 \arguments{
-\item{prior}{A list of parameters for the prior distributions of the normalized
+\item{prior}{A named list of parameters for the prior distributions of the normalized
 parameters:
 \itemize{
 \item \code{eta}:
@@ -51,10 +51,6 @@ The checked input \code{prior}
 \description{
 Function that checks the input \code{prior} and sets missing values to
 default values.
-}
-\details{
-The elements of \code{prior} are parameters for the prior distributions
-of the normalized parameters.
 }
 \examples{
 check_prior(prior = NULL, P_f = 1, P_r = 1, J = 2)

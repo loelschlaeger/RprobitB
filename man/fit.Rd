@@ -11,28 +11,28 @@ fit(
   B = R/2,
   Q = 10,
   print_progress = TRUE,
-  latent_classes = NULL,
-  prior = NULL
+  prior = NULL,
+  latent_classes = NULL
 )
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}, which can be obtained from
 \code{\link{simulate}} or \code{\link{prepare}}.}
 
-\item{scale}{A list of three elements, determining the parameter normalization with
-respect to the scale of utility:
+\item{scale}{A named list of three elements, determining the parameter normalization with
+respect to the utility scale:
 \itemize{
 \item \code{parameter}:
-either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
+Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
 \code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"})
+\code{"Sigma"}).
 \item \code{index}:
-the index of the parameter that gets fixed
+The index of the parameter that gets fixed.
 \item \code{value}:
-the value for the fixed parameter
+The value for the fixed parameter.
 }}
 
-\item{R}{The number of Gibbs sampler iterations.}
+\item{R}{The number of iterations of the Gibbs sampler.}
 
 \item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
 be discarded.}
@@ -40,32 +40,10 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{print_progress}{A boolean, determining whether to print the progress.}
+\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
+estimated remaining computation time.}
 
-\item{latent_classes}{A list of parameters specifying the number and updating scheme of latent
-classes:
-\itemize{
-\item \code{C}:
-The number (greater or equal 1) of latent classes. Set to 1 per default.
-\item \code{update}:
-A boolean, determining whether to update \code{C}.
-\item \code{Cmax}:
-The maximum number of latent classes. Ignored if \code{update = FALSE}.
-\item \code{buffer}:
-The updating buffer (number of iterations to wait before the next update).
-Ignored if \code{update = FALSE}.
-\item \code{epsmin}:
-The threshold weight for removing latent classes (between 0 and 1).
-Ignored if \code{update = FALSE}.
-\item \code{epsmax}:
-The threshold weight for splitting latent classes (between 0 and 1).
-Ignored if \code{update = FALSE}.
-\item \code{distmin}:
-The threshold difference in means for joining latent classes
-(non-negative). Ignored if \code{update = FALSE}.
-}}
-
-\item{prior}{A list of parameters for the prior distributions of the normalized
+\item{prior}{A named list of parameters for the prior distributions of the normalized
 parameters:
 \itemize{
 \item \code{eta}:
@@ -96,6 +74,29 @@ the Inverse Wishart prior for \code{Sigma}.
 The scale matrix of dimension \code{J-1} x \code{J-1} of the
 Inverse Wishart prior for \code{Sigma}.
 }}
+
+\item{latent_classes}{A list of parameters specifying the number and the updating scheme of latent
+classes:
+\itemize{
+\item \code{C}:
+The number (greater or equal 1) of latent classes. Set to 1 per default
+and is ignored if \code{P_r = 0}.
+\item \code{update}:
+A boolean, determining whether to update \code{C}. Ignored if
+\code{P_r = 0}. If \code{update = FALSE}, all of the following elements are
+ignored.
+\item \code{Cmax}:
+The maximum number of latent classes.
+\item \code{buffer}:
+The updating buffer (number of iterations to wait before the next update).
+\item \code{epsmin}:
+The threshold weight for removing latent classes (between 0 and 1).
+\item \code{epsmax}:
+The threshold weight for splitting latent classes (between 0 and 1).
+\item \code{distmin}:
+The threshold difference in means for joining latent classes
+(non-negative).
+}}
 }
 \value{
 An object of class \code{RprobitB_model}
@@ -110,26 +111,24 @@ For more details see the vignette "Model fitting":
 }
 \examples{
 \dontrun{
-### covariates with fixed effects
-data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-model = fit(data = data)
-summary(model)
+### probit model
+p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
+m1 = fit(data = p)
 
-### random effects
-data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var")
-model = fit(data = data)
-summary(model)
+### multinomial probit model
+mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3)
+m2 = fit(data = mnp)
 
-### latent classes
-data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
-                parm = list("C" = 2))
-model = fit(data = data, latent_classes = list("C" = 2))
-summary(model)
+### mixed multinomial probit model
+mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
+m3 = fit(data = mmnp)
+
+### latent classes mixed multinomial probit model
+lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
+                  parm = list("C" = 2))
+m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
 
 ### update of latent classes
-data = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 2, re = "var",
-                parm = list("C" = 2))
-model = fit(data = data, latent_classes = list("update" = TRUE))
-summary(model)
+m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE))
 }
 }
