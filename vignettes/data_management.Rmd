@@ -66,13 +66,13 @@ Say we want to explain the `choice` of transportation means by the variables `co
 
 Therefore, we specify:
 
-```{r}
+```{r, eval = FALSE}
 form = choice ~ cost | income | travel_time
 ```
 
 We typically would expect heterogeneity in preferences regarding spending money on a transportation means, therefore we impose a random effect on `cost`:
 
-```{r}
+```{r, eval = FALSE}
 re = "cost"
 ```
 
