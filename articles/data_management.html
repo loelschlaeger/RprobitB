@@ -177,13 +177,15 @@
 <div id="example-train-data-set-of-the-mlogit-package" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example-train-data-set-of-the-mlogit-package" class="anchor"></a>Example: Train data set of the mlogit package</h3>
-<p>Let’s prepare the <em>Train</em> data set of the for estimation. We consider the covariates <code>price</code> (type 1), <code>time</code>, <code>comfort</code> and <code>change</code> (each of type 3), where we link <code>price</code> and <code>time</code> to random effects. We consider all alternatives, therefore <code>alternatives</code> does not have to be specified.</p>
+<p>Let’s prepare the <em>Train</em> data set of the<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for estimation. We consider the covariates <code>price</code> (type 1), <code>time</code>, <code>comfort</code> and <code>change</code> (each of type 3), where we link <code>price</code> and <code>time</code> to random effects<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. We consider all alternatives, therefore <code>alternatives</code> does not have to be specified.</p>
 </div>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
 <li id="fn1"><p>Alternative specific constants can be interpreted as covariates of type 2. Due to the dummy variable trap, we cannot estimate alternative specific constants for all the alternatives. Therefore, they are added for all except for the last alternative.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Call for details.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Note that alternative specific constants are excluded here.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
