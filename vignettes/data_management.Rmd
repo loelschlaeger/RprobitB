@@ -16,5 +16,43 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette explains how to provide choice data for **RprobitB**. We can either
+
+1. [use empirical data](#empirical-data) or
+
+2. [simulate data](#simulated-data).
+
+As a first step, we recommend to [specify the model formula](#specify-the-model-formula).
+
+
+## Specify the model formula
+
+The model formula is specified using a formula object, let's call it `form`.
+
+The structure of `form` is `choice ~ A | B | C`, where
+
+- `choice` is the discrete choice we aim to explain,
+
+- `A` are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),
+
+- `B` are choice situation specific covariates with alternative specific coefficients (we call them covariates of type 2),
+
+- and `C` are alternative and choice situation specific covariates with
+alternative specific coefficients (we call them covariates of type 3).
+
+Keep the following rules in mind:
+
+- By default, alternative specific constants are added to the model[^1]. They can be removed by adding `+0` in the second spot, e.g. `choice ~ A | B + 0`.
+
+- To exclude covariates of the backmost categories, use either `0`, e.g. `choice ~ A | B | 0` or just leave this part out and write `choice ~ A | B `. However, to exclude covariates of front categories, we have to use `0`, e.g. `choice ~ A | 0 | C`. 
+
+- To include more than one covariate of the same category, use `+`, e.g. `choice ~ A1 + A2 | B`.
+
+- If we don't want to include any covariates of the second category but we want to estimate alternative specific constants, add `1` in the second spot, e.g. `choice ~ A | 1`. The expression `choice ~ A | 0` is interpreted as no covariates of the second category and no alternative specific constants.
+
+To have random effects for specific variables, we need to define a character vector `re` of the corresponding variable names. To have random effects for the alternative specific constants, include `"ASC"` in `re`.
+
+[^1]: Alternative specific constants can be interpreted as covariates of type 2. Due to the dummy variable trap, we cannot estimate alternative specific constants for all the alternatives. Therefore, they are added for all except for the last alternative.
+
 
 
