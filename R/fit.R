@@ -20,7 +20,7 @@
 #' @inheritParams check_latent_classes
 #' @inheritParams check_prior
 #' @return
-#' An object of class \code{RprobitB_model}
+#' An object of class \code{RprobitB_model}.
 #' @examples
 #' \dontrun{
 #' ### probit model
@@ -35,9 +35,9 @@
 #' mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
 #' m3 = fit(data = mmnp)
 #'
-#' ### latent classes mixed multinomial probit model
-#' lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
-#'                   parm = list("C" = 2))
+#' ### mixed multinomial probit model with 2 latent classes
+#' lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+#'                   re = "var", parm = list("C" = 2))
 #' m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
 #'
 #' ### update of latent classes
@@ -66,7 +66,8 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics
-  suff_statistics = compute_suff_statistics(data = data, scale = scale)
+  sufficient_statistics = compute_sufficient_statistics(data = data,
+                                                        scale = scale)
 
   ### set initial values for the Gibbs sampler
   init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
@@ -76,7 +77,7 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   gibbs_samples = gibbs_sampling(
     R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
     P_f = data$P_f, P_r = data$P_r, latent_classes = latent_classes,
-    suff_statistics = suff_statistics, prior = prior, init = init)
+    sufficient_statistics = sufficient_statistics, prior = prior, init = init)
 
   ### normalize, burn and thin 'gibbs_samples'
   gibbs_samples = transform_gibbs_samples(
@@ -86,7 +87,7 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   data$parm = transform_parm(parm = data$parm, scale = scale)
 
   ### compute statistics from 'gibbs_samples'
-  statistics = compute_statistics(
+  statistics = compute_parameter_statistics(
     gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
     C = latent_classes$C)
 
