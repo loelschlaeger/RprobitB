@@ -1,6 +1,6 @@
-#' Compute statistics
+#' Compute parameter statistics.
 #' @description
-#' Function that computes statistics from the Gibbs samples.
+#' This function computes parameter statistics of the Gibbs samples.
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}, i.e. the output of
 #' \code{\link{transform_gibbs_samples}}.
@@ -8,19 +8,23 @@
 #' @param C
 #' The number (greater or equal 1) of latent classes.
 #' @return
-#' A list of statistics from the Gibbs samples for each model parameter
-#' \code{alpha}, \code{s}, \code{b}, \code{Omega}, \code{Sigma} with:
+#' An object of class \code{RprobitB_parameter_statistics}, which is a list of
 #' \itemize{
-#'   \item the parameter indices as rows
-#'   \item \code{mean}, standard deviation \code{sd}, Tukey's
-#'         five number summary obtained from \code{\link[stats]{fivenum}} (i.e.
-#'         minimum \code{min}, lower-hinge \code{q.25}, \code{median},
-#'         upper-hinge \code{q.75}, maximum \code{max}), Gelman-Rubin
-#'         statistic \code{R_hat} as columns
+#'   \item A list of statistics from the Gibbs samples for each model parameter
+#'         \code{alpha}, \code{s}, \code{b}, \code{Omega}, \code{Sigma} with:
+#'         \itemize{
+#'           \item the parameter indices as rows
+#'           \item \code{mean}, standard deviation \code{sd}, Tukey's
+#'                 five number summary obtained from
+#'                 \code{\link[stats]{fivenum}} (i.e. minimum \code{min},
+#'                 lower-hinge \code{q.25}, \code{median},
+#'                 upper-hinge \code{q.75}, maximum \code{max}), and the
+#'                 Gelman-Rubin statistic \code{R_hat} as columns
+#'                 }
+#'   \item \code{C_est}, the estimated number of latent classes.
 #' }
-#' Appended is the element \code{C_est}, the estimated number of latent classes.
 
-compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
+compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
   ### determine estimated number of latent classes
   last_s_draw =
@@ -76,7 +80,7 @@ compute_statistics = function(gibbs_samples, P_f, P_r, J, C) {
   statistics[["C_est"]] = C_est
 
   ### add class to 'statistics'
-  class(statistics) = "RprobitB_statistics"
+  class(statistics) = "RprobitB_parameter_statistics"
 
   ### return 'statistics'
   return(statistics)
