@@ -24,7 +24,7 @@ RprobitB_model = function(RprobitB_data, scale, R, B, Q, latent_classes, prior,
   stopifnot(inherits(latent_classes,"RprobitB_latent_classes"))
   stopifnot(inherits(prior,"RprobitB_prior"))
   stopifnot(inherits(gibbs_samples,"RprobitB_gibbs_samples"))
-  stopifnot(inherits(statistics,"RprobitB_statistics"))
+  stopifnot(inherits(statistics,"RprobitB_parameter_statistics"))
 
   ### create object of class "RprobitB_model"
   out = list("RprobitB_data"  = RprobitB_data,
