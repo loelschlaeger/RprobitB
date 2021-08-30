@@ -204,11 +204,6 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
     data[[n]][["y"]] = data_n[[choice]]
   }
 
-  ### create cov_fix and cov_random
-  cov_names = colnames(data[[1]][["X"]][[1]])
-  cov_fix = cov_names[which(!gsub("_.*$","",cov_names) %in% re)]
-  cov_random = cov_names[which(gsub("_.*$","",cov_names) %in% re)]
-
   ### create RprobitB_data object
   out = RprobitB_data(data         = data,
                       choice_data  = choice_data,
@@ -218,8 +213,6 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
                       P_f          = length(cov_fix),
                       P_r          = length(cov_random),
                       alternatives = alternatives,
-                      cov_fix      = cov_fix,
-                      cov_random   = cov_random,
                       form         = form,
                       re           = re,
                       vars         = vars,

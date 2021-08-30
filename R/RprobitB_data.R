@@ -24,12 +24,6 @@
 #' The number of covariates connected to a random coefficient (can be 0).
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
-#' @param cov_fix
-#' A character vector with the names of the covariates that are connected to a
-#' fixed coefficient.
-#' @param cov_random
-#' A character vector with the names of the covariates that are connected to a
-#' random coefficient.
 #' @param form
 #' A formula object that is used to specify the probit model.
 #' The structure is \code{choice ~ A | B | C}, where
@@ -65,14 +59,23 @@
 #' @inheritParams check_parm
 #' @inheritParams simulate
 #' @return
-#' An object of class \code{RprobitB_data}, i.e. a list with the arguments of
-#' this function as elements.
+#' An object of class \code{RprobitB_data}, which is a list of
+#' \itemize{
+#'   \item the arguments of this functions as elements, and
+#'   \item the element \code{covs}, which is a data frame of the two
+#'   columns \code{name} (the covariate names) and \code{random} (a boolean
+#'   determining whether the covariates are random effects).
+#' }
+#'
+#' list of the arguments
+#' of this function and the element \code{covs}, which is a data frame
+#' containing the parameter names.
 #' In case of empirical data, the elements \code{parm} and \code{distr} equal
 #' \code{NULL}.
 
 RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                         cov_fix, cov_random, form, re, vars, ASC, standardize,
-                         simulated, parm, distr){
+                         form, re, vars, ASC, standardize, simulated, parm,
+                         distr){
 
   ### check inputs
   stopifnot(is.list(data))
@@ -82,12 +85,17 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.numeric(J), J%%1 == 0)
   stopifnot(is.numeric(P_f), P_f%%1 == 0)
   stopifnot(is.numeric(P_r), P_r%%1 == 0)
-  stopifnot(Vectorize(is.character)(c(cov_fix,cov_random,standardize)))
   stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))
   stopifnot(is.null(re) || is.character(re))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(ASC))
+
+  ### create data frame of covariate names
+  cov_names = colnames(data[[1]][["X"]][[1]])
+  covs = data.frame("names" = colnames(data[[1]][["X"]][[1]]),
+                    "random" = FALSE)
+  covs[which(gsub("_.*$","",cov_names) %in% re),"random"] = TRUE
 
   ### create object of class "RprobitB_data"
   out = list("data"         = data,
@@ -98,8 +106,7 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
              "P_f"          = P_f,
              "P_r"          = P_r,
              "alternatives" = alternatives,
-             "cov_fix"      = cov_fix,
-             "cov_random"   = cov_random,
+             "covs"         = covs,
              "form"         = form,
              "re"           = re,
              "vars"         = vars,

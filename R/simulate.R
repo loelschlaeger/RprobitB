@@ -283,11 +283,6 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   ### difference 'Sigma' in 'parm'
   parm$Sigma = Delta(J) %*% parm$Sigma %*% t(Delta(J))
 
-  ### create cov_fix and cov_random
-  cov_names = colnames(data[[1]][["X"]][[1]])
-  cov_fix = cov_names[which(!gsub("_.*$","",cov_names) %in% re)]
-  cov_random = cov_names[which(gsub("_.*$","",cov_names) %in% re)]
-
   ### create RprobitB_data object
   out = RprobitB_data(data         = data,
                       choice_data  = choice_data,
@@ -297,8 +292,6 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
                       P_f          = P_f,
                       P_r          = P_r,
                       alternatives = alternatives,
-                      cov_fix      = cov_fix,
-                      cov_random   = cov_random,
                       form         = form,
                       re           = re,
                       vars         = vars,
