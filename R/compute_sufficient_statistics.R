@@ -10,9 +10,9 @@
 #' scale = check_scale(scale = NULL, P_f = 2, J = 3)
 #' compute_suff_statistics(data = data, scale = scale)
 #' @return
-#' A list of sufficient statistics
+#' A list of sufficient statistics.
 
-compute_suff_statistics = function(data, scale){
+compute_sufficient_statistics = function(data, scale){
 
   ### check input
   if(!inherits(data, "RprobitB_data"))
