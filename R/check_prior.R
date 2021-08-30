@@ -1,6 +1,6 @@
-#' Check \code{prior}
+#' Check \code{prior}.
 #' @description
-#' Function that checks the input \code{prior} and sets missing values to
+#' This function checks the input \code{prior} and sets missing values to
 #' default values.
 #' @param prior
 #' A named list of parameters for the prior distributions of the normalized
