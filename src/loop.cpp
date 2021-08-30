@@ -394,8 +394,8 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' Function to perform Gibbs sampling for the LCMMNP model
 //' @inheritParams fit
 //' @inheritParams RprobitB_data
-//' @param suff_statistics
-//' The output of \code{\link{compute_suff_statistics}}.
+//' @param sufficient_statistics
+//' The output of \code{\link{compute_sufficient_statistics}}.
 //' @param init
 //' The output of \code{\link{set_init}}.
 //' @return
@@ -404,7 +404,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,
                      int N, int J, int P_f, int P_r, List latent_classes,
-                     List suff_statistics, List prior, List init) {
+                     List sufficient_statistics, List prior, List init) {
 
   // extract 'latent_classes' parameters
   int C = as<int>(latent_classes["C"]);
@@ -427,21 +427,21 @@ List gibbs_sampling (int R, int B, bool print_progress,
     distmin = as<double>(latent_classes["distmin"]);
   }
 
-  // extract 'suff_statistics' parameters
-  vec Tvec = as<vec>(suff_statistics["Tvec"]);
-  vec csTvec = as<vec>(suff_statistics["csTvec"]);
+  // extract 'sufficient_statistics' parameters
+  vec Tvec = as<vec>(sufficient_statistics["Tvec"]);
+  vec csTvec = as<vec>(sufficient_statistics["csTvec"]);
   List W;
   List X;
-  mat y = as<mat>(suff_statistics["y"]);
+  mat y = as<mat>(sufficient_statistics["y"]);
   mat WkW;
   List XkX;
   if(P_f>0){
-    W = as<List>(suff_statistics["W"]);
-    WkW = as<mat>(suff_statistics["WkW"]);
+    W = as<List>(sufficient_statistics["W"]);
+    WkW = as<mat>(sufficient_statistics["WkW"]);
   }
   if(P_r>0){
-    X = as<List>(suff_statistics["X"]);
-    XkX = as<List>(suff_statistics["XkX"]);
+    X = as<List>(sufficient_statistics["X"]);
+    XkX = as<List>(sufficient_statistics["XkX"]);
   }
 
   // extract 'prior' parameters
