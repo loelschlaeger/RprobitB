@@ -28,7 +28,7 @@ print.summary.RprobitB_model = function(x, ...) {
   cat("\n")
 
   ### legend of alternatives
-  cat("Legend of alternatives:\n")
+  cat("Legend of alternatives (Sigma):\n")
   for(i in seq_len(x$J)) cat("-",paste0(i,":"),x$alternatives[i],"\n")
   cat("\n")
 
@@ -43,6 +43,12 @@ print.summary.RprobitB_model = function(x, ...) {
   if(x$P_r>0){
     cat("Random effects (b, Omega):\n")
     for(i in seq_len(x$P_r)) cat("-",paste0(i,":"),x$cov_random[i],"\n")
+    cat("\n")
+  }
+
+  ### legend latent classes
+  if(x$P_r>0){
+    cat("Latent classes (s):\n")
     cat("\n")
   }
 
