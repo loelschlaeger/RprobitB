@@ -54,7 +54,7 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL) {
     scale = scale)
 
   ### compute statistics from Gibbs samples
-  statistics = compute_statistics(
+  statistics = compute_parameter_statistics(
     gibbs_samples = gibbs_samples, P_f = model$RprobitB_data$P_f,
     P_r = model$RprobitB_data$P_r, J = model$RprobitB_data$J,
     C = model$latent_classes$C)
