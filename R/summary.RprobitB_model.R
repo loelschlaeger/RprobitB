@@ -1,6 +1,6 @@
 #' Summary method for \code{RprobitB_model}
 #' @param object
-#' An object of class \code{RprobitB_model}
+#' An object of class \code{RprobitB_model}.
 #' @param ...
 #' ignored
 #' @export
