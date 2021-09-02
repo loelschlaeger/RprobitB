@@ -1,9 +1,9 @@
-#' Prepare empirical choice data
+#' Prepare empirical choice data.
 #' @description
-#' Function that prepares empirical choice data for the RprobitB package.
+#' This function prepares empirical choice data for the RprobitB package.
 #' @details
 #' For more details see the vignette "Data management":
-#' \code{vignette("data_management", package = "RprobitB")}
+#' \code{vignette("data_management", package = "RprobitB")}.
 #' @param choice_data
 #' A data frame of choice data in "wide" format (i.e. each row represents
 #' one choice occasion) with the following requirements:
@@ -22,7 +22,7 @@
 #' unique identifier for each decision maker. The default is \code{"id"}.
 #' @inheritParams RprobitB_data
 #' @return
-#' An object of class \code{RprobitB_data}
+#' An object of class \code{RprobitB_data}.
 #' @examples
 #' data("Train", package = "mlogit")
 #' data = prepare(form = choice ~ price | 0 | time + comfort + change,
