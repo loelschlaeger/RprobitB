@@ -1,4 +1,4 @@
-#' Check \code{parm}
+#' Check \code{parm}.
 #' @description
 #' Function that checks \code{parm} and draws missing parameter values.
 #' @param parm
