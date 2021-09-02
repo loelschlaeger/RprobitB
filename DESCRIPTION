@@ -23,10 +23,12 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 Suggests: 
-    knitr, 
+    knitr,
     rmarkdown,
-    mlogit
+    mlogit,
+    testthat (>= 3.0.0)
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
+Config/testthat/edition: 3
