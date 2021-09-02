@@ -34,12 +34,18 @@
 prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
                    standardize = NULL){
 
-  ### check input
-  if(!inherits(form,"formula"))
-    stop("'form' must be of class 'formula'.")
-  choice = all.vars(form)[1]
+  ### check 'form'
+  check_form_out = check_form(form = form, re = re)
+  choice = check_form_out$choice
+  re = check_form_out$re
+  vars = check_form_out$vars
+  ASC = check_form_out$ASC
+
+  ### check other inputs
   if(!is.data.frame(choice_data))
     stop("'choice_data' must be a data frame.")
+  if(!(is.character(id) && length(id) == 1))
+    stop("'id' must be a character.")
   if(!id %in% colnames(choice_data))
     stop(paste0("Identification column '",id,"' not found in 'choice_data'."))
   if(!choice %in% colnames(choice_data))
@@ -47,9 +53,6 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   if(!is.null(alternatives))
     if(!is.character(alternatives))
       stop("'alternatives' must be a character (vector).")
-  if(!is.null(re))
-    if(!is.character(re))
-      stop("'re' must be a character (vector).")
   if(!is.null(standardize))
     if(!is.character(standardize))
       stop("'standardize' must be a character (vector).")
@@ -65,20 +68,6 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   choice_data[,id] = as.numeric(factor(choice_data[,id],
                                        levels=unique(choice_data[,id])))
 
-  ### compute number of decision makers and choice occasions
-  N = length(unique(choice_data[,id]))
-  T = as.numeric(table(choice_data[,id]))
-
-  ### read 'form' and check 're'
-  vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
-  while(length(vars)<3) vars = c(vars,NA)
-  vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
-  ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
-  for(i in 1:3) vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
-  if(!all(re %in% c("ASC",unlist(vars))))
-    stop("The following elements in 're' are not part of 'form': ",
-         paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
-
   ### identify / filter, sort and count alternatives
   if(is.null(alternatives)){
     alternatives = as.character(unique(choice_data[[choice]]))
@@ -92,6 +81,16 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   if(J <= 1)
     stop("At least two alternatives are required.")
 
+  ### compute number of linear coefficients
+  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
+                                            re = re)
+  P_f = P$P_f
+  P_r = P$P_r
+
+  ### compute number of decision makers and choice occasions
+  N = length(unique(choice_data[,id]))
+  T = as.numeric(table(choice_data[,id]))
+
   ### decode choices to numeric (sorted alphabetically)
   choice_data[[choice]] = as.character(choice_data[[choice]])
   for(i in 1:J)
@@ -99,7 +98,8 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   choice_data[[choice]] = as.numeric(choice_data[[choice]])
 
   ### add ASCs (for all but the last alternative)
-  if(ASC) choice_data$ASC = 1
+  if(ASC)
+    choice_data$ASC = 1
 
   ### if 'standardize = all', add all covariates
   if(length(standardize) == 1)
@@ -210,8 +210,8 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
                       N            = N,
                       T            = T,
                       J            = J,
-                      P_f          = length(cov_fix),
-                      P_r          = length(cov_random),
+                      P_f          = P_f,
+                      P_r          = P_r,
                       alternatives = alternatives,
                       form         = form,
                       re           = re,

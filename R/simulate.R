@@ -1,14 +1,16 @@
-#' Simulate choice data
+#' Simulate choice data.
 #' @description
-#' Function that simulates choice data for the RprobitB package.
+#' This function simulates choice data for the RprobitB package.
 #' @details
 #' For more details see the vignette "Data management":
-#' \code{vignette("data_management", package = "RprobitB")}
+#' \code{vignette("data_management", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
 #' @inheritParams check_parm
 #' @inheritParams check_distr
+#' @param seed
+#' Set a seed for the simulation.
 #' @return
-#' An object of class \code{RprobitB_data}
+#' An object of class \code{RprobitB_data}.
 #' @examples
 #' form = choice ~ cost | income | travel_time
 #' re = "cost"
@@ -29,23 +31,25 @@
 #'                 standardize = standardize)
 #' @export
 
-simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
-                    parm = NULL, distr = NULL, standardize = NULL) {
+simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
+                    distr = NULL, standardize = NULL, seed = NULL) {
 
-  ### check input
-  if(!inherits(form,"formula"))
-    stop("'form' must be of class 'formula'.")
+  ### check 'form'
+  check_form_out = check_form(form = form, re = re)
+  choice = check_form_out$choice
+  re = check_form_out$re
+  vars = check_form_out$vars
+  ASC = check_form_out$ASC
+
+  ### check other inputs
   if(!is.numeric(N) || N%%1!=0)
     stop("'N' must be a non-negative number.")
-  if(length(T)==1) T = rep(T,N)
+  if(length(T)==1)
+    T = rep(T,N)
   if(any(!is.numeric(T)) || any(T%%1!=0))
-    stop("'T' must be a non-negative number or a vector of non-negative
-         numbers.")
-  if(!is.numeric(J) || J%%1!=0)
-    stop("'J' must be a non-negative number.")
-  if(!is.null(re))
-    if(!is.character(re))
-      stop("'re' must be a character (vector).")
+    stop("'T' must be a non-negative number or a vector of non-negative numbers.")
+  if(!is.numeric(J) || J%%1!=0 || !J>=2)
+    stop("'J' must be a number greater or equal 2.")
   if(is.null(alternatives))
     alternatives = LETTERS[1:J]
   if(length(alternatives) != J || !is.character(alternatives))
@@ -59,25 +63,9 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     if(!is.character(standardize))
       stop("'standardize' must be a character (vector).")
 
-  ### read formula and check 're'
-  vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
-  while(length(vars)<3) vars = c(vars,NA)
-  vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
-  ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
-  for(i in 1:3) vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
-  if(!all(re %in% c("ASC",unlist(vars))))
-    stop("The following elements in 're' are not part of 'form': ",
-         paste(re[!(re %in% c("ASC",unlist(vars)))],collapse = ", "))
-
-  ### determine numbers P_f and P_r
-  P_f_plus_P_r = length(vars[[1]]) + (length(vars[[2]]) + ASC) * (J-1) +
-    length(vars[[3]]) * J
-  P_r = sum(re %in% vars[[1]]) +
-    (sum(re %in% vars[[2]]) + "ASC" %in% re) * (J-1) +
-    sum(re %in% vars[[3]]) * J
-  P_f = P_f_plus_P_r - P_r
-
   ### draw covariates
+  if(!is.null(seed))
+    set.seed(seed)
   choice_data = data.frame("id" = rep(1:N,times=T))
   for(var in c(vars[[1]],vars[[3]])){
     if(var %in% names(distr)){
@@ -116,7 +104,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### add ASCs (for all but the last alternative)
-  if(ASC) choice_data$ASC = 1
+  if(ASC)
+    choice_data$ASC = 1
 
   ### if 'standardize = all', add all covariates
   if(length(standardize) == 1)
@@ -142,6 +131,12 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
         }
       }
   }
+
+  ### compute number of linear coefficients
+  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
+                                            re = re)
+  P_f = P$P_f
+  P_r = P$P_r
 
   ### check and read parm
   parm = check_parm(parm = parm, P_f = P_f, P_r = P_r, J = J)
