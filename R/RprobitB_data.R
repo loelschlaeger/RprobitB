@@ -24,29 +24,10 @@
 #' The number of covariates connected to a random coefficient (can be 0).
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
-#' @param form
-#' A formula object that is used to specify the probit model.
-#' The structure is \code{choice ~ A | B | C}, where
-#' \itemize{
-#'   \item \code{A} are alternative and choice situation specific covariates
-#'   with a generic coefficient,
-#'   \item \code{B} are choice situation specific covariates with alternative
-#'   specific coefficients,
-#'   \item and \code{C} are alternative and choice situation specific covariates
-#'   with alternative specific coefficients.
-#' }
-#' By default, alternative specific constants are added to the model (for all
-#' except for the last alternative).
-#' They can be removed by adding \code{+0} in the second spot.
-#' @param re
-#' A character vector of variable names of \code{form} with random effects.
-#' To have random effects for the alternative specific constants, include
-#' \code{"ASC"} in \code{re}.
 #' @param vars
-#' A list of length three, containing the three different covariate types of
-#' \code{form}.
+#' The element \code{vars} in the output of \link{check_form}.
 #' @param ASC
-#' A boolean, determining whether alternative specific constants are included.
+#' A boolean, determining whether the model has ASCs.
 #' @param standardize
 #' A character vector of names of covariates that get standardized.
 #' Covariates of type 1 or 3 have to be addressed by
@@ -55,6 +36,7 @@
 #' @param simulated
 #' A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 #' \code{data} is empirical.
+#' @inheritParams check_form
 #' @inheritParams prepare
 #' @inheritParams check_parm
 #' @inheritParams simulate
