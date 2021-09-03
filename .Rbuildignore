@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 sticker/
-load_RprobitB.R
 README.html
 LICENSE
 ^\.github$
