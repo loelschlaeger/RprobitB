@@ -7,8 +7,7 @@
 compute_sufficient_statistics(data, scale)
 }
 \arguments{
-\item{data}{An object of class \code{RprobitB_data}, which can be obtained from
-\code{\link{simulate}} or \code{\link{prepare}}.}
+\item{data}{An object of class \code{RprobitB_data}.}
 
 \item{scale}{A named list of three elements, determining the parameter normalization with
 respect to the utility scale:

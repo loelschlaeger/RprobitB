@@ -1,7 +1,7 @@
 #' Construct object of class \code{RprobitB_model}
 #' @description
 #' Function that constructs an object of class \code{RprobitB_model}.
-#' @param RprobitB_data
+#' @param data
 #' description
 #' @inheritParams fit
 #' @param gibbs_samples
@@ -12,11 +12,11 @@
 #' An object of class \code{RprobitB_model}, i.e. a list with the arguments of
 #' this function as elements.
 
-RprobitB_model = function(RprobitB_data, scale, R, B, Q, latent_classes, prior,
+RprobitB_model = function(data, scale, R, B, Q, latent_classes, prior,
                           gibbs_samples, statistics) {
 
   ### check inputs
-  stopifnot(inherits(RprobitB_data,"RprobitB_data"))
+  stopifnot(inherits(data,"RprobitB_data"))
   stopifnot(is.list(scale))
   stopifnot(is.numeric(R), R%%1 == 0, R>0)
   stopifnot(is.numeric(B), B%%1 == 0, B>0)
@@ -27,7 +27,7 @@ RprobitB_model = function(RprobitB_data, scale, R, B, Q, latent_classes, prior,
   stopifnot(inherits(statistics,"RprobitB_parameter_statistics"))
 
   ### create object of class "RprobitB_model"
-  out = list("RprobitB_data"  = RprobitB_data,
+  out = list("data"  = data,
              "scale"          = scale,
              "R"              = R,
              "B"              = B,

@@ -19,8 +19,8 @@ RprobitB_data(
   ASC,
   standardize,
   simulated,
-  parm,
-  distr
+  distr,
+  true_parameter
 )
 }
 \arguments{
@@ -41,10 +41,12 @@ one choice occasion) with the following requirements:
 decision maker) and \code{choice} (the chosen alternatives), where
 \code{choice} is the name of the dependent variable in \code{form}.
 \item For each alternative specific covariate \emph{p} (covariate of type 1 or
-3) in \code{form} and each choice alternative \emph{j}, \code{choice_data}
-must contain a column named \emph{p_j}.
-\item For each covariate \emph{q} that is constant across covariates (covariate
-of type 2), \code{choice_data} must contain a column named \emph{q}.
+3) in \code{form} and each choice alternative \emph{j} in
+\code{alternatives}, \code{choice_data} must contain a column named
+\emph{p_j}.
+\item For each covariate \emph{q} in \code{form} that is constant across
+covariates (covariate of type 2), \code{choice_data} must contain a
+column named \emph{q}.
 }}
 
 \item{N}{The number (greater or equal 1) of decision makers.}
@@ -94,27 +96,6 @@ If \code{standardize = "all"}, all covariates get standardized.}
 \item{simulated}{A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 \code{data} is empirical.}
 
-\item{parm}{A named list of true parameter values:
-\itemize{
-\item \code{alpha}:
-The fixed coefficient vector of length \code{P_f}.
-\item \code{C:}
-The number (greater or equal 1) of latent classes of decision makers.
-If \code{P_r = 0}, then \code{C} is ignored.
-\item \code{s}:
-The vector of class weights of length \code{C}.
-\item \code{b}:
-The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-\item \code{Omega}:
-The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-\item \code{Sigma}:
-The error term covariance matrix of dimension \code{J} x \code{J}.
-Internally, \code{Sigma} gets differenced with respect to alternative
-\code{J}, so it becomes a covariance matrix of dimension
-\code{J-1} x \code{J-1}.
-}}
-
 \item{distr}{A named list of number generation functions from which the covariates are
 drawn. Each element of \code{distr} must be of the form
 \code{"cov" = list("name" = "<name of the number generation function>", ...)},
@@ -146,5 +127,5 @@ In case of empirical data, the elements \code{parm} and \code{distr} equal
 \code{NULL}.
 }
 \description{
-Function that constructs an object of class \code{RprobitB_data}.
+This function constructs an object of class \code{RprobitB_data}.
 }

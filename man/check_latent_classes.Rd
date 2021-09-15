@@ -2,7 +2,7 @@
 % Please edit documentation in R/checks.R
 \name{check_latent_classes}
 \alias{check_latent_classes}
-\title{Check \code{latent_classes}}
+\title{Check \code{latent_classes}.}
 \usage{
 check_latent_classes(latent_classes)
 }

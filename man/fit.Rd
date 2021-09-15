@@ -12,12 +12,12 @@ fit(
   Q = 10,
   print_progress = TRUE,
   prior = NULL,
-  latent_classes = NULL
+  latent_classes = NULL,
+  seed = NULL
 )
 }
 \arguments{
-\item{data}{An object of class \code{RprobitB_data}, which can be obtained from
-\code{\link{simulate}} or \code{\link{prepare}}.}
+\item{data}{An object of class \code{RprobitB_data}.}
 
 \item{scale}{A named list of three elements, determining the parameter normalization with
 respect to the utility scale:
@@ -97,6 +97,8 @@ The threshold weight for splitting latent classes (between 0 and 1).
 The threshold difference in means for joining latent classes
 (non-negative).
 }}
+
+\item{seed}{Set a seed for the Gibbs sampling.}
 }
 \value{
 An object of class \code{RprobitB_model}.
@@ -112,23 +114,24 @@ For more details see the vignette "Model fitting":
 \examples{
 \dontrun{
 ### probit model
-p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-m1 = fit(data = p)
+p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
+m1 = fit(data = p, seed = 1)
 
 ### multinomial probit model
-mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3)
-m2 = fit(data = mnp)
+mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
+m2 = fit(data = mnp, seed = 1)
 
 ### mixed multinomial probit model
-mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
-m3 = fit(data = mmnp)
+mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
+                seed = 1)
+m3 = fit(data = mmnp, seed = 1)
 
 ### mixed multinomial probit model with 2 latent classes
 lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-                  re = "var", parm = list("C" = 2))
-m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
+                  re = "var", seed = 1, C = 2)
+m4 = fit(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 
 ### update of latent classes
-m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE))
+m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
 }
 }

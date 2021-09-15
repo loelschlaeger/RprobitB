@@ -2,9 +2,8 @@
 #' @description
 #' Function that computes sufficient statistics for estimation.
 #' @param data
-#' An object of class \code{RprobitB_data}, which can be obtained from
-#' \code{\link{simulate}} or \code{\link{prepare}}.
-#' @inheritParams check_scale
+#' An object of class \code{RprobitB_data}.
+#' @inheritParams RprobitB_scale
 #' @examples
 #' data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
 #' scale = check_scale(scale = NULL, P_f = 2, J = 3)
@@ -18,7 +17,7 @@ compute_sufficient_statistics = function(data, scale){
   if(!inherits(data, "RprobitB_data"))
     stop("'data' must be of class 'RprobitB_data'.")
   if(!inherits(scale, "RprobitB_scale"))
-    stop("'data' must be of class 'RprobitB_scale'.")
+    stop("'scale' must be of class 'RprobitB_scale'.")
 
   ### extract parameters
   N = data$N

@@ -21,10 +21,12 @@ one choice occasion) with the following requirements:
 decision maker) and \code{choice} (the chosen alternatives), where
 \code{choice} is the name of the dependent variable in \code{form}.
 \item For each alternative specific covariate \emph{p} (covariate of type 1 or
-3) in \code{form} and each choice alternative \emph{j}, \code{choice_data}
-must contain a column named \emph{p_j}.
-\item For each covariate \emph{q} that is constant across covariates (covariate
-of type 2), \code{choice_data} must contain a column named \emph{q}.
+3) in \code{form} and each choice alternative \emph{j} in
+\code{alternatives}, \code{choice_data} must contain a column named
+\emph{p_j}.
+\item For each covariate \emph{q} in \code{form} that is constant across
+covariates (covariate of type 2), \code{choice_data} must contain a
+column named \emph{q}.
 }}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}

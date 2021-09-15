@@ -1,4 +1,4 @@
-compute_loglikelihood = function() {
+compute_loglikelihood = function(RprobitB_model) {
 
 
 }

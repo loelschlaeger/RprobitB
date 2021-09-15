@@ -1,6 +1,6 @@
 #' Construct object of class \code{RprobitB_data}
 #' @description
-#' Function that constructs an object of class \code{RprobitB_data}.
+#' This function constructs an object of class \code{RprobitB_data}.
 #' @param data
 #' A list with the choice data.
 #' The list has \code{N} elements.
@@ -38,8 +38,9 @@
 #' \code{data} is empirical.
 #' @inheritParams check_form
 #' @inheritParams prepare
-#' @inheritParams check_parm
 #' @inheritParams simulate
+#' @inheritParams true_parameter
+#' An object of class \code{RprobitB_parameters} of true model parameters.
 #' @return
 #' An object of class \code{RprobitB_data}, which is a list of
 #' \itemize{
@@ -56,8 +57,8 @@
 #' \code{NULL}.
 
 RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                         form, re, vars, ASC, standardize, simulated, parm,
-                         distr){
+                         form, re, vars, ASC, standardize, simulated, distr,
+                         true_parameter){
 
   ### check inputs
   stopifnot(is.list(data))
@@ -80,23 +81,23 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   covs[which(gsub("_.*$","",cov_names) %in% re),"random"] = TRUE
 
   ### create object of class "RprobitB_data"
-  out = list("data"         = data,
-             "choice_data"  = choice_data,
-             "N"            = N,
-             "T"            = T,
-             "J"            = J,
-             "P_f"          = P_f,
-             "P_r"          = P_r,
-             "alternatives" = alternatives,
-             "covs"         = covs,
-             "form"         = form,
-             "re"           = re,
-             "vars"         = vars,
-             "ASC"          = ASC,
-             "standardize"  = standardize,
-             "simulated"    = simulated,
-             "parm"         = parm,
-             "distr"        = distr)
+  out = list("data"           = data,
+             "choice_data"    = choice_data,
+             "N"              = N,
+             "T"              = T,
+             "J"              = J,
+             "P_f"            = P_f,
+             "P_r"            = P_r,
+             "alternatives"   = alternatives,
+             "covs"           = covs,
+             "form"           = form,
+             "re"             = re,
+             "vars"           = vars,
+             "ASC"            = ASC,
+             "standardize"    = standardize,
+             "simulated"      = simulated,
+             "distr"          = distr,
+             "true_parameter" = true_parameter)
   class(out) = "RprobitB_data"
 
   ### return object

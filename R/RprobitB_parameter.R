@@ -32,17 +32,20 @@
 #' @param z
 #' The vector of the allocation variables of length \code{N}.
 #' Set to \code{NA} if \code{P_r = 0}.
-#' @param U
-#' The matrix of the latent utilities of dimension \code{J} x 'number of total
-#' choice occasions'.
+#' @param seed
+#' Set a seed for sampling missing parameters.
 #' @return
 #' An object of class \code{RprobitB_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{beta}, \code{z}, and \code{U}.
+#' \code{Sigma}, \code{beta}, and \code{z}.
 
 RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
                               b = NULL, Omega = NULL, Sigma = NULL, beta = NULL,
-                              z = NULL, U = NULL) {
+                              z = NULL, seed = NULL) {
+
+  ### seed for sampling missing parameters
+  if(!is.null(seed))
+    set.seed(seed)
 
   ### function that checks if input is a proper covariance matrix
   is.covariance.matrix = function(x){
@@ -146,9 +149,8 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
              "Omega" = Omega,
              "Sigma" = Sigma,
              "beta" = beta,
-             "z" = z,
-             "U" = NA)
-  class(out) = "RprobitB_parmameter"
+             "z" = z)
+  class(out) = "RprobitB_parameter"
   return(out)
 
 }

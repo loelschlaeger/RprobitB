@@ -16399,3 +16399,30 @@
       
       
 
+---
+
+    Code
+      summary(out)
+    Output
+      Summary of empirical choice data
+      
+      235 decision makers 
+      5 to 19 choice occasions each 
+      2929 choices in total
+      
+      Alternatives
+        frequency
+      A      1474
+      B      1455
+      
+      Covariates
+                type    z    re   min mean median  max sd
+      price_A      1 TRUE  TRUE -2.52    0  -0.11 7.04  1
+      price_B      1 TRUE  TRUE -2.56    0  -0.13 7.17  1
+      time_A       3 TRUE  TRUE -2.49    0  -0.09 4.20  1
+      time_B       3 TRUE  TRUE -2.58    0  -0.08 4.39  1
+      comfort_A    3 TRUE FALSE -1.49    0   0.17 1.83  1
+      comfort_B    3 TRUE FALSE -1.44    0   0.19 1.81  1
+      change_A     3 TRUE FALSE -0.91    0   0.46 4.55  1
+      change_B     3 TRUE FALSE -0.92    0   0.43 4.47  1
+

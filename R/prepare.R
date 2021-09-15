@@ -206,24 +206,22 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
     data[[n]][["y"]] = data_n[[choice]]
   }
 
-  ### create RprobitB_data object
-  out = RprobitB_data(data         = data,
-                      choice_data  = choice_data,
-                      N            = N,
-                      T            = T,
-                      J            = J,
-                      P_f          = P_f,
-                      P_r          = P_r,
-                      alternatives = alternatives,
-                      form         = form,
-                      re           = re,
-                      vars         = vars,
-                      ASC          = ASC,
-                      standardize  = standardize,
-                      simulated    = FALSE,
-                      parm         = NULL,
-                      distr        = NULL)
-
-  ### return RprobitB_data object
+  ### create and return 'RprobitB_data'-object
+  out = RprobitB_data(data           = data,
+                      choice_data    = choice_data,
+                      N              = N,
+                      T              = T,
+                      J              = J,
+                      P_f            = P_f,
+                      P_r            = P_r,
+                      alternatives   = alternatives,
+                      form           = form,
+                      re             = re,
+                      vars           = vars,
+                      ASC            = ASC,
+                      standardize    = standardize,
+                      simulated      = FALSE,
+                      distr          = NULL,
+                      true_parameter = NULL)
   return(out)
 }

@@ -14,7 +14,7 @@ test_that("model fitting works", {
   expect_snapshot(summary(m3))
   ### mixed multinomial probit model with 2 latent classes
   lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-                    re = "var", parm = list("C" = 2), seed = 1)
+                    re = "var", C = 2, seed = 1)
   m4 = fit(data = lcmmnp, latent_classes = list("C" = 2), seed = 1,
            print_progress = FALSE)
   expect_snapshot(summary(m4))

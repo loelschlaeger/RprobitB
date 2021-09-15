@@ -5,7 +5,7 @@
 \title{Construct object of class \code{RprobitB_model}}
 \usage{
 RprobitB_model(
-  RprobitB_data,
+  data,
   scale,
   R,
   B,
@@ -17,7 +17,7 @@ RprobitB_model(
 )
 }
 \arguments{
-\item{RprobitB_data}{description}
+\item{data}{description}
 
 \item{scale}{A named list of three elements, determining the parameter normalization with
 respect to the utility scale:

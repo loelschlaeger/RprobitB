@@ -11,22 +11,22 @@ summary.RprobitB_model = function(object, ... ) {
     stop("Not of class 'RprobitB_model'.")
 
   ### build 'summary.RprobitB_model' object
-  out = list("form" = object$RprobitB_data$form,
+  out = list("form" = object$data$form,
              "R" = object$R,
              "B" = object$B,
              "Q" = object$Q,
-             "P_f" = object$RprobitB_data$P_f,
-             "P_r" = object$RprobitB_data$P_r,
-             "cov_fix" = object$RprobitB_data$cov_fix,
-             "cov_random" = object$RprobitB_data$cov_random,
-             "J" = object$RprobitB_data$J,
-             "alternatives" = object$RprobitB_data$alternatives,
+             "P_f" = object$data$P_f,
+             "P_r" = object$data$P_r,
+             "cov_fix" = object$data$cov_fix,
+             "cov_random" = object$data$cov_random,
+             "J" = object$data$J,
+             "alternatives" = object$data$alternatives,
              "scale" = object$scale,
              "latent_classes" = object$latent_classes,
              "prior" = object$prior,
              "statistics" = object$statistics,
-             "simulated" = object$RprobitB_data$simulated,
-             "parm" = object$RprobitB_data$parm)
+             "simulated" = object$data$simulated,
+             "true_parameter" = object$data$true_parameter)
   class(out) = "summary.RprobitB_model"
 
   ### return 'summary.RprobitB_model' object

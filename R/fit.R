@@ -5,7 +5,9 @@
 #' @details
 #' For more details see the vignette "Model fitting":
 #' \code{vignette("model_fitting", package = "RprobitB")}.
-#' @inheritParams compute_sufficient_statistics
+#' @param data
+#' An object of class \code{RprobitB_data}.
+#' @inheritParams RprobitB_scale
 #' @param R
 #' The number of iterations of the Gibbs sampler.
 #' @param B
@@ -40,7 +42,7 @@
 #'
 #' ### mixed multinomial probit model with 2 latent classes
 #' lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-#'                   re = "var", parm = list("C" = 2), seed = 1)
+#'                   re = "var", seed = 1, C = 2)
 #' m4 = fit(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 #'
 #' ### update of latent classes
@@ -64,7 +66,7 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(!is.logical(print_progress))
     stop("'progress' must be a boolean.")
-  scale = check_scale(scale = scale, P_f = data$P_f, J = data$J)
+  scale = RprobitB_scale(scale = scale, P_f = data$P_f, J = data$J)
   latent_classes = check_latent_classes(latent_classes = latent_classes)
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
@@ -88,8 +90,10 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   gibbs_samples = transform_gibbs_samples(
     gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, scale = scale)
 
-  ### normalize 'data$parm' in based on 'scale'
-  data$parm = transform_parm(parm = data$parm, scale = scale)
+  ### normalize true model parameters based on 'scale'
+  if(data$simulated)
+    data$true_parameter = transform_true_parameter(
+      true_parameter = data$true_parameter, scale = scale)
 
   ### compute statistics from 'gibbs_samples'
   statistics = compute_parameter_statistics(
@@ -97,7 +101,7 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     C = latent_classes$C)
 
   ### build RprobitB_model
-  out = RprobitB_model(RprobitB_data = data,
+  out = RprobitB_model(data = data,
                        scale = scale,
                        R = R,
                        B = B,

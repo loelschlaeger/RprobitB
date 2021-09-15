@@ -5,10 +5,12 @@
 #' For more details see the vignette "Data management":
 #' \code{vignette("data_management", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
-#' @inheritParams check_parm
 #' @inheritParams check_distr
 #' @param seed
 #' Set a seed for the simulation.
+#' @param ...
+#' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
+#' \code{Sigma}, \code{beta}, or \code{z} for the simulation.
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples
@@ -18,21 +20,19 @@
 #' T = 10
 #' J = 3
 #' alternatives = c("car", "bus", "train")
-#' parm = list("C" = 2, "s" = c(0.5,0.5))
 #' distr = list("cost" = list("name" = "rnorm", sd = 3),
-#'              "income" = list("name" = "sample", x = (1:10)*1e3,
-#'                              replace = TRUE),
+#'              "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
 #'              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
 #'              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
 #' standardize = c("income", "travel_time_car", "travel_time_bus",
 #'                 "travel_time_train")
 #' data = simulate(form = form, N = N, T = T, J = J, re = re,
-#'                 alternatives = alternatives, parm = parm, distr = distr,
-#'                 standardize = standardize)
+#'                 alternatives = alternatives, distr = distr,
+#'                 standardize = standardize, C = 2, s = c(0.5,0.5))
 #' @export
 
-simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
-                    distr = NULL, standardize = NULL, seed = NULL) {
+simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
+                    distr = NULL, standardize = NULL, seed = NULL, ...) {
 
   ### check 'form'
   check_form_out = check_form(form = form, re = re)
@@ -54,9 +54,6 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
     alternatives = LETTERS[1:J]
   if(length(alternatives) != J || !is.character(alternatives))
     stop("'alternatives' must be a character (vector) of length 'J'.")
-  if(!is.null(parm))
-    if(!is.list(parm))
-      stop("'parm' must be a list.")
   if(!is.null(distr))
     distr = check_distr(distr = distr)
   if(!is.null(standardize))
@@ -138,35 +135,14 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
   P_f = P$P_f
   P_r = P$P_r
 
-  ### check and read parm
-  parm = check_parm(parm = parm, P_f = P_f, P_r = P_r, J = J)
-
-  ### draw additional model parameters and save them in 'parm'
-  if(P_r>0){
-
-    ### draw allocation variable
-    z = sample(1:parm$C,N,prob=parm$s,replace=TRUE)
-
-    ### compute class sizes
-    m = as.numeric(table(z))
-
-    ### draw beta
-    beta = matrix(0,nrow=P_r,ncol=N)
-    for(n in seq_len(N))
-      beta[,n] = parm$b[,z[n]] +
-      t(chol(matrix(parm$Omega[,z[n]],nrow=P_r,ncol=P_r))) %*% rnorm(P_r)
-
-  } else{
-    beta = NA
-    z = NA
-    m = NA
-  }
-  parm$beta = beta
-  parm$z = z
-  parm$m = m
+  ### check supplied and draw missing model parameters
+  true_parameter = do.call(what = RprobitB_parameter,
+                           args = c(list("P_f" = P_f, "P_r" = P_r,
+                                         "J" = J, "N" = N, "seed" = seed),
+                                    list(...)))
 
   ### compute lower-triangular Choleski root of Sigma
-  L = t(chol(parm$Sigma))
+  L = t(chol(true_parameter$Sigma))
 
   ### allocate space for data and utilities
   data = list()
@@ -245,10 +221,14 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
       }
 
       ### build coefficient vector
-      if(P_f>0 & P_r>0) coeff = c(parm$alpha,parm$beta[,n])
-      if(P_f>0 & P_r==0) coeff = parm$alpha
-      if(P_f==0 & P_r>0) coeff = parm$beta[,n]
-      if(P_f==0 & P_r==0) coeff = NA
+      if(P_f>0 & P_r>0)
+        coeff = c(true_parameter$alpha, true_parameter$beta[,n])
+      if(P_f>0 & P_r==0)
+        coeff = true_parameter$alpha
+      if(P_f==0 & P_r>0)
+        coeff = true_parameter$beta[,n]
+      if(P_f==0 & P_r==0)
+        coeff = NA
 
       ### compute utility and choice decision
       eps = L %*% rnorm(J)
@@ -265,37 +245,33 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL, parm = NULL,
     data[[n]][["y"]] = y_n
   }
 
-  ### add 'U' and 'beta' to 'parm'
-  parm$U = U
-  parm$beta = beta
-
   ### define difference operator (computes differences wrt alternative i)
   Delta = function(i){
     Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
     return(Delta)
   }
 
-  ### difference 'Sigma' in 'parm'
-  parm$Sigma = Delta(J) %*% parm$Sigma %*% t(Delta(J))
+  ### difference 'Sigma' in 'true_parameter'
+  true_parameter$Sigma = Delta(J) %*% true_parameter$Sigma %*% t(Delta(J))
 
   ### create RprobitB_data object
-  out = RprobitB_data(data         = data,
-                      choice_data  = choice_data,
-                      N            = N,
-                      T            = T,
-                      J            = J,
-                      P_f          = P_f,
-                      P_r          = P_r,
-                      alternatives = alternatives,
-                      form         = form,
-                      re           = re,
-                      vars         = vars,
-                      ASC          = ASC,
-                      standardize  = standardize,
-                      simulated    = TRUE,
-                      parm         = parm,
-                      distr        = distr)
+  out = RprobitB_data(data           = data,
+                      choice_data    = choice_data,
+                      N              = N,
+                      T              = T,
+                      J              = J,
+                      P_f            = P_f,
+                      P_r            = P_r,
+                      alternatives   = alternatives,
+                      form           = form,
+                      re             = re,
+                      vars           = vars,
+                      ASC            = ASC,
+                      standardize    = standardize,
+                      simulated      = TRUE,
+                      distr          = distr,
+                      true_parameter = true_parameter)
 
-  ### return RprobitB_data object
+  ### return 'RprobitB_data'-object
   return(out)
 }

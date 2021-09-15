@@ -2,7 +2,7 @@
 % Please edit documentation in R/checks.R
 \name{check_distr}
 \alias{check_distr}
-\title{Check \code{distr}}
+\title{Check \code{distr}.}
 \usage{
 check_distr(distr)
 }

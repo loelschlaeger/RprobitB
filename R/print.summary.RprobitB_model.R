@@ -60,7 +60,7 @@ print.summary.RprobitB_model = function(x, ...) {
 
   ### function that creates table format for estimates
   print_tab = function(par_name){
-    true = as.vector(x$parm[[par_name]])
+    true = as.vector(x$true_parameter[[par_name]])
     statistics = x$statistics[[par_name]]
     if(x$simulated) statistics = cbind(true,statistics)
     statistics = round(statistics, 2)

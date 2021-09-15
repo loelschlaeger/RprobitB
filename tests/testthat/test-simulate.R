@@ -5,7 +5,6 @@ test_that("data simulation works", {
   T = 10
   J = 3
   alternatives = c("car", "bus", "train")
-  parm = list("C" = 2, "s" = c(0.5,0.5))
   distr = list("cost" = list("name" = "rnorm", sd = 3),
                "income" = list("name" = "sample", x = (1:10)*1e3,
                                replace = TRUE),
@@ -14,8 +13,9 @@ test_that("data simulation works", {
   standardize = c("income", "travel_time_car", "travel_time_bus",
                   "travel_time_train")
   data = simulate(form = form, N = N, T = T, J = J, re = re,
-                  alternatives = alternatives, parm = parm, distr = distr,
-                  standardize = standardize, seed = 1)
+                  alternatives = alternatives, distr = distr,
+                  standardize = standardize, seed = 1, "C" = 2,
+                  "s" = c(0.5,0.5))
   expect_snapshot(data$data)
   expect_snapshot(summary(data))
 })

@@ -11,10 +11,10 @@ simulate(
   J,
   re = NULL,
   alternatives = NULL,
-  parm = NULL,
   distr = NULL,
   standardize = NULL,
-  seed = NULL
+  seed = NULL,
+  ...
 )
 }
 \arguments{
@@ -26,27 +26,6 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}
-
-\item{parm}{A named list of true parameter values:
-\itemize{
-\item \code{alpha}:
-The fixed coefficient vector of length \code{P_f}.
-\item \code{C:}
-The number (greater or equal 1) of latent classes of decision makers.
-If \code{P_r = 0}, then \code{C} is ignored.
-\item \code{s}:
-The vector of class weights of length \code{C}.
-\item \code{b}:
-The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-\item \code{Omega}:
-The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-\item \code{Sigma}:
-The error term covariance matrix of dimension \code{J} x \code{J}.
-Internally, \code{Sigma} gets differenced with respect to alternative
-\code{J}, so it becomes a covariance matrix of dimension
-\code{J-1} x \code{J-1}.
-}}
 
 \item{distr}{A named list of number generation functions from which the covariates are
 drawn. Each element of \code{distr} must be of the form
@@ -69,6 +48,9 @@ Covariates of type 1 or 3 have to be addressed by
 If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{seed}{Set a seed for the simulation.}
+
+\item{...}{Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
+\code{Sigma}, \code{beta}, or \code{z} for the simulation.}
 }
 \value{
 An object of class \code{RprobitB_data}.
@@ -87,15 +69,13 @@ N = 100
 T = 10
 J = 3
 alternatives = c("car", "bus", "train")
-parm = list("C" = 2, "s" = c(0.5,0.5))
 distr = list("cost" = list("name" = "rnorm", sd = 3),
-             "income" = list("name" = "sample", x = (1:10)*1e3,
-                             replace = TRUE),
+             "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
 standardize = c("income", "travel_time_car", "travel_time_bus",
                 "travel_time_train")
 data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, parm = parm, distr = distr,
-                standardize = standardize)
+                alternatives = alternatives, distr = distr,
+                standardize = standardize, C = 2, s = c(0.5,0.5))
 }
