@@ -7,6 +7,6 @@
 #' @export
 
 print.RprobitB_model = function(x, ...){
-  cat("Fitted probit model\n")
+  cat("Fitted probit model via Bayesian estimation.\n")
   return(invisible(x))
 }

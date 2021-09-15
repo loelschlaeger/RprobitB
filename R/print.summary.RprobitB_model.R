@@ -7,7 +7,8 @@
 
 print.summary.RprobitB_model = function(x, ...) {
 
-  cat(paste0("Summary of model '",deparse1(x$form),"'\n\n"))
+  cat(paste0("Summary of fitted probit model '",
+             deparse1(x$form),"' via Bayesian estimation:\n\n"))
 
   ### summary of model
   cat("MCMC settings:\n")

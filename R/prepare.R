@@ -1,6 +1,6 @@
 #' Prepare empirical choice data.
 #' @description
-#' This function prepares empirical choice data for estimation.
+#' This function prepares empirical choice data for the RprobitB package.
 #' @details
 #' For more details see the vignette "Data management":
 #' \code{vignette("data_management", package = "RprobitB")}.

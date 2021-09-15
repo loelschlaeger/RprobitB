@@ -6,6 +6,7 @@
 #' @export
 
 print.RprobitB_data = function(x, ...){
-  cat(ifelse(x$simulated,"Simulated","Empirical"),"choice data\n")
+  cat(ifelse(x$simulated,"Simulated","Empirical"),
+      "data of",sum(x$T),"choices.\n")
   return(invisible(x))
 }
