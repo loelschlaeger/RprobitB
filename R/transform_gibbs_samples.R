@@ -5,7 +5,7 @@
 #' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples.
 #' @inheritParams RprobitB_data
 #' @inheritParams fit
-#' @inheritParams compute_suff_statistics
+#' @inheritParams compute_sufficient_statistics
 #' @return
 #' A list of transformed Gibbs samples. Each element is a list, containing the
 #' Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and

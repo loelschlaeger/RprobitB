@@ -2,16 +2,19 @@
 % Please edit documentation in R/compute_waic.R
 \name{compute_waic}
 \alias{compute_waic}
-\title{Compute WAIC value}
+\title{Compute WAIC value.}
 \usage{
-compute_waic(gibbs_samples)
+compute_waic(x)
 }
 \arguments{
-\item{gibbs_samples}{A list of gibbs samples}
+\item{x}{An object of class \code{RprobitB_model}.}
 }
 \value{
-The WAIC value
+The WAIC value.
 }
 \description{
-Function that computes WAIC value
+This function computes the WAIC value of an \code{RprobitB_model}.
+}
+\examples{
+### example missing here
 }

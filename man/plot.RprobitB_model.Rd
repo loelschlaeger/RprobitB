@@ -2,19 +2,31 @@
 % Please edit documentation in R/plot.RprobitB_model.R
 \name{plot.RprobitB_model}
 \alias{plot.RprobitB_model}
-\title{Plot method for an \code{RprobitB_model}}
+\title{Plot method for an \code{RprobitB_model}.}
 \usage{
-\method{plot}{RprobitB_model}(x, type, pars, ...)
+\method{plot}{RprobitB_model}(x, type = "effects", restrict = NULL, ...)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}}
+\item{x}{An object of class \code{RprobitB_model}.}
 
-\item{type}{The type of plot}
+\item{type}{The type of plot, which can be one of:
+\itemize{
+\item \code{"effects"} (the default) for visualizing the effects,
+\item \code{"mixing"} for visualizing the mixing distributions,
+\item \code{"estimates"} for visualizing the parameter estimates,
+\item \code{"acf"} for autocorrelation plots of the Gibbs samples,
+\item \code{"trace"} for trace plots of the Gibbs samples.
+}}
 
-\item{pars}{A vector of parameters to plot}
+\item{restrict}{A character (vector) of covariate or parameter names, which can be used to
+restrict the visualizations to a subset of covariates and parameters,
+respectively. Per default, a combined plot is produced.}
 
-\item{...}{Additional parameters passed on to \code{plot}}
+\item{...}{Additional parameters that get passed on to \link{plot}.}
+}
+\value{
+No return value. Draws a plot to the current device.
 }
 \description{
-Plot method for an \code{RprobitB_model}
+This function is the plot method for an \code{RprobitB_model}.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare.R
 \name{prepare}
 \alias{prepare}
-\title{Prepare empirical choice data}
+\title{Prepare empirical choice data.}
 \usage{
 prepare(
   form,
@@ -14,20 +14,6 @@ prepare(
 )
 }
 \arguments{
-\item{form}{A formula object that is used to specify the probit model.
-The structure is \code{choice ~ A | B | C}, where
-\itemize{
-\item \code{A} are alternative and choice situation specific covariates
-with a generic coefficient,
-\item \code{B} are choice situation specific covariates with alternative
-specific coefficients,
-\item and \code{C} are alternative and choice situation specific covariates
-with alternative specific coefficients.
-}
-By default, alternative specific constants are added to the model (for all
-except for the last alternative).
-They can be removed by adding \code{+0} in the second spot.}
-
 \item{choice_data}{A data frame of choice data in "wide" format (i.e. each row represents
 one choice occasion) with the following requirements:
 \itemize{
@@ -43,10 +29,6 @@ of type 2), \code{choice_data} must contain a column named \emph{q}.
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}
 
-\item{re}{A character vector of variable names of \code{form} with random effects.
-To have random effects for the alternative specific constants, include
-\code{"ASC"} in \code{re}.}
-
 \item{id}{A character, the name of the column in \code{choice_data} that contains
 unique identifier for each decision maker. The default is \code{"id"}.}
 
@@ -56,14 +38,14 @@ Covariates of type 1 or 3 have to be addressed by
 If \code{standardize = "all"}, all covariates get standardized.}
 }
 \value{
-An object of class \code{RprobitB_data}
+An object of class \code{RprobitB_data}.
 }
 \description{
-Function that prepares empirical choice data for the RprobitB package.
+This function prepares empirical choice data for the RprobitB package.
 }
 \details{
 For more details see the vignette "Data management":
-\code{vignette("data_management", package = "RprobitB")}
+\code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{
 data("Train", package = "mlogit")

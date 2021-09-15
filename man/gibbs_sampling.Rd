@@ -13,7 +13,7 @@ gibbs_sampling(
   P_f,
   P_r,
   latent_classes,
-  suff_statistics,
+  sufficient_statistics,
   prior,
   init
 )
@@ -58,7 +58,7 @@ The threshold difference in means for joining latent classes
 (non-negative).
 }}
 
-\item{suff_statistics}{The output of \code{\link{compute_suff_statistics}}.}
+\item{sufficient_statistics}{The output of \code{\link{compute_sufficient_statistics}}.}
 
 \item{prior}{A named list of parameters for the prior distributions of the normalized
 parameters:

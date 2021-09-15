@@ -5,7 +5,7 @@
 #' @details
 #' For more details see the vignette "Model fitting":
 #' \code{vignette("model_fitting", package = "RprobitB")}.
-#' @inheritParams compute_suff_statistics
+#' @inheritParams compute_sufficient_statistics
 #' @param R
 #' The number of iterations of the Gibbs sampler.
 #' @param B

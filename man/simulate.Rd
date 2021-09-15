@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate.R
 \name{simulate}
 \alias{simulate}
-\title{Simulate choice data}
+\title{Simulate choice data.}
 \usage{
 simulate(
   form,
@@ -13,34 +13,17 @@ simulate(
   alternatives = NULL,
   parm = NULL,
   distr = NULL,
-  standardize = NULL
+  standardize = NULL,
+  seed = NULL
 )
 }
 \arguments{
-\item{form}{A formula object that is used to specify the probit model.
-The structure is \code{choice ~ A | B | C}, where
-\itemize{
-\item \code{A} are alternative and choice situation specific covariates
-with a generic coefficient,
-\item \code{B} are choice situation specific covariates with alternative
-specific coefficients,
-\item and \code{C} are alternative and choice situation specific covariates
-with alternative specific coefficients.
-}
-By default, alternative specific constants are added to the model (for all
-except for the last alternative).
-They can be removed by adding \code{+0} in the second spot.}
-
 \item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
 occasions of length \code{N} (i.e. a decision maker specific number).}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{re}{A character vector of variable names of \code{form} with random effects.
-To have random effects for the alternative specific constants, include
-\code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}
 
@@ -84,16 +67,18 @@ all required parameters (except for \code{n}) must be specified,
 Covariates of type 1 or 3 have to be addressed by
 \code{covariate_alternative}.
 If \code{standardize = "all"}, all covariates get standardized.}
+
+\item{seed}{Set a seed for the simulation.}
 }
 \value{
-An object of class \code{RprobitB_data}
+An object of class \code{RprobitB_data}.
 }
 \description{
-Function that simulates choice data for the RprobitB package.
+This function simulates choice data for the RprobitB package.
 }
 \details{
 For more details see the vignette "Data management":
-\code{vignette("data_management", package = "RprobitB")}
+\code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{
 form = choice ~ cost | income | travel_time

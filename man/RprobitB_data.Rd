@@ -13,8 +13,6 @@ RprobitB_data(
   P_f,
   P_r,
   alternatives,
-  cov_fix,
-  cov_random,
   form,
   re,
   vars,
@@ -62,34 +60,31 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}
 
-\item{cov_fix}{A character vector with the names of the covariates that are connected to a
-fixed coefficient.}
-
-\item{cov_random}{A character vector with the names of the covariates that are connected to a
-random coefficient.}
-
 \item{form}{A formula object that is used to specify the probit model.
 The structure is \code{choice ~ A | B | C}, where
 \itemize{
-\item \code{A} are alternative and choice situation specific covariates
-with a generic coefficient,
-\item \code{B} are choice situation specific covariates with alternative
-specific coefficients,
-\item and \code{C} are alternative and choice situation specific covariates
-with alternative specific coefficients.
+\item \code{A} are names of alternative and choice situation specific
+covariates with a generic coefficient,
+\item \code{B} are names of choice situation specific covariates with
+alternative specific coefficients,
+\item and \code{C} are names of alternative and choice situation specific
+covariates with alternative specific coefficients.
 }
-By default, alternative specific constants are added to the model (for all
-except for the last alternative).
-They can be removed by adding \code{+0} in the second spot.}
+Separate multiple covariates of one type by a \code{+} sign.
+By default, alternative specific constants (ASCs) are added to the model
+(for all except for the last alternative).
+They can be removed by adding \code{+0} in the second spot.
+See the vignette \code{vignette("data_management", package = "RprobitB")}
+for more details.}
 
-\item{re}{A character vector of variable names of \code{form} with random effects.
+\item{re}{A character (vector) of covariates of \code{form} with random effects.
+If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the alternative specific constants, include
 \code{"ASC"} in \code{re}.}
 
-\item{vars}{A list of length three, containing the three different covariate types of
-\code{form}.}
+\item{vars}{The element \code{vars} in the output of \link{check_form}.}
 
-\item{ASC}{A boolean, determining whether alternative specific constants are included.}
+\item{ASC}{A boolean, determining whether the model has ASCs.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
@@ -136,8 +131,17 @@ all required parameters (except for \code{n}) must be specified,
 }}
 }
 \value{
-An object of class \code{RprobitB_data}, i.e. a list with the arguments of
-this function as elements.
+An object of class \code{RprobitB_data}, which is a list of
+\itemize{
+\item the arguments of this functions as elements, and
+\item the element \code{covs}, which is a data frame of the two
+columns \code{name} (the covariate names) and \code{random} (a boolean
+determining whether the covariates are random effects).
+}
+
+list of the arguments
+of this function and the element \code{covs}, which is a data frame
+containing the parameter names.
 In case of empirical data, the elements \code{parm} and \code{distr} equal
 \code{NULL}.
 }

@@ -7,7 +7,7 @@
 \method{summary}{RprobitB_model}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{RprobitB_model}}
+\item{object}{An object of class \code{RprobitB_model}.}
 
 \item{...}{ignored}
 }

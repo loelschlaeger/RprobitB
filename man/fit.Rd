@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit.R
 \name{fit}
 \alias{fit}
-\title{Fit a (latent class) (mixed) (multinomial) probit model}
+\title{Fit a (latent class) (mixed) (multinomial) probit model.}
 \usage{
 fit(
   data,
@@ -99,15 +99,15 @@ The threshold difference in means for joining latent classes
 }}
 }
 \value{
-An object of class \code{RprobitB_model}
+An object of class \code{RprobitB_model}.
 }
 \description{
-Function that fits a (latent class) (mixed) (multinomial) probit model via
-Bayesian estimation.
+This function fits a (latent class) (mixed) (multinomial) probit model via
+Bayesian estimation to discrete choice data.
 }
 \details{
 For more details see the vignette "Model fitting":
-\code{vignette("model_fitting", package = "RprobitB")}
+\code{vignette("model_fitting", package = "RprobitB")}.
 }
 \examples{
 \dontrun{
@@ -123,9 +123,9 @@ m2 = fit(data = mnp)
 mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
 m3 = fit(data = mmnp)
 
-### latent classes mixed multinomial probit model
-lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
-                  parm = list("C" = 2))
+### mixed multinomial probit model with 2 latent classes
+lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+                  re = "var", parm = list("C" = 2))
 m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
 
 ### update of latent classes

@@ -16,6 +16,7 @@
 #'   \item effective model parameters
 #' }
 #' @examples
+#' ### example missing here
 #' @export
 
 compare = function(...){

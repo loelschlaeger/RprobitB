@@ -2,24 +2,30 @@
 % Please edit documentation in R/compare.R
 \name{compare}
 \alias{compare}
-\title{Compare RprobitB models}
+\title{Compare fitted models.}
 \usage{
 compare(...)
 }
 \arguments{
-\item{...}{Models from \link[RprobitB]{fit}.}
+\item{...}{One or more objects of class \code{RprobitB_model}.}
 }
 \value{
-WAIC value (numeric).
+A matrix with the following model selection criteria:
+\itemize{
+\item log-likelihood
+\item AIC
+\item BIC
+\item WAIC
+\item effective model parameters
+}
 }
 \description{
-Function that compares RprobitB models based on their
-Widely Applicable Information Criterion (WAIC) value.
+This function computes model selection criteria.
 }
 \details{
 For more details see the vignette "Model comparison":
-\code{vignette("model_comparison", package = "RprobitB")}
+\code{vignette("model_comparison", package = "RprobitB")}.
 }
 \examples{
-### compare the same model with different number of Gibbs samples
+### example missing here
 }

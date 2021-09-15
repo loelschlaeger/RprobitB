@@ -10,7 +10,7 @@
 #'   \item \code{"mixing"} for visualizing the mixing distributions,
 #'   \item \code{"estimates"} for visualizing the parameter estimates,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
-#'   \item \code{"trace"} for trace plots of the Gibbs samples.}
+#'   \item \code{"trace"} for trace plots of the Gibbs samples.
 #' }
 #' @param restrict
 #' A character (vector) of covariate or parameter names, which can be used to

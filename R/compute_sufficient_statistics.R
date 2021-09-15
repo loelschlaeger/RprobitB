@@ -8,7 +8,7 @@
 #' @examples
 #' data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
 #' scale = check_scale(scale = NULL, P_f = 2, J = 3)
-#' compute_suff_statistics(data = data, scale = scale)
+#' compute_sufficient_statistics(data = data, scale = scale)
 #' @return
 #' A list of sufficient statistics.
 

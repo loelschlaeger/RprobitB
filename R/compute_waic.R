@@ -6,6 +6,7 @@
 #' @return
 #' The WAIC value.
 #' @examples
+#' ### example missing here
 #' @export
 
 compute_waic = function(x) {

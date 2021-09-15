@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{predict}
 \alias{predict}
-\title{Title}
+\title{Predict choices.}
 \usage{
 predict()
 }
@@ -10,9 +10,10 @@ predict()
 value
 }
 \description{
-Funtion that...
+This function predicts the choices of decision makers based on a fitted
+\code{RprobitB_model} and choice characteristics.
 }
 \details{
 For more details see the vignette "Prediction":
-\code{vignette("prediction", package = "RprobitB")}
+\code{vignette("prediction", package = "RprobitB")}.
 }
