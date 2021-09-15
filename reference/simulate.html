@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulate choice data — simulate • RprobitB</title>
+<title>Simulate choice data. — simulate • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Simulate choice data — simulate" />
-<meta property="og:description" content="Function that simulates choice data for the RprobitB package." />
+<meta property="og:title" content="Simulate choice data. — simulate" />
+<meta property="og:description" content="This function simulates choice data for the RprobitB package." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -152,13 +152,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulate choice data</h1>
+    <h1>Simulate choice data.</h1>
     
     <div class="hidden name"><code>simulate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that simulates choice data for the RprobitB package.</p>
+    <p>This function simulates choice data for the RprobitB package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>simulate</span><span class='op'>(</span>
@@ -168,28 +168,15 @@
   <span class='va'>J</span>,
   re <span class='op'>=</span> <span class='cn'>NULL</span>,
   alternatives <span class='op'>=</span> <span class='cn'>NULL</span>,
-  parm <span class='op'>=</span> <span class='cn'>NULL</span>,
   distr <span class='op'>=</span> <span class='cn'>NULL</span>,
-  standardize <span class='op'>=</span> <span class='cn'>NULL</span>
+  standardize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>form</th>
-      <td><p>A formula object that is used to specify the probit model.
-The structure is <code>choice ~ A | B | C</code>, where</p><ul>
-<li><p><code>A</code> are alternative and choice situation specific covariates
-with a generic coefficient,</p></li>
-<li><p><code>B</code> are choice situation specific covariates with alternative
-specific coefficients,</p></li>
-<li><p>and <code>C</code> are alternative and choice situation specific covariates
-with alternative specific coefficients.</p></li>
-</ul><p>By default, alternative specific constants are added to the model (for all
-except for the last alternative).
-They can be removed by adding <code>+0</code> in the second spot.</p></td>
-    </tr>
     <tr>
       <th>N</th>
       <td><p>The number (greater or equal 1) of decision makers.</p></td>
@@ -204,36 +191,8 @@ occasions of length <code>N</code> (i.e. a decision maker specific number).</p><
       <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
     </tr>
     <tr>
-      <th>re</th>
-      <td><p>A character vector of variable names of <code>form</code> with random effects.
-To have random effects for the alternative specific constants, include
-<code>"ASC"</code> in <code>re</code>.</p></td>
-    </tr>
-    <tr>
       <th>alternatives</th>
       <td><p>A character vector with the names of the choice alternatives.</p></td>
-    </tr>
-    <tr>
-      <th>parm</th>
-      <td><p>A named list of true parameter values:</p><ul>
-<li><p><code>alpha</code>:
-The fixed coefficient vector of length <code>P_f</code>.</p></li>
-<li><p><code>C:</code>
-The number (greater or equal 1) of latent classes of decision makers.
-If <code>P_r = 0</code>, then <code>C</code> is ignored.</p></li>
-<li><p><code>s</code>:
-The vector of class weights of length <code>C</code>.</p></li>
-<li><p><code>b</code>:
-The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.</p></li>
-<li><p><code>Omega</code>:
-The matrix of class covariance matrices as columns of dimension
-<code>P_r*P_r</code> x <code>C</code>.</p></li>
-<li><p><code>Sigma</code>:
-The error term covariance matrix of dimension <code>J</code> x <code>J</code>.
-Internally, <code>Sigma</code> gets differenced with respect to alternative
-<code>J</code>, so it becomes a covariance matrix of dimension
-<code>J-1</code> x <code>J-1</code>.</p></li>
-</ul></td>
     </tr>
     <tr>
       <th>distr</th>
@@ -258,15 +217,24 @@ Covariates of type 1 or 3 have to be addressed by
 <code>covariate_alternative</code>.
 If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Set a seed for the simulation.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Optionally specify <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</code>, <code>Omega</code>,
+<code>Sigma</code>, <code>beta</code>, or <code>z</code> for the simulation.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_data</code></p>
+    <p>An object of class <code>RprobitB_data</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>For more details see the vignette "Data management":
-<code><a href='../articles/data_management.html'>vignette("data_management", package = "RprobitB")</a></code></p>
+<code><a href='../articles/data_management.html'>vignette("data_management", package = "RprobitB")</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>form</span> <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>cost</span> <span class='op'>|</span> <span class='va'>income</span> <span class='op'>|</span> <span class='va'>travel_time</span>
@@ -275,18 +243,16 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
 <span class='cn'>T</span> <span class='op'>=</span> <span class='fl'>10</span>
 <span class='va'>J</span> <span class='op'>=</span> <span class='fl'>3</span>
 <span class='va'>alternatives</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"car"</span>, <span class='st'>"bus"</span>, <span class='st'>"train"</span><span class='op'>)</span>
-<span class='va'>parm</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"C"</span> <span class='op'>=</span> <span class='fl'>2</span>, <span class='st'>"s"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>distr</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"cost"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rnorm"</span>, sd <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>,
-             <span class='st'>"income"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"sample"</span>, x <span class='op'>=</span> <span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>1e3</span>,
-                             replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+             <span class='st'>"income"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"sample"</span>, x <span class='op'>=</span> <span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>1e3</span>, replace <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>,
              <span class='st'>"travel_time_car"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rlnorm"</span>, meanlog <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
              <span class='st'>"travel_time_bus"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rlnorm"</span>, meanlog <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>standardize</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"income"</span>, <span class='st'>"travel_time_car"</span>, <span class='st'>"travel_time_bus"</span>,
                 <span class='st'>"travel_time_train"</span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>=</span> <span class='fu'>simulate</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>form</span>, N <span class='op'>=</span> <span class='va'>N</span>, T <span class='op'>=</span> <span class='cn'>T</span>, J <span class='op'>=</span> <span class='va'>J</span>, re <span class='op'>=</span> <span class='va'>re</span>,
-                alternatives <span class='op'>=</span> <span class='va'>alternatives</span>, parm <span class='op'>=</span> <span class='va'>parm</span>, distr <span class='op'>=</span> <span class='va'>distr</span>,
-                standardize <span class='op'>=</span> <span class='va'>standardize</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rwishart(P_r, diag(P_r)): object '_RprobitB_rwishart' not found</span></div></pre>
+                alternatives <span class='op'>=</span> <span class='va'>alternatives</span>, distr <span class='op'>=</span> <span class='va'>distr</span>,
+                standardize <span class='op'>=</span> <span class='va'>standardize</span>, C <span class='op'>=</span> <span class='fl'>2</span>, s <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

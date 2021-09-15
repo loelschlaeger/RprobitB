@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Construct object of class RprobitB_data — RprobitB_data" />
-<meta property="og:description" content="Function that constructs an object of class RprobitB_data." />
+<meta property="og:description" content="This function constructs an object of class RprobitB_data." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -158,7 +158,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Function that constructs an object of class <code>RprobitB_data</code>.</p>
+    <p>This function constructs an object of class <code>RprobitB_data</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>RprobitB_data</span><span class='op'>(</span>
@@ -170,16 +170,14 @@
   <span class='va'>P_f</span>,
   <span class='va'>P_r</span>,
   <span class='va'>alternatives</span>,
-  <span class='va'>cov_fix</span>,
-  <span class='va'>cov_random</span>,
   <span class='va'>form</span>,
   <span class='va'>re</span>,
   <span class='va'>vars</span>,
   <span class='va'>ASC</span>,
   <span class='va'>standardize</span>,
   <span class='va'>simulated</span>,
-  <span class='va'>parm</span>,
-  <span class='va'>distr</span>
+  <span class='va'>distr</span>,
+  <span class='va'>true_parameter</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -205,10 +203,12 @@ one choice occasion) with the following requirements:</p><ul>
 decision maker) and <code>choice</code> (the chosen alternatives), where
 <code>choice</code> is the name of the dependent variable in <code>form</code>.</p></li>
 <li><p>For each alternative specific covariate <em>p</em> (covariate of type 1 or
-3) in <code>form</code> and each choice alternative <em>j</em>, <code>choice_data</code>
-must contain a column named <em>p_j</em>.</p></li>
-<li><p>For each covariate <em>q</em> that is constant across covariates (covariate
-of type 2), <code>choice_data</code> must contain a column named <em>q</em>.</p></li>
+3) in <code>form</code> and each choice alternative <em>j</em> in
+<code>alternatives</code>, <code>choice_data</code> must contain a column named
+<em>p_j</em>.</p></li>
+<li><p>For each covariate <em>q</em> in <code>form</code> that is constant across
+covariates (covariate of type 2), <code>choice_data</code> must contain a
+column named <em>q</em>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -237,43 +237,36 @@ occasions of length <code>N</code> (i.e. a decision maker specific number).</p><
       <td><p>A character vector with the names of the choice alternatives.</p></td>
     </tr>
     <tr>
-      <th>cov_fix</th>
-      <td><p>A character vector with the names of the covariates that are connected to a
-fixed coefficient.</p></td>
-    </tr>
-    <tr>
-      <th>cov_random</th>
-      <td><p>A character vector with the names of the covariates that are connected to a
-random coefficient.</p></td>
-    </tr>
-    <tr>
       <th>form</th>
       <td><p>A formula object that is used to specify the probit model.
 The structure is <code>choice ~ A | B | C</code>, where</p><ul>
-<li><p><code>A</code> are alternative and choice situation specific covariates
-with a generic coefficient,</p></li>
-<li><p><code>B</code> are choice situation specific covariates with alternative
-specific coefficients,</p></li>
-<li><p>and <code>C</code> are alternative and choice situation specific covariates
-with alternative specific coefficients.</p></li>
-</ul><p>By default, alternative specific constants are added to the model (for all
-except for the last alternative).
-They can be removed by adding <code>+0</code> in the second spot.</p></td>
+<li><p><code>A</code> are names of alternative and choice situation specific
+covariates with a generic coefficient,</p></li>
+<li><p><code>B</code> are names of choice situation specific covariates with
+alternative specific coefficients,</p></li>
+<li><p>and <code>C</code> are names of alternative and choice situation specific
+covariates with alternative specific coefficients.</p></li>
+</ul><p>Separate multiple covariates of one type by a <code><a href='https://rdrr.io/r/base/Arithmetic.html'>+</a></code> sign.
+By default, alternative specific constants (ASCs) are added to the model
+(for all except for the last alternative).
+They can be removed by adding <code>+0</code> in the second spot.
+See the vignette <code><a href='../articles/data_management.html'>vignette("data_management", package = "RprobitB")</a></code>
+for more details.</p></td>
     </tr>
     <tr>
       <th>re</th>
-      <td><p>A character vector of variable names of <code>form</code> with random effects.
+      <td><p>A character (vector) of covariates of <code>form</code> with random effects.
+If <code>re = NULL</code> (the default), there are no random effects.
 To have random effects for the alternative specific constants, include
 <code>"ASC"</code> in <code>re</code>.</p></td>
     </tr>
     <tr>
       <th>vars</th>
-      <td><p>A list of length three, containing the three different covariate types of
-<code>form</code>.</p></td>
+      <td><p>The element <code>vars</code> in the output of <a href='check_form.html'>check_form</a>.</p></td>
     </tr>
     <tr>
       <th>ASC</th>
-      <td><p>A boolean, determining whether alternative specific constants are included.</p></td>
+      <td><p>A boolean, determining whether the model has ASCs.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
@@ -286,28 +279,6 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
       <th>simulated</th>
       <td><p>A boolean, if <code>TRUE</code> then <code>data</code> is simulated, otherwise
 <code>data</code> is empirical.</p></td>
-    </tr>
-    <tr>
-      <th>parm</th>
-      <td><p>A named list of true parameter values:</p><ul>
-<li><p><code>alpha</code>:
-The fixed coefficient vector of length <code>P_f</code>.</p></li>
-<li><p><code>C:</code>
-The number (greater or equal 1) of latent classes of decision makers.
-If <code>P_r = 0</code>, then <code>C</code> is ignored.</p></li>
-<li><p><code>s</code>:
-The vector of class weights of length <code>C</code>.</p></li>
-<li><p><code>b</code>:
-The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.</p></li>
-<li><p><code>Omega</code>:
-The matrix of class covariance matrices as columns of dimension
-<code>P_r*P_r</code> x <code>C</code>.</p></li>
-<li><p><code>Sigma</code>:
-The error term covariance matrix of dimension <code>J</code> x <code>J</code>.
-Internally, <code>Sigma</code> gets differenced with respect to alternative
-<code>J</code>, so it becomes a covariance matrix of dimension
-<code>J-1</code> x <code>J-1</code>.</p></li>
-</ul></td>
     </tr>
     <tr>
       <th>distr</th>
@@ -329,8 +300,16 @@ all required parameters (except for <code>n</code>) must be specified,</p></li>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_data</code>, i.e. a list with the arguments of
-this function as elements.
+    <p>An object of class <code>RprobitB_data</code>, which is a list of</p><ul>
+<li><p>the arguments of this functions as elements, and</p></li>
+<li><p>the element <code>covs</code>, which is a data frame of the two
+columns <code>name</code> (the covariate names) and <code>random</code> (a boolean
+determining whether the covariates are random effects).</p></li>
+</ul>
+
+<p>list of the arguments
+of this function and the element <code>covs</code>, which is a data frame
+containing the parameter names.
 In case of empirical data, the elements <code>parm</code> and <code>distr</code> equal
 <code>NULL</code>.</p>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Prepare empirical choice data. — prepare • RprobitB</title>
+<title>Visualizing the estimates. — plot_estimates • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Prepare empirical choice data. — prepare" />
-<meta property="og:description" content="This function prepares empirical choice data for the RprobitB package." />
+<meta property="og:title" content="Visualizing the estimates. — plot_estimates" />
+<meta property="og:description" content="This function visualizes the parameter estimates and standard deviations." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -152,76 +152,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Prepare empirical choice data.</h1>
+    <h1>Visualizing the estimates.</h1>
     
-    <div class="hidden name"><code>prepare.Rd</code></div>
+    <div class="hidden name"><code>plot_estimates.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function prepares empirical choice data for the RprobitB package.</p>
+    <p>This function visualizes the parameter estimates and standard deviations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prepare</span><span class='op'>(</span>
-  <span class='va'>form</span>,
-  <span class='va'>choice_data</span>,
-  alternatives <span class='op'>=</span> <span class='cn'>NULL</span>,
-  re <span class='op'>=</span> <span class='cn'>NULL</span>,
-  id <span class='op'>=</span> <span class='st'>"id"</span>,
-  standardize <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_estimates</span><span class='op'>(</span><span class='va'>x</span>, restrict <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>choice_data</th>
-      <td><p>A data frame of choice data in "wide" format (i.e. each row represents
-one choice occasion) with the following requirements:</p><ul>
-<li><p>It must contain columns named <code>id</code> (a unique identifier for each
-decision maker) and <code>choice</code> (the chosen alternatives), where
-<code>choice</code> is the name of the dependent variable in <code>form</code>.</p></li>
-<li><p>For each alternative specific covariate <em>p</em> (covariate of type 1 or
-3) in <code>form</code> and each choice alternative <em>j</em> in
-<code>alternatives</code>, <code>choice_data</code> must contain a column named
-<em>p_j</em>.</p></li>
-<li><p>For each covariate <em>q</em> in <code>form</code> that is constant across
-covariates (covariate of type 2), <code>choice_data</code> must contain a
-column named <em>q</em>.</p></li>
-</ul></td>
+      <th>x</th>
+      <td><p>An object of class <code>RprobitB_model</code>.</p></td>
     </tr>
     <tr>
-      <th>alternatives</th>
-      <td><p>A character vector with the names of the choice alternatives.</p></td>
+      <th>restrict</th>
+      <td><p>A character (vector) of covariate or parameter names, which can be used to
+restrict the visualizations to a subset of covariates and parameters,
+respectively. Per default, a combined plot is produced.</p></td>
     </tr>
     <tr>
-      <th>id</th>
-      <td><p>A character, the name of the column in <code>choice_data</code> that contains
-unique identifier for each decision maker. The default is <code>"id"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>standardize</th>
-      <td><p>A character vector of names of covariates that get standardized.
-Covariates of type 1 or 3 have to be addressed by
-<code>covariate_alternative</code>.
-If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
+      <th>...</th>
+      <td><p>Additional parameters that get passed on to <a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_data</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>No return value. Draws a plot to the current device.</p>
 
-    <p>For more details see the vignette "Data management":
-<code><a href='../articles/data_management.html'>vignette("data_management", package = "RprobitB")</a></code>.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Train"</span>, package <span class='op'>=</span> <span class='st'>"mlogit"</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'>prepare</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>price</span> <span class='op'>|</span> <span class='fl'>0</span> <span class='op'>|</span> <span class='va'>time</span> <span class='op'>+</span> <span class='va'>comfort</span> <span class='op'>+</span> <span class='va'>change</span>,
-               choice_data <span class='op'>=</span> <span class='va'>Train</span>,
-               re <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>,<span class='st'>"time"</span><span class='op'>)</span>,
-               standardize <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

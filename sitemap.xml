@@ -10,19 +10,22 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/RprobitB_model.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/RprobitB_parameter.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/RprobitB_scale.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/check_distr.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/check_form.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/check_latent_classes.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/check_parm.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/check_prior.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/check_scale.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compare.html</loc>
@@ -31,10 +34,13 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_choice_probabilities.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_statistics.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_number_of_linear_coefficients.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_suff_statistics.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_parameter_statistics.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_sufficient_statistics.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_waic.html</loc>
@@ -59,6 +65,12 @@
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_contour.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_effects.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_estimates.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_marginals.html</loc>
@@ -109,7 +121,7 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/transform_gibbs_samples.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/transform_parm.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/transform_true_parameter.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//articles/data_management.html</loc>
