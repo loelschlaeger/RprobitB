@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot method for an RprobitB_model — plot.RprobitB_model • RprobitB</title>
+<title>Plot method for an RprobitB_model. — plot.RprobitB_model • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Plot method for an RprobitB_model — plot.RprobitB_model" />
-<meta property="og:description" content="Plot method for an RprobitB_model" />
+<meta property="og:title" content="Plot method for an RprobitB_model. — plot.RprobitB_model" />
+<meta property="og:description" content="This function is the plot method for an RprobitB_model." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -152,39 +152,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot method for an <code>RprobitB_model</code></h1>
+    <h1>Plot method for an <code>RprobitB_model</code>.</h1>
     
     <div class="hidden name"><code>plot.RprobitB_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot method for an <code>RprobitB_model</code></p>
+    <p>This function is the plot method for an <code>RprobitB_model</code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for RprobitB_model</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>type</span>, <span class='va'>pars</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, type <span class='op'>=</span> <span class='st'>"effects"</span>, restrict <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>RprobitB_model</code></p></td>
+      <td><p>An object of class <code>RprobitB_model</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>The type of plot</p></td>
+      <td><p>The type of plot, which can be one of:</p><ul>
+<li><p><code>"effects"</code> (the default) for visualizing the effects,</p></li>
+<li><p><code>"mixing"</code> for visualizing the mixing distributions,</p></li>
+<li><p><code>"estimates"</code> for visualizing the parameter estimates,</p></li>
+<li><p><code>"acf"</code> for autocorrelation plots of the Gibbs samples,</p></li>
+<li><p><code>"trace"</code> for trace plots of the Gibbs samples.</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>pars</th>
-      <td><p>A vector of parameters to plot</p></td>
+      <th>restrict</th>
+      <td><p>A character (vector) of covariate or parameter names, which can be used to
+restrict the visualizations to a subset of covariates and parameters,
+respectively. Per default, a combined plot is produced.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed on to <code>plot</code></p></td>
+      <td><p>Additional parameters that get passed on to <a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>No return value. Draws a plot to the current device.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
