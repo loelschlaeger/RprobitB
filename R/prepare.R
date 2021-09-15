@@ -1,6 +1,6 @@
 #' Prepare empirical choice data.
 #' @description
-#' This function prepares empirical choice data for the RprobitB package.
+#' This function prepares empirical choice data for estimation.
 #' @details
 #' For more details see the vignette "Data management":
 #' \code{vignette("data_management", package = "RprobitB")}.
@@ -12,10 +12,12 @@
 #'         decision maker) and \code{choice} (the chosen alternatives), where
 #'         \code{choice} is the name of the dependent variable in \code{form}.
 #'   \item For each alternative specific covariate *p* (covariate of type 1 or
-#'         3) in \code{form} and each choice alternative *j*, \code{choice_data}
-#'         must contain a column named *p_j*.
-#'   \item For each covariate *q* that is constant across covariates (covariate
-#'         of type 2), \code{choice_data} must contain a column named *q*.
+#'         3) in \code{form} and each choice alternative *j* in
+#'         \code{alternatives}, \code{choice_data} must contain a column named
+#'         *p_j*.
+#'   \item For each covariate *q* in \code{form} that is constant across
+#'         covariates (covariate of type 2), \code{choice_data} must contain a
+#'         column named *q*.
 #' }
 #' @param id
 #' A character, the name of the column in \code{choice_data} that contains
