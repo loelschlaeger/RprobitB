@@ -17,4 +17,5 @@ test_that("data simulation works", {
                   alternatives = alternatives, parm = parm, distr = distr,
                   standardize = standardize, seed = 1)
   expect_snapshot(data$data)
+  expect_snapshot(summary(data))
 })

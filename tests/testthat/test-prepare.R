@@ -11,6 +11,5 @@ test_that("empirical choice data preparation works", {
                 standardize = standardize)
   expect_s3_class(out, "RprobitB_data")
   expect_snapshot(out$data)
-  #choice_data_bug = choice_data
-  #choice_data_bug[1,1] = NA
+  expect_snapshot(summary(out))
 })
