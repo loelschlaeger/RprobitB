@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute sufficient statistics — compute_sufficient_statistics • RprobitB</title>
+<title>Compute sufficient statistics. — compute_sufficient_statistics • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Compute sufficient statistics — compute_sufficient_statistics" />
-<meta property="og:description" content="Function that computes sufficient statistics for estimation." />
+<meta property="og:title" content="Compute sufficient statistics. — compute_sufficient_statistics" />
+<meta property="og:description" content="This function computes sufficient statistics from data for estimation." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -152,16 +152,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute sufficient statistics</h1>
+    <h1>Compute sufficient statistics.</h1>
     
     <div class="hidden name"><code>compute_sufficient_statistics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that computes sufficient statistics for estimation.</p>
+    <p>This function computes sufficient statistics from <code>data</code> for estimation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_sufficient_statistics</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>scale</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>compute_sufficient_statistics</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>normalization</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,18 +171,8 @@
       <td><p>An object of class <code>RprobitB_data</code>.</p></td>
     </tr>
     <tr>
-      <th>scale</th>
-      <td><p>A named list of three elements, determining the parameter normalization with
-respect to the utility scale:</p><ul>
-<li><p><code>parameter</code>:
-Either <code>"a"</code> (for a linear coefficient of <code>"alpha"</code>) or
-<code>"s"</code> (for a variance of the error-term covariance matrix
-<code>"Sigma"</code>).</p></li>
-<li><p><code>index</code>:
-The index of the parameter that gets fixed.</p></li>
-<li><p><code>value</code>:
-The value for the fixed parameter.</p></li>
-</ul></td>
+      <th>normalization</th>
+      <td><p>An object of class <code>RprobitB_normalization</code>.</p></td>
     </tr>
     </table>
 
@@ -192,9 +182,9 @@ The value for the fixed parameter.</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span>, N <span class='op'>=</span> <span class='fl'>10</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>3</span>, re <span class='op'>=</span> <span class='st'>"ASC"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'><span class='va'>scale</span> <span class='op'>=</span> <span class='fu'>check_scale</span><span class='op'>(</span>scale <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in check_scale(scale = NULL, P_f = 2, J = 3): could not find function "check_scale"</span></div><div class='input'><span class='fu'>compute_sufficient_statistics</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in compute_sufficient_statistics(data = data, scale = scale): 'data' must be of class 'RprobitB_data'.</span></div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'><span class='va'>normalization</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_normalization.html'>RprobitB_normalization</a></span><span class='op'>(</span>J <span class='op'>=</span> <span class='va'>data</span><span class='op'>$</span><span class='va'>J</span>, P_f <span class='op'>=</span> <span class='va'>data</span><span class='op'>$</span><span class='va'>P_f</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in data$J: object of type 'closure' is not subsettable</span></div><div class='input'><span class='fu'>compute_sufficient_statistics</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, <span class='va'>normalization</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in compute_sufficient_statistics(data = data, normalization): 'data' must be of class 'RprobitB_data'.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

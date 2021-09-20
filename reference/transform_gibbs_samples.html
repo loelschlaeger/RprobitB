@@ -161,7 +161,7 @@
     <p>This function normalizes, burns and thins the Gibbs samples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>transform_gibbs_samples</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>R</span>, <span class='va'>B</span>, <span class='va'>Q</span>, <span class='va'>scale</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>transform_gibbs_samples</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>R</span>, <span class='va'>B</span>, <span class='va'>Q</span>, <span class='va'>normalization</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,36 +185,27 @@ be discarded.</p></td>
 sample is kept.</p></td>
     </tr>
     <tr>
-      <th>scale</th>
-      <td><p>A named list of three elements, determining the parameter normalization with
-respect to the utility scale:</p><ul>
-<li><p><code>parameter</code>:
-Either <code>"a"</code> (for a linear coefficient of <code>"alpha"</code>) or
-<code>"s"</code> (for a variance of the error-term covariance matrix
-<code>"Sigma"</code>).</p></li>
-<li><p><code>index</code>:
-The index of the parameter that gets fixed.</p></li>
-<li><p><code>value</code>:
-The value for the fixed parameter.</p></li>
-</ul></td>
+      <th>normalization</th>
+      <td><p>An object of class <code>RprobitB_normalization</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of transformed Gibbs samples. Each element is a list, containing the
+    <p>An object of class <code>RprobitB_gibbs_samples</code>, i.e. a list of transformed
+Gibbs samples. Each element is a list, containing the
 Gibbs samples for <code>s</code>, <code>alpha</code>, <code>b</code>, <code>Omega</code>, and
 <code>Sigma</code> (if available):</p><ul>
 <li><p><code>gibbs_samples</code>:
-The function input <code>gibbs_samples</code></p></li>
+The function input <code>gibbs_samples</code>.</p></li>
 <li><p><code>gibbs_samples_n</code>:
-A list of normalized samples based on <code>scale</code></p></li>
+A list of normalized samples based on <code>normalization</code>.</p></li>
 <li><p><code>gibbs_samples_nb</code>:
-A list of normalized and burned samples based on <code>scale</code> and <code>B</code></p></li>
+A list of normalized and burned samples based on <code>normalization</code> and <code>B</code>.</p></li>
 <li><p><code>gibbs_samples_nt</code>:
-A list of normalized and thinned samples based on <code>scale</code> and <code>Q</code></p></li>
+A list of normalized and thinned samples based on <code>normalization</code> and <code>Q</code></p></li>
 <li><p><code>gibbs_samples_nbt</code>:
-A list of normalized, burned and thinned samples based on <code>scale</code>,
+A list of normalized, burned and thinned samples based on <code>normalization</code>,
 <code>B</code> and <code>Q</code></p></li>
 </ul>
 

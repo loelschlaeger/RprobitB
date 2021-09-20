@@ -48,7 +48,7 @@
 
 <meta property="og:title" content="Transformation of true parameter values. — transform_true_parameter" />
 <meta property="og:description" content="This function transforms the true parameter values 'true_parameter' based
-on 'scale'." />
+on 'normalization$scale'." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -160,31 +160,21 @@ on 'scale'." />
 
     <div class="ref-description">
     <p>This function transforms the true parameter values 'true_parameter' based
-on 'scale'.</p>
+on 'normalization$scale'.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>transform_true_parameter</span><span class='op'>(</span><span class='va'>true_parameter</span>, <span class='va'>scale</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>transform_true_parameter</span><span class='op'>(</span><span class='va'>true_parameter</span>, <span class='va'>normalization</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>true_parameter</th>
-      <td><p>An object of class <code>RprobitB_parameter</code> with true model parameters.</p></td>
+      <td><p>An object of class <code>RprobitB_true_parameter</code>.</p></td>
     </tr>
     <tr>
-      <th>scale</th>
-      <td><p>A named list of three elements, determining the parameter normalization with
-respect to the utility scale:</p><ul>
-<li><p><code>parameter</code>:
-Either <code>"a"</code> (for a linear coefficient of <code>"alpha"</code>) or
-<code>"s"</code> (for a variance of the error-term covariance matrix
-<code>"Sigma"</code>).</p></li>
-<li><p><code>index</code>:
-The index of the parameter that gets fixed.</p></li>
-<li><p><code>value</code>:
-The value for the fixed parameter.</p></li>
-</ul></td>
+      <th>normalization</th>
+      <td><p>An object of class <code>RprobitB_normalization</code>.</p></td>
     </tr>
     </table>
 
@@ -193,10 +183,11 @@ The value for the fixed parameter.</p></li>
     <p>An object of class <code>RprobitB_parameter</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>true_parameter</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_parameter.html'>RprobitB_parameter</a></span><span class='op'>(</span>P_f <span class='op'>=</span> <span class='fl'>2</span>, P_r <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span>, N <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'><span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_scale.html'>RprobitB_scale</a></span><span class='op'>(</span>scale <span class='op'>=</span> <span class='cn'>NULL</span>, P_f <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='fu'>transform_parm</span><span class='op'>(</span>true_parameter <span class='op'>=</span> <span class='va'>true_parameter</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in transform_parm(true_parameter = true_parameter, scale = scale): could not find function "transform_parm"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>true_parameter</span> <span class='op'>=</span> <span class='fu'>RprobitB_parameter</span><span class='op'>(</span>P_f <span class='op'>=</span> <span class='fl'>2</span>, P_r <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span>, N <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in RprobitB_parameter(P_f = 2, P_r = 2, J = 3, N = 100): could not find function "RprobitB_parameter"</span></div><div class='input'><span class='va'>normalization</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_normalization.html'>RprobitB_normalization</a></span><span class='op'>(</span>J <span class='op'>=</span> <span class='fl'>3</span>, P_f <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'>transform_true_parameter</span><span class='op'>(</span>true_parameter <span class='op'>=</span> <span class='va'>true_parameter</span>,
+                         normalization <span class='op'>=</span> <span class='va'>normalization</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in transform_true_parameter(true_parameter = true_parameter, normalization = normalization): object 'true_parameter' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
