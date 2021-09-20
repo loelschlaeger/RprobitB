@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create object of class RprobitB_model. — RprobitB_model • RprobitB</title>
+<title>Create object of class RprobitB_true_parameter. — RprobitB_true_parameter • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,10 @@
 
 
 
-<meta property="og:title" content="Create object of class RprobitB_model. — RprobitB_model" />
-<meta property="og:description" content="This function creates an object of class RprobitB_model." />
+<meta property="og:title" content="Create object of class RprobitB_true_parameter. — RprobitB_true_parameter" />
+<meta property="og:description" content="This function creates an object of class RprobitB_true_parameter.
+Missing parameters are sampled. All parameters are checked against the values
+of P_f, P_r, J, and N." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -152,118 +154,107 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create object of class <code>RprobitB_model</code>.</h1>
+    <h1>Create object of class <code>RprobitB_true_parameter</code>.</h1>
     
-    <div class="hidden name"><code>RprobitB_model.Rd</code></div>
+    <div class="hidden name"><code>RprobitB_true_parameter.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function creates an object of class <code>RprobitB_model</code>.</p>
+    <p>This function creates an object of class <code>RprobitB_true_parameter</code>.
+Missing parameters are sampled. All parameters are checked against the values
+of <code>P_f</code>, <code>P_r</code>, <code>J</code>, and <code>N</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RprobitB_model</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>normalization</span>,
-  <span class='va'>R</span>,
-  <span class='va'>B</span>,
-  <span class='va'>Q</span>,
-  <span class='va'>latent_classes</span>,
-  <span class='va'>prior</span>,
-  <span class='va'>gibbs_samples</span>
+    <pre class="usage"><span class='fu'>RprobitB_true_parameter</span><span class='op'>(</span>
+  <span class='va'>P_f</span>,
+  <span class='va'>P_r</span>,
+  <span class='va'>J</span>,
+  <span class='va'>N</span>,
+  alpha <span class='op'>=</span> <span class='cn'>NULL</span>,
+  C <span class='op'>=</span> <span class='cn'>NULL</span>,
+  s <span class='op'>=</span> <span class='cn'>NULL</span>,
+  b <span class='op'>=</span> <span class='cn'>NULL</span>,
+  Omega <span class='op'>=</span> <span class='cn'>NULL</span>,
+  Sigma <span class='op'>=</span> <span class='cn'>NULL</span>,
+  beta <span class='op'>=</span> <span class='cn'>NULL</span>,
+  z <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>An object of class <code>RprobitB_data</code>.</p></td>
+      <th>P_f</th>
+      <td><p>The number of covariates connected to a fixed coefficient (can be 0).</p></td>
     </tr>
     <tr>
-      <th>normalization</th>
-      <td><p>An object of class <code>RprobitB_normalization</code>.</p></td>
+      <th>P_r</th>
+      <td><p>The number of covariates connected to a random coefficient (can be 0).</p></td>
     </tr>
     <tr>
-      <th>R</th>
-      <td><p>The number of iterations of the Gibbs sampler.</p></td>
+      <th>J</th>
+      <td><p>The number (greater or equal 2) of choice alternatives.</p></td>
     </tr>
     <tr>
-      <th>B</th>
-      <td><p>The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.</p></td>
+      <th>N</th>
+      <td><p>The number (greater or equal 1) of decision makers.</p></td>
     </tr>
     <tr>
-      <th>Q</th>
-      <td><p>The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th
-sample is kept.</p></td>
+      <th>alpha</th>
+      <td><p>The fixed coefficient vector of length <code>P_f</code>.
+Set to <code>NA</code> if <code>P_f = 0</code>.</p></td>
     </tr>
     <tr>
-      <th>latent_classes</th>
-      <td><p>A list of parameters specifying the number and the updating scheme of latent
-classes:</p><ul>
-<li><p><code>C</code>:
-The number (greater or equal 1) of latent classes. Set to 1 per default
-and is ignored if <code>P_r = 0</code>.</p></li>
-<li><p><code>update</code>:
-A boolean, determining whether to update <code>C</code>. Ignored if
-<code>P_r = 0</code>. If <code>update = FALSE</code>, all of the following elements are
-ignored.</p></li>
-<li><p><code>Cmax</code>:
-The maximum number of latent classes.</p></li>
-<li><p><code>buffer</code>:
-The updating buffer (number of iterations to wait before the next update).</p></li>
-<li><p><code>epsmin</code>:
-The threshold weight for removing latent classes (between 0 and 1).</p></li>
-<li><p><code>epsmax</code>:
-The threshold weight for splitting latent classes (between 0 and 1).</p></li>
-<li><p><code>distmin</code>:
-The threshold difference in means for joining latent classes
-(non-negative).</p></li>
-</ul></td>
+      <th>C</th>
+      <td><p>The number (greater or equal 1) of latent classes of decision makers.
+Set to <code>NA</code> if <code>P_r = 0</code>. Otherwise, <code>C = 1</code> per default.</p></td>
     </tr>
     <tr>
-      <th>prior</th>
-      <td><p>A named list of parameters for the prior distributions of the normalized
-parameters:</p><ul>
-<li><p><code>eta</code>:
-The mean vector of length <code>P_f</code> of the normal prior for
-<code>alpha</code>.</p></li>
-<li><p><code>Psi</code>:
-The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
-normal prior for <code>alpha</code>.</p></li>
-<li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for
-<code>s</code>.</p></li>
-<li><p><code>xi</code>:
-The mean vector of length <code>P_r</code> of the normal prior for each
-<code>b_c</code>.</p></li>
-<li><p><code>D</code>:
-The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>nu</code>:
-The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>:
-The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>:
-The degrees of freedom (a natural number greater than <code>J-1</code>) of
-the Inverse Wishart prior for <code>Sigma</code>.</p></li>
-<li><p><code>E</code>:
-The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
-Inverse Wishart prior for <code>Sigma</code>.</p></li>
-</ul></td>
+      <th>s</th>
+      <td><p>The vector of class weights of length <code>C</code>.
+Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
     </tr>
     <tr>
-      <th>gibbs_samples</th>
-      <td><p>An object of class <code>RprobitB_gibbs_samples</code>.</p></td>
+      <th>b</th>
+      <td><p>The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.
+Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
+    </tr>
+    <tr>
+      <th>Omega</th>
+      <td><p>The matrix of class covariance matrices as columns of dimension
+<code>P_r*P_r</code> x <code>C</code>.
+Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
+    </tr>
+    <tr>
+      <th>Sigma</th>
+      <td><p>The error term covariance matrix of dimension <code>J</code> x <code>J</code>.
+Internally, <code>Sigma</code> gets differenced with respect to alternative
+<code>J</code>, so it becomes an identified covariance matrix of dimension
+<code>J-1</code> x <code>J-1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>beta</th>
+      <td><p>The matrix of the decision-maker specific coefficient vectors of dimension
+<code>P_r</code> x <code>N</code>.
+Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
+    </tr>
+    <tr>
+      <th>z</th>
+      <td><p>The vector of the allocation variables of length <code>N</code>.
+Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Set a seed for sampling missing parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_model</code>, i.e. a list with the arguments of
-this function as elements.</p>
+    <p>An object of class <code>RprobitB_true_parameter</code>, i.e. a named list with the
+model parameters <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</code>, <code>Omega</code>,
+<code>Sigma</code>, <code>beta</code>, and <code>z</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
