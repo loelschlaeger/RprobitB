@@ -4,7 +4,7 @@
 \alias{transform_gibbs_samples}
 \title{Transformation of Gibbs samples.}
 \usage{
-transform_gibbs_samples(gibbs_samples, R, B, Q, scale)
+transform_gibbs_samples(gibbs_samples, R, B, Q, normalization)
 }
 \arguments{
 \item{gibbs_samples}{The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples.}
@@ -17,34 +17,24 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{scale}{A named list of three elements, determining the parameter normalization with
-respect to the utility scale:
-\itemize{
-\item \code{parameter}:
-Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
-\code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"}).
-\item \code{index}:
-The index of the parameter that gets fixed.
-\item \code{value}:
-The value for the fixed parameter.
-}}
+\item{normalization}{An object of class \code{RprobitB_normalization}.}
 }
 \value{
-A list of transformed Gibbs samples. Each element is a list, containing the
+An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed
+Gibbs samples. Each element is a list, containing the
 Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and
 \code{Sigma} (if available):
 \itemize{
 \item \code{gibbs_samples}:
-The function input \code{gibbs_samples}
+The function input \code{gibbs_samples}.
 \item \code{gibbs_samples_n}:
-A list of normalized samples based on \code{scale}
+A list of normalized samples based on \code{normalization}.
 \item \code{gibbs_samples_nb}:
-A list of normalized and burned samples based on \code{scale} and \code{B}
+A list of normalized and burned samples based on \code{normalization} and \code{B}.
 \item \code{gibbs_samples_nt}:
-A list of normalized and thinned samples based on \code{scale} and \code{Q}
+A list of normalized and thinned samples based on \code{normalization} and \code{Q}
 \item \code{gibbs_samples_nbt}:
-A list of normalized, burned and thinned samples based on \code{scale},
+A list of normalized, burned and thinned samples based on \code{normalization},
 \code{B} and \code{Q}
 }
 }

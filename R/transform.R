@@ -4,7 +4,7 @@
 #' \itemize{
 #'   \item change the length \code{B} of the burn-in period,
 #'   \item change the thinning factor \code{Q},
-#'   \item change the utility normalization \code{scale}.
+#'   \item change the model \code{scale}.
 #' }
 #' @details
 #' For more details see the vignettes
@@ -47,36 +47,36 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL) {
     model$Q = Q
   }
   R = model$R
-  P_f = model$RprobitB_data$P_f
-  J = model$RprobitB_data$J
+  P_f = model$data$P_f
+  J = model$data$J
   if(!is.numeric(B) || !B%%1 == 0 || !B>0 || !B<R)
     stop("'B' must be a positive integer smaller than 'R'.")
   if(!is.numeric(Q) || !Q%%1 == 0 || !Q>0 || !Q<R)
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(is.null(scale)){
-    scale = model$scale
+    normalization = model$normalization
   } else {
-    scale = RprobitB_scale(scale = scale, P_f = P_f, J = J)
-    model$scale = scale
+    normalization = RprobitB_normalization(J = J, P_f = P_f, scale = scale)
+    model$normalization = normalization
   }
 
-  ### normalize, burn and thin Gibbs samples
+  ### scale, burn and thin Gibbs samples
   gibbs_samples = transform_gibbs_samples(
     gibbs_samples = model$gibbs_samples$gibbs_samples, R = R, B = B, Q = Q,
-    scale = scale)
+    normalization = normalization)
   model$gibbs_samples = gibbs_samples
 
   ### compute statistics from Gibbs samples
   statistics = compute_parameter_statistics(
-    gibbs_samples = gibbs_samples, P_f = model$RprobitB_data$P_f,
-    P_r = model$RprobitB_data$P_r, J = model$RprobitB_data$J,
+    gibbs_samples = gibbs_samples, P_f = model$data$P_f,
+    P_r = model$data$P_r, J = model$data$J,
     C = model$latent_classes$C)
   model$statistics = statistics
 
   ### scale true parameters
-  if(model$RprobitB_data$simulated)
-    model$RprobitB_data$true_parameter = transform_parm(
-      parm = model$RprobitB_data$parm, scale = scale)
+  if(model$data$simulated)
+    model$data$true_parameter = transform_true_parameter(
+      true_parameter = model$data$true_parameter, normalization = normalization)
 
   ### return 'RprobitB_model'
   return(model)
@@ -86,50 +86,47 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL) {
 #' Transformation of true parameter values.
 #' @description
 #' This function transforms the true parameter values 'true_parameter' based
-#' on 'scale'.
+#' on 'normalization$scale'.
 #' @param true_parameter
-#' An object of class \code{RprobitB_parameter} with true model parameters.
-#' @inheritParams RprobitB_scale
+#' An object of class \code{RprobitB_true_parameter}.
+#' @param normalization
+#' An object of class \code{RprobitB_normalization}.
 #' @examples
 #' true_parameter = RprobitB_parameter(P_f = 2, P_r = 2, J = 3, N = 100)
-#' scale = RprobitB_scale(scale = NULL, P_f = 2, J = 3)
-#' transform_parm(true_parameter = true_parameter, scale = scale)
+#' normalization = RprobitB_normalization(J = 3, P_f = 2)
+#' transform_true_parameter(true_parameter = true_parameter,
+#'                          normalization = normalization)
 #' @return
 #' An object of class \code{RprobitB_parameter}.
 
-transform_true_parameter = function(true_parameter, scale) {
+transform_true_parameter = function(true_parameter, normalization) {
 
   ### check inputs
-  if(!inherits(true_parameter, "RprobitB_parameter"))
-    stop("'true_parameter' must be of class 'RprobitB_parameter'.")
-  if(!inherits(scale, "RprobitB_scale"))
-    stop("'scale' must be of class 'RprobitB_scale'.")
+  if(!inherits(true_parameter, "RprobitB_true_parameter"))
+    stop("'true_parameter' must be of class 'RprobitB_true_parameter'.")
+  if(!inherits(normalization, "RprobitB_normalization"))
+    stop("'normalization' must be of class 'RprobitB_normalization'.")
 
-  ### function to normalize the parameters
-  normalize = function(par, factor){
-    if(any(is.na(par))){
-      return(NA)
-    } else {
-      return(par * factor)
-    }
-  }
+  ### function to scale the parameters
+  scaling = function(par, factor) if(any(is.na(par))) NA else par * factor
 
   ### scale elements of 'true_parameter'
+  scale = normalization$scale
   if(scale$parameter=="a"){
     factor = scale$value / true_parameter$alpha[scale$index]
-    true_parameter$alpha = normalize(true_parameter$alpha, factor)
-    true_parameter$b = normalize(true_parameter$b, factor)
-    true_parameter$Omega = normalize(true_parameter$Omega, factor^2)
-    true_parameter$Sigma = normalize(true_parameter$Sigma, factor^2)
-    true_parameter$beta = normalize(true_parameter$beta, factor)
+    true_parameter$alpha = scaling(true_parameter$alpha, factor)
+    true_parameter$b = scaling(true_parameter$b, factor)
+    true_parameter$Omega = scaling(true_parameter$Omega, factor^2)
+    true_parameter$Sigma = scaling(true_parameter$Sigma, factor^2)
+    true_parameter$beta = scaling(true_parameter$beta, factor)
   }
   if(scale$parameter=="s"){
     factor = scale$value / true_parameter$Sigma[scale$index,scale$index]
-    true_parameter$alpha = normalize(true_parameter$alpha, sqrt(factor))
-    true_parameter$b = normalize(true_parameter$b, sqrt(factor))
-    true_parameter$Omega = normalize(true_parameter$Omega, factor)
-    true_parameter$Sigma = normalize(true_parameter$Sigma, factor)
-    true_parameter$beta = normalize(true_parameter$beta, sqrt(factor))
+    true_parameter$alpha = scaling(true_parameter$alpha, sqrt(factor))
+    true_parameter$b = scaling(true_parameter$b, sqrt(factor))
+    true_parameter$Omega = scaling(true_parameter$Omega, factor)
+    true_parameter$Sigma = scaling(true_parameter$Sigma, factor)
+    true_parameter$beta = scaling(true_parameter$beta, sqrt(factor))
   }
 
   ### return 'true_parameter'
@@ -145,52 +142,54 @@ transform_true_parameter = function(true_parameter, scale) {
 #' @inheritParams fit
 #' @inheritParams compute_sufficient_statistics
 #' @return
-#' A list of transformed Gibbs samples. Each element is a list, containing the
+#' An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed
+#' Gibbs samples. Each element is a list, containing the
 #' Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and
 #' \code{Sigma} (if available):
 #' \itemize{
 #'   \item \code{gibbs_samples}:
-#'   The function input \code{gibbs_samples}
+#'   The function input \code{gibbs_samples}.
 #'   \item \code{gibbs_samples_n}:
-#'   A list of normalized samples based on \code{scale}
+#'   A list of normalized samples based on \code{normalization}.
 #'   \item \code{gibbs_samples_nb}:
-#'   A list of normalized and burned samples based on \code{scale} and \code{B}
+#'   A list of normalized and burned samples based on \code{normalization} and \code{B}.
 #'   \item \code{gibbs_samples_nt}:
-#'   A list of normalized and thinned samples based on \code{scale} and \code{Q}
+#'   A list of normalized and thinned samples based on \code{normalization} and \code{Q}
 #'   \item \code{gibbs_samples_nbt}:
-#'   A list of normalized, burned and thinned samples based on \code{scale},
+#'   A list of normalized, burned and thinned samples based on \code{normalization},
 #'   \code{B} and \code{Q}
 #' }
 
-transform_gibbs_samples = function(gibbs_samples, R, B, Q, scale) {
+transform_gibbs_samples = function(gibbs_samples, R, B, Q, normalization) {
 
   ### check inputs
-  if(!inherits(scale, "RprobitB_scale"))
-    stop("'scale' must be of class 'RprobitB_scale'.")
+  if(!inherits(normalization, "RprobitB_normalization"))
+    stop("'normalization' must be of class 'RprobitB_normalization'.")
 
   ### determine estimated number of latent classes
   last_s_draw = gibbs_samples$s_draws[nrow(gibbs_samples$s_draws),]
   C_est = length(last_s_draw[last_s_draw!=0])
 
-  ### function to normalize the samples
-  normalize = function(par, factor) if(any(is.na(par))) NA else par * factor
+  ### function to scale the samples
+  scaling = function(par, factor) if(any(is.na(par))) NA else par * factor
 
-  ### normalization of samples
-  s_draws_n = normalize(gibbs_samples$s_draws, 1)
+  ### scaling of samples
+  scale = normalization$scale
+  s_draws_n = scaling(gibbs_samples$s_draws, 1)
   if(scale$parameter=="a"){
     factor = scale$value / gibbs_samples$alpha_draws[,scale$index]
-    alpha_draws_n = normalize(gibbs_samples$alpha_draws, factor)
-    b_draws_n = normalize(gibbs_samples$b_draws, factor)
-    Omega_draws_n = normalize(gibbs_samples$Omega_draws, factor^2)
-    Sigma_draws_n = normalize(gibbs_samples$Sigma_draws, factor^2)
+    alpha_draws_n = scaling(gibbs_samples$alpha_draws, factor)
+    b_draws_n = scaling(gibbs_samples$b_draws, factor)
+    Omega_draws_n = scaling(gibbs_samples$Omega_draws, factor^2)
+    Sigma_draws_n = scaling(gibbs_samples$Sigma_draws, factor^2)
   }
   if(scale$parameter=="s"){
     Jm1 = sqrt(length(gibbs_samples$Sigma_draws[1,]))
     factor = scale$value / gibbs_samples$Sigma_draws[,(Jm1)*(scale$index-1)+scale$index]
-    alpha_draws_n = normalize(gibbs_samples$alpha_draws, sqrt(factor))
-    b_draws_n = normalize(gibbs_samples$b_draws, sqrt(factor))
-    Omega_draws_n = normalize(gibbs_samples$Omega_draws, factor)
-    Sigma_draws_n = normalize(gibbs_samples$Sigma_draws, factor)
+    alpha_draws_n = scaling(gibbs_samples$alpha_draws, sqrt(factor))
+    b_draws_n = scaling(gibbs_samples$b_draws, sqrt(factor))
+    Omega_draws_n = scaling(gibbs_samples$Omega_draws, factor)
+    Sigma_draws_n = scaling(gibbs_samples$Sigma_draws, factor)
   }
   gibbs_samples_n = list("s"     = s_draws_n,
                          "alpha" = alpha_draws_n,

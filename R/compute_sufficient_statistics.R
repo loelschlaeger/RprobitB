@@ -1,23 +1,23 @@
-#' Compute sufficient statistics
+#' Compute sufficient statistics.
 #' @description
-#' Function that computes sufficient statistics for estimation.
-#' @param data
-#' An object of class \code{RprobitB_data}.
-#' @inheritParams RprobitB_scale
+#' This function computes sufficient statistics from \code{data} for estimation.
+#' @inheritParams fit
+#' @param normalization
+#' An object of class \code{RprobitB_normalization}.
 #' @examples
 #' data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
-#' scale = check_scale(scale = NULL, P_f = 2, J = 3)
-#' compute_sufficient_statistics(data = data, scale = scale)
+#' normalization = RprobitB_normalization(J = data$J, P_f = data$P_f)
+#' compute_sufficient_statistics(data = data, normalization)
 #' @return
 #' A list of sufficient statistics.
 
-compute_sufficient_statistics = function(data, scale){
+compute_sufficient_statistics = function(data, normalization){
 
   ### check input
   if(!inherits(data, "RprobitB_data"))
     stop("'data' must be of class 'RprobitB_data'.")
-  if(!inherits(scale, "RprobitB_scale"))
-    stop("'scale' must be of class 'RprobitB_scale'.")
+  if(!inherits(normalization, "RprobitB_normalization"))
+    stop("'normalization' must be of class 'RprobitB_normalization'.")
 
   ### extract parameters
   N = data$N
@@ -32,15 +32,12 @@ compute_sufficient_statistics = function(data, scale){
     return(Delta)
   }
 
-  ### normalize 'data$data'
-  for(n in seq_len(N)){
-    for(t in seq_len(T[n])){
-      data$data[[n]]$X[[t]] =
-        Delta(J) %*% data$data[[n]]$X[[t]]
-    }
-  }
+  ### compute utility differences with respect to 'normalization$level'
+  for(n in seq_len(N))
+    for(t in seq_len(T[n]))
+      data$data[[n]]$X[[t]] = Delta(normalization$level) %*% data$data[[n]]$X[[t]]
 
-  ### 'compute suff_statistics'
+  ### compute sufficient statistics
   y = matrix(0,nrow=N,ncol=max(T))
   for(n in 1:N){
     y_n = data$data[[n]][[2]]
@@ -98,6 +95,8 @@ compute_sufficient_statistics = function(data, scale){
       }
     }
   }
+
+  ### build and return 'suff_statistics'
   suff_statistics = list("Tvec"   = T,
                          "csTvec" = cumsum(T)-T,
                          "W"      = W,
@@ -105,8 +104,6 @@ compute_sufficient_statistics = function(data, scale){
                          "y"      = y,
                          "XkX"    = XkX,
                          "WkW"    = WkW)
-
-  ### return 'suff_statistics'
   return(suff_statistics)
 
 }

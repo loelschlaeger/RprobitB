@@ -67,8 +67,10 @@ compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
   ### generate statistics for each parameter
   statistics = list()
   par_names = c("Sigma")
-  if(P_f>0) par_names = c(par_names, "alpha")
-  if(P_r>0) par_names = c(par_names, "s","b","Omega")
+  if(P_f>0)
+    par_names = c(par_names, "alpha")
+  if(P_r>0)
+    par_names = c(par_names, "s","b","Omega")
   for(par in par_names){
     statistics[[par]] = compute_statistic_values(
       samples_nbt = gibbs_samples$gibbs_samples_nbt[[par]],

@@ -136,7 +136,7 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   P_r = P$P_r
 
   ### check supplied and draw missing model parameters
-  true_parameter = do.call(what = RprobitB_parameter,
+  true_parameter = do.call(what = RprobitB_true_parameter,
                            args = c(list("P_f" = P_f, "P_r" = P_r,
                                          "J" = J, "N" = N, "seed" = seed),
                                     list(...)))

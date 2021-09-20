@@ -4,33 +4,23 @@
 \alias{transform_true_parameter}
 \title{Transformation of true parameter values.}
 \usage{
-transform_true_parameter(true_parameter, scale)
+transform_true_parameter(true_parameter, normalization)
 }
 \arguments{
-\item{true_parameter}{An object of class \code{RprobitB_parameter} with true model parameters.}
+\item{true_parameter}{An object of class \code{RprobitB_true_parameter}.}
 
-\item{scale}{A named list of three elements, determining the parameter normalization with
-respect to the utility scale:
-\itemize{
-\item \code{parameter}:
-Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
-\code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"}).
-\item \code{index}:
-The index of the parameter that gets fixed.
-\item \code{value}:
-The value for the fixed parameter.
-}}
+\item{normalization}{An object of class \code{RprobitB_normalization}.}
 }
 \value{
 An object of class \code{RprobitB_parameter}.
 }
 \description{
 This function transforms the true parameter values 'true_parameter' based
-on 'scale'.
+on 'normalization$scale'.
 }
 \examples{
 true_parameter = RprobitB_parameter(P_f = 2, P_r = 2, J = 3, N = 100)
-scale = RprobitB_scale(scale = NULL, P_f = 2, J = 3)
-transform_parm(true_parameter = true_parameter, scale = scale)
+normalization = RprobitB_normalization(J = 3, P_f = 2)
+transform_true_parameter(true_parameter = true_parameter,
+                         normalization = normalization)
 }

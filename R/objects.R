@@ -1,6 +1,6 @@
-#' Construct object of class \code{RprobitB_data}
+#' Create object of class \code{RprobitB_data}.
 #' @description
-#' This function constructs an object of class \code{RprobitB_data}.
+#' This function creates an object of class \code{RprobitB_data}.
 #' @param data
 #' A list with the choice data.
 #' The list has \code{N} elements.
@@ -39,8 +39,8 @@
 #' @inheritParams check_form
 #' @inheritParams prepare
 #' @inheritParams simulate
-#' @inheritParams true_parameter
-#' An object of class \code{RprobitB_parameters} of true model parameters.
+#' @params true_parameter
+#' An object of class \code{RprobitB_true_parameters}.
 #' @return
 #' An object of class \code{RprobitB_data}, which is a list of
 #' \itemize{
@@ -49,12 +49,6 @@
 #'   columns \code{name} (the covariate names) and \code{random} (a boolean
 #'   determining whether the covariates are random effects).
 #' }
-#'
-#' list of the arguments
-#' of this function and the element \code{covs}, which is a data frame
-#' containing the parameter names.
-#' In case of empirical data, the elements \code{parm} and \code{distr} equal
-#' \code{NULL}.
 
 RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                          form, re, vars, ASC, standardize, simulated, distr,
@@ -73,6 +67,8 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.null(re) || is.character(re))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(ASC))
+  stopifnot(is.null(true_parameter) ||
+              inherits(true_parameter,"RprobitB_true_parameter"))
 
   ### create data frame of covariate names
   cov_names = colnames(data[[1]][["X"]][[1]])
@@ -80,7 +76,7 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                     "random" = FALSE)
   covs[which(gsub("_.*$","",cov_names) %in% re),"random"] = TRUE
 
-  ### create object of class "RprobitB_data"
+  ### create and return object of class "RprobitB_data"
   out = list("data"           = data,
              "choice_data"    = choice_data,
              "N"              = N,
@@ -99,8 +95,6 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
              "distr"          = distr,
              "true_parameter" = true_parameter)
   class(out) = "RprobitB_data"
-
-  ### return object
   return(out)
 }
 
@@ -222,9 +216,9 @@ RprobitB_normalization = function(J, P_f, level = J,
 
 }
 
-#' Construct object of class \code{RprobitB_true_parameter}.
+#' Create object of class \code{RprobitB_true_parameter}.
 #' @description
-#' This function constructs an object of class \code{RprobitB_true_parameter}.
+#' This function creates an object of class \code{RprobitB_true_parameter}.
 #' Missing parameters are sampled. All parameters are checked against the values
 #' of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 #' @inheritParams RprobitB_data
@@ -377,5 +371,4 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
              "z" = z)
   class(out) = "RprobitB_true_parameter"
   return(out)
-
 }

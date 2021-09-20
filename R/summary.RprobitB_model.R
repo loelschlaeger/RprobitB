@@ -7,8 +7,14 @@
 
 summary.RprobitB_model = function(object, ... ) {
 
+  ### check if 'object' is of class 'RprobitB_model'
   if(!inherits(object, "RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
+
+  ### compute statistics from 'gibbs_samples'
+  statistics = compute_parameter_statistics(
+    gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
+    C = latent_classes$C)
 
   ### build 'summary.RprobitB_model' object
   out = list("form" = object$data$form,

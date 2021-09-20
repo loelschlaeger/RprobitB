@@ -305,7 +305,8 @@ double euc_dist (vec a, vec b){
 }
 
 List update_classes (int rep, int Cmax, double epsmin, double epsmax,
-                     double distmin, vec s, vec m, mat b, mat Omega) {
+                     double distmin, vec s, vec m, mat b, mat Omega,
+                     bool print_progress) {
   // oelschlaeger 04/2020
   // Function to perform the class updating scheme
   char buf[50];
@@ -318,7 +319,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
   if(stack(0,id_min)<epsmin){
     stack.shed_col(id_min);
     C -= 1;
-    sprintf(buf, "%9d removed class         \n", rep+1);
+    if(print_progress) sprintf(buf, "%9d removed class         \n", rep+1);
     Rcout <<  buf;
     flag = true;
   }
@@ -340,7 +341,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
       stack(2+largest_var[1],id_max+1) += largest_var[0]/2;
       stack(span(P+2,1+P+P*P),span(id_max,id_max+1)) /= 2;
       C += 1;
-      sprintf(buf, "%9d splitted class        \n", rep+1);
+      if(print_progress) sprintf(buf, "%9d splitted class        \n", rep+1);
       Rcout <<  buf;
       flag = true;
     }
@@ -370,7 +371,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
       stack(span(2+P,2+P+P*P-1),c1) /=2;
       stack.shed_col(c2);
       C -= 1;
-      sprintf(buf, "%9d joined classes        \n", rep+1);
+      if(print_progress) sprintf(buf, "%9d joined classes        \n", rep+1);
       Rcout <<  buf;
       flag = true;
     }
@@ -604,12 +605,12 @@ List gibbs_sampling (int R, int B, bool print_progress,
 
       // update classes
       if(update==true && (rep+1)>=(B/2) && (rep+1)<=B && (rep+1)%buffer==0){
-        if(rep+1==B/2){
+        if(print_progress && rep+1==B/2){
           sprintf(buf, "%9d started class updating\n", rep+1);
           Rcout << buf;
         }
         List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,
-                                           Omega);
+                                           Omega,print_progress);
         C = as<int>(class_update["C"]);
         s = as<vec>(class_update["s"]);
         m = as<vec>(class_update["m"]);
@@ -619,7 +620,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
         if(flag==true){
           update_steps[(rep+1-B/2)/buffer] = 1;
         }
-        if(rep+1==B){
+        if(print_progress && rep+1==B){
           sprintf(buf, "%9d ended class updating (C = %d)\n", rep+1, C);
           Rcout << buf;
         }

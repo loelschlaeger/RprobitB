@@ -2,34 +2,23 @@
 % Please edit documentation in R/compute_sufficient_statistics.R
 \name{compute_sufficient_statistics}
 \alias{compute_sufficient_statistics}
-\title{Compute sufficient statistics}
+\title{Compute sufficient statistics.}
 \usage{
-compute_sufficient_statistics(data, scale)
+compute_sufficient_statistics(data, normalization)
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
 
-\item{scale}{A named list of three elements, determining the parameter normalization with
-respect to the utility scale:
-\itemize{
-\item \code{parameter}:
-Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
-\code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"}).
-\item \code{index}:
-The index of the parameter that gets fixed.
-\item \code{value}:
-The value for the fixed parameter.
-}}
+\item{normalization}{An object of class \code{RprobitB_normalization}.}
 }
 \value{
 A list of sufficient statistics.
 }
 \description{
-Function that computes sufficient statistics for estimation.
+This function computes sufficient statistics from \code{data} for estimation.
 }
 \examples{
 data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
-scale = check_scale(scale = NULL, P_f = 2, J = 3)
-compute_sufficient_statistics(data = data, scale = scale)
+normalization = RprobitB_normalization(J = data$J, P_f = data$P_f)
+compute_sufficient_statistics(data = data, normalization)
 }

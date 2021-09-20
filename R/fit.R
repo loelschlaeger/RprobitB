@@ -7,7 +7,7 @@
 #' \code{vignette("model_fitting", package = "RprobitB")}.
 #' @param data
 #' An object of class \code{RprobitB_data}.
-#' @inheritParams RprobitB_scale
+#' @inheritParams RprobitB_normalization
 #' @param R
 #' The number of iterations of the Gibbs sampler.
 #' @param B
@@ -66,13 +66,14 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(!is.logical(print_progress))
     stop("'progress' must be a boolean.")
-  scale = RprobitB_scale(scale = scale, P_f = data$P_f, J = data$J)
+  normalization = RprobitB_normalization(J = data$J, P_f = data$P_f,
+                                         scale = scale)
   latent_classes = check_latent_classes(latent_classes = latent_classes)
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics
   sufficient_statistics = compute_sufficient_statistics(data = data,
-                                                        scale = scale)
+                                                        normalization = normalization)
 
   ### set initial values for the Gibbs sampler
   init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
@@ -88,29 +89,21 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### normalize, burn and thin 'gibbs_samples'
   gibbs_samples = transform_gibbs_samples(
-    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, scale = scale)
+    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, normalization = normalization)
 
-  ### normalize true model parameters based on 'scale'
+  ### normalize true model parameters based on 'normalization'
   if(data$simulated)
     data$true_parameter = transform_true_parameter(
-      true_parameter = data$true_parameter, scale = scale)
+      true_parameter = data$true_parameter, normalization = normalization)
 
-  ### compute statistics from 'gibbs_samples'
-  statistics = compute_parameter_statistics(
-    gibbs_samples = gibbs_samples, P_f = data$P_f, P_r = data$P_r, J = data$J,
-    C = latent_classes$C)
-
-  ### build RprobitB_model
+  ### build and return an 'RprobitB_model'
   out = RprobitB_model(data = data,
-                       scale = scale,
+                       normalization = normalization,
                        R = R,
                        B = B,
                        Q = Q,
                        latent_classes = latent_classes,
                        prior = prior,
-                       gibbs_samples = gibbs_samples,
-                       statistics = statistics)
-
-  ### return RprobitB_model
+                       gibbs_samples = gibbs_samples)
   return(out)
 }
