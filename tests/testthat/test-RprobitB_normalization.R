@@ -1,6 +1,6 @@
 test_that("building of RprobitB_normalization works", {
-  J = sample(2:10,1)
-  P_f = sample(1:10,1)
+  J = 5
+  P_f = 5
   expect_snapshot(RprobitB_normalization(J = J, P_f = P_f))
   expect_error(RprobitB_normalization(J = J, P_f = P_f, level = J+1),
                "'level' must be equal to 'J'.")
