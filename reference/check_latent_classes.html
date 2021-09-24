@@ -200,40 +200,20 @@ The threshold difference in means for joining latent classes
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $C
-#&gt; [1] 1
-#&gt; 
-#&gt; $update
-#&gt; [1] FALSE
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "RprobitB_latent_classes"</div><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"C"</span> <span class='op'>=</span> <span class='fl'>2</span>, <span class='st'>"update"</span> <span class='op'>=</span> <span class='cn'>TRUE</span>,
+</div><div class='output co'>#&gt; Latent classes:
+#&gt; - Number: 1 
+#&gt; - Update: FALSE </div><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"C"</span> <span class='op'>=</span> <span class='fl'>2</span>, <span class='st'>"update"</span> <span class='op'>=</span> <span class='cn'>TRUE</span>,
                                            <span class='st'>"Cmax"</span> <span class='op'>=</span> <span class='fl'>10</span>, <span class='st'>"buffer"</span> <span class='op'>=</span> <span class='fl'>100</span>,
                                            <span class='st'>"epsmin"</span> <span class='op'>=</span> <span class='fl'>0.01</span>, <span class='st'>"epsmax"</span> <span class='op'>=</span> <span class='fl'>0.99</span>,
                                            <span class='st'>"distmin"</span> <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $C
-#&gt; [1] 2
-#&gt; 
-#&gt; $update
-#&gt; [1] TRUE
-#&gt; 
-#&gt; $Cmax
-#&gt; [1] 10
-#&gt; 
-#&gt; $buffer
-#&gt; [1] 100
-#&gt; 
-#&gt; $epsmin
-#&gt; [1] 0.01
-#&gt; 
-#&gt; $epsmax
-#&gt; [1] 0.99
-#&gt; 
-#&gt; $distmin
-#&gt; [1] 0.1
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "RprobitB_latent_classes"</div></pre>
+</div><div class='output co'>#&gt; Latent classes:
+#&gt; - Update: TRUE 
+#&gt; - Initial number: 5 
+#&gt; - Maximum number: 10 
+#&gt; - Buffer: 100 
+#&gt; - Minimum class weight: 0.01 
+#&gt; - Maximum class weight: 0.99 
+#&gt; - Mimumum class distance: 0.1 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
