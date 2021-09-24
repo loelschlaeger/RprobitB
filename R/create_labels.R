@@ -3,19 +3,20 @@
 #' Function that creates labels for the model coefficients.
 #' @inheritParams RprobitB_data
 #' @param C
-#' The number (greater or equal 1) of latent classes.
-#' @param C_est
-#' The estimated number (greater or equal 1) of latent classes.
+#' The number (greater or equal 1) of true or estimated latent classes.
 #' @param symmetric
-#' A boolean, determining whether labels for symmetric matrix elements should be
-#' created.
+#' Set \code{TRUE} to create labels for symmetric matrix elements.
 #' @examples
-#' create_labels(P_f = 1, P_r = 2, J = 3, C = 4, C_est = 5, symmetric = TRUE)
+#' create_labels(P_f = 1, P_r = 2, J = 3, C = 4, symmetric = TRUE)
 #' @return
 #' A list of labels for the model coefficients \code{alpha}, \code{s}, \code{b},
 #' \code{Omega}, and \code{Sigma}.
 
-create_labels = function(P_f, P_r, J, C, C_est, symmetric){
+create_labels = function(P_f, P_r, J, C, symmetric){
+
+  ### check value 'C'
+  if(!(is.numeric(C) && C%%1 == 0 && C>=1))
+    stop("'C' must be a number greater or equal 1.")
 
   ### labels for 'alpha'
   alpha_label = NA
@@ -25,14 +26,13 @@ create_labels = function(P_f, P_r, J, C, C_est, symmetric){
   ### labels for 's'
   s_label = NA
   if(P_r>0)
-    s_label = as.character(seq_len(max(C,C_est,na.rm=TRUE)))
+    s_label = as.character(seq_len(C))
 
   ### labels for 'b'
   b_label = NA
   if(P_r>0)
-    b_label = paste0(as.character(rep(1:max(C,C_est,na.rm=TRUE),each=P_r)),
-                     rep(".",P_r*max(C,C_est,na.rm=TRUE)),
-                     as.character(rep(1:P_r,times=max(C,C_est,na.rm=TRUE))))
+    b_label = paste0(as.character(rep(1:C,each=P_r)), rep(".",P_r*C),
+                     as.character(rep(1:P_r,times=C)))
 
   ### labels for 'Omega'
   Omega_label = NA
@@ -40,13 +40,11 @@ create_labels = function(P_f, P_r, J, C, C_est, symmetric){
     Omega_id = rep(TRUE,P_r*P_r)
     if(!symmetric)
       Omega_id[-which(lower.tri(matrix(NA,P_r,P_r),diag=TRUE)==TRUE)] = FALSE
-    Omega_id = rep(Omega_id,max(C,C_est,na.rm=TRUE))
+    Omega_id = rep(Omega_id,C)
     Omega_label =
-      paste0(as.character(rep(1:max(C,C_est,na.rm=TRUE),each=P_r^2)),
-             rep(".",P_r*max(C,C_est,na.rm=TRUE)),
-             as.character(rep(paste0(rep(1:P_r,each=P_r),
-                                     ",",rep(1:P_r,times=P_r)),
-                              times=max(C,C_est,na.rm=TRUE))))[Omega_id]
+      paste0(as.character(rep(1:C,each=P_r^2)),rep(".",P_r*C),
+             as.character(rep(paste0(rep(1:P_r,each=P_r),",",rep(1:P_r,times=P_r)),
+                              times = C)))[Omega_id]
   }
 
   ### labels for 'Sigma'
