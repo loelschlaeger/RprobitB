@@ -15,7 +15,7 @@ void start_timer() {
   // Function to initialize the timer for Gibbs sampling
   itime = time(NULL);
   Rcout << "Iteration Event                  ETA (min)\n";
-  Rcout << "        0 started sampling                \n";
+  Rcout << "        0 started Gibbs sampling          \n";
 }
 
 void update_timer(int rep, int R) {
