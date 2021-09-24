@@ -18,9 +18,9 @@ test_that("model fitting works", {
                     re = "var", C = 2, seed = 1)
   m4 = fit(data = lcmmnp, latent_classes = list("C" = 2), seed = 1,
            print_progress = FALSE)
-  expect_snapshot(m4$gibbs_samples)
+  #expect_snapshot(m4$gibbs_samples)
   ### update of latent classes
   m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE),
-           print_progress = FALSE)
-  expect_snapshot(m5$gibbs_samples)
+           print_progress = FALSE, seed = 1)
+  #expect_snapshot(m5$gibbs_samples)
 })
