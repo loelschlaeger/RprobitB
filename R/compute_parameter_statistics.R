@@ -9,32 +9,22 @@
 #' The number (greater or equal 1) of latent classes.
 #' @return
 #' An object of class \code{RprobitB_parameter_statistics}, which is a list of
+#' statistics from the Gibbs samples for each model parameter \code{alpha},
+#' \code{s}, \code{b}, \code{Omega}, \code{Sigma} with
 #' \itemize{
-#'   \item A list of statistics from the Gibbs samples for each model parameter
-#'         \code{alpha}, \code{s}, \code{b}, \code{Omega}, \code{Sigma} with:
-#'         \itemize{
-#'           \item the parameter indices as rows
-#'           \item \code{mean}, standard deviation \code{sd}, Tukey's
-#'                 five number summary obtained from
-#'                 \code{\link[stats]{fivenum}} (i.e. minimum \code{min},
-#'                 lower-hinge \code{q.25}, \code{median},
-#'                 upper-hinge \code{q.75}, maximum \code{max}), and the
-#'                 Gelman-Rubin statistic \code{R_hat} as columns
-#'                 }
-#'   \item \code{C_est}, the estimated number of latent classes.
+#'   \item the parameter indices as rows and
+#'   \item \code{mean}, standard deviation \code{sd}, Tukey's
+#'         five number summary obtained from
+#'         \code{\link[stats]{fivenum}} (i.e. minimum \code{min},
+#'         lower-hinge \code{q.25}, \code{median},
+#'         upper-hinge \code{q.75}, maximum \code{max}), and the
+#'         Gelman-Rubin statistic \code{R_hat} as columns.
 #' }
 
 compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
-  ### determine estimated number of latent classes
-  last_s_draw =
-    gibbs_samples$gibbs_samples$
-    s_draws[nrow(gibbs_samples$gibbs_samples_raw$s_draws),]
-  C_est = length(last_s_draw[last_s_draw!=0])
-
-  ### get coefficient labels
-  labels = create_labels(P_f = P_f, P_r = P_r, J = J, C = C, C_est = C_est,
-                         symmetric = TRUE)
+  ### create coefficient labels
+  labels = create_labels(P_f = P_f, P_r = P_r, J = J, C = C, symmetric = TRUE)
 
   ### compute R_hat (Gelman-Rubin statistic)
   ### https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html
@@ -54,7 +44,7 @@ compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
 
   ### function that computes statistic values
   compute_statistic_values = function(samples_nbt, samples_nb, labels){
-    out = matrix(NA,nrow=length(labels),ncol=8)
+    out = matrix(NA, nrow = length(labels), ncol=8)
     out[,1] = apply(samples_nbt,2,mean)
     out[,2] = apply(samples_nbt,2,sd)
     out[,3:7] = t(apply(samples_nbt,2,fivenum))
@@ -77,9 +67,6 @@ compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
       samples_nb = gibbs_samples$gibbs_samples_nb[[par]],
       labels = labels[[par]])
   }
-
-  ### append 'C_est'
-  statistics[["C_est"]] = C_est
 
   ### add class to 'statistics'
   class(statistics) = "RprobitB_parameter_statistics"
