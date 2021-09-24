@@ -130,8 +130,7 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### compute number of linear coefficients
-  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
-                                            re = re)
+  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J, re = re)
   P_f = P$P_f
   P_r = P$P_r
 
