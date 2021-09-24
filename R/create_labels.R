@@ -3,7 +3,8 @@
 #' Function that creates labels for the model coefficients.
 #' @inheritParams RprobitB_data
 #' @param C
-#' The number (greater or equal 1) of true or estimated latent classes.
+#' If \code{P_r>0}, the number (greater or equal 1) of latent classes.
+#' Ignored otherwise.
 #' @param symmetric
 #' Set \code{TRUE} to create labels for symmetric matrix elements.
 #' @examples
@@ -14,9 +15,10 @@
 
 create_labels = function(P_f, P_r, J, C, symmetric){
 
-  ### check value 'C'
-  if(!(is.numeric(C) && C%%1 == 0 && C>=1))
-    stop("'C' must be a number greater or equal 1.")
+  ### check that 'C' is a number if 'P_r>0'
+  if(P_r>0)
+    if(!(is.numeric(C) && C%%1 == 0 && C>=1))
+      stop("'C' must be a number greater or equal 1.")
 
   ### labels for 'alpha'
   alpha_label = NA
