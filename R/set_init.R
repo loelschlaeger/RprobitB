@@ -20,7 +20,7 @@ set_init = function(N, T, J, P_f, P_r, C){
 
   ### define initial values
   alpha0 = if(P_f>0) numeric(P_f) else NA
-  m0 = if(P_r>0) round(rep(N,C)*2^(1:C-1)/sum(2^(1:C-1))) else NA
+  m0 = if(P_r>0) round(rep(N,C)*2^(C:1-1)/sum(2^(C:1-1))) else NA
   b0 = if(P_r>0) matrix(0,nrow=P_r,ncol=C) else NA
   Omega0 =
     if(P_r>0) matrix(rep(as.vector(diag(P_r)),C),nrow=P_r*P_r,ncol=C) else NA

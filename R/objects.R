@@ -302,9 +302,9 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
 
     ### s
     if(is.null(s))
-      s = round(sort(as.vector(rdirichlet(rep(1,C)))),2)
-    if(length(s)!=C || !is.numeric(s) || sum(s)!=1)
-      stop("'s' must be a numeric vector of length ", C, " which sums up to 1.")
+      s = round(sort(as.vector(rdirichlet(rep(1,C))), decreasing = TRUE),2)
+    if(length(s)!=C || !is.numeric(s) || sum(s)!=1 || is.unsorted(rev(s)))
+      stop("'s' must be a non-ascending numeric vector of length ", C, " which sums up to 1.")
 
     ### b
     if(is.null(b)){

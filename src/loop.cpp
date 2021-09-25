@@ -528,9 +528,10 @@ List gibbs_sampling (int R, int B, bool print_progress,
   for(int rep = 0; rep<R; rep++) {
 
     if(P_r>0){
-      // draw s, update only if draw is ascending
+      // draw s, update only if draw is descending
       s_cand = rdirichlet(delta*ones(C)+m);
-      if(std::is_sorted(std::begin(s_cand),std::end(s_cand))) s = s_cand;
+      if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>()))
+        s = s_cand;
 
       // draw z
       z = zeros<vec>(N);
