@@ -186,9 +186,11 @@ print.RprobitB_latent_classes = function(x, ...) {
 #' @param true
 #' Either \code{NULL} or an object of class \code{RprobitB_true_parameter}.
 #' @param statistics
-#' c("mean", "sd", "min", "q.25", "median", "q.75", "max", "R^")
+#' A character vector, specifying the output of parameter statistics. Possible
+#' values are \code{"mean"}, \code{"sd"}, \code{"min"}, \code{"q.25"},
+#' \code{"median"}, \code{"q.75"}, \code{"max"}, and \code{"R^"}.
 #' @param digits
-#'
+#' An integer, specifying the number of decimal places for the statistics.
 #' @param ...
 #' Ignored.
 #' @export
