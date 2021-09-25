@@ -43,6 +43,18 @@ print.RprobitB_normalization = function(x,...) {
   return(invisible(x))
 }
 
+#' Print method for \code{RprobitB_gibbs_samples}.
+#' @param x
+#' An object of class \code{RprobitB_gibbs_samples}.
+#' @param ...
+#' Ignored.
+#' @export
+
+print.RprobitB_gibbs_samples = function(x, ...){
+  cat("Gibbs samples.\n")
+  return(invisible(x))
+}
+
 #' Print method for the summary of \code{RprobitB_data}.
 #' @param x
 #' An object of class \code{summary.RprobitB_data}.
