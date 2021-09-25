@@ -173,52 +173,51 @@ print.RprobitB_latent_classes = function(x, ...) {
 #' An object of class \code{RprobitB_parameter_statistics}.
 #' @param true
 #' Either \code{NULL} or an object of class \code{RprobitB_true_parameter}.
+#' @param statistics
+#' c("mean", "sd", "min", "q.25", "median", "q.75", "max", "R^")
+#' @param digits
+#'
 #' @param ...
 #' Ignored.
 #' @export
 
-print.RprobitB_parameter_statistics = function(x, true = NULL, ...) {
+print.RprobitB_parameter_statistics = function(
+  x, true = NULL, statistics = c("mean", "sd", "R^"), digits = 2, ...) {
 
-  cat("Print an overview of the parameter estimates here.\n")
+  ### select 'statistics'
+  statistics = intersect(statistics, colnames(x[[1]]))
 
-  # ### get coefficient labels
-  # labels = create_labels(P_f = x$P_f, P_r = x$P_r, J = x$J,
-  #                        C = x$latent_classes$C, C_est = x$statistics$C_est,
-  #                        symmetric = FALSE)
-  #
-  # ### function that creates table format for estimates
-  # print_tab = function(par_name){
-  #   true = as.vector(x$true_parameter[[par_name]])
-  #   statistics = x$statistics[[par_name]]
-  #   if(x$simulated) statistics = cbind(true,statistics)
-  #   statistics = round(statistics, 2)
-  #   statistics = statistics[labels[[par_name]],,drop=FALSE]
-  #   colnames(statistics) = rep(sprintf("%6s"," "),ncol(statistics))
-  #   rownames(statistics) = sprintf("%6s",labels[[par_name]])
-  #   writeLines(paste("\n",par_name))
-  #   print(statistics)
-  # }
-  #
-  # cat("Estimates:\n")
-  # cat(paste(sprintf("%6s"," "),
-  #           if(x$simulated) sprintf("%6s","true"),
-  #           sprintf("%6s","mean"),
-  #           sprintf("%6s","sd"),
-  #           sprintf("%6s","min"),
-  #           sprintf("%6s","q.25"),
-  #           sprintf("%6s","median"),
-  #           sprintf("%6s","q.75"),
-  #           sprintf("%6s","max"),
-  #           sprintf("%6s","R^")))
-  #
-  # if(x$P_f>0)
-  #   print_tab(par_name = "alpha")
-  # if(x$P_r>0){
-  #   print_tab(par_name = "s")
-  #   print_tab(par_name = "b")
-  #   print_tab(par_name = "Omega")
-  # }
-  # print_tab(par_name = "Sigma")
+  if(length(statistics) > 0){
+
+    ### make 'digits' non-negative
+    digits = max(digits, 0)
+
+    ### determine cell width
+    cw = max(digits + 5, max(nchar(statistics))+1)
+
+    ### print header of table
+    cat("Parameter statistics:\n")
+    header = sprintf("%6s"," ")
+    if(!is.null(true))
+      header = paste0(header,sprintf(paste0("%", cw+1,"s"),"true"))
+    for(header_element in statistics)
+      header = paste0(header,
+                      sprintf(paste0("%", cw+1,"s"),header_element))
+    cat(header)
+
+    ### print table elements
+    for(par_name in names(x)){
+      out = x[[par_name]][,statistics,drop=FALSE]
+      if(!is.null(true))
+        out = cbind(as.vector(true[[par_name]]),out)
+      out = round(out, digits)
+      colnames(out) = rep(sprintf(paste0("%",cw,"s")," "), ncol(out))
+      rownames(out) = sprintf("%6s", rownames(out))
+      writeLines(paste("\n",par_name))
+      print(formatC(out, format='f', digits=digits, width = cw,
+                    flag = ""), quote = FALSE)
+    }
+  }
 
   return(invisible(x))
 }

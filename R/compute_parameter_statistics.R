@@ -1,9 +1,8 @@
 #' Compute parameter statistics.
 #' @description
-#' This function computes parameter statistics of the Gibbs samples.
+#' This function computes parameter statistics from the Gibbs samples.
 #' @param gibbs_samples
-#' An object of class \code{RprobitB_gibbs_samples}, i.e. the output of
-#' \code{\link{transform_gibbs_samples}}.
+#' An object of class \code{RprobitB_gibbs_samples}.
 #' @inheritParams RprobitB_data
 #' @param C
 #' The number (greater or equal 1) of latent classes.
@@ -26,7 +25,7 @@ compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
   ### create coefficient labels
   labels = create_labels(P_f = P_f, P_r = P_r, J = J, C = C, symmetric = TRUE)
 
-  ### compute R_hat (Gelman-Rubin statistic)
+  ### compute 'R_hat' (Gelman-Rubin statistic)
   ### https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html
   ### samples_nb: normalized and burned but not thinned Gibbs samples
   ### parts: number of parts to divide the Gibbs samples
