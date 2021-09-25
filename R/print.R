@@ -99,11 +99,13 @@ print.summary.RprobitB_data = function(x, ...) {
 #' Print method for the summary of \code{RprobitB_model}.
 #' @param x
 #' An object of class \code{summary.RprobitB_model}.
+#' @inheritParams print.RprobitB_parameter_statistics
 #' @param ...
 #' Ignored.
 #' @export
 
-print.summary.RprobitB_model = function(x, ...) {
+print.summary.RprobitB_model = function(x, statistics = c("mean", "sd", "R^"),
+                                        digits = 2, ...) {
 
   cat(paste0("Summary of fitted probit model '",
              deparse1(x$form),"' via Bayesian estimation:\n\n"))
@@ -150,8 +152,8 @@ print.summary.RprobitB_model = function(x, ...) {
   }
 
   ### overview of estimates
-  print(x$statistics, true = x$true_parameter)
-  cat("\n")
+  print(x$parameter_statistics, true = x$true_parameter, statistics = statistics,
+        digits = digits)
 
   return(invisible(x))
 }
@@ -220,7 +222,8 @@ print.RprobitB_parameter_statistics = function(
     cat(header)
 
     ### print table elements
-    for(par_name in names(x)){
+    order_of_parameters = c("alpha","s","b","Omega","Sigma")
+    for(par_name in intersect(order_of_parameters,names(x))){
       out = x[[par_name]][,statistics,drop=FALSE]
       if(!is.null(true))
         out = cbind(as.vector(true[[par_name]]),out)

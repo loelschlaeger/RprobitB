@@ -77,11 +77,13 @@ summary.RprobitB_data = function(object, ...){
 #' Summary method for \code{RprobitB_model}.
 #' @param object
 #' An object of class \code{RprobitB_model}.
+#' @inheritParams print.RprobitB_parameter_statistics
 #' @param ...
 #' Ignored.
 #' @export
 
-summary.RprobitB_model = function(object, ... ) {
+summary.RprobitB_model = function(object, statistics = c("mean", "sd", "R^"),
+                                  digits = 2, ... ) {
 
   ### check class of 'object'
   if(!inherits(object, "RprobitB_model"))
@@ -110,7 +112,7 @@ summary.RprobitB_model = function(object, ... ) {
       C = object$latent_classes$C
     }
   }
-  statistics = compute_parameter_statistics(
+  parameter_statistics = compute_parameter_statistics(
     gibbs_samples = object$gibbs_samples,
     P_f = object$data$P_f, P_r = object$data$P_r, J = object$data$J, C = C)
 
@@ -127,12 +129,13 @@ summary.RprobitB_model = function(object, ... ) {
              "normalization" = object$normalization,
              "latent_classes" = object$latent_classes,
              "prior" = object$prior,
-             "statistics" = statistics,
+             "parameter_statistics" = parameter_statistics,
              "C_est" = C_est,
              "simulated" = object$data$simulated,
              "true_parameter" = object$data$true_parameter)
   class(out) = "summary.RprobitB_model"
 
-  ### return 'summary.RprobitB_model' object
-  return(out)
+  ### print and invisibly return 'summary.RprobitB_model' object
+  print(out, statistics = statistics, digits = digits)
+  return(invisible(out))
 }
