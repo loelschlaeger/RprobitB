@@ -242,6 +242,10 @@ RprobitB_normalization = function(J, P_f, level = J,
 #' Internally, \code{Sigma} gets differenced with respect to alternative
 #' \code{J}, so it becomes an identified covariance matrix of dimension
 #' \code{J-1} x \code{J-1}.
+#' @param Sigma_diff
+#' The differenced error term covariance matrix of dimension
+#' \code{J-1} x \code{J-1} with respect to alternative \code{J}. If \code{Sigma}
+#' is specified, \code{Sigma_diff} is ignored.
 #' @param beta
 #' The matrix of the decision-maker specific coefficient vectors of dimension
 #' \code{P_r} x \code{N}.
@@ -254,19 +258,19 @@ RprobitB_normalization = function(J, P_f, level = J,
 #' @return
 #' An object of class \code{RprobitB_true_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{beta}, and \code{z}.
+#' \code{Sigma}, \code{Sigma_diff}, \code{beta}, and \code{z}.
 
 RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
                                    s = NULL, b = NULL, Omega = NULL,
-                                   Sigma = NULL, beta = NULL, z = NULL,
-                                   seed = NULL) {
+                                   Sigma = NULL, Sigma_diff = NULL, beta = NULL,
+                                   z = NULL, seed = NULL) {
 
   ### seed for sampling missing parameters
   if(!is.null(seed))
     set.seed(seed)
 
   ### function that checks if input is a proper covariance matrix
-  is.covariance.matrix = function(x){
+  is_covariance_matrix  = function(x){
     is.matrix(x) && ncol(x)==nrow(x) && isSymmetric(x) && all(eigen(x)$value>=0)
   }
 
@@ -327,7 +331,7 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
       stop("'Omega' must be a numeric matrix of dimension ", P_r*P_r, " x ",
            C, ".")
     for(c in 1:C)
-      if(!is.covariance.matrix(matrix(Omega[,c],nrow=P_r,ncol=P_r)))
+      if(!is_covariance_matrix (matrix(Omega[,c],nrow=P_r,ncol=P_r)))
         stop(paste("Column",c,"in 'Omega' builds no covariance matrix."))
 
     ### z
@@ -356,7 +360,7 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
   Sigma = as.matrix(Sigma)
   if(!is.numeric(Sigma) || nrow(Sigma)!=J || ncol(Sigma)!=J)
     stop("'Sigma' must be a numeric matrix of dimension ", J, " x ", J, ".")
-  if(!is.covariance.matrix(Sigma))
+  if(!is_covariance_matrix (Sigma))
     stop("'Sigma' is not a proper covariance matrix.")
 
   ### build and return 'RprobitB_true_parameter'-object
@@ -366,6 +370,7 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
              "b" = b,
              "Omega" = Omega,
              "Sigma" = Sigma,
+             "Sigma_diff" = Sigma,
              "beta" = beta,
              "z" = z)
   class(out) = "RprobitB_true_parameter"

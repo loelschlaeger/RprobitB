@@ -1,37 +1,48 @@
-#' Transform fitted \code{RprobitB_model}.
+#' Change the length of the burn-in period, the thinning factor and the scale
+#' of a fitted probit model.
 #' @description
-#' Given an \code{RprobitB_model}, this function can:
+#' Given a fitted \code{RprobitB_model}, this function can:
 #' \itemize{
-#'   \item change the length \code{B} of the burn-in period,
-#'   \item change the thinning factor \code{Q},
+#'   \item change the length \code{B} of the burn-in period and the thinning
+#'         factor \code{Q} of the Gibbs sampler,
 #'   \item change the model \code{scale}.
 #' }
 #' @details
-#' For more details see the vignettes
-#' "Model fitting":
-#' \code{vignette("model_fitting", package = "RprobitB")} and
-#' "Model checking and model selection":
-#' \code{vignette("model_checking_and_model_selection", package = "RprobitB")}.
+#' For more details see the vignette "Model fitting":
+#' \code{vignette("model_fitting", package = "RprobitB")}.
 #' @inheritParams fit
 #' @param model
 #' An object of class \code{RprobitB_model}.
+#' @param check_preference_flip
+#' A boolean, if \code{TRUE} the function checks if the new \code{scale} flips
+#' the preferences in the model.
 #' @return
 #' An object of class \code{RprobitB_model}.
 #' @examples
+#' \dontrun{
 #' ### fit a model to simulated data
 #' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2)
 #' scale = list("parameter" = "s", "index" = 1, "value" = 1)
-#' model = fit(data = data, R = 1e4, B = 1, Q = 1)
+#' model = fit(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
 #'
 #' ### change 'B' and 'Q'
-#' model = transform(model = model, B = 1e4/2, Q = 10)
+#' model = transform(model = model, B = 5e3, Q = 10)
 #'
 #' ### change 'scale'
-#' scale = list("parameter" = "a", "index" = 1, "value" = -1)
-#' model = transform(model = model, scale = scale)
+#' scale_new = list("parameter" = "a", "index" = 1, "value" = -1)
+#' model = transform(model = model, scale = scale_new)
+#'
+#' ### warning if new scale flips preferences
+#' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
+#'                 alpha = 1:2)
+#' model = fit(data = data, R = 1e4, B = 1, Q = 1)
+#' scale_new = list("parameter" = "a", "index" = 1, "value" = -1)
+#' model_new = transform(model = model, scale = scale_new)
+#' }
 #' @export
 
-transform = function(model, B = NULL, Q = NULL, scale = NULL) {
+transform = function(model, B = NULL, Q = NULL, scale = NULL,
+                     check_preference_flip = TRUE) {
 
   ### check inputs
   if(!inherits(model,"RprobitB_model"))
@@ -56,6 +67,12 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL) {
   if(is.null(scale)){
     normalization = model$normalization
   } else {
+    ### check if new scale flips preferences
+    if(check_preference_flip)
+      if(preference_flip(model_old = model,
+                         model_new = transform(model = model, scale = scale,
+                                               check_preference_flip = FALSE)))
+        warning()
     normalization = RprobitB_normalization(J = J, P_f = P_f, scale = scale)
     model$normalization = normalization
   }

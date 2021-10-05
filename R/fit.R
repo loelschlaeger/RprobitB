@@ -1,7 +1,7 @@
 #' Fit a (latent class) (mixed) (multinomial) probit model.
 #' @description
 #' This function fits a (latent class) (mixed) (multinomial) probit model via
-#' Bayesian estimation to discrete choice data.
+#' Bayesian estimation to discrete choice data for the RprobitB package.
 #' @details
 #' For more details see the vignette "Model fitting":
 #' \code{vignette("model_fitting", package = "RprobitB")}.
