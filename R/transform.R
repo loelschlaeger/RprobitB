@@ -85,8 +85,8 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL,
 
   ### scale true parameters
   if(model$data$simulated)
-    model$data$true_parameter = transform_true_parameter(
-      true_parameter = model$data$true_parameter, normalization = normalization)
+    model$data$true_parameter = transform_parameter(
+      parameter = model$data$true_parameter, normalization = normalization)
 
   ### return 'RprobitB_model'
   return(model)

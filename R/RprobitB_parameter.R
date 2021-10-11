@@ -1,6 +1,6 @@
-#' Create object of class \code{RprobitB_true_parameter}.
+#' Create object of class \code{RprobitB_parameter}.
 #' @description
-#' This function creates an object of class \code{RprobitB_true_parameter}.
+#' This function creates an object of class \code{RprobitB_parameter}.
 #' Missing parameters are sampled. All parameters are checked against the values
 #' of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 #' @inheritParams RprobitB_data
@@ -38,11 +38,11 @@
 #' @param seed
 #' Set a seed for sampling missing parameters.
 #' @return
-#' An object of class \code{RprobitB_true_parameter}, i.e. a named list with the
+#' An object of class \code{RprobitB_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
 
-RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
+RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
                                    s = NULL, b = NULL, Omega = NULL,
                                    Sigma = NULL, Sigma_full = NULL, beta = NULL,
                                    z = NULL, seed = NULL) {
@@ -148,7 +148,7 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
   if(!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full)==J))
     stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J, " x ", J, ".")
 
-  ### build and return 'RprobitB_true_parameter'-object
+  ### build and return 'RprobitB_parameter'-object
   out = list("alpha" = alpha,
              "C" = C,
              "s" = s,
@@ -158,6 +158,6 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
              "Sigma_full" = Sigma_full,
              "beta" = beta,
              "z" = z)
-  class(out) = "RprobitB_true_parameter"
+  class(out) = "RprobitB_parameter"
   return(out)
 }

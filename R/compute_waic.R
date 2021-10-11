@@ -11,12 +11,6 @@
 
 compute_waic = function(x) {
 
-  ### define difference operator
-  Delta = function(i){
-    Delta = diag(J)[-J,,drop=FALSE]; Delta[,J] = -1
-    return(Delta)
-  }
-
   ### extract model meta data
   N = model$N
   T = if(length(model$T)==model$N) model$T else rep(model$T,model$N)
@@ -69,7 +63,7 @@ compute_waic = function(x) {
           Sigma_sample = matrix(Sigma[sample,],nrow=J-1,ncol=J-1)
 
           ### compute differences wrt reference alternative J
-          if(model$P_f>0 || model$P_r>0) X_nt = Delta(J) %*% X_nt
+          if(model$P_f>0 || model$P_r>0) X_nt = delta(J,J) %*% X_nt
 
           ### append 0's for reference alternative J
           if(model$P_f>0 || model$P_r>0) X_nt = rbind(X_nt,0)
@@ -78,22 +72,22 @@ compute_waic = function(x) {
           ### define parameters of multivariate normal distribution
           if(P_f>0){
             if(P_r>0){
-              upper = as.vector(-Delta(j) %*% X_nt %*% c(alpha_sample,b_c_sample))
-              sigma = Delta(j) %*% ( X_nt[,-(1:P_f)] %*% Omega_c_sample %*% t(X_nt[,-(1:P_f)]) + Sigma_sample ) %*% t(Delta(j))
+              upper = as.vector(-delta(J,j) %*% X_nt %*% c(alpha_sample,b_c_sample))
+              sigma = delta(J,j) %*% ( X_nt[,-(1:P_f)] %*% Omega_c_sample %*% t(X_nt[,-(1:P_f)]) + Sigma_sample ) %*% t(delta(J,j))
             }
             if(P_r==0){
-              upper = as.vector(-Delta(j) %*% X_nt %*% alpha_sample)
-              sigma = Delta(j) %*%  Sigma_sample %*% t(Delta(j))
+              upper = as.vector(-delta(J,j) %*% X_nt %*% alpha_sample)
+              sigma = delta(J,j) %*%  Sigma_sample %*% t(delta(J,j))
             }
           }
           if(P_f==0){
             if(P_r>0){
-              upper = as.vector(-Delta(j) %*% X_nt %*% b_c_sample)
-              sigma = Delta(j) %*% ( X_nt %*% Omega_c_sample %*% t(X_nt) + Sigma_sample ) %*% t(Delta(j))
+              upper = as.vector(-delta(J,j) %*% X_nt %*% b_c_sample)
+              sigma = delta(J,j) %*% ( X_nt %*% Omega_c_sample %*% t(X_nt) + Sigma_sample ) %*% t(delta(J,j))
             }
             if(P_r==0){
               upper = rep(0,J-1)
-              sigma = Delta(j) %*% Sigma_sample %*% t(Delta(j))
+              sigma = delta(J,j) %*% Sigma_sample %*% t(delta(J,j))
             }
           }
 

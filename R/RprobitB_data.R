@@ -40,7 +40,7 @@
 #' @inheritParams prepare
 #' @inheritParams simulate
 #' @params true_parameter
-#' An object of class \code{RprobitB_true_parameters}.
+#' An object of class \code{RprobitB_parameters}.
 #' @return
 #' An object of class \code{RprobitB_data}, which is a list of
 #' \itemize{
@@ -67,7 +67,7 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.null(re) || is.character(re))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(ASC))
-  stopifnot(is.null(true_parameter) || inherits(true_parameter,"RprobitB_true_parameter"))
+  stopifnot(is.null(true_parameter) || inherits(true_parameter,"RprobitB_parameter"))
 
   ### create data frame of covariate names
   cov_names = colnames(data[[1]][["X"]][[1]])

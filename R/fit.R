@@ -92,8 +92,8 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### normalize true model parameters based on 'normalization'
   if(data$simulated)
-    data$true_parameter = transform_true_parameter(
-      true_parameter = data$true_parameter, normalization = normalization)
+    data$true_parameter = transform_parameter(
+      parameter = data$true_parameter, normalization = normalization)
 
   ### build and return an 'RprobitB_model'
   out = RprobitB_model(data = data,
