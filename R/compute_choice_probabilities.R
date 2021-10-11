@@ -1,54 +1,21 @@
-#' Compute probit choice probabilities
+#' Compute probit choice probabilities.
 #' @description
-#' Function that computes the probit choice probabilities.
-#' @details
-#' If \code{P_f = 0}, \code{alpha} is ignored.
-#' If \code{P_r = 0}, \code{C}, \code{s}, \code{b} and \code{Omega} are ignored.
-#' If \code{P_f = 0} and \code{P_r = 0}, \code{X} is ignored.
+#' This function computes probit choice probabilities.
 #' @param X
 #' A matrix of covariates with one row per alternative.
 #' The first \code{P_f} columns are connected to fixed coefficients, the last
 #' \code{P_r} columns are connected to random coefficients.
-#' @param J
-#' The number of choice alternatives.
-#' @param P_f
-#' The number of covariates connected to fixed coefficients.
-#' @param P_r
-#' The number of covariates connected to random coefficients.
-#' @param C
-#' The number of latent classes.
-#' @param alpha
-#' The fixed coefficient vector of length \code{P_f}.
-#' @param s
-#' The vector of class weights of length \code{C}.
-#' @param b
-#' The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-#' @param Omega
-#' The matrix of class covariance matrices as columns of dimension \code{P_r}^2 x \code{C}.
-#' @param Sigma
-#' The error term covariance matrix of dimension \code{J-1} x \code{J-1}.
-#' It is assumend to be differenced with respect to alternative \code{J}.
+#' @param parameter
+#' An object of class \code{RprobitB_parameter}.
 #' @return
-#' The probability.
+#' A probability vector of length \code{C}.
 #' @examples
-#' ### covariates
 #' X = matrix(c(3,2,1,3,2,1,3,2,1),3,3)
-#' ### model setting
-#' J = 3
-#' P_f = 1
-#' P_r = 2
-#' C = 2
-#' ### model parameter
-#' alpha = 1
-#' s = c(0.3,0.7)
-#' b = matrix(c(1,1,1,1),2,2)
-#' Omega = matrix(c(as.numeric(diag(2)),as.numeric(diag(2))),4,2)
-#' Sigma = diag(J-1)
-#' ### compute choice probability
-#' prob = compute_choice_probabilities(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma)
+#' parameter = RprobitB_true_parameter(P_f = 1, P_r = 2, J = 3, N = 100, C = 2)
+#' prob = compute_choice_probabilities(X = X, parameter = parameter)
 #' @export
 
-compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
+compute_choice_probabilities = function(X, parameter) {
 
   ### check inputs
   if(P_f>0 || P_r>0){
@@ -59,38 +26,20 @@ compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
     if(nrow(X)!=J)
       stop("'X' must have 'J' columns.")
   }
-  if(P_f==0){
-    alpha = NULL
-  } else {
-    if(length(alpha)!=P_f || !is.numeric(alpha))
-      stop("'alpha' must be a numeric vector of length 'P_f'.")
-  }
-  if(P_r==0){
-    C = 1
-    s = 1
-    b = NULL
-    Omega = NULL
-  } else {
-    if(length(s)!=C || !is.numeric(s))
-      stop("'s' must be a numeric vector of length 'C'.")
-    if(!is.matrix(b) || any(dim(b)!=c(P_r,C)) || !is.numeric(b))
-      stop("'b' must be a numeric matrix of dimension 'P_r' x 'C'.")
-    if(!is.matrix(Omega) || any(dim(Omega)!=c(P_r^2,C)) || !is.numeric(Omega))
-      stop("'Omega' must be a numeric matrix of dimension 'P_r'^2 x 'C'.")
-  }
-  if(!is.matrix(Sigma) || any(dim(Sigma)!=c(J-1,J-1)))
-    stop("'Sigma' must be a numeric matrix of dimension 'J-1' x 'J-1'.")
+  if(class(parameter) != "RprobitB_true_parameter")
+    stop("'parameter' is not of class 'RprobitB_true_parameter.")
 
-  ### define difference operator (computes differences wrt alternative i)
-  Delta = function(J,i){
-    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
-    return(Delta)
-  }
+  ### unpack parameters
+  alpha = parameter$alpha
+  C = parameter$C
+  s = parameter$s
+  b = parameter$b
+  Omega = parameter$Omega
+  Sigma = parameter$Sigma
 
   ### compute differences with respect to reference alternative J
-  if(P_f>0 || P_r>0){
-    X = Delta(J,J) %*% X
-  }
+  if(P_f>0 || P_r>0)
+    X = delta(J,J) %*% X
 
   ### allocate space for choice probabilities
   probabilities = numeric(J)
@@ -135,7 +84,7 @@ compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
   Sigma = cbind(rbind(Sigma,0),0)
 
   ### compute choice probabilities of alternatives 1 to J-1
-  for(j in 1:J-1){
+  for(j in 1:(J-1)){
 
     probability_j = 0
 
@@ -144,8 +93,8 @@ compute_choice_probabilities = function(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma) {
       ### define parameters of multivariate normal distribution
       if(P_f>0){
         if(P_r>0){
-          upper = as.vector(-Delta(J,j) %*% X %*% c(alpha,b[,c]))
-          cov_matrix = Delta(J,j) %*% ( X[,-(1:P_f)] %*% matrix(Omega[,c],P_r,P_r) %*% t(X[,-(1:P_f)]) + Sigma ) %*% t(Delta(J,j))
+          upper = as.vector(-delta(J,j) %*% X %*% c(alpha,b[,c]))
+          cov_matrix = delta(J,j) %*% ( X[,-(1:P_f)] %*% matrix(Omega[,c],P_r,P_r) %*% t(X[,-(1:P_f)]) + Sigma ) %*% t(delta(J,j))
         }
         if(P_r==0){
           upper = as.vector(-Delta(J,j) %*% X %*% alpha)

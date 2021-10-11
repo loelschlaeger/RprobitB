@@ -7,7 +7,7 @@
 #' @export
 
 summary.RprobitB_model = function(object, statistics = c("mean", "sd", "R^"),
-                                  digits = 2, full_Sigma = FALSE, ... ) {
+                                  digits = 2, ... ) {
 
   ### check class of 'object'
   if(!inherits(object, "RprobitB_model"))

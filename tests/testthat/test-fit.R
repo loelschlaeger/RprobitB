@@ -1,26 +1,44 @@
-test_that("model fitting works", {
+test_that("probit model fitting works", {
   skip_on_cran()
-  ### probit model
   p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
   m1 = fit(data = p, seed = 1, print_progress = FALSE)
-  expect_snapshot(m1$gibbs_samples)
-  ### multinomial probit model
+  expect_snapshot(unclass(m1$gibbs_samples))
+  expect_snapshot(summary(m1))
+})
+
+test_that("multinomial probit model fitting works", {
+  skip_on_cran()
   mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
   m2 = fit(data = mnp, seed = 1, print_progress = FALSE)
-  expect_snapshot(m2$gibbs_samples)
-  ### mixed multinomial probit model
-  mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
-                  seed = 1)
+  expect_snapshot(unclass(m2$gibbs_samples))
+  expect_snapshot(summary(m2))
+})
+
+test_that("mixed multinomial probit model fitting works", {
+  skip_on_cran()
+  mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+                  re = "var", seed = 1)
   m3 = fit(data = mmnp, seed = 1, print_progress = FALSE)
-  expect_snapshot(m3$gibbs_samples)
-  ### mixed multinomial probit model with 2 latent classes
+  expect_snapshot(unclass(m3$gibbs_samples))
+  expect_snapshot(summary(m3))
+})
+
+test_that("mixed multinomial probit model with 2 latent classes fitting works", {
+  skip_on_cran()
   lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
                     re = "var", C = 2, seed = 1)
   m4 = fit(data = lcmmnp, latent_classes = list("C" = 2), seed = 1,
            print_progress = FALSE)
-  #expect_snapshot(m4$gibbs_samples)
-  ### update of latent classes
-  m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE),
-           print_progress = FALSE, seed = 1)
-  #expect_snapshot(m5$gibbs_samples)
+  expect_snapshot(unclass(m4$gibbs_samples))
+  expect_snapshot(summary(m4))
+})
+
+test_that("mixed multinomial probit model with updated latent classes fitting works", {
+  skip_on_cran()
+  lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+                    re = "var", C = 2, seed = 1)
+  m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1,
+           print_progress = FALSE)
+  expect_snapshot(unclass(m5$gibbs_samples))
+  expect_snapshot(summary(m5))
 })
