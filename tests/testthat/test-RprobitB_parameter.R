@@ -3,7 +3,7 @@ test_that("parameter checks work", {
   P_r = sample(0:10,1)
   J = sample(2:10,1)
   N = sample(1:1000,1)
-  parm = RprobitB_true_parameter(P_f = P_f, P_r = P_r, J = J, N = N)
+  parm = RprobitB_parameter(P_f = P_f, P_r = P_r, J = J, N = N)
   if(P_f>0){
     expect_length(parm$alpha,P_f)
   } else {
@@ -19,6 +19,5 @@ test_that("parameter checks work", {
 })
 
 test_that("reproducibility works", {
-  expect_snapshot(RprobitB_true_parameter(P_f = 2, P_r = 2, J = 2, N = 100,
-                                          seed = 1))
+  expect_snapshot(RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1))
 })
