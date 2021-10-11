@@ -10,7 +10,7 @@
 #' Set a seed for the simulation.
 #' @param ...
 #' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{beta}, or \code{z} for the simulation.
+#' \code{Sigma}, \code{Sigma_diff}, \code{beta}, or \code{z} for the simulation.
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples
@@ -244,14 +244,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     data[[n]][["y"]] = y_n
   }
 
-  ### define difference operator (computes differences wrt alternative i)
-  Delta = function(i){
-    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
-    return(Delta)
-  }
-
   ### difference 'Sigma' in 'true_parameter'
-  true_parameter$Sigma = Delta(J) %*% true_parameter$Sigma %*% t(Delta(J))
+  true_parameter$Sigma = delta(J,J) %*% true_parameter$Sigma %*% t(delta(J,J))
 
   ### create RprobitB_data object
   out = RprobitB_data(data           = data,

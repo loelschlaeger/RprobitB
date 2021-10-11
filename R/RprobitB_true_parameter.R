@@ -52,11 +52,6 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
   if(!is.null(seed))
     set.seed(seed)
 
-  ### function that checks if input is a proper covariance matrix
-  is_covariance_matrix  = function(x){
-    is.matrix(x) && ncol(x)==nrow(x) && isSymmetric(x) && all(eigen(x)$value>=0)
-  }
-
   ### alpha
   if(P_f==0){
     alpha = NA
@@ -138,13 +133,21 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
   }
 
   ### Sigma
-  if(is.null(Sigma))
-    Sigma = rwishart(J,diag(J))$W
-  Sigma = as.matrix(Sigma)
-  if(!is.numeric(Sigma) || nrow(Sigma)!=J || ncol(Sigma)!=J)
-    stop("'Sigma' must be a numeric matrix of dimension ", J, " x ", J, ".")
-  if(!is_covariance_matrix (Sigma))
-    stop("'Sigma' is not a proper covariance matrix.")
+  if(is.null(Sigma)){
+    if(is.null(Sigma_diff)){
+      Sigma = rwishart(J,diag(J))$W
+      Sigma_diff = delta(J,J) %*% Sigma %*% t(delta(J,J))
+    } else {
+      Sigma = Sigma_diff_to_Sigma(Sigma_diff, i = J)
+    }
+  } else {
+    Sigma = as.matrix(Sigma)
+    Sigma_diff = delta(J,J) %*% Sigma %*% t(delta(J,J))
+  }
+  if(!(is_covariance_matrix(Sigma) && nrow(Sigma)==J))
+    stop("'Sigma' is not a proper covariance matrix of dimension ", J, " x ", J, ".")
+  if(!(is_covariance_matrix(Sigma_diff) && nrow(Sigma_diff)==J-1))
+    stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J-1, " x ", J-1, ".")
 
   ### build and return 'RprobitB_true_parameter'-object
   out = list("alpha" = alpha,

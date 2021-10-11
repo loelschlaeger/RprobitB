@@ -26,16 +26,10 @@ compute_sufficient_statistics = function(data, normalization){
   P_r = data$P_r
   P_f = data$P_f
 
-  ### define difference operator (computes differences wrt alternative i)
-  Delta = function(i){
-    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
-    return(Delta)
-  }
-
   ### compute utility differences with respect to 'normalization$level'
   for(n in seq_len(N))
     for(t in seq_len(T[n]))
-      data$data[[n]]$X[[t]] = Delta(normalization$level) %*% data$data[[n]]$X[[t]]
+      data$data[[n]]$X[[t]] = delta(J,normalization$level) %*% data$data[[n]]$X[[t]]
 
   ### compute sufficient statistics
   y = matrix(0,nrow=N,ncol=max(T))
