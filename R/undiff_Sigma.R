@@ -1,32 +1,27 @@
 #' Transform differenced to non-differenced error term covariance matrix.
 #' @description
 #' This function transforms the differenced error term covariance matrix
-#' \code{Sigma_diff} back to a non-differenced error term covariance matrix.
-#' @param Sigma_diff
+#' \code{Sigma} back to a non-differenced error term covariance matrix.
+#' @param Sigma
 #' The error term covariance matrix of dimension \code{J-1} x \code{J-1} which
 #' was differenced with respect to alternative \code{i}.
 #' @param i
-#' An integer, the alternative number with respect to which \code{Sigma_diff}
+#' An integer, the alternative number with respect to which \code{Sigma}
 #' got differenced.
 #' @return
 #' A covariance matrix of dimension \code{J} x \code{J}. If this covariance
 #' matrix gets differenced with respect to alternative \code{i}, the results is
-#' \code{Sigma_diff}.
+#' \code{Sigma}.
 
-Sigma_diff_to_Sigma = function(Sigma_diff, i = nrow(Sigma_diff) + 1){
+undiff_Sigma = function(Sigma, i = nrow(Sigma) + 1){
 
   ### check inputs
-  if(!is_covariance_matrix(Sigma_diff))
-    stop("'Sigma_diff' is no covariance matrix.")
-  J = nrow(Sigma_diff) + 1
+  Sigma = as.matrix(Sigma)
+  if(!is_covariance_matrix(Sigma))
+    stop("'Sigma' is no covariance matrix.")
+  J = nrow(Sigma) + 1
   if(!(length(i)==1 && is.numeric(i) && i%%1==0 && i<=J && i>=1))
      stop("'i' must an alternative number.")
-
-  ### difference operator
-  Delta = function(i){
-    Delta = diag(J)[-J,,drop=FALSE]; Delta[,i] = -1
-    return(Delta)
-  }
 
   ### Moore-Penrose generalized inverse
   mpgi = function(x){
@@ -43,20 +38,18 @@ Sigma_diff_to_Sigma = function(Sigma_diff, i = nrow(Sigma_diff) + 1){
   }
 
   ### transform to non-differenced error-term matrix
-  Sigma = mpgi(t(Delta(i)) %*% Delta(i)) %*% t(Delta(i)) %*%
-    Sigma_diff %*%
-    Delta(i) %*% mpgi(t(Delta(i))%*%Delta(i))
+  Sigma_full = mpgi(t(delta(J,i)) %*% delta(J,i)) %*% t(delta(J,i)) %*%
+    Sigma %*% delta(J,i) %*% mpgi(t(delta(J,i)) %*% delta(J,i))
 
   ### check if Sigma is a covariance matrix
-  if(!is_covariance_matrix(Sigma))
+  if(!is_covariance_matrix(Sigma_full))
     stop("Back-transformed matrix is no covariance matrix.")
 
   ### check if back-differencing yields differenced matrix
-  Sigma_diff_back = Delta(i) %*% Sigma %*% t(Delta(i))
-  if(any(abs(Sigma_diff_back - Sigma_diff) > sqrt(.Machine$double.eps)))
+  Sigma_back = delta(J,i) %*% Sigma_full %*% t(delta(J,i))
+  if(any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps)))
     stop("Back-differencing failed.")
 
-  ### return transformed matrix
-  return(Sigma)
-
+  ### return undifferenced covariance matrix
+  return(Sigma_full)
 }

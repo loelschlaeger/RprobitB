@@ -21,14 +21,13 @@
 #' \code{P_r*P_r} x \code{C}.
 #' Set to \code{NA} if \code{P_r = 0}.
 #' @param Sigma
-#' The error term covariance matrix of dimension \code{J} x \code{J}.
-#' Internally, \code{Sigma} gets differenced with respect to alternative
-#' \code{J}, so it becomes an identified covariance matrix of dimension
-#' \code{J-1} x \code{J-1}.
-#' @param Sigma_diff
 #' The differenced error term covariance matrix of dimension
-#' \code{J-1} x \code{J-1} with respect to alternative \code{J}. If \code{Sigma}
-#' is specified, \code{Sigma_diff} is ignored.
+#' \code{J-1} x \code{J-1} with respect to alternative \code{J}.
+#' @param Sigma_full
+#' The error term covariance matrix of dimension \code{J} x \code{J}.
+#' Internally, \code{Sigma_full} gets differenced with respect to alternative
+#' \code{J}, so it becomes an identified covariance matrix of dimension
+#' \code{J-1} x \code{J-1}. If \code{Sigma} is specified, \code{Sigma_full} is ignored.
 #' @param beta
 #' The matrix of the decision-maker specific coefficient vectors of dimension
 #' \code{P_r} x \code{N}.
@@ -41,11 +40,11 @@
 #' @return
 #' An object of class \code{RprobitB_true_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{Sigma_diff}, \code{beta}, and \code{z}.
+#' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
 
 RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
                                    s = NULL, b = NULL, Omega = NULL,
-                                   Sigma = NULL, Sigma_diff = NULL, beta = NULL,
+                                   Sigma = NULL, Sigma_full = NULL, beta = NULL,
                                    z = NULL, seed = NULL) {
 
   ### seed for sampling missing parameters
@@ -134,20 +133,20 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
 
   ### Sigma
   if(is.null(Sigma)){
-    if(is.null(Sigma_diff)){
-      Sigma = rwishart(J,diag(J))$W
-      Sigma_diff = delta(J,J) %*% Sigma %*% t(delta(J,J))
+    if(is.null(Sigma_full)){
+      Sigma_full = rwishart(J,diag(J))$W
     } else {
-      Sigma = Sigma_diff_to_Sigma(Sigma_diff, i = J)
+      Sigma_full = as.matrix(Sigma_full)
     }
+    Sigma = delta(J,J) %*% Sigma_full %*% t(delta(J,J))
   } else {
     Sigma = as.matrix(Sigma)
-    Sigma_diff = delta(J,J) %*% Sigma %*% t(delta(J,J))
+    Sigma_full = undiff_Sigma(Sigma, i = J)
   }
-  if(!(is_covariance_matrix(Sigma) && nrow(Sigma)==J))
-    stop("'Sigma' is not a proper covariance matrix of dimension ", J, " x ", J, ".")
-  if(!(is_covariance_matrix(Sigma_diff) && nrow(Sigma_diff)==J-1))
-    stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J-1, " x ", J-1, ".")
+  if(!(is_covariance_matrix(Sigma) && nrow(Sigma)==J-1))
+    stop("'Sigma' is not a proper (differenced) covariance matrix of dimension ", J-1, " x ", J-1, ".")
+  if(!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full)==J))
+    stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J, " x ", J, ".")
 
   ### build and return 'RprobitB_true_parameter'-object
   out = list("alpha" = alpha,
@@ -156,7 +155,7 @@ RprobitB_true_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL,
              "b" = b,
              "Omega" = Omega,
              "Sigma" = Sigma,
-             "Sigma_diff" = Sigma,
+             "Sigma_full" = Sigma_full,
              "beta" = beta,
              "z" = z)
   class(out) = "RprobitB_true_parameter"

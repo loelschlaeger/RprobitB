@@ -2,6 +2,8 @@
 #' @param x
 #' An object of class \code{summary.RprobitB_model}.
 #' @inheritParams print.RprobitB_parameter_statistics
+#' @param full_Sigma
+#' If \code{TRUE}, prints an undifferenced error-term covariance matrix.
 #' @param ...
 #' Ignored.
 #' @export
@@ -57,5 +59,6 @@ print.summary.RprobitB_model = function(x, statistics = c("mean", "sd", "R^"),
   print(x$parameter_statistics, true = x$true_parameter, statistics = statistics,
         digits = digits)
 
+  ### return 'x' invisibly
   return(invisible(x))
 }

@@ -21,7 +21,8 @@
 #' @examples
 #' \dontrun{
 #' ### fit a model to simulated data
-#' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2)
+#' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
+#'                 Sigma = 2, alpha = c(0.5,2))
 #' scale = list("parameter" = "s", "index" = 1, "value" = 1)
 #' model = fit(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
 #'
@@ -29,14 +30,7 @@
 #' model = transform(model = model, B = 5e3, Q = 10)
 #'
 #' ### change 'scale'
-#' scale_new = list("parameter" = "a", "index" = 1, "value" = -1)
-#' model = transform(model = model, scale = scale_new)
-#'
-#' ### warning if new scale flips preferences
-#' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
-#'                 alpha = 1:2)
-#' model = fit(data = data, R = 1e4, B = 1, Q = 1)
-#' scale_new = list("parameter" = "a", "index" = 1, "value" = -1)
+#' scale_new = list("parameter" = "a", "index" = 1, "value" = 1)
 #' model_new = transform(model = model, scale = scale_new)
 #' }
 #' @export
@@ -68,11 +62,10 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL,
     normalization = model$normalization
   } else {
     ### check if new scale flips preferences
-    if(check_preference_flip)
-      if(preference_flip(model_old = model,
-                         model_new = transform(model = model, scale = scale,
-                                               check_preference_flip = FALSE)))
-        warning()
+    if(check_preference_flip){
+      model_new = transform(model = model, scale = scale, check_preference_flip = FALSE)
+      preference_flip(model_old = model, model_new = model_new)
+    }
     normalization = RprobitB_normalization(J = J, P_f = P_f, scale = scale)
     model$normalization = normalization
   }
@@ -97,7 +90,6 @@ transform = function(model, B = NULL, Q = NULL, scale = NULL,
 
   ### return 'RprobitB_model'
   return(model)
-
 }
 
 

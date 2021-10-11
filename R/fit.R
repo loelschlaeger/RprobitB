@@ -66,8 +66,7 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(!is.logical(print_progress))
     stop("'progress' must be a boolean.")
-  normalization = RprobitB_normalization(J = data$J, P_f = data$P_f,
-                                         scale = scale)
+  normalization = RprobitB_normalization(J = data$J, P_f = data$P_f, scale = scale)
   latent_classes = check_latent_classes(latent_classes = latent_classes)
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 

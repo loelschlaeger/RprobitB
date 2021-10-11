@@ -10,7 +10,7 @@
 #' Set a seed for the simulation.
 #' @param ...
 #' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{Sigma_diff}, \code{beta}, or \code{z} for the simulation.
+#' \code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples
@@ -140,8 +140,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
                                          "J" = J, "N" = N, "seed" = seed),
                                     list(...)))
 
-  ### compute lower-triangular Choleski root of Sigma
-  L = t(chol(true_parameter$Sigma))
+  ### compute lower-triangular Choleski root of 'Sigma_full'
+  L = suppressWarnings(t(chol(true_parameter$Sigma_full, pivot = TRUE)))
 
   ### allocate space for data and utilities
   data = list()
@@ -243,9 +243,6 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
 
     data[[n]][["y"]] = y_n
   }
-
-  ### difference 'Sigma' in 'true_parameter'
-  true_parameter$Sigma = delta(J,J) %*% true_parameter$Sigma %*% t(delta(J,J))
 
   ### create RprobitB_data object
   out = RprobitB_data(data           = data,

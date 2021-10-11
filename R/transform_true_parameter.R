@@ -42,6 +42,8 @@ transform_true_parameter = function(true_parameter, normalization) {
     true_parameter$Omega = scaling(true_parameter$Omega, factor)
     true_parameter$Sigma = scaling(true_parameter$Sigma, factor)
     true_parameter$beta = scaling(true_parameter$beta, sqrt(factor))
+    true_parameter$Sigma_full = undiff_Sigma(true_parameter$Sigma,
+                                             normalization$level)
   }
 
   ### return 'true_parameter'
