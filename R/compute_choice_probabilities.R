@@ -1,6 +1,7 @@
-#' Compute probit choice probabilities.
+#' Compute probit choice probabilities for a single choice situation.
 #' @description
-#' This function computes probit choice probabilities.
+#' This function computes the probit choice probabilities for a single choice
+#' situation.
 #' @param X
 #' A matrix of covariates with one row per alternative.
 #' The first \code{P_f} columns are connected to fixed coefficients, the last
@@ -14,7 +15,6 @@
 #' parameter = RprobitB_parameter(P_f = 1, P_r = 0, J = 3,
 #'                                alpha = 1, Sigma_full = diag(3))
 #' prob = compute_choice_probabilities(X = X, parameter = parameter)
-#' @export
 
 compute_choice_probabilities = function(X, parameter) {
 
@@ -81,7 +81,10 @@ compute_choice_probabilities = function(X, parameter) {
 
   }
 
+  ### check if probabilities sum to 1
   if(abs(sum(probabilities)-1)>sqrt(.Machine$double.eps))
     warning("probabilities do not sum to 1.")
+
+  ### return probabilities
   return(probabilities)
 }
