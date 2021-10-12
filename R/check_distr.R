@@ -57,5 +57,4 @@ check_distr = function(distr) {
 
   ### return checked 'distr'
   return(distr)
-
 }

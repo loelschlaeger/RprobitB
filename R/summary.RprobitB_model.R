@@ -3,11 +3,10 @@
 #' An object of class \code{RprobitB_model}.
 #' @inheritParams print.RprobitB_parameter_statistics
 #' @param ...
-#' Ignored.
+#' Additional parameters that get passed on to the print method.
 #' @export
 
-summary.RprobitB_model = function(object, statistics = c("mean", "sd", "R^"),
-                                  digits = 2, ... ) {
+summary.RprobitB_model = function(object, ...) {
 
   ### check class of 'object'
   if(!inherits(object, "RprobitB_model"))
@@ -59,7 +58,6 @@ summary.RprobitB_model = function(object, statistics = c("mean", "sd", "R^"),
              "true_parameter" = object$data$true_parameter)
   class(out) = "summary.RprobitB_model"
 
-  ### print and invisibly return 'summary.RprobitB_model' object
-  print(out, statistics = statistics, digits = digits)
-  return(invisible(out))
+  ### return 'summary.RprobitB_model' object
+  return(out)
 }

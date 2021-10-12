@@ -1,9 +1,10 @@
 #' Print method for the summary of \code{RprobitB_model}.
 #' @param x
 #' An object of class \code{summary.RprobitB_model}.
-#' @inheritParams print.RprobitB_parameter_statistics
-#' @param full_Sigma
-#' If \code{TRUE}, prints an undifferenced error-term covariance matrix.
+#' @param statistics
+#' ...
+#' @param digits
+#' ...
 #' @param ...
 #' Ignored.
 #' @export

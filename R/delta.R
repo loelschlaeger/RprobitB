@@ -17,7 +17,8 @@
 #' delta(3,3) %*% X
 
 delta = function(J,i){
-  stopifnot(is_number(c(J,i), int = TRUE, pos = TRUE))
+  stopifnot(is.numeric(J), J%%1 == 0, J>=2)
+  stopifnot(is.numeric(i), i%%1 == 0, i>=1)
   stopifnot(J>=2)
   stopifnot(J>=i)
   if(i == 1){

@@ -7,7 +7,7 @@
 #' The type of plot, which can be one of:
 #' \itemize{
 #'   \item \code{"effects"} (the default) for visualizing the effects,
-#'   \item \code{"mixing"} for visualizing the mixing distributions,
+#'   \item \code{"mixture"} for visualizing the mixture distributions,
 #'   \item \code{"estimates"} for visualizing the parameter estimates,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples.
@@ -15,9 +15,9 @@
 #' @param restrict
 #' A character (vector) of covariate or parameter names, which can be used to
 #' restrict the visualizations to a subset of covariates and parameters,
-#' respectively. Per default, a combined plot is produced.
+#' respectively. Per default, a combined plot of all parameters is produced.
 #' @param ...
-#' Additional parameters that get passed on to \link{plot}.
+#' Additional parameters that get passed on to \link[base]{plot}.
 #' @return
 #' No return value. Draws a plot to the current device.
 #' @export
@@ -28,9 +28,8 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
   if(!inherits(x,"RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
   if(length(type) != 1 || !type %in%
-     c("effects","mixing","estimates","acf","trace"))
-    stop("'type' must be one of ",
-         "'effects', 'mixing', 'estimates', acf', or 'trace'.")
+     c("effects","mixture","estimates","acf","trace"))
+    stop("'type' must be one of 'effects', 'mixture', 'estimates', acf', or 'trace'.")
   if(!is.null(restrict) && !is.character(restrict))
     stop("'restrict' must be a character vector.")
 
@@ -38,8 +37,8 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
   if(type == "effects")
     plot_effects(x = x, restrict = restrict, ...)
 
-  ### make plot type 'mixing'
-  if(type == "mixing"){
+  ### make plot type 'mixture'
+  if(type == "mixture"){
     par(mfrow = c(length(cov_names),length(cov_names)))
     pars_pairs = expand.grid(cov_names, cov_names, stringsAsFactors = FALSE)
     for(pars_pair in 1:nrow(pars_pairs)){
