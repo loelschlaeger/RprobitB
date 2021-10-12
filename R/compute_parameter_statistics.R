@@ -25,22 +25,6 @@ compute_parameter_statistics = function(gibbs_samples, P_f, P_r, J, C) {
   ### create coefficient labels
   labels = create_labels(P_f = P_f, P_r = P_r, J = J, C = C, symmetric = TRUE)
 
-  ### compute 'R_hat' (Gelman-Rubin statistic)
-  ### https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html
-  ### samples_nb: normalized and burned but not thinned Gibbs samples
-  ### parts: number of parts to divide the Gibbs samples
-  compute_R_hat = function(samples_nb, parts=2){
-    sub_chains = split(samples_nb,cut(seq_along(samples_nb),parts,labels=FALSE))
-    L = length(samples_nb)/parts
-    chain_means = sapply(sub_chains,mean)
-    grand_mean = mean(chain_means)
-    B = 1/(parts-1)*sum((chain_means-grand_mean)^2)
-    chain_variances = sapply(sub_chains,var)
-    W = sum(chain_variances)/parts
-    R_hat = ((L-1)/L*W+B)/W
-    return(R_hat)
-  }
-
   ### function that computes statistic values
   compute_statistic_values = function(samples_nbt, samples_nb, labels){
     out = matrix(NA, nrow = length(labels), ncol=8)
