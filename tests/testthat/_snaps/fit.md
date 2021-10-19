@@ -66706,7 +66706,7 @@
     Code
       summary(m1)
     Output
-      Summary of fitted probit model 'choice ~ var | 0' via Bayesian estimation:
+      Probit model 'choice ~ var | 0'.
       
       MCMC settings:
       - R: 10000 
@@ -130194,7 +130194,7 @@
     Code
       summary(m2)
     Output
-      Summary of fitted probit model 'choice ~ var | 0' via Bayesian estimation:
+      Probit model 'choice ~ var | 0'.
       
       MCMC settings:
       - R: 10000 
@@ -142446,7 +142446,7 @@
     Code
       summary(m3)
     Output
-      Summary of fitted probit model 'choice ~ 0 | var' via Bayesian estimation:
+      Probit model 'choice ~ 0 | var'.
       
       MCMC settings:
       - R: 10000 
@@ -151481,7 +151481,7 @@
     Code
       summary(m4)
     Output
-      Summary of fitted probit model 'choice ~ 0 | var' via Bayesian estimation:
+      Probit model 'choice ~ 0 | var'.
       
       MCMC settings:
       - R: 10000 
@@ -157601,7 +157601,7 @@
     Code
       summary(m5)
     Output
-      Summary of fitted probit model 'choice ~ 0 | var' via Bayesian estimation:
+      Probit model 'choice ~ 0 | var'.
       
       MCMC settings:
       - R: 10000 

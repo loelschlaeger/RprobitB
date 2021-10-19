@@ -1,7 +1,7 @@
 # reproducibility works
 
     Code
-      RprobitB_true_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1)
+      RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1)
     Output
       $alpha
       [1] -1.4 -0.8
@@ -86,5 +86,5 @@
        [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
       
       attr(,"class")
-      [1] "RprobitB_true_parameter"
+      [1] "RprobitB_parameter"
 
