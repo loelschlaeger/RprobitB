@@ -3,7 +3,7 @@
 #' This function fits a (latent class) (mixed) (multinomial) probit model via
 #' Bayesian estimation to discrete choice data for the RprobitB package.
 #' @details
-#' For more details see the vignette "Model fitting":
+#' For more details see the vignette "Model fitting"
 #' \code{vignette("model_fitting", package = "RprobitB")}.
 #' @param data
 #' An object of class \code{RprobitB_data}.
@@ -66,13 +66,14 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     stop("'Q' must be a positive integer smaller than 'R'.")
   if(!is.logical(print_progress))
     stop("'progress' must be a boolean.")
-  normalization = RprobitB_normalization(J = data$J, P_f = data$P_f, scale = scale)
+  normalization = RprobitB_normalization(J = data$J, P_f = data$P_f,
+                                         scale = scale)
   latent_classes = check_latent_classes(latent_classes = latent_classes)
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics
-  sufficient_statistics = compute_sufficient_statistics(data = data,
-                                                        normalization = normalization)
+  sufficient_statistics = compute_sufficient_statistics(
+    data = data, normalization = normalization)
 
   ### set initial values for the Gibbs sampler
   init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
@@ -88,7 +89,8 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### normalize, burn and thin 'gibbs_samples'
   gibbs_samples = transform_gibbs_samples(
-    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, normalization = normalization)
+    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q,
+    normalization = normalization)
 
   ### normalize true model parameters based on 'normalization'
   if(data$simulated)

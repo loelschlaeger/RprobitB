@@ -1,19 +1,27 @@
+### building
 useDynLib(RprobitB, .registration=TRUE)
+
+### imports
 importFrom(Rcpp, evalCpp)
-exportPattern("^[[:alpha:]]+")
 importFrom("grDevices", "dev.list", "dev.off", "pdf", "rgb")
-importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par", "points", "title")
-importFrom("stats", "acf", "dnorm", "plot.ts", "quantile", "rnorm", "runif", "sd", "var")
+importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par",
+           "points", "title")
+importFrom("stats", "acf", "dnorm", "plot.ts", "quantile", "rnorm", "runif",
+           "sd", "var")
 importFrom("utils", "head", "tail")
 importFrom("graphics", "plot")
 importFrom("stats", "fivenum", "median")
 importFrom("utils", "packageVersion")
 
+### exports
 export(compare)
 export(compute_choice_probabilities)
 export(fit)
-S3method(plot,RprobitB_model)
 export(prepare)
+export(simulate)
+
+### S3 methods
+S3method(plot,RprobitB_model)
 S3method(print,RprobitB_data)
 S3method(print,RprobitB_model)
 S3method(print,RprobitB_normalization)
@@ -22,7 +30,5 @@ S3method(print,summary.RprobitB_model)
 S3method(print,RprobitB_latent_classes)
 S3method(print,RprobitB_parameter_statistics)
 S3method(print,RprobitB_gibbs_samples)
-S3method(print,RprobitB_parameter)
-export(simulate)
 S3method(summary,RprobitB_data)
 S3method(summary,RprobitB_model)

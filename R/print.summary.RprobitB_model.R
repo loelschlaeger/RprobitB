@@ -12,8 +12,7 @@
 print.summary.RprobitB_model = function(x, statistics = c("mean", "sd", "R^"),
                                         digits = 2, ...) {
 
-  cat(paste0("Summary of fitted probit model '",
-             deparse1(x$form),"' via Bayesian estimation:\n\n"))
+  cat("Probit model '",deparse1(x$form),"'.\n\n", sep = "")
 
   ### summary of model
   cat("MCMC settings:\n")

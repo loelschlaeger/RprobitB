@@ -21,7 +21,7 @@ undiff_Sigma = function(Sigma, i = nrow(Sigma) + 1){
     stop("'Sigma' is no covariance matrix.")
   J = nrow(Sigma) + 1
   if(!(length(i)==1 && is.numeric(i) && i%%1==0 && i<=J && i>=1))
-     stop("'i' must an alternative number.")
+    stop("'i' must an alternative number.")
 
   ### Moore-Penrose generalized inverse
   mpgi = function(x){

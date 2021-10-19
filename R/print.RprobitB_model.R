@@ -6,6 +6,6 @@
 #' @export
 
 print.RprobitB_model = function(x, ...){
-  cat("Fitted probit model via Bayesian estimation.\n")
+  cat("Probit model '",deparse1(x$data$form),"'.\n", sep = "")
   return(invisible(x))
 }

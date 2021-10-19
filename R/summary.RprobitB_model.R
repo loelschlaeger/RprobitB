@@ -1,9 +1,8 @@
 #' Summary method for \code{RprobitB_model}.
 #' @param object
 #' An object of class \code{RprobitB_model}.
-#' @inheritParams print.RprobitB_parameter_statistics
 #' @param ...
-#' Additional parameters that get passed on to the print method.
+#' Ignorded.
 #' @export
 
 summary.RprobitB_model = function(object, ...) {

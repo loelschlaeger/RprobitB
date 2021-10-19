@@ -14,7 +14,7 @@ time_t itime;
 void start_timer() {
   // Function to initialize the timer for Gibbs sampling
   itime = time(NULL);
-  Rcout << "Iteration Event                  ETA (min)\n";
+  Rcout << "Iteration Info                   ETA (min)\n";
   Rcout << "        0 started Gibbs sampling          \n";
 }
 
@@ -702,11 +702,12 @@ List gibbs_sampling (int R, int B, bool print_progress,
 
     // print time to completion
     if(print_progress)
-      if((rep+1)%nprint==0)
+      if((rep+1)%nprint==0 && rep+1 != R)
         update_timer(rep, R);
   }
 
-  if(print_progress) end_timer(R);
+  if(print_progress)
+    end_timer(R);
 
   return List::create(Named("s_draws") = s_draws,
                       Named("alpha_draws") = alpha_draws,

@@ -2,7 +2,7 @@
 #' @description
 #' This function simulates choice data for the RprobitB package.
 #' @details
-#' For more details see the vignette "Data management":
+#' For more details see the vignette "Data management"
 #' \code{vignette("data_management", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
 #' @inheritParams check_distr
@@ -14,21 +14,30 @@
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples
+#' ### simulate data
 #' form = choice ~ cost | income | travel_time
 #' re = "cost"
 #' N = 100
 #' T = 10
 #' J = 3
 #' alternatives = c("car", "bus", "train")
+#' data = simulate(form = form, N = N, T = T, J = J, re = re,
+#'                 alternatives = alternatives, seed = 1)
+#'
+#' ### specify distributions for the covariates
 #' distr = list("cost" = list("name" = "rnorm", sd = 3),
 #'              "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
 #'              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
 #'              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
+#' data = simulate(form = form, N = N, T = T, J = J, re = re,
+#'                 alternatives = alternatives, distr = distr, seed = 1)
+#'
+#' ### standardize covariates
 #' standardize = c("income", "travel_time_car", "travel_time_bus",
 #'                 "travel_time_train")
 #' data = simulate(form = form, N = N, T = T, J = J, re = re,
 #'                 alternatives = alternatives, distr = distr,
-#'                 standardize = standardize, C = 2, s = c(0.5,0.5))
+#'                 standardize = standardize, seed = 1)
 #' @export
 
 simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
