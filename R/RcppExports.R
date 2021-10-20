@@ -48,9 +48,9 @@ rwishart <- function(nu, V) {
     .Call(`_RprobitB_rwishart`, nu, V)
 }
 
-#' Gibbs sampler
+#' Gibbs sampler.
 #' @description
-#' Function to perform Gibbs sampling for the LCMMNP model
+#' This function performs Gibbs sampling for RprobitB package.
 #' @inheritParams fit
 #' @inheritParams RprobitB_data
 #' @param sufficient_statistics
@@ -58,7 +58,7 @@ rwishart <- function(nu, V) {
 #' @param init
 #' The output of \code{\link{set_init}}.
 #' @return
-#' A list of Gibbs samples
+#' A list of Gibbs samples.
 #'
 gibbs_sampling <- function(R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init) {
     .Call(`_RprobitB_gibbs_sampling`, R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init)

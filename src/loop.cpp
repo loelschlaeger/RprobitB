@@ -390,9 +390,9 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
                       Named("flag") = flag);
 }
 
-//' Gibbs sampler
+//' Gibbs sampler.
 //' @description
-//' Function to perform Gibbs sampling for the LCMMNP model
+//' This function performs Gibbs sampling for RprobitB package.
 //' @inheritParams fit
 //' @inheritParams RprobitB_data
 //' @param sufficient_statistics
@@ -400,7 +400,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' @param init
 //' The output of \code{\link{set_init}}.
 //' @return
-//' A list of Gibbs samples
+//' A list of Gibbs samples.
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,
@@ -499,7 +499,6 @@ List gibbs_sampling (int R, int B, bool print_progress,
   List Wish;
   int ind;
   char buf[50];
-  bool flag = false;
   int nprint = round(R/10);
   int Jm1 = J - 1;
 
@@ -509,7 +508,6 @@ List gibbs_sampling (int R, int B, bool print_progress,
   mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
   mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
-  vec update_steps((R-B)/buffer);
 
   // define updating variables and set initial values
   vec s(C);
@@ -617,10 +615,6 @@ List gibbs_sampling (int R, int B, bool print_progress,
         m = as<vec>(class_update["m"]);
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
-        flag = as<bool>(class_update["flag"]);
-        if(flag==true){
-          update_steps[(rep+1-B/2)/buffer] = 1;
-        }
         if(print_progress && rep+1==B){
           sprintf(buf, "%9d ended class updating (C = %d)\n", rep+1, C);
           Rcout << buf;
@@ -709,10 +703,9 @@ List gibbs_sampling (int R, int B, bool print_progress,
   if(print_progress)
     end_timer(R);
 
-  return List::create(Named("s_draws") = s_draws,
-                      Named("alpha_draws") = alpha_draws,
-                      Named("b_draws") = b_draws,
-                      Named("Omega_draws") = Omega_draws,
-                      Named("Sigma_draws") = Sigma_draws,
-                      Named("update_steps") = update_steps);
+  return List::create(Named("s") = s_draws,
+                      Named("alpha") = alpha_draws,
+                      Named("b") = b_draws,
+                      Named("Omega") = Omega_draws,
+                      Named("Sigma") = Sigma_draws);
 }

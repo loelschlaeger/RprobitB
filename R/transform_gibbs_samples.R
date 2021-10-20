@@ -2,7 +2,7 @@
 #' @description
 #' This function normalizes, burns and thins the Gibbs samples.
 #' @param gibbs_samples
-#' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples.
+#' The output of \link{gibbs_sampling}.
 #' @inheritParams RprobitB_data
 #' @inheritParams fit
 #' @inheritParams compute_sufficient_statistics
@@ -31,80 +31,75 @@ transform_gibbs_samples = function(gibbs_samples, R, B, Q, normalization) {
   if(!inherits(normalization, "RprobitB_normalization"))
     stop("'normalization' must be of class 'RprobitB_normalization'.")
 
-  ### determine estimated number of latent classes
-  last_s_draw = gibbs_samples$s_draws[nrow(gibbs_samples$s_draws),]
-  C_est = length(last_s_draw[last_s_draw!=0])
-
   ### function to scale the samples
   scaling = function(par, factor) if(any(is.na(par))) NA else par * factor
 
   ### scaling of samples
   scale = normalization$scale
-  s_draws_n = scaling(gibbs_samples$s_draws, 1)
+  s_n = scaling(gibbs_samples$s, 1)
   if(scale$parameter=="a"){
-    factor = scale$value / gibbs_samples$alpha_draws[,scale$index]
-    alpha_draws_n = scaling(gibbs_samples$alpha_draws, factor)
-    b_draws_n = scaling(gibbs_samples$b_draws, factor)
-    Omega_draws_n = scaling(gibbs_samples$Omega_draws, factor^2)
-    Sigma_draws_n = scaling(gibbs_samples$Sigma_draws, factor^2)
+    factor = scale$value / gibbs_samples$alpha[,scale$index]
+    alpha_n = scaling(gibbs_samples$alpha, factor)
+    b_n = scaling(gibbs_samples$b, factor)
+    Omega_n = scaling(gibbs_samples$Omega, factor^2)
+    Sigma_n = scaling(gibbs_samples$Sigma, factor^2)
   }
   if(scale$parameter=="s"){
-    Jm1 = sqrt(length(gibbs_samples$Sigma_draws[1,]))
-    factor = scale$value / gibbs_samples$Sigma_draws[,(Jm1)*(scale$index-1)+scale$index]
-    alpha_draws_n = scaling(gibbs_samples$alpha_draws, sqrt(factor))
-    b_draws_n = scaling(gibbs_samples$b_draws, sqrt(factor))
-    Omega_draws_n = scaling(gibbs_samples$Omega_draws, factor)
-    Sigma_draws_n = scaling(gibbs_samples$Sigma_draws, factor)
+    factor = scale$value / gibbs_samples$Sigma[,paste0(scale$index,",",scale$index)]
+    alpha_n = scaling(gibbs_samples$alpha, sqrt(factor))
+    b_n = scaling(gibbs_samples$b, sqrt(factor))
+    Omega_n = scaling(gibbs_samples$Omega, factor)
+    Sigma_n = scaling(gibbs_samples$Sigma, factor)
   }
-  gibbs_samples_n = list("s"     = s_draws_n,
-                         "alpha" = alpha_draws_n,
-                         "b"     = b_draws_n,
-                         "Omega" = Omega_draws_n,
-                         "Sigma" = Sigma_draws_n)
+  gibbs_samples_n = list("s"     = s_n,
+                         "alpha" = alpha_n,
+                         "b"     = b_n,
+                         "Omega" = Omega_n,
+                         "Sigma" = Sigma_n)
 
   ### function to burn samples
   burn = function(samples)
     if(any(is.na(samples))) NA else samples[(B+1):R,,drop=FALSE]
 
   ### burning of normalized samples
-  s_draws_nb = burn(s_draws_n)
-  alpha_draws_nb = burn(alpha_draws_n)
-  b_draws_nb = burn(b_draws_n)
-  Omega_draws_nb = burn(Omega_draws_n)
-  Sigma_draws_nb = burn(Sigma_draws_n)
-  gibbs_samples_nb = list("s"     = s_draws_nb,
-                          "alpha" = alpha_draws_nb,
-                          "b"     = b_draws_nb,
-                          "Omega" = Omega_draws_nb,
-                          "Sigma" = Sigma_draws_nb)
+  s_nb = burn(s_n)
+  alpha_nb = burn(alpha_n)
+  b_nb = burn(b_n)
+  Omega_nb = burn(Omega_n)
+  Sigma_nb = burn(Sigma_n)
+  gibbs_samples_nb = list("s"     = s_nb,
+                          "alpha" = alpha_nb,
+                          "b"     = b_nb,
+                          "Omega" = Omega_nb,
+                          "Sigma" = Sigma_nb)
 
   ### function to thin samples
   thin = function(samples,end)
     if(any(is.na(samples))) NA else samples[seq(1,end,Q),,drop=FALSE]
 
   ### thinning of normalized samples
-  s_draws_nt = thin(s_draws_n,R)
-  alpha_draws_nt = thin(alpha_draws_n,R)
-  b_draws_nt = thin(b_draws_n,R)
-  Omega_draws_nt = thin(Omega_draws_n,R)
-  Sigma_draws_nt = thin(Sigma_draws_n,R)
-  gibbs_samples_nt = list("s"     = s_draws_nt,
-                          "alpha" = alpha_draws_nt,
-                          "b"     = b_draws_nt,
-                          "Omega" = Omega_draws_nt,
-                          "Sigma" = Sigma_draws_nt)
+  s_nt = thin(s_n,R)
+  alpha_nt = thin(alpha_n,R)
+  b_nt = thin(b_n,R)
+  Omega_nt = thin(Omega_n,R)
+  Sigma_nt = thin(Sigma_n,R)
+  gibbs_samples_nt = list("s"     = s_nt,
+                          "alpha" = alpha_nt,
+                          "b"     = b_nt,
+                          "Omega" = Omega_nt,
+                          "Sigma" = Sigma_nt)
 
   ### thinning of normalized and burned samples
-  s_draws_nbt = thin(s_draws_nb,R-B)
-  alpha_draws_nbt = thin(alpha_draws_nb,R-B)
-  b_draws_nbt = thin(b_draws_nb,R-B)
-  Omega_draws_nbt = thin(Omega_draws_nb,R-B)
-  Sigma_draws_nbt = thin(Sigma_draws_nb,R-B)
-  gibbs_samples_nbt = list("s"    = s_draws_nbt,
-                           "alpha" = alpha_draws_nbt,
-                           "b"     = b_draws_nbt,
-                           "Omega" = Omega_draws_nbt,
-                           "Sigma" = Sigma_draws_nbt)
+  s_nbt = thin(s_nb,R-B)
+  alpha_nbt = thin(alpha_nb,R-B)
+  b_nbt = thin(b_nb,R-B)
+  Omega_nbt = thin(Omega_nb,R-B)
+  Sigma_nbt = thin(Sigma_nb,R-B)
+  gibbs_samples_nbt = list("s"     = s_nbt,
+                           "alpha" = alpha_nbt,
+                           "b"     = b_nbt,
+                           "Omega" = Omega_nbt,
+                           "Sigma" = Sigma_nbt)
 
   ### build and add class to 'gibbs_samples'
   gibbs_samples = list("gibbs_samples"     = gibbs_samples,

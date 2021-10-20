@@ -51,7 +51,7 @@
 #' @export
 
 fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
-               R = 1e4, B = R/2, Q = 10, print_progress = TRUE, prior = NULL,
+               R = 1e4, B = R/2, Q = 1, print_progress = TRUE, prior = NULL,
                latent_classes = NULL, seed = NULL) {
 
   ### check inputs
@@ -86,6 +86,13 @@ fit = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
     P_f = data$P_f, P_r = data$P_r, latent_classes = latent_classes,
     sufficient_statistics = sufficient_statistics, prior = prior, init = init)
+
+  ### label Gibbs samples
+  labels = create_labels(P_f = data$P_f, P_r = data$P_r, J = data$J,
+                         C = length(as.numeric(tail(gibbs_samples$s,1)) != 0),
+                         symmetric = TRUE)
+  for(par in names(gibbs_samples))
+    colnames(gibbs_samples[[par]]) = labels[[par]]
 
   ### normalize, burn and thin 'gibbs_samples'
   gibbs_samples = transform_gibbs_samples(

@@ -27,32 +27,16 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
   ### check inputs
   if(!inherits(x,"RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
-  if(!(length(type) == 1 && type %in% c("effects", "mixture", "estimates",
-                                        "acf", "trace")))
+  if(!(length(type) == 1 && type %in% c("effects", "mixture", "estimates", "acf", "trace")))
     stop("Unknown 'type'.")
-  if(!is.null(restrict))
-    if(!is.character(restrict))
-      stop("'restrict' must be a character vector.")
+  if(is.null(restrict))
+    restrict = c("alpha", "s", "b", "Omega", "Sigma")
+  if(!is.character(restrict))
+    stop("'restrict' must be a character vector.")
 
-  ### make plot type 'effects'
-  if(type == "effects")
-    plot_effects(x = x, restrict = restrict)
-
-  ### make plot type 'estimates'
-  if(type == "estimates")
-    plot_estimates(x = x, restrict = restrict)
-
-  ### function that finds balanced par(mfrow) values
-  set_mfrow = function(n){
-    if(n==1) return(c(1,1))
-    ran = 2:max(floor((n-1)/2),1)
-    ran2 = pmax(ceiling(n/(ran)),1)
-    rem = abs(n - ran2*ran)
-    score = abs(sqrt(n)-(ran)) + abs(sqrt(n)-(ran2)) + rem
-    mf1 = ran[which.min(score)]
-    mf2 = ran2[which.min(score)]
-    return(c(mf1, mf2))
-  }
+  ### reset of 'par' settings
+  oldpar = par(no.readonly = TRUE)
+  on.exit(par(oldpar))
 
   ### make plot type 'mixture'
   if(type == "mixture"){
@@ -65,26 +49,50 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
         par1 = pars_pairs[pars_pair,1]
         par2 = pars_pairs[pars_pair,2]
         if(par1 == par2){
-          plot_marginal(x = x, par = par1, ...)
+          plot_marginal(x = x, par = par1)
         } else {
           plot_contour(x = x, par1 = pars_pairs[pars_pair,1],
-                       par2 = pars_pairs[pars_pair,1], ...)
+                       par2 = pars_pairs[pars_pair,1])
         }
       }
     }
   }
 
-  ### make plot type 'acf'
-  if(type == "acf"){
-    par(mfrow = set_mfrow(length(par_names)))
-    for(par in par_names)
-      plot_acf(x = x, par = par)
-  }
+  ### make plot type 'effects'
+  if(type == "effects")
+    plot_effects(x = x, restrict = restrict)
+
+  ### determine names of parameters to plot
+  par_names = c()
+  if(x$data$P_f > 0)
+    par_names = c(par_names, "alpha")
+  if(x$data$P_r > 0)
+    par_names = c(par_names, "s", "b", "Omega")
+  par_names = c(par_names, "Sigma")
+  par_names = intersect(par_names, restrict)
+
+  ### make plot type 'estimates'
+  if(type == "estimates")
+    plot_estimates(x = x, restrict = restrict)
 
   ### make plot type 'trace'
   if(type == "trace"){
     par(mfrow = set_mfrow(length(par_names)))
-    for(par in par_names)
-      plot_trace(x = x, par = par)
+    for(par_name in par_names)
+      plot_trace(
+        gibbs_samples = x$gibbs_samples$gibbs_samples_nbt[[par_name, drop = FALSE]],
+        names = paste(par_name, labels[[par_name]], sep = "_")
+      )
+  }
+
+  ### make plot type 'acf'
+  if(type == "acf"){
+    par_names_labels = sapply(par_names, function(x) paste(x, labels[[x]], sep = "_"))
+    par(mfrow = set_mfrow(length(unlist(par_names_labels))))
+    for(par_name in par_names)
+      plot_acf(
+        gibbs_samples = x$gibbs_samples$gibbs_samples_nbt[[par_name, drop = FALSE]],
+        names = paste(par_name, labels[[par_name]], sep = "_")
+      )
   }
 }
