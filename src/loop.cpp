@@ -392,7 +392,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 
 //' Gibbs sampler.
 //' @description
-//' This function performs Gibbs sampling for RprobitB package.
+//' This function performs Gibbs sampling for the RprobitB package.
 //' @inheritParams fit
 //' @inheritParams RprobitB_data
 //' @param sufficient_statistics
@@ -400,7 +400,8 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' @param init
 //' The output of \code{\link{set_init}}.
 //' @return
-//' A list of Gibbs samples.
+//' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
+//' and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,
@@ -682,7 +683,8 @@ List gibbs_sampling (int R, int B, bool print_progress,
     Sigmainv = as<mat>(Wish["W"]);
 
     // save draws
-    if(P_f>0) alpha_draws(rep,span::all) = trans(alpha);
+    if(P_f>0)
+      alpha_draws(rep,span::all) = trans(alpha);
     if(P_r>0){
       s_draws(rep,span(0,s.size()-1)) = trans(s);
       vec vectorise_b = vectorise(b);
@@ -703,9 +705,23 @@ List gibbs_sampling (int R, int B, bool print_progress,
   if(print_progress)
     end_timer(R);
 
-  return List::create(Named("s") = s_draws,
-                      Named("alpha") = alpha_draws,
-                      Named("b") = b_draws,
-                      Named("Omega") = Omega_draws,
-                      Named("Sigma") = Sigma_draws);
+  // build and return output list 'out'
+  List out;
+  if(P_f>0 && P_r>0)
+    out = List::create(Named("s") = s_draws,
+                       Named("alpha") = alpha_draws,
+                       Named("b") = b_draws,
+                       Named("Omega") = Omega_draws,
+                       Named("Sigma") = Sigma_draws);
+  if(P_f>0 && P_r==0)
+    out = List::create(Named("alpha") = alpha_draws,
+                       Named("Sigma") = Sigma_draws);
+  if(P_f==0 && P_r>0)
+    out = List::create(Named("s") = s_draws,
+                       Named("b") = b_draws,
+                       Named("Omega") = Omega_draws,
+                       Named("Sigma") = Sigma_draws);
+  if(P_f==0 && P_r==0)
+    out = List::create(Named("Sigma") = Sigma_draws);
+  return out;
 }
