@@ -10,7 +10,7 @@
 is_covariance_matrix = function(x){
   is.matrix(x) &&
     is.numeric(x) &&
-    ncol(x)==nrow(x) &&
-    isSymmetric(x) &&
+    ncol(x) == nrow(x) &&
+    all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
 }

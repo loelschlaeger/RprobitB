@@ -51,5 +51,6 @@ undiff_Sigma = function(Sigma, i = nrow(Sigma) + 1){
     stop("Back-differencing failed.")
 
   ### return undifferenced covariance matrix
+  names(Sigma_full) = create_labels_Sigma(J+1, cov_sym = TRUE)
   return(Sigma_full)
 }

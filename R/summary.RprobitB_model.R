@@ -1,11 +1,13 @@
 #' Summary method for \code{RprobitB_model}.
 #' @param object
 #' An object of class \code{RprobitB_model}.
+#' @inheritParams RprobitB_gibbs_samples_statistics
 #' @param ...
 #' Ignorded.
 #' @export
 
-summary.RprobitB_model = function(object, ...) {
+summary.RprobitB_model = function(object, FUN = c("mean" = mean, "sd" = sd,
+                                                  "R^" = R_hat), ...) {
 
   ### check class of 'object'
   if(!inherits(object, "RprobitB_model"))
@@ -34,9 +36,11 @@ summary.RprobitB_model = function(object, ...) {
       C = object$latent_classes$C
     }
   }
-  parameter_statistics = compute_parameter_statistics(
-    gibbs_samples = object$gibbs_samples,
-    P_f = object$data$P_f, P_r = object$data$P_r, J = object$data$J, C = C)
+  statistics = RprobitB_gibbs_samples_statistics(
+    gibbs_samples = filter_gibbs_samples(
+      object$gibbs_samples, P_f = object$data$P_f, P_r = object$data$P_r,
+      J = object$data$J, C = C, cov_sym = FALSE, drop_par = NULL),
+    FUN = FUN)
 
   ### build 'summary.RprobitB_model' object
   out = list("form" = object$data$form,
@@ -51,7 +55,7 @@ summary.RprobitB_model = function(object, ...) {
              "normalization" = object$normalization,
              "latent_classes" = object$latent_classes,
              "prior" = object$prior,
-             "parameter_statistics" = parameter_statistics,
+             "statistics" = statistics,
              "C_est" = C_est,
              "simulated" = object$data$simulated,
              "true_parameter" = object$data$true_parameter)

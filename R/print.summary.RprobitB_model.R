@@ -1,16 +1,13 @@
 #' Print method for the summary of \code{RprobitB_model}.
 #' @param x
 #' An object of class \code{summary.RprobitB_model}.
-#' @param statistics
-#' ...
 #' @param digits
-#' ...
+#' The number of printed decimal places.
 #' @param ...
 #' Ignored.
 #' @export
 
-print.summary.RprobitB_model = function(x, statistics = c("mean", "sd", "R^"),
-                                        digits = 2, ...) {
+print.summary.RprobitB_model = function(x, digits = 2, ...) {
 
   cat("Probit model '",deparse1(x$form),"'.\n\n", sep = "")
 
@@ -56,8 +53,8 @@ print.summary.RprobitB_model = function(x, statistics = c("mean", "sd", "R^"),
   }
 
   ### overview of estimates
-  print(x$parameter_statistics, true = x$true_parameter, statistics = statistics,
-        digits = digits)
+  print.RprobitB_gibbs_samples_statistics(
+    x = x$statistics, true = x$true_parameter, digits = digits)
 
   ### return 'x' invisibly
   return(invisible(x))

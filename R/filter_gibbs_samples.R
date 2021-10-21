@@ -1,24 +1,27 @@
-#'
+#' Filter Gibbs samples.
 #' @description
-#' Filter for symmetric parameters
+#' This function filters Gibbs samples.
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_gibbs_samples}.
+#' @inheritParams create_labels
+#' @return
+#' An object of class \code{RprobitB_gibbs_samples} filtered by the labels
+#' \code{create_labels(P_f, P_r, J, C, cov_sym, drop_par)}.
+#' @keywords
+#' internal
 
-filter_gibbs_samples = function(x, drop_symmetric) {
-
-  ### filter out symmetric Gibbs samples
-  if(drop_symmetric){
-    gibbs_samples = x$gibbs_samples$gibbs_samples
-    labels_sf = create_labels(P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-                              C = x$data$true_parameter$C, symmetric = FALSE)
-    for(par in names(gibbs_samples)){
-      gibbs_samples[[par]] = gibbs_samples[[par]][,labels_sf[[par]], drop = FALSE]
+filter_gibbs_samples = function(x, P_f, P_r, J, C, cov_sym, drop_par) {
+  labels = create_labels(P_f, P_r, J, C, cov_sym, drop_par)
+  for(gs in names(x)){
+    for(par in names(x[[gs]])){
+      if(!par %in% names(labels)){
+        x[[gs]][[par]] = NULL
+      } else {
+        cols = intersect(colnames(x[[gs]][[par]]),labels[[par]])
+        x[[gs]][[par]] = x[[gs]][[par]][,cols,drop=FALSE]
+      }
+      x[[gs]] = x[[gs]][lengths(x[[gs]]) != 0]
     }
-    x$gibbs_samples = transform_gibbs_samples(
-      gibbs_samples = gibbs_samples, R = x$R, B = x$B, Q = x$Q,
-      normalization = x$normalization
-    )
   }
-
-
+  return(x)
 }

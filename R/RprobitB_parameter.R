@@ -47,8 +47,8 @@
 
 RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
                               b = NULL, Omega = NULL, Sigma = NULL,
-                              Sigma_full = NULL, beta = NULL, z = NULL, seed = NULL,
-                              sample = TRUE) {
+                              Sigma_full = NULL, beta = NULL, z = NULL,
+                              seed = NULL, sample = TRUE) {
 
   ### seed for sampling missing parameters
   if(!is.null(seed))
@@ -65,6 +65,7 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
         alpha = round(runif(P_f,-3,3),1)
       if(length(alpha)!=P_f || !is.numeric(alpha))
         stop("'alpha' must be a numeric vector of length ",P_f,".")
+      names(alpha) = create_labels_alpha(P_f)
     }
   }
 
@@ -94,6 +95,7 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
         s = round(sort(as.vector(rdirichlet(rep(1,C))), decreasing = TRUE),2)
       if(length(s)!=C || !is.numeric(s) || sum(s)!=1 || is.unsorted(rev(s)))
         stop("'s' must be a non-ascending numeric vector of length ", C, " which sums up to 1.")
+      names(s) = create_labels_s(P_r, C)
     }
 
     ### b
@@ -107,6 +109,7 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       b = as.matrix(b)
       if(!is.numeric(b) || nrow(b)!=P_r || ncol(b)!=C)
         stop("'b' must be a numeric matrix of dimension ", P_r, " x ", C, ".")
+      names(b) = create_labels_b(P_r, C)
     }
 
     ### Omega
@@ -126,6 +129,7 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       for(c in 1:C)
         if(!is_covariance_matrix (matrix(Omega[,c],nrow=P_r,ncol=P_r)))
           stop(paste("Column",c,"in 'Omega' builds no covariance matrix."))
+      names(Omega) = create_labels_Omega(P_r, C, cov_sym = TRUE)
     }
 
     ### z
@@ -175,6 +179,8 @@ RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       stop("'Sigma' is not a proper (differenced) covariance matrix of dimension ", J-1, " x ", J-1, ".")
     if(!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full)==J))
       stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J, " x ", J, ".")
+    names(Sigma) = create_labels_Sigma(J, cov_sym = TRUE)
+    names(Sigma_full) = create_labels_Sigma(J+1, cov_sym = TRUE)
   }
 
   ### build and return 'RprobitB_parameter'-object

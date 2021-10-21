@@ -92,7 +92,7 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   ### label Gibbs samples
   labels = create_labels(P_f = data$P_f, P_r = data$P_r, J = data$J,
                          C = length(as.numeric(tail(gibbs_samples$s,1)) != 0),
-                         symmetric = TRUE)
+                         cov_sym = TRUE, drop_par = NULL)
   for(par in names(gibbs_samples))
     colnames(gibbs_samples[[par]]) = labels[[par]]
 

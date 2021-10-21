@@ -10,7 +10,7 @@
 #' @return
 #' The Gelman-Rubin statistic.
 
-compute_R_hat = function(samples, parts=2){
+R_hat = function(samples, parts=2){
   sub_chains = split(samples,cut(seq_along(samples),parts,labels=FALSE))
   L = length(samples)/parts
   chain_means = sapply(sub_chains,mean)
