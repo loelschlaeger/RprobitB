@@ -16,7 +16,7 @@ importFrom("utils", "packageVersion")
 ### exports
 export(compare)
 export(compute_choice_probabilities)
-export(fit)
+export(mcmc)
 export(prepare)
 export(simulate)
 
