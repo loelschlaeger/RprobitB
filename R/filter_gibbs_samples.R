@@ -3,15 +3,15 @@
 #' This function filters Gibbs samples.
 #' @param x
 #' An object of class \code{RprobitB_gibbs_samples}.
-#' @inheritParams create_labels
+#' @inheritParams create_parameter_labels
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples} filtered by the labels
-#' \code{create_labels(P_f, P_r, J, C, cov_sym, drop_par)}.
+#' \code{create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)}.
 #' @keywords
 #' internal
 
 filter_gibbs_samples = function(x, P_f, P_r, J, C, cov_sym, drop_par) {
-  labels = create_labels(P_f, P_r, J, C, cov_sym, drop_par)
+  labels = create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)
   for(gs in names(x)){
     for(par in names(x[[gs]])){
       if(!par %in% names(labels)){

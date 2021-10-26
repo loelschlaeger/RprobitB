@@ -6,6 +6,7 @@
 #' \code{vignette("data_management", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
 #' @inheritParams check_distr
+#' @inheritParams check_form
 #' @param seed
 #' Set a seed for the simulation.
 #' @param ...

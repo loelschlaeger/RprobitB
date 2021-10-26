@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler}
+\title{Gibbs sampler.}
 \usage{
 gibbs_sampling(
   R,
@@ -39,8 +39,10 @@ estimated remaining computation time.}
 classes:
 \itemize{
 \item \code{C}:
-The number (greater or equal 1) of latent classes. Set to 1 per default
-and is ignored if \code{P_r = 0}.
+The fixed number (greater or equal 1) of latent classes. Set to 1 per
+default and is ignored if \code{P_r = 0}.
+If \code{update = TRUE}, \code{C} equals the initial number of latent
+classes and is set to 5 per default.
 \item \code{update}:
 A boolean, determining whether to update \code{C}. Ignored if
 \code{P_r = 0}. If \code{update = FALSE}, all of the following elements are
@@ -95,8 +97,9 @@ Inverse Wishart prior for \code{Sigma}.
 \item{init}{The output of \code{\link{set_init}}.}
 }
 \value{
-A list of Gibbs samples
+A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
+and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).
 }
 \description{
-Function to perform Gibbs sampling for the LCMMNP model
+This function performs Gibbs sampling for the RprobitB package.
 }

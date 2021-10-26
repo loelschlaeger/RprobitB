@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.RprobitB_model.R
 \name{plot.RprobitB_model}
 \alias{plot.RprobitB_model}
-\title{Plot method for an \code{RprobitB_model}.}
+\title{Plot method for \code{RprobitB_model}.}
 \usage{
 \method{plot}{RprobitB_model}(x, type = "effects", restrict = NULL, ...)
 }
@@ -12,7 +12,7 @@
 \item{type}{The type of plot, which can be one of:
 \itemize{
 \item \code{"effects"} (the default) for visualizing the effects,
-\item \code{"mixing"} for visualizing the mixing distributions,
+\item \code{"mixture"} for visualizing the mixture distributions,
 \item \code{"estimates"} for visualizing the parameter estimates,
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 \item \code{"trace"} for trace plots of the Gibbs samples.
@@ -20,13 +20,13 @@
 
 \item{restrict}{A character (vector) of covariate or parameter names, which can be used to
 restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot is produced.}
+respectively. Per default, a combined plot of all parameters is produced.}
 
-\item{...}{Additional parameters that get passed on to \link{plot}.}
+\item{...}{Ignored.}
 }
 \value{
 No return value. Draws a plot to the current device.
 }
 \description{
-This function is the plot method for an \code{RprobitB_model}.
+This function is the plot method for an object of class \code{RprobitB_model}.
 }

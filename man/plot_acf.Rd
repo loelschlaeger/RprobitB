@@ -4,19 +4,13 @@
 \alias{plot_acf}
 \title{Autocorrelation plots}
 \usage{
-plot_acf(gibbs_samples, model, mcmc, out)
+plot_acf(gibbs_samples, names)
 }
 \arguments{
 \item{gibbs_samples}{A list of Gibbs samples.}
-
-\item{model}{A list of model information.}
-
-\item{mcmc}{A list of Markov chain Monte Carlo parameters.}
-
-\item{out}{A list of output settings.}
 }
 \value{
-No return value. Creates pdf-file "acf.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
+...
 }
 \description{
 Function that plots the autocorrelation of the Gibbs samples.

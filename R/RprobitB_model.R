@@ -1,7 +1,7 @@
 #' Create object of class \code{RprobitB_model}.
 #' @description
 #' This function creates an object of class \code{RprobitB_model}.
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
 #' @param gibbs_samples

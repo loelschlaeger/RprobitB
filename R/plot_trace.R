@@ -5,7 +5,7 @@
 #' A matrix of Gibbs samples.
 #' @param names
 #' The parameter names.
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @return
 #' ...
 

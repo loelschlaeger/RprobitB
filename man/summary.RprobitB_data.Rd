@@ -2,15 +2,15 @@
 % Please edit documentation in R/summary.RprobitB_data.R
 \name{summary.RprobitB_data}
 \alias{summary.RprobitB_data}
-\title{Summary method for \code{RprobitB_data}}
+\title{Summary method for \code{RprobitB_data}.}
 \usage{
 \method{summary}{RprobitB_data}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{RprobitB_data}}
+\item{object}{An object of class \code{RprobitB_data}.}
 
-\item{...}{ignored}
+\item{...}{Ignored.}
 }
 \description{
-Summary method for \code{RprobitB_data}
+Summary method for \code{RprobitB_data}.
 }

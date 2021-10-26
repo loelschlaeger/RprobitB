@@ -5,10 +5,11 @@
 #' @details
 #' For more details see the vignette "Prediction":
 #' \code{vignette("prediction", package = "RprobitB")}.
+#' @param x
+#' An object of class \code{RprobitB_model}.
 #' @return
 #' value
 
-predict = function() {
-
-
+predict = function(x) {
+  warning("Not implemented yet.")
 }

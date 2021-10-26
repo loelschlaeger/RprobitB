@@ -30,8 +30,6 @@
 #'   \item \code{value}:
 #'   The value for the fixed parameter.
 #' }
-#' @examples
-#' RprobitB_normalization(scale = NULL, P_f = 2, J = 3)
 #' @return
 #' An object of class \code{RprobitB_normalization}, which is a list of the
 #' elements \code{level} and \code{scale}.

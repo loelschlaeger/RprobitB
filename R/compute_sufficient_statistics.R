@@ -1,7 +1,7 @@
 #' Compute sufficient statistics.
 #' @description
 #' This function computes sufficient statistics from \code{data} for estimation.
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
 #' @examples

@@ -10,7 +10,7 @@
 #' @details
 #' For more details see the vignette "Model fitting":
 #' \code{vignette("model_fitting", package = "RprobitB")}.
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @param x
 #' An object of class \code{RprobitB_model}.
 #' @param check_preference_flip
@@ -23,7 +23,7 @@
 #' data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
 #'                 Sigma = 2, alpha = c(0.5,2))
 #' scale = list("parameter" = "s", "index" = 1, "value" = 1)
-#' m1 = fit(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
+#' m1 = mcmc(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
 #'
 #' ### change 'B' and 'Q'
 #' m2 = transform(m1, B = 5e3, Q = 10)
@@ -73,13 +73,6 @@ transform = function(x, B = NULL, Q = NULL, scale = NULL, check_preference_flip 
     gibbs_samples = x$gibbs_samples$gibbs_samples, R = R, B = B, Q = Q,
     normalization = normalization)
   x$gibbs_samples = gibbs_samples
-
-  ### compute statistics from Gibbs samples
-  statistics = compute_parameter_statistics(
-    gibbs_samples = gibbs_samples, P_f = x$data$P_f,
-    P_r = x$data$P_r, J = x$data$J,
-    C = x$latent_classes$C)
-  x$statistics = statistics
 
   ### scale true parameters
   if(x$data$simulated)

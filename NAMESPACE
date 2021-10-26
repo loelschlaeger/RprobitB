@@ -12,6 +12,9 @@ importFrom("utils", "head", "tail")
 importFrom("graphics", "plot")
 importFrom("stats", "fivenum", "median")
 importFrom("utils", "packageVersion")
+importFrom("graphics", "boxplot", "segments")
+importFrom("stats", "ecdf")
+importFrom("utils", "data")
 
 ### exports
 export(compare)

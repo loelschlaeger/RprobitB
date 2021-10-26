@@ -393,12 +393,12 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' Gibbs sampler.
 //' @description
 //' This function performs Gibbs sampling for the RprobitB package.
-//' @inheritParams fit
+//' @inheritParams mcmc
 //' @inheritParams RprobitB_data
 //' @param sufficient_statistics
 //' The output of \code{\link{compute_sufficient_statistics}}.
 //' @param init
-//' The output of \code{\link{set_init}}.
+//' The output of \code{\link{set_inititial_gibbs_values}}.
 //' @return
 //' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
 //' and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).

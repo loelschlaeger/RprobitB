@@ -8,11 +8,11 @@
 #' @return
 #' ...
 
-plot_acf = function(gibbs_samples, names){
+plot_acf = function(gibbs_samples){
 
   for(c in 1:ncol(gibbs_samples)) {
     ###
-    rho = acf(gibbs_samples[,c], las=1, main = names[c])
+    rho = acf(gibbs_samples[,c], las=1, main = "main")
 
     ### compute effective sample size
     SS = length(gibbs_samples[,c])

@@ -11,15 +11,15 @@ plot_effects(x, restrict = NULL, ...)
 
 \item{restrict}{A character (vector) of covariate or parameter names, which can be used to
 restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot is produced.}
+respectively. Per default, a combined plot of all parameters is produced.}
 
-\item{...}{Additional parameters that get passed on to \link{plot}.}
+\item{...}{Ignored.}
 }
 \value{
 No return value. Draws a plot to the current device.
 }
 \description{
-This function visualizes the effects (i.e. the linear coefficients) of the
-covariates together with an uncertainty interval of plus and minus one
-standard deviation.
+This function visualizes the effects of the covariates on the choices (i.e.
+the linear coefficients) along with an uncertainty interval of plus and minus
+one standard deviation.
 }

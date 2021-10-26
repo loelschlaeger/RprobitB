@@ -51,7 +51,7 @@ rwishart <- function(nu, V) {
 #' Gibbs sampler.
 #' @description
 #' This function performs Gibbs sampling for the RprobitB package.
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @inheritParams RprobitB_data
 #' @param sufficient_statistics
 #' The output of \code{\link{compute_sufficient_statistics}}.

@@ -4,7 +4,10 @@
 \alias{predict}
 \title{Predict choices.}
 \usage{
-predict()
+predict(x)
+}
+\arguments{
+\item{x}{An object of class \code{RprobitB_model}.}
 }
 \value{
 value

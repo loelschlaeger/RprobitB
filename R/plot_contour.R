@@ -1,16 +1,11 @@
 #' Contour plots
-#' @description Function that creates contour plot and progress contour plots of the Gibbs samples.
-#' @details Only in case of \code{model[["P_r"]]=2}. Progress contour plots only in case of \code{out[["pp"]]=TRUE}.
-#' @param gibbs_samples A list of gibbs samples.
-#' @param model A list of model information.
-#' @param estimates A list of model estimates.
-#' @param parm A list of true parameter values.
-#' @param mcmc A list of Markov chain Monte Carlo parameters.
-#' @param lcus A list of latent class updating scheme parameters.
-#' @param out A list of output settings.
-#' @return No return value. Creates pdf-files "contour.pdf" and "contour_progress.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
+#' @description
+#' Function that creates contour plot and progress contour plots of the Gibbs
+#' samples.
+#' @return
+#' ...
 
-plot_contour = function(gibbs_samples,model,estimates,parm,mcmc,lcus,out){
+plot_contour = function(){
   if(model$P_r==2){
     make_contour = function(C,s,b,Omega,limits=NULL,main_add=NULL){
       if(is.null(parm$beta)){

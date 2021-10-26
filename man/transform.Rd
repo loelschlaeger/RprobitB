@@ -2,12 +2,13 @@
 % Please edit documentation in R/transform.R
 \name{transform}
 \alias{transform}
-\title{Transform fitted \code{RprobitB_model}.}
+\title{Change the length of the burn-in period, the thinning factor and the scale
+of a fitted \code{RprobitB_model}.}
 \usage{
-transform(model, B = NULL, Q = NULL, scale = NULL)
+transform(x, B = NULL, Q = NULL, scale = NULL, check_preference_flip = TRUE)
 }
 \arguments{
-\item{model}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_model}.}
 
 \item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
 be discarded.}
@@ -27,35 +28,37 @@ The index of the parameter that gets fixed.
 \item \code{value}:
 The value for the fixed parameter.
 }}
+
+\item{check_preference_flip}{If \code{TRUE} check for flip in preferences with new scale.}
 }
 \value{
 An object of class \code{RprobitB_model}.
 }
 \description{
-Given an \code{RprobitB_model}, this function can:
+Given a fitted \code{RprobitB_model}, this function can:
 \itemize{
-\item change the length \code{B} of the burn-in period,
-\item change the thinning factor \code{Q},
-\item change the utility normalization \code{scale}.
+\item change the length \code{B} of the burn-in period and the thinning
+factor \code{Q} of the Gibbs sampler,
+\item change the model \code{scale}.
 }
 }
 \details{
-For more details see the vignettes
-"Model fitting":
-\code{vignette("model_fitting", package = "RprobitB")} and
-"Model checking and model selection":
-\code{vignette("model_checking_and_model_selection", package = "RprobitB")}.
+For more details see the vignette "Model fitting":
+\code{vignette("model_fitting", package = "RprobitB")}.
 }
 \examples{
+\dontrun{
 ### fit a model to simulated data
-data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2)
+data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
+                Sigma = 2, alpha = c(0.5,2))
 scale = list("parameter" = "s", "index" = 1, "value" = 1)
-model = fit(data = data, R = 1e4, B = 1, Q = 1)
+m1 = mcmc(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
 
 ### change 'B' and 'Q'
-model = transform(model = model, B = 1e4/2, Q = 10)
+m2 = transform(m1, B = 5e3, Q = 10)
 
 ### change 'scale'
-scale = list("parameter" = "a", "index" = 1, "value" = -1)
-model = transform(model = model, scale = scale)
+scale_new = list("parameter" = "a", "index" = 1, "value" = 1)
+m3 = transform(m2, scale = scale_new)
+}
 }

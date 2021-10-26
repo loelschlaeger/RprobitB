@@ -10,7 +10,7 @@
 #' A data frame, one row per choice situation and one column per alternative.
 #' @examples
 #' p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-#' m1 = fit(data = p, seed = 1)
+#' m1 = mcmc(data = p, seed = 1)
 
 choice_probabilities = function(object, at_true = TRUE) {
   if(at_true){

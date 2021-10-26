@@ -23,6 +23,7 @@
 #' A character, the name of the column in \code{choice_data} that contains
 #' unique identifier for each decision maker. The default is \code{"id"}.
 #' @inheritParams RprobitB_data
+#' @inheritParams check_form
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples

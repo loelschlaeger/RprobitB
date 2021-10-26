@@ -39,7 +39,7 @@
 #' @inheritParams check_form
 #' @inheritParams prepare
 #' @inheritParams simulate
-#' @params true_parameter
+#' @param true_parameter
 #' An object of class \code{RprobitB_parameters}.
 #' @return
 #' An object of class \code{RprobitB_data}, which is a list of

@@ -1,4 +1,7 @@
 #' Print method for the summary of \code{RprobitB_model}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{summary.RprobitB_model}.
 #' @param x
 #' An object of class \code{summary.RprobitB_model}.
 #' @param digits

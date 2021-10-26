@@ -2,8 +2,7 @@
 #' (mixed) (multinomial) probit model.
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting a
-#' (latent class) (mixed) (multinomial) probit model to discrete choice data for
-#' the RprobitB package.
+#' (latent class) (mixed) (multinomial) probit model to discrete choice data.
 #' @details
 #' For more details see the vignette "Model fitting"
 #' \code{vignette("model_fitting", package = "RprobitB")}.
@@ -78,8 +77,9 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     data = data, normalization = normalization)
 
   ### set initial values for the Gibbs sampler
-  init = set_init(N = data$N, T = data$T, J = data$J, P_f = data$P_f,
-                  P_r = data$P_r, C = latent_classes$C)
+  init = set_initial_gibbs_values(
+    N = data$N, T = data$T, J = data$J, P_f = data$P_f, P_r = data$P_r,
+    C = latent_classes$C)
 
   ### perform Gibbs sampling
   if(!is.null(seed))
@@ -90,9 +90,10 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     sufficient_statistics = sufficient_statistics, prior = prior, init = init)
 
   ### label Gibbs samples
-  labels = create_labels(P_f = data$P_f, P_r = data$P_r, J = data$J,
-                         C = length(as.numeric(tail(gibbs_samples$s,1)) != 0),
-                         cov_sym = TRUE, drop_par = NULL)
+  labels = create_parameter_labels(
+    P_f = data$P_f, P_r = data$P_r, J = data$J,
+    C = length(as.numeric(tail(gibbs_samples$s,1)) != 0), cov_sym = TRUE,
+    drop_par = NULL)
   for(par in names(gibbs_samples))
     colnames(gibbs_samples[[par]]) = labels[[par]]
 

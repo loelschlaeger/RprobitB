@@ -2,59 +2,27 @@
 % Please edit documentation in R/compute_choice_probabilities.R
 \name{compute_choice_probabilities}
 \alias{compute_choice_probabilities}
-\title{Compute probit choice probabilities}
+\title{Compute probit choice probabilities for a single choice situation.}
 \usage{
-compute_choice_probabilities(X, J, P_f, P_r, C, alpha, s, b, Omega, Sigma)
+compute_choice_probabilities(X, parameter)
 }
 \arguments{
 \item{X}{A matrix of covariates with one row per alternative.
 The first \code{P_f} columns are connected to fixed coefficients, the last
 \code{P_r} columns are connected to random coefficients.}
 
-\item{J}{The number of choice alternatives.}
-
-\item{P_f}{The number of covariates connected to fixed coefficients.}
-
-\item{P_r}{The number of covariates connected to random coefficients.}
-
-\item{C}{The number of latent classes.}
-
-\item{alpha}{The fixed coefficient vector of length \code{P_f}.}
-
-\item{s}{The vector of class weights of length \code{C}.}
-
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.}
-
-\item{Omega}{The matrix of class covariance matrices as columns of dimension \code{P_r}^2 x \code{C}.}
-
-\item{Sigma}{The error term covariance matrix of dimension \code{J-1} x \code{J-1}.
-It is assumend to be differenced with respect to alternative \code{J}.}
+\item{parameter}{An object of class \code{RprobitB_parameter}.}
 }
 \value{
-The probability.
+A probability vector of length \code{C}.
 }
 \description{
-Function that computes the probit choice probabilities.
-}
-\details{
-If \code{P_f = 0}, \code{alpha} is ignored.
-If \code{P_r = 0}, \code{C}, \code{s}, \code{b} and \code{Omega} are ignored.
-If \code{P_f = 0} and \code{P_r = 0}, \code{X} is ignored.
+This function computes the probit choice probabilities for a single choice
+situation.
 }
 \examples{
-### covariates
-X = matrix(c(3,2,1,3,2,1,3,2,1),3,3)
-### model setting
-J = 3
-P_f = 1
-P_r = 2
-C = 2
-### model parameter
-alpha = 1
-s = c(0.3,0.7)
-b = matrix(c(1,1,1,1),2,2)
-Omega = matrix(c(as.numeric(diag(2)),as.numeric(diag(2))),4,2)
-Sigma = diag(J-1)
-### compute choice probability
-prob = compute_choice_probabilities(X,J,P_f,P_r,C,alpha,s,b,Omega,Sigma)
+X = matrix(1,3)
+parameter = RprobitB_parameter(P_f = 1, P_r = 0, J = 3,
+                               alpha = 1, Sigma_full = diag(3))
+prob = compute_choice_probabilities(X = X, parameter = parameter)
 }

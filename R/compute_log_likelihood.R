@@ -6,7 +6,7 @@
 #' The log-likelihood value.
 #' @examples
 #' p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-#' m1 = fit(data = p, seed = 1)
+#' m1 = mcmc(data = p, seed = 1)
 #' compute_log_likelihood(m1)
 #' @export
 

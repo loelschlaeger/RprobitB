@@ -11,15 +11,8 @@
 
 compute_waic = function(x) {
 
-  ### extract model meta data
-  N = model$N
-  T = if(length(model$T)==model$N) model$T else rep(model$T,model$N)
-  J = model$J
-  P_f = model$P_f
-  P_r = model$P_r
-  C = ifelse(P_r>0,gibbs_samples$C_est,1)
-
   ### number of samples
+  gibbs_samples = x$gibbs_samples
   no_samples = nrow(gibbs_samples$gibbs_samples_nbt$Sigma_draws_nbt)
 
   ### log-likelihood of each observation (in rows) at each sample (in columns) of the posterior
@@ -29,8 +22,8 @@ compute_waic = function(x) {
   for(n in 1:N){
     #cat(paste0("Computing WAIC: ",round((n-1)/N*100),"%\r"))
 
-    X_n = data[[n]]$X
-    y_n = data[[n]]$y
+    X_n = x$data[[n]]$X
+    y_n = x$data[[n]]$y
 
     for(t in 1:T[n]){
 
@@ -63,10 +56,12 @@ compute_waic = function(x) {
           Sigma_sample = matrix(Sigma[sample,],nrow=J-1,ncol=J-1)
 
           ### compute differences wrt reference alternative J
-          if(model$P_f>0 || model$P_r>0) X_nt = delta(J,J) %*% X_nt
+          if(P_f>0 || P_r>0)
+            X_nt = delta(J,J) %*% X_nt
 
           ### append 0's for reference alternative J
-          if(model$P_f>0 || model$P_r>0) X_nt = rbind(X_nt,0)
+          if(P_f>0 || P_r>0)
+            X_nt = rbind(X_nt,0)
           Sigma_sample = cbind(rbind(Sigma_sample,0),0)
 
           ### define parameters of multivariate normal distribution

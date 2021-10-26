@@ -1,4 +1,7 @@
 #' Print method for \code{RprobitB_gibbs_samples_statistics}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{RprobitB_gibbs_samples_statistics}.
 #' @param x
 #' An object of class \code{RprobitB_gibbs_samples_statistics}.
 #' @param true

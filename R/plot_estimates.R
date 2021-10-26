@@ -8,8 +8,9 @@
 plot_estimates = function(x, restrict = NULL, ...) {
 
   ### create coefficient labels
-  labels = create_labels(P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-                         C = x$data$C, symmetric = TRUE)
+  labels = create_parameter_labels(
+    P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J, C = x$data$C,
+    symmetric = TRUE)
 
   ###
   pars = names(labels)[!is.na(labels)]

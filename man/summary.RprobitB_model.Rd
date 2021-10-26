@@ -2,15 +2,27 @@
 % Please edit documentation in R/summary.RprobitB_model.R
 \name{summary.RprobitB_model}
 \alias{summary.RprobitB_model}
-\title{Summary method for \code{RprobitB_model}}
+\title{Summary method for \code{RprobitB_model}.}
 \usage{
-\method{summary}{RprobitB_model}(object, ...)
+\method{summary}{RprobitB_model}(object, FUN = c(mean = mean, sd = sd, `R^` = R_hat), ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_model}.}
 
-\item{...}{ignored}
+\item{FUN}{A (preferably named) list of functions that compute parameter statistics
+from the Gibbs samples, i.e.
+\itemize{
+\item \code{mean} for the mean,
+\item \code{sd} for the standard deviation,
+\item \code{min} for the minimum,
+\item \code{max} for the maximum,
+\item \code{median} for the median,
+\item \code{function(x) quantile(x, p)} for the \code{p}th quantile,
+\item \code{R_hat} for the Gelman-Rubin statistic.
+}}
+
+\item{...}{Ignorded.}
 }
 \description{
-Summary method for \code{RprobitB_model}
+Summary method for \code{RprobitB_model}.
 }

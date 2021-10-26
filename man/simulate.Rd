@@ -50,7 +50,7 @@ If \code{standardize = "all"}, all covariates get standardized.}
 \item{seed}{Set a seed for the simulation.}
 
 \item{...}{Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-\code{Sigma}, \code{beta}, or \code{z} for the simulation.}
+\code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.}
 }
 \value{
 An object of class \code{RprobitB_data}.
@@ -59,23 +59,32 @@ An object of class \code{RprobitB_data}.
 This function simulates choice data for the RprobitB package.
 }
 \details{
-For more details see the vignette "Data management":
+For more details see the vignette "Data management"
 \code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{
+### simulate data
 form = choice ~ cost | income | travel_time
 re = "cost"
 N = 100
 T = 10
 J = 3
 alternatives = c("car", "bus", "train")
+data = simulate(form = form, N = N, T = T, J = J, re = re,
+                alternatives = alternatives, seed = 1)
+
+### specify distributions for the covariates
 distr = list("cost" = list("name" = "rnorm", sd = 3),
              "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
+data = simulate(form = form, N = N, T = T, J = J, re = re,
+                alternatives = alternatives, distr = distr, seed = 1)
+
+### standardize covariates
 standardize = c("income", "travel_time_car", "travel_time_bus",
                 "travel_time_train")
 data = simulate(form = form, N = N, T = T, J = J, re = re,
                 alternatives = alternatives, distr = distr,
-                standardize = standardize, C = 2, s = c(0.5,0.5))
+                standardize = standardize, seed = 1)
 }

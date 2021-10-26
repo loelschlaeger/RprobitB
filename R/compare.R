@@ -52,11 +52,11 @@ compare = function(...){
 
   ### fill output
   for(i in seq_len(length(models))){
-    par_i = compute_number_parameters(models[[i]])
+    par_i = compute_number_of_linear_coefficients(models[[i]])
     n_i = sum(models[[i]]$RprobitB_data$T)
-    ll_i = compute_loglikelihood(models[[i]])
+    ll_i = compute_log_likelihood(models[[i]])
     aic_i = -2*ll_i + 2*par_i
-    bic_i = -2*ll_i + p*log(n_i)
+    bic_i = -2*ll_i + par_i*log(n_i)
     waic_i = compute_waic(models[[i]])
     output[i,"parameters"] = par_i
     output[i,"log-likelihood"] = ll_i

@@ -2,22 +2,26 @@
 % Please edit documentation in R/plot_trace.R
 \name{plot_trace}
 \alias{plot_trace}
-\title{Trace plots}
+\title{Visualizing the trace of Gibbs samples.}
 \usage{
-plot_trace(gibbs_samples, model, mcmc, out)
+plot_trace(gibbs_samples, names, R, B, Q)
 }
 \arguments{
-\item{gibbs_samples}{A list of Gibbs samples.}
+\item{gibbs_samples}{A matrix of Gibbs samples.}
 
-\item{model}{A list of model information.}
+\item{names}{The parameter names.}
 
-\item{mcmc}{A list of Markov chain Monte Carlo parameters.}
+\item{R}{The number of iterations of the Gibbs sampler.}
 
-\item{out}{A list of output settings.}
+\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
+be discarded.}
+
+\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
+sample is kept.}
 }
 \value{
-No return value. Creates pdf-file "trace.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
+...
 }
 \description{
-Function that plots traces of the Gibbs samples.
+This function plots traces of Gibbs samples.
 }

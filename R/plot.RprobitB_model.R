@@ -43,8 +43,8 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
     if(x$data$P_r == 0){
       stop("No random effects.")
     } else {
-      par(mfrow = c(length(cov_names), length(cov_names)))
-      pars_pairs = expand.grid(cov_names, cov_names, stringsAsFactors = FALSE)
+      #par(mfrow = c(length(cov_names), length(cov_names)))
+      #pars_pairs = expand.grid(cov_names, cov_names, stringsAsFactors = FALSE)
       for(pars_pair in 1:nrow(pars_pairs)){
         par1 = pars_pairs[pars_pair,1]
         par2 = pars_pairs[pars_pair,2]

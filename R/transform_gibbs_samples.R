@@ -4,7 +4,7 @@
 #' @param gibbs_samples
 #' The output of \link{gibbs_sampling}.
 #' @inheritParams RprobitB_data
-#' @inheritParams fit
+#' @inheritParams mcmc
 #' @inheritParams compute_sufficient_statistics
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed

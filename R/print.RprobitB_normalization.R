@@ -1,11 +1,14 @@
 #' Print method for \code{RprobitB_normalization}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{RprobitB_normalization}.
 #' @param x
 #' An object of class \code{RprobitB_normalization}.
 #' @param ...
 #' Ignored.
 #' @export
 
-print.RprobitB_normalization = function(x,...) {
+print.RprobitB_normalization = function(x, ...) {
   cat("Normalization:\n")
   cat(paste0("- Level: Utility differences with respect to alternative ",
              x$level,".\n"))
