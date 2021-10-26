@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gibbs sampler — gibbs_sampling • RprobitB</title>
+<title>Gibbs sampler. — gibbs_sampling • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Gibbs sampler — gibbs_sampling" />
-<meta property="og:description" content="Function to perform Gibbs sampling for the LCMMNP model" />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:title" content="Gibbs sampler. — gibbs_sampling" />
+<meta property="og:description" content="This function performs Gibbs sampling for the RprobitB package." />
 
 
 
@@ -152,13 +151,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Gibbs sampler</h1>
+    <h1>Gibbs sampler.</h1>
     
     <div class="hidden name"><code>gibbs_sampling.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function to perform Gibbs sampling for the LCMMNP model</p>
+    <p>This function performs Gibbs sampling for the RprobitB package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>gibbs_sampling</span><span class='op'>(</span>
@@ -213,8 +212,10 @@ estimated remaining computation time.</p></td>
       <td><p>A list of parameters specifying the number and the updating scheme of latent
 classes:</p><ul>
 <li><p><code>C</code>:
-The number (greater or equal 1) of latent classes. Set to 1 per default
-and is ignored if <code>P_r = 0</code>.</p></li>
+The fixed number (greater or equal 1) of latent classes. Set to 1 per
+default and is ignored if <code>P_r = 0</code>.
+If <code>update = TRUE</code>, <code>C</code> equals the initial number of latent
+classes and is set to 5 per default.</p></li>
 <li><p><code>update</code>:
 A boolean, determining whether to update <code>C</code>. Ignored if
 <code>P_r = 0</code>. If <code>update = FALSE</code>, all of the following elements are
@@ -271,13 +272,14 @@ Inverse Wishart prior for <code>Sigma</code>.</p></li>
     </tr>
     <tr>
       <th>init</th>
-      <td><p>The output of <code><a href='set_init.html'>set_init</a></code>.</p></td>
+      <td><p>The output of <code>set_init</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of Gibbs samples</p>
+    <p>A list of Gibbs samples for <code>Sigma</code>, <code>alpha</code> (if <code>P_f&gt;0</code>)
+and <code>s</code>, <code>b</code>, and <code>Omega</code> (if <code>P_r&gt;0</code>).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

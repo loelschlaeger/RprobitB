@@ -47,9 +47,8 @@
 
 
 <meta property="og:title" content="Check latent_classes. — check_latent_classes" />
-<meta property="og:description" content="Function that checks the input latent_classes and sets missing values
+<meta property="og:description" content="This function checks the input latent_classes and sets missing values
 to default values." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -159,7 +158,7 @@ to default values." />
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>latent_classes</code> and sets missing values
+    <p>This function checks the input <code>latent_classes</code> and sets missing values
 to default values.</p>
     </div>
 
@@ -173,8 +172,10 @@ to default values.</p>
       <td><p>A list of parameters specifying the number and the updating scheme of latent
 classes:</p><ul>
 <li><p><code>C</code>:
-The number (greater or equal 1) of latent classes. Set to 1 per default
-and is ignored if <code>P_r = 0</code>.</p></li>
+The fixed number (greater or equal 1) of latent classes. Set to 1 per
+default and is ignored if <code>P_r = 0</code>.
+If <code>update = TRUE</code>, <code>C</code> equals the initial number of latent
+classes and is set to 5 per default.</p></li>
 <li><p><code>update</code>:
 A boolean, determining whether to update <code>C</code>. Ignored if
 <code>P_r = 0</code>. If <code>update = FALSE</code>, all of the following elements are
@@ -196,15 +197,9 @@ The threshold difference in means for joining latent classes
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>latent_classes</code></p>
+    <p>An object of class <code>RprobitB_latent_classes</code>.
+The checked input <code>latent_classes</code></p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in check_latent_classes(latent_classes = NULL): could not find function "check_latent_classes"</span></div><div class='input'><span class='fu'>check_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"C"</span> <span class='op'>=</span> <span class='fl'>2</span>, <span class='st'>"update"</span> <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                                           <span class='st'>"Cmax"</span> <span class='op'>=</span> <span class='fl'>10</span>, <span class='st'>"buffer"</span> <span class='op'>=</span> <span class='fl'>100</span>,
-                                           <span class='st'>"epsmin"</span> <span class='op'>=</span> <span class='fl'>0.01</span>, <span class='st'>"epsmax"</span> <span class='op'>=</span> <span class='fl'>0.99</span>,
-                                           <span class='st'>"distmin"</span> <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in check_latent_classes(latent_classes = list(C = 2, update = TRUE,     Cmax = 10, buffer = 100, epsmin = 0.01, epsmax = 0.99, distmin = 0.1)): could not find function "check_latent_classes"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

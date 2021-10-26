@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transform fitted RprobitB_model. — transform • RprobitB</title>
+<title>Change the length of the burn-in period, the thinning factor and the scale
+of a fitted RprobitB_model. — transform • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,14 +47,14 @@
 
 
 
-<meta property="og:title" content="Transform fitted RprobitB_model. — transform" />
-<meta property="og:description" content="Given an RprobitB_model, this function can:
-change the length B of the burn-in period,
-change the thinning factor Q,
-change the utility normalization scale.
+<meta property="og:title" content="Change the length of the burn-in period, the thinning factor and the scale
+of a fitted RprobitB_model. — transform" />
+<meta property="og:description" content="Given a fitted RprobitB_model, this function can:
+change the length B of the burn-in period and the thinning
+factor Q of the Gibbs sampler,
+change the model scale.
 
 " />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -157,27 +158,28 @@ change the utility normalization scale.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transform fitted <code>RprobitB_model</code>.</h1>
+    <h1>Change the length of the burn-in period, the thinning factor and the scale
+of a fitted <code>RprobitB_model</code>.</h1>
     
     <div class="hidden name"><code>transform.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Given an <code>RprobitB_model</code>, this function can:</p><ul>
-<li><p>change the length <code>B</code> of the burn-in period,</p></li>
-<li><p>change the thinning factor <code>Q</code>,</p></li>
-<li><p>change the utility normalization <code>scale</code>.</p></li>
+    <p>Given a fitted <code>RprobitB_model</code>, this function can:</p><ul>
+<li><p>change the length <code>B</code> of the burn-in period and the thinning
+factor <code>Q</code> of the Gibbs sampler,</p></li>
+<li><p>change the model <code>scale</code>.</p></li>
 </ul>
 
     </div>
 
-    <pre class="usage"><span class='fu'>transform</span><span class='op'>(</span><span class='va'>model</span>, B <span class='op'>=</span> <span class='cn'>NULL</span>, Q <span class='op'>=</span> <span class='cn'>NULL</span>, scale <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>transform</span><span class='op'>(</span><span class='va'>x</span>, B <span class='op'>=</span> <span class='cn'>NULL</span>, Q <span class='op'>=</span> <span class='cn'>NULL</span>, scale <span class='op'>=</span> <span class='cn'>NULL</span>, check_preference_flip <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>model</th>
+      <th>x</th>
       <td><p>An object of class <code>RprobitB_model</code>.</p></td>
     </tr>
     <tr>
@@ -204,6 +206,10 @@ The index of the parameter that gets fixed.</p></li>
 The value for the fixed parameter.</p></li>
 </ul></td>
     </tr>
+    <tr>
+      <th>check_preference_flip</th>
+      <td><p>If <code>TRUE</code> check for flip in preferences with new scale.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -211,25 +217,25 @@ The value for the fixed parameter.</p></li>
     <p>An object of class <code>RprobitB_model</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>For more details see the vignettes
-"Model fitting":
-<code><a href='../articles/model_fitting.html'>vignette("model_fitting", package = "RprobitB")</a></code> and
-"Model checking and model selection":
-<code><a href='../articles/model_checking_and_model_selection.html'>vignette("model_checking_and_model_selection", package = "RprobitB")</a></code>.</p>
+    <p>For more details see the vignette "Model fitting":
+<code><a href='../articles/model_fitting.html'>vignette("model_fitting", package = "RprobitB")</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>### fit a model to simulated data</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span> <span class='op'>|</span> <span class='fl'>1</span>, N <span class='op'>=</span> <span class='fl'>100</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rwishart(J, diag(J)): object '_RprobitB_rwishart' not found</span></div><div class='input'><span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"s"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>model</span> <span class='op'>=</span> <span class='fu'><a href='fit.html'>fit</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, R <span class='op'>=</span> <span class='fl'>1e4</span>, B <span class='op'>=</span> <span class='fl'>1</span>, Q <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in fit(data = data, R = 10000, B = 1, Q = 1): could not find function "fit"</span></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'>### fit a model to simulated data</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span> <span class='op'>|</span> <span class='fl'>1</span>, N <span class='op'>=</span> <span class='fl'>100</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>2</span>,
+                Sigma <span class='op'>=</span> <span class='fl'>2</span>, alpha <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"s"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>m1</span> <span class='op'>=</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, R <span class='op'>=</span> <span class='fl'>1e4</span>, B <span class='op'>=</span> <span class='fl'>1</span>, Q <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
+
 <span class='co'>### change 'B' and 'Q'</span>
-<span class='va'>model</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span>model <span class='op'>=</span> <span class='va'>model</span>, B <span class='op'>=</span> <span class='fl'>1e4</span><span class='op'>/</span><span class='fl'>2</span>, Q <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in transform(model = model, B = 10000/2, Q = 10): object 'model' not found</span></div><div class='input'>
+<span class='va'>m2</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span><span class='va'>m1</span>, B <span class='op'>=</span> <span class='fl'>5e3</span>, Q <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+
 <span class='co'>### change 'scale'</span>
-<span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"a"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>model</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span>model <span class='op'>=</span> <span class='va'>model</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in transform(model = model, scale = scale): object 'model' not found</span></div></pre>
+<span class='va'>scale_new</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"a"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>m3</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span><span class='va'>m2</span>, scale <span class='op'>=</span> <span class='va'>scale_new</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
