@@ -47,10 +47,9 @@
 
 
 <meta property="og:title" content="Visualizing the effects. — plot_effects" />
-<meta property="og:description" content="This function visualizes the effects (i.e. the linear coefficients) of the
-covariates together with an uncertainty interval of plus and minus one
-standard deviation." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:description" content="This function visualizes the effects of the covariates on the choices (i.e.
+the linear coefficients) along with an uncertainty interval of plus and minus
+one standard deviation." />
 
 
 
@@ -160,9 +159,9 @@ standard deviation." />
     </div>
 
     <div class="ref-description">
-    <p>This function visualizes the effects (i.e. the linear coefficients) of the
-covariates together with an uncertainty interval of plus and minus one
-standard deviation.</p>
+    <p>This function visualizes the effects of the covariates on the choices (i.e.
+the linear coefficients) along with an uncertainty interval of plus and minus
+one standard deviation.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_effects</span><span class='op'>(</span><span class='va'>x</span>, restrict <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -178,11 +177,11 @@ standard deviation.</p>
       <th>restrict</th>
       <td><p>A character (vector) of covariate or parameter names, which can be used to
 restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot is produced.</p></td>
+respectively. Per default, a combined plot of all parameters is produced.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters that get passed on to <a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a>.</p></td>
+      <td><p>Ignored.</p></td>
     </tr>
     </table>
 

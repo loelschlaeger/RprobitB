@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Construct object of class RprobitB_parameter. — RprobitB_parameter • RprobitB</title>
+<title>Create object of class RprobitB_parameter. — RprobitB_parameter • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,10 @@
 
 
 
-<meta property="og:title" content="Construct object of class RprobitB_parameter. — RprobitB_parameter" />
-<meta property="og:description" content="This function constructs an object of class RprobitB_parameter.
-Missing parameters are sampled. All parameters are checked against the values
-of P_f, P_r, J, and N." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:title" content="Create object of class RprobitB_parameter. — RprobitB_parameter" />
+<meta property="og:description" content="This function creates an object of class RprobitB_parameter.
+If sample = TRUE, missing parameters are sampled. All parameters are
+checked against the values of P_f, P_r, J, and N." />
 
 
 
@@ -154,15 +153,15 @@ of P_f, P_r, J, and N." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Construct object of class <code>RprobitB_parameter</code>.</h1>
+    <h1>Create object of class <code>RprobitB_parameter</code>.</h1>
     
     <div class="hidden name"><code>RprobitB_parameter.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function constructs an object of class <code>RprobitB_parameter</code>.
-Missing parameters are sampled. All parameters are checked against the values
-of <code>P_f</code>, <code>P_r</code>, <code>J</code>, and <code>N</code>.</p>
+    <p>This function creates an object of class <code>RprobitB_parameter</code>.
+If <code>sample = TRUE</code>, missing parameters are sampled. All parameters are
+checked against the values of <code>P_f</code>, <code>P_r</code>, <code>J</code>, and <code>N</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>RprobitB_parameter</span><span class='op'>(</span>
@@ -176,9 +175,11 @@ of <code>P_f</code>, <code>P_r</code>, <code>J</code>, and <code>N</code>.</p>
   b <span class='op'>=</span> <span class='cn'>NULL</span>,
   Omega <span class='op'>=</span> <span class='cn'>NULL</span>,
   Sigma <span class='op'>=</span> <span class='cn'>NULL</span>,
+  Sigma_full <span class='op'>=</span> <span class='cn'>NULL</span>,
   beta <span class='op'>=</span> <span class='cn'>NULL</span>,
   z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  seed <span class='op'>=</span> <span class='cn'>NULL</span>
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  sample <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -228,10 +229,16 @@ Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
     </tr>
     <tr>
       <th>Sigma</th>
+      <td><p>The differenced error term covariance matrix of dimension
+<code>J-1</code> x <code>J-1</code> with respect to alternative <code>J</code>.</p></td>
+    </tr>
+    <tr>
+      <th>Sigma_full</th>
       <td><p>The error term covariance matrix of dimension <code>J</code> x <code>J</code>.
-Internally, <code>Sigma</code> gets differenced with respect to alternative
+Internally, <code>Sigma_full</code> gets differenced with respect to alternative
 <code>J</code>, so it becomes an identified covariance matrix of dimension
-<code>J-1</code> x <code>J-1</code>.</p></td>
+<code>J-1</code> x <code>J-1</code>. If <code>Sigma</code> is specified, <code>Sigma_full</code> is
+ignored.</p></td>
     </tr>
     <tr>
       <th>beta</th>
@@ -248,13 +255,17 @@ Set to <code>NA</code> if <code>P_r = 0</code>.</p></td>
       <th>seed</th>
       <td><p>Set a seed for sampling missing parameters.</p></td>
     </tr>
+    <tr>
+      <th>sample</th>
+      <td><p>A boolean, if <code>TRUE</code> missing parameters get sampled.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>RprobitB_parameter</code>, i.e. a named list with the
 model parameters <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</code>, <code>Omega</code>,
-<code>Sigma</code>, <code>beta</code>, and <code>z</code>.</p>
+<code>Sigma</code>, <code>Sigma_full</code>, <code>beta</code>, and <code>z</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

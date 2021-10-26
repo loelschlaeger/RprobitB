@@ -48,7 +48,6 @@
 
 <meta property="og:title" content="Transformation of Gibbs samples. — transform_gibbs_samples" />
 <meta property="og:description" content="This function normalizes, burns and thins the Gibbs samples." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -168,7 +167,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>gibbs_samples</th>
-      <td><p>The output of <code><a href='gibbs_sampling.html'>gibbs_sampling</a></code>, i.e. a list of Gibbs samples.</p></td>
+      <td><p>The output of <a href='gibbs_sampling.html'>gibbs_sampling</a>.</p></td>
     </tr>
     <tr>
       <th>R</th>
@@ -193,9 +192,9 @@ sample is kept.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>RprobitB_gibbs_samples</code>, i.e. a list of transformed
-Gibbs samples. Each element is a list, containing the
+Gibbs samples. Each element is a list, containing (if available) the
 Gibbs samples for <code>s</code>, <code>alpha</code>, <code>b</code>, <code>Omega</code>, and
-<code>Sigma</code> (if available):</p><ul>
+<code>Sigma</code>:</p><ul>
 <li><p><code>gibbs_samples</code>:
 The function input <code>gibbs_samples</code>.</p></li>
 <li><p><code>gibbs_samples_n</code>:

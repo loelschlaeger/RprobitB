@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Trace plots — plot_trace • RprobitB</title>
+<title>Visualizing the trace of Gibbs samples. — plot_trace • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Trace plots — plot_trace" />
-<meta property="og:description" content="Function that plots traces of the Gibbs samples." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:title" content="Visualizing the trace of Gibbs samples. — plot_trace" />
+<meta property="og:description" content="This function plots traces of Gibbs samples." />
 
 
 
@@ -152,41 +151,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Trace plots</h1>
+    <h1>Visualizing the trace of Gibbs samples.</h1>
     
     <div class="hidden name"><code>plot_trace.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that plots traces of the Gibbs samples.</p>
+    <p>This function plots traces of Gibbs samples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_trace</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>model</span>, <span class='va'>mcmc</span>, <span class='va'>out</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_trace</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>names</span>, <span class='va'>R</span>, <span class='va'>B</span>, <span class='va'>Q</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>gibbs_samples</th>
-      <td><p>A list of Gibbs samples.</p></td>
+      <td><p>A matrix of Gibbs samples.</p></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>A list of model information.</p></td>
+      <th>names</th>
+      <td><p>The parameter names.</p></td>
     </tr>
     <tr>
-      <th>mcmc</th>
-      <td><p>A list of Markov chain Monte Carlo parameters.</p></td>
+      <th>R</th>
+      <td><p>The number of iterations of the Gibbs sampler.</p></td>
     </tr>
     <tr>
-      <th>out</th>
-      <td><p>A list of output settings.</p></td>
+      <th>B</th>
+      <td><p>The length of the burn-in period, i.e. a non-negative number of samples to
+be discarded.</p></td>
+    </tr>
+    <tr>
+      <th>Q</th>
+      <td><p>The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th
+sample is kept.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>No return value. Creates pdf-file "trace.pdf" in folder "<code>out[["rdir"]]/out[["id"]]</code>".</p>
+    <p>...</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

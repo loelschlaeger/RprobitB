@@ -48,7 +48,6 @@
 
 <meta property="og:title" content="Simulate choice data. — simulate" />
 <meta property="og:description" content="This function simulates choice data for the RprobitB package." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -224,7 +223,7 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     <tr>
       <th>...</th>
       <td><p>Optionally specify <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</code>, <code>Omega</code>,
-<code>Sigma</code>, <code>beta</code>, or <code>z</code> for the simulation.</p></td>
+<code>Sigma</code>, <code>Sigma_full</code>, <code>beta</code>, or <code>z</code> for the simulation.</p></td>
     </tr>
     </table>
 
@@ -233,25 +232,34 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     <p>An object of class <code>RprobitB_data</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>For more details see the vignette "Data management":
+    <p>For more details see the vignette "Data management"
 <code><a href='../articles/data_management.html'>vignette("data_management", package = "RprobitB")</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>form</span> <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>cost</span> <span class='op'>|</span> <span class='va'>income</span> <span class='op'>|</span> <span class='va'>travel_time</span>
+    <pre class="examples"><div class='input'><span class='co'>### simulate data</span>
+<span class='va'>form</span> <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>cost</span> <span class='op'>|</span> <span class='va'>income</span> <span class='op'>|</span> <span class='va'>travel_time</span>
 <span class='va'>re</span> <span class='op'>=</span> <span class='st'>"cost"</span>
 <span class='va'>N</span> <span class='op'>=</span> <span class='fl'>100</span>
 <span class='cn'>T</span> <span class='op'>=</span> <span class='fl'>10</span>
 <span class='va'>J</span> <span class='op'>=</span> <span class='fl'>3</span>
 <span class='va'>alternatives</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"car"</span>, <span class='st'>"bus"</span>, <span class='st'>"train"</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'>simulate</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>form</span>, N <span class='op'>=</span> <span class='va'>N</span>, T <span class='op'>=</span> <span class='cn'>T</span>, J <span class='op'>=</span> <span class='va'>J</span>, re <span class='op'>=</span> <span class='va'>re</span>,
+                alternatives <span class='op'>=</span> <span class='va'>alternatives</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'>
+<span class='co'>### specify distributions for the covariates</span>
 <span class='va'>distr</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"cost"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rnorm"</span>, sd <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>,
              <span class='st'>"income"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"sample"</span>, x <span class='op'>=</span> <span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>1e3</span>, replace <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>,
              <span class='st'>"travel_time_car"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rlnorm"</span>, meanlog <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
              <span class='st'>"travel_time_bus"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"rlnorm"</span>, meanlog <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'>simulate</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>form</span>, N <span class='op'>=</span> <span class='va'>N</span>, T <span class='op'>=</span> <span class='cn'>T</span>, J <span class='op'>=</span> <span class='va'>J</span>, re <span class='op'>=</span> <span class='va'>re</span>,
+                alternatives <span class='op'>=</span> <span class='va'>alternatives</span>, distr <span class='op'>=</span> <span class='va'>distr</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div><div class='input'>
+<span class='co'>### standardize covariates</span>
 <span class='va'>standardize</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"income"</span>, <span class='st'>"travel_time_car"</span>, <span class='st'>"travel_time_bus"</span>,
                 <span class='st'>"travel_time_train"</span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>=</span> <span class='fu'>simulate</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>form</span>, N <span class='op'>=</span> <span class='va'>N</span>, T <span class='op'>=</span> <span class='cn'>T</span>, J <span class='op'>=</span> <span class='va'>J</span>, re <span class='op'>=</span> <span class='va'>re</span>,
                 alternatives <span class='op'>=</span> <span class='va'>alternatives</span>, distr <span class='op'>=</span> <span class='va'>distr</span>,
-                standardize <span class='op'>=</span> <span class='va'>standardize</span>, C <span class='op'>=</span> <span class='fl'>2</span>, s <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+                standardize <span class='op'>=</span> <span class='va'>standardize</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in rdirichlet(rep(1, C)): object '_RprobitB_rdirichlet' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

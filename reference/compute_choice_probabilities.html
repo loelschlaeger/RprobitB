@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute probit choice probabilities — compute_choice_probabilities • RprobitB</title>
+<title>Compute probit choice probabilities for a single choice situation. — compute_choice_probabilities • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Compute probit choice probabilities — compute_choice_probabilities" />
-<meta property="og:description" content="Function that computes the probit choice probabilities." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
+<meta property="og:title" content="Compute probit choice probabilities for a single choice situation. — compute_choice_probabilities" />
+<meta property="og:description" content="This function computes the probit choice probabilities for a single choice
+situation." />
 
 
 
@@ -152,16 +152,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute probit choice probabilities</h1>
+    <h1>Compute probit choice probabilities for a single choice situation.</h1>
     
     <div class="hidden name"><code>compute_choice_probabilities.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that computes the probit choice probabilities.</p>
+    <p>This function computes the probit choice probabilities for a single choice
+situation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_choice_probabilities</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>J</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>C</span>, <span class='va'>alpha</span>, <span class='va'>s</span>, <span class='va'>b</span>, <span class='va'>Omega</span>, <span class='va'>Sigma</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>compute_choice_probabilities</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>parameter</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,70 +174,21 @@ The first <code>P_f</code> columns are connected to fixed coefficients, the last
 <code>P_r</code> columns are connected to random coefficients.</p></td>
     </tr>
     <tr>
-      <th>J</th>
-      <td><p>The number of choice alternatives.</p></td>
-    </tr>
-    <tr>
-      <th>P_f</th>
-      <td><p>The number of covariates connected to fixed coefficients.</p></td>
-    </tr>
-    <tr>
-      <th>P_r</th>
-      <td><p>The number of covariates connected to random coefficients.</p></td>
-    </tr>
-    <tr>
-      <th>C</th>
-      <td><p>The number of latent classes.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>The fixed coefficient vector of length <code>P_f</code>.</p></td>
-    </tr>
-    <tr>
-      <th>s</th>
-      <td><p>The vector of class weights of length <code>C</code>.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.</p></td>
-    </tr>
-    <tr>
-      <th>Omega</th>
-      <td><p>The matrix of class covariance matrices as columns of dimension <code>P_r</code>^2 x <code>C</code>.</p></td>
-    </tr>
-    <tr>
-      <th>Sigma</th>
-      <td><p>The error term covariance matrix of dimension <code>J-1</code> x <code>J-1</code>.
-It is assumend to be differenced with respect to alternative <code>J</code>.</p></td>
+      <th>parameter</th>
+      <td><p>An object of class <code>RprobitB_parameter</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The probability.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>If <code>P_f = 0</code>, <code>alpha</code> is ignored.
-If <code>P_r = 0</code>, <code>C</code>, <code>s</code>, <code>b</code> and <code>Omega</code> are ignored.
-If <code>P_f = 0</code> and <code>P_r = 0</code>, <code>X</code> is ignored.</p>
+    <p>A probability vector of length <code>C</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>### covariates</span>
-<span class='va'>X</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>)</span>,<span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>
-<span class='co'>### model setting</span>
-<span class='va'>J</span> <span class='op'>=</span> <span class='fl'>3</span>
-<span class='va'>P_f</span> <span class='op'>=</span> <span class='fl'>1</span>
-<span class='va'>P_r</span> <span class='op'>=</span> <span class='fl'>2</span>
-<span class='va'>C</span> <span class='op'>=</span> <span class='fl'>2</span>
-<span class='co'>### model parameter</span>
-<span class='va'>alpha</span> <span class='op'>=</span> <span class='fl'>1</span>
-<span class='va'>s</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.3</span>,<span class='fl'>0.7</span><span class='op'>)</span>
-<span class='va'>b</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,<span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>Omega</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,<span class='fl'>4</span>,<span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>Sigma</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>J</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='co'>### compute choice probability</span>
-<span class='va'>prob</span> <span class='op'>=</span> <span class='fu'>compute_choice_probabilities</span><span class='op'>(</span><span class='va'>X</span>,<span class='va'>J</span>,<span class='va'>P_f</span>,<span class='va'>P_r</span>,<span class='va'>C</span>,<span class='va'>alpha</span>,<span class='va'>s</span>,<span class='va'>b</span>,<span class='va'>Omega</span>,<span class='va'>Sigma</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in compute_choice_probabilities(X, J, P_f, P_r, C, alpha, s, b,     Omega, Sigma): unused arguments (P_f, P_r, C, alpha, s, b, Omega, Sigma)</span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>X</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span><span class='op'>)</span>
+<span class='va'>parameter</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_parameter.html'>RprobitB_parameter</a></span><span class='op'>(</span>P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>0</span>, J <span class='op'>=</span> <span class='fl'>3</span>,
+                               alpha <span class='op'>=</span> <span class='fl'>1</span>, Sigma_full <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in RprobitB_parameter(P_f = 1, P_r = 0, J = 3, alpha = 1, Sigma_full = diag(3)): could not find function "RprobitB_parameter"</span></div><div class='input'><span class='va'>prob</span> <span class='op'>=</span> <span class='fu'>compute_choice_probabilities</span><span class='op'>(</span>X <span class='op'>=</span> <span class='va'>X</span>, parameter <span class='op'>=</span> <span class='va'>parameter</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in compute_choice_probabilities(X = X, parameter = parameter): object 'parameter' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -48,7 +48,6 @@
 
 <meta property="og:title" content="Autocorrelation plots — plot_acf" />
 <meta property="og:description" content="Function that plots the autocorrelation of the Gibbs samples." />
-<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -161,7 +160,7 @@
     <p>Function that plots the autocorrelation of the Gibbs samples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_acf</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>model</span>, <span class='va'>mcmc</span>, <span class='va'>out</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_acf</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>names</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,23 +169,11 @@
       <th>gibbs_samples</th>
       <td><p>A list of Gibbs samples.</p></td>
     </tr>
-    <tr>
-      <th>model</th>
-      <td><p>A list of model information.</p></td>
-    </tr>
-    <tr>
-      <th>mcmc</th>
-      <td><p>A list of Markov chain Monte Carlo parameters.</p></td>
-    </tr>
-    <tr>
-      <th>out</th>
-      <td><p>A list of output settings.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>No return value. Creates pdf-file "acf.pdf" in folder "<code>out[["rdir"]]/out[["id"]]</code>".</p>
+    <p>...</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Function computes the <a href='https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html'>effective sample size</a>.</p>
