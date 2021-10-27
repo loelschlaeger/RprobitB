@@ -1,24 +1,31 @@
-#' Autocorrelation plots
+#' Autocorrelation plot of Gibbs samples.
 #' @description
-#' Function that plots the autocorrelation of the Gibbs samples.
-#' @details
-#' Function computes the [effective sample size](https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html).
+#' This function plots the autocorrelation of the Gibbs samples, including the
+#' total sample size \code{SS}, effective sample size \code{ESS} and the factor
+#' \code{SS/ESS}.
+#' @reference
+#' <https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html>
 #' @param gibbs_samples
-#' A list of Gibbs samples.
+#' A matrix of Gibbs samples.
+#' @param par_labels
+#' A character vector of length equal to the number of columns of
+#' \code{gibbs_samples}, containing labels for the parameters.
 #' @return
-#' ...
+#' No return value. Draws a plot to the current device.
 
-plot_acf = function(gibbs_samples){
+plot_acf = function(gibbs_samples, par_labels){
 
   for(c in 1:ncol(gibbs_samples)) {
-    ###
-    rho = acf(gibbs_samples[,c], las=1, main = "main")
+    ### compute autocorrelation and produce plot
+    rho = acf(gibbs_samples[,c], las=1, main = "")
+    title(par_labels[c], line = -1)
 
     ### compute effective sample size
     SS = length(gibbs_samples[,c])
     ESS = min(SS/(1+2*sum(rho$acf)),SS)
     legend("topright", x.intersp = -0.5, bg = "white",
-           legend = sprintf("%s %.0f",paste0(c("total sample size","effective sample size","factor"),":"),c(SS,ESS,SS/ESS)))
+           legend = sprintf("%s %.0f",paste0(c("SS", "ESS", "factor"),":"),
+                            c(SS,ESS,SS/ESS)))
   }
 
 }

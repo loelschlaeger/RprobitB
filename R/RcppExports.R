@@ -56,7 +56,7 @@ rwishart <- function(nu, V) {
 #' @param sufficient_statistics
 #' The output of \code{\link{compute_sufficient_statistics}}.
 #' @param init
-#' The output of \code{\link{set_init}}.
+#' The output of \code{\link{set_inititial_gibbs_values}}.
 #' @return
 #' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
 #' and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).

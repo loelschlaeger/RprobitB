@@ -12,7 +12,7 @@
 #' \code{vignette("model_fitting", package = "RprobitB")}.
 #' @inheritParams mcmc
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{\link{RprobitB_model}}.
 #' @param check_preference_flip
 #' If \code{TRUE} check for flip in preferences with new scale.
 #' @return

@@ -4,29 +4,15 @@
 \alias{plot_contour}
 \title{Contour plots}
 \usage{
-plot_contour(gibbs_samples, model, estimates, parm, mcmc, lcus, out)
+plot_contour(x)
 }
 \arguments{
-\item{gibbs_samples}{A list of gibbs samples.}
-
-\item{model}{A list of model information.}
-
-\item{estimates}{A list of model estimates.}
-
-\item{parm}{A list of true parameter values.}
-
-\item{mcmc}{A list of Markov chain Monte Carlo parameters.}
-
-\item{lcus}{A list of latent class updating scheme parameters.}
-
-\item{out}{A list of output settings.}
+\item{x}{...}
 }
 \value{
-No return value. Creates pdf-files "contour.pdf" and "contour_progress.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
+...
 }
 \description{
-Function that creates contour plot and progress contour plots of the Gibbs samples.
-}
-\details{
-Only in case of \code{model[["P_r"]]=2}. Progress contour plots only in case of \code{out[["pp"]]=TRUE}.
+Function that creates contour plot and progress contour plots of the Gibbs
+samples.
 }

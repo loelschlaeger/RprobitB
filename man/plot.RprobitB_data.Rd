@@ -4,7 +4,7 @@
 \alias{plot.RprobitB_data}
 \title{Plot method for \code{RprobitB_data}.}
 \usage{
-\method{plot}{RprobitB_data}(x)
+\method{plot}{RprobitB_data}(x, ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}

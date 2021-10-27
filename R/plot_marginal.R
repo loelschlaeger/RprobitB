@@ -1,6 +1,8 @@
 #' Marginal mixing distributions
 #' @description Function that plots the estimated marginal mixing distributions.
 #' @details Adds true mixing distribution if available.
+#' @param x
+#' ...
 #' @param gibbs_samples A list of Gibbs samples.
 #' @param model A list of model information.
 #' @param estimates A list of model estimates.
@@ -8,7 +10,7 @@
 #' @param out A list of output settings.
 #' @return No return value. Creates pdf-file "marginal.pdf" in folder "\code{out[["rdir"]]/out[["id"]]}".
 
-plot_marginal = function(gibbs_samples,model,estimates,parm,out){
+plot_marginal = function(x, gibbs_samples, model, estimates, parm, out){
   if(model$P_r>0){
 
     s_est = estimates$s_est$mean

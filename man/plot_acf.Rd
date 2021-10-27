@@ -8,6 +8,8 @@ plot_acf(gibbs_samples, names)
 }
 \arguments{
 \item{gibbs_samples}{A list of Gibbs samples.}
+
+\item{names}{....}
 }
 \value{
 ...

@@ -52,6 +52,3 @@ Alternatively, any error-term variance or any linear coefficient can
 be fixed.
 }
 }
-\examples{
-RprobitB_normalization(scale = NULL, P_f = 2, J = 3)
-}

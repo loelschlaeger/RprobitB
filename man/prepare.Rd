@@ -14,6 +14,23 @@ prepare(
 )
 }
 \arguments{
+\item{form}{A formula object that is used to specify the probit model.
+The structure is \code{choice ~ A | B | C}, where
+\itemize{
+\item \code{A} are names of alternative and choice situation specific
+covariates with a generic coefficient,
+\item \code{B} are names of choice situation specific covariates with
+alternative specific coefficients,
+\item and \code{C} are names of alternative and choice situation specific
+covariates with alternative specific coefficients.
+}
+Separate multiple covariates of one type by a \code{+} sign.
+By default, alternative specific constants (ASCs) are added to the model
+(for all except for the last alternative).
+They can be removed by adding \code{+0} in the second spot.
+See the vignette \code{vignette("data_management", package = "RprobitB")}
+for more details.}
+
 \item{choice_data}{A data frame of choice data in "wide" format (i.e. each row represents
 one choice occasion) with the following requirements:
 \itemize{
@@ -30,6 +47,11 @@ column named \emph{q}.
 }}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.}
+
+\item{re}{A character (vector) of covariates of \code{form} with random effects.
+If \code{re = NULL} (the default), there are no random effects.
+To have random effects for the alternative specific constants, include
+\code{"ASC"} in \code{re}.}
 
 \item{id}{A character, the name of the column in \code{choice_data} that contains
 unique identifier for each decision maker. The default is \code{"id"}.}

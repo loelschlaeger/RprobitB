@@ -16,10 +16,6 @@
 #'   \item the function \code{sample}, where all required parameters
 #'         (except for \code{size}) must be specified.
 #' }
-#' @examples
-#' check_distr(distr = list("price_bus" = list("name"= "rgamma", shape = 1),
-#'                          "cars" = list("name" = "sample", x = 0:2,
-#'                                        replace = TRUE)))
 #' @return
 #' The checked input \code{distr}
 

@@ -2,10 +2,12 @@
 #' @description
 #' Function that creates contour plot and progress contour plots of the Gibbs
 #' samples.
+#' @param x
+#' ...
 #' @return
 #' ...
 
-plot_contour = function(){
+plot_contour = function(x){
   if(model$P_r==2){
     make_contour = function(C,s,b,Omega,limits=NULL,main_add=NULL){
       if(is.null(parm$beta)){

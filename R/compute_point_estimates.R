@@ -1,41 +1,51 @@
 #' Compute point estimates of an \code{RprobitB_model}.
 #' @description
-#' This function computes the point estimates of an \code{RprobitB_model} based
-#' on the means of the Gibbs samples.
-#' @param object
-#' An object of class \code{RprobitB_model}.
+#' This function computes the point estimates of an \code{\link{RprobitB_model}}.
+#' Per default, the \code{mean} of the Gibbs samples is used as a point estimate.
+#' However, any statistic that computes a single numeric value out of a vector of
+#' Gibbs samples can be specified for \code{FUN}.
+#' @param x
+#' An object of class \code{\link{RprobitB_model}}.
+#' @param FUN
+#' A function that computes a single numeric value out of a vector of numeric
+#' values.
 #' @return
-#' An object of class \code{RprobitB_parameter}.
+#' An object of class \code{\link{RprobitB_parameter}}.
 
-compute_point_estimates = function(object) {
+compute_point_estimates = function(x, FUN = mean) {
 
   ### check input
-  if(!class(object) == "RprobitB_model")
-    stop("'object' is not of class 'RprobitB_model'.")
+  if(!class(x) == "RprobitB_model")
+    stop("'x' is not of class 'RprobitB_model'.")
+  if(!is.list(FUN))
+    FUN = list(FUN)
+  if(length(FUN) != 1 || class(FUN[[1]]) != "function")
+    stop("'FUN' must be a function.")
 
   ### extract meta parameters
-  P_f = object$data$P_f
-  P_r = object$data$P_r
-  J = object$data$J
+  P_f = x$data$P_f
+  P_r = x$data$P_r
+  J = x$data$J
   C = 1
-  parameter_statistics = summary.RprobitB_model(object)$parameter_statistics
+  point_estimates = RprobitB_gibbs_samples_statistics(
+    gibbs_samples = x$gibbs_samples, FUN = FUN)
 
   ### compute point estimates
   if(P_f>0){
-    alpha = as.numeric(parameter_statistics$alpha[,"mean"])
+    alpha = as.numeric(point_estimates$alpha)
   } else {
     alpha = NULL
   }
   if(P_r>0){
-    s = as.numeric(parameter_statistics$s[,"mean"])
-    b = matrix(parameter_statistics$b[,"mean"], nrow = P_r, ncol = C)
-    Omega = matrix(parameter_statistics$Omega[,"mean"], nrow = P_r^2, ncol = C)
+    s = as.numeric(point_estimates$s)
+    b = matrix(point_estimates$b, nrow = P_r, ncol = C)
+    Omega = matrix(point_estimates$Omega, nrow = P_r^2, ncol = C)
   } else {
     s = NULL
     b = NULL
     Omega = NULL
   }
-  Sigma = matrix(parameter_statistics$Sigma[,"mean"], nrow = J-1, ncol = J-1)
+  Sigma = matrix(point_estimates$Sigma, nrow = J-1, ncol = J-1)
 
   ### build an return an object of class 'RprobitB_parameter'
   out = RprobitB_parameter(P_f = P_f, P_r = P_r, J = J,

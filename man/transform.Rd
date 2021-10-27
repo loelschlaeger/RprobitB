@@ -8,7 +8,7 @@ of a fitted \code{RprobitB_model}.}
 transform(x, B = NULL, Q = NULL, scale = NULL, check_preference_flip = TRUE)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{\link{RprobitB_model}}.}
 
 \item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
 be discarded.}

@@ -6,16 +6,18 @@
 #' The number of latent classes.
 #' @param cov_sym
 #' If \code{TRUE} considers symmetric covariance matrix elements.
+#' @param keep_par
+#' A vector of parameter names which are kept.
 #' @param drop_par
 #' A vector of parameter names which get dropped.
-#' @examples
-#' create_parameter_labels(P_f = 0, P_r = 2, J = 3, C = 4, cov_sym = TRUE, drop_par = "s")
 #' @return
 #' A list of labels for the model parameters.
 #' @keywords
 #' internal
 
-create_parameter_labels = function(P_f, P_r, J, C, cov_sym, drop_par){
+create_parameter_labels = function(P_f, P_r, J, C, cov_sym,
+                                   keep_par = c("s","alpha","b","Omega","Sigma"),
+                                   drop_par = NULL){
 
   ### check that 'C' is a number if 'P_r>0'
   if(P_r>0) if(!(is.numeric(C) && C%%1 == 0 && C>=1))
@@ -27,7 +29,9 @@ create_parameter_labels = function(P_f, P_r, J, C, cov_sym, drop_par){
                 "b" = create_labels_b(P_r, C),
                 "Omega" = create_labels_Omega(P_r, C, cov_sym),
                 "Sigma" = create_labels_Sigma(J, cov_sym))
-  labels = labels[lengths(labels) != 0 & !names(labels) %in% drop_par]
+  labels = labels[lengths(labels) != 0 &
+                    names(labels) %in% keep_par &
+                    !names(labels) %in% drop_par]
   return(labels)
 }
 
