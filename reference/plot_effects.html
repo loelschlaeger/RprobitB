@@ -164,24 +164,22 @@ the linear coefficients) along with an uncertainty interval of plus and minus
 one standard deviation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_effects</span><span class='op'>(</span><span class='va'>x</span>, restrict <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_effects</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>par_names</span>, cov_names <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>RprobitB_model</code>.</p></td>
+      <td><p>An object of class <code>RprobitB_gibbs_samples</code>.</p></td>
     </tr>
     <tr>
-      <th>restrict</th>
-      <td><p>A character (vector) of covariate or parameter names, which can be used to
-restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot of all parameters is produced.</p></td>
+      <th>par_names</th>
+      <td><p>...</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Ignored.</p></td>
+      <th>cov_names</th>
+      <td><p>A character vector of covariate names.</p></td>
     </tr>
     </table>
 

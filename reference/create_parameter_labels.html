@@ -160,7 +160,15 @@
     <p>This function creates labels for the model parameters.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>create_parameter_labels</span><span class='op'>(</span><span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span>, <span class='va'>C</span>, <span class='va'>cov_sym</span>, <span class='va'>drop_par</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>create_parameter_labels</span><span class='op'>(</span>
+  <span class='va'>P_f</span>,
+  <span class='va'>P_r</span>,
+  <span class='va'>J</span>,
+  <span class='va'>C</span>,
+  <span class='va'>cov_sym</span>,
+  keep_par <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"s"</span>, <span class='st'>"alpha"</span>, <span class='st'>"b"</span>, <span class='st'>"Omega"</span>, <span class='st'>"Sigma"</span><span class='op'>)</span>,
+  drop_par <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,6 +194,10 @@
       <td><p>If <code>TRUE</code> considers symmetric covariance matrix elements.</p></td>
     </tr>
     <tr>
+      <th>keep_par</th>
+      <td><p>A vector of parameter names which are kept.</p></td>
+    </tr>
+    <tr>
       <th>drop_par</th>
       <td><p>A vector of parameter names which get dropped.</p></td>
     </tr>
@@ -195,9 +207,6 @@
 
     <p>A list of labels for the model parameters.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>create_parameter_labels</span><span class='op'>(</span>P_f <span class='op'>=</span> <span class='fl'>0</span>, P_r <span class='op'>=</span> <span class='fl'>2</span>, J <span class='op'>=</span> <span class='fl'>3</span>, C <span class='op'>=</span> <span class='fl'>4</span>, cov_sym <span class='op'>=</span> <span class='cn'>TRUE</span>, drop_par <span class='op'>=</span> <span class='st'>"s"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in create_parameter_labels(P_f = 0, P_r = 2, J = 3, C = 4, cov_sym = TRUE,     drop_par = "s"): could not find function "create_parameter_labels"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

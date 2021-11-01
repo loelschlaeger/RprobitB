@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Autocorrelation plots — plot_acf • RprobitB</title>
+<title>Autocorrelation plot of Gibbs samples. — plot_acf • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,10 @@
 
 
 
-<meta property="og:title" content="Autocorrelation plots — plot_acf" />
-<meta property="og:description" content="Function that plots the autocorrelation of the Gibbs samples." />
+<meta property="og:title" content="Autocorrelation plot of Gibbs samples. — plot_acf" />
+<meta property="og:description" content="This function plots the autocorrelation of the Gibbs samples, including the
+total sample size SS, effective sample size ESS and the factor
+SS/ESS." />
 
 
 
@@ -151,32 +153,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Autocorrelation plots</h1>
+    <h1>Autocorrelation plot of Gibbs samples.</h1>
     
     <div class="hidden name"><code>plot_acf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that plots the autocorrelation of the Gibbs samples.</p>
+    <p>This function plots the autocorrelation of the Gibbs samples, including the
+total sample size <code>SS</code>, effective sample size <code>ESS</code> and the factor
+<code>SS/ESS</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_acf</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>names</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_acf</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>par_labels</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>gibbs_samples</th>
-      <td><p>A list of Gibbs samples.</p></td>
+      <td><p>A matrix of Gibbs samples.</p></td>
+    </tr>
+    <tr>
+      <th>par_labels</th>
+      <td><p>A character vector of length equal to the number of columns of
+<code>gibbs_samples</code>, containing labels for the parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>...</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>No return value. Draws a plot to the current device.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Function computes the <a href='https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html'>effective sample size</a>.</p>
+    <p><a href='https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html'>https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Visualizing the trace of Gibbs samples. — plot_trace" />
-<meta property="og:description" content="This function plots traces of Gibbs samples." />
+<meta property="og:description" content="This function plots traces of the Gibbs samples." />
 
 
 
@@ -157,10 +157,10 @@
     </div>
 
     <div class="ref-description">
-    <p>This function plots traces of Gibbs samples.</p>
+    <p>This function plots traces of the Gibbs samples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_trace</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>names</span>, <span class='va'>R</span>, <span class='va'>B</span>, <span class='va'>Q</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_trace</span><span class='op'>(</span><span class='va'>gibbs_samples</span>, <span class='va'>par_labels</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,28 +170,15 @@
       <td><p>A matrix of Gibbs samples.</p></td>
     </tr>
     <tr>
-      <th>names</th>
-      <td><p>The parameter names.</p></td>
-    </tr>
-    <tr>
-      <th>R</th>
-      <td><p>The number of iterations of the Gibbs sampler.</p></td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td><p>The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.</p></td>
-    </tr>
-    <tr>
-      <th>Q</th>
-      <td><p>The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th
-sample is kept.</p></td>
+      <th>par_labels</th>
+      <td><p>A character vector of length equal to the number of columns of
+<code>gibbs_samples</code>, containing labels for the parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>...</p>
+    <p>No return value. Draws a plot to the current device.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

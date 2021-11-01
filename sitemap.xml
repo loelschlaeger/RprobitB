@@ -55,9 +55,6 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_sufficient_statistics.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_waic.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/create_labels_Omega.html</loc>
   </url>
   <url>
@@ -94,16 +91,10 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/mcmc.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot.RprobitB_data.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot.RprobitB_model.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_acf.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_contour.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_effects.html</loc>
@@ -112,7 +103,10 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_estimates.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_marginals.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_mixture_contour.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_mixture_marginal.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_trace.html</loc>
@@ -187,15 +181,6 @@
     <loc>https://loelschlaeger.github.io/RprobitB//articles/introduction_to_RprobitB_and_model_formulation.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//articles/model_checking_and_model_selection.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//articles/model_fitting.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//articles/model_results.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//articles/prediction.html</loc>
   </url>
 </urlset>

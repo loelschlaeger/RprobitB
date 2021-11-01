@@ -47,8 +47,10 @@
 
 
 <meta property="og:title" content="Compute point estimates of an RprobitB_model. — compute_point_estimates" />
-<meta property="og:description" content="This function computes the point estimates of an RprobitB_model based
-on the means of the Gibbs samples." />
+<meta property="og:description" content="This function computes the point estimates of an RprobitB_model.
+Per default, the mean of the Gibbs samples is used as a point estimate.
+However, any statistic that computes a single numeric value out of a vector of
+Gibbs samples can be specified for FUN." />
 
 
 
@@ -158,24 +160,31 @@ on the means of the Gibbs samples." />
     </div>
 
     <div class="ref-description">
-    <p>This function computes the point estimates of an <code>RprobitB_model</code> based
-on the means of the Gibbs samples.</p>
+    <p>This function computes the point estimates of an <code><a href='RprobitB_model.html'>RprobitB_model</a></code>.
+Per default, the <code>mean</code> of the Gibbs samples is used as a point estimate.
+However, any statistic that computes a single numeric value out of a vector of
+Gibbs samples can be specified for <code>FUN</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_point_estimates</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>compute_point_estimates</span><span class='op'>(</span><span class='va'>x</span>, FUN <span class='op'>=</span> <span class='va'>mean</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>An object of class <code>RprobitB_model</code>.</p></td>
+      <th>x</th>
+      <td><p>An object of class <code><a href='RprobitB_model.html'>RprobitB_model</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>FUN</th>
+      <td><p>A function that computes a single numeric value out of a vector of numeric
+values.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_parameter</code>.</p>
+    <p>An object of class <code><a href='RprobitB_parameter.html'>RprobitB_parameter</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
