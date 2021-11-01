@@ -48,7 +48,7 @@
 
 <meta property="og:title" content="Compute probit choice probabilities for a single choice situation. — compute_choice_probabilities" />
 <meta property="og:description" content="This function computes the probit choice probabilities for a single choice
-situation." />
+situation with J alternatives." />
 
 
 
@@ -159,7 +159,7 @@ situation." />
 
     <div class="ref-description">
     <p>This function computes the probit choice probabilities for a single choice
-situation.</p>
+situation with <code>J</code> alternatives.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_choice_probabilities</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>parameter</span><span class='op'>)</span></pre>
@@ -169,8 +169,8 @@ situation.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>A matrix of covariates with one row per alternative.
-The first <code>P_f</code> columns are connected to fixed coefficients, the last
+      <td><p>A matrix of covariates with <code>J</code> rows and <code>P_f + P_r</code> columns, where
+the first <code>P_f</code> columns are connected to fixed coefficients and the last
 <code>P_r</code> columns are connected to random coefficients.</p></td>
     </tr>
     <tr>
@@ -181,14 +181,8 @@ The first <code>P_f</code> columns are connected to fixed coefficients, the last
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A probability vector of length <code>C</code>.</p>
+    <p>A probability vector of length <code>J</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>X</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>parameter</span> <span class='op'>=</span> <span class='fu'><a href='RprobitB_parameter.html'>RprobitB_parameter</a></span><span class='op'>(</span>P_f <span class='op'>=</span> <span class='fl'>1</span>, P_r <span class='op'>=</span> <span class='fl'>0</span>, J <span class='op'>=</span> <span class='fl'>3</span>,
-                               alpha <span class='op'>=</span> <span class='fl'>1</span>, Sigma_full <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in RprobitB_parameter(P_f = 1, P_r = 0, J = 3, alpha = 1, Sigma_full = diag(3)): could not find function "RprobitB_parameter"</span></div><div class='input'><span class='va'>prob</span> <span class='op'>=</span> <span class='fu'>compute_choice_probabilities</span><span class='op'>(</span>X <span class='op'>=</span> <span class='va'>X</span>, parameter <span class='op'>=</span> <span class='va'>parameter</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in compute_choice_probabilities(X = X, parameter = parameter): object 'parameter' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

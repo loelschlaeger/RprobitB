@@ -160,7 +160,16 @@
     <p>This function filters Gibbs samples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filter_gibbs_samples</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>P_f</span>, <span class='va'>P_r</span>, <span class='va'>J</span>, <span class='va'>C</span>, <span class='va'>cov_sym</span>, <span class='va'>drop_par</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>filter_gibbs_samples</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>P_f</span>,
+  <span class='va'>P_r</span>,
+  <span class='va'>J</span>,
+  <span class='va'>C</span>,
+  <span class='va'>cov_sym</span>,
+  keep_par <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"s"</span>, <span class='st'>"alpha"</span>, <span class='st'>"b"</span>, <span class='st'>"Omega"</span>, <span class='st'>"Sigma"</span><span class='op'>)</span>,
+  drop_par <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,6 +199,10 @@
       <td><p>If <code>TRUE</code> considers symmetric covariance matrix elements.</p></td>
     </tr>
     <tr>
+      <th>keep_par</th>
+      <td><p>A vector of parameter names which are kept.</p></td>
+    </tr>
+    <tr>
       <th>drop_par</th>
       <td><p>A vector of parameter names which get dropped.</p></td>
     </tr>
@@ -198,7 +211,7 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>RprobitB_gibbs_samples</code> filtered by the labels
-<code><a href='create_parameter_labels.html'>create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)</a></code>.</p>
+<code><a href='create_parameter_labels.html'>create_parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

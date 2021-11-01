@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visualizing the effects. — plot_estimates • RprobitB</title>
+<title>Plotting marginal mixing distributions. — plot_mixture_marginal • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,10 @@
 
 
 
-<meta property="og:title" content="Visualizing the effects. — plot_estimates" />
-<meta property="og:description" content="This function visualizes the effects of the covariates on the choices (i.e.
-the linear coefficients) along with an uncertainty interval of plus and minus
-one standard deviation." />
+<meta property="og:title" content="Plotting marginal mixing distributions. — plot_mixture_marginal" />
+<meta property="og:description" content="This function plots the estimated mixing distributions with respect to one
+covariate and adds the true marginal mixing distribution for comparison if
+available." />
 
 
 
@@ -153,29 +153,61 @@ one standard deviation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visualizing the effects.</h1>
+    <h1>Plotting marginal mixing distributions.</h1>
     
-    <div class="hidden name"><code>plot_estimates.Rd</code></div>
+    <div class="hidden name"><code>plot_mixture_marginal.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function visualizes the effects of the covariates on the choices (i.e.
-the linear coefficients) along with an uncertainty interval of plus and minus
-one standard deviation.</p>
+    <p>This function plots the estimated mixing distributions with respect to one
+covariate and adds the true marginal mixing distribution for comparison if
+available.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_estimates</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>par_names</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_mixture_marginal</span><span class='op'>(</span>
+  <span class='va'>mean_est</span>,
+  mean_true <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>weight_est</span>,
+  weight_true <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>sd_est</span>,
+  sd_true <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cov_name <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>An object of class <code>RprobitB_gibbs_samples</code>.</p></td>
+      <th>mean_est</th>
+      <td><p>A list of length <code>C</code>, where each element is an estimated class mean.</p></td>
     </tr>
     <tr>
-      <th>par_names</th>
-      <td><p>...</p></td>
+      <th>mean_true</th>
+      <td><p>Either <code>NULL</code> or a list of length <code>C</code>, where each element is a true
+class mean.</p></td>
+    </tr>
+    <tr>
+      <th>weight_est</th>
+      <td><p>A numeric vector of length <code>C</code> with estimated class weights.</p></td>
+    </tr>
+    <tr>
+      <th>weight_true</th>
+      <td><p>Either <code>NULL</code> or a numeric vector of length <code>C</code> with true class
+weights.</p></td>
+    </tr>
+    <tr>
+      <th>sd_est</th>
+      <td><p>A list of length <code>C</code>, where each element is an estimated class standard
+deviation.</p></td>
+    </tr>
+    <tr>
+      <th>sd_true</th>
+      <td><p>Either <code>NULL</code> or a list of length <code>C</code>, where each element is a true
+class standard deviation.</p></td>
+    </tr>
+    <tr>
+      <th>cov_name</th>
+      <td><p>Either <code>NULL</code> or the name of the corresponding covariate.</p></td>
     </tr>
     </table>
 
