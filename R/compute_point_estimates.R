@@ -26,7 +26,7 @@ compute_point_estimates = function(x, FUN = mean) {
   P_f = x$data$P_f
   P_r = x$data$P_r
   J = x$data$J
-  C = 1
+  C = x$latent_classes$C
   point_estimates = RprobitB_gibbs_samples_statistics(
     gibbs_samples = x$gibbs_samples, FUN = FUN)
 

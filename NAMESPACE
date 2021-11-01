@@ -2,7 +2,7 @@
 useDynLib(RprobitB, .registration=TRUE)
 
 ### imports
-importFrom(Rcpp, evalCpp)
+importFrom("Rcpp", "evalCpp")
 importFrom("grDevices", "dev.list", "dev.off", "pdf", "rgb")
 importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par",
            "points", "title")
@@ -18,10 +18,13 @@ importFrom("utils", "data")
 
 ### exports
 export(compare)
+export(choice_probabilities)
 export(compute_choice_probabilities)
 export(mcmc)
 export(prepare)
+export(R_hat)
 export(simulate)
+export(transform)
 
 ### S3 methods
 S3method(plot,RprobitB_model)

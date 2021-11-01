@@ -7,7 +7,7 @@
 \method{plot}{RprobitB_model}(x, type = "effects", restrict = NULL, ...)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{\link{RprobitB_model}}.}
 
 \item{type}{The type of plot, which can be one of:
 \itemize{

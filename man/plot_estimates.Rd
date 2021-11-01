@@ -2,22 +2,20 @@
 % Please edit documentation in R/plot_estimates.R
 \name{plot_estimates}
 \alias{plot_estimates}
-\title{Visualizing the estimates.}
+\title{Visualizing the effects.}
 \usage{
-plot_estimates(x, restrict = NULL, ...)
+plot_estimates(x, par_names)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_gibbs_samples}.}
 
-\item{restrict}{A character (vector) of covariate or parameter names, which can be used to
-restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot of all parameters is produced.}
-
-\item{...}{Ignored.}
+\item{par_names}{...}
 }
 \value{
 No return value. Draws a plot to the current device.
 }
 \description{
-This function visualizes the parameter estimates and standard deviations.
+This function visualizes the effects of the covariates on the choices (i.e.
+the linear coefficients) along with an uncertainty interval of plus and minus
+one standard deviation.
 }

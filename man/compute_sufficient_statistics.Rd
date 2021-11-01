@@ -17,8 +17,3 @@ A list of sufficient statistics.
 \description{
 This function computes sufficient statistics from \code{data} for estimation.
 }
-\examples{
-data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
-normalization = RprobitB_normalization(J = data$J, P_f = data$P_f)
-compute_sufficient_statistics(data = data, normalization)
-}

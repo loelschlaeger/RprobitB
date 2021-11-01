@@ -4,7 +4,16 @@
 \alias{filter_gibbs_samples}
 \title{Filter Gibbs samples.}
 \usage{
-filter_gibbs_samples(x, P_f, P_r, J, C, cov_sym, drop_par)
+filter_gibbs_samples(
+  x,
+  P_f,
+  P_r,
+  J,
+  C,
+  cov_sym,
+  keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+  drop_par = NULL
+)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_gibbs_samples}.}
@@ -19,11 +28,13 @@ filter_gibbs_samples(x, P_f, P_r, J, C, cov_sym, drop_par)
 
 \item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
 
+\item{keep_par}{A vector of parameter names which are kept.}
+
 \item{drop_par}{A vector of parameter names which get dropped.}
 }
 \value{
 An object of class \code{RprobitB_gibbs_samples} filtered by the labels
-\code{create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)}.
+\code{create_parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)}.
 }
 \description{
 This function filters Gibbs samples.

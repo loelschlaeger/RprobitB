@@ -4,10 +4,6 @@
 #' @inheritParams mcmc
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
-#' @examples
-#' data = simulate(form = choice ~ var, N = 10, T = 10, J = 3, re = "ASC")
-#' normalization = RprobitB_normalization(J = data$J, P_f = data$P_f)
-#' compute_sufficient_statistics(data = data, normalization)
 #' @return
 #' A list of sufficient statistics.
 

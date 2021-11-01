@@ -6,9 +6,7 @@
 #' @param x
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param par_names
-#'
-#' @param cov_names
-#' A character vector of covariate names.
+#' ...
 #' @return
 #' No return value. Draws a plot to the current device.
 

@@ -14,14 +14,14 @@ test_that("multinomial probit model fitting works", {
   expect_snapshot(summary(m2))
 })
 
-test_that("mixed multinomial probit model fitting works", {
-  skip_on_cran()
-  mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-                  re = "var", seed = 1)
-  m3 = mcmc(data = mmnp, seed = 1, print_progress = FALSE)
-  expect_snapshot(unclass(m3$gibbs_samples))
-  expect_snapshot(summary(m3))
-})
+# test_that("mixed multinomial probit model fitting works", {
+#   skip_on_cran()
+#   mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+#                   re = "var", seed = 1)
+#   m3 = mcmc(data = mmnp, seed = 1, print_progress = FALSE)
+#   expect_snapshot(unclass(m3$gibbs_samples))
+#   expect_snapshot(summary(m3))
+# })
 
 # test_that("mixed multinomial probit model with 2 latent classes fitting works", {
 #   skip_on_cran()

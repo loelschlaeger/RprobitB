@@ -35,10 +35,10 @@
 #'   Inverse Wishart prior for \code{Sigma}.
 #' }
 #' @inheritParams RprobitB_data
-#' @examples
-#' check_prior(prior = NULL, P_f = 1, P_r = 1, J = 2)
 #' @return
 #' The checked input \code{prior}
+#' @keywords
+#' internal
 
 check_prior = function(prior, P_f, P_r, J){
 

@@ -4,16 +4,14 @@
 \alias{plot_effects}
 \title{Visualizing the effects.}
 \usage{
-plot_effects(x, restrict = NULL, ...)
+plot_effects(x, par_names, cov_names = NULL)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_gibbs_samples}.}
 
-\item{restrict}{A character (vector) of covariate or parameter names, which can be used to
-restrict the visualizations to a subset of covariates and parameters,
-respectively. Per default, a combined plot of all parameters is produced.}
+\item{par_names}{...}
 
-\item{...}{Ignored.}
+\item{cov_names}{A character vector of covariate names.}
 }
 \value{
 No return value. Draws a plot to the current device.

@@ -3,7 +3,7 @@
 #' This function plots the autocorrelation of the Gibbs samples, including the
 #' total sample size \code{SS}, effective sample size \code{ESS} and the factor
 #' \code{SS/ESS}.
-#' @reference
+#' @references
 #' <https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html>
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.

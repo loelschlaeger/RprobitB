@@ -4,7 +4,15 @@
 \alias{create_parameter_labels}
 \title{Create parameters labels.}
 \usage{
-create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)
+create_parameter_labels(
+  P_f,
+  P_r,
+  J,
+  C,
+  cov_sym,
+  keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+  drop_par = NULL
+)
 }
 \arguments{
 \item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
@@ -17,6 +25,8 @@ create_parameter_labels(P_f, P_r, J, C, cov_sym, drop_par)
 
 \item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
 
+\item{keep_par}{A vector of parameter names which are kept.}
+
 \item{drop_par}{A vector of parameter names which get dropped.}
 }
 \value{
@@ -24,8 +34,5 @@ A list of labels for the model parameters.
 }
 \description{
 This function creates labels for the model parameters.
-}
-\examples{
-create_parameter_labels(P_f = 0, P_r = 2, J = 3, C = 4, cov_sym = TRUE, drop_par = "s")
 }
 \keyword{internal}

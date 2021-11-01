@@ -7,22 +7,16 @@
 compute_choice_probabilities(X, parameter)
 }
 \arguments{
-\item{X}{A matrix of covariates with one row per alternative.
-The first \code{P_f} columns are connected to fixed coefficients, the last
+\item{X}{A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
+the first \code{P_f} columns are connected to fixed coefficients and the last
 \code{P_r} columns are connected to random coefficients.}
 
 \item{parameter}{An object of class \code{RprobitB_parameter}.}
 }
 \value{
-A probability vector of length \code{C}.
+A probability vector of length \code{J}.
 }
 \description{
 This function computes the probit choice probabilities for a single choice
-situation.
-}
-\examples{
-X = matrix(1,3)
-parameter = RprobitB_parameter(P_f = 1, P_r = 0, J = 3,
-                               alpha = 1, Sigma_full = diag(3))
-prob = compute_choice_probabilities(X = X, parameter = parameter)
+situation with \code{J} alternatives.
 }

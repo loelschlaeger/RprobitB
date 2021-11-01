@@ -94,7 +94,7 @@ The scale matrix of dimension \code{J-1} x \code{J-1} of the
 Inverse Wishart prior for \code{Sigma}.
 }}
 
-\item{init}{The output of \code{\link{set_inititial_gibbs_values}}.}
+\item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
 }
 \value{
 A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})

@@ -12,9 +12,6 @@
 #' The alternative number to which respect utility differences are computed.
 #' @return
 #' A matrix of dimension \code{J-1} x \code{J}.
-#' @examples
-#' X = matrix(1:9,3,3, byrow = TRUE)
-#' delta(3,3) %*% X
 
 delta = function(J, i){
   stopifnot(is.numeric(J), J%%1 == 0, J>=2)

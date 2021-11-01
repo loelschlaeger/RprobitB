@@ -4,7 +4,7 @@
 \alias{compute_log_likelihood}
 \title{Compute log-likelihood of an \code{RprobitB_model}.}
 \usage{
-compute_log_likelihood(object, at_true = TRUE)
+compute_log_likelihood(object, at_true = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_model}.}
@@ -17,9 +17,4 @@ The log-likelihood value.
 }
 \description{
 This function computes the log-likelihood of an \code{RprobitB_model}.
-}
-\examples{
-p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-m1 = mcmc(data = p, seed = 1)
-compute_log_likelihood(m1)
 }

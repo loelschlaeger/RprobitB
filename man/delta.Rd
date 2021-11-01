@@ -23,7 +23,3 @@ Given a \code{J} x \code{P} matrix \code{X} of choice characteristics,
 then \code{delta(i,J)\%*\%X} computes differences with respect to alternative
 \code{i}.
 }
-\examples{
-X = matrix(1:9,3,3, byrow = TRUE)
-delta(3,3) \%*\% X
-}

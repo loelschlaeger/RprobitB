@@ -52,6 +52,4 @@ The checked input \code{prior}
 This function checks the input \code{prior} and sets missing values to
 default values.
 }
-\examples{
-check_prior(prior = NULL, P_f = 1, P_r = 1, J = 2)
-}
+\keyword{internal}

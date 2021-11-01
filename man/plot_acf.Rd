@@ -2,21 +2,24 @@
 % Please edit documentation in R/plot_acf.R
 \name{plot_acf}
 \alias{plot_acf}
-\title{Autocorrelation plots}
+\title{Autocorrelation plot of Gibbs samples.}
 \usage{
-plot_acf(gibbs_samples, names)
+plot_acf(gibbs_samples, par_labels)
 }
 \arguments{
-\item{gibbs_samples}{A list of Gibbs samples.}
+\item{gibbs_samples}{A matrix of Gibbs samples.}
 
-\item{names}{....}
+\item{par_labels}{A character vector of length equal to the number of columns of
+\code{gibbs_samples}, containing labels for the parameters.}
 }
 \value{
-...
+No return value. Draws a plot to the current device.
 }
 \description{
-Function that plots the autocorrelation of the Gibbs samples.
+This function plots the autocorrelation of the Gibbs samples, including the
+total sample size \code{SS}, effective sample size \code{ESS} and the factor
+\code{SS/ESS}.
 }
-\details{
-Function computes the \href{https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html}{effective sample size}.
+\references{
+\url{https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html}
 }

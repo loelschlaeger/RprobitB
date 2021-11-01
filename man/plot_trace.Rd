@@ -4,24 +4,17 @@
 \alias{plot_trace}
 \title{Visualizing the trace of Gibbs samples.}
 \usage{
-plot_trace(gibbs_samples, names, R, B, Q)
+plot_trace(gibbs_samples, par_labels)
 }
 \arguments{
 \item{gibbs_samples}{A matrix of Gibbs samples.}
 
-\item{names}{The parameter names.}
-
-\item{R}{The number of iterations of the Gibbs sampler.}
-
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
-
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{par_labels}{A character vector of length equal to the number of columns of
+\code{gibbs_samples}, containing labels for the parameters.}
 }
 \value{
-...
+No return value. Draws a plot to the current device.
 }
 \description{
-This function plots traces of Gibbs samples.
+This function plots traces of the Gibbs samples.
 }

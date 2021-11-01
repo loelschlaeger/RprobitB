@@ -5,10 +5,6 @@
 #' An object of class \code{RprobitB_parameter}.
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
-#' @examples
-#' parameter = RprobitB_parameter(P_f = 2, P_r = 2, J = 3, N = 100)
-#' normalization = RprobitB_normalization(J = 3, P_f = 2)
-#' transform_parameter(parameter = parameter, normalization = normalization)
 #' @return
 #' An object of class \code{RprobitB_parameter}.
 

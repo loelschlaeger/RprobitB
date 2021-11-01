@@ -4,7 +4,7 @@
 \alias{choice_probabilities}
 \title{Compute choice probabilities of an \code{RprobitB_model}.}
 \usage{
-choice_probabilities(object, at_true = TRUE)
+choice_probabilities(object, at_true = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_model}.}
@@ -19,6 +19,6 @@ A data frame, one row per choice situation and one column per alternative.
 This function computes the choice probabilities of an \code{RprobitB_model}.
 }
 \examples{
-p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-m1 = mcmc(data = p, seed = 1)
+model = mcmc(data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2))
+choice_probabilities(model)
 }

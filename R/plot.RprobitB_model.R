@@ -49,24 +49,47 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
   par_names = intersect(par_names, restrict)
 
   ### determine names of covariates to plot
-  cov_names = c()
+  cov_names = intersect(x$data$covs$names, restrict)
 
   ### make plot type 'mixture'
   if(type == "mixture"){
     if(x$data$P_r == 0){
       warning("Plot type 'mixture' invalid because there are no random effects.")
     } else {
-      parameter = compute_point_estimates(x, FUN = mean)
-      #par(mfrow = c(length(cov_names), length(cov_names)))
-      #pars_pairs = expand.grid(cov_names, cov_names, stringsAsFactors = FALSE)
-      for(pars_pair in 1:nrow(pars_pairs)){
-        par1 = pars_pairs[pars_pair,1]
-        par2 = pars_pairs[pars_pair,2]
-        if(par1 == par2){
-          plot_marginal(x = x, par = par1)
+      est = compute_point_estimates(x, FUN = mean)
+      true = x$data$true_parameter
+      C_est = x$latent_classes$C
+      C_true = x$data$true_parameter$C
+      comb = expand.grid(1:x$data$P_r, 1:x$data$P_r)
+      cov_names = x$data$covs$names[x$data$covs$random]
+      par(mfrow = set_mfrow(nrow(comb)))
+      for(i in 1:nrow(comb)){
+        p1 = comb[i,1]
+        p2 = comb[i,2]
+        if(p1 == p2){
+          plot_mixture_marginal(
+            mean_est = as.list(est$b[paste0(1:C_est,".",p1)]),
+            mean_true = as.list(true$b[paste0(1:C_true,".",p1)]),
+            weight_est = est$s,
+            weight_true = true$s,
+            sd_est = as.list(sqrt(est$Omega[paste0(1:C_est,".",p1,",",p1)])),
+            sd_true = as.list(sqrt(true$Omega[paste0(1:C_true,".",p1,",",p1)])),
+            cov_name = cov_names[p1]
+          )
         } else {
-          plot_contour(x = x, par1 = pars_pairs[pars_pair,1],
-                       par2 = pars_pairs[pars_pair,1])
+          mean_est = list()
+          cov_est = list()
+          for(c in 1:C_est){
+            mean_est[[c]] = est$b[paste0(c,".",c(p1,p2))]
+            cov_est[[c]] = matrix(est$Omega[paste0(c,".",as.vector(outer(c(p1,p2), c(p1,p2), paste, sep=",")))],2,2)
+          }
+          plot_mixture_contour(
+            mean_est = mean_est,
+            weight_est = est$s,
+            cov_est = cov_est,
+            beta_true = x$data$true_parameter$beta[c(p1,p2),],
+            cov_names = cov_names[c(p1,p2)]
+          )
         }
       }
     }
@@ -85,10 +108,9 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
       warning("Plot type 'effects' invalid because there are no effects.")
     } else {
       par(mfrow = c(1,1), mar = c(2,3,0,0) + 0.5)
-      plot_estimates(x = x$gibbs_samples,
-                     par_names = intersect(par_names, c("alpha","b")),
-                     cov_names = x$data$covs$names,
-                     highlight_zero = TRUE)
+      plot_effects(x = x$gibbs_samples,
+                   par_names = intersect(par_names, c("alpha","b")),
+                   cov_names = x$data$covs$names)
     }
   }
 

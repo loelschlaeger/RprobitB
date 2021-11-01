@@ -7,15 +7,27 @@
 R_hat(samples, parts = 2)
 }
 \arguments{
-\item{samples}{Normalized and burned but not thinned Gibbs samples.}
+\item{samples}{A vector or a matrix of samples from a Markov chain, e.g. Gibbs samples.
+If \code{samples} is a matrix, each column gives the samples for a separate
+run.}
 
-\item{parts}{The number of parts to divide the samples into sub-chains.}
+\item{parts}{The number of parts to divide each chain into sub-chains.}
 }
 \value{
 The Gelman-Rubin statistic.
 }
 \description{
 This function computes the Gelman-Rubin statistic \code{R_hat}.
+}
+\examples{
+no_chains = 2
+length_chains = 1e3
+samples = matrix(NA,length_chains,no_chains)
+samples[1,] = 1
+Gamma = matrix(c(0.8,0.1,0.2,0.9),2,2)
+for(c in 1:no_chains) for(t in 2:length_chains)
+  samples[t,c] = sample(1:2, 1, prob = Gamma[samples[t-1,c],])
+R_hat(samples)
 }
 \references{
 \url{https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html}

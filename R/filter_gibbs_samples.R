@@ -2,7 +2,7 @@
 #' @description
 #' This function filters Gibbs samples.
 #' @param x
-#' An object of class \code{\link{RprobitB_gibbs_samples}}.
+#' An object of class \code{RprobitB_gibbs_samples}.
 #' @inheritParams create_parameter_labels
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples} filtered by the labels

@@ -10,22 +10,14 @@ compare(...)
 \item{...}{One or more objects of class \code{RprobitB_model}.}
 }
 \value{
-A matrix with the following model selection criteria:
+A matrix with each model's
 \itemize{
-\item log-likelihood
-\item AIC
-\item BIC
-\item WAIC
-\item effective model parameters
+\item number of parameters,
+\item log-likelihood,
+\item AIC, and
+\item BIC value.
 }
 }
 \description{
-This function computes model selection criteria.
-}
-\details{
-For more details see the vignette "Model comparison":
-\code{vignette("model_comparison", package = "RprobitB")}.
-}
-\examples{
-### example missing here
+This function computes model comparison criteria.
 }

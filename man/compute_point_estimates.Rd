@@ -4,15 +4,20 @@
 \alias{compute_point_estimates}
 \title{Compute point estimates of an \code{RprobitB_model}.}
 \usage{
-compute_point_estimates(object)
+compute_point_estimates(x, FUN = mean)
 }
 \arguments{
-\item{object}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{\link{RprobitB_model}}.}
+
+\item{FUN}{A function that computes a single numeric value out of a vector of numeric
+values.}
 }
 \value{
-An object of class \code{RprobitB_parameter}.
+An object of class \code{\link{RprobitB_parameter}}.
 }
 \description{
-This function computes the point estimates of an \code{RprobitB_model} based
-on the means of the Gibbs samples.
+This function computes the point estimates of an \code{\link{RprobitB_model}}.
+Per default, the \code{mean} of the Gibbs samples is used as a point estimate.
+However, any statistic that computes a single numeric value out of a vector of
+Gibbs samples can be specified for \code{FUN}.
 }
