@@ -9,8 +9,10 @@
 #' @return
 #' A data frame, one row per choice situation and one column per alternative.
 #' @examples
+#' \dontrun{
 #' model = mcmc(data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2))
 #' choice_probabilities(model)
+#' }
 #' @export
 
 choice_probabilities = function(object, at_true = FALSE) {

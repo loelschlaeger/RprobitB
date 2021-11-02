@@ -1,6 +1,7 @@
 # RprobitB <img src="man/figures/logo.png" align="right" height=136 />
 [![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
+[![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
 
 **RprobitB** is an R package that can be used to fit (latent class) (mixed) (multinomial) probit models to simulated or empirical data. 
 

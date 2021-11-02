@@ -2,7 +2,7 @@ Package: RprobitB
 Type: Package
 Title: Bayes Estimation of Latent Class Mixed Multinomial Probit Models
 Version: 0.1.1
-Date: 2021-05-11
+Date: 2021-11-02
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
            email = "lennart.oelschlaeger@uni-bielefeld.de", 
