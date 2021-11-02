@@ -11,7 +11,7 @@
 #' this function as elements.
 
 RprobitB_model = function(data, normalization, R, B, Q, latent_classes, prior,
-                          gibbs_samples) {
+                          gibbs_samples, classification) {
 
   ### check inputs
   stopifnot(inherits(data,"RprobitB_data"))
@@ -31,7 +31,8 @@ RprobitB_model = function(data, normalization, R, B, Q, latent_classes, prior,
              "Q"              = Q,
              "latent_classes" = latent_classes,
              "prior"          = prior,
-             "gibbs_samples"  = gibbs_samples)
+             "gibbs_samples"  = gibbs_samples,
+             "classification" = classification)
   class(out) = "RprobitB_model"
   return(out)
 }

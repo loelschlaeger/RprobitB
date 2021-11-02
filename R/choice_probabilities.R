@@ -27,7 +27,6 @@ choice_probabilities = function(object, at_true = FALSE) {
       X = object$data$data[[n]]$X[[t]], parameter = parameter)
     probabilities = rbind(probabilities, c(n,t,P_nt))
   }
-  colnames(probabilities) = c("N","T",1:object$data$J)
-  class(probabilities) = "RprobitB_choice_probabilities"
+  colnames(probabilities) = c("N","T",object$data$alternatives)
   return(probabilities)
 }

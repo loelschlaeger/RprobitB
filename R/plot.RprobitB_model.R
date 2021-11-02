@@ -139,7 +139,7 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
       keep_par = par_names)$gibbs_samples_nbt
     par(mfrow = set_mfrow(length(sapply(gibbs_samples_nbt_filtered, colnames))),
         mar = c(2,2,0,0) + 0.5)
-    for(i in 1:length(gibbs_samples_nbt_filtered)){
+    for(par_name in par_names){
       gibbs_samples = gibbs_samples_nbt_filtered[[i]]
       plot_acf(
         gibbs_samples = gibbs_samples,

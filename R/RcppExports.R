@@ -59,7 +59,8 @@ rwishart <- function(nu, V) {
 #' The output of \code{\link{set_initial_gibbs_values}}.
 #' @return
 #' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-#' and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).
+#' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
+#' (if \code{P_r>0}).
 #'
 gibbs_sampling <- function(R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init) {
     .Call(`_RprobitB_gibbs_sampling`, R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init)

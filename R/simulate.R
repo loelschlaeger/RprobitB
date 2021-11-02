@@ -254,6 +254,9 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     data[[n]][["y"]] = y_n
   }
 
+  ### save choices in 'choice_data'
+  choice_data["choice"] = unlist(lapply(data, function(x) x[["y"]]))
+
   ### create RprobitB_data object
   out = RprobitB_data(data           = data,
                       choice_data    = choice_data,

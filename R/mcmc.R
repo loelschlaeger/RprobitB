@@ -89,6 +89,14 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     P_f = data$P_f, P_r = data$P_r, latent_classes = latent_classes,
     sufficient_statistics = sufficient_statistics, prior = prior, init = init)
 
+  ### save classification
+  if(!is.null(gibbs_samples$classification)){
+    classification = gibbs_samples$classification + 1
+    gibbs_samples = within(gibbs_samples, rm(classification))
+  } else {
+    classification = NULL
+  }
+
   ### label Gibbs samples
   labels = create_parameter_labels(
     P_f = data$P_f, P_r = data$P_r, J = data$J,
@@ -115,6 +123,7 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
                        Q = Q,
                        latent_classes = latent_classes,
                        prior = prior,
-                       gibbs_samples = gibbs_samples)
+                       gibbs_samples = gibbs_samples,
+                       classification = classification)
   return(out)
 }

@@ -401,7 +401,8 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return
 //' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-//' and \code{s}, \code{b}, and \code{Omega} (if \code{P_r>0}).
+//' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
+//' (if \code{P_r>0}).
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,
@@ -712,7 +713,8 @@ List gibbs_sampling (int R, int B, bool print_progress,
                        Named("alpha") = alpha_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
-                       Named("Sigma") = Sigma_draws);
+                       Named("Sigma") = Sigma_draws,
+                       Named("classification") = z);
   if(P_f>0 && P_r==0)
     out = List::create(Named("alpha") = alpha_draws,
                        Named("Sigma") = Sigma_draws);
@@ -720,7 +722,8 @@ List gibbs_sampling (int R, int B, bool print_progress,
     out = List::create(Named("s") = s_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
-                       Named("Sigma") = Sigma_draws);
+                       Named("Sigma") = Sigma_draws,
+                       Named("classification") = z);
   if(P_f==0 && P_r==0)
     out = List::create(Named("Sigma") = Sigma_draws);
   return out;

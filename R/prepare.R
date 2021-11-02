@@ -68,8 +68,8 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
                   colnames(choice_data)[col],"'."))
 
   ### convert decision maker ids to numeric
-  choice_data[,id] = as.numeric(factor(choice_data[,id],
-                                       levels=unique(choice_data[,id])))
+  choice_data[,"id"] = as.numeric(factor(choice_data[,id],
+                                         levels = unique(choice_data[,id])))
 
   ### identify / filter, sort and count alternatives
   if(is.null(alternatives)){
@@ -91,8 +91,8 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   P_r = P$P_r
 
   ### compute number of decision makers and choice occasions
-  N = length(unique(choice_data[,id]))
-  T = as.numeric(table(choice_data[,id]))
+  N = length(unique(choice_data[,"id"]))
+  T = as.numeric(table(choice_data[,"id"]))
 
   ### decode choices to numeric (sorted alphabetically)
   choice_data[[choice]] = as.character(choice_data[[choice]])
@@ -143,7 +143,7 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   data = list()
   for(n in 1:N){
     data[[n]] = list()
-    data_n = choice_data[choice_data[,id] == n,]
+    data_n = choice_data[choice_data[,"id"] == n,]
     X_n = list()
 
     for(t in 1:T[n]){

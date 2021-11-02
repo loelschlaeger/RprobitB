@@ -12,6 +12,7 @@
 
 plot_estimates = function(x, par_names){
   gibbs_samples_matrix_nbt = sapply(x$gibbs_samples_nbt, rbind)
-  colnames(gibbs_samples_matrix_nbt) = sapply(x$gibbs_samples_nbt, colnames)
+  colnames(gibbs_samples_matrix_nbt) = paste0(par_names, "_",
+                                             sapply(x$gibbs_samples_nbt, colnames))
   boxplot(gibbs_samples_matrix_nbt)
 }
