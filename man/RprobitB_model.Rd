@@ -12,7 +12,8 @@ RprobitB_model(
   Q,
   latent_classes,
   prior,
-  gibbs_samples
+  gibbs_samples,
+  classification
 )
 }
 \arguments{

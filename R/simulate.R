@@ -2,7 +2,7 @@
 #' @description
 #' This function simulates choice data for the RprobitB package.
 #' @details
-#' For more details see the vignette "Data management"
+#' See the vignette "Data management" for more details:
 #' \code{vignette("data_management", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
 #' @inheritParams check_distr
@@ -15,30 +15,9 @@
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' @examples
-#' ### simulate data
-#' form = choice ~ cost | income | travel_time
-#' re = "cost"
-#' N = 100
-#' T = 10
-#' J = 3
-#' alternatives = c("car", "bus", "train")
-#' data = simulate(form = form, N = N, T = T, J = J, re = re,
-#'                 alternatives = alternatives, seed = 1)
-#'
-#' ### specify distributions for the covariates
-#' distr = list("cost" = list("name" = "rnorm", sd = 3),
-#'              "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
-#'              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
-#'              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
-#' data = simulate(form = form, N = N, T = T, J = J, re = re,
-#'                 alternatives = alternatives, distr = distr, seed = 1)
-#'
-#' ### standardize covariates
-#' standardize = c("income", "travel_time_car", "travel_time_bus",
-#'                 "travel_time_train")
-#' data = simulate(form = form, N = N, T = T, J = J, re = re,
-#'                 alternatives = alternatives, distr = distr,
-#'                 standardize = standardize, seed = 1)
+#' data = simulate(form = choice ~ cost | income + 0 | time,
+#'                 N = 100, T = 10, J = 3, re = "cost",
+#'                 alternatives = c("car", "bus", "scooter"))
 #' @export
 
 simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
@@ -57,7 +36,7 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   if(length(T)==1)
     T = rep(T,N)
   if(any(!is.numeric(T)) || any(T%%1!=0))
-    stop("'T' must be a non-negative number or a vector of non-negative numbers.")
+    stop("'T' must be non-negative or a vector of non-negative numbers.")
   if(!is.numeric(J) || J%%1!=0 || !J>=2)
     stop("'J' must be a number greater or equal 2.")
   if(is.null(alternatives))
@@ -140,7 +119,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### compute number of linear coefficients
-  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J, re = re)
+  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
+                                            re = re)
   P_f = P$P_f
   P_r = P$P_r
 
@@ -148,7 +128,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
   true_parameter = do.call(what = RprobitB_parameter,
                            args = c(list("P_f" = P_f, "P_r" = P_r,
                                          "J" = J, "N" = N, "seed" = seed),
-                                    list(...)))
+                                    list(...))
+                           )
 
   ### compute lower-triangular Choleski root of 'Sigma_full'
   L = suppressWarnings(t(chol(true_parameter$Sigma_full, pivot = TRUE)))
@@ -179,9 +160,8 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
         for(var in vars[[1]]){
           old_names = colnames(X_nt)
           col = numeric(J)
-          for(alternative in 1:J)
-            col[alternative] =
-            data_nt[,paste0(var,"_",alternatives[alternative])]
+          for(j in 1:J)
+            col[j] = data_nt[,paste0(var,"_",alternatives[j])]
           ### put covariates with random effects at the end
           if(var %in% re){
             X_nt = cbind(X_nt,col)

@@ -19,6 +19,8 @@ A data frame, one row per choice situation and one column per alternative.
 This function computes the choice probabilities of an \code{RprobitB_model}.
 }
 \examples{
+\dontrun{
 model = mcmc(data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2))
 choice_probabilities(model)
+}
 }

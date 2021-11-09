@@ -16,11 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette explains how to provide choice data for **RprobitB**. We can either
+This vignette explains how to provide choice data for **RprobitB** via
 
-1. [use empirical data](#empirical-data) or
+1. [empirical data](#empirical-data) or
 
-2. [simulate data](#simulated-data).
+2. [simulated data](#simulated-data).
 
 As a first step, we recommend to [specify the model formula](#specify-the-model-formula).
 
@@ -113,7 +113,7 @@ The function `prepare()` has the following optional arguments:
 
 ### Example: "Train" data set of the mlogit package
 
-Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit) for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^2]. We consider all alternatives, therefore `alternatives` does not have to be specified.
+Let's prepare the *Train* data set of the [mlogit package](https://cran.r-project.org/package=mlogit) for estimation. We consider the covariates `price` (type 1), `time`, `comfort` and `change` (each of type 3), where we link `price` and `time` to random effects[^2]. 
 
 ```{r, eval = FALSE}
 data("Train", package = "mlogit")
@@ -137,25 +137,9 @@ data = simulate(form = form, N = N, T = T, J = J)
 
 The function `simulate()` has the following optional arguments:
 
-- `C`: The number of true latent classes. If `re = NULL`, `C` is ignored. 
-
 - `re`: The character vector of variable names of `form` with random effects.
 
 - `alternatives`: A character vector with the names of the choice alternatives with length `J`.
-
-- `parm`: A list of true parameter values:
-
-  - `alpha`, the fixed coefficient vector
-  
-  - `C`, the number (greater or equal 1) of latent classes of decision makers
-  
-  - `s`, the vector of class weights
-  
-  - `b`, the matrix of class means as columns
-  
-  - `Omega`, the matrix of class covariance matrices as columns
-  
-  - `Sigma`, the differenced error term covariance matrix
 
 - `distr`: A named list of number generation functions from which the covariates are drawn. Each element of `distr` must be of the form `"cov" = list("name" = "<name of the number generation function>", ...)`, where `cov` is the name of the covariate[^4] and `...` are required parameters for the number generation function. Covariates for which no distribution is specified are drawn from a standard normal distribution. Possible number generation functions are
 
@@ -164,6 +148,22 @@ The function `simulate()` has the following optional arguments:
   - the function `sample`, where all required parameters except for `size`) must be specified.
 
 - `standardize`: A character vector of variable names of `form` that get standardized, see [below](#standardize-covariates).
+
+We can specify true parameter values by adding values for
+
+- `alpha`, the fixed coefficient vector,
+  
+- `C`, the number (greater or equal 1) of latent classes of decision, makers
+  
+- `s`, the vector of class weights,
+  
+- `b`, the matrix of class means as columns,
+  
+- `Omega`, the matrix of class covariance matrices as columns,
+  
+- `Sigma`, the differenced error term covariance matrix,
+  
+- `Sigma_full`, the full error term covariance matrix.
 
 [^3]: `T` can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length `N`, i.e. a decision maker specific number of choice occasions.
 
@@ -178,25 +178,22 @@ form = choice ~ cost | income | travel_time
 re = "cost"
 ```
 
-Let us now simulate the choices of `N = 100` decision makers in `T = 10` choice occasions on the `J = 3` alternatives "car", "bus" and "train". We want `C = 2` true latent classes with equal weights and specific distributions[^5] for our covariates:
+Let us now simulate the choices of `N = 100` decision makers in `T = 10` choice occasions on the `J = 3` alternatives "car", "bus" and "train". We want `C = 2` true latent classes and specific distributions[^5] for our covariates:
 
 ```{r, eval = FALSE}
 N = 100
 T = 10
 J = 3
 alternatives = c("car", "bus", "train")
-parm = list("C" = 2, "s" = c(0.5,0.5))
 distr = list("cost" = list("name" = "rnorm", sd = 3),
-             "income" = list("name" =  "sample", x = (1:10)*1e3, 
-                             replace = TRUE),
+             "income" = list("name" =  "sample", x = (1:10)*1e3, replace = TRUE),
              "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
              "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
 data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, parm = parm, distr = distr)
+                alternatives = alternatives, distr = distr, C = 2)
 ```
 
 [^5]: Note that the `cost` covariate for all alternatives is drawn from the same distribution. Also note that since we did not specify a distribution for `travel_time_bus`, this covariate is drawn from a standard normal distribution.
-
 
 ## Standardize covariates
 

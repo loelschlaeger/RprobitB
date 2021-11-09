@@ -4,10 +4,13 @@
 \alias{predict}
 \title{Predict choices.}
 \usage{
-predict(x)
+predict(x, aggregate = TRUE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_model}.}
+
+\item{aggregate}{If \code{aggregate = TRUE}, the function returns the actual and predicted
+choices in a frequency table.}
 }
 \value{
 value

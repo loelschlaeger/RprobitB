@@ -10,12 +10,13 @@
 #' A data frame, one row per choice situation and one column per alternative.
 #' @examples
 #' \dontrun{
-#' model = mcmc(data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2))
-#' choice_probabilities(model)
+#' data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
+#' model = mcmc(data)
+#' choice_probs(model)
 #' }
 #' @export
 
-choice_probabilities = function(object, at_true = FALSE) {
+choice_probs = function(object, at_true = FALSE) {
   if(at_true){
     parameter = object$data$true_parameter
   } else {
