@@ -47,7 +47,8 @@
 
 
 <meta property="og:title" content="Check distr. — check_distr" />
-<meta property="og:description" content="Function that checks the input distr." />
+<meta property="og:description" content="This function checks the input distr." />
+<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -79,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -157,7 +158,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>distr</code>.</p>
+    <p>This function checks the input <code>distr</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_distr</span><span class='op'>(</span><span class='va'>distr</span><span class='op'>)</span></pre>
@@ -168,12 +169,12 @@
     <tr>
       <th>distr</th>
       <td><p>A named list of number generation functions from which the covariates are
-drawn. Each element of <code>distr</code> must be of the form
-<code>"cov" = list("name" = "&lt;name of the number generation function&gt;", ...)</code>,
+drawn. Covariates for which no distribution is specified are drawn from a
+standard normal distribution.
+Each element of <code>distr</code> must be of the form
+<code>"cov" = list("name" = "&lt;name of the number generation function&gt;",...)</code>,
 where <code>cov</code> is the name of the covariate and <code>...</code> are required
 parameters for the number generation function.
-Covariates for which no distribution is specified are drawn from a standard
-normal distribution.
 Possible number generation functions are</p><ul>
 <li><p>functions of the type <code>r*</code> from base R (e.g. <code>rnorm</code>) where
 all required parameters (except for <code>n</code>) must be specified,</p></li>
@@ -185,7 +186,7 @@ all required parameters (except for <code>n</code>) must be specified,</p></li>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>distr</code></p>
+    <p>The checked input <code>distr</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
