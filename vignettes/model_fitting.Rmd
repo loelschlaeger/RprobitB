@@ -22,12 +22,12 @@ knitr::opts_chunk$set(
 To fit a model to choice data, apply the function
 
 ```{r, eval = FALSE}
-model = fit(data = data)
+model = mcmc(data = data)
 ```
 
 where `data` must be the output of either `prepare()` or `simulate()`, see [the vignette about data management](data_management.html).
 
-The function `fit()` has the following optional arguments:
+The function `mcmc()` has the following optional arguments:
 
 - `scale`: A named list of three elements, determining the parameter normalization with respect to the utility scale (see [the introductory vignette](introduction_to_RprobitB_and_model_formulation.html))[^1]: 
 
@@ -186,7 +186,7 @@ The normalization of a fitted model can be changed afterwards via
 model = transform(model = model, scale = scale)
 ``` 
 
-where `model` is the output of `fit()` and `scale` is a named list of three elements, determining the parameter normalization, as described above. 
+where `model` is the output of `mcmc()` and `scale` is a named list of three elements, determining the parameter normalization, as described above. 
 
 ## Burning and thinning
 
@@ -221,31 +221,31 @@ These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\vare
 ```{r, eval = FALSE}
 ### probit model
 p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-m1 = fit(data = p)
+m1 = mcmc(data = p)
 ```
 
 ```{r, eval = FALSE}
 ### multinomial probit model
 mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3)
-m2 = fit(data = mnp)
+m2 = mcmc(data = mnp)
 ```
 
 ```{r, eval = FALSE}
 ### mixed multinomial probit model
 mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
-m3 = fit(data = mmnp)
+m3 = mcmc(data = mmnp)
 ```
 
 ```{r, eval = FALSE}
 ### latent classes mixed multinomial probit model
 lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
                   parm = list("C" = 2))
-m4 = fit(data = lcmmnp, latent_classes = list("C" = 2))
+m4 = mcmc(data = lcmmnp, latent_classes = list("C" = 2))
 ```
 
 ```{r, eval = FALSE}
 ### update of latent classes
-m5 = fit(data = lcmmnp, latent_classes = list("update" = TRUE))
+m5 = mcmc(data = lcmmnp, latent_classes = list("update" = TRUE))
 ```
 
 

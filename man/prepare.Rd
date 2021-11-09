@@ -68,7 +68,7 @@ An object of class \code{RprobitB_data}.
 This function prepares empirical choice data for the RprobitB package.
 }
 \details{
-For more details see the vignette "Data management":
+See the vignette "Data management" for more details:
 \code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{

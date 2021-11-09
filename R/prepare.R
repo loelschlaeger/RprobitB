@@ -28,13 +28,10 @@
 #' An object of class \code{RprobitB_data}.
 #' @examples
 #' data("Train", package = "mlogit")
-#' Train$price_A = Train$price_A / 100 * 2.20371
-#' Train$price_B = Train$price_B / 100 * 2.20371
-#' Train$time_A = Train$time_A / 60
-#' Train$time_B = Train$time_B / 60
 #' data = prepare(form = choice ~ price | 0 | time + comfort + change,
 #'                choice_data = Train,
-#'                re = c("price","time"))
+#'                re = c("price","time"),
+#'                standardize = "all")
 #' @export
 
 prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",

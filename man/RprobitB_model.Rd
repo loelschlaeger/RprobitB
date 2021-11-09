@@ -87,6 +87,8 @@ Inverse Wishart prior for \code{Sigma}.
 }}
 
 \item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}.}
+
+\item{classification}{The allocation variable of the estimated latent classes.}
 }
 \value{
 An object of class \code{RprobitB_model}, i.e. a list with the arguments of

@@ -97,12 +97,12 @@ If \code{standardize = "all"}, all covariates get standardized.}
 \code{data} is empirical.}
 
 \item{distr}{A named list of number generation functions from which the covariates are
-drawn. Each element of \code{distr} must be of the form
-\code{"cov" = list("name" = "<name of the number generation function>", ...)},
+drawn. Covariates for which no distribution is specified are drawn from a
+standard normal distribution.
+Each element of \code{distr} must be of the form
+\code{"cov" = list("name" = "<name of the number generation function>",...)},
 where \code{cov} is the name of the covariate and \code{...} are required
 parameters for the number generation function.
-Covariates for which no distribution is specified are drawn from a standard
-normal distribution.
 Possible number generation functions are
 \itemize{
 \item functions of the type \code{r*} from base R (e.g. \code{rnorm}) where

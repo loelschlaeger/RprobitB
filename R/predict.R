@@ -14,7 +14,7 @@
 #' value
 
 predict = function(x, aggregate = TRUE) {
-  choice_probs = as.data.frame(choice_probabilities(x))
+  choice_probs = as.data.frame(choice_probs(x))
   predictions = cbind(
     choice_probs, true = x$data$choice_data$choice,
     predicted = apply(choice_probs[x$data$alternatives], 1, which.max))

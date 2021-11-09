@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-sticker/
+make_sticker.R
 README.html
 LICENSE
 ^\.github$

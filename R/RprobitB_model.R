@@ -6,6 +6,8 @@
 #' An object of class \code{RprobitB_normalization}.
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
+#' @param classification
+#' The allocation variable of the estimated latent classes.
 #' @return
 #' An object of class \code{RprobitB_model}, i.e. a list with the arguments of
 #' this function as elements.

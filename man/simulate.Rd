@@ -50,12 +50,12 @@ To have random effects for the alternative specific constants, include
 \item{alternatives}{A character vector with the names of the choice alternatives.}
 
 \item{distr}{A named list of number generation functions from which the covariates are
-drawn. Each element of \code{distr} must be of the form
-\code{"cov" = list("name" = "<name of the number generation function>", ...)},
+drawn. Covariates for which no distribution is specified are drawn from a
+standard normal distribution.
+Each element of \code{distr} must be of the form
+\code{"cov" = list("name" = "<name of the number generation function>",...)},
 where \code{cov} is the name of the covariate and \code{...} are required
 parameters for the number generation function.
-Covariates for which no distribution is specified are drawn from a standard
-normal distribution.
 Possible number generation functions are
 \itemize{
 \item functions of the type \code{r*} from base R (e.g. \code{rnorm}) where
@@ -81,32 +81,11 @@ An object of class \code{RprobitB_data}.
 This function simulates choice data for the RprobitB package.
 }
 \details{
-For more details see the vignette "Data management"
+See the vignette "Data management" for more details:
 \code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{
-### simulate data
-form = choice ~ cost | income | travel_time
-re = "cost"
-N = 100
-T = 10
-J = 3
-alternatives = c("car", "bus", "train")
-data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, seed = 1)
-
-### specify distributions for the covariates
-distr = list("cost" = list("name" = "rnorm", sd = 3),
-             "income" = list("name" = "sample", x = (1:10)*1e3, replace = T),
-             "travel_time_car" = list("name" = "rlnorm", meanlog = 1),
-             "travel_time_bus" = list("name" = "rlnorm", meanlog = 2))
-data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, distr = distr, seed = 1)
-
-### standardize covariates
-standardize = c("income", "travel_time_car", "travel_time_bus",
-                "travel_time_train")
-data = simulate(form = form, N = N, T = T, J = J, re = re,
-                alternatives = alternatives, distr = distr,
-                standardize = standardize, seed = 1)
+data = simulate(form = choice ~ cost | income + 0 | time,
+                N = 100, T = 10, J = 3, re = "cost",
+                alternatives = c("car", "bus", "scooter"))
 }

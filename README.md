@@ -1,46 +1,44 @@
 # RprobitB <img src="man/figures/logo.png" align="right" height=136 />
+
+<!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 [![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
+<!-- badges: end -->
 
-**RprobitB** is an R package that can be used to fit (latent class) (mixed) (multinomial) probit models to simulated or empirical data. 
+The goal of RprobitB is to fit (latent class) (mixed) (multinomial) probit models to simulated or empirical choice data via Bayesian estimation.
 
-Do you found a bug or request a feature? Please [tell us](https://github.com/loelschlaeger/RprobitB/issues)!
+## Installation
 
-## Using RprobitB
+You can install the released version of RprobitB from [CRAN](https://CRAN.R-project.org) with:
 
-To use RprobitB, follow these steps:
+``` r
+install.packages("RprobitB")
+```
 
-1. Run `install.packages("RprobitB")` in your R console to install the latest version of **RprobitB**.
-2. Specify the model, see the vignette **Introduction to RprobitB** for details.
-3. Run `RprobitB::fit_mnp(<list of model specifications>)`.
-4. You get on-screen information and model results in an output folder, see the package vignette for details.
+## Documentation
+
+The package is documented in several vignettes:
+
+```r
+browseVignettes("RprobitB")
+```
 
 ## Example
 
-The code below fits a mixed multinomial probit model with
+This is a basic example which shows how to fit a mixed multinomial probit model:
 
-- `P_f = 1` fixed  
-- and `P_r = 2` random coefficients
-
-to simulated data with
-
-- `N = 100` decision makers,
-- variable choice occasions between `T = 10` and `T = 20`,
-- `J = 3` choice alternatives,
-- and `C = 2` true latent classes.
-
-The number of latent classes is updated, because `do_lcus = TRUE` is set. The Gibbs sampler draws `R = 20000` samples. By default, the model is named `id = "test"` and results are saved in `rdir = "tempdir()"` (the path of the per-session temporary directory). 
-
-
-```r
-set.seed(1)
-
-### model specification
-model = list("N" = 100, "T" = sample(10:20,100,replace=TRUE), "J" = 3, "P_f" = 1, "P_r" = 2, "C" = 2)
-lcus  = list("do_lcus" = TRUE)
-mcmc  = list("R" = 20000)
-
-### start estimation (about 3 minutes computation time)
-RprobitB::fit_mnp("model" = model, "lcus" = lcus, "mcmc" = mcmc)
+``` r
+library(RprobitB)
+data("Train", package = "mlogit")
+data = prepare(form = choice ~ price | 0 | time + comfort + change,
+               choice_data = Train,
+               re = c("price","time"),
+               standardize = "all")
+model = mcmc(data)
+summary(model)
+plot(model)
+choice_probs(model)
+predict(model)
 ```
+

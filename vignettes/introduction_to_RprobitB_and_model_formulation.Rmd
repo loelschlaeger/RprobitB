@@ -54,12 +54,6 @@ Why the notation **(latent class) (mixed) (multinomial) probit model**? Because 
 
 3. [How to fit a model?](model_fitting.html)
 
-4. [How to check and select a model?](model_checking_and_model_selection.html)
-
-5. [How to interprete the model results?](model_results.html)
-
-6. [How to make choice predictions?](prediction.html)
-
 ## The model 
 
 Assume that we observe the choices of $N$ decision makers which decide between $J$ alternatives at each of $T$ choice occasions.[^2] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P_f+P_r$ choice attributes that we use to explain the choices. The first $P_f$ attributes are connected to fixed coefficients, the other $P_r$ attributes to random coefficients following a joint distribution mixed across decision makers. 
