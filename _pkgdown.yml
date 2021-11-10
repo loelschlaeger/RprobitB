@@ -27,21 +27,36 @@ navbar:
     href: https://github.com/loelschlaeger/RprobitB
 
 reference:
-- title: Data
+- title: Data preparation
   desc: Use these functions to prepare or simulate choice data.
 - contents:
   - prepare
   - simulate
   - summary.RprobitB_data
-- title: Model
-  desc: Use these function to estimate a choice model.
+- title: Model estimate
+  desc: Use these function to estimate a probit model.
 - contents:
-  - fit
+  - mcmc
   - transform
-- title: Evaluation
+- title: Model evaluation
   desc: Use these functions to evaluate your model.
 - contents:
   - summary.RprobitB_model
+  - plot.RprobitB_model
   - compare
   - predict
-  - plot.RprobitB_model
+  - choice_probs
+  - classify
+- title: S3 classes
+  desc: These functions construct the S3 classes of RprobitB.
+- contents:
+  - has_keyword("s3")
+- title: Internal functions
+  desc: These functions are not user-level.
+- contents:
+  - has_keyword("internal")
+- title: Helper functions
+  desc: These functions may be useful beyond RprobitB.
+- contents:
+  - has_keyword("helper")
+

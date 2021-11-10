@@ -21,6 +21,8 @@
 #'   samples[t,c] = sample(1:2, 1, prob = Gamma[samples[t-1,c],])
 #' R_hat(samples)
 #' @export
+#' @keywords
+#' helper
 
 R_hat = function(samples, parts = 2){
 

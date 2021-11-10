@@ -12,6 +12,8 @@
 #' A covariance matrix of dimension \code{J} x \code{J}. If this covariance
 #' matrix gets differenced with respect to alternative \code{i}, the results is
 #' again \code{Sigma}.
+#' @keywords
+#' helper
 
 undiff_Sigma = function(Sigma, i){
 

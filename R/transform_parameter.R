@@ -7,6 +7,8 @@
 #' An object of class \code{RprobitB_normalization}.
 #' @return
 #' An object of class \code{RprobitB_parameter}.
+#' @keywords
+#' internal
 
 transform_parameter = function(parameter, normalization) {
 

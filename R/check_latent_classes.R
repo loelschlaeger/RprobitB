@@ -30,6 +30,8 @@
 #' @return
 #' An object of class \code{RprobitB_latent_classes}.
 #' The checked input \code{latent_classes}
+#' @keywords
+#' internal
 
 check_latent_classes = function(latent_classes){
 

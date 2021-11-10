@@ -8,6 +8,8 @@
 #' A character vector of coefficient names.
 #' @return
 #' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
 
 plot_effects = function(x, coeff_names){
 

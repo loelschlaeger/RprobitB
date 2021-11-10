@@ -18,6 +18,8 @@
 #' }
 #' @return
 #' The checked input \code{distr}.
+#' @keywords
+#' internal
 
 check_distr = function(distr) {
 

@@ -6,6 +6,9 @@
 #' A matrix.
 #' @return
 #' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
+#' @export
+#' @keywords
+#' helper
 
 is_covariance_matrix = function(x){
   is.matrix(x) &&

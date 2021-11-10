@@ -12,6 +12,9 @@
 #' The alternative number to which respect utility differences are computed.
 #' @return
 #' A matrix of dimension \code{J-1} x \code{J}.
+#' @export
+#' @keywords
+#' helper
 
 delta = function(J, i){
   stopifnot(is.numeric(J), J%%1 == 0, J>=2)

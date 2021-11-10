@@ -23,6 +23,8 @@
 #' Either \code{NULL} or the name of the corresponding covariate.
 #' @return
 #' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
 
 plot_mixture_marginal = function(mean_est, mean_true = NULL, weight_est,
                                  weight_true = NULL, sd_est, sd_true = NULL,

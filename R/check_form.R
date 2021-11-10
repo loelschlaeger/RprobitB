@@ -36,6 +36,8 @@
 #'   \item \code{ASC}:
 #'   A boolean, determining whether the model has ASCs.
 #' }
+#' @keywords
+#' internal
 
 check_form = function(form, re = NULL) {
 

@@ -19,6 +19,8 @@
 #' An object of class \code{RprobitB_gibbs_samples_statistics}, which is a list
 #' of statistics from \code{gibbs_samples} obtained by applying the elements of
 #' \code{FUN}.
+#' @keywords
+#' s3
 
 RprobitB_gibbs_samples_statistics = function(gibbs_samples, FUN) {
 

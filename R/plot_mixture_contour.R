@@ -16,6 +16,8 @@
 #' Either \code{NULL} or a vector of two covariate names.
 #' @return
 #' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
 
 plot_mixture_contour = function(mean_est, weight_est, cov_est, beta_true = NULL,
                                 cov_names = NULL){

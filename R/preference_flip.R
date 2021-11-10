@@ -7,6 +7,8 @@
 #' An object of class \code{RprobitB_model}, the model after the scale change.
 #' @return
 #' No return value, called for side-effects.
+#' @keywords
+#' internal
 
 preference_flip = function(model_old, model_new) {
   stopifnot(class(model_old) == "RprobitB_model")

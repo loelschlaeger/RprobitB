@@ -8,6 +8,8 @@
 #' \code{gibbs_samples}, containing labels for the Gibbs samples.
 #' @return
 #' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
 
 plot_trace = function(gibbs_samples, par_labels){
 

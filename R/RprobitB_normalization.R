@@ -33,6 +33,8 @@
 #' @return
 #' An object of class \code{RprobitB_normalization}, which is a list of the
 #' elements \code{level} and \code{scale}.
+#' @keywords
+#' s3
 
 RprobitB_normalization = function(J, P_f, level = J,
                                   scale = list("parameter" = "s", "index" = 1,

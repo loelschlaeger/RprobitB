@@ -6,6 +6,8 @@
 #' An object of class \code{RprobitB_normalization}.
 #' @return
 #' A list of sufficient statistics.
+#' @keywords
+#' internal
 
 compute_sufficient_statistics = function(data, normalization){
 

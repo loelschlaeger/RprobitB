@@ -10,6 +10,8 @@
 #' An object of class \code{RprobitB_parameter}.
 #' @return
 #' A probability vector of length \code{J}.
+#' @keywords
+#' internal
 
 compute_choice_probabilities = function(X, parameter) {
 

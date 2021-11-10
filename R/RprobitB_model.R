@@ -11,6 +11,8 @@
 #' @return
 #' An object of class \code{RprobitB_model}, i.e. a list with the arguments of
 #' this function as elements.
+#' @keywords
+#' s3
 
 RprobitB_model = function(data, normalization, R, B, Q, latent_classes, prior,
                           gibbs_samples, classification) {

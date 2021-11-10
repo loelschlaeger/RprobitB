@@ -24,6 +24,8 @@
 #'   A list of normalized, burned and thinned samples based on \code{normalization},
 #'   \code{B} and \code{Q}
 #' }
+#' @keywords
+#' internal
 
 transform_gibbs_samples = function(gibbs_samples, R, B, Q, normalization) {
 

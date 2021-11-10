@@ -7,6 +7,9 @@
 #' A vector of the form \code{c(nr,nc)}. If \code{par(mfrow = c(nr,nc))},
 #' subsequent figures will be drawn in an \code{nr} x \code{nc} array on the
 #' current device by rows.
+#' @export
+#' @keywords
+#' helper
 
 set_mfrow = function(n){
   if(n==1)

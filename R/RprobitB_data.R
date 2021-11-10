@@ -44,6 +44,8 @@
 #' @return
 #' An object of class \code{RprobitB_data} with the arguments of this function
 #' as elements.
+#' @keywords
+#' s3
 
 RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                          form, re, ASC, linear_coeffs, standardize, simulated,

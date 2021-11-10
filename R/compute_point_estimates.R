@@ -11,6 +11,8 @@
 #' values.
 #' @return
 #' An object of class \code{\link{RprobitB_parameter}}.
+#' @keywords
+#' internal
 
 compute_point_estimates = function(x, FUN = mean) {
 

@@ -45,6 +45,8 @@
 #' An object of class \code{RprobitB_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
+#' @keywords
+#' s3
 
 RprobitB_parameter = function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
                               b = NULL, Omega = NULL, Sigma = NULL,

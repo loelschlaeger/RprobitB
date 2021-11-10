@@ -6,6 +6,8 @@
 #' The number (greater or equal 1) of latent classes.
 #' @return
 #' A list of initial values for the Gibbs sampler.
+#' @keywords
+#' internal
 
 set_initial_gibbs_values = function(N, T, J, P_f, P_r, C){
 
