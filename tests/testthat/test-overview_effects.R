@@ -4,3 +4,11 @@ test_that("P", {
   out = overview_effects(form = form, alternatives = alternatives)
   expect_snapshot(out)
 })
+
+test_that("MNP", {
+  form = choice ~ cost | income | time
+  alternatives = c("train","bus","car")
+  out = overview_effects(form = form, alternatives = alternatives)
+  expect_snapshot(out)
+})
+
