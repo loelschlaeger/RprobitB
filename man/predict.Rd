@@ -4,22 +4,16 @@
 \alias{predict}
 \title{Predict choices.}
 \usage{
-predict(x, aggregate = TRUE)
+predict(x, overview = TRUE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_model}.}
 
-\item{aggregate}{If \code{aggregate = TRUE}, the function returns the actual and predicted
-choices in a frequency table.}
+\item{overview}{If \code{TRUE}, aggregate the actual and predicted choices in a table.}
 }
 \value{
-value
+Either a table if \code{overview = TRUE} or a data frame otherwise.
 }
 \description{
-This function predicts the choices of decision makers based on a fitted
-\code{RprobitB_model} and choice characteristics.
-}
-\details{
-For more details see the vignette "Prediction":
-\code{vignette("prediction", package = "RprobitB")}.
+This function predicts the choices of decision makers.
 }

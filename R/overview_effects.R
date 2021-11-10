@@ -8,7 +8,7 @@
 #' they are connected to random effects.
 #' @export
 
-overview_effects = function(form, re, alternatives) {
+overview_effects = function(form, re = NULL, alternatives) {
 
   ### sort and count 'alternatives'
   alternatives = sort(alternatives)

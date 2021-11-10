@@ -1,26 +1,24 @@
 #' Predict choices.
 #' @description
-#' This function predicts the choices of decision makers based on a fitted
-#' \code{RprobitB_model} and choice characteristics.
-#' @details
-#' For more details see the vignette "Prediction":
-#' \code{vignette("prediction", package = "RprobitB")}.
+#' This function predicts the choices of decision makers.
 #' @param x
 #' An object of class \code{RprobitB_model}.
-#' @param aggregate
-#' If \code{aggregate = TRUE}, the function returns the actual and predicted
-#' choices in a frequency table.
+#' @param overview
+#' If \code{TRUE}, aggregate the actual and predicted choices in a table.
 #' @return
-#' value
+#' Either a table if \code{overview = TRUE} or a data frame otherwise.
+#' @export
 
-predict = function(x, aggregate = TRUE) {
+predict = function(x, overview = TRUE) {
   choice_probs = as.data.frame(choice_probs(x))
-  predictions = cbind(
-    choice_probs, true = x$data$choice_data$choice,
-    predicted = apply(choice_probs[x$data$alternatives], 1, which.max))
-  if(aggregate){
-    table(predictions$true, predictions$predicted, dnn = c("true","predicted"))
+  true_choices = x$data$choice_data$choice
+  true_choices = factor(true_choices, labels = x$data$alternatives)
+  prediction = apply(choice_probs[x$data$alternatives], 1, which.max)
+  prediction = factor(prediction, labels = x$data$alternatives)
+  if(overview){
+    table(true_choices, prediction, dnn = c("true","predicted"))
   } else {
-    return(predictions)
+    cbind(choice_probs, "true" = true_choices, "predicted" = prediction,
+          "correct" = (true_choices == prediction))
   }
 }

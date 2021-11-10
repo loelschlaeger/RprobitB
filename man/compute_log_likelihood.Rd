@@ -9,8 +9,7 @@ compute_log_likelihood(object, at_true = FALSE)
 \arguments{
 \item{object}{An object of class \code{RprobitB_model}.}
 
-\item{at_true}{If \code{TRUE}, choice probabilities are computed for the true parameter
-values.}
+\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameters.}
 }
 \value{
 The log-likelihood value.

@@ -3,7 +3,7 @@
 \name{transform}
 \alias{transform}
 \title{Change the length of the burn-in period, the thinning factor and the scale
-of a fitted \code{RprobitB_model}.}
+after Gibbs sampling.}
 \usage{
 transform(x, B = NULL, Q = NULL, scale = NULL, check_preference_flip = TRUE)
 }
@@ -35,30 +35,14 @@ The value for the fixed parameter.
 An object of class \code{RprobitB_model}.
 }
 \description{
-Given a fitted \code{RprobitB_model}, this function can:
+Given an object of class \code{RprobitB_model}, this function can:
 \itemize{
-\item change the length \code{B} of the burn-in period and the thinning
-factor \code{Q} of the Gibbs sampler,
+\item change the length \code{B} of the burn-in period,
+\item change the the thinning factor \code{Q} of the Gibbs samples,
 \item change the model \code{scale}.
 }
 }
 \details{
-For more details see the vignette "Model fitting":
+See the vignette "Model fitting" for more details:
 \code{vignette("model_fitting", package = "RprobitB")}.
-}
-\examples{
-\dontrun{
-### fit a model to simulated data
-data = simulate(form = choice ~ var | 1, N = 100, T = 10, J = 2,
-                Sigma = 2, alpha = c(0.5,2))
-scale = list("parameter" = "s", "index" = 1, "value" = 1)
-m1 = mcmc(data = data, R = 1e4, B = 1, Q = 1, scale = scale)
-
-### change 'B' and 'Q'
-m2 = transform(m1, B = 5e3, Q = 10)
-
-### change 'scale'
-scale_new = list("parameter" = "a", "index" = 1, "value" = 1)
-m3 = transform(m2, scale = scale_new)
-}
 }

@@ -1,14 +1,14 @@
 #' Plot method for \code{RprobitB_model}.
 #' @description
-#' This function is the plot method for an object of class \code{RprobitB_model}.
+#' This function is the plot method for an object of class
+#' \code{RprobitB_model}.
 #' @param x
 #' An object of class \code{\link{RprobitB_model}}.
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
-#'   \item \code{"effects"} (the default) for visualizing the effects,
+#'   \item \code{"effects"} (the default) for visualizing the linear effects,
 #'   \item \code{"mixture"} for visualizing the mixture distributions,
-#'   \item \code{"estimates"} for visualizing the parameter estimates,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples.
 #' }

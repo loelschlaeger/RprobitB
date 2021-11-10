@@ -9,19 +9,11 @@ choice_probs(object, at_true = FALSE)
 \arguments{
 \item{object}{An object of class \code{RprobitB_model}.}
 
-\item{at_true}{If \code{TRUE}, choice probabilities are computed for the true parameter
-values.}
+\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameters.}
 }
 \value{
-A data frame, one row per choice situation and one column per alternative.
+A data frame, choice situations in rows and alternatives in columns.
 }
 \description{
 This function computes the choice probabilities of an \code{RprobitB_model}.
-}
-\examples{
-\dontrun{
-data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-model = mcmc(data)
-choice_probs(model)
-}
 }

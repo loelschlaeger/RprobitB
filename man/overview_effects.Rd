@@ -4,7 +4,7 @@
 \alias{overview_effects}
 \title{Overview of effects.}
 \usage{
-overview_effects(form, re, alternatives)
+overview_effects(form, re = NULL, alternatives)
 }
 \arguments{
 \item{form}{A formula object that is used to specify the probit model.

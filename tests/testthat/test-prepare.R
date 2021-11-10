@@ -1,15 +1,11 @@
-test_that("empirical choice data preparation works", {
-  form = choice ~ price | 0 | time + comfort + change
+test_that("P", {
   data("Train", package = "mlogit")
-  choice_data = Train
-  alternatives = NULL
-  re = c("price","time")
-  id = "id"
-  standardize = "all"
-  out = prepare(form = form, choice_data = choice_data,
-                alternatives = alternatives, re = re, id = id,
-                standardize = standardize)
-  expect_s3_class(out, "RprobitB_data")
-  expect_snapshot(out$data)
-  expect_snapshot(summary(out))
+  data = prepare(form = choice ~ price | 0 | time + comfort + change,
+                 choice_data = Train)
+  expect_snapshot(data$data)
+  expect_snapshot(data$choice_data)
+  expect_snapshot(data$true_parameter)
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
 })
+

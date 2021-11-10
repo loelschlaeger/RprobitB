@@ -7,7 +7,6 @@ test_that("P", {
                   seed = 1,
                   alpha = 1:5, Sigma = 1)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(unclass(model))
-  expect_snapshot(print(model))
-  expect_snapshot(summary(model))
+  expect_snapshot(choice_probs(model, at_true = TRUE))
+  expect_snapshot(choice_probs(model, at_true = FALSE))
 })

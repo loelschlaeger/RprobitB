@@ -4,10 +4,10 @@
 #' @details
 #' Any choice model has to be normalized with respect to level and scale.
 #' \itemize{
-#'   \item Level normalization: The package \code{RprobitB} takes utility
-#'         differences with respect to the last alternative \code{J}.
-#'   \item Scale normalization: Some model parameter has to be fixed. Per
-#'         default, the first error-term variance is fixed to \code{1}, i.e.
+#'   \item For level normalization, we takes utility differences with respect to
+#'         one alternative.
+#'   \item For scale normalization, we fix a model parameter. Per default, the
+#'         first error-term variance is fixed to \code{1}, i.e.
 #'         \code{scale = list("parameter" = "s", "index" = 1, "value" = 1)}.
 #'         Alternatively, any error-term variance or any linear coefficient can
 #'         be fixed.

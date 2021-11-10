@@ -4,16 +4,9 @@
 #' @param object
 #' An object of class \code{RprobitB_model}.
 #' @param at_true
-#' If \code{TRUE}, choice probabilities are computed for the true parameter
-#' values.
+#' If \code{TRUE}, choice probabilities are computed at the true parameters.
 #' @return
-#' A data frame, one row per choice situation and one column per alternative.
-#' @examples
-#' \dontrun{
-#' data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
-#' model = mcmc(data)
-#' choice_probs(model)
-#' }
+#' A data frame, choice situations in rows and alternatives in columns.
 #' @export
 
 choice_probs = function(object, at_true = FALSE) {
@@ -28,6 +21,8 @@ choice_probs = function(object, at_true = FALSE) {
       X = object$data$data[[n]]$X[[t]], parameter = parameter)
     probabilities = rbind(probabilities, c(n,t,P_nt))
   }
-  colnames(probabilities) = c("N","T",object$data$alternatives)
+  probabilities = as.data.frame(probabilities)
+  probabilities = cbind(object$data$choice_data$id, probabilities)
+  colnames(probabilities) = c("id", "N","T",object$data$alternatives)
   return(probabilities)
 }
