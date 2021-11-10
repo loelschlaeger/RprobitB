@@ -49,6 +49,9 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     if(!is.character(standardize))
       stop("'standardize' must be a character (vector).")
 
+  ### sort alternatives
+  alternatives = sort(alternatives)
+
   ### draw covariates
   if(!is.null(seed))
     set.seed(seed)
@@ -64,10 +67,10 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
       cov = matrix(rnorm(n = sum(T)*J), nrow = sum(T), ncol = J)
     }
     colnames(cov) = paste(var,alternatives,sep="_")
-    for(alternative in alternatives){
-      if(paste(var,alternative,sep="_") %in% names(distr)){
-        distr_i = distr[[which(names(distr) == paste(var,alternative,sep="_"))]]
-        cov[,paste(var,alternative,sep="_")] =
+    for(j in alternatives){
+      if(paste(var,j,sep="_") %in% names(distr)){
+        distr_i = distr[[which(names(distr) == paste(var,j,sep="_"))]]
+        cov[,paste(var,j,sep="_")] =
           replicate(do.call(what = distr_i[["name"]],
                             args = distr_i[names(distr_i) != "name"]),
                     n = sum(T))
@@ -110,26 +113,25 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
     if(var %in% standardize)
       choice_data[,var] = scale(choice_data[,var])
   for(var in c(vars[[1]],vars[[3]])){
-      for(alternative in alternatives){
-        var_alt = paste0(var,"_",alternative)
+      for(j in alternatives){
+        var_alt = paste0(var,"_",j)
         if(var_alt %in% standardize){
           choice_data[,var_alt] = scale(choice_data[,var_alt])
         }
       }
   }
 
-  ### compute number of linear coefficients
-  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
-                                            re = re)
-  P_f = P$P_f
-  P_r = P$P_r
+  ### determine number and names of linear coefficients
+  linear_coeffs = overview_effects(form, re, alternatives)
+  P_f = sum(linear_coeffs$re == FALSE)
+  P_r = sum(linear_coeffs$re == TRUE)
+  linear_coeffs_names = linear_coeffs$name
 
   ### check supplied and draw missing model parameters
   true_parameter = do.call(what = RprobitB_parameter,
                            args = c(list("P_f" = P_f, "P_r" = P_r,
                                          "J" = J, "N" = N, "seed" = seed),
-                                    list(...))
-                           )
+                                    list(...)))
 
   ### compute lower-triangular Choleski root of 'Sigma_full'
   L = suppressWarnings(t(chol(true_parameter$Sigma_full, pivot = TRUE)))
@@ -151,63 +153,43 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
 
       ### extract data for each choice occasion
       data_nt = data_n[t,]
+      X_nt = matrix(NA, nrow = J, ncol = 0)
+
+      ### type-1 covariates
+      for(var in vars[[1]]){
+        old_names = colnames(X_nt)
+        col = numeric(J)
+        for(j in 1:J)
+          col[j] = data_nt[,paste0(var,"_",alternatives[j])]
+        X_nt = cbind(X_nt,col)
+        colnames(X_nt) = c(old_names,var)
+      }
+
+      ### type-2 covariates
+      for(var in c(vars[[2]],if(ASC)"ASC")){
+        old_names = colnames(X_nt)
+        mat = matrix(0,J,J)[,-J,drop=FALSE]
+        for(j in 1:(J-1))
+          mat[j,j] = data_nt[,var]
+        X_nt = cbind(X_nt,mat)
+        colnames(X_nt) = c(old_names,paste0(var,"_",alternatives[1:(J-1)]))
+      }
+
+      ### type-3 covariates
+      for(var in vars[[3]]){
+        old_names = colnames(X_nt)
+        mat = matrix(0,J,J)
+        for(j in 1:J)
+          mat[j,j] = data_nt[,paste0(var,"_",alternatives[j])]
+        X_nt = cbind(X_nt,mat)
+        colnames(X_nt) = c(old_names,paste0(var,"_",alternatives))
+      }
 
       ### sort covariates
-      {
-        X_nt = matrix(NA, nrow = J, ncol = 0)
+      X_nt = X_nt[,linear_coeffs_names, drop = FALSE]
 
-        ### type-1 covariates
-        for(var in vars[[1]]){
-          old_names = colnames(X_nt)
-          col = numeric(J)
-          for(j in 1:J)
-            col[j] = data_nt[,paste0(var,"_",alternatives[j])]
-          ### put covariates with random effects at the end
-          if(var %in% re){
-            X_nt = cbind(X_nt,col)
-            colnames(X_nt) = c(old_names,var)
-          } else {
-            X_nt = cbind(col,X_nt)
-            colnames(X_nt) = c(var,old_names)
-          }
-        }
-
-        ### type-2 covariates
-        for(var in c(vars[[2]],if(ASC)"ASC")){
-          old_names = colnames(X_nt)
-          mat = matrix(0,J,J)[,-J,drop=FALSE]
-          for(alternative in 1:(J-1))
-            mat[alternative,alternative] = data_nt[,var]
-          ### put covariates with random effects at the end
-          if(var %in% re){
-            X_nt = cbind(X_nt,mat)
-            colnames(X_nt) = c(old_names,paste0(var,"_",alternatives[1:(J-1)]))
-          } else {
-            X_nt = cbind(mat,X_nt)
-            colnames(X_nt) = c(paste0(var,"_",alternatives[1:(J-1)]),old_names)
-          }
-        }
-
-        ### type-3 covariates
-        for(var in vars[[3]]){
-          old_names = colnames(X_nt)
-          mat = matrix(0,J,J)
-          for(alternative in 1:J)
-            mat[alternative,alternative] =
-            data_nt[,paste0(var,"_",alternatives[alternative])]
-          ### put covariates with random effects at the end
-          if(var %in% re){
-            X_nt = cbind(X_nt,mat)
-            colnames(X_nt) = c(old_names,paste0(var,"_",alternatives))
-          } else {
-            X_nt = cbind(mat,X_nt)
-            colnames(X_nt) = c(paste0(var,"_",alternatives),old_names)
-          }
-        }
-
-        ### save in list
-        data[[n]][["X"]][[t]] = X_nt
-      }
+      ### save in list
+      data[[n]][["X"]][[t]] = X_nt
 
       ### build coefficient vector
       if(P_f>0 & P_r>0)
@@ -248,11 +230,10 @@ simulate = function(form, N, T, J, re = NULL, alternatives = NULL,
                       alternatives   = alternatives,
                       form           = form,
                       re             = re,
-                      vars           = vars,
                       ASC            = ASC,
+                      linear_coeffs  = linear_coeffs,
                       standardize    = standardize,
                       simulated      = TRUE,
-                      distr          = distr,
                       true_parameter = true_parameter)
 
   ### return 'RprobitB_data'-object

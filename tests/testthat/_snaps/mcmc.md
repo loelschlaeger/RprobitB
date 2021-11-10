@@ -8063,13 +8063,15 @@
       - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       Legend of alternatives:
-      - 1: A 
-      - 2: B 
+        name
+      1    A
+      2    B
       
-      Covariates with fixed coefficients (alpha):
-      - 1: var 
+      Legend of linear coefficients:
+        name    re
+      1  var FALSE
       
-      Statistics of Gibbs samples:
+      Parameter statistics:
                 true    mean      sd      R^
        alpha
                                             

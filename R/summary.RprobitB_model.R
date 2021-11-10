@@ -1,4 +1,7 @@
 #' Summary method for \code{RprobitB_model}.
+#' @description
+#' This function is the summary method for an object of class
+#' \code{RprobitB_model}.
 #' @param object
 #' An object of class \code{RprobitB_model}.
 #' @inheritParams RprobitB_gibbs_samples_statistics
@@ -49,7 +52,7 @@ summary.RprobitB_model = function(object, FUN = c("mean" = mean, "sd" = sd,
              "Q" = object$Q,
              "P_f" = object$data$P_f,
              "P_r" = object$data$P_r,
-             "covs" = object$data$covs,
+             "linear_coeffs" = object$data$linear_coeffs,
              "J" = object$data$J,
              "alternatives" = object$data$alternatives,
              "normalization" = object$normalization,

@@ -27,27 +27,13 @@ print.summary.RprobitB_model = function(x, digits = 2, ...) {
 
   ### legend of alternatives
   cat("Legend of alternatives:\n")
-  for(i in seq_len(x$J))
-    cat("-",paste0(i,":"),x$alternatives[i],"\n")
+  print(data.frame("name" = x$alternatives))
   cat("\n")
 
-  ### legend of covariates with fixed coefficients
-  if(x$P_f>0){
-    cat("Covariates with fixed coefficients (alpha):\n")
-    cov_fix = x$covs[!x$covs$random,"names"]
-    for(i in seq_len(x$P_f))
-      cat("-",paste0(i,":"),cov_fix[i],"\n")
-    cat("\n")
-  }
-
-  ### legend of covariates with random coefficients
-  if(x$P_r>0){
-    cat("Random effects (b, Omega):\n")
-    cov_random = x$covs[x$covs$random,"names"]
-    for(i in seq_len(x$P_r))
-      cat("-",paste0(i,":"),cov_random[i],"\n")
-    cat("\n")
-  }
+  ### legend of linear coefficients
+  cat("Legend of linear coefficients:\n")
+  print(x$linear_coeffs)
+  cat("\n")
 
   ### legend of latent classes
   if(x$P_r>0){

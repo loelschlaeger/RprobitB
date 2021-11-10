@@ -31,7 +31,7 @@ print.RprobitB_gibbs_samples_statistics = function(
     cw = max(digits + 5, max(nchar(cols))+1)
 
     ### print header of table
-    cat("Statistics of Gibbs samples:\n")
+    cat("Parameter statistics:\n")
     header = sprintf("%6s"," ")
     if(!is.null(true))
       header = paste0(header,sprintf(paste0("%", cw+1,"s"),"true"))

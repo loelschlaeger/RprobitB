@@ -16,7 +16,7 @@
 #'         \code{alternatives}, \code{choice_data} must contain a column named
 #'         *p_j*.
 #'   \item For each covariate *q* in \code{form} that is constant across
-#'         covariates (covariate of type 2), \code{choice_data} must contain a
+#'         alternatives (covariate of type 2), \code{choice_data} must contain a
 #'         column named *q*.
 #' }
 #' @param id
@@ -84,11 +84,21 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   if(J <= 1)
     stop("At least two alternatives are required.")
 
-  ### compute number of linear coefficients
-  P = compute_number_of_linear_coefficients(vars = vars, ASC = ASC, J = J,
-                                            re = re)
-  P_f = P$P_f
-  P_r = P$P_r
+  ### check if all required covariates are present in 'choice_data'
+  for(var in vars[[2]])
+    if(!var %in% names(choice_data))
+      stop(paste0("Column '",var,"' not found in choice_data."))
+  for(var in c(vars[[1]],vars[[3]]))
+    for(j in alternatives)
+      if(!paste0(var,"_",j) %in% names(choice_data))
+        stop(paste0("Column '",paste0(var,"_",j),"' not found in
+                    'choice_data'."))
+
+  ### determine number and names of linear coefficients
+  linear_coeffs = overview_effects(form, re, alternatives)
+  P_f = sum(linear_coeffs$re == FALSE)
+  P_r = sum(linear_coeffs$re == TRUE)
+  linear_coeffs_names = linear_coeffs$name
 
   ### compute number of decision makers and choice occasions
   N = length(unique(choice_data[,"id"]))
@@ -97,14 +107,14 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   ### decode choices to numeric (sorted alphabetically)
   choice_data[[choice]] = as.character(choice_data[[choice]])
   for(i in 1:J)
-    choice_data[[choice]][choice_data[[choice]]==alternatives[i]] = i
+    choice_data[[choice]][choice_data[[choice]] == alternatives[i]] = i
   choice_data[[choice]] = as.numeric(choice_data[[choice]])
 
   ### add ASCs (for all but the last alternative)
   if(ASC)
     choice_data$ASC = 1
 
-  ### if 'standardize = all', add all covariates
+  ### if 'standardize = all', add all covariates to 'standardize'
   if(length(standardize) == 1)
     if(standardize == "all")
       standardize =
@@ -116,30 +126,20 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
   if("ASC" %in% standardize)
     standardize = standardize[-which(standardize == "ASC")]
 
-  ### check choice_data
-  for(var in vars[[2]])
-    if(!var %in% names(choice_data))
-      stop(paste0("Column '",var,"' not found in choice_data."))
-  for(var in c(vars[[1]],vars[[3]]))
-    for(alternative in alternatives)
-      if(!paste0(var,"_",alternative) %in% names(choice_data))
-        stop(paste0("Column '",paste0(var,"_",alternative),"' not found in
-                    'choice_data'."))
-
   ### standardize covariates
   for(var in vars[[2]])
     if(var %in% standardize)
       choice_data[,var] = scale(choice_data[,var])
   for(var in c(vars[[1]],vars[[3]])){
-    for(alternative in alternatives){
-      var_alt = paste0(var,"_",alternative)
+    for(j in alternatives){
+      var_alt = paste0(var,"_",j)
       if(var_alt %in% standardize){
         choice_data[,var_alt] = scale(choice_data[,var_alt])
       }
     }
   }
 
-  ### transform choice_data in list format
+  ### transform 'choice_data' in list format 'data'
   data = list()
   for(n in 1:N){
     data[[n]] = list()
@@ -154,50 +154,34 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
       for(var in vars[[1]]){
         old_names = colnames(X_nt)
         col = numeric(J)
-        for(alternative in 1:J)
-          col[alternative] = data_nt[,paste0(var,"_",alternatives[alternative])]
-        ### put covariates with random effects at the end
-        if(var %in% re){
-          X_nt = cbind(X_nt,col)
-          colnames(X_nt) = c(old_names,var)
-        } else {
-          X_nt = cbind(col,X_nt)
-          colnames(X_nt) = c(var,old_names)
-        }
+        for(j in 1:J)
+          col[j] = data_nt[,paste0(var,"_",alternatives[j])]
+        X_nt = cbind(X_nt, col)
+        colnames(X_nt) = c(old_names,var)
       }
 
       ### type-2 covariates
       for(var in c(vars[[2]],if(ASC)"ASC")){
         old_names = colnames(X_nt)
         mat = matrix(0,J,J)[,-J,drop=FALSE]
-        for(alternative in 1:(J-1))
-          mat[alternative,alternative] = data_nt[,var]
-        ### put covariates with random effects at the end
-        if(var %in% re){
-          X_nt = cbind(X_nt,mat)
-          colnames(X_nt) = c(old_names,paste0(var,"_",alternatives[1:(J-1)]))
-        } else {
-          X_nt = cbind(mat,X_nt)
-          colnames(X_nt) = c(paste0(var,"_",alternatives[1:(J-1)]),old_names)
-        }
+        for(j in 1:(J-1))
+          mat[j,j] = data_nt[,var]
+        X_nt = cbind(X_nt,mat)
+        colnames(X_nt) = c(old_names,paste0(var,"_",alternatives[1:(J-1)]))
       }
 
       ### type-3 covariates
       for(var in vars[[3]]){
         old_names = colnames(X_nt)
         mat = matrix(0,J,J)
-        for(alternative in 1:J)
-          mat[alternative,alternative] =
-          data_nt[,paste0(var,"_",alternatives[alternative])]
-        ### put covariates with random effects at the end
-        if(var %in% re){
-          X_nt = cbind(X_nt,mat)
-          colnames(X_nt) = c(old_names,paste0(var,"_",alternatives))
-        } else {
-          X_nt = cbind(mat,X_nt)
-          colnames(X_nt) = c(paste0(var,"_",alternatives),old_names)
-        }
+        for(j in 1:J)
+          mat[j,j] = data_nt[,paste0(var,"_",alternatives[j])]
+        X_nt = cbind(X_nt,mat)
+        colnames(X_nt) = c(old_names,paste0(var,"_",alternatives))
       }
+
+      ### sort covariates
+      X_nt = X_nt[,linear_coeffs_names]
 
       ### save in list
       X_n[[t]] = X_nt
@@ -218,11 +202,10 @@ prepare = function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
                       alternatives   = alternatives,
                       form           = form,
                       re             = re,
-                      vars           = vars,
                       ASC            = ASC,
+                      linear_coeffs  = linear_coeffs,
                       standardize    = standardize,
                       simulated      = FALSE,
-                      distr          = NULL,
                       true_parameter = NULL)
   return(out)
 }
