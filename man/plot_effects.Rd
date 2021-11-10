@@ -2,22 +2,20 @@
 % Please edit documentation in R/plot_effects.R
 \name{plot_effects}
 \alias{plot_effects}
-\title{Visualizing the effects.}
+\title{Visualizing the linear effects.}
 \usage{
-plot_effects(x, par_names, cov_names = NULL)
+plot_effects(x, coeff_names)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_gibbs_samples}.}
 
-\item{par_names}{...}
-
-\item{cov_names}{A character vector of covariate names.}
+\item{coeff_names}{A character vector of coefficient names.}
 }
 \value{
 No return value. Draws a plot to the current device.
 }
 \description{
-This function visualizes the effects of the covariates on the choices (i.e.
-the linear coefficients) along with an uncertainty interval of plus and minus
-one standard deviation.
+This function visualizes the linear effects of the covariates on the choices
+together with an uncertainty interval of plus / minus one standard deviation.
 }
+\keyword{internal}

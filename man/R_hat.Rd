@@ -32,3 +32,4 @@ R_hat(samples)
 \references{
 \url{https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html}
 }
+\keyword{helper}

@@ -10,7 +10,7 @@ plot_acf(gibbs_samples, par_labels)
 \item{gibbs_samples}{A matrix of Gibbs samples.}
 
 \item{par_labels}{A character vector of length equal to the number of columns of
-\code{gibbs_samples}, containing labels for the parameters.}
+\code{gibbs_samples}, containing labels for the Gibbs samples.}
 }
 \value{
 No return value. Draws a plot to the current device.
@@ -20,6 +20,4 @@ This function plots the autocorrelation of the Gibbs samples, including the
 total sample size \code{SS}, effective sample size \code{ESS} and the factor
 \code{SS/ESS}.
 }
-\references{
-\url{https://mc-stan.org/docs/2_18/reference-manual/effective-sample-size-section.html}
-}
+\keyword{internal}

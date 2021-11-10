@@ -104,3 +104,4 @@ and \code{s}, \code{b}, \code{Omega} and a vector of classifications
 \description{
 This function performs Gibbs sampling for the RprobitB package.
 }
+\keyword{internal}

@@ -41,3 +41,4 @@ A list of normalized, burned and thinned samples based on \code{normalization},
 \description{
 This function normalizes, burns and thins the Gibbs samples.
 }
+\keyword{internal}

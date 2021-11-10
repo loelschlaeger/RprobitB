@@ -41,3 +41,4 @@ This function plots the estimated mixing distributions with respect to one
 covariate and adds the true marginal mixing distribution for comparison if
 available.
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ An object of class \code{RprobitB_parameter}.
 \description{
 This function transforms parameter values based on \code{normalization}.
 }
+\keyword{internal}

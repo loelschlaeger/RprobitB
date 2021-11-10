@@ -16,3 +16,4 @@ A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
 This function checks if the input is a proper covariance matrix, i.e.
 a symmetric, numeric matrix with non-negative eigenvalues.
 }
+\keyword{helper}

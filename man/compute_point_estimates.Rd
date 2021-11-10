@@ -21,3 +21,4 @@ Per default, the \code{mean} of the Gibbs samples is used as a point estimate.
 However, any statistic that computes a single numeric value out of a vector of
 Gibbs samples can be specified for \code{FUN}.
 }
+\keyword{internal}

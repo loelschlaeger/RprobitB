@@ -22,3 +22,4 @@ again \code{Sigma}.
 This function transforms the differenced error term covariance matrix
 \code{Sigma} back to a non-differenced error term covariance matrix.
 }
+\keyword{helper}

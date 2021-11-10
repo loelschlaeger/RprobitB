@@ -8,6 +8,7 @@ importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par",
 importFrom("stats", "acf", "dnorm", "plot.ts", "quantile", "rnorm", "runif",
            "sd", "var", "fivenum", "median", "ecdf")
 importFrom("utils", "head", "tail", "data", "packageVersion")
+importFrom("grDevices", "rgb")
 
 ### export main functions
 export(choice_probs)

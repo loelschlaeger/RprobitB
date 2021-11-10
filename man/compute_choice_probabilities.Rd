@@ -20,3 +20,4 @@ A probability vector of length \code{J}.
 This function computes the probit choice probabilities for a single choice
 situation with \code{J} alternatives.
 }
+\keyword{internal}

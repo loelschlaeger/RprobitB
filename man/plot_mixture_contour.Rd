@@ -32,3 +32,4 @@ No return value. Draws a plot to the current device.
 This function plots contours of the estimated mixing distributions and adds
 the true beta values for comparison if available.
 }
+\keyword{internal}

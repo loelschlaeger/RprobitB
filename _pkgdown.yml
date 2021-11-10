@@ -50,13 +50,13 @@ reference:
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.
 - contents:
-  - has_keyword("s3")
+  - has_keywords("s3")
 - title: Internal functions
   desc: These functions are not user-level.
 - contents:
-  - has_keyword("internal")
+  - has_keywords("internal")
 - title: Helper functions
   desc: These functions may be useful beyond RprobitB.
 - contents:
-  - has_keyword("helper")
+  - has_keywords("helper")
 

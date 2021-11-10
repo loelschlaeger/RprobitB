@@ -17,3 +17,4 @@ current device by rows.
 \description{
 This function finds a balanced setting for \code{par(mfrow)}.
 }
+\keyword{helper}

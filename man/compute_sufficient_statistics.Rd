@@ -17,3 +17,4 @@ A list of sufficient statistics.
 \description{
 This function computes sufficient statistics from \code{data} for estimation.
 }
+\keyword{internal}

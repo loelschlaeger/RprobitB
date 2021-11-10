@@ -2,7 +2,7 @@
 % Please edit documentation in R/preference_flip.R
 \name{preference_flip}
 \alias{preference_flip}
-\title{Check for flip in preferences after change in scale.}
+\title{Check for flip in preferences after change in model scale.}
 \usage{
 preference_flip(model_old, model_new)
 }
@@ -15,5 +15,6 @@ preference_flip(model_old, model_new)
 No return value, called for side-effects.
 }
 \description{
-This function checks if a change in the scale flipped the preferences.
+This function checks if a change in the model scale flipped the preferences.
 }
+\keyword{internal}

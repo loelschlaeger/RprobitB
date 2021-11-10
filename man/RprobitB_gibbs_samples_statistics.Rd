@@ -29,3 +29,4 @@ of statistics from \code{gibbs_samples} obtained by applying the elements of
 \description{
 This function computes parameter statistics from Gibbs samples.
 }
+\keyword{s3}

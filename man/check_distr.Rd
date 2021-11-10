@@ -28,3 +28,4 @@ The checked input \code{distr}.
 \description{
 This function checks the input \code{distr}.
 }
+\keyword{internal}

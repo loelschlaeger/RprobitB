@@ -26,3 +26,4 @@ A list of initial values for the Gibbs sampler.
 \description{
 This function sets initial values for the Gibbs sampler.
 }
+\keyword{internal}

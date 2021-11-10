@@ -403,6 +403,8 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
 //' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
 //' (if \code{P_r>0}).
+//' @keywords
+//' internal
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (int R, int B, bool print_progress,

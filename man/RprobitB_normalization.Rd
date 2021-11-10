@@ -52,3 +52,4 @@ Alternatively, any error-term variance or any linear coefficient can
 be fixed.
 }
 }
+\keyword{s3}

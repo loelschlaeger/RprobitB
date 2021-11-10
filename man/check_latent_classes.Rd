@@ -40,3 +40,4 @@ The checked input \code{latent_classes}
 This function checks the input \code{latent_classes} and sets missing values
 to default values.
 }
+\keyword{internal}

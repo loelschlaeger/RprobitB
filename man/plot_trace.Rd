@@ -10,7 +10,7 @@ plot_trace(gibbs_samples, par_labels)
 \item{gibbs_samples}{A matrix of Gibbs samples.}
 
 \item{par_labels}{A character vector of length equal to the number of columns of
-\code{gibbs_samples}, containing labels for the parameters.}
+\code{gibbs_samples}, containing labels for the Gibbs samples.}
 }
 \value{
 No return value. Draws a plot to the current device.
@@ -18,3 +18,4 @@ No return value. Draws a plot to the current device.
 \description{
 This function plots traces of the Gibbs samples.
 }
+\keyword{internal}

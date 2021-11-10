@@ -105,3 +105,4 @@ as elements.
 \description{
 This function creates an object of class \code{RprobitB_data}.
 }
+\keyword{s3}
