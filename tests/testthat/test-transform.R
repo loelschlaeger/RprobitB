@@ -11,7 +11,7 @@ test_that("P", {
   model_new_Q = transform(model, Q = 2)
   model_new_scale = transform(model, scale = list("parameter" = "a",
                                                   "index" = 1, "value" = 1))
-  expect_snapshot(unclass(model_new_B))
-  expect_snapshot(unclass(model_new_Q))
-  expect_snapshot(unclass(model_new_scale))
+  expect_s3_class(model_new_B, "RprobitB_model")
+  expect_s3_class(model_new_Q, "RprobitB_model")
+  expect_s3_class(model_new_scale, "RprobitB_model")
 })
