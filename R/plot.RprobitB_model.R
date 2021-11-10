@@ -36,9 +36,9 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
   ### determine 'par_names' and 'coeff_names'
   par_names = c(if(x$data$P_f > 0) "alpha",
                 if(x$data$P_r > 0) c("s", "b", "Omega"), "Sigma")
-  par_names = setdiff(par_names, restrict)
+  par_names = setdiff(par_names, ignore)
   coeff_names = x$data$linear_coeffs$name
-  coeff_names = setdiff(coeff_names, restrict)
+  coeff_names = setdiff(coeff_names, ignore)
 
   ### make plot type 'effects'
   if(type == "effects"){
