@@ -19,12 +19,6 @@ navbar:
       href: articles/data_management.html
     - text: Model fitting
       href: articles/model_fitting.html
-    - text: Model results
-      href: articles/model_results.html
-    - text: Model checking and model selection
-      href: articles/model_checking_and_model_selection.html
-    - text: Prediction
-      href: articles/prediction.html
   - text: Changelog
     icon: fa-wrench
     href: news/index.html
