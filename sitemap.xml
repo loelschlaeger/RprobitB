@@ -49,9 +49,6 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_log_likelihood.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_number_of_linear_coefficients.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/compute_point_estimates.html</loc>
   </url>
   <url>
@@ -94,6 +91,9 @@
     <loc>https://loelschlaeger.github.io/RprobitB//reference/mcmc.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB//reference/overview_effects.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot.RprobitB_model.html</loc>
   </url>
   <url>
@@ -101,9 +101,6 @@
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_effects.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_estimates.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB//reference/plot_mixture_contour.html</loc>

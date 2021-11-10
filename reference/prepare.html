@@ -202,7 +202,7 @@ decision maker) and <code>choice</code> (the chosen alternatives), where
 <code>alternatives</code>, <code>choice_data</code> must contain a column named
 <em>p_j</em>.</p></li>
 <li><p>For each covariate <em>q</em> in <code>form</code> that is constant across
-covariates (covariate of type 2), <code>choice_data</code> must contain a
+alternatives (covariate of type 2), <code>choice_data</code> must contain a
 column named <em>q</em>.</p></li>
 </ul></td>
     </tr>
@@ -226,7 +226,7 @@ unique identifier for each decision maker. The default is <code>"id"</code>.</p>
       <th>standardize</th>
       <td><p>A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
-<code>covariate_alternative</code>.
+<code>&lt;covariate&gt;_&lt;alternative&gt;</code>.
 If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     </tr>
     </table>
