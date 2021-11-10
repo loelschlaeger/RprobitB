@@ -172,22 +172,14 @@
     </tr>
     <tr>
       <th>at_true</th>
-      <td><p>If <code>TRUE</code>, choice probabilities are computed for the true parameter
-values.</p></td>
+      <td><p>If <code>TRUE</code>, choice probabilities are computed at the true parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame, one row per choice situation and one column per alternative.</p>
+    <p>A data frame, choice situations in rows and alternatives in columns.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span> <span class='op'>|</span> <span class='fl'>0</span>, N <span class='op'>=</span> <span class='fl'>100</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>model</span> <span class='op'>=</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
-<span class='fu'>choice_probs</span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

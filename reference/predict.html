@@ -47,8 +47,7 @@
 
 
 <meta property="og:title" content="Predict choices. — predict" />
-<meta property="og:description" content="This function predicts the choices of decision makers based on a fitted
-RprobitB_model and choice characteristics." />
+<meta property="og:description" content="This function predicts the choices of decision makers." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -159,11 +158,10 @@ RprobitB_model and choice characteristics." />
     </div>
 
     <div class="ref-description">
-    <p>This function predicts the choices of decision makers based on a fitted
-<code>RprobitB_model</code> and choice characteristics.</p>
+    <p>This function predicts the choices of decision makers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>predict</span><span class='op'>(</span><span class='va'>x</span>, aggregate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>predict</span><span class='op'>(</span><span class='va'>x</span>, overview <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,19 +171,14 @@ RprobitB_model and choice characteristics." />
       <td><p>An object of class <code>RprobitB_model</code>.</p></td>
     </tr>
     <tr>
-      <th>aggregate</th>
-      <td><p>If <code>aggregate = TRUE</code>, the function returns the actual and predicted
-choices in a frequency table.</p></td>
+      <th>overview</th>
+      <td><p>If <code>TRUE</code>, aggregate the actual and predicted choices in a table.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>value</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>For more details see the vignette "Prediction":
-<code>vignette("prediction", package = "RprobitB")</code>.</p>
+    <p>Either a table if <code>overview = TRUE</code> or a data frame otherwise.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
