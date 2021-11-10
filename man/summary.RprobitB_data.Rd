@@ -12,5 +12,6 @@
 \item{...}{Ignored.}
 }
 \description{
-Summary method for \code{RprobitB_data}.
+This function is the summary method for an object of class
+\code{RprobitB_data}.
 }

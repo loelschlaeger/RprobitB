@@ -66,7 +66,7 @@ all required parameters (except for \code{n}) must be specified,
 
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
-\code{covariate_alternative}.
+\code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{seed}{Set a seed for the simulation.}

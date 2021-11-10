@@ -24,5 +24,6 @@ from the Gibbs samples, i.e.
 \item{...}{Ignorded.}
 }
 \description{
-Summary method for \code{RprobitB_model}.
+This function is the summary method for an object of class
+\code{RprobitB_model}.
 }

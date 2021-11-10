@@ -15,11 +15,10 @@ RprobitB_data(
   alternatives,
   form,
   re,
-  vars,
   ASC,
+  linear_coeffs,
   standardize,
   simulated,
-  distr,
   true_parameter
 )
 }
@@ -45,7 +44,7 @@ decision maker) and \code{choice} (the chosen alternatives), where
 \code{alternatives}, \code{choice_data} must contain a column named
 \emph{p_j}.
 \item For each covariate \emph{q} in \code{form} that is constant across
-covariates (covariate of type 2), \code{choice_data} must contain a
+alternatives (covariate of type 2), \code{choice_data} must contain a
 column named \emph{q}.
 }}
 
@@ -84,43 +83,24 @@ If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the alternative specific constants, include
 \code{"ASC"} in \code{re}.}
 
-\item{vars}{The element \code{vars} in the output of \link{check_form}.}
-
 \item{ASC}{A boolean, determining whether the model has ASCs.}
+
+\item{linear_coeffs}{A data frame with the coefficient names and booleans indicating whether
+they are connected to random effects.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
-\code{covariate_alternative}.
+\code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{simulated}{A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 \code{data} is empirical.}
 
-\item{distr}{A named list of number generation functions from which the covariates are
-drawn. Covariates for which no distribution is specified are drawn from a
-standard normal distribution.
-Each element of \code{distr} must be of the form
-\code{"cov" = list("name" = "<name of the number generation function>",...)},
-where \code{cov} is the name of the covariate and \code{...} are required
-parameters for the number generation function.
-Possible number generation functions are
-\itemize{
-\item functions of the type \code{r*} from base R (e.g. \code{rnorm}) where
-all required parameters (except for \code{n}) must be specified,
-\item the function \code{sample}, where all required parameters
-(except for \code{size}) must be specified.
-}}
-
 \item{true_parameter}{An object of class \code{RprobitB_parameters}.}
 }
 \value{
-An object of class \code{RprobitB_data}, which is a list of
-\itemize{
-\item the arguments of this functions as elements, and
-\item the element \code{covs}, which is a data frame of the two
-columns \code{name} (the covariate names) and \code{random} (a boolean
-determining whether the covariates are random effects).
-}
+An object of class \code{RprobitB_data} with the arguments of this function
+as elements.
 }
 \description{
 This function creates an object of class \code{RprobitB_data}.

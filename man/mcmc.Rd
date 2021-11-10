@@ -111,7 +111,7 @@ This function performs Markov chain Monte Carlo simulation for fitting a
 (latent class) (mixed) (multinomial) probit model to discrete choice data.
 }
 \details{
-For more details see the vignette "Model fitting"
+See the vignette "Model fitting" for more details:
 \code{vignette("model_fitting", package = "RprobitB")}.
 }
 \examples{

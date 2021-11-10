@@ -42,7 +42,7 @@ decision maker) and \code{choice} (the chosen alternatives), where
 \code{alternatives}, \code{choice_data} must contain a column named
 \emph{p_j}.
 \item For each covariate \emph{q} in \code{form} that is constant across
-covariates (covariate of type 2), \code{choice_data} must contain a
+alternatives (covariate of type 2), \code{choice_data} must contain a
 column named \emph{q}.
 }}
 
@@ -58,7 +58,7 @@ unique identifier for each decision maker. The default is \code{"id"}.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
-\code{covariate_alternative}.
+\code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 }
 \value{
