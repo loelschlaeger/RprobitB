@@ -208,10 +208,10 @@ elements <code>level</code> and <code>scale</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Any choice model has to be normalized with respect to level and scale.</p><ul>
-<li><p>Level normalization: The package <code>RprobitB</code> takes utility
-differences with respect to the last alternative <code>J</code>.</p></li>
-<li><p>Scale normalization: Some model parameter has to be fixed. Per
-default, the first error-term variance is fixed to <code>1</code>, i.e.
+<li><p>For level normalization, we takes utility differences with respect to
+one alternative.</p></li>
+<li><p>For scale normalization, we fix a model parameter. Per default, the
+first error-term variance is fixed to <code>1</code>, i.e.
 <code>scale = list("parameter" = "s", "index" = 1, "value" = 1)</code>.
 Alternatively, any error-term variance or any linear coefficient can
 be fixed.</p></li>

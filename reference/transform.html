@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Change the length of the burn-in period, the thinning factor and the scale
-of a fitted RprobitB_model. — transform • RprobitB</title>
+after Gibbs sampling. — transform • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -48,10 +48,10 @@ of a fitted RprobitB_model. — transform • RprobitB</title>
 
 
 <meta property="og:title" content="Change the length of the burn-in period, the thinning factor and the scale
-of a fitted RprobitB_model. — transform" />
-<meta property="og:description" content="Given a fitted RprobitB_model, this function can:
-change the length B of the burn-in period and the thinning
-factor Q of the Gibbs sampler,
+after Gibbs sampling. — transform" />
+<meta property="og:description" content="Given an object of class RprobitB_model, this function can:
+change the length B of the burn-in period,
+change the the thinning factor Q of the Gibbs samples,
 change the model scale.
 
 " />
@@ -160,15 +160,15 @@ change the model scale.
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Change the length of the burn-in period, the thinning factor and the scale
-of a fitted <code>RprobitB_model</code>.</h1>
+after Gibbs sampling.</h1>
     
     <div class="hidden name"><code>transform.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Given a fitted <code>RprobitB_model</code>, this function can:</p><ul>
-<li><p>change the length <code>B</code> of the burn-in period and the thinning
-factor <code>Q</code> of the Gibbs sampler,</p></li>
+    <p>Given an object of class <code>RprobitB_model</code>, this function can:</p><ul>
+<li><p>change the length <code>B</code> of the burn-in period,</p></li>
+<li><p>change the the thinning factor <code>Q</code> of the Gibbs samples,</p></li>
 <li><p>change the model <code>scale</code>.</p></li>
 </ul>
 
@@ -218,25 +218,9 @@ The value for the fixed parameter.</p></li>
     <p>An object of class <code>RprobitB_model</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>For more details see the vignette "Model fitting":
+    <p>See the vignette "Model fitting" for more details:
 <code><a href='../articles/model_fitting.html'>vignette("model_fitting", package = "RprobitB")</a></code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'>### fit a model to simulated data</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='simulate.html'>simulate</a></span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>var</span> <span class='op'>|</span> <span class='fl'>1</span>, N <span class='op'>=</span> <span class='fl'>100</span>, T <span class='op'>=</span> <span class='fl'>10</span>, J <span class='op'>=</span> <span class='fl'>2</span>,
-                Sigma <span class='op'>=</span> <span class='fl'>2</span>, alpha <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>scale</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"s"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>m1</span> <span class='op'>=</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, R <span class='op'>=</span> <span class='fl'>1e4</span>, B <span class='op'>=</span> <span class='fl'>1</span>, Q <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='va'>scale</span><span class='op'>)</span>
-
-<span class='co'>### change 'B' and 'Q'</span>
-<span class='va'>m2</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span><span class='va'>m1</span>, B <span class='op'>=</span> <span class='fl'>5e3</span>, Q <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-
-<span class='co'>### change 'scale'</span>
-<span class='va'>scale_new</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"parameter"</span> <span class='op'>=</span> <span class='st'>"a"</span>, <span class='st'>"index"</span> <span class='op'>=</span> <span class='fl'>1</span>, <span class='st'>"value"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>m3</span> <span class='op'>=</span> <span class='fu'>transform</span><span class='op'>(</span><span class='va'>m2</span>, scale <span class='op'>=</span> <span class='va'>scale_new</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
