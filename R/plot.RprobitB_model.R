@@ -12,26 +12,22 @@
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples.
 #' }
-#' @param restrict
-#' A character (vector) of covariate or parameter names, which can be used to
-#' restrict the visualizations.
+#' @param ignore
+#' A character (vector) of covariate or parameter names that do not get
+#' visualized.
 #' @param ...
 #' Ignored.
 #' @return
 #' No return value. Draws a plot to the current device.
 #' @export
 
-plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
+plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
 
   ### check inputs
   if(!inherits(x,"RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
   if(!(length(type) == 1 && type %in% c("effects", "mixture", "acf", "trace")))
     stop("Unknown 'type'.")
-  if(is.null(restrict))
-    restrict = c("alpha","s","b","Omega","Sigma",x$data$linear_coeffs$name)
-  if(!is.character(restrict))
-    stop("'restrict' must be a character vector.")
 
   ### reset of 'par' settings
   oldpar = par(no.readonly = TRUE)
@@ -40,9 +36,9 @@ plot.RprobitB_model = function(x, type = "effects", restrict = NULL, ...) {
   ### determine 'par_names' and 'coeff_names'
   par_names = c(if(x$data$P_f > 0) "alpha",
                 if(x$data$P_r > 0) c("s", "b", "Omega"), "Sigma")
-  par_names = intersect(par_names, restrict)
+  par_names = setdiff(par_names, restrict)
   coeff_names = x$data$linear_coeffs$name
-  coeff_names = intersect(coeff_names, restrict)
+  coeff_names = setdiff(coeff_names, restrict)
 
   ### make plot type 'effects'
   if(type == "effects"){
