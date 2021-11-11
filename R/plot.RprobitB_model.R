@@ -31,7 +31,7 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
 
   ### reset of 'par' settings
   oldpar = par(no.readonly = TRUE)
-  on.exit(par(oldpar))
+  on.exit(suppressWarnings(par(oldpar)))
 
   ### determine 'par_names' and 'coeff_names'
   par_names = c(if(x$data$P_f > 0) "alpha",

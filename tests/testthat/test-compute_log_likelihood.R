@@ -5,9 +5,10 @@ test_that("P", {
                   J = 2,
                   alternatives = c("bus","car"),
                   seed = 1,
-                  alpha = 1:5)
-  expect_snapshot(print(data))
-  expect_snapshot(summary(data))
+                  alpha = 1:5, Sigma = 1)
+  model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
+  expect_snapshot(compute_log_likelihood(object = model, at_true = FALSE))
+  expect_snapshot(compute_log_likelihood(object = model, at_true = TRUE))
 })
 
 test_that("MNP", {
@@ -18,8 +19,9 @@ test_that("MNP", {
                   alternatives = c("train","bus","car"),
                   seed = 1,
                   alpha = 1:8)
-  expect_snapshot(print(data))
-  expect_snapshot(summary(data))
+  model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
+  expect_snapshot(compute_log_likelihood(object = model, at_true = FALSE))
+  expect_snapshot(compute_log_likelihood(object = model, at_true = TRUE))
 })
 
 test_that("MMNP", {
@@ -32,6 +34,7 @@ test_that("MMNP", {
                   seed = 1,
                   alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
                   Sigma = diag(2))
-  expect_snapshot(print(data))
-  expect_snapshot(summary(data))
+  model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
+  expect_snapshot(compute_log_likelihood(object = model, at_true = FALSE))
+  expect_snapshot(compute_log_likelihood(object = model, at_true = TRUE))
 })

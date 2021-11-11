@@ -25,7 +25,7 @@ compute_choice_probabilities = function(X, parameter) {
   Omega = parameter$Omega
   Sigma_full = parameter$Sigma_full
   P_f = ifelse(any(is.na(alpha)), 0, length(alpha))
-  P_r = ifelse(any(is.na(parameter$s)),0,length(parameter$s))
+  P_r = ifelse(any(is.na(parameter$s)), 0, nrow(parameter$b))
   J = nrow(Sigma_full)
   C = ifelse(is.na(parameter$C),1,parameter$C)
   if(P_f>0 || P_r>0){

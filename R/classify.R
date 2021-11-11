@@ -11,7 +11,7 @@ classify = function(x) {
   if(is.null(x$classification)){
     warning("No classification available.")
   } else {
-    data.frame(id = x$data$choice_data$id,
+    data.frame(id = unique(x$data$choice_data$id),
                class = x$classification)
   }
 }

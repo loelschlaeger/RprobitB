@@ -23,3 +23,18 @@ test_that("MNP", {
   expect_snapshot(choice_probs(model, at_true = TRUE))
   expect_snapshot(choice_probs(model, at_true = FALSE))
 })
+
+test_that("MMNP", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 10,
+                  T = 1:10,
+                  J = 3,
+                  re = c("cost","ASC"),
+                  alternatives = c("train","bus","car"),
+                  seed = 1,
+                  alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
+                  Sigma = diag(2))
+  model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
+  expect_snapshot(choice_probs(model, at_true = TRUE))
+  expect_snapshot(choice_probs(model, at_true = FALSE))
+})
