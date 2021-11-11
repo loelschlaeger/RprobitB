@@ -93,13 +93,4 @@ plot_mixture_marginal = function(mean_est, mean_true = NULL, weight_est,
     }
   }
 
-  ### add legend
-  if(true_avail){
-    legend("topright", cex = 0.75,
-           legend = c("estimated mixture", "true mixture"),
-           lty    = c(1,2),
-           lwd    = 2,
-           col    = "black")
-  }
-
 }

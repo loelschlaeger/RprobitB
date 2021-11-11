@@ -17,15 +17,9 @@ plot_trace = function(gibbs_samples, par_labels){
   col = viridis::magma(n = ncol(gibbs_samples), begin=0.1, end=0.9, alpha=0.6)
 
   ### plot trace
-  plot.ts(gibbs_samples,
-          plot.type = "single",
+  plot.ts(gibbs_samples, plot.type = "single",
           ylim = c(min(gibbs_samples), max(gibbs_samples)),
-          col = col,
-          xlab = "",
-          ylab = "",
-          xaxt = "n",
-          las = 1,
-          main = "")
+          col = col, xlab = "", ylab = "", xaxt = "n", main = "")
 
   ### add info
   axis(side=1, at = c(1, nrow(gibbs_samples)), labels = c("B+1","R"))

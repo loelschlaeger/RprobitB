@@ -40,3 +40,17 @@
     Output
       [1] -134.0427
 
+# LCMMNP
+
+    Code
+      compute_log_likelihood(object = model, at_true = FALSE)
+    Output
+      [1] -527.2339
+
+---
+
+    Code
+      compute_log_likelihood(object = model, at_true = TRUE)
+    Output
+      [1] -598.9573
+

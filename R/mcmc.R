@@ -86,7 +86,7 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     set.seed(seed)
   gibbs_samples = gibbs_sampling(
     R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
-    P_f = data$P_f, P_r = data$P_r, latent_classes = latent_classes,
+    P_f = data$P_f, P_r = data$P_r, latent_classes = unclass(latent_classes),
     sufficient_statistics = sufficient_statistics, prior = prior, init = init)
 
   ### save classification

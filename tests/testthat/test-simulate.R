@@ -35,3 +35,16 @@ test_that("MMNP", {
   expect_snapshot(print(data))
   expect_snapshot(summary(data))
 })
+
+test_that("LCMMNP", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 10,
+                  T = 1:10,
+                  J = 3,
+                  re = c("cost","ASC"),
+                  alternatives = c("train","bus","car"),
+                  seed = 1,
+                  C = 2)
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})

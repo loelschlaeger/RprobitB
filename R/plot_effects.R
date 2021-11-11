@@ -2,7 +2,7 @@
 #' @description
 #' This function visualizes the linear effects of the covariates on the choices
 #' together with an uncertainty interval of plus / minus one standard deviation.
-#' @param x
+#' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param coeff_names
 #' A character vector of coefficient names.
@@ -11,13 +11,13 @@
 #' @keywords
 #' internal
 
-plot_effects = function(x, coeff_names){
+plot_effects = function(gibbs_samples, coeff_names){
 
   ### extract means and sds
-  means = unlist(RprobitB_gibbs_samples_statistics(x,list(mean))[c("alpha","b")])
-  sds = unlist(RprobitB_gibbs_samples_statistics(x, list(sd))[c("alpha","b")])
+  means = unlist(RprobitB_gibbs_samples_statistics(gibbs_samples,list(mean))[c("alpha","b")])
+  sds = unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(sd))[c("alpha","b")])
 
-  ### determin coefficient labels
+  ### determine coefficient labels
   labels = coeff_names
 
   ### plot means

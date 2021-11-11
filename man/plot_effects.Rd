@@ -4,10 +4,10 @@
 \alias{plot_effects}
 \title{Visualizing the linear effects.}
 \usage{
-plot_effects(x, coeff_names)
+plot_effects(gibbs_samples, coeff_names)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_gibbs_samples}.}
+\item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}.}
 
 \item{coeff_names}{A character vector of coefficient names.}
 }
