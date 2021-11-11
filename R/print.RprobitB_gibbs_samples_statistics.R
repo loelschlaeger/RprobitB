@@ -44,8 +44,13 @@ print.RprobitB_gibbs_samples_statistics = function(
     order_of_parameters = c("alpha","s","b","Omega","Sigma")
     for(par_name in intersect(order_of_parameters, names(x))){
       out = x[[par_name]]
-      if(!is.null(true))
-        out = cbind(true[[par_name]][rownames(out)],out)
+      if(!is.null(true)){
+        true_par_name = true[[par_name]][rownames(out)]
+        rownames_true = names(true_par_name)[!is.na(names(true_par_name))]
+        rownames_all = union(rownames(out), rownames_true)
+        out = cbind(true_par_name, out)
+        rownames(out) = rownames_all
+      }
       out = round(out, digits)
       colnames(out) = rep(sprintf(paste0("%",cw,"s")," "), ncol(out))
       rownames(out) = sprintf("%6s", rownames(out))

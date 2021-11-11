@@ -147,8 +147,7 @@
       7    ASC_bus  TRUE
       8    ASC_car  TRUE
       
-      Latent classes:
-      - Number: 1 
+      Latent classes: 1 
       - Update: FALSE 
       
       Parameter statistics:
@@ -226,8 +225,7 @@
       7    ASC_bus  TRUE
       8    ASC_car  TRUE
       
-      Latent classes:
-      - Number: 2 
+      Latent classes: 2 
       - Update: FALSE 
       
       Parameter statistics:
@@ -274,4 +272,107 @@
          1,1    1.00    1.00    0.00    1.00
          1,2    0.95    0.31    0.20    1.00
          2,2    1.12    0.49    0.19    1.01
+
+# ULCMMNP
+
+    Code
+      print(model)
+    Output
+      Probit model 'choice ~ cost | income | time'.
+
+---
+
+    Code
+      summary(model)
+    Output
+      Probit model 'choice ~ cost | income | time'.
+      
+      MCMC settings:
+      - R: 2000 
+      - B: 1000 
+      - Q: 1 
+      
+      Normalization:
+      - Level: Utility differences with respect to alternative 3.
+      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
+      
+      Legend of alternatives:
+         name
+      1   bus
+      2   car
+      3 train
+      
+      Legend of linear coefficients:
+              name    re
+      1 income_bus FALSE
+      2 income_car FALSE
+      3   time_bus FALSE
+      4   time_car FALSE
+      5 time_train FALSE
+      6       cost  TRUE
+      7    ASC_bus  TRUE
+      8    ASC_car  TRUE
+      
+      Latent classes: 3 
+      - Update: TRUE 
+      - Maximum number: 10 
+      - Buffer: 100 
+      - Minimum class weight: 0.1 
+      - Maximum class weight: 0.9 
+      - Mimumum class distance: 0.1 
+      
+      Parameter statistics:
+                true    mean      sd      R^
+       alpha
+                                            
+           1   -0.83   -0.69    0.16    1.04
+           2   -0.48   -0.46    0.14    1.00
+           3    0.24    0.04    0.12    1.00
+           4    1.43    1.50    0.35    1.04
+           5   -1.07   -1.04    0.22    1.09
+      
+       s
+                                            
+           1    0.68    0.63    0.10    1.06
+           2    0.32    0.29    0.09    1.00
+           3      NA    0.09    0.06    1.36
+      
+       b
+                                            
+         1.1   -1.55   -1.08    0.50    1.81
+         1.2   -1.07   -1.17    0.41    1.65
+         1.3   -1.13   -0.85    0.52    1.57
+         2.1    0.65   -0.54    0.83    1.38
+         2.2   -0.42   -0.89    0.71    1.36
+         2.3    0.95   -0.37    0.73    1.37
+         3.1      NA   -0.32    0.85    1.00
+         3.2      NA   -0.29    0.82    1.02
+         3.3      NA    0.20    0.95    1.01
+      
+       Omega
+                                            
+       1.1,1    0.70    1.02    0.56    1.08
+       1.1,2   -0.57   -0.19    0.41    1.05
+       1.1,3   -0.14    0.29    0.37    1.22
+       1.2,2    0.68    1.26    0.88    1.11
+       1.2,3    0.03    0.19    0.34    1.00
+       1.3,3    0.11    0.91    0.54    1.12
+       2.1,1    0.45    1.09    0.94    1.20
+       2.1,2   -0.09   -0.23    0.58    1.00
+       2.1,3    0.15    0.19    0.42    1.02
+       2.2,2    0.36    1.11    0.88    1.01
+       2.2,3    0.02   -0.01    0.43    1.02
+       2.3,3    0.07    1.02    0.68    1.07
+       3.1,1      NA    1.61    2.20    1.09
+       3.1,2      NA   -0.05    0.92    1.00
+       3.1,3      NA    0.13    1.43    1.04
+       3.2,2      NA    1.53    1.61    1.06
+       3.2,3      NA    0.04    1.10    1.00
+       3.3,3      NA    1.88    2.45    1.04
+      
+       Sigma
+                                            
+         1,1    1.00    1.00    0.00    1.00
+         1,2    0.14    0.46    0.29    1.04
+         2,2    0.65    1.29    0.66    1.05
 

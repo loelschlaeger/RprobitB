@@ -42,8 +42,7 @@ print.summary.RprobitB_model = function(x, digits = 2, ...) {
   }
 
   ### overview of estimates
-  print.RprobitB_gibbs_samples_statistics(
-    x = x$statistics, true = x$true_parameter, digits = digits)
+  print(x = x$statistics, true = x$true_parameter, digits = digits)
 
   ### return 'x' invisibly
   return(invisible(x))

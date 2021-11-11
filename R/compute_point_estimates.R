@@ -39,7 +39,7 @@ compute_point_estimates = function(x, FUN = mean) {
     alpha = NULL
   }
   if(P_r>0){
-    s = as.numeric(point_estimates$s)
+    s = as.numeric(point_estimates$s)[1:C]
     b = matrix(point_estimates$b, nrow = P_r, ncol = C)
     Omega = matrix(point_estimates$Omega, nrow = P_r^2, ncol = C)
   } else {

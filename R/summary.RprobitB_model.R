@@ -16,28 +16,11 @@ summary.RprobitB_model = function(object, FUN = c("mean" = mean, "sd" = sd,
   if(!inherits(object, "RprobitB_model"))
     stop("Not of class 'RprobitB_model'.")
 
-  ### determine estimated number of latent classes
-  if(object$latent_classes$update){
-    s_draws = object$gibbs_samples$gibbs_samples$s_draws
-    last_s_draw = tail(s_draws,1)
-    C_est = sum(last_s_draw != 0)
-  } else {
-    C_est = NA
-  }
-
   ### compute statistics from 'gibbs_samples'
-  if(object$latent_classes$update){
-    if(object$data$simulated){
-      C = max(object$latent_classes$Cmax, object$data$true_parameter$C)
-    } else {
-      C = object$latent_classes$Cmax
-    }
+  if(object$data$simulated){
+    C = max(object$latent_classes$C, object$data$true_parameter$C)
   } else {
-    if(object$data$simulated){
-      C = max(object$latent_classes$C, object$data$true_parameter$C)
-    } else {
-      C = object$latent_classes$C
-    }
+    C = object$latent_classes$C
   }
   statistics = RprobitB_gibbs_samples_statistics(
     gibbs_samples = filter_gibbs_samples(
@@ -59,7 +42,6 @@ summary.RprobitB_model = function(object, FUN = c("mean" = mean, "sd" = sd,
              "latent_classes" = object$latent_classes,
              "prior" = object$prior,
              "statistics" = statistics,
-             "C_est" = C_est,
              "simulated" = object$data$simulated,
              "true_parameter" = object$data$true_parameter)
   class(out) = "summary.RprobitB_model"

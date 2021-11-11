@@ -8,12 +8,11 @@
 #'   \item \code{C}:
 #'   The number (greater or equal 1) of latent classes, which is set to 1 per
 #'   default and is ignored if \code{P_r = 0}.
-#'   If \code{update = TRUE}, \code{C} equals the initial number of latent
-#'   classes and is set to 5 per default.
+#'   If \code{update = TRUE}, \code{C} equals the initial number of classes.
 #'   \item \code{update}:
-#'   A boolean, determining whether to update \code{C}. Ignored if
-#'   \code{P_r = 0}. If \code{update = FALSE}, all of the following elements are
-#'   ignored.
+#'   A boolean, determining whether to update \code{C}.
+#'   Ignored if \code{P_r = 0}.
+#'   If \code{update = FALSE}, all of the following elements are ignored.
 #'   \item \code{Cmax}:
 #'   The maximum number of latent classes.
 #'   \item \code{buffer}:
@@ -42,7 +41,8 @@ RprobitB_latent_classes = function(latent_classes = NULL){
   }
 
   ### set default number of latent classes
-  if(is.null(latent_classes[["C"]])) latent_classes[["C"]] = 1
+  if(is.null(latent_classes[["C"]]))
+    latent_classes[["C"]] = 1
 
   ### determine whether latent classes should be updated
   latent_classes$update =
@@ -54,9 +54,6 @@ RprobitB_latent_classes = function(latent_classes = NULL){
     latent_classes = list("C" = latent_classes[["C"]], "update" = FALSE)
 
   } else {
-    ### if 'latent_classes$update = TRUE', 'latent_classes$C' is initial number
-    latent_classes[["C"]] = 5
-
     ### set missing parameters to default values
     if(is.null(latent_classes[["Cmax"]])) latent_classes[["Cmax"]] = 10
     if(is.null(latent_classes[["buffer"]])) latent_classes[["buffer"]] = 100

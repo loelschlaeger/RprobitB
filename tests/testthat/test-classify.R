@@ -49,3 +49,18 @@ test_that("LCMMNP", {
                latent_classes = list("C" = 2))
   expect_snapshot(classify(model))
 })
+
+test_that("ULCMMNP", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 100,
+                  T = 5,
+                  J = 3,
+                  re = c("cost","ASC"),
+                  alternatives = c("train","bus","car"),
+                  seed = 1,
+                  C = 2)
+  model = mcmc(data, R = 2000, print_progress = FALSE, seed = 1,
+               latent_classes = list("C" = 8, "update" = TRUE, "epsmin" = 0.1,
+                                     "epsmax" = 0.9))
+  expect_snapshot(classify(model))
+})

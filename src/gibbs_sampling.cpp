@@ -319,8 +319,10 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
   if(stack(0,id_min)<epsmin){
     stack.shed_col(id_min);
     C -= 1;
-    if(print_progress) sprintf(buf, "%9d removed class         \n", rep+1);
-    Rcout <<  buf;
+    if(print_progress){
+      sprintf(buf, "%9d removed class         \n", rep+1);
+      Rcout <<  buf;
+    }
     flag = true;
   }
   //split class
@@ -341,8 +343,10 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
       stack(2+largest_var[1],id_max+1) += largest_var[0]/2;
       stack(span(P+2,1+P+P*P),span(id_max,id_max+1)) /= 2;
       C += 1;
-      if(print_progress) sprintf(buf, "%9d splitted class        \n", rep+1);
-      Rcout <<  buf;
+      if(print_progress){
+        sprintf(buf, "%9d splitted class        \n", rep+1);
+        Rcout <<  buf;
+      }
       flag = true;
     }
   }
@@ -371,13 +375,15 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
       stack(span(2+P,2+P+P*P-1),c1) /=2;
       stack.shed_col(c2);
       C -= 1;
-      if(print_progress) sprintf(buf, "%9d joined classes        \n", rep+1);
-      Rcout <<  buf;
+      if(print_progress){
+        sprintf(buf, "%9d joined classes        \n", rep+1);
+        Rcout <<  buf;
+      }
       flag = true;
     }
   }
   //sort s ascending
-  stack = stack.cols(sort_index(stack(0,span::all)));
+  stack = stack.cols(sort_index(stack(0,span::all),"descend"));
   rowvec s_update = stack.row(0);
   rowvec m_update = stack.row(1);
   mat b_update = stack.rows(span(2,P+1));

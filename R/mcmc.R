@@ -89,6 +89,16 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     P_f = data$P_f, P_r = data$P_r, latent_classes = unclass(latent_classes),
     sufficient_statistics = sufficient_statistics, prior = prior, init = init)
 
+  if(latent_classes$update){
+    ### update number of latent classes
+    latent_classes$C = sum(tail(gibbs_samples$s,1) != 0)
+
+    ### remove zeros
+    gibbs_samples$s = gibbs_samples$s[,1:latent_classes$C]
+    gibbs_samples$b = gibbs_samples$b[,1:(data$P_r*latent_classes$C)]
+    gibbs_samples$Omega = gibbs_samples$Omega[,1:(data$P_r^2*latent_classes$C)]
+  }
+
   ### save classification
   if(!is.null(gibbs_samples$classification)){
     classification = gibbs_samples$classification + 1
@@ -100,7 +110,7 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
   ### label Gibbs samples
   labels = create_parameter_labels(
     P_f = data$P_f, P_r = data$P_r, J = data$J,
-    C = length(as.numeric(tail(gibbs_samples$s,1)) != 0), cov_sym = TRUE,
+    C = length(tail(gibbs_samples$s,1)), cov_sym = TRUE,
     drop_par = NULL)
   for(par in names(gibbs_samples))
     colnames(gibbs_samples[[par]]) = labels[[par]]

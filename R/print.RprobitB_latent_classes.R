@@ -9,13 +9,9 @@
 #' @export
 
 print.RprobitB_latent_classes = function(x, ...) {
-  cat("Latent classes:\n")
-  if(!x$update){
-    cat(paste("- Number:",x$C,"\n"))
-  }
+  cat("Latent classes:",x$C,"\n")
   cat(paste("- Update:",x$update,"\n"))
   if(x$update){
-    cat(paste("- Initial number:",x$C,"\n"))
     cat(paste("- Maximum number:",x$Cmax,"\n"))
     cat(paste("- Buffer:",x$buffer,"\n"))
     cat(paste("- Minimum class weight:",x$epsmin,"\n"))

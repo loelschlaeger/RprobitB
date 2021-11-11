@@ -7,7 +7,7 @@ test_that("P", {
                   seed = 1,
                   alpha = 1:5, Sigma = 1)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict(model, overview = FALSE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("MNP", {
@@ -19,7 +19,7 @@ test_that("MNP", {
                   seed = 1,
                   alpha = 1:8)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict(model, overview = FALSE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("MMNP", {
@@ -33,7 +33,7 @@ test_that("MMNP", {
                   alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
                   Sigma = diag(2))
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict(model, overview = FALSE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("LCMMNP", {
@@ -47,5 +47,20 @@ test_that("LCMMNP", {
                   C = 2)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1,
                latent_classes = list("C" = 2))
-  expect_snapshot(predict(model, overview = FALSE))
+  expect_snapshot(predict(model, overview = TRUE))
+})
+
+test_that("ULCMMNP", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 100,
+                  T = 5,
+                  J = 3,
+                  re = c("cost","ASC"),
+                  alternatives = c("train","bus","car"),
+                  seed = 1,
+                  C = 2)
+  model = mcmc(data, R = 2000, print_progress = FALSE, seed = 1,
+               latent_classes = list("C" = 8, "update" = TRUE, "epsmin" = 0.1,
+                                     "epsmax" = 0.9))
+  expect_snapshot(predict(model, overview = TRUE))
 })
