@@ -20,7 +20,7 @@
 #' @param print_progress
 #' A boolean, determining whether to print the Gibbs sampler progress and the
 #' estimated remaining computation time.
-#' @inheritParams check_latent_classes
+#' @inheritParams RprobitB_latent_classes
 #' @inheritParams check_prior
 #' @param seed
 #' Set a seed for the Gibbs sampling.
@@ -69,7 +69,7 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
     stop("'progress' must be a boolean.")
   normalization = RprobitB_normalization(J = data$J, P_f = data$P_f,
                                          scale = scale)
-  latent_classes = check_latent_classes(latent_classes = latent_classes)
+  latent_classes = RprobitB_latent_classes(latent_classes = latent_classes)
   prior = check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics

@@ -1,13 +1,12 @@
-#' Check \code{latent_classes}.
+#' Create object of class \code{RprobitB_latent_classes}.
 #' @description
-#' This function checks the input \code{latent_classes} and sets missing values
-#' to default values.
+#' This function creates an object of class \code{RprobitB_latent_classes}.
 #' @param latent_classes
-#' A list of parameters specifying the number and the updating scheme of latent
-#' classes:
+#' Either \code{NULL} or a list of parameters specifying the number and the
+#' latent classes:
 #' \itemize{
 #'   \item \code{C}:
-#'   The fixed number (greater or equal 1) of latent classes. Set to 1 per
+#'   The number (greater or equal 1) of latent classes, which is set to 1 per
 #'   default and is ignored if \code{P_r = 0}.
 #'   If \code{update = TRUE}, \code{C} equals the initial number of latent
 #'   classes and is set to 5 per default.
@@ -29,11 +28,10 @@
 #' }
 #' @return
 #' An object of class \code{RprobitB_latent_classes}.
-#' The checked input \code{latent_classes}
 #' @keywords
-#' internal
+#' s3
 
-check_latent_classes = function(latent_classes){
+RprobitB_latent_classes = function(latent_classes = NULL){
 
   ### check if 'latent_classes' is a list
   if(!is.null(latent_classes)){
@@ -75,10 +73,12 @@ check_latent_classes = function(latent_classes){
   if(latent_classes$update){
     if(!is.numeric(latent_classes$C) || !latent_classes$C%%1 == 0 ||
        !latent_classes$C>0 || !latent_classes$C <= latent_classes$Cmax)
-      stop("'latent_classes$C' must be a positive integer less or equal than 'latent_classes$Cmax'.")
+      stop("'latent_classes$C' must be a positive integer less or equal than",
+           "'latent_classes$Cmax'.")
     if(!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax%%1 == 0 ||
        !latent_classes$Cmax>0 || !latent_classes$C <= latent_classes$Cmax)
-      stop("'latent_classes$Cmax' must be a positive integer greater or equal than 'latent_classes$C'.")
+      stop("'latent_classes$Cmax' must be a positive integer greater or equal",
+           "than 'latent_classes$C'.")
     if(!is.numeric(latent_classes$buffer) || !latent_classes$buffer%%1 == 0 ||
        !latent_classes$buffer>0)
       stop("'latent_classes$buffer' must be a positive integer.")
@@ -88,7 +88,8 @@ check_latent_classes = function(latent_classes){
     if(!is.numeric(latent_classes$epsmax) || !latent_classes$epsmax <= 1 ||
        !latent_classes$epsmax >= 0 ||
        !latent_classes$epsmin < latent_classes$epsmax)
-      stop("'latent_classes$epsmax' must be a numeric between 0 and 1 and greater than 'latent_classes$epsmin'.")
+      stop("'latent_classes$epsmax' must be a numeric between 0 and 1 and",
+           "greater than 'latent_classes$epsmin'.")
     if(!is.numeric(latent_classes$distmin) || !0<=latent_classes$distmin)
       stop("'latent_classes$distmin' must be a non-negative numeric value.")
   }

@@ -29,11 +29,11 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{latent_classes}{A list of parameters specifying the number and the updating scheme of latent
-classes:
+\item{latent_classes}{Either \code{NULL} or a list of parameters specifying the number and the
+latent classes:
 \itemize{
 \item \code{C}:
-The fixed number (greater or equal 1) of latent classes. Set to 1 per
+The number (greater or equal 1) of latent classes, which is set to 1 per
 default and is ignored if \code{P_r = 0}.
 If \code{update = TRUE}, \code{C} equals the initial number of latent
 classes and is set to 5 per default.
