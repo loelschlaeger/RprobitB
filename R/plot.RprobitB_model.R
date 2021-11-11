@@ -37,7 +37,8 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
   par_names = c(if(x$data$P_f > 0) "alpha",
                 if(x$data$P_r > 0) c("s", "b", "Omega"), "Sigma")
   par_names = setdiff(par_names, ignore)
-  coeff_names = x$data$linear_coeffs$name
+  linear_coeffs = x$data$linear_coeffs
+  coeff_names = linear_coeffs$name
   coeff_names = setdiff(coeff_names, ignore)
 
   ### make plot type 'effects'
@@ -51,42 +52,71 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
 
   ### make plot type 'mixture'
   if(type == "mixture"){
-    if(is.null(coeff_names) || !is.element("b",par_names)){
+    coeff_names_re = linear_coeffs[linear_coeffs$name %in% coeff_names &
+                                     linear_coeffs$re == TRUE,]$name
+    if(is.null(coeff_names_re) || !is.element("b",par_names)){
       warning("Type 'mixture' invalid because there are no random effects.")
     } else {
       est = compute_point_estimates(x, FUN = mean)
       true = x$data$true_parameter
       C_est = x$latent_classes$C
       C_true = x$data$true_parameter$C
-      comb = expand.grid(1:x$data$P_r, 1:x$data$P_r)
-      cov_names = x$data$covs$names[x$data$covs$random]
+      comb = expand.grid(1:length(coeff_names_re), 1:length(coeff_names_re))
       par(mfrow = set_mfrow(nrow(comb)))
       for(i in 1:nrow(comb)){
         p1 = comb[i,1]
         p2 = comb[i,2]
+
         if(p1 == p2){
+          ### marginal plots
+          mean_est = list()
+          sd_est = list()
+          weight_est = est$s
+          for(c in 1:C_est){
+            mean_est[[c]] = est$b[paste0(c,".",p1)]
+            sd_est[[c]] = sqrt(est$Omega[paste0(c,".",p1,",",p1)])
+          }
+          if(is.null(true)){
+            mean_true = NULL
+            sd_true = NULL
+            weight_true = TRUE
+          } else {
+            mean_true = list()
+            sd_true = list()
+            weight_true = true$s
+            for(c in 1:C_true){
+              mean_true[[c]] = est$b[paste0(c,".",p1)]
+              sd_true[[c]] = sqrt(true$Omega[paste0(c,".",p1,",",p1)])
+            }
+          }
           plot_mixture_marginal(
-            mean_est = as.list(est$b[paste0(1:C_est,".",p1)]),
-            mean_true = as.list(true$b[paste0(1:C_true,".",p1)]),
-            weight_est = est$s,
-            weight_true = true$s,
-            sd_est = as.list(sqrt(est$Omega[paste0(1:C_est,".",p1,",",p1)])),
-            sd_true = as.list(sqrt(true$Omega[paste0(1:C_true,".",p1,",",p1)])),
-            cov_name = cov_names[p1]
+            mean_est = mean_est,
+            mean_true = mean_true,
+            weight_est = weight_est,
+            weight_true = weight_true,
+            sd_est = sd_est,
+            sd_true = sd_true,
+            cov_name = coeff_names_re[p1]
           )
         } else {
+          ### contour plots
           mean_est = list()
           cov_est = list()
           for(c in 1:C_est){
             mean_est[[c]] = est$b[paste0(c,".",c(p1,p2))]
-            cov_est[[c]] = matrix(est$Omega[paste0(c,".",as.vector(outer(c(p1,p2), c(p1,p2), paste, sep=",")))],2,2)
+            cov_est[[c]] = matrix(est$Omega[paste0(c,".", as.vector(outer(c(p1,p2), c(p1,p2), paste, sep=",")))],2,2)
+          }
+          if(is.null(true)){
+            beta_true = NULL
+          } else {
+            beta_true = x$data$true_parameter$beta[c(p1,p2),]
           }
           plot_mixture_contour(
             mean_est = mean_est,
             weight_est = est$s,
             cov_est = cov_est,
-            beta_true = x$data$true_parameter$beta[c(p1,p2),],
-            cov_names = cov_names[c(p1,p2)]
+            beta_true = beta_true,
+            cov_names = coeff_names_re[c(p1,p2)]
           )
         }
       }
@@ -118,12 +148,20 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
     if(is.null(par_names)){
       warning("Type 'trace' invalid because there are no parameters.")
     } else {
+
+      ### remove parameters
+      if(x$latent_classes$C == 1){
+        keep_par = setdiff(par_names, "s")
+      } else {
+        keep_par = par_names
+      }
+
       gibbs_samples_nbt_filtered = filter_gibbs_samples(
         x = x$gibbs_samples, P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
         C = x$latent_classes$C, cov_sym = FALSE,
-        keep_par = par_names)$gibbs_samples_nbt
+        keep_par = keep_par)$gibbs_samples_nbt
       par(mfrow = set_mfrow(sum(sapply(gibbs_samples_nbt_filtered, ncol))))
-      for(par_name in par_names){
+      for(par_name in keep_par){
         gibbs_samples = gibbs_samples_nbt_filtered[[par_name, drop = FALSE]]
         plot_acf(
           gibbs_samples = gibbs_samples,

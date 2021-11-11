@@ -8,6 +8,8 @@ test_that("P", {
                   alpha = 1:5, Sigma = 1)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
   build_plot = function(type) plot(model, type = type)
+  sink(tempfile())
+  on.exit(sink())
   expect_doppelganger("P_effects", build_plot("effects"))
   expect_warning(build_plot("mixture"))
   expect_doppelganger("P_trace", build_plot("trace"))
@@ -24,26 +26,30 @@ test_that("MNP", {
                   alpha = 1:8)
   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
   build_plot = function(type) plot(model, type = type)
+  sink(tempfile())
+  on.exit(sink())
   expect_doppelganger("MNP_effects", build_plot("effects"))
   expect_warning(build_plot("mixture"))
   expect_doppelganger("MNP_trace", build_plot("trace"))
   expect_doppelganger("MNP_acf", build_plot("acf"))
 })
 
-# test_that("MMNP", {
-#   data = simulate(form = choice ~ cost | income | time,
-#                   N = 10,
-#                   T = 1:10,
-#                   J = 3,
-#                   re = c("cost","ASC"),
-#                   alternatives = c("train","bus","car"),
-#                   seed = 1,
-#                   alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
-#                   Sigma = diag(2))
-#   model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-#   build_plot = function(type) plot(model, type = type)
-#   expect_doppelganger("MMNP_effects", build_plot("effects"))
-#   expect_doppelganger("MMNP_mixture", build_plot("mixture"))
-#   expect_doppelganger("MMNP_trace", build_plot("trace"))
-#   expect_doppelganger("MMNP_acf", build_plot("acf"))
-# })
+test_that("MMNP", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 10,
+                  T = 1:10,
+                  J = 3,
+                  re = c("cost","ASC"),
+                  alternatives = c("train","bus","car"),
+                  seed = 1,
+                  alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
+                  Sigma = diag(2))
+  model = mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
+  sink(tempfile())
+  on.exit(sink())
+  build_plot = function(type) plot(model, type = type)
+  expect_doppelganger("MMNP_effects", build_plot("effects"))
+  expect_doppelganger("MMNP_mixture", build_plot("mixture"))
+  expect_doppelganger("MMNP_trace", build_plot("trace"))
+  expect_doppelganger("MMNP_acf", build_plot("acf"))
+})

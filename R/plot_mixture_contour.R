@@ -31,10 +31,14 @@ plot_mixture_contour = function(mean_est, weight_est, cov_est, beta_true = NULL,
   C_est = length(mean_est)
 
   ### specify grid
-  xmin = min(sapply(1:C_est, function(c) mean_est[[c]][1] - 3*sqrt(cov_est[[c]][1,1])))
-  xmax = max(sapply(1:C_est, function(c) mean_est[[c]][1] + 3*sqrt(cov_est[[c]][1,1])))
-  ymin = min(sapply(1:C_est, function(c) mean_est[[c]][2] - 3*sqrt(cov_est[[c]][2,2])))
-  ymax = max(sapply(1:C_est, function(c) mean_est[[c]][2] - 3*sqrt(cov_est[[c]][2,2])))
+  xmin = min(sapply(1:C_est,
+                    function(c) mean_est[[c]][1] - 3*sqrt(cov_est[[c]][1,1])))
+  xmax = max(sapply(1:C_est,
+                    function(c) mean_est[[c]][1] + 3*sqrt(cov_est[[c]][1,1])))
+  ymin = min(sapply(1:C_est,
+                    function(c) mean_est[[c]][2] - 3*sqrt(cov_est[[c]][2,2])))
+  ymax = max(sapply(1:C_est,
+                    function(c) mean_est[[c]][2] + 3*sqrt(cov_est[[c]][2,2])))
   grid_x = seq(xmin, xmax, length.out = 200)
   grid_y = seq(ymin, ymax, length.out = 200)
 
@@ -64,7 +68,8 @@ plot_mixture_contour = function(mean_est, weight_est, cov_est, beta_true = NULL,
        main = "")
 
   ### add true beta values
-  points(x = beta_true[1,], y = beta_true[2,], pch = 16, col = rgb(0,0,0,0.1))
+  if(true_avail)
+    points(x = beta_true[1,], y = beta_true[2,], pch = 16, col = "black")
 
   ### add contour
   contour(add = TRUE, grid_x, grid_y, prob, labcex = 0.75)
