@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create object of class RprobitB_model. — RprobitB_model • RprobitB</title>
+<title>Create object of class RprobitB_latent_classes. — RprobitB_latent_classes • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Create object of class RprobitB_model. — RprobitB_model" />
-<meta property="og:description" content="This function creates an object of class RprobitB_model." />
+<meta property="og:title" content="Create object of class RprobitB_latent_classes. — RprobitB_latent_classes" />
+<meta property="og:description" content="This function creates an object of class RprobitB_latent_classes." />
 <meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
@@ -143,52 +143,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create object of class <code>RprobitB_model</code>.</h1>
+    <h1>Create object of class <code>RprobitB_latent_classes</code>.</h1>
     
-    <div class="hidden name"><code>RprobitB_model.Rd</code></div>
+    <div class="hidden name"><code>RprobitB_latent_classes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function creates an object of class <code>RprobitB_model</code>.</p>
+    <p>This function creates an object of class <code>RprobitB_latent_classes</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RprobitB_model</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>normalization</span>,
-  <span class='va'>R</span>,
-  <span class='va'>B</span>,
-  <span class='va'>Q</span>,
-  <span class='va'>latent_classes</span>,
-  <span class='va'>prior</span>,
-  <span class='va'>gibbs_samples</span>,
-  <span class='va'>classification</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RprobitB_latent_classes</span><span class='op'>(</span>latent_classes <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>An object of class <code>RprobitB_data</code>.</p></td>
-    </tr>
-    <tr>
-      <th>normalization</th>
-      <td><p>An object of class <code>RprobitB_normalization</code>.</p></td>
-    </tr>
-    <tr>
-      <th>R</th>
-      <td><p>The number of iterations of the Gibbs sampler.</p></td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td><p>The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.</p></td>
-    </tr>
-    <tr>
-      <th>Q</th>
-      <td><p>The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th
-sample is kept.</p></td>
-    </tr>
     <tr>
       <th>latent_classes</th>
       <td><p>Either <code>NULL</code> or a list of parameters specifying the number and the
@@ -215,53 +183,11 @@ The threshold difference in means for joining latent classes
 (non-negative).</p></li>
 </ul></td>
     </tr>
-    <tr>
-      <th>prior</th>
-      <td><p>A named list of parameters for the prior distributions of the normalized
-parameters:</p><ul>
-<li><p><code>eta</code>:
-The mean vector of length <code>P_f</code> of the normal prior for
-<code>alpha</code>.</p></li>
-<li><p><code>Psi</code>:
-The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
-normal prior for <code>alpha</code>.</p></li>
-<li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for
-<code>s</code>.</p></li>
-<li><p><code>xi</code>:
-The mean vector of length <code>P_r</code> of the normal prior for each
-<code>b_c</code>.</p></li>
-<li><p><code>D</code>:
-The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>nu</code>:
-The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>:
-The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>:
-The degrees of freedom (a natural number greater than <code>J-1</code>) of
-the Inverse Wishart prior for <code>Sigma</code>.</p></li>
-<li><p><code>E</code>:
-The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
-Inverse Wishart prior for <code>Sigma</code>.</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>gibbs_samples</th>
-      <td><p>An object of class <code>RprobitB_gibbs_samples</code>.</p></td>
-    </tr>
-    <tr>
-      <th>classification</th>
-      <td><p>The allocation variable of the estimated latent classes.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_model</code>, i.e. a list with the arguments of
-this function as elements.</p>
+    <p>An object of class <code>RprobitB_latent_classes</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
