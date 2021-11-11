@@ -26,7 +26,6 @@ License: GPL-3
 Encoding: UTF-8
 Imports:
     Rcpp,
-    RcppArmadillo,
     mvtnorm,
     viridis
 LinkingTo:
