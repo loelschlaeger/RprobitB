@@ -41,12 +41,11 @@ latent classes:
 \item \code{C}:
 The number (greater or equal 1) of latent classes, which is set to 1 per
 default and is ignored if \code{P_r = 0}.
-If \code{update = TRUE}, \code{C} equals the initial number of latent
-classes and is set to 5 per default.
+If \code{update = TRUE}, \code{C} equals the initial number of classes.
 \item \code{update}:
-A boolean, determining whether to update \code{C}. Ignored if
-\code{P_r = 0}. If \code{update = FALSE}, all of the following elements are
-ignored.
+A boolean, determining whether to update \code{C}.
+Ignored if \code{P_r = 0}.
+If \code{update = FALSE}, all of the following elements are ignored.
 \item \code{Cmax}:
 The maximum number of latent classes.
 \item \code{buffer}:
