@@ -6,7 +6,7 @@
 [![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
 <!-- badges: end -->
 
-The goal of RprobitB is to fit (latent class) (mixed) (multinomial) probit models to simulated or empirical choice data via Bayesian estimation.
+The goal of RprobitB is to fit mixed probit models to choice data via Bayesian estimation.
 
 ## Installation
 
@@ -26,19 +26,18 @@ browseVignettes("RprobitB")
 
 ## Example
 
-This is a basic example which shows how to fit a mixed multinomial probit model:
+This is a basic example to show how to fit a mixed probit model:
 
 ``` r
 library(RprobitB)
 data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change,
                choice_data = Train,
-               re = c("price","time"),
+               re = "price",
                standardize = "all")
 model = mcmc(data)
 summary(model)
 plot(model)
-choice_probs(model)
 predict(model)
 ```
 
