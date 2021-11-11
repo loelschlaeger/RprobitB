@@ -201,10 +201,10 @@ estimated remaining computation time.</p></td>
     </tr>
     <tr>
       <th>latent_classes</th>
-      <td><p>A list of parameters specifying the number and the updating scheme of latent
-classes:</p><ul>
+      <td><p>Either <code>NULL</code> or a list of parameters specifying the number and the
+latent classes:</p><ul>
 <li><p><code>C</code>:
-The fixed number (greater or equal 1) of latent classes. Set to 1 per
+The number (greater or equal 1) of latent classes, which is set to 1 per
 default and is ignored if <code>P_r = 0</code>.
 If <code>update = TRUE</code>, <code>C</code> equals the initial number of latent
 classes and is set to 5 per default.</p></li>
