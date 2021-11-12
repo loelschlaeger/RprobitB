@@ -6,7 +6,9 @@
 [![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
 <!-- badges: end -->
 
-The goal of RprobitB is to fit mixed probit models to choice data via Bayesian estimation.
+The goal of RprobitB is to fit mixed probit models to choice data. 
+The package differs from comparable packages in two ways: Bayesian estimation and a focus on taste heterogeneity.
+
 
 ## Installation
 
@@ -26,7 +28,7 @@ browseVignettes("RprobitB")
 
 ## Example
 
-This is a basic example to show how to fit a mixed probit model:
+This is a basic example to show how to fit a mixed probit model and make choice predictions:
 
 ``` r
 library(RprobitB)
@@ -34,10 +36,11 @@ data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change,
                choice_data = Train,
                re = "price",
-               standardize = "all")
-model = mcmc(data)
+               standardize = "all",
+               test_prop = 0.5)
+model = mcmc(data$train)
 summary(model)
-plot(model)
-predict(model)
+plot(model, type = "mixture")
+predict(model, data$test)
 ```
 
