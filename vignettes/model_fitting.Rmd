@@ -194,7 +194,7 @@ The theory behind Gibbs sampling constitutes that the sequence of samples produc
 
 Adequate values for $R$, $B$ and $Q$ depend on the complexity of the considered Bayesian framework. Per default, **RprobitB** sets `R = 1e4`, `B = R/2` and `Q = 10`.
 
-The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots. Both is explained in [the vignette about model checking and model selection](model_checking_and_model_selection.html).
+The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots.
 
 ## Updating the number of latent classes
 
