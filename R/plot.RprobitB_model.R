@@ -71,8 +71,6 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
     } else {
       est = compute_point_estimates(x, FUN = mean)
       true = x$data$true_parameter
-      C_est = x$latent_classes$C
-      C_true = x$data$true_parameter$C
       comb = expand.grid(1:length(linear_coeffs_re_orig$name),
                          1:length(linear_coeffs_re_orig$name))
       par(mfrow = set_mfrow(nrow(comb)), oma = c(1, 1, 1, 1),
@@ -86,7 +84,7 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
           mean_est = list()
           sd_est = list()
           weight_est = est$s
-          for(c in 1:C_est){
+          for(c in 1:x$latent_classes$C){
             mean_est[[c]] = est$b[paste0(c,".",p1)]
             sd_est[[c]] = sqrt(est$Omega[paste0(c,".",p1,",",p1)])
           }
@@ -98,7 +96,7 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
             mean_true = list()
             sd_true = list()
             weight_true = true$s
-            for(c in 1:C_true){
+            for(c in 1:x$data$true_parameter$C){
               mean_true[[c]] = est$b[paste0(c,".",p1)]
               sd_true[[c]] = sqrt(true$Omega[paste0(c,".",p1,",",p1)])
             }
@@ -116,7 +114,7 @@ plot.RprobitB_model = function(x, type = "effects", ignore = NULL, ...) {
           ### contour plots
           mean_est = list()
           cov_est = list()
-          for(c in 1:C_est){
+          for(c in 1:x$latent_classes$C){
             mean_est[[c]] = est$b[paste0(c,".",c(p1,p2))]
             cov_est[[c]] = matrix(est$Omega[paste0(c,".",
                     as.vector(outer(c(p1,p2), c(p1,p2), paste, sep=",")))],2,2)

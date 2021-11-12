@@ -41,6 +41,8 @@ plot_mixture_marginal = function(mean_est, mean_true = NULL, weight_est,
     stopifnot(length(mean_true) == length(weight_true),
               length(weight_true) == length(sd_true))
     C_true = length(mean_true)
+  } else {
+    C_true = 1
   }
 
   ### specify x-range
@@ -87,7 +89,7 @@ plot_mixture_marginal = function(mean_est, mean_true = NULL, weight_est,
       lines(x, mixture_est[,c], col = col[c], lty = 1, lwd = 2)
     }
   }
-  if(C_true > 1 && true_avail){
+  if(true_avail && C_true > 1){
     for(c in 1:C_true){
       lines(x, mixture_true[,c], col = col[c], lty = 2, lwd = 2)
     }
