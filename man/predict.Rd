@@ -4,12 +4,14 @@
 \alias{predict}
 \title{Predict choices.}
 \usage{
-predict(x, overview = TRUE)
+predict(x, data = NULL, overview = TRUE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_model}.}
 
-\item{overview}{If \code{TRUE}, aggregate the actual and predicted choices in a table.}
+\item{data}{Either \code{NULL} or an object of class \code{RprobitB_data}.}
+
+\item{overview}{If \code{TRUE}, aggregate the prediction in a table.}
 }
 \value{
 Either a table if \code{overview = TRUE} or a data frame otherwise.

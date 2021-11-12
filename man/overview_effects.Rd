@@ -29,7 +29,8 @@ If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the alternative specific constants, include
 \code{"ASC"} in \code{re}.}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.}
+\item{alternatives}{A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.}
 }
 \value{
 A data frame with the coefficient names and booleans indicating whether

@@ -19,6 +19,7 @@ RprobitB_data(
   linear_coeffs,
   standardize,
   simulated,
+  choice_available,
   true_parameter
 )
 }
@@ -36,16 +37,17 @@ chosen alternatives.}
 \item{choice_data}{A data frame of choice data in "wide" format (i.e. each row represents
 one choice occasion) with the following requirements:
 \itemize{
-\item It must contain columns named \code{id} (a unique identifier for each
-decision maker) and \code{choice} (the chosen alternatives), where
-\code{choice} is the name of the dependent variable in \code{form}.
-\item For each alternative specific covariate \emph{p} (covariate of type 1 or
-3) in \code{form} and each choice alternative \emph{j} in
-\code{alternatives}, \code{choice_data} must contain a column named
-\emph{p_j}.
+\item It must contain a column named \code{id} which contains unique
+identifier for each decision maker.
+\item It can contain a column named \code{choice} with the observed
+choices, where \code{choice} must match the name of the dependent
+variable in \code{form}.
+Such a column is required for model fitting but not for prediction.
+\item For each alternative specific covariate \emph{p} in \code{form} and each
+choice alternative \emph{j} in \code{alternatives}, \code{choice_data}
+must contain a column named \emph{p_j}.
 \item For each covariate \emph{q} in \code{form} that is constant across
-alternatives (covariate of type 2), \code{choice_data} must contain a
-column named \emph{q}.
+alternatives, \code{choice_data} must contain a column named \emph{q}.
 }}
 
 \item{N}{The number (greater or equal 1) of decision makers.}
@@ -59,7 +61,8 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.}
+\item{alternatives}{A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.}
 
 \item{form}{A formula object that is used to specify the probit model.
 The structure is \code{choice ~ A | B | C}, where
@@ -95,6 +98,8 @@ If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{simulated}{A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 \code{data} is empirical.}
+
+\item{choice_available}{A boolean, if \code{TRUE} then \code{data} contains observed choices.}
 
 \item{true_parameter}{An object of class \code{RprobitB_parameters}.}
 }

@@ -4,10 +4,12 @@
 \alias{choice_probs}
 \title{Compute choice probabilities of an \code{RprobitB_model}.}
 \usage{
-choice_probs(object, at_true = FALSE)
+choice_probs(x, data = NULL, at_true = FALSE)
 }
 \arguments{
-\item{object}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_model}.}
+
+\item{data}{Either \code{NULL} or an object of class \code{RprobitB_data}.}
 
 \item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameters.}
 }

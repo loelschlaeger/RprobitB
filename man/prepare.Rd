@@ -10,7 +10,8 @@ prepare(
   alternatives = NULL,
   re = NULL,
   id = "id",
-  standardize = NULL
+  standardize = NULL,
+  test_prop = NULL
 )
 }
 \arguments{
@@ -34,19 +35,21 @@ for more details.}
 \item{choice_data}{A data frame of choice data in "wide" format (i.e. each row represents
 one choice occasion) with the following requirements:
 \itemize{
-\item It must contain columns named \code{id} (a unique identifier for each
-decision maker) and \code{choice} (the chosen alternatives), where
-\code{choice} is the name of the dependent variable in \code{form}.
-\item For each alternative specific covariate \emph{p} (covariate of type 1 or
-3) in \code{form} and each choice alternative \emph{j} in
-\code{alternatives}, \code{choice_data} must contain a column named
-\emph{p_j}.
+\item It must contain a column named \code{id} which contains unique
+identifier for each decision maker.
+\item It can contain a column named \code{choice} with the observed
+choices, where \code{choice} must match the name of the dependent
+variable in \code{form}.
+Such a column is required for model fitting but not for prediction.
+\item For each alternative specific covariate \emph{p} in \code{form} and each
+choice alternative \emph{j} in \code{alternatives}, \code{choice_data}
+must contain a column named \emph{p_j}.
 \item For each covariate \emph{q} in \code{form} that is constant across
-alternatives (covariate of type 2), \code{choice_data} must contain a
-column named \emph{q}.
+alternatives, \code{choice_data} must contain a column named \emph{q}.
 }}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.}
+\item{alternatives}{A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
@@ -60,9 +63,15 @@ unique identifier for each decision maker. The default is \code{"id"}.}
 Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
+
+\item{test_prop}{Either \code{NULL} or a numeric between 0 and 1. In the latter case, the data
+is split into a training set (of decider proportion \code{1-test_prop}) and a
+testing set (of decider proportion \code{test_prop}).}
 }
 \value{
 An object of class \code{RprobitB_data}.
+If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects
+labelled \code{"train"} and \code{"test"}.
 }
 \description{
 This function prepares empirical choice data for the RprobitB package.
@@ -74,7 +83,6 @@ See the vignette "Data management" for more details:
 \examples{
 data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change,
-               choice_data = Train,
-               re = c("price","time"),
+               choice_data = Train, re = c("price","time"),
                standardize = "all")
 }

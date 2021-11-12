@@ -4,10 +4,10 @@
 \alias{compute_log_likelihood}
 \title{Compute log-likelihood of an \code{RprobitB_model}.}
 \usage{
-compute_log_likelihood(object, at_true = FALSE)
+compute_log_likelihood(x, at_true = FALSE)
 }
 \arguments{
-\item{object}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_model}.}
 
 \item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameters.}
 }
