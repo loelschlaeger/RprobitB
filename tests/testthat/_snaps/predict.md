@@ -8,6 +8,16 @@
         bus  30   1
         car   2  22
 
+# P train test
+
+    Code
+      predict(model, data = data$test, overview = TRUE)
+    Output
+           predicted
+      true  bus car
+        bus  13   3
+        car   2   9
+
 # MNP
 
     Code

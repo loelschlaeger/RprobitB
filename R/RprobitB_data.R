@@ -24,6 +24,7 @@
 #' The number of covariates connected to a random coefficient (can be 0).
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
+#' If not specified, the choice set is defined by the observed choices.
 #' @param ASC
 #' A boolean, determining whether the model has ASCs.
 #' @param linear_coeffs
@@ -37,6 +38,8 @@
 #' @param simulated
 #' A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
 #' \code{data} is empirical.
+#' @param choice_available
+#' A boolean, if \code{TRUE} then \code{data} contains observed choices.
 #' @inheritParams check_form
 #' @inheritParams prepare
 #' @param true_parameter
@@ -49,7 +52,7 @@
 
 RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                          form, re, ASC, linear_coeffs, standardize, simulated,
-                         true_parameter){
+                         choice_available, true_parameter){
 
   ### check inputs
   stopifnot(is.list(data))
@@ -61,25 +64,27 @@ RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.character(alternatives) || J != length(alternatives))
   stopifnot(inherits(form,"formula"))
   stopifnot(is.logical(simulated))
-  stopifnot(is.null(true_parameter) ||
-              inherits(true_parameter,"RprobitB_parameter"))
+  stopifnot(is.logical(choice_available))
+  if(!is.null(true_parameter))
+    stopifnot(class(true_parameter) == "RprobitB_parameter")
 
   ### create and return object of class "RprobitB_data"
-  out = list("data"           = data,
-             "choice_data"    = choice_data,
-             "N"              = N,
-             "T"              = T,
-             "J"              = J,
-             "P_f"            = P_f,
-             "P_r"            = P_r,
-             "alternatives"   = alternatives,
-             "form"           = form,
-             "re"             = re,
-             "ASC"            = ASC,
-             "linear_coeffs"  = linear_coeffs,
-             "standardize"    = standardize,
-             "simulated"      = simulated,
-             "true_parameter" = true_parameter)
+  out = list("data"             = data,
+             "choice_data"      = choice_data,
+             "N"                = N,
+             "T"                = T,
+             "J"                = J,
+             "P_f"              = P_f,
+             "P_r"              = P_r,
+             "alternatives"     = alternatives,
+             "form"             = form,
+             "re"               = re,
+             "ASC"              = ASC,
+             "linear_coeffs"    = linear_coeffs,
+             "standardize"      = standardize,
+             "choice_available" = choice_available,
+             "simulated"        = simulated,
+             "true_parameter"   = true_parameter)
   class(out) = "RprobitB_data"
   return(out)
 }

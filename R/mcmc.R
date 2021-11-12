@@ -57,8 +57,11 @@ mcmc = function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
 
   ### check inputs
   if(!inherits(data,"RprobitB_data"))
-    stop("'data' must an object of class 'RprobitB_data', i.e. the output of
-         'RprobitB::prepare()' or 'RprobitB::simulate()'.")
+    stop("'data' must an object of class 'RprobitB_data', i.e. the output of",
+         " 'RprobitB::prepare()' or 'RprobitB::simulate()'.")
+  if(!data[["choice_available"]])
+    stop("Cannot use 'data' for model fitting because information on choices",
+         " is not available.")
   if(!is.numeric(R) || !R%%1 == 0 || !R>0)
     stop("'R' must be a positive integer.")
   if(!is.numeric(B) || !B%%1 == 0 || !B>0 || !B<R)

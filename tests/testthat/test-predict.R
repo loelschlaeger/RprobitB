@@ -10,6 +10,19 @@ test_that("P", {
   expect_snapshot(predict(model, overview = TRUE))
 })
 
+test_that("P train test", {
+  data = simulate(form = choice ~ cost | income | time,
+                  N = 10,
+                  T = 1:10,
+                  J = 2,
+                  alternatives = c("bus","car"),
+                  seed = 1,
+                  test_prop = 0.3,
+                  alpha = 1:5, Sigma = 1)
+  model = mcmc(data$train, R = 1000, print_progress = FALSE, seed = 1)
+  expect_snapshot(predict(model, data = data$test, overview = TRUE))
+})
+
 test_that("MNP", {
   data = simulate(form = choice ~ cost | income | time,
                   N = 10,
