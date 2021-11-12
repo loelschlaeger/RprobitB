@@ -152,14 +152,18 @@
     <p>This function computes the choice probabilities of an <code>RprobitB_model</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>choice_probs</span><span class='op'>(</span><span class='va'>object</span>, at_true <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>choice_probs</span><span class='op'>(</span><span class='va'>x</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, at_true <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
+      <th>x</th>
       <td><p>An object of class <code>RprobitB_model</code>.</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>Either <code>NULL</code> or an object of class <code>RprobitB_data</code>.</p></td>
     </tr>
     <tr>
       <th>at_true</th>
