@@ -158,7 +158,8 @@
   alternatives <span class='op'>=</span> <span class='cn'>NULL</span>,
   re <span class='op'>=</span> <span class='cn'>NULL</span>,
   id <span class='op'>=</span> <span class='st'>"id"</span>,
-  standardize <span class='op'>=</span> <span class='cn'>NULL</span>
+  standardize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  test_prop <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -185,21 +186,23 @@ for more details.</p></td>
       <th>choice_data</th>
       <td><p>A data frame of choice data in "wide" format (i.e. each row represents
 one choice occasion) with the following requirements:</p><ul>
-<li><p>It must contain columns named <code>id</code> (a unique identifier for each
-decision maker) and <code>choice</code> (the chosen alternatives), where
-<code>choice</code> is the name of the dependent variable in <code>form</code>.</p></li>
-<li><p>For each alternative specific covariate <em>p</em> (covariate of type 1 or
-3) in <code>form</code> and each choice alternative <em>j</em> in
-<code>alternatives</code>, <code>choice_data</code> must contain a column named
-<em>p_j</em>.</p></li>
+<li><p>It must contain a column named <code>id</code> which contains unique
+identifier for each decision maker.</p></li>
+<li><p>It can contain a column named <code>choice</code> with the observed
+choices, where <code>choice</code> must match the name of the dependent
+variable in <code>form</code>.
+Such a column is required for model fitting but not for prediction.</p></li>
+<li><p>For each alternative specific covariate <em>p</em> in <code>form</code> and each
+choice alternative <em>j</em> in <code>alternatives</code>, <code>choice_data</code>
+must contain a column named <em>p_j</em>.</p></li>
 <li><p>For each covariate <em>q</em> in <code>form</code> that is constant across
-alternatives (covariate of type 2), <code>choice_data</code> must contain a
-column named <em>q</em>.</p></li>
+alternatives, <code>choice_data</code> must contain a column named <em>q</em>.</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>alternatives</th>
-      <td><p>A character vector with the names of the choice alternatives.</p></td>
+      <td><p>A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.</p></td>
     </tr>
     <tr>
       <th>re</th>
@@ -220,11 +223,19 @@ Covariates of type 1 or 3 have to be addressed by
 <code>&lt;covariate&gt;_&lt;alternative&gt;</code>.
 If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     </tr>
+    <tr>
+      <th>test_prop</th>
+      <td><p>Either <code>NULL</code> or a numeric between 0 and 1. In the latter case, the data
+is split into a training set (of decider proportion <code>1-test_prop</code>) and a
+testing set (of decider proportion <code>test_prop</code>).</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_data</code>.</p>
+    <p>An object of class <code>RprobitB_data</code>.
+If <code>test_prop</code> is specified, a list of two <code>RprobitB_data</code> objects
+labelled <code>"train"</code> and <code>"test"</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>See the vignette "Data management" for more details:
@@ -233,8 +244,7 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Train"</span>, package <span class='op'>=</span> <span class='st'>"mlogit"</span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>=</span> <span class='fu'>prepare</span><span class='op'>(</span>form <span class='op'>=</span> <span class='va'>choice</span> <span class='op'>~</span> <span class='va'>price</span> <span class='op'>|</span> <span class='fl'>0</span> <span class='op'>|</span> <span class='va'>time</span> <span class='op'>+</span> <span class='va'>comfort</span> <span class='op'>+</span> <span class='va'>change</span>,
-               choice_data <span class='op'>=</span> <span class='va'>Train</span>,
-               re <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>,<span class='st'>"time"</span><span class='op'>)</span>,
+               choice_data <span class='op'>=</span> <span class='va'>Train</span>, re <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>,<span class='st'>"time"</span><span class='op'>)</span>,
                standardize <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span>
 </div></pre>
   </div>

@@ -152,7 +152,7 @@
     <p>This function predicts the choices of decision makers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>predict</span><span class='op'>(</span><span class='va'>x</span>, overview <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>predict</span><span class='op'>(</span><span class='va'>x</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, overview <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,8 +162,12 @@
       <td><p>An object of class <code>RprobitB_model</code>.</p></td>
     </tr>
     <tr>
+      <th>data</th>
+      <td><p>Either <code>NULL</code> or an object of class <code>RprobitB_data</code>.</p></td>
+    </tr>
+    <tr>
       <th>overview</th>
-      <td><p>If <code>TRUE</code>, aggregate the actual and predicted choices in a table.</p></td>
+      <td><p>If <code>TRUE</code>, aggregate the prediction in a table.</p></td>
     </tr>
     </table>
 

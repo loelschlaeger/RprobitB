@@ -162,6 +162,7 @@
   distr <span class='op'>=</span> <span class='cn'>NULL</span>,
   standardize <span class='op'>=</span> <span class='cn'>NULL</span>,
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  test_prop <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -207,7 +208,8 @@ To have random effects for the alternative specific constants, include
     </tr>
     <tr>
       <th>alternatives</th>
-      <td><p>A character vector with the names of the choice alternatives.</p></td>
+      <td><p>A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.</p></td>
     </tr>
     <tr>
       <th>distr</th>
@@ -237,6 +239,12 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
       <td><p>Set a seed for the simulation.</p></td>
     </tr>
     <tr>
+      <th>test_prop</th>
+      <td><p>Either <code>NULL</code> or a numeric between 0 and 1. In the latter case, the data
+is split into a training set (of decider proportion <code>1-test_prop</code>) and a
+testing set (of decider proportion <code>test_prop</code>).</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Optionally specify <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</code>, <code>Omega</code>,
 <code>Sigma</code>, <code>Sigma_full</code>, <code>beta</code>, or <code>z</code> for the simulation.</p></td>
@@ -245,7 +253,9 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>RprobitB_data</code>.</p>
+    <p>An object of class <code>RprobitB_data</code>.
+If <code>test_prop</code> is specified, a list of two <code>RprobitB_data</code> objects
+labelled <code>"train"</code> and <code>"test"</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>See the vignette "Data management" for more details:
