@@ -102,7 +102,7 @@
       <h1 data-toc-skip>Data management</h1>
                         <h4 class="author">Lennart Oelschläger</h4>
             
-            <h4 class="date">2021-11-12</h4>
+            <h4 class="date">2021-11-26</h4>
       
       
       <div class="hidden name"><code>data_management.Rmd</code></div>
@@ -132,7 +132,7 @@
 <ul>
 <li><p>By default, alternative specific constants are added to the model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. They can be removed by adding <code>+0</code> in the second spot, e.g. <code>choice ~ A | B + 0</code>.</p></li>
 <li><p>To exclude covariates of the backmost categories, use either <code>0</code>, e.g. <code>choice ~ A | B | 0</code> or just leave this part out and write <code>choice ~ A | B</code>. However, to exclude covariates of front categories, we have to use <code>0</code>, e.g. <code>choice ~ A | 0 | C</code>.</p></li>
-<li><p>To include more than one covariate of the same category, use <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>, e.g. <code>choice ~ A1 + A2 | B</code>.</p></li>
+<li><p>To include more than one covariate of the same category, use <code>+</code>, e.g. <code>choice ~ A1 + A2 | B</code>.</p></li>
 <li><p>If we don’t want to include any covariates of the second category but we want to estimate alternative specific constants, add <code>1</code> in the second spot, e.g. <code>choice ~ A | 1</code>. The expression <code>choice ~ A | 0</code> is interpreted as no covariates of the second category and no alternative specific constants.</p></li>
 </ul>
 <p>To have random effects for specific variables, we need to define a character vector <code>re</code> of the corresponding variable names. To have random effects for the alternative specific constants, include <code>"ASC"</code> in <code>re</code>.</p>
