@@ -10,44 +10,46 @@
 #' @keywords
 #' internal
 
-transform_parameter = function(parameter, normalization) {
+transform_parameter <- function(parameter, normalization) {
 
   ### check inputs
-  if(!inherits(parameter, "RprobitB_parameter"))
+  if (!inherits(parameter, "RprobitB_parameter")) {
     stop("'parameter' must be of class 'RprobitB_parameter'.")
-  if(!inherits(normalization, "RprobitB_normalization"))
+  }
+  if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.")
+  }
 
   ### function to scale the parameters
-  scaling = function(par, factor){
-    if(any(is.na(par))){
+  scaling <- function(par, factor) {
+    if (any(is.na(par))) {
       NA
     } else {
-      out = par * factor
+      out <- par * factor
       ### preserve names
-      names(out) = names(par)
+      names(out) <- names(par)
       return(out)
     }
   }
 
   ### scale elements of 'parameter'
-  scale = normalization$scale
-  if(scale$parameter == "a"){
-    factor = scale$value / parameter$alpha[scale$index]
-    parameter$alpha = scaling(parameter$alpha, factor)
-    parameter$b = scaling(parameter$b, factor)
-    parameter$Omega = scaling(parameter$Omega, factor^2)
-    parameter$Sigma = scaling(parameter$Sigma, factor^2)
-    parameter$beta = scaling(parameter$beta, factor)
+  scale <- normalization$scale
+  if (scale$parameter == "a") {
+    factor <- scale$value / parameter$alpha[scale$index]
+    parameter$alpha <- scaling(parameter$alpha, factor)
+    parameter$b <- scaling(parameter$b, factor)
+    parameter$Omega <- scaling(parameter$Omega, factor^2)
+    parameter$Sigma <- scaling(parameter$Sigma, factor^2)
+    parameter$beta <- scaling(parameter$beta, factor)
   }
-  if(scale$parameter == "s"){
-    factor = scale$value / parameter$Sigma[scale$index,scale$index]
-    parameter$alpha = scaling(parameter$alpha, sqrt(factor))
-    parameter$b = scaling(parameter$b, sqrt(factor))
-    parameter$Omega = scaling(parameter$Omega, factor)
-    parameter$Sigma = scaling(parameter$Sigma, factor)
-    parameter$beta = scaling(parameter$beta, sqrt(factor))
-    parameter$Sigma_full = undiff_Sigma(parameter$Sigma, normalization$level)
+  if (scale$parameter == "s") {
+    factor <- scale$value / parameter$Sigma[scale$index, scale$index]
+    parameter$alpha <- scaling(parameter$alpha, sqrt(factor))
+    parameter$b <- scaling(parameter$b, sqrt(factor))
+    parameter$Omega <- scaling(parameter$Omega, factor)
+    parameter$Sigma <- scaling(parameter$Sigma, factor)
+    parameter$beta <- scaling(parameter$beta, sqrt(factor))
+    parameter$Sigma_full <- undiff_Sigma(parameter$Sigma, normalization$level)
   }
 
   ### return 'parameter'

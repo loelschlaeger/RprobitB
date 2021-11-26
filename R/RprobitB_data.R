@@ -50,41 +50,44 @@
 #' @keywords
 #' s3
 
-RprobitB_data = function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                         form, re, ASC, linear_coeffs, standardize, simulated,
-                         choice_available, true_parameter){
+RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
+                          form, re, ASC, linear_coeffs, standardize, simulated,
+                          choice_available, true_parameter) {
 
   ### check inputs
   stopifnot(is.list(data))
-  stopifnot(is.numeric(N), N%%1 == 0)
-  stopifnot(is.numeric(T), T%%1 == 0)
-  stopifnot(is.numeric(J), J%%1 == 0)
-  stopifnot(is.numeric(P_f), P_f%%1 == 0)
-  stopifnot(is.numeric(P_r), P_r%%1 == 0)
+  stopifnot(is.numeric(N), N %% 1 == 0)
+  stopifnot(is.numeric(T), T %% 1 == 0)
+  stopifnot(is.numeric(J), J %% 1 == 0)
+  stopifnot(is.numeric(P_f), P_f %% 1 == 0)
+  stopifnot(is.numeric(P_r), P_r %% 1 == 0)
   stopifnot(is.character(alternatives) || J != length(alternatives))
-  stopifnot(inherits(form,"formula"))
+  stopifnot(inherits(form, "formula"))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(choice_available))
-  if(!is.null(true_parameter))
+  if (!is.null(true_parameter)) {
     stopifnot(class(true_parameter) == "RprobitB_parameter")
+  }
 
   ### create and return object of class "RprobitB_data"
-  out = list("data"             = data,
-             "choice_data"      = choice_data,
-             "N"                = N,
-             "T"                = T,
-             "J"                = J,
-             "P_f"              = P_f,
-             "P_r"              = P_r,
-             "alternatives"     = alternatives,
-             "form"             = form,
-             "re"               = re,
-             "ASC"              = ASC,
-             "linear_coeffs"    = linear_coeffs,
-             "standardize"      = standardize,
-             "choice_available" = choice_available,
-             "simulated"        = simulated,
-             "true_parameter"   = true_parameter)
-  class(out) = "RprobitB_data"
+  out <- list(
+    "data" = data,
+    "choice_data" = choice_data,
+    "N" = N,
+    "T" = T,
+    "J" = J,
+    "P_f" = P_f,
+    "P_r" = P_r,
+    "alternatives" = alternatives,
+    "form" = form,
+    "re" = re,
+    "ASC" = ASC,
+    "linear_coeffs" = linear_coeffs,
+    "standardize" = standardize,
+    "choice_available" = choice_available,
+    "simulated" = simulated,
+    "true_parameter" = true_parameter
+  )
+  class(out) <- "RprobitB_data"
   return(out)
 }

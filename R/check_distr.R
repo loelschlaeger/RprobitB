@@ -21,37 +21,47 @@
 #' @keywords
 #' internal
 
-check_distr = function(distr) {
+check_distr <- function(distr) {
 
   ### check if 'distr' is a list
-  if(!is.list(distr))
+  if (!is.list(distr)) {
     stop("'distr' must be a list.")
+  }
 
   ### check if 'distr' has proper elements
-  for(i in seq_len(length(distr))){
+  for (i in seq_len(length(distr))) {
 
     ### set 'size' and 'n' arguments to 1
-    if(distr[[i]][["name"]] == "sample"){
-      distr[[i]][["size"]] = 1
-    } else if(grepl("^r",distr[[i]][["name"]])) {
-      distr[[i]][["n"]] = 1
+    if (distr[[i]][["name"]] == "sample") {
+      distr[[i]][["size"]] <- 1
+    } else if (grepl("^r", distr[[i]][["name"]])) {
+      distr[[i]][["n"]] <- 1
     } else {
       stop(
-        paste0("The 'name' of element '", names(distr)[i],
-               "' in 'distr' is not a valid number generation function name."))
+        paste0(
+          "The 'name' of element '", names(distr)[i],
+          "' in 'distr' is not a valid number generation function name."
+        )
+      )
     }
 
     ### check if element in 'distr' gives single numeric draw
-    out = try(do.call(what = distr[[i]][["name"]],
-                      args = distr[[i]][names(distr[[i]]) != "name"]),
-              silent = TRUE)
-    if(inherits(out,"try-error") || length(out) != 1 || !is.numeric(out))
-      stop(paste0("Could not interpret element '", names(distr)[i],
-                  "' in 'distr'."))
+    out <- try(do.call(
+      what = distr[[i]][["name"]],
+      args = distr[[i]][names(distr[[i]]) != "name"]
+    ),
+    silent = TRUE
+    )
+    if (inherits(out, "try-error") || length(out) != 1 || !is.numeric(out)) {
+      stop(paste0(
+        "Could not interpret element '", names(distr)[i],
+        "' in 'distr'."
+      ))
+    }
   }
 
   ### add class to 'distr'
-  class(distr) = "RprobitB_distr"
+  class(distr) <- "RprobitB_distr"
 
   ### return checked 'distr'
   return(distr)

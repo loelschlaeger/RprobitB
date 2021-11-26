@@ -15,39 +15,43 @@
 #' @keywords
 #' helper
 
-undiff_Sigma = function(Sigma, i){
+undiff_Sigma <- function(Sigma, i) {
 
   ### check inputs
-  Sigma = as.matrix(Sigma)
-  if(!is_covariance_matrix(Sigma))
+  Sigma <- as.matrix(Sigma)
+  if (!is_covariance_matrix(Sigma)) {
     stop("'Sigma' is no covariance matrix.")
-  J = nrow(Sigma) + 1
-  if(!(length(i)==1 && is.numeric(i) && i%%1==0 && i<=J && i>=1))
+  }
+  J <- nrow(Sigma) + 1
+  if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
     stop("'i' must an alternative number.")
+  }
 
   ### add zero row and column to Sigma at row and column i
-  if(i == 1){
-    Sigma_full = rbind(0, cbind(0, Sigma))
-  } else if(i == J){
-    Sigma_full = rbind(cbind(Sigma, 0), 0)
+  if (i == 1) {
+    Sigma_full <- rbind(0, cbind(0, Sigma))
+  } else if (i == J) {
+    Sigma_full <- rbind(cbind(Sigma, 0), 0)
   } else {
-    Sigma_full = cbind(Sigma[,1:(i-1)], 0, Sigma[,i:(J-1)])
-    Sigma_full = rbind(Sigma_full[1:(i-1),], 0, Sigma_full[i:(J-1),])
+    Sigma_full <- cbind(Sigma[, 1:(i - 1)], 0, Sigma[, i:(J - 1)])
+    Sigma_full <- rbind(Sigma_full[1:(i - 1), ], 0, Sigma_full[i:(J - 1), ])
   }
 
   ### add kernel element to make all elements non-zero
-  Sigma_full = Sigma_full + 1
+  Sigma_full <- Sigma_full + 1
 
   ### check if 'Sigma_full' is a covariance matrix
-  if(!is_covariance_matrix(Sigma_full))
+  if (!is_covariance_matrix(Sigma_full)) {
     stop("Back-transformed matrix is no covariance matrix.")
+  }
 
   ### check if back-differencing yields differenced matrix
-  Sigma_back = delta(J,i) %*% Sigma_full %*% t(delta(J,i))
-  if(any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps)))
+  Sigma_back <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
+  if (any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps))) {
     stop("Back-differencing failed.")
+  }
 
   ### return undifferenced covariance matrix
-  names(Sigma_full) = create_labels_Sigma(J+1, cov_sym = TRUE)
+  names(Sigma_full) <- create_labels_Sigma(J + 1, cov_sym = TRUE)
   return(Sigma_full)
 }

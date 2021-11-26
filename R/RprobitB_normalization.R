@@ -36,44 +36,59 @@
 #' @keywords
 #' s3
 
-RprobitB_normalization = function(J, P_f, level = J,
-                                  scale = list("parameter" = "s", "index" = 1,
-                                               "value" = 1)) {
+RprobitB_normalization <- function(J, P_f, level = J,
+                                   scale = list(
+                                     "parameter" = "s", "index" = 1,
+                                     "value" = 1
+                                   )) {
 
   ### check 'level' and 'scale' based on 'J' and 'P_f' and set default values
-  if(level != J)
+  if (level != J) {
     stop("'level' must be equal to 'J'.")
-  if(is.null(scale))
-    scale = list()
-  if(!is.list(scale))
-    stop("'scale' must be a list")
-  if(is.null(scale[["parameter"]]))
-    scale[["parameter"]] = "s"
-  if(!scale[["parameter"]] %in% c("s","a"))
-    stop("'scale$parameter' must be one of 'a' or 's'.")
-  if(is.null(scale[["index"]]))
-    scale[["index"]] = 1
-  if(scale[["parameter"]] == "a"){
-    if(P_f == 0)
-      stop("Cannot use 'alpha' for normalization because the model has no fixed coefficients.")
-    if(!scale[["index"]] %in% seq_len(P_f))
-      stop("'scale$index' is out of bound.")
   }
-  if(scale[["parameter"]] == "s" &&
-     !scale[["index"]] %in% seq_len(J-1))
+  if (is.null(scale)) {
+    scale <- list()
+  }
+  if (!is.list(scale)) {
+    stop("'scale' must be a list")
+  }
+  if (is.null(scale[["parameter"]])) {
+    scale[["parameter"]] <- "s"
+  }
+  if (!scale[["parameter"]] %in% c("s", "a")) {
+    stop("'scale$parameter' must be one of 'a' or 's'.")
+  }
+  if (is.null(scale[["index"]])) {
+    scale[["index"]] <- 1
+  }
+  if (scale[["parameter"]] == "a") {
+    if (P_f == 0) {
+      stop("Cannot use 'alpha' for normalization because the model has no fixed coefficients.")
+    }
+    if (!scale[["index"]] %in% seq_len(P_f)) {
+      stop("'scale$index' is out of bound.")
+    }
+  }
+  if (scale[["parameter"]] == "s" &&
+    !scale[["index"]] %in% seq_len(J - 1)) {
     stop("'scale$index' is out of bound.")
-  if(is.null(scale[["value"]]))
-    scale[["value"]] = 1
-  if(!is.numeric(scale[["value"]]) || length(scale[["value"]])!=1 ||
-     scale[["value"]] == 0)
+  }
+  if (is.null(scale[["value"]])) {
+    scale[["value"]] <- 1
+  }
+  if (!is.numeric(scale[["value"]]) || length(scale[["value"]]) != 1 ||
+    scale[["value"]] == 0) {
     stop("'scale$value' must be a single numeric value not equal to zero.")
-  if(scale[["parameter"]] == "s" && scale[["value"]] < 0)
+  }
+  if (scale[["parameter"]] == "s" && scale[["value"]] < 0) {
     stop("'scale$value' must be non-negative.")
+  }
 
   ### create and return object of class 'RprobitB_normalization'
-  out = list(level = level,
-             scale = scale)
-  class(out) = "RprobitB_normalization"
+  out <- list(
+    level = level,
+    scale = scale
+  )
+  class(out) <- "RprobitB_normalization"
   return(out)
-
 }

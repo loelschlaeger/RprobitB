@@ -13,19 +13,21 @@
 #' @keywords
 #' internal
 
-plot_acf = function(gibbs_samples, par_labels){
-
-  for(c in 1:ncol(gibbs_samples)) {
+plot_acf <- function(gibbs_samples, par_labels) {
+  for (c in 1:ncol(gibbs_samples)) {
     ### compute autocorrelation and produce plot
-    rho = acf(gibbs_samples[,c], las=1, main = "")
+    rho <- acf(gibbs_samples[, c], las = 1, main = "")
     title(par_labels[c], line = -1)
 
     ### compute effective sample size
-    SS = length(gibbs_samples[,c])
-    ESS = min(SS/(1+2*sum(rho$acf)),SS)
-    legend("topright", x.intersp = -0.5, bg = "white",
-           legend = sprintf("%s %.0f",paste0(c("SS", "ESS", "factor"),":"),
-                            c(SS,ESS,SS/ESS)))
+    SS <- length(gibbs_samples[, c])
+    ESS <- min(SS / (1 + 2 * sum(rho$acf)), SS)
+    legend("topright",
+      x.intersp = -0.5, bg = "white",
+      legend = sprintf(
+        "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
+        c(SS, ESS, SS / ESS)
+      )
+    )
   }
-
 }

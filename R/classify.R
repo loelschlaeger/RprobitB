@@ -7,11 +7,13 @@
 #' A data frame with the deciders id and the latent class number.
 #' @export
 
-classify = function(x) {
-  if(is.null(x$classification)){
+classify <- function(x) {
+  if (is.null(x$classification)) {
     warning("No classification available.")
   } else {
-    data.frame(id = unique(x$data$choice_data$id),
-               class = x$classification)
+    data.frame(
+      id = unique(x$data$choice_data$id),
+      class = x$classification
+    )
   }
 }

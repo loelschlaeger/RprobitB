@@ -10,7 +10,7 @@
 #' @keywords
 #' helper
 
-is_covariance_matrix = function(x){
+is_covariance_matrix <- function(x) {
   is.matrix(x) &&
     is.numeric(x) &&
     ncol(x) == nrow(x) &&

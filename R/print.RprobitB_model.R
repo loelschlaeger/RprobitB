@@ -7,7 +7,7 @@
 #' Ignored.
 #' @export
 
-print.RprobitB_model = function(x, ...){
-  cat("Probit model '",deparse1(x$data$form),"'.\n", sep = "")
+print.RprobitB_model <- function(x, ...) {
+  cat("Probit model '", deparse1(x$data$form), "'.\n", sep = "")
   return(invisible(x))
 }

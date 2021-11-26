@@ -10,15 +10,14 @@
 #' Ignored.
 #' @export
 
-print.summary.RprobitB_model = function(x, digits = 2, ...) {
-
-  cat("Probit model '",deparse1(x$form),"'.\n\n", sep = "")
+print.summary.RprobitB_model <- function(x, digits = 2, ...) {
+  cat("Probit model '", deparse1(x$form), "'.\n\n", sep = "")
 
   ### summary of model
   cat("MCMC settings:\n")
-  cat("- R:",x$R,"\n")
-  cat("- B:",x$B,"\n")
-  cat("- Q:",x$Q,"\n")
+  cat("- R:", x$R, "\n")
+  cat("- B:", x$B, "\n")
+  cat("- Q:", x$Q, "\n")
   cat("\n")
 
   ### summary of normalization
@@ -36,7 +35,7 @@ print.summary.RprobitB_model = function(x, digits = 2, ...) {
   cat("\n")
 
   ### legend of latent classes
-  if(x$P_r>0){
+  if (x$P_r > 0) {
     print(x$latent_classes)
     cat("\n")
   }

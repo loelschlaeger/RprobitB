@@ -22,44 +22,57 @@
 #' @keywords
 #' s3
 
-RprobitB_gibbs_samples_statistics = function(gibbs_samples, FUN) {
+RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 
   ### check inputs
-  if(class(gibbs_samples) != "RprobitB_gibbs_samples")
+  if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
     stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.")
-  for(i in seq_len(length(FUN))){
-    if(class(FUN[[i]]) != "function")
-      stop("Element ",i," in 'FUN' is not of class 'function'.")
-    if(is.null(names(FUN)[i]) || names(FUN)[i] == "")
-      names(FUN)[i] = paste0("FUN",i)
+  }
+  for (i in seq_len(length(FUN))) {
+    if (class(FUN[[i]]) != "function") {
+      stop("Element ", i, " in 'FUN' is not of class 'function'.")
+    }
+    if (is.null(names(FUN)[i]) || names(FUN)[i] == "") {
+      names(FUN)[i] <- paste0("FUN", i)
+    }
   }
 
-  if(any(sapply(FUN, class) != "function"))
+  if (any(sapply(FUN, class) != "function")) {
     stop("Not all elements of 'FUN' are functions.")
+  }
 
   ### build 'RprobitB_gibbs_sample_statistics'
-  statistics = list()
-  for(par in names(gibbs_samples$gibbs_samples)){
-    statistics[[par]] = matrix(
-      NA, nrow = ncol(gibbs_samples$gibbs_samples_nbt[[par]]), ncol = 0,
-      dimnames = list(colnames(gibbs_samples$gibbs_samples_nbt[[par]])))
-    for(i in seq_len(length(FUN))){
-      fun = FUN[[i]]
-      values = apply(gibbs_samples$gibbs_samples_nbt[[par]], 2, fun,
-                     simplify = FALSE)
-      nvalue = length(values[[1]])
-      labels = colnames(gibbs_samples$gibbs_samples_nbt[[par]])
-      fun_name = if(nvalue == 1) names(FUN[i]) else
+  statistics <- list()
+  for (par in names(gibbs_samples$gibbs_samples)) {
+    statistics[[par]] <- matrix(
+      NA,
+      nrow = ncol(gibbs_samples$gibbs_samples_nbt[[par]]), ncol = 0,
+      dimnames = list(colnames(gibbs_samples$gibbs_samples_nbt[[par]]))
+    )
+    for (i in seq_len(length(FUN))) {
+      fun <- FUN[[i]]
+      values <- apply(gibbs_samples$gibbs_samples_nbt[[par]], 2, fun,
+        simplify = FALSE
+      )
+      nvalue <- length(values[[1]])
+      labels <- colnames(gibbs_samples$gibbs_samples_nbt[[par]])
+      fun_name <- if (nvalue == 1) {
+        names(FUN[i])
+      } else {
         paste(names(FUN[i]), seq_len(nvalue), sep = "_", recycle0 = TRUE)
-      append = matrix(NA, nrow = length(values), ncol = nvalue,
-                      dimnames = list(labels, fun_name))
-      for(j in seq_len(length(values)))
-        append[j,] = values[[j]]
-      statistics[[par]] = cbind(statistics[[par]], append)
+      }
+      append <- matrix(NA,
+        nrow = length(values), ncol = nvalue,
+        dimnames = list(labels, fun_name)
+      )
+      for (j in seq_len(length(values))) {
+        append[j, ] <- values[[j]]
+      }
+      statistics[[par]] <- cbind(statistics[[par]], append)
     }
   }
 
   ### return
-  class(statistics) = "RprobitB_gibbs_samples_statistics"
+  class(statistics) <- "RprobitB_gibbs_samples_statistics"
   return(statistics)
 }

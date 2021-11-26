@@ -10,19 +10,19 @@
 #' @keywords
 #' internal
 
-filter_gibbs_samples = function(x, P_f, P_r, J, C, cov_sym,
-                                keep_par = c("s","alpha","b","Omega","Sigma"),
-                                drop_par = NULL) {
-  labels = create_parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)
-  for(gs in names(x)){
-    for(par in names(x[[gs]])){
-      if(!par %in% names(labels)){
-        x[[gs]][[par]] = NULL
+filter_gibbs_samples <- function(x, P_f, P_r, J, C, cov_sym,
+                                 keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+                                 drop_par = NULL) {
+  labels <- create_parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)
+  for (gs in names(x)) {
+    for (par in names(x[[gs]])) {
+      if (!par %in% names(labels)) {
+        x[[gs]][[par]] <- NULL
       } else {
-        cols = intersect(colnames(x[[gs]][[par]]),labels[[par]])
-        x[[gs]][[par]] = x[[gs]][[par]][,cols,drop=FALSE]
+        cols <- intersect(colnames(x[[gs]][[par]]), labels[[par]])
+        x[[gs]][[par]] <- x[[gs]][[par]][, cols, drop = FALSE]
       }
-      x[[gs]] = x[[gs]][lengths(x[[gs]]) != 0]
+      x[[gs]] <- x[[gs]][lengths(x[[gs]]) != 0]
     }
   }
   return(x)

@@ -11,24 +11,27 @@
 #' @keywords
 #' internal
 
-plot_effects = function(gibbs_samples, coeff_names){
+plot_effects <- function(gibbs_samples, coeff_names) {
 
   ### extract means and sds
-  means = unlist(RprobitB_gibbs_samples_statistics(gibbs_samples,list(mean))[c("alpha","b")])
-  sds = unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(sd))[c("alpha","b")])
+  means <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(mean))[c("alpha", "b")])
+  sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(sd))[c("alpha", "b")])
 
   ### determine coefficient labels
-  labels = coeff_names
+  labels <- coeff_names
 
   ### plot means
-  xlim = c(min(c(means - sds),0), max(c(means + sds),0))
-  plot(x = means, y = 1:length(means),
-       yaxt = "n", ylab = "", xlab = "", xlim = xlim, main = "")
+  xlim <- c(min(c(means - sds), 0), max(c(means + sds), 0))
+  plot(
+    x = means, y = 1:length(means),
+    yaxt = "n", ylab = "", xlab = "", xlim = xlim, main = ""
+  )
 
   ### add uncertainty interval
   axis(2, at = 1:length(means), labels = labels, las = 1)
-  for(n in 1:length(means))
+  for (n in 1:length(means)) {
     segments(x0 = means[n] - sds[n], y0 = n, x1 = means[n] + sds[n], y1 = n)
+  }
 
   ### mark zero
   abline(v = 0, lty = 2)

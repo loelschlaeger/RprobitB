@@ -7,8 +7,10 @@
 #' Ignored.
 #' @export
 
-print.RprobitB_data = function(x, ...){
-  cat(ifelse(x$simulated,"Simulated","Empirical"),
-      "data of",sum(x$T),"choices.\n")
+print.RprobitB_data <- function(x, ...) {
+  cat(
+    ifelse(x$simulated, "Simulated", "Empirical"),
+    "data of", sum(x$T), "choices.\n"
+  )
   return(invisible(x))
 }

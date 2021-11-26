@@ -11,14 +11,15 @@
 #' @keywords
 #' helper
 
-set_mfrow = function(n){
-  if(n==1)
-    return(c(1,1))
-  ran = 2:max(floor((n-1)/2),1)
-  ran2 = pmax(ceiling(n/(ran)),1)
-  rem = abs(n - ran2*ran)
-  score = abs(sqrt(n)-(ran)) + abs(sqrt(n)-(ran2)) + rem
-  nr = ran[which.min(score)]
-  nc = ran2[which.min(score)]
+set_mfrow <- function(n) {
+  if (n == 1) {
+    return(c(1, 1))
+  }
+  ran <- 2:max(floor((n - 1) / 2), 1)
+  ran2 <- pmax(ceiling(n / (ran)), 1)
+  rem <- abs(n - ran2 * ran)
+  score <- abs(sqrt(n) - (ran)) + abs(sqrt(n) - (ran2)) + rem
+  nr <- ran[which.min(score)]
+  nc <- ran2[which.min(score)]
   return(c(nr, nc))
 }

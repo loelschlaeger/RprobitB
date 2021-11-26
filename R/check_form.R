@@ -39,43 +39,53 @@
 #' @keywords
 #' internal
 
-check_form = function(form, re = NULL) {
+check_form <- function(form, re = NULL) {
 
   ### check inputs
-  if(!inherits(form,"formula"))
+  if (!inherits(form, "formula")) {
     stop("'form' must be of class 'formula'.")
-  if(!is.null(re))
-    if(!is.character(re))
+  }
+  if (!is.null(re)) {
+    if (!is.character(re)) {
       stop("'re' must be a character (vector).")
+    }
+  }
 
   ### extract name of depentend variable
-  choice = all.vars(form)[1]
+  choice <- all.vars(form)[1]
 
   ### build 'vars'
-  vars = trimws(strsplit(as.character(form)[3], split="|", fixed = TRUE)[[1]])
-  while(length(vars)<3)
-    vars = c(vars,NA)
-  vars = lapply(strsplit(vars, split="+", fixed=TRUE), trimws)
+  vars <- trimws(strsplit(as.character(form)[3], split = "|", fixed = TRUE)[[1]])
+  while (length(vars) < 3) {
+    vars <- c(vars, NA)
+  }
+  vars <- lapply(strsplit(vars, split = "+", fixed = TRUE), trimws)
 
   ### build 'ASC'
-  ASC = ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
-  for(i in 1:3)
-    vars[[i]] = vars[[i]][!vars[[i]] %in% c(0,1,NA)]
+  ASC <- ifelse(any(vars[[2]] %in% 0), FALSE, TRUE)
+  for (i in 1:3) {
+    vars[[i]] <- vars[[i]][!vars[[i]] %in% c(0, 1, NA)]
+  }
 
   ### match 're' with 'form'
-  if(!is.null(re))
-    for(re_element in re)
-      if(!re_element %in% c("ASC",unlist(vars))){
-        re = setdiff(re, re_element)
-        warning("The covariate '",re_element,
-                "' in 're' is not part of 'form' and hence ignored.")
+  if (!is.null(re)) {
+    for (re_element in re) {
+      if (!re_element %in% c("ASC", unlist(vars))) {
+        re <- setdiff(re, re_element)
+        warning(
+          "The covariate '", re_element,
+          "' in 're' is not part of 'form' and hence ignored."
+        )
       }
+    }
+  }
 
   ### return
-  out = list("choice" = choice,
-             "re" = re,
-             "vars" = vars,
-             "ASC" = ASC)
+  out <- list(
+    "choice" = choice,
+    "re" = re,
+    "vars" = vars,
+    "ASC" = ASC
+  )
   return(out)
-
 }
