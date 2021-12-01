@@ -44,7 +44,7 @@ delta <- function(J, i) {
 #' subsequent figures will be drawn in an \code{nr} x \code{nc} array on the
 #' current device by rows.
 #' @export
-#' @example
+#' @examples
 #' set_mfrow(3)
 #' @keywords
 #' utils
