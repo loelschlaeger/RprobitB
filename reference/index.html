@@ -6,7 +6,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
@@ -19,37 +19,18 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-2">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">
-    <span class="fa fa-clipboard"></span>
-     
-    Reference
-  </a>
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown--vignettes">
-    <span class="fa fa-book-reader"></span>
-     
-    Vignettes
-  </a>
-  <div class="dropdown-menu" aria-labelledby="dropdown--vignettes">
-    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction and model formulation</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
+    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../news/index.html">
-    <span class="fa fa-wrench"></span>
-     
-    Changelog
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB">
-    <span class="fa fa-github fa-lg"></span>
-     
-    GitHub Repository
-  </a>
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -246,184 +227,13 @@ after Gibbs sampling.</dd>
           <code><a href="set_mfrow.html">set_mfrow()</a></code> 
         </dt>
         <dd>Balancing visualization of multiple figures.</dd>
-      </dl></div><div class="section level2">
-      <h2 id="internal-functions">Internal functions<a class="anchor" aria-label="anchor" href="#internal-functions"></a></h2>
-      
-      <p class="section-desc"></p><p>These functions are not user-level.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="check_distr.html">check_distr()</a></code> 
-        </dt>
-        <dd>Check <code>distr</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="check_form.html">check_form()</a></code> 
-        </dt>
-        <dd>Check <code>form</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="check_prior.html">check_prior()</a></code> 
-        </dt>
-        <dd>Check <code>prior</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_choice_probabilities.html">compute_choice_probabilities()</a></code> 
-        </dt>
-        <dd>Compute probit choice probabilities for a single choice situation.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_point_estimates.html">compute_point_estimates()</a></code> 
-        </dt>
-        <dd>Compute point estimates of an <code>RprobitB_model</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_sufficient_statistics.html">compute_sufficient_statistics()</a></code> 
-        </dt>
-        <dd>Compute sufficient statistics.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_labels_Omega.html">create_labels_Omega()</a></code> 
-        </dt>
-        <dd>Create labels for <code>Omega</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_labels_Sigma.html">create_labels_Sigma()</a></code> 
-        </dt>
-        <dd>Create labels for <code>Sigma</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_labels_alpha.html">create_labels_alpha()</a></code> 
-        </dt>
-        <dd>Create labels for <code>alpha</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_labels_b.html">create_labels_b()</a></code> 
-        </dt>
-        <dd>Create labels for <code>b</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_labels_s.html">create_labels_s()</a></code> 
-        </dt>
-        <dd>Create labels for <code>s</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_parameter_labels.html">create_parameter_labels()</a></code> 
-        </dt>
-        <dd>Create parameters labels.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="filter_gibbs_samples.html">filter_gibbs_samples()</a></code> 
-        </dt>
-        <dd>Filter Gibbs samples.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="gibbs_sampling.html">gibbs_sampling()</a></code> 
-        </dt>
-        <dd>Gibbs sampler.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_acf.html">plot_acf()</a></code> 
-        </dt>
-        <dd>Autocorrelation plot of Gibbs samples.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_effects.html">plot_effects()</a></code> 
-        </dt>
-        <dd>Visualizing the linear effects.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_mixture_contour.html">plot_mixture_contour()</a></code> 
-        </dt>
-        <dd>Plotting mixing distribution contours.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_mixture_marginal.html">plot_mixture_marginal()</a></code> 
-        </dt>
-        <dd>Plotting marginal mixing distributions.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_trace.html">plot_trace()</a></code> 
-        </dt>
-        <dd>Visualizing the trace of Gibbs samples.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="preference_flip.html">preference_flip()</a></code> 
-        </dt>
-        <dd>Check for flip in preferences after change in model scale.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="set_initial_gibbs_values.html">set_initial_gibbs_values()</a></code> 
-        </dt>
-        <dd>Set initial values for the Gibbs sampler.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transform_gibbs_samples.html">transform_gibbs_samples()</a></code> 
-        </dt>
-        <dd>Transformation of Gibbs samples.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transform_parameter.html">transform_parameter()</a></code> 
-        </dt>
-        <dd>Transformation of parameter values.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="undiff_Sigma.html">undiff_Sigma()</a></code> 
-        </dt>
-        <dd>Transform differenced to non-differenced error term covariance matrix.</dd>
-      </dl></div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="print.RprobitB_data.html">print(<i>&lt;RprobitB_data&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for <code>RprobitB_data</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.RprobitB_gibbs_samples_statistics.html">print(<i>&lt;RprobitB_gibbs_samples_statistics&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for <code>RprobitB_gibbs_samples_statistics</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.RprobitB_latent_classes.html">print(<i>&lt;RprobitB_latent_classes&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for <code>RprobitB_latent_classes</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.RprobitB_model.html">print(<i>&lt;RprobitB_model&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for <code>RprobitB_model</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.RprobitB_normalization.html">print(<i>&lt;RprobitB_normalization&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for <code>RprobitB_normalization</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.summary.RprobitB_data.html">print(<i>&lt;summary.RprobitB_data&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for the summary of <code>RprobitB_data</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.summary.RprobitB_model.html">print(<i>&lt;summary.RprobitB_model&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print method for the summary of <code>RprobitB_model</code>.</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
+  <p></p><p>Developed by <a href="https://www.oilbat.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown-footer-right">
