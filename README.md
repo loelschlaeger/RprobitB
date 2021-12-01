@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# RprobitB <img src="man/figures/logo.png" align="right" height=136 />
+# RprobitB <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 
@@ -69,8 +69,8 @@ data = prepare(form = choice ~ price | 0 | time + comfort + change,
 model = mcmc(data$train)
 #> Iteration Info                   ETA (min)
 #>         0 started Gibbs sampling          
-#>      1000                                2
-#>      2000                                2
+#>      1000                                1
+#>      2000                                1
 #>      3000                                1
 #>      4000                                1
 #>      5000                                1
@@ -113,12 +113,12 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.82    0.10    1.05
-#>      2   -0.83    0.10    1.05
-#>      3   -0.54    0.06    1.05
-#>      4   -0.51    0.06    1.03
-#>      5   -0.24    0.05    1.05
-#>      6   -0.20    0.05    1.03
+#>      1   -0.82    0.10    1.00
+#>      2   -0.83    0.10    1.00
+#>      3   -0.54    0.06    1.00
+#>      4   -0.50    0.06    1.00
+#>      5   -0.24    0.05    1.00
+#>      6   -0.21    0.05    1.01
 #> 
 #>  s
 #>                               
@@ -126,11 +126,11 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.15    0.29    1.12
+#>    1.1   -2.14    0.28    1.00
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    2.88    0.90    1.05
+#>  1.1,1    2.85    0.87    1.00
 #> 
 #>  Sigma
 #>                               
@@ -138,12 +138,12 @@ summary(model)
 plot(model, type = "mixture")
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+![](man/figures/README-example-1.png)<!-- -->
 
 ``` r
 predict(model, data$test)
 #>     predicted
 #> true   A   B
-#>    A 519 218
-#>    B 231 506
+#>    A 518 219
+#>    B 232 505
 ```
