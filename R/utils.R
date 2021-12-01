@@ -1,18 +1,21 @@
-#' Difference operator.
+#' Matrix difference operator.
 #' @description
-#' This function computes the difference operator matrix for computing utility
-#' differences.
+#' This function creates the difference operator matrix \code{delta} for
+#' subtracting a matrix row from the other matrix rows.
 #' @details
-#' Given a \code{J} x \code{P} matrix \code{X} of choice characteristics,
-#' then \code{delta(i,J)%*%X} computes differences with respect to alternative
-#' \code{i}.
+#' Given a matrix \code{x} with \code{J} rows, then \code{delta(i,J) %*% x}
+#' computes differences with respect to row \code{i}.
 #' @param J
-#' The total number of alternatives.
+#' The number of matrix rows.
 #' @param i
-#' The alternative number to which respect utility differences are computed.
+#' The row number to which respect differences are computed.
 #' @return
-#' A matrix of dimension \code{J-1} x \code{J}.
+#' A matrix with \code{J-1} rows.
 #' @export
+#' @examples
+#' J <- 2
+#' x <- matrix(1, nrow = J, ncol = 2)
+#' delta(J, 1) %*% x
 #' @keywords
 #' utils
 
@@ -172,13 +175,16 @@ R_hat <- function(samples, parts = 2) {
 
 #' Check covariance matrix properties.
 #' @description
-#' This function checks if the input is a proper covariance matrix, i.e.
-#' a symmetric, numeric matrix with non-negative eigenvalues.
+#' This function checks if the input is a proper covariance matrix, i.e. a
+#' symmetric, numeric matrix with non-negative eigenvalues.
 #' @param x
 #' A matrix.
 #' @return
 #' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
 #' @export
+#' @example
+#' x <- diag(2)
+#' is_covariance_matrix(x)
 #' @keywords
 #' utils
 
@@ -189,4 +195,3 @@ is_covariance_matrix <- function(x) {
     all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
 }
-
