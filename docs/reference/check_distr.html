@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check distr — check_distr • RprobitB</title>
+<title>Check distr. — check_distr • RprobitB</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -19,8 +19,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Check distr — check_distr" />
-<meta property="og:description" content="Function that checks the input distr." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:title" content="Check distr. — check_distr" />
+<meta property="og:description" content="This function checks the input distr." />
+<meta property="og:image" content="https://loelschlaeger.github.io/RprobitB/logo.png" />
 
 
 
@@ -80,23 +80,52 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+  <a href="../reference/index.html">
+    <span class="fa fa-clipboard"></span>
      
+    Reference
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book-reader"></span>
+     
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction and model formulation</a>
+    </li>
+    <li>
+      <a href="../articles/data_management.html">Data management</a>
+    </li>
+    <li>
+      <a href="../articles/model_fitting.html">Model fitting</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">
+    <span class="fa fa-wrench"></span>
+     
+    Changelog
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="https://github.com/loelschlaeger/RprobitB">
+    <span class="fa fa-github fa-lg"></span>
+     
+    GitHub Repository
+  </a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -114,13 +143,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check <code>distr</code></h1>
+    <h1>Check <code>distr</code>.</h1>
     
     <div class="hidden name"><code>check_distr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Function that checks the input <code>distr</code>.</p>
+    <p>This function checks the input <code>distr</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_distr</span><span class='op'>(</span><span class='va'>distr</span><span class='op'>)</span></pre>
@@ -131,12 +160,12 @@
     <tr>
       <th>distr</th>
       <td><p>A named list of number generation functions from which the covariates are
-drawn. Each element of <code>distr</code> must be of the form
-<code>"cov" = list("name" = "&lt;name of the number generation function&gt;", ...)</code>,
+drawn. Covariates for which no distribution is specified are drawn from a
+standard normal distribution.
+Each element of <code>distr</code> must be of the form
+<code>"cov" = list("name" = "&lt;name of the number generation function&gt;",...)</code>,
 where <code>cov</code> is the name of the covariate and <code>...</code> are required
 parameters for the number generation function.
-Covariates for which no distribution is specified are drawn from a standard
-normal distribution.
 Possible number generation functions are</p><ul>
 <li><p>functions of the type <code>r*</code> from base R (e.g. <code>rnorm</code>) where
 all required parameters (except for <code>n</code>) must be specified,</p></li>
@@ -148,40 +177,8 @@ all required parameters (except for <code>n</code>) must be specified,</p></li>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The checked input <code>distr</code></p>
+    <p>The checked input <code>distr</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>check_distr</span><span class='op'>(</span>distr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"price_bus"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span><span class='op'>=</span> <span class='st'>"rgamma"</span>, shape <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,</span>
-<span class='r-in'>                         <span class='st'>"cars"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"name"</span> <span class='op'>=</span> <span class='st'>"sample"</span>, x <span class='op'>=</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>2</span>,</span>
-<span class='r-in'>                                       replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $price_bus</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $price_bus$name</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "rgamma"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $price_bus$shape</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $price_bus$n</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $cars</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $cars$name</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "sample"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $cars$x</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0 1 2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $cars$replace</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $cars$size</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "RprobitB_distr"</span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
