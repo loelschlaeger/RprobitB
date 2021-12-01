@@ -33,7 +33,7 @@ reference:
   - prepare
   - simulate
   - summary.RprobitB_data
-- title: Model estimate
+- title: Model estimation
   desc: Use these function to estimate a probit model.
 - contents:
   - mcmc
@@ -51,12 +51,12 @@ reference:
   desc: These functions construct the S3 classes of RprobitB.
 - contents:
   - has_keyword("s3")
+- title: Small utilities
+  desc: These functions may be useful beyond RprobitB.
+- contents:
+  - has_keyword("utils")
 - title: Internal functions
   desc: These functions are not user-level.
 - contents:
   - has_keyword("internal")
-- title: Helper functions
-  desc: These functions may be useful beyond RprobitB.
-- contents:
-  - has_keyword("helper")
 
