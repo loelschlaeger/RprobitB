@@ -82,7 +82,9 @@ See the vignette "Data management" for more details:
 }
 \examples{
 data("Train", package = "mlogit")
-data = prepare(form = choice ~ price | 0 | time + comfort + change,
-               choice_data = Train, re = c("price","time"),
-               standardize = "all")
+data <- prepare(
+  form = choice ~ price | 0 | time + comfort + change,
+  choice_data = Train, re = c("price", "time"),
+  standardize = "all"
+)
 }

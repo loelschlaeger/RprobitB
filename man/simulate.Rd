@@ -93,7 +93,9 @@ See the vignette "Data management" for more details:
 \code{vignette("data_management", package = "RprobitB")}.
 }
 \examples{
-data = simulate(form = choice ~ cost | income + 0 | time,
-                N = 100, T = 10, J = 3, re = "cost",
-                alternatives = c("car", "bus", "scooter"))
+data <- simulate(
+  form = choice ~ cost | income + 0 | time,
+  N = 100, T = 10, J = 3, re = "cost",
+  alternatives = c("car", "bus", "scooter")
+)
 }

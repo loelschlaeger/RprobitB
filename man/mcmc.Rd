@@ -116,24 +116,28 @@ See the vignette "Model fitting" for more details:
 \examples{
 \dontrun{
 ### probit model
-p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-m1 = mcmc(data = p, seed = 1)
+p <- simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
+m1 <- mcmc(data = p, seed = 1)
 
 ### multinomial probit model
-mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
-m2 = mcmc(data = mnp, seed = 1)
+mnp <- simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
+m2 <- mcmc(data = mnp, seed = 1)
 
 ### mixed multinomial probit model
-mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
-                seed = 1)
-m3 = mcmc(data = mmnp, seed = 1)
+mmnp <- simulate(
+  form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
+  seed = 1
+)
+m3 <- mcmc(data = mmnp, seed = 1)
 
 ### mixed multinomial probit model with 2 latent classes
-lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-                  re = "var", seed = 1, C = 2)
-m4 = mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
+lcmmnp <- simulate(
+  form = choice ~ 0 | var, N = 100, T = 10, J = 3,
+  re = "var", seed = 1, C = 2
+)
+m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 
 ### update of latent classes
-m5 = mcmc(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
+m5 <- mcmc(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
 }
 }
