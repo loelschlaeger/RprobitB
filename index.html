@@ -31,6 +31,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -43,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
       </span>
     </div>
 
@@ -84,7 +86,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/loelschlaeger/RprobitB">
+  <a href="https://github.com/loelschlaeger/RprobitB" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub Repository
@@ -103,88 +105,188 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="rprobitb-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#rprobitb-" class="anchor"></a>RprobitB <img src="reference/figures/logo.png" align="right" height="136">
+<div class="section level1">
+<div class="page-header"><h1 id="rprobitb-">RprobitB <img src="reference/figures/logo.png" align="right" height="136"><a class="anchor" aria-label="anchor" href="#rprobitb-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>The goal of RprobitB is to fit mixed probit models to choice data. The package differs from comparable packages in two ways: Bayesian estimation and a focus on taste heterogeneity.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of RprobitB from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of RprobitB from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="documentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
-<p>The package is documented in several vignettes:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
+<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html">browseVignettes</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"loelschlaeger/RprobitB"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example to show how to fit a mixed probit model and make choice predictions:</p>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>The package is documented in several vignettes:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RprobitB</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>This is a basic example to show how to fit a mixed probit model and make choice predictions:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RprobitB</span><span class="op">)</span>
+<span class="co">#&gt; Thanks for using RprobitB 1.0.0, happy choice modeling!</span>
+<span class="co">#&gt; See https://loelschlaeger.github.io/RprobitB for help.</span>
+<span class="co">#&gt; Type 'citation("RprobitB")' for citing this R package.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attache Paket: 'RprobitB'</span>
+<span class="co">#&gt; Die folgenden Objekte sind maskiert von 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     predict, simulate</span>
+<span class="co">#&gt; Das folgende Objekt ist maskiert 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     transform</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span>,
                choice_data <span class="op">=</span> <span class="va">Train</span>,
                re <span class="op">=</span> <span class="st">"price"</span>,
                standardize <span class="op">=</span> <span class="st">"all"</span>,
                test_prop <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
 <span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">train</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span>
-<span class="fu"><a href="reference/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span></code></pre></div>
+<span class="co">#&gt; Iteration Info                   ETA (min)</span>
+<span class="co">#&gt;         0 started Gibbs sampling          </span>
+<span class="co">#&gt;      1000                                2</span>
+<span class="co">#&gt;      2000                                2</span>
+<span class="co">#&gt;      3000                                1</span>
+<span class="co">#&gt;      4000                                1</span>
+<span class="co">#&gt;      5000                                1</span>
+<span class="co">#&gt;      6000                                1</span>
+<span class="co">#&gt;      7000                                1</span>
+<span class="co">#&gt;      8000                                1</span>
+<span class="co">#&gt;      9000                                1</span>
+<span class="co">#&gt;     10000 done, total time: 2 min</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
+<span class="co">#&gt; Probit model 'choice ~ price | 0 | time + comfort + change'.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; MCMC settings:</span>
+<span class="co">#&gt; - R: 10000 </span>
+<span class="co">#&gt; - B: 5000 </span>
+<span class="co">#&gt; - Q: 1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Normalization:</span>
+<span class="co">#&gt; - Level: Utility differences with respect to alternative 2.</span>
+<span class="co">#&gt; - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Legend of alternatives:</span>
+<span class="co">#&gt;   name</span>
+<span class="co">#&gt; 1    A</span>
+<span class="co">#&gt; 2    B</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Legend of linear coefficients:</span>
+<span class="co">#&gt;        name    re</span>
+<span class="co">#&gt; 1    time_A FALSE</span>
+<span class="co">#&gt; 2    time_B FALSE</span>
+<span class="co">#&gt; 3 comfort_A FALSE</span>
+<span class="co">#&gt; 4 comfort_B FALSE</span>
+<span class="co">#&gt; 5  change_A FALSE</span>
+<span class="co">#&gt; 6  change_B FALSE</span>
+<span class="co">#&gt; 7     price  TRUE</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Latent classes: 1 </span>
+<span class="co">#&gt; - Update: FALSE </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Parameter statistics:</span>
+<span class="co">#&gt;           mean      sd      R^</span>
+<span class="co">#&gt;  alpha</span>
+<span class="co">#&gt;                               </span>
+<span class="co">#&gt;      1   -0.82    0.10    1.05</span>
+<span class="co">#&gt;      2   -0.83    0.10    1.05</span>
+<span class="co">#&gt;      3   -0.54    0.06    1.05</span>
+<span class="co">#&gt;      4   -0.51    0.06    1.03</span>
+<span class="co">#&gt;      5   -0.24    0.05    1.05</span>
+<span class="co">#&gt;      6   -0.20    0.05    1.03</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  s</span>
+<span class="co">#&gt;                               </span>
+<span class="co">#&gt;      1    1.00    0.00     NaN</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  b</span>
+<span class="co">#&gt;                               </span>
+<span class="co">#&gt;    1.1   -2.15    0.29    1.12</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Omega</span>
+<span class="co">#&gt;                               </span>
+<span class="co">#&gt;  1.1,1    2.88    0.90    1.05</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Sigma</span>
+<span class="co">#&gt;                               </span>
+<span class="co">#&gt;    1,1    1.00    0.00    1.00</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span>
+<span class="co">#&gt;     predicted</span>
+<span class="co">#&gt; true   A   B</span>
+<span class="co">#&gt;    A 519 218</span>
+<span class="co">#&gt;    B 231 506</span></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=RprobitB">https://​cloud.r-project.org/​package=RprobitB</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Lennart Oelschläger <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Dietmar Bauer <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://cloud.r-project.org/package=RprobitB" class="external-link">View on CRAN</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-pkg.org/badges/version-last-release/RprobitB"><img src="https://www.r-pkg.org/badges/version-last-release/RprobitB" alt="CRAN status"></a></li>
-<li><a href="https://cranlogs.r-pkg.org/badges/grand-total/RprobitB"><img src="https://cranlogs.r-pkg.org/badges/grand-total/RprobitB" alt="CRAN downloads"></a></li>
-<li><a href="https://github.com/loelschlaeger/RprobitB/actions"><img src="https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing RprobitB</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Lennart Oelschläger <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Dietmar Bauer <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.r-pkg.org/badges/version-last-release/RprobitB" class="external-link"><img src="https://www.r-pkg.org/badges/version-last-release/RprobitB" alt="CRAN status"></a></li>
+<li><a href="https://cranlogs.r-pkg.org/badges/grand-total/RprobitB" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/RprobitB" alt="CRAN downloads"></a></li>
+<li><a href="https://github.com/loelschlaeger/RprobitB/actions" class="external-link"><img src="https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main" class="external-link"><img src="https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
+  <p></p>
+<p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -192,6 +294,8 @@
 
   
 
+
+  
 
   </body>
 </html>

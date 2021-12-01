@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
       </span>
     </div>
 
@@ -79,7 +81,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/loelschlaeger/RprobitB">
+  <a href="https://github.com/loelschlaeger/RprobitB" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub Repository
@@ -100,9 +102,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to RprobitB and model formulation</h1>
-                        <h4 class="author">Lennart Oelschläger</h4>
+                        <h4 data-toc-skip class="author">Lennart Oelschläger</h4>
             
-            <h4 class="date">2021-11-26</h4>
+            <h4 data-toc-skip class="date">2021-12-01</h4>
       
       
       <div class="hidden name"><code>introduction_to_RprobitB_and_model_formulation.Rmd</code></div>
@@ -112,9 +114,9 @@
     
     
 <p>Welcome to <strong>RprobitB</strong>! This vignette introduces the R package and defines the underlying model.</p>
-<div id="introdution" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introdution" class="anchor"></a>Introdution</h2>
+<div class="section level2">
+<h2 id="introdution">Introdution<a class="anchor" aria-label="anchor" href="#introdution"></a>
+</h2>
 <p>With <strong>RprobitB</strong><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> you can</p>
 <ol style="list-style-type: decimal">
 <li><p>analyze choices made by deciders among a discrete set of alternatives,</p></li>
@@ -124,9 +126,9 @@
 </ol>
 <p>Run <code>install.packages("RprobitB")</code> in your R console to install the latest version of <strong>RprobitB</strong>.</p>
 </div>
-<div id="levels-of-model-complexity" class="section level2">
-<h2 class="hasAnchor">
-<a href="#levels-of-model-complexity" class="anchor"></a>Levels of model complexity</h2>
+<div class="section level2">
+<h2 id="levels-of-model-complexity">Levels of model complexity<a class="anchor" aria-label="anchor" href="#levels-of-model-complexity"></a>
+</h2>
 <p>Why the notation <strong>(latent class) (mixed) (multinomial) probit model</strong>? Because <strong>RprobitB</strong> can fit probit models of increasing complexity:</p>
 <ul>
 <li><p>Most basic, modelling the choice between two alternatives (the <strong>probit model</strong>).</p></li>
@@ -135,18 +137,18 @@
 <li><p>The most general model is the <strong>latent class mixed multinomial probit model</strong>, which approximates the mixing distribution through a mixiture of normal distributions.</p></li>
 </ul>
 </div>
-<div id="outline-of-the-vignettes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#outline-of-the-vignettes" class="anchor"></a>Outline of the vignettes</h2>
+<div class="section level2">
+<h2 id="outline-of-the-vignettes">Outline of the vignettes<a class="anchor" aria-label="anchor" href="#outline-of-the-vignettes"></a>
+</h2>
 <ol style="list-style-type: decimal">
 <li><p><a href="#the-model">How is the model defined?</a></p></li>
 <li><p><a href="data_management.html">How to prepare or simulate choice data?</a></p></li>
 <li><p><a href="model_fitting.html">How to fit a model?</a></p></li>
 </ol>
 </div>
-<div id="the-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-model" class="anchor"></a>The model</h2>
+<div class="section level2">
+<h2 id="the-model">The model<a class="anchor" aria-label="anchor" href="#the-model"></a>
+</h2>
 <p>Assume that we observe the choices of <span class="math inline">\(N\)</span> decision makers which decide between <span class="math inline">\(J\)</span> alternatives at each of <span class="math inline">\(T\)</span> choice occasions.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Specific to each decision maker, alternative and choice occasion, we furthermore observe <span class="math inline">\(P_f+P_r\)</span> choice attributes that we use to explain the choices. The first <span class="math inline">\(P_f\)</span> attributes are connected to fixed coefficients, the other <span class="math inline">\(P_r\)</span> attributes to random coefficients following a joint distribution mixed across decision makers.</p>
 <p>Person <span class="math inline">\(n\)</span>’s utility <span class="math inline">\(\tilde{U}_{ntj}\)</span> for alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span> is modeled as <span class="math display">\[\begin{equation}
 \tilde{U}_{ntj} = \tilde{W}_{ntj}'\alpha + \tilde{X}_{ntj}'\beta_n + \tilde{\epsilon}_{ntj}
@@ -157,32 +159,32 @@
 <li><p><span class="math inline">\(\tilde{X}_{ntj}\)</span> is a vector of <span class="math inline">\(P_r\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span> corresponding to the random, decision maker-specific coefficient vector <span class="math inline">\(\beta_n \in {\mathbb R}^{P_r}\)</span>, where <span class="math inline">\(\beta_n\)</span> is distributed according to some <span class="math inline">\(P_r\)</span>-variate distribution <span class="math inline">\(g_{P_r}\)</span>,</p></li>
 <li><p>and <span class="math inline">\((\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},\dots,\tilde{\epsilon}_{ntJ})' \sim \text{MVN}_{J} (0,\tilde{\Sigma})\)</span> is the models’ error term vector for <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span>, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix <span class="math inline">\(\tilde{\Sigma}\)</span>.</p></li>
 </ul>
-<div id="normalization" class="section level3">
-<h3 class="hasAnchor">
-<a href="#normalization" class="anchor"></a>Normalization</h3>
+<div class="section level3">
+<h3 id="normalization">Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
+</h3>
 <p>As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified. Therefore, we consider the transformed model</p>
 <p><span class="math display">\[\begin{equation}
 U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
 \end{equation}\]</span></p>
 <p><span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J-1\)</span>, where (choosing <span class="math inline">\(J\)</span> as the reference alternative) <span class="math inline">\(U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}\)</span>, <span class="math inline">\(W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}\)</span>, <span class="math inline">\(X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}\)</span> and <span class="math inline">\(\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}\)</span>, where <span class="math inline">\((\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})' \sim \text{MVN}_{J-1} (0,\Sigma)\)</span> and <span class="math inline">\(\Sigma\)</span> denotes a covariance matrix with the top-left element restricted to one.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 </div>
-<div id="linking-the-latent-utility-to-the-choices" class="section level3">
-<h3 class="hasAnchor">
-<a href="#linking-the-latent-utility-to-the-choices" class="anchor"></a>Linking the latent utility to the choices</h3>
+<div class="section level3">
+<h3 id="linking-the-latent-utility-to-the-choices">Linking the latent utility to the choices<a class="anchor" aria-label="anchor" href="#linking-the-latent-utility-to-the-choices"></a>
+</h3>
 <p>Let <span class="math inline">\(y_{nt}=j\)</span> denote the event that decision maker <span class="math inline">\(n\)</span> chooses alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span>. Assuming utility maximizing behavior of the decision makers, the decisions are linked to the utilities via <span class="math display">\[\begin{equation}
 y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + J \cdot 1\left (U_{ntj}&lt;0 ~\text{for all}~j\right), 
 \end{equation}\]</span> where <span class="math inline">\(1(A)\)</span> equals <span class="math inline">\(1\)</span> if condition <span class="math inline">\(A\)</span> is true and <span class="math inline">\(0\)</span> else.</p>
 </div>
-<div id="approximating-the-mixing-distribution" class="section level3">
-<h3 class="hasAnchor">
-<a href="#approximating-the-mixing-distribution" class="anchor"></a>Approximating the mixing distribution</h3>
+<div class="section level3">
+<h3 id="approximating-the-mixing-distribution">Approximating the mixing distribution<a class="anchor" aria-label="anchor" href="#approximating-the-mixing-distribution"></a>
+</h3>
 <p>We approximate the mixing distribution <span class="math inline">\(g_{P_r}\)</span> for the random coefficients<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> <span class="math inline">\(\beta=(\beta_n)_{n}\)</span> by a mixture of <span class="math inline">\(P_r\)</span>-variate normal densities <span class="math inline">\(\phi_{P_r}\)</span> with mean vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span> using <span class="math inline">\(C\)</span> components, i.e. <span class="math display">\[\begin{equation}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c),
 \end{equation}\]</span> where <span class="math inline">\((s_c)_{c}\)</span> are weights satisfying <span class="math inline">\(0 &lt; s_c\leq 1\)</span> for <span class="math inline">\(c=1,\dots,C\)</span> and <span class="math inline">\(\sum_c s_c=1\)</span>.</p>
 </div>
-<div id="interpreting-the-latent-classes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#interpreting-the-latent-classes" class="anchor"></a>Interpreting the latent classes</h3>
+<div class="section level3">
+<h3 id="interpreting-the-latent-classes">Interpreting the latent classes<a class="anchor" aria-label="anchor" href="#interpreting-the-latent-classes"></a>
+</h3>
 <p>One interpretation of the latent class model is obtained by introducing variables <span class="math inline">\(z=(z_n)_n\)</span> allocating each decision maker <span class="math inline">\(n\)</span> to class <span class="math inline">\(c\)</span> with probability <span class="math inline">\(s_c\)</span>, i.e. <span class="math display">\[\begin{equation}
 \text{Prob}(z_n=c)=s_c \quad \text{and} \quad \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
 \end{equation}\]</span></p>
@@ -212,11 +214,13 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 
 
       <footer><div class="copyright">
-  <p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
+  <p></p>
+<p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -224,6 +228,8 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 
   
 
+
+  
 
   </body>
 </html>

@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
       </span>
     </div>
 
@@ -79,7 +81,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/loelschlaeger/RprobitB">
+  <a href="https://github.com/loelschlaeger/RprobitB" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub Repository
@@ -100,9 +102,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Model fitting</h1>
-                        <h4 class="author">Lennart Oelschläger</h4>
+                        <h4 data-toc-skip class="author">Lennart Oelschläger</h4>
             
-            <h4 class="date">2021-11-26</h4>
+            <h4 data-toc-skip class="date">2021-12-01</h4>
       
       
       <div class="hidden name"><code>model_fitting.Rmd</code></div>
@@ -157,9 +159,9 @@
 </ul>
 </li>
 </ul>
-<div id="prior-settings" class="section level2">
-<h2 class="hasAnchor">
-<a href="#prior-settings" class="anchor"></a>Prior settings</h2>
+<div class="section level2">
+<h2 id="prior-settings">Prior settings<a class="anchor" aria-label="anchor" href="#prior-settings"></a>
+</h2>
 <p>Bayesian analysis enables to impose prior beliefs on the model parameters. It is possible to either express strong prior knowledge using informative prior distributions or to express vague knowledge using diffuse prior distributions. <strong>RprobitB</strong> applies the following conjugate priors:</p>
 <ul>
 <li><p><span class="math inline">\((s_1,\dots,s_C)\sim D_C(\delta)\)</span>, where <span class="math inline">\(D_C(\delta)\)</span> denotes the <span class="math inline">\(C\)</span>-dimensional Dirichlet distribution with concentration parameter vector <span class="math inline">\(\delta = (\delta_1,\dots,\delta_C)\)</span>,</p></li>
@@ -171,9 +173,9 @@
 <p>Per default, <strong>RprobitB</strong> applies the diffuse prior approach, setting <span class="math inline">\(\delta_1=\dots=\delta_C=1\)</span>; <span class="math inline">\(\psi\)</span> and <span class="math inline">\(\xi\)</span> equal to the zero vector; <span class="math inline">\(\Psi\)</span> and <span class="math inline">\(\Xi\)</span> equal to the identity matrix; <span class="math inline">\(\nu\)</span> and <span class="math inline">\(\kappa\)</span> equal to <span class="math inline">\(P_r+2\)</span> and <span class="math inline">\(J+1\)</span>, respectively (to obtain proper priors); <span class="math inline">\(\Theta\)</span> and <span class="math inline">\(\Lambda\)</span> equal to the identity matrix.</p>
 <p>Alternatively, the parameters can be chosen based on estimation results of similar choice settings, resulting in informative priors.</p>
 </div>
-<div id="bayes-estimation-of-the-probit-model-via-gibbs-sampling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bayes-estimation-of-the-probit-model-via-gibbs-sampling" class="anchor"></a>Bayes estimation of the probit model via Gibbs sampling</h2>
+<div class="section level2">
+<h2 id="bayes-estimation-of-the-probit-model-via-gibbs-sampling">Bayes estimation of the probit model via Gibbs sampling<a class="anchor" aria-label="anchor" href="#bayes-estimation-of-the-probit-model-via-gibbs-sampling"></a>
+</h2>
 <p>The Bayesian analysis of the (latent class) (mixed) (multinomial) probit model builds upon the work of <span class="citation">(McCulloch and Rossi 1994)</span>, <span class="citation">(Nobile 1998)</span>, <span class="citation">(Allenby and Rossi 1998)</span>, and <span class="citation">(Imai and Dyk 2005)</span>. A key ingredient is the concept of data augmentation, cf. <span class="citation">(Albert and Chib 1993)</span>, which treats the latent utilities as parameters themselves. Conditional on the latent utilities, the multinomial probit model constitutes a standard Bayesian linear regression set-up, which renders drawing from the posterior distribution feasible without the need to evaluate any likelihood.</p>
 <p>Gibbs sampling from the joint posterior distribution of a latent class mixed multinomial probit model proceeds by iteratively drawing and updating each model parameter conditional on the other parameters.</p>
 <ul>
@@ -209,9 +211,9 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 \end{equation}\]</span> where <span class="math inline">\(S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'\)</span> and <span class="math inline">\(\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n\)</span>.</p></li>
 </ul>
 </div>
-<div id="parameter-normalization" class="section level2">
-<h2 class="hasAnchor">
-<a href="#parameter-normalization" class="anchor"></a>Parameter normalization</h2>
+<div class="section level2">
+<h2 id="parameter-normalization">Parameter normalization<a class="anchor" aria-label="anchor" href="#parameter-normalization"></a>
+</h2>
 <p>Samples obtained from the scheme described above still lack identification (see <a href="introduction_to_RprobitB_and_model_formulation.html">the introductory vignette</a>). Therefore, subsequent to the sampling, the normalizations</p>
 <ul>
 <li><p><span class="math inline">\(\alpha^{(i)}/\sqrt{(\Sigma^{(i)})_{11}}\)</span>,</p></li>
@@ -227,16 +229,16 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="../reference/transform.html">transform</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, scale <span class="op">=</span> <span class="va">scale</span><span class="op">)</span></code></pre></div>
 <p>where <code>model</code> is the output of <code><a href="../reference/mcmc.html">mcmc()</a></code> and <code>scale</code> is a named list of three elements, determining the parameter normalization, as described above.</p>
 </div>
-<div id="burning-and-thinning" class="section level2">
-<h2 class="hasAnchor">
-<a href="#burning-and-thinning" class="anchor"></a>Burning and thinning</h2>
+<div class="section level2">
+<h2 id="burning-and-thinning">Burning and thinning<a class="anchor" aria-label="anchor" href="#burning-and-thinning"></a>
+</h2>
 <p>The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme can be considered as a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first <span class="math inline">\(B\)</span> out of <span class="math inline">\(R\)</span> samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every <span class="math inline">\(Q\)</span>th sample when averaging values to compute parameter statistics like expectation and standard deviation.</p>
 <p>Adequate values for <span class="math inline">\(R\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(Q\)</span> depend on the complexity of the considered Bayesian framework. Per default, <strong>RprobitB</strong> sets <code>R = 1e4</code>, <code>B = R/2</code> and <code>Q = 10</code>.</p>
 <p>The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots.</p>
 </div>
-<div id="updating-the-number-of-latent-classes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#updating-the-number-of-latent-classes" class="anchor"></a>Updating the number of latent classes</h2>
+<div class="section level2">
+<h2 id="updating-the-number-of-latent-classes">Updating the number of latent classes<a class="anchor" aria-label="anchor" href="#updating-the-number-of-latent-classes"></a>
+</h2>
 <p>Updating the number <span class="math inline">\(C\)</span> of latent classes is done within the Gibbs sampler by executing the following weight-based updating scheme within the second half of the burn-in period<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
 <ul>
 <li><p>We remove class <span class="math inline">\(c\)</span>, if <span class="math inline">\(s_c&lt;\varepsilon_{\text{min}}\)</span>, i.e. if the class weight <span class="math inline">\(s_c\)</span> drops below some threshold <span class="math inline">\(\varepsilon_{\text{min}}\)</span>. This case indicates that class <span class="math inline">\(c\)</span> has a negligible impact on the mixing distribution.</p></li>
@@ -250,9 +252,9 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <li><p><code>distmin = 0.1</code>.</p></li>
 </ul>
 </div>
-<div id="examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h2>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### probit model</span>
 <span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="../reference/simulate.html">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
@@ -268,15 +270,15 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### latent classes mixed multinomial probit model</span>
 <span class="va">lcmmnp</span> <span class="op">=</span> <span class="fu"><a href="../reference/simulate.html">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">var</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>, re <span class="op">=</span> <span class="st">"var"</span>,
-                  parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="va">m4</span> <span class="op">=</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+                  parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">m4</span> <span class="op">=</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### update of latent classes</span>
-<span class="va">m5</span> <span class="op">=</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"update"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">m5</span> <span class="op">=</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"update"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="references" class="section level2 unnumbered">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2 unnumbered">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references">
 <div id="ref-Albert:93">
 <p>Albert, James H., and Siddhartha Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88.</p>
@@ -315,11 +317,13 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 
 
       <footer><div class="copyright">
-  <p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
+  <p></p>
+<p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -327,6 +331,8 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 
   
 
+
+  
 
   </body>
 </html>
