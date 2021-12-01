@@ -8,6 +8,7 @@
 #' The number of printed decimal places.
 #' @param ...
 #' Ignored.
+#' @noRd
 
 print.summary.RprobitB_model <- function(x, digits = 2, ...) {
   cat("Probit model '", deparse1(x$form), "'.\n\n", sep = "")

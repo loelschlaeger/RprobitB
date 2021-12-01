@@ -6,6 +6,7 @@
 #' An object of class \code{summary.RprobitB_data}.
 #' @param ...
 #' Ignored.
+#' @noRd
 
 print.summary.RprobitB_data <- function(x, ...) {
   cat(

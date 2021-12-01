@@ -6,6 +6,7 @@
 #' An object of class \code{RprobitB_latent_classes}.
 #' @param ...
 #' Ignored.
+#' @noRd
 
 print.RprobitB_latent_classes <- function(x, ...) {
   cat("Latent classes:", x$C, "\n")
