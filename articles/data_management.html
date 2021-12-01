@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
       </span>
     </div>
 
@@ -79,7 +81,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/loelschlaeger/RprobitB">
+  <a href="https://github.com/loelschlaeger/RprobitB" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub Repository
@@ -100,9 +102,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Data management</h1>
-                        <h4 class="author">Lennart Oelschläger</h4>
+                        <h4 data-toc-skip class="author">Lennart Oelschläger</h4>
             
-            <h4 class="date">2021-11-26</h4>
+            <h4 data-toc-skip class="date">2021-12-01</h4>
       
       
       <div class="hidden name"><code>data_management.Rmd</code></div>
@@ -117,9 +119,9 @@
 <li><p><a href="#simulated-data">simulated data</a>.</p></li>
 </ol>
 <p>As a first step, we recommend to <a href="#specify-the-model-formula">specify the model formula</a>.</p>
-<div id="specify-the-model-formula" class="section level2">
-<h2 class="hasAnchor">
-<a href="#specify-the-model-formula" class="anchor"></a>Specify the model formula</h2>
+<div class="section level2">
+<h2 id="specify-the-model-formula">Specify the model formula<a class="anchor" aria-label="anchor" href="#specify-the-model-formula"></a>
+</h2>
 <p>The model formula is specified using a formula object, let’s call it <code>form</code>.</p>
 <p>The structure of <code>form</code> is <code>choice ~ A | B | C</code>, where</p>
 <ul>
@@ -136,9 +138,9 @@
 <li><p>If we don’t want to include any covariates of the second category but we want to estimate alternative specific constants, add <code>1</code> in the second spot, e.g. <code>choice ~ A | 1</code>. The expression <code>choice ~ A | 0</code> is interpreted as no covariates of the second category and no alternative specific constants.</p></li>
 </ul>
 <p>To have random effects for specific variables, we need to define a character vector <code>re</code> of the corresponding variable names. To have random effects for the alternative specific constants, include <code>"ASC"</code> in <code>re</code>.</p>
-<div id="example-simulated-choice-of-transportation-means" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-simulated-choice-of-transportation-means" class="anchor"></a>Example: Simulated choice of transportation means</h3>
+<div class="section level3">
+<h3 id="example-simulated-choice-of-transportation-means">Example: Simulated choice of transportation means<a class="anchor" aria-label="anchor" href="#example-simulated-choice-of-transportation-means"></a>
+</h3>
 <p>Say we want to explain the <code>choice</code> of transportation means by the variables <code>cost</code>, <code>income</code>, and <code>travel_time</code>. We furthermore want to add alternative specific constants.</p>
 <ul>
 <li><p>The <code>cost</code> of an alternative is obviously alternative specific. However, we can argue that it does not matter for which alternative we spend our money. Therefore, we want to estimate a generic coefficient for <code>cost</code>.</p></li>
@@ -153,9 +155,9 @@
 <code class="sourceCode R"><span class="va">re</span> <span class="op">=</span> <span class="st">"cost"</span></code></pre></div>
 </div>
 </div>
-<div id="empirical-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#empirical-data" class="anchor"></a>Empirical data</h2>
+<div class="section level2">
+<h2 id="empirical-data">Empirical data<a class="anchor" aria-label="anchor" href="#empirical-data"></a>
+</h2>
 <p>This section explains how to prepare empirical data for estimation using the function <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
 <p>Say we have a data set with empirical choice data, let’s call it <code>choice_data</code>. It must meet the following requirements:</p>
 <ol style="list-style-type: decimal">
@@ -176,20 +178,20 @@
 <li><p><code>id</code>: A character, the name of the column in <code>choice_data</code> that contains a unique identifier for each decision maker. The default is <code>"id"</code>.</p></li>
 <li><p><code>standardize</code>: A character vector of variable names of <code>form</code> that get standardized, see <a href="#standardize-covariates">below</a>.</p></li>
 </ul>
-<div id="example-train-data-set-of-the-mlogit-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-train-data-set-of-the-mlogit-package" class="anchor"></a>Example: “Train” data set of the mlogit package</h3>
-<p>Let’s prepare the <em>Train</em> data set of the <a href="https://cran.r-project.org/package=mlogit">mlogit package</a> for estimation. We consider the covariates <code>price</code> (type 1), <code>time</code>, <code>comfort</code> and <code>change</code> (each of type 3), where we link <code>price</code> and <code>time</code> to random effects<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<div class="section level3">
+<h3 id="example-train-data-set-of-the-mlogit-package">Example: “Train” data set of the mlogit package<a class="anchor" aria-label="anchor" href="#example-train-data-set-of-the-mlogit-package"></a>
+</h3>
+<p>Let’s prepare the <em>Train</em> data set of the <a href="https://cran.r-project.org/package=mlogit" class="external-link">mlogit package</a> for estimation. We consider the covariates <code>price</code> (type 1), <code>time</code>, <code>comfort</code> and <code>change</code> (each of type 3), where we link <code>price</code> and <code>time</code> to random effects<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span>, 
                choice_data <span class="op">=</span> <span class="va">Train</span>,
-               re <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+               re <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="simulated-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simulated-data" class="anchor"></a>Simulated data</h2>
+<div class="section level2">
+<h2 id="simulated-data">Simulated data<a class="anchor" aria-label="anchor" href="#simulated-data"></a>
+</h2>
 <p>This section explains how to simulate choice data using the function <code><a href="../reference/simulate.html">simulate()</a></code>.</p>
 <p>If we want to simulate the choices of <code>N</code> deciders in <code>T</code> choice occasions<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> among <code>J</code> alternatives from our model formulation <code>form</code>, we have to call</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -217,9 +219,9 @@
 <li><p><code>Sigma</code>, the differenced error term covariance matrix,</p></li>
 <li><p><code>Sigma_full</code>, the full error term covariance matrix.</p></li>
 </ul>
-<div id="example-simulated-choice-of-transportation-means-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-simulated-choice-of-transportation-means-1" class="anchor"></a>Example: Simulated choice of transportation means</h3>
+<div class="section level3">
+<h3 id="example-simulated-choice-of-transportation-means-1">Example: Simulated choice of transportation means<a class="anchor" aria-label="anchor" href="#example-simulated-choice-of-transportation-means-1"></a>
+</h3>
 <p>We revisit our example of the simulated choice of transportation means, where we already specified:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">form</span> <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">cost</span> <span class="op">|</span> <span class="va">income</span> <span class="op">|</span> <span class="va">travel_time</span>
@@ -229,39 +231,39 @@
 <code class="sourceCode R"><span class="va">N</span> <span class="op">=</span> <span class="fl">100</span>
 <span class="cn">T</span> <span class="op">=</span> <span class="fl">10</span>
 <span class="va">J</span> <span class="op">=</span> <span class="fl">3</span>
-<span class="va">alternatives</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span><span class="op">)</span>
-<span class="va">distr</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"cost"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rnorm"</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,
-             <span class="st">"income"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span>  <span class="st">"sample"</span>, x <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">1e3</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-             <span class="st">"travel_time_car"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rlnorm"</span>, meanlog <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
-             <span class="st">"travel_time_bus"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rlnorm"</span>, meanlog <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">alternatives</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span><span class="op">)</span>
+<span class="va">distr</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"cost"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rnorm"</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,
+             <span class="st">"income"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span>  <span class="st">"sample"</span>, x <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fl">1e3</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+             <span class="st">"travel_time_car"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rlnorm"</span>, meanlog <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
+             <span class="st">"travel_time_bus"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"name"</span> <span class="op">=</span> <span class="st">"rlnorm"</span>, meanlog <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/simulate.html">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, N <span class="op">=</span> <span class="va">N</span>, T <span class="op">=</span> <span class="cn">T</span>, J <span class="op">=</span> <span class="va">J</span>, re <span class="op">=</span> <span class="va">re</span>,
                 alternatives <span class="op">=</span> <span class="va">alternatives</span>, distr <span class="op">=</span> <span class="va">distr</span>, C <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="standardize-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#standardize-covariates" class="anchor"></a>Standardize covariates</h2>
+<div class="section level2">
+<h2 id="standardize-covariates">Standardize covariates<a class="anchor" aria-label="anchor" href="#standardize-covariates"></a>
+</h2>
 <p>Both <code><a href="../reference/simulate.html">simulate()</a></code> and <code><a href="../reference/prepare.html">prepare()</a></code> have the optional input <code>standardize</code>, which is a character vector of names of covariates that get standardized, i.e. normalize to mean 0 and standard deviation 1. If <code>standardize = "all"</code>, all covariates get standardized.</p>
 <p>Covariates of type 1 or 3 have to be addressed by <code>covariate_alternative</code>.</p>
 <p>If <code>standardize = "all"</code>, all covariates get standardized.</p>
-<div id="example-simulated-choice-of-transportation-means-2" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-simulated-choice-of-transportation-means-2" class="anchor"></a>Example: Simulated choice of transportation means</h3>
+<div class="section level3">
+<h3 id="example-simulated-choice-of-transportation-means-2">Example: Simulated choice of transportation means<a class="anchor" aria-label="anchor" href="#example-simulated-choice-of-transportation-means-2"></a>
+</h3>
 <p>In our example of the simulated choice of transportation means, scaling the <code>income</code> is reasonable and can improve model fitting. For demonstration purpose, we also standardize <code>travel_time</code> for each alternative:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">standardize</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"income"</span>, <span class="st">"travel_time_car"</span>, <span class="st">"travel_time_bus"</span>,
+<code class="sourceCode R"><span class="va">standardize</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"income"</span>, <span class="st">"travel_time_car"</span>, <span class="st">"travel_time_bus"</span>,
                 <span class="st">"travel_time_train"</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/simulate.html">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, N <span class="op">=</span> <span class="va">N</span>, T <span class="op">=</span> <span class="cn">T</span>, J <span class="op">=</span> <span class="va">J</span>, re <span class="op">=</span> <span class="va">re</span>,
                 alternatives <span class="op">=</span> <span class="va">alternatives</span>, parm <span class="op">=</span> <span class="va">parm</span>, distr <span class="op">=</span> <span class="va">distr</span>,
                 standardize <span class="op">=</span> <span class="va">standardize</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="data-summary" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-summary" class="anchor"></a>Data summary</h2>
-<p>We can check if the data preparation or simulation worked as expected using the <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> function. The columns <code>z</code> and <code>re</code> indicate standardized and random effect covariates, respectively. The rest of the output is self-explanatory.</p>
+<div class="section level2">
+<h2 id="data-summary">Data summary<a class="anchor" aria-label="anchor" href="#data-summary"></a>
+</h2>
+<p>We can check if the data preparation or simulation worked as expected using the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function. The columns <code>z</code> and <code>re</code> indicate standardized and random effect covariates, respectively. The rest of the output is self-explanatory.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="footnotes">
 <hr>
@@ -286,11 +288,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
+  <p></p>
+<p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -298,6 +302,8 @@
 
   
 
+
+  
 
   </body>
 </html>
