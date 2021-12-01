@@ -111,17 +111,14 @@
 <p>First, load the package.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RprobitB</span><span class="op">)</span>
-<span class="co">#&gt; Thanks for using RprobitB 1.0.0, happy choice modeling!</span>
+<span class="co">#&gt; Thanks for using RprobitB 1.0.0.9000, happy choice modeling!</span>
 <span class="co">#&gt; See https://loelschlaeger.github.io/RprobitB for help.</span>
 <span class="co">#&gt; Type 'citation("RprobitB")' for citing this R package.</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attache Paket: 'RprobitB'</span>
-<span class="co">#&gt; Die folgenden Objekte sind maskiert von 'package:stats':</span>
+<span class="co">#&gt; Das folgende Objekt ist maskiert 'package:stats':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     predict, simulate</span>
-<span class="co">#&gt; Das folgende Objekt ist maskiert 'package:base':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     transform</span></code></pre></div>
+<span class="co">#&gt;     simulate</span></code></pre></div>
 <p>Then, prepare choice data, for example the Train dataset from the mlogit package. Here, we put 30 percent of data aside for later out-of-sample prediction.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
@@ -135,16 +132,16 @@
 <code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">train</span><span class="op">)</span>
 <span class="co">#&gt; Iteration Info                   ETA (min)</span>
 <span class="co">#&gt;         0 started Gibbs sampling          </span>
-<span class="co">#&gt;      1000                                2</span>
-<span class="co">#&gt;      2000                                2</span>
+<span class="co">#&gt;      1000                                3</span>
+<span class="co">#&gt;      2000                                3</span>
 <span class="co">#&gt;      3000                                2</span>
 <span class="co">#&gt;      4000                                2</span>
-<span class="co">#&gt;      5000                                1</span>
-<span class="co">#&gt;      6000                                1</span>
+<span class="co">#&gt;      5000                                2</span>
+<span class="co">#&gt;      6000                                2</span>
 <span class="co">#&gt;      7000                                1</span>
 <span class="co">#&gt;      8000                                1</span>
 <span class="co">#&gt;      9000                                1</span>
-<span class="co">#&gt;     10000 done, total time: 2 min</span></code></pre></div>
+<span class="co">#&gt;     10000 done, total time: 3 min</span></code></pre></div>
 <p>The summary method gives an overview over the estimation.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
@@ -181,12 +178,12 @@
 <span class="co">#&gt;           mean      sd      R^</span>
 <span class="co">#&gt;  alpha</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;      1   -0.84    0.08    1.00</span>
-<span class="co">#&gt;      2   -0.87    0.08    1.00</span>
-<span class="co">#&gt;      3   -0.52    0.05    1.00</span>
-<span class="co">#&gt;      4   -0.50    0.05    1.00</span>
-<span class="co">#&gt;      5   -0.27    0.04    1.01</span>
-<span class="co">#&gt;      6   -0.23    0.05    1.00</span>
+<span class="co">#&gt;      1   -0.83    0.08    1.00</span>
+<span class="co">#&gt;      2   -0.86    0.09    1.00</span>
+<span class="co">#&gt;      3   -0.51    0.05    1.00</span>
+<span class="co">#&gt;      4   -0.49    0.05    1.00</span>
+<span class="co">#&gt;      5   -0.27    0.05    1.00</span>
+<span class="co">#&gt;      6   -0.22    0.05    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  s</span>
 <span class="co">#&gt;                               </span>
@@ -194,11 +191,11 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  b</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;    1.1   -2.24    0.26    1.00</span>
+<span class="co">#&gt;    1.1   -2.17    0.26    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Omega</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;  1.1,1    3.21    0.87    1.00</span>
+<span class="co">#&gt;  1.1,1    3.09    0.88    1.02</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Sigma</span>
 <span class="co">#&gt;                               </span>
@@ -209,7 +206,7 @@
 <p><img src="reference/figures/README-plot-1.png"><!-- --></p>
 <p>The <code>predict</code> function makes choice predictions and compares the prediction to the actual choices.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="reference/predict_choices.html">predict_choices</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span>
 <span class="co">#&gt;     predicted</span>
 <span class="co">#&gt; true   A   B</span>
 <span class="co">#&gt;    A 306 128</span>
