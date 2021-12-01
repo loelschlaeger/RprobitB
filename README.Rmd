@@ -51,16 +51,37 @@ browseVignettes("RprobitB")
 
 This is a basic example to show how to fit a mixed probit model and make choice predictions:
 
-```{r example}
+First, load the package.
+```{r load load}
 library(RprobitB)
+``` 
+
+Then, prepare choice data, for example the Train dataset from the mlogit package. Here, we put 30 percent of data aside for later out-of-sample prediction.
+```{r data}
 data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change,
                choice_data = Train,
                re = "price",
                standardize = "all",
-               test_prop = 0.5)
+               test_prop = 0.3)
+```
+
+Call the `mcmc` function to estimate the model.
+```{r fit}
 model = mcmc(data$train)
+```
+
+The summary method gives an overview over the estimation.
+```{r summary}
 summary(model)
+```
+
+Let's visualize the estimated mixture distribution for the price coefficient.
+```{r plot}
 plot(model, type = "mixture")
+```
+
+The `predict` function makes choice predictions and compares the prediction to the actual choices.
+```{r prediction}
 predict(model, data$test)
 ```

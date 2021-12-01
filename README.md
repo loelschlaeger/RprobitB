@@ -47,6 +47,8 @@ browseVignettes("RprobitB")
 This is a basic example to show how to fit a mixed probit model and make
 choice predictions:
 
+First, load the package.
+
 ``` r
 library(RprobitB)
 #> Thanks for using RprobitB 1.0.0, happy choice modeling!
@@ -60,25 +62,42 @@ library(RprobitB)
 #> Das folgende Objekt ist maskiert 'package:base':
 #> 
 #>     transform
+```
+
+Then, prepare choice data, for example the Train dataset from the mlogit
+package. Here, we put 30 percent of data aside for later out-of-sample
+prediction.
+
+``` r
 data("Train", package = "mlogit")
 data = prepare(form = choice ~ price | 0 | time + comfort + change,
                choice_data = Train,
                re = "price",
                standardize = "all",
-               test_prop = 0.5)
+               test_prop = 0.3)
+```
+
+Call the `mcmc` function to estimate the model.
+
+``` r
 model = mcmc(data$train)
 #> Iteration Info                   ETA (min)
 #>         0 started Gibbs sampling          
-#>      1000                                1
-#>      2000                                1
-#>      3000                                1
-#>      4000                                1
+#>      1000                                2
+#>      2000                                2
+#>      3000                                2
+#>      4000                                2
 #>      5000                                1
 #>      6000                                1
 #>      7000                                1
 #>      8000                                1
 #>      9000                                1
 #>     10000 done, total time: 2 min
+```
+
+The summary method gives an overview over the estimation.
+
+``` r
 summary(model)
 #> Probit model 'choice ~ price | 0 | time + comfort + change'.
 #> 
@@ -113,12 +132,12 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.82    0.10    1.00
-#>      2   -0.83    0.10    1.00
-#>      3   -0.54    0.06    1.00
-#>      4   -0.50    0.06    1.00
-#>      5   -0.24    0.05    1.00
-#>      6   -0.21    0.05    1.01
+#>      1   -0.84    0.08    1.00
+#>      2   -0.87    0.08    1.00
+#>      3   -0.52    0.05    1.00
+#>      4   -0.50    0.05    1.00
+#>      5   -0.27    0.04    1.01
+#>      6   -0.23    0.05    1.00
 #> 
 #>  s
 #>                               
@@ -126,24 +145,33 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.14    0.28    1.00
+#>    1.1   -2.24    0.26    1.00
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    2.85    0.87    1.00
+#>  1.1,1    3.21    0.87    1.00
 #> 
 #>  Sigma
 #>                               
 #>    1,1    1.00    0.00    1.00
+```
+
+Let’s visualize the estimated mixture distribution for the price
+coefficient.
+
+``` r
 plot(model, type = "mixture")
 ```
 
-![](man/figures/README-example-1.png)<!-- -->
+![](man/figures/README-plot-1.png)<!-- -->
+
+The `predict` function makes choice predictions and compares the
+prediction to the actual choices.
 
 ``` r
 predict(model, data$test)
 #>     predicted
 #> true   A   B
-#>    A 518 219
-#>    B 232 505
+#>    A 306 128
+#>    B 147 309
 ```
