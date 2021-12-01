@@ -71,7 +71,7 @@ Call the `mcmc` function to estimate the model.
 model = mcmc(data$train)
 ```
 
-The summary method gives an overview over the estimation.
+The summary method gives an overview over the estimates.
 ```{r summary}
 summary(model)
 ```

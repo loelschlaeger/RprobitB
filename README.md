@@ -54,11 +54,6 @@ library(RprobitB)
 #> Thanks for using RprobitB 1.0.0.9000, happy choice modeling!
 #> See https://loelschlaeger.github.io/RprobitB for help.
 #> Type 'citation("RprobitB")' for citing this R package.
-#> 
-#> Attache Paket: 'RprobitB'
-#> Das folgende Objekt ist maskiert 'package:stats':
-#> 
-#>     simulate
 ```
 
 Then, prepare choice data, for example the Train dataset from the mlogit
@@ -80,19 +75,19 @@ Call the `mcmc` function to estimate the model.
 model = mcmc(data$train)
 #> Iteration Info                   ETA (min)
 #>         0 started Gibbs sampling          
-#>      1000                                3
-#>      2000                                3
+#>      1000                                2
+#>      2000                                2
 #>      3000                                2
 #>      4000                                2
-#>      5000                                2
-#>      6000                                2
+#>      5000                                1
+#>      6000                                1
 #>      7000                                1
 #>      8000                                1
 #>      9000                                1
-#>     10000 done, total time: 3 min
+#>     10000 done, total time: 2 min
 ```
 
-The summary method gives an overview over the estimation.
+The summary method gives an overview over the estimates.
 
 ``` r
 summary(model)
@@ -129,11 +124,11 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.83    0.08    1.00
-#>      2   -0.86    0.09    1.00
-#>      3   -0.51    0.05    1.00
-#>      4   -0.49    0.05    1.00
-#>      5   -0.27    0.05    1.00
+#>      1   -0.84    0.08    1.00
+#>      2   -0.86    0.08    1.00
+#>      3   -0.52    0.05    1.01
+#>      4   -0.50    0.05    1.00
+#>      5   -0.27    0.04    1.00
 #>      6   -0.22    0.05    1.00
 #> 
 #>  s
@@ -142,11 +137,11 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.17    0.26    1.00
+#>    1.1   -2.22    0.25    1.00
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    3.09    0.88    1.02
+#>  1.1,1    3.16    0.83    1.00
 #> 
 #>  Sigma
 #>                               
