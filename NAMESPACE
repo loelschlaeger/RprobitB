@@ -22,12 +22,11 @@ export(prepare)
 export(simulate)
 export(transform)
 
-### export helper functions
+### export utils functions
 export(delta)
 export(is_covariance_matrix)
 export(R_hat)
 export(set_mfrow)
-export(undiff_Sigma)
 
 ### S3 methods
 S3method(plot,RprobitB_model)

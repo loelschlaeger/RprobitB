@@ -125,7 +125,7 @@ R_hat <- function(samples, parts = 2) {
 #' @return
 #' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
 #' @export
-#' @example
+#' @examples
 #' x <- diag(2)
 #' is_covariance_matrix(x)
 #' @keywords
