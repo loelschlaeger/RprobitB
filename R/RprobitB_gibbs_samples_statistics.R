@@ -1,6 +1,6 @@
-#' Compute parameter statistics.
+#' Create object of class \code{RprobitB_gibbs_samples_statistics}.
 #' @description
-#' This function computes parameter statistics from Gibbs samples.
+#' This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param FUN
