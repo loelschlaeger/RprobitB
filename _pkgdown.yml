@@ -1,6 +1,7 @@
 url: https://loelschlaeger.github.io/RprobitB/
 
 template:
+  bootstrap: 5
   params:
     bootswatch: simplex
 
