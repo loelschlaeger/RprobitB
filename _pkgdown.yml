@@ -3,6 +3,10 @@ url: https://loelschlaeger.github.io/RprobitB/
 home:
   title: Fit mixed probit models to choice data
 
+authors:
+  Lennart Oelschläger:
+    href: https://www.oilbat.de
+
 template:
   bootstrap: 5
   bslib:
@@ -50,11 +54,4 @@ reference:
   desc: These functions are not user-level.
   contents:
   - has_keyword("internal")
-  - print.RprobitB_data
-  - print.RprobitB_gibbs_samples_statistics
-  - print.RprobitB_latent_classes
-  - print.RprobitB_model
-  - print.RprobitB_normalization
-  - print.summary.RprobitB_data
-  - print.summary.RprobitB_model
 
