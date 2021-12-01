@@ -1,5 +1,7 @@
 # RprobitB 1.0.0.9000
 
+* `simulate()` is now called `simulate_choices()` to not mask `stats::simulate()`.
+
 * `predict()` is now called `predict_choices()` to not mask `stats::predict()`.
 
 * `transform()` is now called `transform_model()` to not mask `base::transform()`.
