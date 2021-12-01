@@ -19,7 +19,7 @@ export(mcmc)
 export(overview_effects)
 export(predict_choices)
 export(prepare)
-export(simulate)
+export(simulate_choices)
 export(transform_model)
 
 ### export utils functions

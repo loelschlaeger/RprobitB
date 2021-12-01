@@ -19,7 +19,7 @@ reference:
   desc: Use these functions to prepare or simulate choice data.
   contents:
   - prepare
-  - simulate
+  - simulate_choices
   - overview_effects
   - summary.RprobitB_data
 - title: Model estimation

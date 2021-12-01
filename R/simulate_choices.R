@@ -18,15 +18,16 @@
 #' If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects
 #' labelled \code{"train"} and \code{"test"}.
 #' @examples
-#' data <- simulate(
+#' data <- simulate_choices(
 #'   form = choice ~ cost | income + 0 | time,
 #'   N = 100, T = 10, J = 3, re = "cost",
 #'   alternatives = c("car", "bus", "scooter")
 #' )
 #' @export
 
-simulate <- function(form, N, T, J, re = NULL, alternatives = NULL, distr = NULL,
-                     standardize = NULL, seed = NULL, test_prop = NULL, ...) {
+simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
+                             distr = NULL, standardize = NULL, seed = NULL,
+                             test_prop = NULL, ...) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)

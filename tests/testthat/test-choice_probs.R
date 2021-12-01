@@ -1,5 +1,5 @@
 test_that("P", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,
@@ -13,7 +13,7 @@ test_that("P", {
 })
 
 test_that("P train test", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,

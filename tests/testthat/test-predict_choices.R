@@ -1,5 +1,5 @@
 test_that("P", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,
@@ -13,7 +13,7 @@ test_that("P", {
 })
 
 test_that("P train test", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,
@@ -28,7 +28,7 @@ test_that("P train test", {
 })
 
 test_that("MNP", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,
@@ -42,7 +42,7 @@ test_that("MNP", {
 })
 
 test_that("MMNP", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
     T = 1:10,
@@ -58,7 +58,7 @@ test_that("MMNP", {
 })
 
 test_that("LCMMNP", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 30,
     T = 10,
@@ -76,7 +76,7 @@ test_that("LCMMNP", {
 })
 
 test_that("ULCMMNP", {
-  data <- simulate(
+  data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 100,
     T = 5,
