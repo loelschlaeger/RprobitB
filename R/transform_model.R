@@ -1,3 +1,80 @@
+#' Change the length of the burn-in period, the thinning factor and the scale
+#' after Gibbs sampling.
+#' @description
+#' Given an object of class \code{RprobitB_model}, this function can:
+#' \itemize{
+#'   \item change the length \code{B} of the burn-in period,
+#'   \item change the the thinning factor \code{Q} of the Gibbs samples,
+#'   \item change the model \code{scale}.
+#' }
+#' @details
+#' See the vignette "Model fitting" for more details:
+#' \code{vignette("model_fitting", package = "RprobitB")}.
+#' @inheritParams mcmc
+#' @param x
+#' An object of class \code{\link{RprobitB_model}}.
+#' @param check_preference_flip
+#' If \code{TRUE} check for flip in preferences with new scale.
+#' @return
+#' An object of class \code{RprobitB_model}.
+#' @export
+
+transform_model <- function(x, B = NULL, Q = NULL, scale = NULL,
+                            check_preference_flip = TRUE) {
+
+  ### check inputs
+  if (!inherits(x, "RprobitB_model")) {
+    stop("'x' must be of class 'RprobitB_model'.")
+  }
+  if (is.null(B)) {
+    B <- x$B
+  } else {
+    x$B <- B
+  }
+  if (is.null(Q)) {
+    Q <- x$Q
+  } else {
+    x$Q <- Q
+  }
+  R <- x$R
+  P_f <- x$data$P_f
+  J <- x$data$J
+  if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
+    stop("'B' must be a positive integer smaller than 'R'.")
+  }
+  if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
+    stop("'Q' must be a positive integer smaller than 'R'.")
+  }
+  if (is.null(scale)) {
+    normalization <- x$normalization
+  } else {
+    ### check if new scale flips preferences
+    if (check_preference_flip) {
+      model_new <- transform_model(x = x, scale = scale, check_preference_flip = FALSE)
+      preference_flip(model_old = x, model_new = model_new)
+    }
+    normalization <- RprobitB_normalization(J = J, P_f = P_f, scale = scale)
+    x$normalization <- normalization
+  }
+
+  ### scale, burn and thin Gibbs samples
+  gibbs_samples <- transform_gibbs_samples(
+    gibbs_samples = x$gibbs_samples$gibbs_samples, R = R, B = B, Q = Q,
+    normalization = normalization
+  )
+  x$gibbs_samples <- gibbs_samples
+
+  ### scale true parameters
+  if (x$data$simulated) {
+    x$data$true_parameter <- transform_parameter(
+      parameter = x$data$true_parameter, normalization = normalization
+    )
+  }
+
+  ### return 'RprobitB_model'
+  return(x)
+}
+
 #' Transformation of Gibbs samples.
 #' @description
 #' This function normalizes, burns and thins the Gibbs samples.
@@ -133,3 +210,62 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   ### return list of transformed Gibbs samples
   return(gibbs_samples)
 }
+
+#' Transformation of parameter values.
+#' @description
+#' This function transforms parameter values based on \code{normalization}.
+#' @param parameter
+#' An object of class \code{RprobitB_parameter}.
+#' @param normalization
+#' An object of class \code{RprobitB_normalization}.
+#' @return
+#' An object of class \code{RprobitB_parameter}.
+#' @keywords
+#' internal
+
+transform_parameter <- function(parameter, normalization) {
+
+  ### check inputs
+  if (!inherits(parameter, "RprobitB_parameter")) {
+    stop("'parameter' must be of class 'RprobitB_parameter'.")
+  }
+  if (!inherits(normalization, "RprobitB_normalization")) {
+    stop("'normalization' must be of class 'RprobitB_normalization'.")
+  }
+
+  ### function to scale the parameters
+  scaling <- function(par, factor) {
+    if (any(is.na(par))) {
+      NA
+    } else {
+      out <- par * factor
+      ### preserve names
+      names(out) <- names(par)
+      return(out)
+    }
+  }
+
+  ### scale elements of 'parameter'
+  scale <- normalization$scale
+  if (scale$parameter == "a") {
+    factor <- scale$value / parameter$alpha[scale$index]
+    parameter$alpha <- scaling(parameter$alpha, factor)
+    parameter$b <- scaling(parameter$b, factor)
+    parameter$Omega <- scaling(parameter$Omega, factor^2)
+    parameter$Sigma <- scaling(parameter$Sigma, factor^2)
+    parameter$beta <- scaling(parameter$beta, factor)
+  }
+  if (scale$parameter == "s") {
+    factor <- scale$value / parameter$Sigma[scale$index, scale$index]
+    parameter$alpha <- scaling(parameter$alpha, sqrt(factor))
+    parameter$b <- scaling(parameter$b, sqrt(factor))
+    parameter$Omega <- scaling(parameter$Omega, factor)
+    parameter$Sigma <- scaling(parameter$Sigma, factor)
+    parameter$beta <- scaling(parameter$beta, sqrt(factor))
+    parameter$Sigma_full <- undiff_Sigma(parameter$Sigma, normalization$level)
+  }
+
+  ### return 'parameter'
+  return(parameter)
+}
+

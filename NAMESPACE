@@ -20,7 +20,7 @@ export(overview_effects)
 export(predict)
 export(prepare)
 export(simulate)
-export(transform)
+export(transform_model)
 
 ### export utils functions
 export(delta)
