@@ -9,7 +9,7 @@
 #' @return
 #' A vector, the sample from the Dirichlet distribution.
 #' @export
-#' @keyword
+#' @keywords
 #' utils
 #'
 rdirichlet <- function(alpha) {
@@ -27,7 +27,7 @@ rdirichlet <- function(alpha) {
 #' A list, the draw from the Wishart (W), inverted Wishart (IW), and
 #' corresponding Cholesky decomposition (C and CI)
 #' @export
-#' @keyword
+#' @keywords
 #' utils
 #'
 rwishart <- function(nu, V) {

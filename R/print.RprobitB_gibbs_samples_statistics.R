@@ -9,7 +9,6 @@
 #' @inheritParams print.summary.RprobitB_model
 #' @param ...
 #' Ignored.
-#' @export
 
 print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, ...) {
 

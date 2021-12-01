@@ -18,3 +18,4 @@ corresponding Cholesky decomposition (C and CI)
 \description{
 Function to draw from Wishart and inverted Wishart distribution.
 }
+\keyword{utils}

@@ -15,3 +15,4 @@ A vector, the sample from the Dirichlet distribution.
 \description{
 Function to draw from a Dirichlet distribution.
 }
+\keyword{utils}

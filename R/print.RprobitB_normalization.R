@@ -6,7 +6,6 @@
 #' An object of class \code{RprobitB_normalization}.
 #' @param ...
 #' Ignored.
-#' @export
 
 print.RprobitB_normalization <- function(x, ...) {
   cat("Normalization:\n")
