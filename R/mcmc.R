@@ -1,5 +1,4 @@
-#' Perform Markov chain Monte Carlo simulation for fitting a (latent class)
-#' (mixed) (multinomial) probit model.
+#' Markov chain Monte Carlo simulation for probit model fitting.
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting a
 #' (latent class) (mixed) (multinomial) probit model to discrete choice data.

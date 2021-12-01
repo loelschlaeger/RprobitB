@@ -2,8 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{mcmc}
 \alias{mcmc}
-\title{Perform Markov chain Monte Carlo simulation for fitting a (latent class)
-(mixed) (multinomial) probit model.}
+\title{Markov chain Monte Carlo simulation for probit model fitting.}
 \usage{
 mcmc(
   data,
