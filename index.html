@@ -4,7 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="
+    Fitting latent class mixed multinomial probit (LCMMNP) models to simulated
+    or empirical choice data via Bayesian estimation. The number of latent 
+    classes can be updated within the algorithm on a weight-based strategy. 
+    For a reference on the method see Oelschlaeger and Bauer (2021) 
+    &lt;https://trid.trb.org/view/1759753&gt;.">
 <title>Bayes Estimation of Latent Class Mixed Multinomial Probit Models • RprobitB</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,12 +18,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Bayes Estimation of Latent Class Mixed Multinomial Probit Models">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Bayes Estimation of Latent Class Mixed Multinomial Probit Models">
 <meta property="og:description" content="
     Fitting latent class mixed multinomial probit (LCMMNP) models to simulated
     or empirical choice data via Bayesian estimation. The number of latent 
@@ -30,84 +35,73 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">RprobitB</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0.9000</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-default navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">RprobitB</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-2">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">
     <span class="fa fa-clipboard"></span>
      
     Reference
   </a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown--vignettes">
     <span class="fa fa-book-reader"></span>
      
     Vignettes
-     
-    <span class="caret"></span>
   </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/introduction_to_RprobitB_and_model_formulation.html">Introduction and model formulation</a>
-    </li>
-    <li>
-      <a href="articles/data_management.html">Data management</a>
-    </li>
-    <li>
-      <a href="articles/model_fitting.html">Model fitting</a>
-    </li>
-  </ul>
+  <div class="dropdown-menu" aria-labelledby="dropdown--vignettes">
+    <a class="dropdown-item" href="articles/introduction_to_RprobitB_and_model_formulation.html">Introduction and model formulation</a>
+    <a class="dropdown-item" href="articles/data_management.html">Data management</a>
+    <a class="dropdown-item" href="articles/model_fitting.html">Model fitting</a>
+  </div>
 </li>
-<li>
-  <a href="news/index.html">
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">
     <span class="fa fa-wrench"></span>
      
     Changelog
   </a>
 </li>
-<li>
-  <a href="https://github.com/loelschlaeger/RprobitB" class="external-link">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub Repository
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav"></ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="rprobitb-">RprobitB <a class="anchor" aria-label="anchor" href="#rprobitb-"></a>
+</h1>
 </div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="rprobitb-">RprobitB <img src="reference/figures/logo.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#rprobitb-"></a>
-</h1></div>
 <!-- badges: start -->
 
 <p>The goal of RprobitB is to fit mixed probit models to choice data. The package differs from comparable packages in two ways: Bayesian estimation and a focus on taste heterogeneity.</p>
@@ -133,6 +127,7 @@
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>This is a basic example to show how to fit a mixed probit model and make choice predictions:</p>
+<p>First, load the package.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RprobitB</span><span class="op">)</span>
 <span class="co">#&gt; Thanks for using RprobitB 1.0.0, happy choice modeling!</span>
@@ -145,27 +140,33 @@
 <span class="co">#&gt;     predict, simulate</span>
 <span class="co">#&gt; Das folgende Objekt ist maskiert 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     transform</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
+<span class="co">#&gt;     transform</span></code></pre></div>
+<p>Then, prepare choice data, for example the Train dataset from the mlogit package. Here, we put 30 percent of data aside for later out-of-sample prediction.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span>,
                choice_data <span class="op">=</span> <span class="va">Train</span>,
                re <span class="op">=</span> <span class="st">"price"</span>,
                standardize <span class="op">=</span> <span class="st">"all"</span>,
-               test_prop <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">train</span><span class="op">)</span>
+               test_prop <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></code></pre></div>
+<p>Call the <code>mcmc</code> function to estimate the model.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">train</span><span class="op">)</span>
 <span class="co">#&gt; Iteration Info                   ETA (min)</span>
 <span class="co">#&gt;         0 started Gibbs sampling          </span>
-<span class="co">#&gt;      1000                                1</span>
-<span class="co">#&gt;      2000                                1</span>
-<span class="co">#&gt;      3000                                1</span>
-<span class="co">#&gt;      4000                                1</span>
+<span class="co">#&gt;      1000                                2</span>
+<span class="co">#&gt;      2000                                2</span>
+<span class="co">#&gt;      3000                                2</span>
+<span class="co">#&gt;      4000                                2</span>
 <span class="co">#&gt;      5000                                1</span>
 <span class="co">#&gt;      6000                                1</span>
 <span class="co">#&gt;      7000                                1</span>
 <span class="co">#&gt;      8000                                1</span>
 <span class="co">#&gt;      9000                                1</span>
-<span class="co">#&gt;     10000 done, total time: 2 min</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
+<span class="co">#&gt;     10000 done, total time: 2 min</span></code></pre></div>
+<p>The summary method gives an overview over the estimation.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 <span class="co">#&gt; Probit model 'choice ~ price | 0 | time + comfort + change'.</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; MCMC settings:</span>
@@ -199,12 +200,12 @@
 <span class="co">#&gt;           mean      sd      R^</span>
 <span class="co">#&gt;  alpha</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;      1   -0.82    0.10    1.00</span>
-<span class="co">#&gt;      2   -0.83    0.10    1.00</span>
-<span class="co">#&gt;      3   -0.54    0.06    1.00</span>
-<span class="co">#&gt;      4   -0.50    0.06    1.00</span>
-<span class="co">#&gt;      5   -0.24    0.05    1.00</span>
-<span class="co">#&gt;      6   -0.21    0.05    1.01</span>
+<span class="co">#&gt;      1   -0.84    0.08    1.00</span>
+<span class="co">#&gt;      2   -0.87    0.08    1.00</span>
+<span class="co">#&gt;      3   -0.52    0.05    1.00</span>
+<span class="co">#&gt;      4   -0.50    0.05    1.00</span>
+<span class="co">#&gt;      5   -0.27    0.04    1.01</span>
+<span class="co">#&gt;      6   -0.23    0.05    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  s</span>
 <span class="co">#&gt;                               </span>
@@ -212,29 +213,29 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  b</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;    1.1   -2.14    0.28    1.00</span>
+<span class="co">#&gt;    1.1   -2.24    0.26    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Omega</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;  1.1,1    2.85    0.87    1.00</span>
+<span class="co">#&gt;  1.1,1    3.21    0.87    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Sigma</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;    1,1    1.00    0.00    1.00</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png"><!-- --></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span class="co">#&gt;    1,1    1.00    0.00    1.00</span></code></pre></div>
+<p>Let’s visualize the estimated mixture distribution for the price coefficient.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-plot-1.png"><!-- --></p>
+<p>The <code>predict</code> function makes choice predictions and compares the prediction to the actual choices.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span>
 <span class="co">#&gt;     predicted</span>
 <span class="co">#&gt; true   A   B</span>
-<span class="co">#&gt;    A 518 219</span>
-<span class="co">#&gt;    B 232 505</span></code></pre></div>
+<span class="co">#&gt;    A 306 128</span>
+<span class="co">#&gt;    B 147 309</span></code></pre></div>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=RprobitB" class="external-link">View on CRAN</a></li>
@@ -275,25 +276,24 @@
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Lennart Oelschläger, Dietmar Bauer.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
 <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 
