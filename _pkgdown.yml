@@ -61,4 +61,13 @@ reference:
   desc: These functions are not user-level.
 - contents:
   - has_keyword("internal")
+- title: internal
+- contents:
+  - print.RprobitB_data
+  - print.RprobitB_gibbs_samples_statistics
+  - print.RprobitB_latent_classes
+  - print.RprobitB_model
+  - print.RprobitB_normalization
+  - print.summary.RprobitB_data
+  - print.summary.RprobitB_model
 
