@@ -136,7 +136,7 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_trace.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/predict.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/predict_choices.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/preference_flip.html</loc>
@@ -166,10 +166,10 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/summary.RprobitB_model.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_gibbs_samples.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_gibbs_samples.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_model.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_parameter.html</loc>
