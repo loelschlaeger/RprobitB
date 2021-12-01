@@ -106,7 +106,7 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="rprobitb-">RprobitB <img src="reference/figures/logo.png" align="right" height="136"><a class="anchor" aria-label="anchor" href="#rprobitb-"></a>
+<div class="page-header"><h1 id="rprobitb-">RprobitB <img src="reference/figures/logo.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#rprobitb-"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -155,8 +155,8 @@
 <span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="reference/mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">train</span><span class="op">)</span>
 <span class="co">#&gt; Iteration Info                   ETA (min)</span>
 <span class="co">#&gt;         0 started Gibbs sampling          </span>
-<span class="co">#&gt;      1000                                2</span>
-<span class="co">#&gt;      2000                                2</span>
+<span class="co">#&gt;      1000                                1</span>
+<span class="co">#&gt;      2000                                1</span>
 <span class="co">#&gt;      3000                                1</span>
 <span class="co">#&gt;      4000                                1</span>
 <span class="co">#&gt;      5000                                1</span>
@@ -199,12 +199,12 @@
 <span class="co">#&gt;           mean      sd      R^</span>
 <span class="co">#&gt;  alpha</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;      1   -0.82    0.10    1.05</span>
-<span class="co">#&gt;      2   -0.83    0.10    1.05</span>
-<span class="co">#&gt;      3   -0.54    0.06    1.05</span>
-<span class="co">#&gt;      4   -0.51    0.06    1.03</span>
-<span class="co">#&gt;      5   -0.24    0.05    1.05</span>
-<span class="co">#&gt;      6   -0.20    0.05    1.03</span>
+<span class="co">#&gt;      1   -0.82    0.10    1.00</span>
+<span class="co">#&gt;      2   -0.83    0.10    1.00</span>
+<span class="co">#&gt;      3   -0.54    0.06    1.00</span>
+<span class="co">#&gt;      4   -0.50    0.06    1.00</span>
+<span class="co">#&gt;      5   -0.24    0.05    1.00</span>
+<span class="co">#&gt;      6   -0.21    0.05    1.01</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  s</span>
 <span class="co">#&gt;                               </span>
@@ -212,23 +212,23 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  b</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;    1.1   -2.15    0.29    1.12</span>
+<span class="co">#&gt;    1.1   -2.14    0.28    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Omega</span>
 <span class="co">#&gt;                               </span>
-<span class="co">#&gt;  1.1,1    2.88    0.90    1.05</span>
+<span class="co">#&gt;  1.1,1    2.85    0.87    1.00</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Sigma</span>
 <span class="co">#&gt;                               </span>
 <span class="co">#&gt;    1,1    1.00    0.00    1.00</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<p><img src="reference/figures/README-example-1.png"><!-- --></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span>
 <span class="co">#&gt;     predicted</span>
 <span class="co">#&gt; true   A   B</span>
-<span class="co">#&gt;    A 519 218</span>
-<span class="co">#&gt;    B 231 506</span></code></pre></div>
+<span class="co">#&gt;    A 518 219</span>
+<span class="co">#&gt;    B 232 505</span></code></pre></div>
 </div>
 </div>
   </div>
