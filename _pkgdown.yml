@@ -48,6 +48,7 @@ reference:
   - predict
   - choice_probs
   - classify
+  - compute_log_likelihood
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.
 - contents:

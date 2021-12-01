@@ -58,7 +58,7 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
     for (j in seq_len(length(grid_x))) {
       for (c in 1:C_est) {
         prob[i, j] <- prob[i, j] + weight_est[c] *
-          dmvnrm_arma_mc(
+          mvtnorm::dmvnorm(
             x = t(matrix(c(grid_x[i], grid_y[j]))),
             mean = mean_est[[c]],
             sigma = cov_est[[c]]

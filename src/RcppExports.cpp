@@ -11,20 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// dmvnrm_arma_mc
-arma::vec dmvnrm_arma_mc(arma::mat const& x, arma::vec const& mean, arma::mat const& sigma, bool const logd);
-RcppExport SEXP _RprobitB_dmvnrm_arma_mc(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat const& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec const& >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< bool const >::type logd(logdSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnrm_arma_mc(x, mean, sigma, logd));
-    return rcpp_result_gen;
-END_RCPP
-}
 // rdirichlet
 arma::vec rdirichlet(arma::vec alpha);
 RcppExport SEXP _RprobitB_rdirichlet(SEXP alphaSEXP) {
@@ -71,7 +57,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_RprobitB_dmvnrm_arma_mc", (DL_FUNC) &_RprobitB_dmvnrm_arma_mc, 4},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 11},

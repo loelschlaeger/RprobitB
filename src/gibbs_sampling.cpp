@@ -131,57 +131,6 @@ double mvnpdf(arma::vec const& x, arma::vec const& mean,
   return(norm * exp(-0.5*quadform(0,0)));
 }
 
-static double const log2pi = std::log(2.0 * M_PI);
-
-void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
-  // oelschlaeger 04/2020
-  // helper function for dmvnrm_arma_mc
-  arma::uword const n = trimat.n_cols;
-  for(unsigned j = n; j-- > 0;){
-    double tmp(0.);
-    for(unsigned i = 0; i <= j; ++i)
-      tmp += trimat.at(i, j) * x[i];
-    x[j] = tmp;
-  }
-}
-
-//' Multivariate normal density
-//' @description
-//' Function to compute the density of a multivariate normal distribution.
-//' @param x
-//' A matrix, the arguments.
-//' @param mean
-//' A vector, the mean.
-//' @param sigma
-//' A matrix, the covariance matrix.
-//' @param logd
-//' A boolean, whether to apply the logarithm.
-//' @return A vector, the computed multivariate normal densities
-//' @export
-//'
-// [[Rcpp::export]]
-arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
-                         arma::mat const &sigma, bool const logd = false) {
-  // oelschlaeger 04/2020
-  using arma::uword;
-  uword const n = x.n_rows,
-    xdim = x.n_cols;
-  arma::vec out(n);
-  arma::mat const rooti = arma::inv(trimatu(arma::chol(sigma)));
-  double const rootisum = arma::sum(log(rooti.diag())),
-    constants = -(double)xdim/2.0 * log2pi,
-    other_terms = rootisum + constants;
-  arma::rowvec z;
-  for (uword i = 0; i < n; i++) {
-    z = (x.row(i) - trans(mean));
-    inplace_tri_mat_mult(z, rooti);
-    out(i) = other_terms - 0.5 * arma::dot(z, z);
-  }
-  if (logd)
-    return out;
-  return exp(out);
-}
-
 //' Draw from Dirichlet
 //' @description
 //' Function to draw from a Dirichlet distribution.
@@ -190,6 +139,8 @@ arma::vec dmvnrm_arma_mc(arma::mat const &x, arma::vec const &mean,
 //' @return
 //' A vector, the sample from the Dirichlet distribution.
 //' @export
+//' @keywords
+//' utils
 //'
 // [[Rcpp::export]]
 arma::vec rdirichlet(arma::vec alpha) {
@@ -219,6 +170,8 @@ arma::vec rdirichlet(arma::vec alpha) {
 //' A list, the draw from the Wishart (W), inverted Wishart (IW), and
 //' corresponding Cholesky decomposition (C and CI)
 //' @export
+//' @keywords
+//' utils
 //'
 // [[Rcpp::export]]
 List rwishart(double nu, arma::mat const& V){
