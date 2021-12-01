@@ -83,5 +83,5 @@ plot(model, type = "mixture")
 
 The `predict` function makes choice predictions and compares the prediction to the actual choices.
 ```{r prediction}
-predict(model, data$test)
+predict_choices(model, data$test)
 ```

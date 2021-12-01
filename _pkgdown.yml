@@ -26,14 +26,14 @@ reference:
   desc: Use these function to estimate a probit model.
   contents:
   - mcmc
-  - transform
+  - transform_model
 - title: Model evaluation
   desc: Use these functions to evaluate your model.
   contents:
   - summary.RprobitB_model
   - plot.RprobitB_model
   - compare
-  - predict
+  - predict_choices
   - choice_probs
   - classify
   - compute_log_likelihood

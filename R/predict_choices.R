@@ -11,7 +11,7 @@
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
 #' @export
 
-predict <- function(x, data = NULL, overview = TRUE) {
+predict_choices <- function(x, data = NULL, overview = TRUE) {
 
   ### choose data
   if (is.null(data)) {
