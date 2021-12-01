@@ -35,7 +35,8 @@ Suggests:
     knitr,
     rmarkdown,
     mlogit,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    covr
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

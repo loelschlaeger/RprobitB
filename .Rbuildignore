@@ -8,3 +8,4 @@ LICENSE
 ^docs$
 ^pkgdown$
 ^README\.Rmd$
+^codecov\.yml$

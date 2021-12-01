@@ -10,6 +10,8 @@ status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)
 [![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg)](https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main)
 <!-- badges: end -->
 
 The goal of RprobitB is to fit mixed probit models to choice data. The
@@ -67,8 +69,8 @@ data = prepare(form = choice ~ price | 0 | time + comfort + change,
 model = mcmc(data$train)
 #> Iteration Info                   ETA (min)
 #>         0 started Gibbs sampling          
-#>      1000                                1
-#>      2000                                1
+#>      1000                                2
+#>      2000                                2
 #>      3000                                1
 #>      4000                                1
 #>      5000                                1
@@ -76,7 +78,7 @@ model = mcmc(data$train)
 #>      7000                                1
 #>      8000                                1
 #>      9000                                1
-#>     10000 done, total time: 1 min
+#>     10000 done, total time: 2 min
 summary(model)
 #> Probit model 'choice ~ price | 0 | time + comfort + change'.
 #> 
@@ -111,12 +113,12 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.82    0.10    1.01
-#>      2   -0.83    0.10    1.01
-#>      3   -0.53    0.06    1.01
-#>      4   -0.51    0.06    1.02
-#>      5   -0.24    0.05    1.01
-#>      6   -0.21    0.06    1.00
+#>      1   -0.82    0.10    1.05
+#>      2   -0.83    0.10    1.05
+#>      3   -0.54    0.06    1.05
+#>      4   -0.51    0.06    1.03
+#>      5   -0.24    0.05    1.05
+#>      6   -0.20    0.05    1.03
 #> 
 #>  s
 #>                               
@@ -124,11 +126,11 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.16    0.30    1.05
+#>    1.1   -2.15    0.29    1.12
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    2.88    0.96    1.02
+#>  1.1,1    2.88    0.90    1.05
 #> 
 #>  Sigma
 #>                               
@@ -142,6 +144,6 @@ plot(model, type = "mixture")
 predict(model, data$test)
 #>     predicted
 #> true   A   B
-#>    A 517 220
-#>    B 232 505
+#>    A 519 218
+#>    B 231 506
 ```
