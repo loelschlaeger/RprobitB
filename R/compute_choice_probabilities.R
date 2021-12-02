@@ -6,6 +6,9 @@
 #' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
 #' the first \code{P_f} columns are connected to fixed coefficients and the last
 #' \code{P_r} columns are connected to random coefficients.
+#' @param alternatives
+#' A vector with unique integers from \code{1} to \code{J}, indicating the
+#' alternatives for which choice probabilities are computed.
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
 #' @return
@@ -13,14 +16,13 @@
 #' @keywords
 #' internal
 
-compute_choice_probabilities <- function(X, parameter) {
+compute_choice_probabilities <- function(X = NULL, alternatives, parameter) {
 
   ### unpack and check inputs
   if (class(parameter) != "RprobitB_parameter") {
     stop("'parameter' is not of class 'RprobitB_parameter.")
   }
   alpha <- parameter$alpha
-  C <- parameter$C
   s <- ifelse(is.na(parameter$s), 1, parameter$s)
   b <- parameter$b
   Omega <- parameter$Omega
@@ -28,7 +30,11 @@ compute_choice_probabilities <- function(X, parameter) {
   P_f <- ifelse(any(is.na(alpha)), 0, length(alpha))
   P_r <- ifelse(any(is.na(parameter$s)), 0, nrow(parameter$b))
   J <- nrow(Sigma_full)
-  C <- ifelse(is.na(parameter$C), 1, parameter$C)
+
+  ### check inputs
+  if (!(is.numeric(alternatives) && identical(alternatives,unique(alternatives)) &&
+      length(setdiff(alternatives, 1:J)) == 0))
+    stop("'alternatives' must be a vector with unique integers from 1 to 'J'.")
   if (P_f > 0 || P_r > 0) {
     if (!is.matrix(X)) {
       stop("'X' must be a matrix.")
@@ -42,49 +48,134 @@ compute_choice_probabilities <- function(X, parameter) {
   }
 
   ### compute choice probabilities
-  probabilities <- numeric(J)
-  for (j in 1:J) {
-    probability_j <- 0
-    for (c in 1:C) {
-      ### define parameters of multivariate normal distribution
-      if (P_f > 0) {
-        if (P_r > 0) {
-          upper <- as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c]))
-          cov_matrix <- delta(J, j) %*%
-            (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*% t(X[, -(1:P_f)]) +
-              Sigma_full) %*% t(delta(J, j))
-        }
-        if (P_r == 0) {
-          upper <- as.vector(-delta(J, j) %*% X %*% alpha)
-          cov_matrix <- delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-        }
+  probabilities <- rep(NA, J )
+  for (j in alternatives) {
+    if (P_f > 0) {
+      if (P_r > 0) {
+        probabilities[j] <- ccp_pfpr(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r)
       }
-      if (P_f == 0) {
-        if (P_r > 0) {
-          upper <- as.vector(-delta(J, j) %*% X %*% b[, c])
-          cov_matrix <- delta(J, j) %*%
-            (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
-            t(delta(J, j))
-        }
-        if (P_r == 0) {
-          upper <- rep(0, J - 1)
-          cov_matrix <- delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-        }
+      if (P_r == 0) {
+        probabilities[j] <- ccp_pf(j, J, Sigma_full, X, alpha)
       }
-      probability_j <- probability_j +
-        s[c] * mvtnorm::pmvnorm(
-          lower = rep(-Inf, J - 1), upper = upper,
-          mean = rep(0, J - 1), sigma = cov_matrix
-        )[1]
     }
-    probabilities[j] <- probability_j
+    if (P_f == 0) {
+      if (P_r > 0) {
+        probabilities[j] <- ccp_pr(j, J, Sigma_full, X, b, Omega, s, P_r)
+      }
+      if (P_r == 0) {
+        probabilities[j] <- ccp(j, J, Sigma_full)
+      }
+    }
   }
 
   ### check if probabilities sum to 1
-  if (abs(sum(probabilities) - 1) > sqrt(.Machine$double.eps)) {
-    warning("probabilities do not sum to 1.")
+  if(identical(alternatives, 1:J)){
+    if (abs(sum(probabilities) - 1) > sqrt(.Machine$double.eps)) {
+      warning("probabilities do not sum to 1.")
+    }
   }
 
   ### return probabilities
   return(probabilities)
+}
+
+#' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r = 0}.
+#' @description
+#' This function computes the probit choice probability for alternative \code{j}
+#' in case of \code{P_f = 0} and \code{P_r = 0}.
+#' @inheritParams ccp_pfpr
+#' @return
+#' A probability.
+#' @keywords
+#' internal
+#' @noRd
+
+ccp <- function(j, J, Sigma_full) {
+  mvtnorm::pmvnorm(
+    lower = rep(-Inf, J - 1),
+    upper = rep(0, J - 1),
+    mean = rep(0, J - 1),
+    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+  )[1]
+}
+
+#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r = 0}.
+#' @description
+#' This function computes the probit choice probability for alternative \code{j}
+#' in case of \code{P_f > 0} and \code{P_r = 0}.
+#' @inheritParams ccp_pfpr
+#' @return
+#' A probability.
+#' @keywords
+#' internal
+#' @noRd
+
+ccp_pf <- function(j, J, Sigma_full, X, alpha) {
+  mvtnorm::pmvnorm(
+    lower = rep(-Inf, J - 1),
+    upper = as.vector(-delta(J, j) %*% X %*% alpha),
+    mean = rep(0, J - 1),
+    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+  )[1]
+}
+
+#' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r > 0}.
+#' @description
+#' This function computes the probit choice probability for alternative \code{j}
+#' in case of \code{P_f = 0} and \code{P_r > 0}.
+#' @inheritParams ccp_pfpr
+#' @return
+#' A probability.
+#' @keywords
+#' internal
+#' @noRd
+
+ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
+  out <- 0
+  for(c in seq_len(s)){
+    out <- out + s[c] * mvtnorm::pmvnorm(
+      lower = rep(-Inf, J - 1),
+      upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
+      mean = rep(0, J - 1),
+      sigma = delta(J, j) %*%
+        (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
+        t(delta(J, j))
+    )[1]
+  }
+  return(out)
+}
+
+#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r > 0}.
+#' @description
+#' This function computes the probit choice probability for alternative \code{j}
+#' in case of \code{P_f > 0} and \code{P_r > 0}.
+#' @param j
+#' An integer between 1 and \code{J}.
+#' @inheritParams
+#' @inheritParams compute_choice_probabilities
+#' @param X
+#' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
+#' the first \code{P_f} columns are connected to fixed coefficients and the last
+#' \code{P_r} columns are connected to random coefficients.
+#' @param parameter
+#' An object of class \code{RprobitB_parameter}.
+#' @return
+#' A probability.
+#' @keywords
+#' internal
+#' @noRd
+
+ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
+  out <- 0
+  for(c in seq_len(s)){
+    out <- out + s[c] * mvtnorm::pmvnorm(
+      lower = rep(-Inf, J - 1),
+      upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
+      mean = rep(0, J - 1),
+      sigma = delta(J, j) %*%
+        (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*% t(X[, -(1:P_f)]) +
+           Sigma_full) %*% t(delta(J, j))
+    )[1]
+  }
+  return(out)
 }

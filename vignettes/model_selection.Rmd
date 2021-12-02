@@ -1,0 +1,96 @@
+---
+title: "Model selection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+This vignette explains model selection in RprobitB. We target the question: If there are several possible models, how do I choose the most appropriate one?
+
+```{r setup}
+library(RprobitB)
+```
+
+## Model selection with the `model_selection()` function
+
+RprobitB provides a function called `model_selection()` which guides through the process of model selection. As input the function takes an arbitrary number of `RprobitB_model` objects.
+
+For illustration, we fit three different models with increasing complexity to the [Train dataset from the mlogit package](https://cran.r-project.org/package=mlogit).
+
+```{r fit models}
+data("Train", package = "mlogit")
+
+### Using only the alternative's price as covariate
+d1 <- prepare_data(
+  form = choice ~ price,
+  choice_data = Train
+)
+m1 <- mcmc(d1, print_progress = FALSE)
+
+### Using all available covariates
+d2 <- prepare_data(
+  form = choice ~ price | 0 | time + comfort + change,
+  choice_data = Train
+)
+m2 <- mcmc(d2, print_progress = FALSE)
+
+### We additionally impose a mixing distribution on the price coefficient
+d3 <- prepare_data(
+  form = choice ~ price | 0 | time + comfort + change,
+  choice_data = Train, 
+  re = "price"
+)
+m3 <- mcmc(d3, print_progress = FALSE)
+```
+
+The `model_selection()` function returns the following information:
+
+```{r model selection}
+model_selection(m1, m2, m3)
+```
+
+The output is explained in detail below.
+
+## Information criteria
+
+### `npar`
+
+Simply the number of estimated model parameters.
+
+### `LL`
+
+The model's log-likelihood value at the estimated parameters.
+
+### `AIC`
+
+### `BIC`
+
+### `WAIC`
+
+WAIC is short for Widely Applicable Information Criterion. The smaller its value the better the model. Its definition is
+
+$$\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),$$
+where $\text{lppd}$ is the log-pointwise-predictive-density and $p_\text{WAIC}$ is a penalty term sometimes called effective number of parameters.
+
+The $\text{lppd}$ is computed as follows. Let $p_{is} = \Pr(y_i\mid \theta_s)$ be the probability of observation $y_i$ given the $s$-th set of sampled parameter values from the posterior distribution $\theta_s$. Then
+
+$$\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.$$
+The penalty term is computed as the sum over the variances in log-probability for each observation:
+$$p_\text{WAIC} = \sum_i \text{var}_{\theta} \log p_{si}. $$
+Note that each individual observation has its own penalty term in the $p_\text{WAIC}$, which provides an interesting opportunity to study how different observations contribute to overfitting.
+
+## Bayes factors
+
+## Prediction accuracy
+
+## Likelihood ratio test

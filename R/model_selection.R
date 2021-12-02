@@ -1,6 +1,6 @@
 #' Compare fitted models.
 #' @description
-#' This function computes model comparison criteria.
+#' This function guides through the process of model selection.
 #' @param ...
 #' One or more objects of class \code{RprobitB_model}.
 #' @return
@@ -24,24 +24,7 @@ model_selection <- function(...) {
   ### check if models are of class "RprobitB_model"
   for (i in seq_len(length(models))) {
     if (!inherits(models[[i]], "RprobitB_model")) {
-      stop(paste0(
-        "Input '", model_names[i],
-        "' is not of class 'RprobitB_model'."
-      ))
-    }
-  }
-
-  ### check if data is the same for each model
-  for (i in seq_len(length(models))) {
-    data_i <- as.numeric(unlist(models[[i]]$RprobitB_data$data))
-    for (j in 1:i) {
-      data_j <- as.numeric(unlist(models[[j]]$RprobitB_data$data))
-      if (!identical(data_i, data_j)) {
-        warning(paste0(
-          "Models '", model_names[i], "' and '", model_names[j],
-          "' are not estimated on the same data."
-        ))
-      }
+      stop(paste0("Input '", model_names[i], "' is not of class 'RprobitB_model'."))
     }
   }
 
