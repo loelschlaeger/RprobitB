@@ -72,7 +72,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Data management</h1>
                         <h4 data-toc-skip class="author">Lennart Oelschläger</h4>
             
-            <h4 data-toc-skip class="date">2021-12-01</h4>
+            <h4 data-toc-skip class="date">2021-12-02</h4>
       
       
       <div class="d-none name"><code>data_management.Rmd</code></div>
@@ -125,7 +125,7 @@
 <div class="section level2">
 <h2 id="empirical-data">Empirical data<a class="anchor" aria-label="anchor" href="#empirical-data"></a>
 </h2>
-<p>This section explains how to prepare empirical data for estimation using the function <code><a href="../reference/prepare.html">prepare()</a></code>.</p>
+<p>This section explains how to prepare empirical data for estimation using the function <code>prepare()</code>.</p>
 <p>Say we have a data set with empirical choice data, let’s call it <code>choice_data</code>. It must meet the following requirements:</p>
 <ol style="list-style-type: decimal">
 <li><p>It must be a data frame.</p></li>
@@ -137,8 +137,8 @@
 </ol>
 <p>To prepare <code>choice_data</code> for estimation, we must call</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></code></pre></div>
-<p>The function <code><a href="../reference/prepare.html">prepare()</a></code> has the following optional arguments:</p>
+<code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">prepare</span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></code></pre></div>
+<p>The function <code>prepare()</code> has the following optional arguments:</p>
 <ul>
 <li><p><code>alternatives</code>: We may not want to consider all alternatives in <code>choice_data</code>. In that case, we can specify a character vector <code>alternatives</code> with selected names of alternatives.</p></li>
 <li><p><code>re</code>: The character vector of variable names of <code>form</code> with random effects.</p></li>
@@ -151,7 +151,7 @@
 <p>Let’s prepare the <em>Train</em> data set of the <a href="https://cran.r-project.org/package=mlogit" class="external-link">mlogit package</a> for estimation. We consider the covariates <code>price</code> (type 1), <code>time</code>, <code>comfort</code> and <code>change</code> (each of type 3), where we link <code>price</code> and <code>time</code> to random effects<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Note that alternative specific constants are excluded here.&lt;/p&gt;"><sup>2</sup></a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
-<span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span>, 
+<span class="va">data</span> <span class="op">=</span> <span class="fu">prepare</span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span>, 
                choice_data <span class="op">=</span> <span class="va">Train</span>,
                re <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
@@ -210,7 +210,7 @@
 <div class="section level2">
 <h2 id="standardize-covariates">Standardize covariates<a class="anchor" aria-label="anchor" href="#standardize-covariates"></a>
 </h2>
-<p>Both <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> and <code><a href="../reference/prepare.html">prepare()</a></code> have the optional input <code>standardize</code>, which is a character vector of names of covariates that get standardized, i.e. normalize to mean 0 and standard deviation 1. If <code>standardize = "all"</code>, all covariates get standardized.</p>
+<p>Both <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate()</a></code> and <code>prepare()</code> have the optional input <code>standardize</code>, which is a character vector of names of covariates that get standardized, i.e. normalize to mean 0 and standard deviation 1. If <code>standardize = "all"</code>, all covariates get standardized.</p>
 <p>Covariates of type 1 or 3 have to be addressed by <code>covariate_alternative</code>.</p>
 <p>If <code>standardize = "all"</code>, all covariates get standardized.</p>
 <div class="section level3">
