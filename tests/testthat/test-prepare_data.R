@@ -1,6 +1,6 @@
 test_that("P", {
   data("Train", package = "mlogit")
-  data <- prepare(
+  data <- prepare_data(
     form = choice ~ price | 0 | time + comfort + change,
     choice_data = Train
   )
@@ -10,7 +10,7 @@ test_that("P", {
 
 test_that("MMNP", {
   data("Train", package = "mlogit")
-  data <- prepare(
+  data <- prepare_data(
     form = choice ~ price | 0 | time + comfort + change,
     choice_data = Train,
     re = c("price", "time")
@@ -22,7 +22,7 @@ test_that("MMNP", {
 test_that("without choice variable", {
   data("Train", package = "mlogit")
   Train[["choice"]] <- NULL
-  data <- prepare(
+  data <- prepare_data(
     form = choice ~ price | 0 | time + comfort + change,
     choice_data = Train,
     re = c("price", "time"),
@@ -35,7 +35,7 @@ test_that("without choice variable", {
 
 test_that("train and test data", {
   data("Train", package = "mlogit")
-  data <- prepare(
+  data <- prepare_data(
     form = choice ~ price | 0 | time + comfort + change,
     choice_data = Train,
     re = c("price", "time"),

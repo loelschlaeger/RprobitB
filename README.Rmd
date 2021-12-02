@@ -59,11 +59,12 @@ library(RprobitB)
 Then, prepare choice data, for example the Train dataset from the mlogit package. Here, we put 30 percent of data aside for later out-of-sample prediction.
 ```{r data}
 data("Train", package = "mlogit")
-data = prepare(form = choice ~ price | 0 | time + comfort + change,
-               choice_data = Train,
-               re = "price",
-               standardize = "all",
-               test_prop = 0.3)
+data = prepare_data(
+  form = choice ~ price | 0 | time + comfort + change,
+  choice_data = Train,
+  re = "price",
+  standardize = "all",
+  test_prop = 0.3)
 ```
 
 Call the `mcmc` function to estimate the model.

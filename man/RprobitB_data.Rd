@@ -34,9 +34,10 @@ for one choice occasion.
 \code{y} is a vector of length \code{T} and contains the labels for the
 chosen alternatives.}
 
-\item{choice_data}{A data frame of choice data in "wide" format (i.e. each row represents
-one choice occasion) with the following requirements:
+\item{choice_data}{A data frame of choice data with the following requirements:
 \itemize{
+\item It must be in "wide" format, i.e. each row represents one choice
+occasion.
 \item It must contain a column named \code{id} which contains unique
 identifier for each decision maker.
 \item It can contain a column named \code{choice} with the observed

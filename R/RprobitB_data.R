@@ -41,7 +41,7 @@
 #' @param choice_available
 #' A boolean, if \code{TRUE} then \code{data} contains observed choices.
 #' @inheritParams check_form
-#' @inheritParams prepare
+#' @inheritParams prepare_data
 #' @param true_parameter
 #' An object of class \code{RprobitB_parameters}.
 #' @return

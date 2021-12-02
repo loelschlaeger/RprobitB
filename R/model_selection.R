@@ -13,7 +13,7 @@
 #' }
 #' @export
 
-compare <- function(...) {
+model_selection <- function(...) {
 
   ### read models
   models <- as.list(list(...))

@@ -12,7 +12,7 @@
 #' @param ...
 #' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.
-#' @inheritParams prepare
+#' @inheritParams prepare_data
 #' @return
 #' An object of class \code{RprobitB_data}.
 #' If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects

@@ -36,15 +36,16 @@
 #' labelled \code{"train"} and \code{"test"}.
 #' @examples
 #' data("Train", package = "mlogit")
-#' data <- prepare(
+#' data <- prepare_data(
 #'   form = choice ~ price | 0 | time + comfort + change,
 #'   choice_data = Train, re = c("price", "time"),
 #'   standardize = "all"
 #' )
 #' @export
 
-prepare <- function(form, choice_data, alternatives = NULL, re = NULL, id = "id",
-                    standardize = NULL, test_prop = NULL) {
+# TODO: Add id for choice occasion.
+prepare_data <- function(form, choice_data, alternatives = NULL, re = NULL,
+                         id = "id", standardize = NULL, test_prop = NULL) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)

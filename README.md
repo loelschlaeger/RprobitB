@@ -62,11 +62,12 @@ prediction.
 
 ``` r
 data("Train", package = "mlogit")
-data = prepare(form = choice ~ price | 0 | time + comfort + change,
-               choice_data = Train,
-               re = "price",
-               standardize = "all",
-               test_prop = 0.3)
+data = prepare_data(
+  form = choice ~ price | 0 | time + comfort + change,
+  choice_data = Train,
+  re = "price",
+  standardize = "all",
+  test_prop = 0.3)
 ```
 
 Call the `mcmc` function to estimate the model.
@@ -124,12 +125,12 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.84    0.08    1.00
-#>      2   -0.86    0.08    1.00
-#>      3   -0.52    0.05    1.01
-#>      4   -0.50    0.05    1.00
-#>      5   -0.27    0.04    1.00
-#>      6   -0.22    0.05    1.00
+#>      1   -0.85    0.08    1.04
+#>      2   -0.87    0.08    1.04
+#>      3   -0.52    0.05    1.03
+#>      4   -0.50    0.05    1.04
+#>      5   -0.27    0.04    1.02
+#>      6   -0.23    0.05    1.02
 #> 
 #>  s
 #>                               
@@ -137,11 +138,11 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.22    0.25    1.00
+#>    1.1   -2.24    0.27    1.11
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    3.16    0.83    1.00
+#>  1.1,1    3.32    0.93    1.02
 #> 
 #>  Sigma
 #>                               
