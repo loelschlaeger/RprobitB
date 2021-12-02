@@ -18,7 +18,7 @@ reference:
 - title: Data preparation
   desc: Use these functions to prepare or simulate choice data.
   contents:
-  - prepare
+  - prepare_data
   - simulate_choices
   - overview_effects
   - summary.RprobitB_data
@@ -32,7 +32,7 @@ reference:
   contents:
   - summary.RprobitB_model
   - plot.RprobitB_model
-  - compare
+  - model_selection
   - predict_choices
   - choice_probs
   - classify

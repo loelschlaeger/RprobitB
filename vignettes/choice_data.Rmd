@@ -61,9 +61,9 @@ It is a data frame, each row represents one choice occasion, the columns `id` an
 
 We have to tell RprobitB which covariates we want to include in our model. This is done by specifying a `formula` object.
 
-## The `prepare` function in RprobitB
+## The `prepare_data()` function in RprobitB
 
-## Simulate choice data in RprobitB
+## Simulate choice data in RprobitB using the `simulate_choices()` function
 
 ## Standardize covariates
 

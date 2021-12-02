@@ -4,6 +4,9 @@
     <loc>https://loelschlaeger.github.io/RprobitB/404.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/articles/choice_data.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/articles/data_management.html</loc>
   </url>
   <url>
@@ -94,6 +97,9 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/mcmc.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/model_selection.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/overview_effects.html</loc>
   </url>
   <url>
@@ -118,10 +124,16 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/predict.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/predict_choices.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/preference_flip.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/prepare.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/prepare_data.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/print.RprobitB_data.html</loc>
@@ -181,6 +193,9 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/simulate.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/simulate_choices.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/summary.RprobitB_data.html</loc>
   </url>
   <url>
@@ -191,6 +206,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_gibbs_samples.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_model.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_parameter.html</loc>

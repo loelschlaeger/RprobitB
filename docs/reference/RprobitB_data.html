@@ -24,6 +24,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
     <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
@@ -86,8 +87,9 @@ for one choice occasion.
 <code>y</code> is a vector of length <code>T</code> and contains the labels for the
 chosen alternatives.</p></dd>
 <dt>choice_data</dt>
-<dd><p>A data frame of choice data in "wide" format (i.e. each row represents
-one choice occasion) with the following requirements:</p><ul><li><p>It must contain a column named <code>id</code> which contains unique
+<dd><p>A data frame of choice data with the following requirements:</p><ul><li><p>It must be in "wide" format, i.e. each row represents one choice
+occasion.</p></li>
+<li><p>It must contain a column named <code>id</code> which contains unique
 identifier for each decision maker.</p></li>
 <li><p>It can contain a column named <code>choice</code> with the observed
 choices, where <code>choice</code> must match the name of the dependent
