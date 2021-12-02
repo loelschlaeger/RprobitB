@@ -8,6 +8,12 @@
 #' @param i
 #' An integer, the alternative number with respect to which \code{Sigma}
 #' was differenced.
+#' @param checks
+#' If \code{TRUE} the function runs additional input and transformation checks.
+#' @param pos
+#' If \code{TRUE} the function returns a positive matrix.
+#' @param labels
+#' If \code{TRUE} the function adds labels to the output matrix.
 #' @return
 #' A covariance matrix of dimension \code{J} x \code{J}. If this covariance
 #' matrix gets differenced with respect to alternative \code{i}, the results is
@@ -15,16 +21,18 @@
 #' @keywords
 #' internal
 
-undiff_Sigma <- function(Sigma, i) {
+undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
 
-  ### check inputs
-  Sigma <- as.matrix(Sigma)
-  if (!is_covariance_matrix(Sigma)) {
-    stop("'Sigma' is no covariance matrix.")
-  }
   J <- nrow(Sigma) + 1
-  if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
-    stop("'i' must an alternative number.")
+  if(checks){
+    ### check inputs
+    Sigma <- as.matrix(Sigma)
+    if (!is_covariance_matrix(Sigma)) {
+      stop("'Sigma' is no covariance matrix.")
+    }
+    if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
+      stop("'i' must an alternative number.")
+    }
   }
 
   ### add zero row and column to Sigma at row and column i
@@ -38,20 +46,26 @@ undiff_Sigma <- function(Sigma, i) {
   }
 
   ### add kernel element to make all elements non-zero
-  Sigma_full <- Sigma_full + 1
-
-  ### check if 'Sigma_full' is a covariance matrix
-  if (!is_covariance_matrix(Sigma_full)) {
-    stop("Back-transformed matrix is no covariance matrix.")
+  if(pos){
+    Sigma_full <- Sigma_full + 1
   }
 
-  ### check if back-differencing yields differenced matrix
-  Sigma_back <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
-  if (any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps))) {
-    stop("Back-differencing failed.")
+  if(checks){
+    ### check if 'Sigma_full' is a covariance matrix
+    if (!is_covariance_matrix(Sigma_full)) {
+      stop("Back-transformed matrix is no covariance matrix.")
+    }
+
+    ### check if back-differencing yields differenced matrix
+    Sigma_back <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
+    if (any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps))) {
+      stop("Back-differencing failed.")
+    }
   }
 
   ### return undifferenced covariance matrix
-  names(Sigma_full) <- create_labels_Sigma(J + 1, cov_sym = TRUE)
+  if(labels){
+    names(Sigma_full) <- create_labels_Sigma(J + 1, cov_sym = TRUE)
+  }
   return(Sigma_full)
 }
