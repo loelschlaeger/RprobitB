@@ -86,8 +86,9 @@ for one choice occasion.
 <code>y</code> is a vector of length <code>T</code> and contains the labels for the
 chosen alternatives.</p></dd>
 <dt>choice_data</dt>
-<dd><p>A data frame of choice data in "wide" format (i.e. each row represents
-one choice occasion) with the following requirements:</p><ul><li><p>It must contain a column named <code>id</code> which contains unique
+<dd><p>A data frame of choice data with the following requirements:</p><ul><li><p>It must be in "wide" format, i.e. each row represents one choice
+occasion.</p></li>
+<li><p>It must contain a column named <code>id</code> which contains unique
 identifier for each decision maker.</p></li>
 <li><p>It can contain a column named <code>choice</code> with the observed
 choices, where <code>choice</code> must match the name of the dependent
