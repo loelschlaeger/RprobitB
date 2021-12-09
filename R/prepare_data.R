@@ -2,8 +2,8 @@
 #' @description
 #' This function prepares empirical choice data for the RprobitB package.
 #' @details
-#' See the vignette "Data management" for more details:
-#' \code{vignette("data_management", package = "RprobitB")}.
+#' See the vignette "Choice data" for more details:
+#' \code{vignette("choice_data", package = "RprobitB")}.
 #' @param choice_data
 #' A data frame of choice data with the following requirements:
 #' \itemize{
@@ -43,9 +43,9 @@
 #' )
 #' @export
 
-# TODO: Add id for choice occasion.
 prepare_data <- function(form, choice_data, alternatives = NULL, re = NULL,
-                         id = "id", standardize = NULL, test_prop = NULL) {
+                         id = "id", idc = NULL, standardize = NULL,
+                         test_prop = NULL) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)

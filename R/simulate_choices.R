@@ -2,8 +2,8 @@
 #' @description
 #' This function simulates choice data for the RprobitB package.
 #' @details
-#' See the vignette "Data management" for more details:
-#' \code{vignette("data_management", package = "RprobitB")}.
+#' See the vignette "Choice data" for more details:
+#' \code{vignette("choice_data", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
 #' @inheritParams check_distr
 #' @inheritParams check_form
@@ -26,8 +26,8 @@
 #' @export
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
-                             distr = NULL, standardize = NULL, seed = NULL,
-                             test_prop = NULL, ...) {
+                             distr = NULL, standardize = NULL, test_prop = NULL,
+                             seed = NULL, ...) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)
