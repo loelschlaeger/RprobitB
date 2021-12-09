@@ -11,6 +11,7 @@ importFrom("utils", "head", "tail", "data", "packageVersion")
 importFrom("grDevices", "rgb")
 
 ### export main functions
+export(check_form)
 export(choice_probs)
 export(classify)
 export(model_selection)
