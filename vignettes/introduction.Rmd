@@ -1,10 +1,10 @@
 ---
-title: "Introduction to RprobitB and model formulation"
+title: "Introduction"
 author: "Lennart Oelschläger"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to RprobitB and model formulation}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,11 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-Welcome to **RprobitB**! This vignette introduces the R package and defines the underlying model.
+Welcome to RprobitB! This vignette introduces the R package and defines the underlying model.
 
 ## Introdution
 
-With **RprobitB**[^1] you can 
+With RprobitB[^1] you can 
 
 1. analyze choices made by deciders among a discrete set of alternatives,
 
@@ -30,13 +30,13 @@ With **RprobitB**[^1] you can
 
 4. identify latent classes of decision makers.
 
-Run `install.packages("RprobitB")` in your R console to install the latest version of **RprobitB**.
+Run `install.packages("RprobitB")` in your R console to install the latest version of RprobitB.
 
-[^1]: The package name **RprobitB** is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).
+[^1]: The package name RprobitB is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).
 
 ## Levels of model complexity
 
-Why the notation **(latent class) (mixed) (multinomial) probit model**? Because **RprobitB** can fit probit models of increasing complexity:
+Why the notation **(latent class) (mixed) (multinomial) probit model**? Because RprobitB can fit probit models of increasing complexity:
 
 - Most basic, modelling the choice between two alternatives (the **probit model**).
 
@@ -106,9 +106,9 @@ One interpretation of the latent class model is obtained by introducing variable
 
 We call this model the **latent class mixed multinomial probit** model.[^5]
 
-[^2]: For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, **RprobitB** allows for a different number of choice occasions for each decision maker.
+[^2]: For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, RprobitB allows for a different number of choice occasions for each decision maker.
 
-[^3]: **RprobitB** provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of $\alpha$.
+[^3]: RprobitB provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of $\alpha$.
 
 [^4]: We use the abbreviation $(\beta_n)_n$ as a shortcut to $(\beta_n)_{n =1,...,N}$ the collection of vectors $\beta_n,n=1,...,N$.
 
