@@ -27,6 +27,8 @@
 #' An object of class \code{RprobitB_formula}, which is a list that contains the
 #' following elements:
 #' \itemize{
+#'   \item \code{form}:
+#'   The input \code{form}.
 #'   \item \code{choice}:
 #'   The dependent variable in \code{form}.
 #'   \item \code{re}:
@@ -38,6 +40,10 @@
 #'   \item \code{ASC}:
 #'   A boolean, determining whether the model has ASCs.
 #' }
+#' @examples
+#' form <- choice ~ price + time + comfort + change | 1
+#' re <- re <- c("price","time")
+#' check_form(form = form, re = re)
 #' @export
 
 check_form <- function(form, re = NULL) {
@@ -83,6 +89,7 @@ check_form <- function(form, re = NULL) {
 
   ### return
   out <- list(
+    "form" = form,
     "choice" = choice,
     "re" = re,
     "vars" = vars,
@@ -90,4 +97,26 @@ check_form <- function(form, re = NULL) {
   )
   class(out) <- "RprobitB_formula"
   return(out)
+}
+
+#' Print method for \code{RprobitB_formula}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{RprobitB_formula}.
+#' @param x
+#' An object of class \code{RprobitB_formula}.
+#' @param ...
+#' Ignored.
+#' @return
+#' Invisibly \code{x}.
+#' @noRd
+
+print.RprobitB_formula <- function(x,...) {
+  print(x$form)
+  cat("- dependent variable:", x$choice, "\n")
+  for(i in 1:3)
+    cat("- type",i,"covariate(s):", paste(x$vars[[i]], collapse = ", "), "\n")
+  cat("- random effects:", paste(x$re, collapse = ", "), "\n")
+  cat("- ASC:", x$ASC, "\n")
+  return(invisible(x))
 }
