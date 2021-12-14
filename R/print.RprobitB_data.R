@@ -5,6 +5,8 @@
 #' An object of class \code{RprobitB_data}.
 #' @param ...
 #' Ignored.
+#' @return
+#' Invisibly \code{x}.
 #' @noRd
 
 print.RprobitB_data <- function(x, ...) {

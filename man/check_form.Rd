@@ -30,7 +30,11 @@ To have random effects for the alternative specific constants, include
 \code{"ASC"} in \code{re}.}
 }
 \value{
+An object of class \code{RprobitB_formula}, which is a list that contains the
+following elements:
 \itemize{
+\item \code{form}:
+The input \code{form}.
 \item \code{choice}:
 The dependent variable in \code{form}.
 \item \code{re}:
@@ -46,4 +50,8 @@ A boolean, determining whether the model has ASCs.
 \description{
 This function checks the input \code{form}.
 }
-\keyword{internal}
+\examples{
+form <- choice ~ price + time + comfort + change | 1
+re <- re <- c("price","time")
+check_form(form = form, re = re)
+}

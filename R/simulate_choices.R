@@ -5,8 +5,12 @@
 #' See the vignette "Choice data" for more details:
 #' \code{vignette("choice_data", package = "RprobitB")}.
 #' @inheritParams RprobitB_data
-#' @inheritParams check_distr
 #' @inheritParams check_form
+#' @param covariates
+#' A named list of covariate values. Each element must be a vector of length
+#' equal to the number of choice occasions and named according to a covariate.
+#' Covariates for which no values are supplied are drawn from a standard normal
+#' distribution.
 #' @param seed
 #' Set a seed for the simulation.
 #' @param ...
@@ -15,22 +19,26 @@
 #' @inheritParams prepare_data
 #' @return
 #' An object of class \code{RprobitB_data}.
-#' If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects
-#' labelled \code{"train"} and \code{"test"}.
 #' @examples
 #' data <- simulate_choices(
-#'   form = choice ~ cost | income + 0 | time,
-#'   N = 100, T = 10, J = 3, re = "cost",
-#'   alternatives = c("car", "bus", "scooter")
+#'   form = choice ~ cost | income | time,
+#'   N = 100,
+#'   T = 10,
+#'   J = 2,
+#'   re = c("cost", "time"),
+#'   alternatives = c("car", "bus"),
+#'   seed = 1,
+#'   alpha = c(-1,1),
+#'   C = 2
 #' )
 #' @export
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
-                             distr = NULL, standardize = NULL, test_prop = NULL,
-                             seed = NULL, ...) {
+                             covariates = NULL, seed = NULL, ...) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)
+  form <- check_form_out$form
   choice <- check_form_out$choice
   re <- check_form_out$re
   vars <- check_form_out$vars
@@ -50,17 +58,20 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     stop("'J' must be a number greater or equal 2.")
   }
   if (is.null(alternatives)) {
-    alternatives <- LETTERS[1:J]
+    if(J > 26){
+      stop("Please specify 'alternatives'.")
+    } else {
+      alternatives <- LETTERS[1:J]
+    }
   }
   if (length(alternatives) != J || !is.character(alternatives)) {
     stop("'alternatives' must be a character (vector) of length 'J'.")
   }
-  if (!is.null(distr)) {
-    distr <- check_distr(distr = distr)
-  }
-  if (!is.null(standardize)) {
-    if (!is.character(standardize)) {
-      stop("'standardize' must be a character (vector).")
+  if (!is.null(covariates)) {
+    for(i in 1:length(covariates)) {
+      if (length(covariates[[i]]) != sum(T)) {
+        stop(paste0("In 'covariates', there must be ", sum(T), " values for '", names(covariates)[i], "'."))
+      }
     }
   }
 
@@ -71,89 +82,53 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   if (!is.null(seed)) {
     set.seed(seed)
   }
-  choice_data <- data.frame("id" = rep(1:N, times = T))
-  for (var in c(vars[[1]], vars[[3]])) {
-    if (var %in% names(distr)) {
-      distr_i <- distr[[which(names(distr) == var)]]
-      cov <- matrix(replicate(do.call(
-        what = distr_i[["name"]],
-        args = distr_i[names(distr_i) != "name"]
-      ),
-      n = sum(T) * J
-      ),
-      nrow = sum(T), ncol = J
-      )
-    } else {
-      cov <- matrix(rnorm(n = sum(T) * J), nrow = sum(T), ncol = J)
-    }
-    colnames(cov) <- paste(var, alternatives, sep = "_")
-    for (j in alternatives) {
-      if (paste(var, j, sep = "_") %in% names(distr)) {
-        distr_i <- distr[[which(names(distr) == paste(var, j, sep = "_"))]]
-        cov[, paste(var, j, sep = "_")] <-
-          replicate(do.call(
-            what = distr_i[["name"]],
-            args = distr_i[names(distr_i) != "name"]
-          ),
-          n = sum(T)
-          )
+  choice_data <- data.frame("id" = rep(1:N, times = T),
+                            "idc" = unlist(sapply(T, seq_len)))
+  for (var in vars[[1]]) {
+    for(alt in alternatives) {
+      var_alt <- paste0(var,"_",alt)
+      if(var_alt %in% names(covariates)) {
+        cov <- matrix(covariates[[var_alt]], ncol = 1)
+        covariates[[var_alt]] <- NULL
+      } else {
+        cov <- matrix(rnorm(n = sum(T)), ncol = 1)
       }
+      colnames(cov) <- var_alt
+      choice_data <- cbind(choice_data, cov)
     }
-    choice_data <- cbind(choice_data, cov)
   }
   for (var in vars[[2]]) {
-    if (var %in% names(distr)) {
-      distr_i <- distr[[which(names(distr) == var)]]
-      cov <- matrix(replicate(do.call(
-        what = distr_i[["name"]],
-        args = distr_i[names(distr_i) != "name"]
-      ),
-      n = sum(T)
-      ),
-      nrow = sum(T), ncol = 1
-      )
+    if(var %in% names(covariates)) {
+      cov <- matrix(covariates[[var]], ncol = 1)
+      covariates[[var]] <- NULL
     } else {
-      cov <- matrix(rnorm(n = sum(T)), nrow = sum(T), ncol = 1)
+      cov <- matrix(rnorm(n = sum(T)), ncol = 1)
     }
     colnames(cov) <- var
     choice_data <- cbind(choice_data, cov)
+  }
+  for (var in vars[[3]]) {
+    for(alt in alternatives) {
+      var_alt <- paste0(var,"_",alt)
+      if(var_alt %in% names(covariates)) {
+        cov <- matrix(covariates[[var_alt]], ncol = 1)
+        covariates[[var_alt]] <- NULL
+      } else {
+        cov <- matrix(rnorm(n = sum(T)), ncol = 1)
+      }
+      colnames(cov) <- var_alt
+      choice_data <- cbind(choice_data, cov)
+    }
+  }
+
+  ### report unsed elements in 'covariates'
+  if (length(names(covariates)) > 0) {
+    warning(paste("The column(s)",paste(paste0("'",names(covariates),"'", collapse = ", ")), "in 'covariates' are ignored."))
   }
 
   ### add ASCs (for all but the last alternative)
   if (ASC) {
     choice_data$ASC <- 1
-  }
-
-  ### if 'standardize = all', add all covariates
-  if (length(standardize) == 1) {
-    if (standardize == "all") {
-      standardize <-
-        c(
-          apply(expand.grid(vars[[1]], alternatives), 1, paste, collapse = "_"),
-          vars[[2]],
-          apply(expand.grid(vars[[3]], alternatives), 1, paste, collapse = "_")
-        )
-    }
-  }
-
-  ### ASCs do not get standardized
-  if ("ASC" %in% standardize) {
-    standardize <- standardize[-which(standardize == "ASC")]
-  }
-
-  ### standardize covariates
-  for (var in vars[[2]]) {
-    if (var %in% standardize) {
-      choice_data[, var] <- scale(choice_data[, var])
-    }
-  }
-  for (var in c(vars[[1]], vars[[3]])) {
-    for (j in alternatives) {
-      var_alt <- paste0(var, "_", j)
-      if (var_alt %in% standardize) {
-        choice_data[, var_alt] <- scale(choice_data[, var_alt])
-      }
-    }
   }
 
   ### determine number and names of linear coefficients
@@ -177,139 +152,117 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   ### compute lower-triangular Choleski root of 'Sigma_full'
   L <- suppressWarnings(t(chol(true_parameter$Sigma_full, pivot = TRUE)))
 
-  ### check if 'choice_data' is to be splitted in train and test set
-  out <- list()
-  if (is.null(test_prop)) {
-    split <- FALSE
-    choice_data <- list(choice_data)
-  } else {
-    if (!(is.numeric(test_prop) && length(test_prop) == 1 && test_prop <= 1 &&
-      test_prop >= 0)) {
-      stop("'test_prop' must be a numeric between 0 and 1.")
-    }
-    split <- TRUE
-    cutoff <- round(length(unique(choice_data[, "id"])) * (1 - test_prop))
-    choice_data <- split(choice_data, choice_data$id > cutoff)
-  }
-
   ### transform 'choice_data' in list format 'data'
-  for (b in seq_len(ifelse(split, 2, 1))) {
-    data <- list()
-    ids <- unique(choice_data[[b]][, "id"])
-    N <- length(ids)
-    T <- as.numeric(table(choice_data[[b]][, "id"]))
+  data <- list()
+  ids <- unique(choice_data[, "id"])
+  N <- length(ids)
+  T <- as.numeric(table(choice_data[, "id"]))
 
-    ### simulate choices
-    for (n in seq_len(N)) {
+  ### simulate choices
+  for (n in seq_len(N)) {
 
-      ### extract data for each decision maker
-      data[[n]] <- list()
-      data[[n]][["X"]] <- list()
-      data_n <- choice_data[[b]][choice_data[[b]][, "id"] == ids[n], ]
-      y_n <- numeric(T[n])
+    ### extract data for each decision maker
+    data[[n]] <- list()
+    data[[n]][["X"]] <- list()
+    data_n <- choice_data[choice_data[, "id"] == ids[n], ]
+    y_n <- numeric(T[n])
 
-      for (t in seq_len(T[n])) {
+    for (t in seq_len(T[n])) {
 
-        ### extract data for each choice occasion
-        data_nt <- data_n[t, ]
-        X_nt <- matrix(NA, nrow = J, ncol = 0)
+      ### extract data for each choice occasion
+      data_nt <- data_n[t, ]
+      X_nt <- matrix(NA, nrow = J, ncol = 0)
 
-        ### type-1 covariates
-        for (var in vars[[1]]) {
-          old_names <- colnames(X_nt)
-          col <- numeric(J)
-          for (j in 1:J) {
-            col[j] <- data_nt[, paste0(var, "_", alternatives[j])]
-          }
-          X_nt <- cbind(X_nt, col)
-          colnames(X_nt) <- c(old_names, var)
+      ### type-1 covariates
+      for (var in vars[[1]]) {
+        old_names <- colnames(X_nt)
+        col <- numeric(J)
+        for (j in 1:J) {
+          col[j] <- data_nt[, paste0(var, "_", alternatives[j])]
         }
-
-        ### type-2 covariates
-        for (var in c(vars[[2]], if (ASC) "ASC")) {
-          old_names <- colnames(X_nt)
-          mat <- matrix(0, J, J)[, -J, drop = FALSE]
-          for (j in 1:(J - 1)) {
-            mat[j, j] <- data_nt[, var]
-          }
-          X_nt <- cbind(X_nt, mat)
-          colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[1:(J - 1)]))
-        }
-
-        ### type-3 covariates
-        for (var in vars[[3]]) {
-          old_names <- colnames(X_nt)
-          mat <- matrix(0, J, J)
-          for (j in 1:J) {
-            mat[j, j] <- data_nt[, paste0(var, "_", alternatives[j])]
-          }
-          X_nt <- cbind(X_nt, mat)
-          colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives))
-        }
-
-        ### sort covariates
-        X_nt <- X_nt[, linear_coeffs_names, drop = FALSE]
-
-        ### save in list
-        data[[n]][["X"]][[t]] <- X_nt
-
-        ### build coefficient vector
-        if (P_f > 0 & P_r > 0) {
-          coeff <- c(true_parameter$alpha, true_parameter$beta[, n])
-        }
-        if (P_f > 0 & P_r == 0) {
-          coeff <- true_parameter$alpha
-        }
-        if (P_f == 0 & P_r > 0) {
-          coeff <- true_parameter$beta[, n]
-        }
-        if (P_f == 0 & P_r == 0) {
-          coeff <- NA
-        }
-
-        ### compute utility and choice decision
-        eps <- L %*% rnorm(J)
-        if (P_f == 0 & P_r == 0) {
-          U_nt <- eps
-        } else {
-          V_nt <- X_nt %*% coeff
-          U_nt <- V_nt + eps
-        }
-        y_n[t] <- which.max(U_nt)
+        X_nt <- cbind(X_nt, col)
+        colnames(X_nt) <- c(old_names, var)
       }
 
-      data[[n]][["y"]] <- y_n
+      ### type-2 covariates
+      for (var in c(vars[[2]], if (ASC) "ASC")) {
+        old_names <- colnames(X_nt)
+        mat <- matrix(0, J, J)[, -J, drop = FALSE]
+        for (j in 1:(J - 1)) {
+          mat[j, j] <- data_nt[, var]
+        }
+        X_nt <- cbind(X_nt, mat)
+        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[1:(J - 1)]))
+      }
+
+      ### type-3 covariates
+      for (var in vars[[3]]) {
+        old_names <- colnames(X_nt)
+        mat <- matrix(0, J, J)
+        for (j in 1:J) {
+          mat[j, j] <- data_nt[, paste0(var, "_", alternatives[j])]
+        }
+        X_nt <- cbind(X_nt, mat)
+        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives))
+      }
+
+      ### sort covariates
+      X_nt <- X_nt[, linear_coeffs_names, drop = FALSE]
+
+      ### save in list
+      data[[n]][["X"]][[t]] <- X_nt
+
+      ### build coefficient vector
+      if (P_f > 0 & P_r > 0) {
+        coeff <- c(true_parameter$alpha, true_parameter$beta[, n])
+      }
+      if (P_f > 0 & P_r == 0) {
+        coeff <- true_parameter$alpha
+      }
+      if (P_f == 0 & P_r > 0) {
+        coeff <- true_parameter$beta[, n]
+      }
+      if (P_f == 0 & P_r == 0) {
+        coeff <- NA
+      }
+
+      ### compute utility and choice decision
+      eps <- L %*% rnorm(J)
+      if (P_f == 0 & P_r == 0) {
+        U_nt <- eps
+      } else {
+        V_nt <- X_nt %*% coeff
+        U_nt <- V_nt + eps
+      }
+      y_n[t] <- which.max(U_nt)
     }
 
-    ### save choices in 'choice_data'
-    choice_data[[b]]["choice"] <- unlist(lapply(data, function(x) x[["y"]]))
-
-    ### create output
-    out[[b]] <- RprobitB_data(
-      data = data,
-      choice_data = choice_data[[b]],
-      N = N,
-      T = T,
-      J = J,
-      P_f = P_f,
-      P_r = P_r,
-      alternatives = alternatives,
-      form = form,
-      re = re,
-      ASC = ASC,
-      linear_coeffs = linear_coeffs,
-      standardize = standardize,
-      simulated = TRUE,
-      choice_available = TRUE,
-      true_parameter = true_parameter
-    )
+    data[[n]][["y"]] <- y_n
   }
+
+  ### save choices in 'choice_data'
+  choice_data["choice"] <- unlist(lapply(data, function(x) x[["y"]]))
+
+  ### create output
+  out <- RprobitB_data(
+    data = data,
+    choice_data = choice_data,
+    N = N,
+    T = T,
+    J = J,
+    P_f = P_f,
+    P_r = P_r,
+    alternatives = alternatives,
+    form = form,
+    re = re,
+    ASC = ASC,
+    linear_coeffs = linear_coeffs,
+    standardize = NULL,
+    simulated = TRUE,
+    choice_available = TRUE,
+    true_parameter = true_parameter
+  )
 
   ### return 'RprobitB_data' object
-  if (split) {
-    names(out) <- c("train", "test")
-    return(out)
-  } else {
-    return(out[[1]])
-  }
+  return(out)
 }

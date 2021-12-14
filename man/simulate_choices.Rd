@@ -13,8 +13,8 @@ simulate_choices(
   alternatives = NULL,
   distr = NULL,
   standardize = NULL,
-  seed = NULL,
   test_prop = NULL,
+  seed = NULL,
   ...
 )
 }
@@ -73,10 +73,6 @@ If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{seed}{Set a seed for the simulation.}
 
-\item{test_prop}{Either \code{NULL} or a numeric between 0 and 1. In the latter case, the data
-is split into a training set (of decider proportion \code{1-test_prop}) and a
-testing set (of decider proportion \code{test_prop}).}
-
 \item{...}{Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 \code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.}
 }
@@ -89,8 +85,8 @@ labelled \code{"train"} and \code{"test"}.
 This function simulates choice data for the RprobitB package.
 }
 \details{
-See the vignette "Data management" for more details:
-\code{vignette("data_management", package = "RprobitB")}.
+See the vignette "Choice data" for more details:
+\code{vignette("choice_data", package = "RprobitB")}.
 }
 \examples{
 data <- simulate_choices(

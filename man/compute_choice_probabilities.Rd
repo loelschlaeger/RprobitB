@@ -4,12 +4,15 @@
 \alias{compute_choice_probabilities}
 \title{Compute probit choice probabilities for a single choice situation.}
 \usage{
-compute_choice_probabilities(X, parameter)
+compute_choice_probabilities(X = NULL, alternatives, parameter)
 }
 \arguments{
 \item{X}{A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
 the first \code{P_f} columns are connected to fixed coefficients and the last
 \code{P_r} columns are connected to random coefficients.}
+
+\item{alternatives}{A vector with unique integers from \code{1} to \code{J}, indicating the
+alternatives for which choice probabilities are computed.}
 
 \item{parameter}{An object of class \code{RprobitB_parameter}.}
 }

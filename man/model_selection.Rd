@@ -19,5 +19,5 @@ A matrix with each model's
 }
 }
 \description{
-This function computes model comparison criteria.
+This function guides through the process of model selection.
 }

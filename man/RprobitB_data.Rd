@@ -36,19 +36,23 @@ chosen alternatives.}
 
 \item{choice_data}{A data frame of choice data with the following requirements:
 \itemize{
-\item It must be in "wide" format, i.e. each row represents one choice
+\item It \strong{must} be in "wide" format, i.e. each row represents one choice
 occasion.
-\item It must contain a column named \code{id} which contains unique
+\item It \strong{must} contain a column named \code{id} which contains unique
 identifier for each decision maker.
-\item It can contain a column named \code{choice} with the observed
+\item It \strong{can} contain a column named \code{idc} which contains unique
+identifier for each choice situation of each decision maker.
+If this information is missing, these identifier are generated
+automatically by the appearance of the choices in the data set.
+\item It \strong{can} contain a column named \code{choice} with the observed
 choices, where \code{choice} must match the name of the dependent
 variable in \code{form}.
 Such a column is required for model fitting but not for prediction.
-\item For each alternative specific covariate \emph{p} in \code{form} and each
-choice alternative \emph{j} in \code{alternatives}, \code{choice_data}
-must contain a column named \emph{p_j}.
-\item For each covariate \emph{q} in \code{form} that is constant across
-alternatives, \code{choice_data} must contain a column named \emph{q}.
+\item It \strong{must} contain a column named \emph{p_j} for each alternative
+specific covariate \emph{p} in \code{form} and each choice alternative \emph{j}
+in \code{alternatives}.
+\item It \strong{must} contain a column named \emph{q} for each covariate \emph{q} in
+\code{form} that is constant across alternatives.
 }}
 
 \item{N}{The number (greater or equal 1) of decision makers.}

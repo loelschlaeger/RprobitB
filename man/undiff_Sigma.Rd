@@ -4,7 +4,7 @@
 \alias{undiff_Sigma}
 \title{Transform differenced to non-differenced error term covariance matrix.}
 \usage{
-undiff_Sigma(Sigma, i)
+undiff_Sigma(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE)
 }
 \arguments{
 \item{Sigma}{An error term covariance matrix of dimension \code{J-1} x \code{J-1} which
@@ -12,6 +12,12 @@ was differenced with respect to alternative \code{i}.}
 
 \item{i}{An integer, the alternative number with respect to which \code{Sigma}
 was differenced.}
+
+\item{checks}{If \code{TRUE} the function runs additional input and transformation checks.}
+
+\item{pos}{If \code{TRUE} the function returns a positive matrix.}
+
+\item{labels}{If \code{TRUE} the function adds labels to the output matrix.}
 }
 \value{
 A covariance matrix of dimension \code{J} x \code{J}. If this covariance

@@ -6,6 +6,11 @@
 #' @return
 #' A data frame with the coefficient names and booleans indicating whether
 #' they are connected to random effects.
+#' @examples
+#' form <- choice ~ price + time + comfort + change | 1
+#' re <- c("price","time")
+#' alternatives <- c("A","B")
+#' overview_effects(form = form, re = re, alternatives = alternatives)
 #' @export
 
 overview_effects <- function(form, re = NULL, alternatives) {

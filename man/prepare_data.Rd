@@ -10,8 +10,8 @@ prepare_data(
   alternatives = NULL,
   re = NULL,
   id = "id",
-  standardize = NULL,
-  test_prop = NULL
+  idc = NULL,
+  standardize = NULL
 )
 }
 \arguments{
@@ -34,19 +34,23 @@ for more details.}
 
 \item{choice_data}{A data frame of choice data with the following requirements:
 \itemize{
-\item It must be in "wide" format, i.e. each row represents one choice
+\item It \strong{must} be in "wide" format, i.e. each row represents one choice
 occasion.
-\item It must contain a column named \code{id} which contains unique
+\item It \strong{must} contain a column named \code{id} which contains unique
 identifier for each decision maker.
-\item It can contain a column named \code{choice} with the observed
+\item It \strong{can} contain a column named \code{idc} which contains unique
+identifier for each choice situation of each decision maker.
+If this information is missing, these identifier are generated
+automatically by the appearance of the choices in the data set.
+\item It \strong{can} contain a column named \code{choice} with the observed
 choices, where \code{choice} must match the name of the dependent
 variable in \code{form}.
 Such a column is required for model fitting but not for prediction.
-\item For each alternative specific covariate \emph{p} in \code{form} and each
-choice alternative \emph{j} in \code{alternatives}, \code{choice_data}
-must contain a column named \emph{p_j}.
-\item For each covariate \emph{q} in \code{form} that is constant across
-alternatives, \code{choice_data} must contain a column named \emph{q}.
+\item It \strong{must} contain a column named \emph{p_j} for each alternative
+specific covariate \emph{p} in \code{form} and each choice alternative \emph{j}
+in \code{alternatives}.
+\item It \strong{must} contain a column named \emph{q} for each covariate \emph{q} in
+\code{form} that is constant across alternatives.
 }}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
@@ -60,32 +64,34 @@ To have random effects for the alternative specific constants, include
 \item{id}{A character, the name of the column in \code{choice_data} that contains
 unique identifier for each decision maker. The default is \code{"id"}.}
 
+\item{idc}{A character, the name of the column in \code{choice_data} that contains
+unique identifier for each choice situation of each decision maker.
+The default is \code{NULL}, in which case these identifier are generated
+automatically.}
+
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
-
-\item{test_prop}{Either \code{NULL} or a numeric between 0 and 1. In the latter case, the data
-is split into a training set (of decider proportion \code{1-test_prop}) and a
-testing set (of decider proportion \code{test_prop}).}
 }
 \value{
 An object of class \code{RprobitB_data}.
-If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects
-labelled \code{"train"} and \code{"test"}.
 }
 \description{
 This function prepares empirical choice data for the RprobitB package.
 }
 \details{
-See the vignette "Data management" for more details:
-\code{vignette("data_management", package = "RprobitB")}.
+See the vignette "Choice data" for more details:
+\code{vignette("choice_data", package = "RprobitB")}.
 }
 \examples{
 data("Train", package = "mlogit")
 data <- prepare_data(
-  form = choice ~ price | 0 | time + comfort + change,
-  choice_data = Train, re = c("price", "time"),
+  form = choice ~ price + time + comfort + change | 1,
+  choice_data = Train,
+  re = c("price", "time"),
+  id = "id",
+  idc = "choiceid",
   standardize = "all"
 )
 }
