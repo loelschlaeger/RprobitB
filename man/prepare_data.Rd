@@ -7,8 +7,8 @@
 prepare_data(
   form,
   choice_data,
-  alternatives = NULL,
   re = NULL,
+  alternatives = NULL,
   id = "id",
   idc = NULL,
   standardize = NULL
@@ -53,13 +53,13 @@ in \code{alternatives}.
 \code{form} that is constant across alternatives.
 }}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
-
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the alternative specific constants, include
 \code{"ASC"} in \code{re}.}
+
+\item{alternatives}{A character vector with the names of the choice alternatives.
+If not specified, the choice set is defined by the observed choices.}
 
 \item{id}{A character, the name of the column in \code{choice_data} that contains
 unique identifier for each decision maker. The default is \code{"id"}.}

@@ -11,9 +11,7 @@ simulate_choices(
   J,
   re = NULL,
   alternatives = NULL,
-  distr = NULL,
-  standardize = NULL,
-  test_prop = NULL,
+  covariates = NULL,
   seed = NULL,
   ...
 )
@@ -51,25 +49,10 @@ To have random effects for the alternative specific constants, include
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
-\item{distr}{A named list of number generation functions from which the covariates are
-drawn. Covariates for which no distribution is specified are drawn from a
-standard normal distribution.
-Each element of \code{distr} must be of the form
-\code{"cov" = list("name" = "<name of the number generation function>",...)},
-where \code{cov} is the name of the covariate and \code{...} are required
-parameters for the number generation function.
-Possible number generation functions are
-\itemize{
-\item functions of the type \code{r*} from base R (e.g. \code{rnorm}) where
-all required parameters (except for \code{n}) must be specified,
-\item the function \code{sample}, where all required parameters
-(except for \code{size}) must be specified.
-}}
-
-\item{standardize}{A character vector of names of covariates that get standardized.
-Covariates of type 1 or 3 have to be addressed by
-\code{<covariate>_<alternative>}.
-If \code{standardize = "all"}, all covariates get standardized.}
+\item{covariates}{A named list of covariate values. Each element must be a vector of length
+equal to the number of choice occasions and named according to a covariate.
+Covariates for which no values are supplied are drawn from a standard normal
+distribution.}
 
 \item{seed}{Set a seed for the simulation.}
 
@@ -78,8 +61,6 @@ If \code{standardize = "all"}, all covariates get standardized.}
 }
 \value{
 An object of class \code{RprobitB_data}.
-If \code{test_prop} is specified, a list of two \code{RprobitB_data} objects
-labelled \code{"train"} and \code{"test"}.
 }
 \description{
 This function simulates choice data for the RprobitB package.
@@ -90,8 +71,14 @@ See the vignette "Choice data" for more details:
 }
 \examples{
 data <- simulate_choices(
-  form = choice ~ cost | income + 0 | time,
-  N = 100, T = 10, J = 3, re = "cost",
-  alternatives = c("car", "bus", "scooter")
+  form = choice ~ cost | income | time,
+  N = 100,
+  T = 10,
+  J = 2,
+  re = c("cost", "time"),
+  alternatives = c("car", "bus"),
+  seed = 1,
+  alpha = c(-1,1),
+  C = 2
 )
 }

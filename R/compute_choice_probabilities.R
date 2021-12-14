@@ -151,7 +151,6 @@ ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
 #' in case of \code{P_f > 0} and \code{P_r > 0}.
 #' @param j
 #' An integer between 1 and \code{J}.
-#' @inheritParams
 #' @inheritParams compute_choice_probabilities
 #' @param X
 #' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
