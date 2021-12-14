@@ -3,8 +3,7 @@ test_that("formula is correctly interpreted", {
   re <- c("price", "time")
   out <- check_form(form = form, re = re)
   expect_type(out, "list")
-  expect_length(out, 4)
-  expect_equal(names(out), c("choice", "re", "vars", "ASC"))
+  expect_equal(names(out), c("form", "choice", "re", "vars", "ASC"))
   expect_equal(out$choice, "choice")
   expect_equal(out$re, re)
   expect_equal(
