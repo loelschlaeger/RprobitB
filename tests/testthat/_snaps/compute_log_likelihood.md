@@ -3,68 +3,68 @@
     Code
       compute_log_likelihood(x = model, at_true = FALSE)
     Output
-      [1] -186.5257
+      [1] -5.698641
 
 ---
 
     Code
       compute_log_likelihood(x = model, at_true = TRUE)
     Output
-      [1] -383.9197
+      [1] -8.999249
 
 # MNP
 
     Code
       compute_log_likelihood(x = model, at_true = FALSE)
     Output
-      [1] -206.3957
+      [1] -9.30257
 
 ---
 
     Code
       compute_log_likelihood(x = model, at_true = TRUE)
     Output
-      [1] -210.6581
+      [1] -15.4757
 
 # MMNP
 
     Code
       compute_log_likelihood(x = model, at_true = FALSE)
     Output
-      [1] -94.80433
+      [1] -16.54749
 
 ---
 
     Code
       compute_log_likelihood(x = model, at_true = TRUE)
     Output
-      [1] -134.0427
+      [1] -18.77131
 
 # LCMMNP
 
     Code
       compute_log_likelihood(x = model, at_true = FALSE)
     Output
-      [1] -527.2339
+      [1] -209.4369
 
 ---
 
     Code
       compute_log_likelihood(x = model, at_true = TRUE)
     Output
-      [1] -598.9573
+      [1] -214.6362
 
 # ULCMMNP
 
     Code
       compute_log_likelihood(x = model, at_true = FALSE)
     Output
-      [1] -834.4824
+      [1] -346.2811
 
 ---
 
     Code
       compute_log_likelihood(x = model, at_true = TRUE)
     Output
-      [1] -923.0045
+      [1] -349.9253
 

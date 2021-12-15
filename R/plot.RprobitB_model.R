@@ -205,3 +205,323 @@ plot.RprobitB_model <- function(x, type = "effects", ignore = NULL, ...) {
     }
   }
 }
+
+#' Autocorrelation plot of Gibbs samples.
+#' @description
+#' This function plots the autocorrelation of the Gibbs samples, including the
+#' total sample size \code{SS}, effective sample size \code{ESS} and the factor
+#' \code{SS/ESS}.
+#' @param gibbs_samples
+#' A matrix of Gibbs samples.
+#' @param par_labels
+#' A character vector of length equal to the number of columns of
+#' \code{gibbs_samples}, containing labels for the Gibbs samples.
+#' @return
+#' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
+#' @noRd
+
+plot_acf <- function(gibbs_samples, par_labels) {
+  for (c in 1:ncol(gibbs_samples)) {
+    ### compute autocorrelation and produce plot
+    rho <- acf(gibbs_samples[, c], las = 1, main = "")
+    title(par_labels[c], line = -1)
+
+    ### compute effective sample size
+    SS <- length(gibbs_samples[, c])
+    ESS <- min(SS / (1 + 2 * sum(rho$acf)), SS)
+    legend("topright",
+           x.intersp = -0.5, bg = "white",
+           legend = sprintf(
+             "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
+             c(SS, ESS, SS / ESS)
+           )
+    )
+  }
+}
+
+#' Visualizing the linear effects.
+#' @description
+#' This function visualizes the linear effects of the covariates on the choices
+#' together with an uncertainty interval of plus / minus one standard deviation.
+#' @param gibbs_samples
+#' An object of class \code{RprobitB_gibbs_samples}.
+#' @param coeff_names
+#' A character vector of coefficient names.
+#' @return
+#' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
+#' @noRd
+
+plot_effects <- function(gibbs_samples, coeff_names) {
+
+  ### extract means and sds
+  means <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(mean))[c("alpha", "b")])
+  sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(sd))[c("alpha", "b")])
+
+  ### determine coefficient labels
+  labels <- coeff_names
+
+  ### plot means
+  xlim <- c(min(c(means - sds), 0), max(c(means + sds), 0))
+  plot(
+    x = means, y = 1:length(means),
+    yaxt = "n", ylab = "", xlab = "", xlim = xlim, main = ""
+  )
+
+  ### add uncertainty interval
+  axis(2, at = 1:length(means), labels = labels, las = 1)
+  for (n in 1:length(means)) {
+    segments(x0 = means[n] - sds[n], y0 = n, x1 = means[n] + sds[n], y1 = n)
+  }
+
+  ### mark zero
+  abline(v = 0, lty = 2)
+}
+
+#' Plotting mixing distribution contours.
+#' @description
+#' This function plots contours of the estimated mixing distributions and adds
+#' the true beta values for comparison if available.
+#' @param mean_est
+#' A list of length \code{C}, where each element is a vector of two
+#' estimated class means.
+#' @param weight_est
+#' A numeric vector of length \code{C} with estimated class weights.
+#' @param cov_est
+#' A list of length \code{C}, where each element is an estimated class
+#' covariance matrix.
+#' @param beta_true
+#' Either \code{NULL} or a matrix of \code{C} rows with true \code{beta} values.
+#' @param cov_names
+#' Either \code{NULL} or a vector of two covariate names.
+#' @return
+#' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
+#' @noRd
+
+plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL,
+                                 cov_names = NULL) {
+
+  ### check inputs
+  true_avail <- !is.null(beta_true)
+
+  ### extract number of classes
+  stopifnot(
+    length(mean_est) == length(weight_est),
+    length(weight_est) == length(cov_est)
+  )
+  C_est <- length(mean_est)
+
+  ### specify grid
+  xmin <- min(sapply(
+    1:C_est,
+    function(c) mean_est[[c]][1] - 3 * sqrt(cov_est[[c]][1, 1])
+  ))
+  xmax <- max(sapply(
+    1:C_est,
+    function(c) mean_est[[c]][1] + 3 * sqrt(cov_est[[c]][1, 1])
+  ))
+  ymin <- min(sapply(
+    1:C_est,
+    function(c) mean_est[[c]][2] - 3 * sqrt(cov_est[[c]][2, 2])
+  ))
+  ymax <- max(sapply(
+    1:C_est,
+    function(c) mean_est[[c]][2] + 3 * sqrt(cov_est[[c]][2, 2])
+  ))
+  grid_x <- seq(xmin, xmax, length.out = 200)
+  grid_y <- seq(ymin, ymax, length.out = 200)
+
+  ### compute density of estimated mixture distribution
+  prob <- matrix(0, nrow = length(grid_x), ncol = length(grid_y))
+  for (i in seq_len(length(grid_x))) {
+    for (j in seq_len(length(grid_x))) {
+      for (c in 1:C_est) {
+        prob[i, j] <- prob[i, j] + weight_est[c] *
+          mvtnorm::dmvnorm(
+            x = t(matrix(c(grid_x[i], grid_y[j]))),
+            mean = mean_est[[c]],
+            sigma = cov_est[[c]]
+          )
+      }
+    }
+  }
+
+  ### specify limits
+  xlim <- c(
+    min(grid_x[which(rowSums(prob) > 1e-2)]),
+    max(grid_x[which(rowSums(prob) > 1e-2)])
+  )
+  ylim <- c(
+    min(grid_y[which(colSums(prob) > 1e-2)]),
+    max(grid_y[which(colSums(prob) > 1e-2)])
+  )
+
+  ### initialize plot
+  plot(0,
+       type = "n", xlim = xlim, ylim = ylim,
+       xlab = bquote(paste(beta[.(cov_names[1])])),
+       ylab = bquote(paste(beta[.(cov_names[2])])),
+       main = ""
+  )
+
+  ### add true beta values
+  if (true_avail) {
+    points(x = beta_true[1, ], y = beta_true[2, ], pch = 16, col = "black")
+  }
+
+  ### add contour
+  contour(add = TRUE, grid_x, grid_y, prob, labcex = 0.75)
+}
+
+#' Plotting marginal mixing distributions.
+#' @description
+#' This function plots the estimated mixing distributions with respect to one
+#' covariate and adds the true marginal mixing distribution for comparison if
+#' available.
+#' @param mean_est
+#' A list of length \code{C}, where each element is an estimated class mean.
+#' @param mean_true
+#' Either \code{NULL} or a list of length \code{C}, where each element is a true
+#' class mean.
+#' @param weight_est
+#' A numeric vector of length \code{C} with estimated class weights.
+#' @param weight_true
+#' Either \code{NULL} or a numeric vector of length \code{C} with true class
+#' weights.
+#' @param sd_est
+#' A list of length \code{C}, where each element is an estimated class standard
+#' deviation.
+#' @param sd_true
+#' Either \code{NULL} or a list of length \code{C}, where each element is a true
+#' class standard deviation.
+#' @param cov_name
+#' Either \code{NULL} or the name of the corresponding covariate.
+#' @return
+#' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
+#' @noRd
+
+plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
+                                  weight_true = NULL, sd_est, sd_true = NULL,
+                                  cov_name = NULL) {
+
+  ### check if true parameters are available
+  true_avail <- !(is.null(mean_true) || is.null(weight_true) || is.null(sd_true))
+
+  ### extract number of classes
+  stopifnot(
+    length(mean_est) == length(weight_est),
+    length(weight_est) == length(sd_est)
+  )
+  C_est <- length(mean_est)
+  if (true_avail) {
+    stopifnot(
+      length(mean_true) == length(weight_true),
+      length(weight_true) == length(sd_true)
+    )
+    C_true <- length(mean_true)
+  } else {
+    C_true <- 1
+  }
+
+  ### specify x-range
+  xlim <- c(
+    min(
+      unlist(mean_est) - 3 * unlist(sd_est),
+      unlist(mean_true) - 3 * unlist(sd_true)
+    ),
+    max(
+      unlist(mean_est) + 3 * unlist(sd_est),
+      unlist(mean_true) + 3 * unlist(sd_true)
+    )
+  )
+  x <- seq(xlim[1], xlim[2], 0.01)
+
+  ### compute mixture components
+  mixture_est <- matrix(NA, nrow = length(x), ncol = C_est)
+  for (c in 1:C_est) {
+    mixture_est[, c] <- weight_est[c] * dnorm(x,
+                                              mean = mean_est[[c]],
+                                              sd = sd_est[[c]]
+    )
+  }
+  if (true_avail) {
+    mixture_true <- matrix(NA, nrow = length(x), ncol = C_true)
+    for (c in 1:C_true) {
+      mixture_true[, c] <- weight_true[c] * dnorm(x,
+                                                  mean = mean_true[[c]],
+                                                  sd = sd_true[[c]]
+      )
+    }
+  }
+
+  ### specify y-range
+  ylim <- c(0, max(rowSums(mixture_est), if (true_avail) rowSums(mixture_true)))
+
+  ### initialize plot
+  plot(0, xlim = xlim, ylim = ylim, type = "n", main = "", xlab = "", ylab = "")
+  title(
+    main = "",
+    xlab = bquote(paste(beta[.(cov_name)])),
+    ylab = ""
+  )
+
+  ### add full mixture
+  lines(x, rowSums(mixture_est), col = "black", lty = 1, lwd = 2)
+  if (true_avail) {
+    lines(x, rowSums(mixture_true), col = "black", lty = 2, lwd = 2)
+  }
+
+  ### add mixture components
+  col <- viridis::magma(
+    n = max(C_est, C_true), begin = 0.1, end = 0.9,
+    alpha = 0.6
+  )
+  if (C_est > 1) {
+    for (c in 1:C_est) {
+      lines(x, mixture_est[, c], col = col[c], lty = 1, lwd = 2)
+    }
+  }
+  if (true_avail && C_true > 1) {
+    for (c in 1:C_true) {
+      lines(x, mixture_true[, c], col = col[c], lty = 2, lwd = 2)
+    }
+  }
+}
+
+#' Visualizing the trace of Gibbs samples.
+#' @description
+#' This function plots traces of the Gibbs samples.
+#' @param gibbs_samples
+#' A matrix of Gibbs samples.
+#' @param par_labels
+#' A character vector of length equal to the number of columns of
+#' \code{gibbs_samples}, containing labels for the Gibbs samples.
+#' @return
+#' No return value. Draws a plot to the current device.
+#' @keywords
+#' internal
+#' @noRd
+
+plot_trace <- function(gibbs_samples, par_labels) {
+
+  ### define colors
+  col <- viridis::magma(n = ncol(gibbs_samples), begin = 0.1, end = 0.9, alpha = 0.6)
+
+  ### plot trace
+  plot.ts(gibbs_samples,
+          plot.type = "single",
+          ylim = c(min(gibbs_samples), max(gibbs_samples)),
+          col = col, xlab = "", ylab = "", xaxt = "n", main = ""
+  )
+
+  ### add info
+  axis(side = 1, at = c(1, nrow(gibbs_samples)), labels = c("B+1", "R"))
+  legend("topright", legend = par_labels, lty = 1, col = col, cex = 0.75)
+}

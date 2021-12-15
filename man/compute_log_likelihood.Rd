@@ -9,11 +9,17 @@ compute_log_likelihood(x, at_true = FALSE)
 \arguments{
 \item{x}{An object of class \code{RprobitB_model}.}
 
-\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameters.}
+\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameter
+values (if they are available).}
 }
 \value{
 The log-likelihood value.
 }
 \description{
 This function computes the log-likelihood of an \code{RprobitB_model}.
+}
+\examples{
+data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+x <- mcmc(data)
+compute_log_likelihood(x)
 }

@@ -18,82 +18,8 @@
       
       Alternatives
           frequency
-      bus        32
-      car        23
-      
-      Linear coefficients
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3    ASC_bus FALSE
-      4   time_bus FALSE
-      5   time_car FALSE
-
-# P_train_test
-
-    Code
-      print(data)
-    Output
-      $train
-      Simulated data of 36 choices.
-      
-      $test
-      Simulated data of 19 choices.
-      
-
----
-
-    Code
-      print(data[[i]])
-    Output
-      Simulated data of 36 choices.
-
----
-
-    Code
-      summary(data[[i]])
-    Output
-      Summary of simulated choice data
-      
-      8 decision makers 
-      1 to 8 choice occasions each 
-      36 choices in total
-      
-      Alternatives
-          frequency
-      bus        20
+      bus        39
       car        16
-      
-      Linear coefficients
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3    ASC_bus FALSE
-      4   time_bus FALSE
-      5   time_car FALSE
-
----
-
-    Code
-      print(data[[i]])
-    Output
-      Simulated data of 19 choices.
-
----
-
-    Code
-      summary(data[[i]])
-    Output
-      Summary of simulated choice data
-      
-      2 decision makers 
-      9 to 10 choice occasions each 
-      19 choices in total
-      
-      Alternatives
-          frequency
-      bus        12
-      car         7
       
       Linear coefficients
               name    re
@@ -123,91 +49,9 @@
       
       Alternatives
             frequency
-      bus          22
-      car          20
-      train        13
-      
-      Linear coefficients
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3 income_car FALSE
-      4    ASC_bus FALSE
-      5    ASC_car FALSE
-      6   time_bus FALSE
-      7   time_car FALSE
-      8 time_train FALSE
-
-# MNP_train_test
-
-    Code
-      print(data)
-    Output
-      $train
-      Simulated data of 6 choices.
-      
-      $test
-      Simulated data of 49 choices.
-      
-
----
-
-    Code
-      print(data[[i]])
-    Output
-      Simulated data of 6 choices.
-
----
-
-    Code
-      summary(data[[i]])
-    Output
-      Summary of simulated choice data
-      
-      3 decision makers 
-      1 to 3 choice occasions each 
-      6 choices in total
-      
-      Alternatives
-            frequency
-      bus           2
-      car           2
-      train         2
-      
-      Linear coefficients
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3 income_car FALSE
-      4    ASC_bus FALSE
-      5    ASC_car FALSE
-      6   time_bus FALSE
-      7   time_car FALSE
-      8 time_train FALSE
-
----
-
-    Code
-      print(data[[i]])
-    Output
-      Simulated data of 49 choices.
-
----
-
-    Code
-      summary(data[[i]])
-    Output
-      Summary of simulated choice data
-      
-      7 decision makers 
-      4 to 10 choice occasions each 
-      49 choices in total
-      
-      Alternatives
-            frequency
-      bus          20
-      car          18
-      train        11
+      bus          21
+      car          25
+      train         9
       
       Linear coefficients
               name    re
@@ -240,9 +84,9 @@
       
       Alternatives
             frequency
-      bus          21
-      car          20
-      train        14
+      bus          17
+      car          29
+      train         9
       
       Linear coefficients
               name    re
@@ -275,9 +119,9 @@
       
       Alternatives
             frequency
-      bus          11
-      car          19
-      train        25
+      bus           7
+      car          20
+      train        28
       
       Linear coefficients
               name    re

@@ -91,3 +91,108 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   class(out) <- "RprobitB_data"
   return(out)
 }
+
+#' Print method for \code{RprobitB_data}.
+#' @description
+#' This function is the print method for an object of class \code{RprobitB_data}.
+#' @param x
+#' An object of class \code{RprobitB_data}.
+#' @param ...
+#' Ignored.
+#' @return
+#' Invisibly \code{x}.
+#' @noRd
+
+print.RprobitB_data <- function(x, ...) {
+  cat(
+    ifelse(x$simulated, "Simulated", "Empirical"),
+    "data of", sum(x$T), "choices.\n"
+  )
+  return(invisible(x))
+}
+
+#' Summary method for \code{RprobitB_data}.
+#' @description
+#' This function is the summary method for an object of class
+#' \code{RprobitB_data}.
+#' @param object
+#' An object of class \code{RprobitB_data}.
+#' @param ...
+#' Ignored.
+#' @noRd
+
+summary.RprobitB_data <- function(object, ...) {
+
+  ### check class of 'object'
+  if (!inherits(object, "RprobitB_data")) {
+    stop("Not of class 'RprobitB_data'.")
+  }
+
+  ### summary of alternatives
+  alt <- data.frame(matrix(NA, nrow = 0, ncol = 1))
+  colnames(alt) <- "frequency"
+  for (i in 1:object$J) {
+    alt[nrow(alt) + 1, ] <-
+      sum(unlist(lapply(object$data, function(x) x[["y"]])) == i)
+    rownames(alt)[nrow(alt)] <- object$alternatives[i]
+  }
+
+  ### build 'summary.RprobitB_data' object
+  out <- list(
+    "simulated" = object$simulated,
+    "N" = object$N,
+    "T" = object$T,
+    "linear_coeffs" = object$linear_coeffs,
+    "alternatives" = alt
+  )
+  class(out) <- "summary.RprobitB_data"
+
+  ### return 'summary.RprobitB_data' object
+  return(out)
+}
+
+
+#' Print method for the summary of \code{RprobitB_data}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{summary.RprobitB_data}.
+#' @param x
+#' An object of class \code{summary.RprobitB_data}.
+#' @param ...
+#' Ignored.
+#' @noRd
+
+print.summary.RprobitB_data <- function(x, ...) {
+  cat(
+    "Summary of", ifelse(x$simulated, "simulated", "empirical"),
+    "choice data\n\n"
+  )
+
+  ### summary of decision makers
+  cat(x$N, paste0("decision maker", ifelse(x$N == 1, "", "s")), "\n")
+  if (length(unique(x$T)) == 1) {
+    cat(
+      x$T[1], paste0("choice occasion", ifelse(unique(x$T) == 1, "", "s")),
+      ifelse(x$N == 1, "", "each"), "\n"
+    )
+  }
+  if (length(unique(x$T)) > 1) {
+    cat(
+      min(x$T), "to", max(x$T), "choice occasions",
+      ifelse(x$N == 1, "", "each"), "\n"
+    )
+  }
+  cat(sum(x$T), "choices in total\n")
+  cat("\n")
+
+  ### summary of alternatives
+  cat("Alternatives\n")
+  print(x$alternatives)
+  cat("\n")
+
+  ### summary of covariates
+  cat("Linear coefficients\n")
+  print(x$linear_coeffs)
+  return(invisible(x))
+}
+

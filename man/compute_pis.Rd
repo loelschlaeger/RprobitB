@@ -18,3 +18,4 @@ A matrix.
 This function computes the probability for each observation for different samples
 from the posterior.
 }
+\keyword{internal}

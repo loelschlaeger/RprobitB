@@ -8,7 +8,8 @@
 #' The number of different samples taken from the posterior.
 #' @return
 #' A matrix.
-#' @export
+#' @keywords
+#' internal
 
 # TODO: Add progress bar. Parallelize.
 compute_pis <- function(x, no_samples = 2) {
@@ -25,6 +26,7 @@ compute_pis <- function(x, no_samples = 2) {
   J = x$data$J
   P_f = x$data$P_f
   P_r = x$data$P_r
+  C = x$latent_classes$C
 
   ### extract Gibbs samples
   gibbs_samples_nbt = x$gibbs_samples$gibbs_samples_nbt

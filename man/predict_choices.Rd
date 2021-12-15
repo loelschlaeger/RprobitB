@@ -19,3 +19,9 @@ Either a table if \code{overview = TRUE} or a data frame otherwise.
 \description{
 This function predicts the choices of decision makers.
 }
+\examples{
+data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+x <- mcmc(data)
+predict_choices(x, overview = TRUE)
+predict_choices(x, overview = FALSE)
+}

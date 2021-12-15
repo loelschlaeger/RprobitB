@@ -8,14 +8,14 @@ compute_waic(x, no_samples, pis = NULL)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_model}.}
+
+\item{no_samples}{Documentation missing}
+
+\item{pis}{Documentation missing}
 }
 \value{
 The WAIC value.
 }
 \description{
 This function computes the WAIC value of an \code{RprobitB_model}.
-}
-\examples{
-model = mcmc(data = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2))
-compute_waic(model)
 }

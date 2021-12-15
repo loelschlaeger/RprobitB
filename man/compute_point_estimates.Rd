@@ -21,4 +21,9 @@ Per default, the \code{mean} of the Gibbs samples is used as a point estimate.
 However, any statistic that computes a single numeric value out of a vector of
 Gibbs samples can be specified for \code{FUN}.
 }
-\keyword{internal}
+\examples{
+data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+model <- mcmc(data)
+compute_point_estimates(model)
+compute_point_estimates(model, FUN = median)
+}

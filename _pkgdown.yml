@@ -16,27 +16,32 @@ template:
 
 reference:
 - title: Data preparation
-  desc: Use these functions to prepare or simulate choice data.
+  desc: Use these functions for data preparation.
   contents:
   - prepare_data
   - simulate_choices
+  - check_form
   - overview_effects
-  - summary.RprobitB_data
+  - train_test
 - title: Model estimation
-  desc: Use these function to estimate a probit model.
+  desc: Use these function for model estimation.
   contents:
   - mcmc
   - transform_model
 - title: Model evaluation
-  desc: Use these functions to evaluate your model.
+  desc: Use these functions for model evaluation.
   contents:
-  - summary.RprobitB_model
-  - plot.RprobitB_model
-  - model_selection
+  - compute_point_estimates
+  - choice_probabilities
   - predict_choices
-  - choice_probs
   - classify
+  - plot.RprobitB_model
+- title: Model checking and selection
+  desc: Use these functions for model checking and selection.
+  contents:
   - compute_log_likelihood
+  - model_selection
+  - compute_waic
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.
   contents:

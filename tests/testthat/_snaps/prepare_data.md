@@ -103,10 +103,10 @@
       print(data)
     Output
       $train
-      Empirical data of 2343 choices.
+      Empirical data of 2055 choices.
       
       $test
-      Empirical data of 586 choices.
+      Empirical data of 874 choices.
       
 
 ---
@@ -114,7 +114,7 @@
     Code
       print(data[[i]])
     Output
-      Empirical data of 2343 choices.
+      Empirical data of 2055 choices.
 
 ---
 
@@ -123,14 +123,14 @@
     Output
       Summary of empirical choice data
       
-      188 decision makers 
+      165 decision makers 
       5 to 19 choice occasions each 
-      2343 choices in total
+      2055 choices in total
       
       Alternatives
         frequency
-      A      1179
-      B      1164
+      A      1048
+      B      1007
       
       Linear coefficients
              name    re
@@ -147,7 +147,7 @@
     Code
       print(data[[i]])
     Output
-      Empirical data of 586 choices.
+      Empirical data of 874 choices.
 
 ---
 
@@ -156,14 +156,14 @@
     Output
       Summary of empirical choice data
       
-      47 decision makers 
-      7 to 18 choice occasions each 
-      586 choices in total
+      70 decision makers 
+      5 to 18 choice occasions each 
+      874 choices in total
       
       Alternatives
         frequency
-      A       295
-      B       291
+      A       426
+      B       448
       
       Linear coefficients
              name    re

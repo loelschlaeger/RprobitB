@@ -9,6 +9,11 @@
 #' If \code{TRUE}, aggregate the prediction in a table.
 #' @return
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
+#' @examples
+#' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+#' x <- mcmc(data)
+#' predict_choices(x, overview = TRUE)
+#' predict_choices(x, overview = FALSE)
 #' @export
 
 predict_choices <- function(x, data = NULL, overview = TRUE) {
@@ -22,7 +27,7 @@ predict_choices <- function(x, data = NULL, overview = TRUE) {
   }
 
   ### compute choice probabilites
-  choice_probs <- as.data.frame(choice_probs(x, data = data))
+  choice_probs <- as.data.frame(choice_probabilities(x, data = data))
 
   ### check if true choices are available
   if (data$choice_available) {

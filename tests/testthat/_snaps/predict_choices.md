@@ -5,8 +5,8 @@
     Output
            predicted
       true  bus car
-        bus  30   1
-        car   2  22
+        bus  33   2
+        car   1  19
 
 # P train test
 
@@ -15,8 +15,8 @@
     Output
            predicted
       true  bus car
-        bus  13   3
-        car   2   9
+        bus  13   0
+        car   1  13
 
 # MNP
 
@@ -25,9 +25,9 @@
     Output
              predicted
       true    bus car train
-        bus    20   2     0
-        car     1  17     2
-        train   0   0    13
+        bus    20   1     0
+        car     1  24     0
+        train   0   0     9
 
 # MMNP
 
@@ -36,9 +36,9 @@
     Output
              predicted
       true    bus car train
-        bus    18   1     2
-        car     2  16     2
-        train   1   0    13
+        bus    14   2     1
+        car     2  26     1
+        train   0   1     8
 
 # LCMMNP
 
@@ -47,9 +47,9 @@
     Output
              predicted
       true    bus car train
-        bus    31  11    17
-        car    12  61    23
-        train   7  18   120
+        bus    37  10    15
+        car    14  52    31
+        train  15  13   113
 
 # ULCMMNP
 
@@ -58,7 +58,7 @@
     Output
              predicted
       true    bus car train
-        bus    42  22    33
-        car    13 122    42
-        train  16  33   177
+        bus    68  28    19
+        car    34 115    30
+        train  21  26   159
 

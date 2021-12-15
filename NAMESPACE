@@ -6,16 +6,17 @@ importFrom("Rcpp", "evalCpp")
 importFrom("graphics", "abline", "axis", "contour", "legend", "lines", "par",
            "points", "title", "plot", "boxplot", "segments")
 importFrom("stats", "acf", "dnorm", "plot.ts", "quantile", "rnorm", "runif",
-           "sd", "var", "fivenum", "median", "ecdf")
+           "sd", "var", "fivenum", "median", "ecdf","na.omit")
 importFrom("utils", "head", "tail", "data", "packageVersion")
 importFrom("grDevices", "rgb")
 
 ### export main functions
 export(check_form)
-export(choice_probs)
+export(choice_probabilities)
 export(classify)
 export(model_selection)
 export(compute_log_likelihood)
+export(compute_point_estimates)
 export(mcmc)
 export(overview_effects)
 export(predict_choices)

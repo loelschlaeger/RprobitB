@@ -22,10 +22,11 @@
 #' @examples
 #' x <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #'
-#' ### 70% of deciders in the train subsample, 30% of deciders in the test subsample
+#' # 70% of deciders in the train subsample, 30% of deciders in the test subsample
 #' train_test(x, test_proportion = 0.3, by = "N")
 #'
-#' ### 2 randomly chosen choice occasions per decider in the test subsample, the rest in the train subsample
+#' # 2 randomly chosen choice occasions per decider in the test subsample, the rest
+#' # in the train subsample
 #' train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
 #' @export
 

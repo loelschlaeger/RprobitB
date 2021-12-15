@@ -1,3 +1,69 @@
+#' Return choice probabilities of an \code{RprobitB_model}.
+#' @description
+#' This function returns the choice probabilities of an \code{RprobitB_model}.
+#' @param x
+#' An object of class \code{RprobitB_model}.
+#' @param data
+#' Either \code{NULL} or an object of class \code{RprobitB_data}. In the former
+#' case, choice probabilities are computed for the data that was used for model
+#' fitting. Alternatively, a new data set can be provided.
+#' @param at_true
+#' If \code{TRUE}, choice probabilities are computed at the true parameter
+#' values (if they are available).
+#' @return
+#' A data frame of choice probabilities with choice situations in rows and
+#' alternatives in columns. The first two columns are the decider identifier
+#' \code{"id"} and the choice situation identifier \code{"idc"}.
+#' @examples
+#' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+#' x <- mcmc(data)
+#' choice_probabilities(x)
+#' @export
+
+choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
+
+  ### extract parameters
+  if (at_true) {
+    parameter <- x$data$true_parameter
+    if (is.null(parameter)) {
+      stop("True parameters are not available.")
+    }
+  } else {
+    parameter <- compute_point_estimates(x, FUN = mean)
+  }
+
+  ### choose data
+  if (is.null(data)) {
+    data <- x$data
+  }
+  if (class(data) != "RprobitB_data") {
+    stop("'data' is not of class 'RprobitB_data'.")
+  }
+
+  ### compute probabilities
+  probabilities <- matrix(NA, nrow = 0, ncol = data$J)
+  for (n in 1:data$N) {
+    for (t in 1:data$T[n]) {
+      P_nt <- compute_choice_probabilities(
+        X = data$data[[n]]$X[[t]],
+        alternatives = 1:data$J,
+        parameter = parameter
+      )
+      probabilities <- rbind(probabilities, P_nt)
+    }
+  }
+  probabilities <- as.data.frame(probabilities)
+
+  ### add decision maker ids
+  probabilities <- cbind(data$choice_data$id, data$choice_data$idc, probabilities)
+  colnames(probabilities) <- c("id", "idc", data$alternatives)
+  rownames(probabilities) <- NULL
+
+  ### return probabilities
+  out <- as.data.frame(probabilities)
+  return(out)
+}
+
 #' Compute probit choice probabilities for a single choice situation.
 #' @description
 #' This function computes the probit choice probabilities for a single choice
@@ -8,15 +74,15 @@
 #' \code{P_r} columns are connected to random coefficients.
 #' @param alternatives
 #' A vector with unique integers from \code{1} to \code{J}, indicating the
-#' alternatives for which choice probabilities are computed.
+#' alternatives for which choice probabilities are to be computed.
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
 #' @return
-#' A probability vector of length \code{J}.
+#' A probability vector of length \code{length(alternatives)}.
 #' @keywords
 #' internal
 
-compute_choice_probabilities <- function(X = NULL, alternatives, parameter) {
+compute_choice_probabilities <- function(X, alternatives, parameter) {
 
   ### unpack and check inputs
   if (class(parameter) != "RprobitB_parameter") {
@@ -33,7 +99,7 @@ compute_choice_probabilities <- function(X = NULL, alternatives, parameter) {
 
   ### check inputs
   if (!(is.numeric(alternatives) && identical(alternatives,unique(alternatives)) &&
-      length(setdiff(alternatives, 1:J)) == 0))
+        length(setdiff(alternatives, 1:J)) == 0))
     stop("'alternatives' must be a vector with unique integers from 1 to 'J'.")
   if (P_f > 0 || P_r > 0) {
     if (!is.matrix(X)) {
@@ -132,7 +198,7 @@ ccp_pf <- function(j, J, Sigma_full, X, alpha) {
 
 ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
   out <- 0
-  for(c in seq_len(s)){
+  for(c in seq_along(s)){
     out <- out + s[c] * mvtnorm::pmvnorm(
       lower = rep(-Inf, J - 1),
       upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
@@ -166,7 +232,7 @@ ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
 
 ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
   out <- 0
-  for(c in seq_len(s)){
+  for(c in seq_along(s)){
     out <- out + s[c] * mvtnorm::pmvnorm(
       lower = rep(-Inf, J - 1),
       upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),

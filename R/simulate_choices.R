@@ -83,7 +83,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     set.seed(seed)
   }
   choice_data <- data.frame("id" = rep(1:N, times = T),
-                            "idc" = unlist(sapply(T, seq_len)))
+                            "idc" = unlist(sapply(T, seq_len, simplify = FALSE)))
   for (var in vars[[1]]) {
     for(alt in alternatives) {
       var_alt <- paste0(var,"_",alt)

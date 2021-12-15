@@ -11,8 +11,12 @@
 #' values.
 #' @return
 #' An object of class \code{\link{RprobitB_parameter}}.
-#' @keywords
-#' internal
+#' @examples
+#' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
+#' model <- mcmc(data)
+#' compute_point_estimates(model)
+#' compute_point_estimates(model, FUN = median)
+#' @export
 
 compute_point_estimates <- function(x, FUN = mean) {
 

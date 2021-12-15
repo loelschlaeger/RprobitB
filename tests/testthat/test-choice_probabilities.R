@@ -9,7 +9,7 @@ test_that("P", {
     alpha = 1:5
   )
   model <- mcmc(data, print_progress = FALSE)
-  expect_true(is.data.frame(choice_probs(model)))
+  expect_true(is.data.frame(choice_probabilities(model)))
 })
 
 test_that("P train test", {
@@ -20,9 +20,9 @@ test_that("P train test", {
     J = 2,
     alternatives = c("bus", "car"),
     seed = 1,
-    test_prop = 0.2,
     alpha = 1:5
   )
+  data <- train_test(data, test_proportion = 0.3)
   model <- mcmc(data$train, print_progress = FALSE)
-  expect_true(is.data.frame(choice_probs(model, data = data$test)))
+  expect_true(is.data.frame(choice_probabilities(model, data = data$test)))
 })
