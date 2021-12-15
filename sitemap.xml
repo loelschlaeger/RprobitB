@@ -7,16 +7,16 @@
     <loc>https://loelschlaeger.github.io/RprobitB/articles/choice_data.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/articles/data_management.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/articles/introduction_to_RprobitB_and_model_formulation.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/articles/introduction.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/articles/model_fitting.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/articles/model_selection.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/authors.html</loc>
@@ -31,16 +31,13 @@
     <loc>https://loelschlaeger.github.io/RprobitB/news/index.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/check_distr.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/check_form.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/check_prior.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/choice_probs.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/choice_probabilities.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/classify.html</loc>
@@ -52,10 +49,16 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/compute_log_likelihood.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/compute_pis.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/compute_point_estimates.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/compute_sufficient_statistics.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/compute_waic.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/create_labels_alpha.html</loc>
@@ -103,25 +106,7 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/plot.RprobitB_model.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_acf.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_effects.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_mixture_contour.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_mixture_marginal.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/plot_trace.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/predict_choices.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/preference_flip.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/prepare_data.html</loc>
@@ -163,10 +148,7 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/simulate_choices.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/summary.RprobitB_data.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.github.io/RprobitB/reference/summary.RprobitB_model.html</loc>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/train_test.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_gibbs_samples.html</loc>
