@@ -27,7 +27,8 @@ Encoding: UTF-8
 Imports:
     Rcpp,
     mvtnorm,
-    viridis
+    viridis,
+    ramify
 LinkingTo:
     Rcpp,
     RcppArmadillo

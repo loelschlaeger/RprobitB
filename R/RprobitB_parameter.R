@@ -223,3 +223,39 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
   class(out) <- "RprobitB_parameter"
   return(out)
 }
+
+#' Print method for \code{RprobitB_parameter}.
+#' @description
+#' This function is the print method for an object of class
+#' \code{RprobitB_parameter}.
+#' @param x
+#' An object of class \code{RprobitB_parameter}.
+#' @param ...
+#' Ignored.
+#' @noRd
+
+print.RprobitB_parameter <- function(x, ...) {
+
+  cat("RprobitB model parameter:\n\n")
+
+  for(i in seq_along(x)) {
+
+    if("numeric" %in% class(x[[i]]) || "integer" %in% class(x[[i]])) {
+
+      cat(paste0(names(x)[i], ":"), x[[i]], "\n\n")
+
+    } else if("matrix" %in% class(x[[i]])) {
+
+      cat(paste0(names(x)[i], ": "))
+
+      rowdots <- min(nrow(x[[i]]) - 1, 4)
+      coldots <- min(ncol(x[[i]]) - 1, 4)
+
+      ramify::pprint(x[[i]], rowdots = rowdots, coldots = coldots)
+      cat("\n")
+    }
+
+  }
+
+  return(invisible(x))
+}

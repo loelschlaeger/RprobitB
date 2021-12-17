@@ -23,6 +23,7 @@ reference:
   - check_form
   - overview_effects
   - train_test
+  - plot.RprobitB_data
 - title: Model estimation
   desc: Use these function for model estimation.
   contents:
