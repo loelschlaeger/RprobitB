@@ -1,0 +1,22 @@
+---
+title: "Choice prediction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Choice prediction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+```{r setup}
+library(RprobitB)
+```
+
