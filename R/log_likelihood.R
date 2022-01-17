@@ -1,13 +1,18 @@
-#' Compute log-likelihood of an \code{RprobitB_model}.
+#' Compute log-likelihood of an \code{RprobitB_fit}.
+#'
 #' @description
-#' This function computes the log-likelihood of an \code{RprobitB_model}.
+#' This function computes the log-likelihood of an \code{RprobitB_fit}.
+#'
 #' @inheritParams choice_probabilities
+#'
 #' @return
 #' The log-likelihood value.
+#'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
 #' log_likelihood(x)
+#'
 #' @export
 
 log_likelihood <- function(x, at_true = FALSE) {
