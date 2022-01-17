@@ -9,3 +9,5 @@ LICENSE
 ^pkgdown$
 ^README\.Rmd$
 ^codecov\.yml$
+^doc$
+^Meta$

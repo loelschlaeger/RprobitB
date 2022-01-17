@@ -46,17 +46,6 @@ Why the notation **(latent class) (mixed) (multinomial) probit model**? Because 
 
 ## A package overview
 
-```{r, echo = FALSE}
-library(DiagrammeR)
-mermaid("
-graph TD
-    prepare --> RprobitB_data
-    simulate --> RprobitB_data
-    RprobitB_data --> mcmc
-    mcmc --> RprobitB_fit
-")
-```
-
 1. [How is the model defined?](#the-model)
 
 2. [How to prepare or simulate choice data?](data_management.html)
