@@ -102,7 +102,7 @@ The threshold difference in means for joining latent classes
 \item{seed}{Set a seed for the Gibbs sampling.}
 }
 \value{
-An object of class \code{RprobitB_model}.
+An object of class \code{RprobitB_fit}.
 }
 \description{
 This function performs Markov chain Monte Carlo simulation for fitting a
@@ -139,4 +139,5 @@ m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 ### update of latent classes
 m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
 }
+
 }

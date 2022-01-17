@@ -2,12 +2,12 @@
 % Please edit documentation in R/choice_probabilities.R
 \name{choice_probabilities}
 \alias{choice_probabilities}
-\title{Return choice probabilities of an \code{RprobitB_model}.}
+\title{Return choice probabilities of an \code{RprobitB_fit}.}
 \usage{
 choice_probabilities(x, data = NULL, at_true = FALSE)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_fit}.}
 
 \item{data}{Either \code{NULL} or an object of class \code{RprobitB_data}. In the former
 case, choice probabilities are computed for the data that was used for model
@@ -22,10 +22,11 @@ alternatives in columns. The first two columns are the decider identifier
 \code{"id"} and the choice situation identifier \code{"idc"}.
 }
 \description{
-This function returns the choice probabilities of an \code{RprobitB_model}.
+This function returns the choice probabilities of an \code{RprobitB_fit}.
 }
 \examples{
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 x <- mcmc(data)
 choice_probabilities(x)
+
 }

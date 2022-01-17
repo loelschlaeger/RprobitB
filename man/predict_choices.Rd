@@ -7,7 +7,7 @@
 predict_choices(x, data = NULL, overview = TRUE)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_fit}.}
 
 \item{data}{Either \code{NULL} or an object of class \code{RprobitB_data}.}
 
@@ -24,4 +24,5 @@ data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 x <- mcmc(data)
 predict_choices(x, overview = TRUE)
 predict_choices(x, overview = FALSE)
+
 }

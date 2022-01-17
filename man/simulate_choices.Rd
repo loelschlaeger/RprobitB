@@ -78,7 +78,8 @@ data <- simulate_choices(
   re = c("cost", "time"),
   alternatives = c("car", "bus"),
   seed = 1,
-  alpha = c(-1,1),
+  alpha = c(-1, 1),
   C = 2
 )
+
 }

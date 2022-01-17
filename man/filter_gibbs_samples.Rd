@@ -17,26 +17,12 @@ filter_gibbs_samples(
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_gibbs_samples}.}
-
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
-
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
-
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{C}{The number of latent classes.}
-
-\item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
-
-\item{keep_par}{A vector of parameter names which are kept.}
-
-\item{drop_par}{A vector of parameter names which get dropped.}
 }
 \value{
 An object of class \code{RprobitB_gibbs_samples} filtered by the labels
 \code{create_parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)}.
 }
 \description{
-This function filters Gibbs samples.
+This is a helper function that filters Gibbs samples.
 }
 \keyword{internal}

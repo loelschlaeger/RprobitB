@@ -7,7 +7,7 @@
 model_selection(...)
 }
 \arguments{
-\item{...}{One or more objects of class \code{RprobitB_model}.}
+\item{...}{One or more objects of class \code{RprobitB_fit}.}
 }
 \value{
 A matrix with each model's
@@ -19,5 +19,6 @@ A matrix with each model's
 }
 }
 \description{
-This function guides through the process of model selection.
+This function guides through the process of model selection by providing
+criteria for model comparison.
 }

@@ -5,7 +5,7 @@ test_that("creation of labels works", {
   C <- sample(1:5, 1)
   cov_sym <- sample(c(TRUE, FALSE), 1)
   drop_par <- if (runif(1) < 0.5) NULL else sample(c("alpha", "s", "b", "Omega", "Sigma"), sample(1:5, 1))
-  out <- create_parameter_labels(
+  out <- parameter_labels(
     P_f = P_f, P_r = P_r, J = J, C = C, cov_sym = cov_sym,
     drop_par = drop_par
   )
