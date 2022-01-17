@@ -52,7 +52,6 @@
 #'   idc = "choiceid",
 #'   standardize = "all"
 #' )
-#'
 #' @export
 
 prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,

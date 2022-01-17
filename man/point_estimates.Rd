@@ -26,5 +26,4 @@ data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 model <- mcmc(data)
 point_estimates(model)
 point_estimates(model, FUN = median)
-
 }

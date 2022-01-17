@@ -34,7 +34,6 @@
 #'   alpha = c(-1, 1),
 #'   C = 2
 #' )
-#'
 #' @export
 #'
 #' @importFrom stats rnorm

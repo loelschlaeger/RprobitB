@@ -19,7 +19,7 @@
 #' s3
 
 RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
-                           gibbs_samples, classification) {
+                         gibbs_samples, classification) {
 
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
@@ -65,9 +65,9 @@ print.RprobitB_fit <- function(x, ...) {
 #' @importFrom stats sd
 
 summary.RprobitB_fit <- function(object, FUN = c(
-                                     "mean" = mean, "sd" = stats::sd,
-                                     "R^" = R_hat
-                                   ), ...) {
+                                   "mean" = mean, "sd" = stats::sd,
+                                   "R^" = R_hat
+                                 ), ...) {
 
   ### check class of 'object'
   if (!inherits(object, "RprobitB_fit")) {

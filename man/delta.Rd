@@ -26,6 +26,5 @@ computes differences with respect to row \code{i}.
 J <- 2
 x <- matrix(1, nrow = J, ncol = 2)
 delta(J, 1) \%*\% x
-
 }
 \keyword{utils}

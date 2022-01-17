@@ -20,7 +20,6 @@
 #' model <- mcmc(data)
 #' point_estimates(model)
 #' point_estimates(model, FUN = median)
-#'
 #' @export
 
 point_estimates <- function(x, FUN = mean) {

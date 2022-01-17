@@ -94,5 +94,4 @@ data <- prepare_data(
   idc = "choiceid",
   standardize = "all"
 )
-
 }

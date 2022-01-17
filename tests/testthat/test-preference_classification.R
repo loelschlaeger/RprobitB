@@ -9,7 +9,7 @@ test_that("P", {
     alpha = 1:5, Sigma = 1
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_warning(classify(model))
+  expect_warning(preference_classification(model))
 })
 
 test_that("MNP", {
@@ -23,7 +23,7 @@ test_that("MNP", {
     alpha = 1:8
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_warning(classify(model))
+  expect_warning(preference_classification(model))
 })
 
 test_that("MMNP", {
@@ -39,7 +39,7 @@ test_that("MMNP", {
     Sigma = diag(2)
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(classify(model))
+  expect_snapshot(preference_classification(model))
 })
 
 test_that("LCMMNP", {
@@ -57,7 +57,7 @@ test_that("LCMMNP", {
     R = 1000, print_progress = FALSE, seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(classify(model))
+  expect_snapshot(preference_classification(model))
 })
 
 test_that("ULCMMNP", {
@@ -78,5 +78,5 @@ test_that("ULCMMNP", {
       "epsmax" = 0.9
     )
   )
-  expect_snapshot(classify(model))
+  expect_snapshot(preference_classification(model))
 })

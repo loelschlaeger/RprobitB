@@ -19,7 +19,6 @@
 #' J <- 2
 #' x <- matrix(1, nrow = J, ncol = 2)
 #' delta(J, 1) %*% x
-#'
 #' @keywords
 #' utils
 
@@ -54,7 +53,6 @@ delta <- function(J, i) {
 #'
 #' @examples
 #' set_mfrow(3)
-#'
 #' @keywords
 #' utils
 
@@ -101,7 +99,6 @@ set_mfrow <- function(n) {
 #'   }
 #' }
 #' R_hat(samples)
-#'
 #' @export
 #'
 #' @keywords
@@ -151,7 +148,6 @@ R_hat <- function(samples, parts = 2) {
 #' @examples
 #' x <- diag(2)
 #' is_covariance_matrix(x)
-#'
 #' @keywords
 #' utils
 

@@ -22,7 +22,6 @@
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
 #' choice_probabilities(x)
-#'
 #' @export
 
 choice_probabilities <- function(x, data = NULL, at_true = FALSE) {

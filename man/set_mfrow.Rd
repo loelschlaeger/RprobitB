@@ -19,6 +19,5 @@ This function finds a balanced setting for \code{par(mfrow)}.
 }
 \examples{
 set_mfrow(3)
-
 }
 \keyword{utils}

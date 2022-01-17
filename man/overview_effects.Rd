@@ -45,5 +45,4 @@ form <- choice ~ price + time + comfort + change | 1
 re <- c("price", "time")
 alternatives <- c("A", "B")
 overview_effects(form = form, re = re, alternatives = alternatives)
-
 }

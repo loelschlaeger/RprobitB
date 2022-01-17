@@ -18,7 +18,6 @@
 #' x <- mcmc(data)
 #' predict_choices(x, overview = TRUE)
 #' predict_choices(x, overview = FALSE)
-#'
 #' @export
 
 predict_choices <- function(x, data = NULL, overview = TRUE) {

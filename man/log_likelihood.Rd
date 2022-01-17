@@ -22,5 +22,4 @@ This function computes the log-likelihood of an \code{RprobitB_fit}.
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 x <- mcmc(data)
 log_likelihood(x)
-
 }

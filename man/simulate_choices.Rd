@@ -81,5 +81,4 @@ data <- simulate_choices(
   alpha = c(-1, 1),
   C = 2
 )
-
 }

@@ -31,7 +31,6 @@ for (c in 1:no_chains) {
   }
 }
 R_hat(samples)
-
 }
 \references{
 \url{https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html}

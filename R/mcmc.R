@@ -488,4 +488,3 @@ sufficient_statistics <- function(data, normalization) {
   )
   return(suff_statistics)
 }
-

@@ -15,7 +15,6 @@
 #' re <- c("price", "time")
 #' alternatives <- c("A", "B")
 #' overview_effects(form = form, re = re, alternatives = alternatives)
-#'
 #' @export
 
 overview_effects <- function(form, re = NULL, alternatives) {

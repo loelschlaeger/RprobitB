@@ -54,5 +54,4 @@ This function checks the input \code{form}.
 form <- choice ~ price + time + comfort + change | 1
 re <- re <- c("price", "time")
 check_form(form = form, re = re)
-
 }
