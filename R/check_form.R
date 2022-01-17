@@ -20,7 +20,6 @@
 #' They can be removed by adding \code{+0} in the second spot.
 #' See the vignette \code{vignette("data_management", package = "RprobitB")}
 #' for more details.
-#'
 #' @param re
 #' A character (vector) of covariates of \code{form} with random effects.
 #' If \code{re = NULL} (the default), there are no random effects.
@@ -49,6 +48,7 @@
 #' form <- choice ~ price + time + comfort + change | 1
 #' re <- re <- c("price", "time")
 #' check_form(form = form, re = re)
+#'
 #' @export
 
 check_form <- function(form, re = NULL) {

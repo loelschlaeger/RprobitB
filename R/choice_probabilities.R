@@ -1,8 +1,10 @@
-#' Return choice probabilities of an \code{RprobitB_model}.
+#' Return choice probabilities of an \code{RprobitB_fit}.
+#'
 #' @description
-#' This function returns the choice probabilities of an \code{RprobitB_model}.
+#' This function returns the choice probabilities of an \code{RprobitB_fit}.
+#'
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
 #' @param data
 #' Either \code{NULL} or an object of class \code{RprobitB_data}. In the former
 #' case, choice probabilities are computed for the data that was used for model
@@ -10,14 +12,17 @@
 #' @param at_true
 #' If \code{TRUE}, choice probabilities are computed at the true parameter
 #' values (if they are available).
+#'
 #' @return
 #' A data frame of choice probabilities with choice situations in rows and
 #' alternatives in columns. The first two columns are the decider identifier
 #' \code{"id"} and the choice situation identifier \code{"idc"}.
+#'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
 #' choice_probabilities(x)
+#'
 #' @export
 
 choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
@@ -65,9 +70,11 @@ choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
 }
 
 #' Compute probit choice probabilities for a single choice situation.
+#'
 #' @description
 #' This function computes the probit choice probabilities for a single choice
 #' situation with \code{J} alternatives.
+#'
 #' @param X
 #' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
 #' the first \code{P_f} columns are connected to fixed coefficients and the last
@@ -77,8 +84,10 @@ choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
 #' alternatives for which choice probabilities are to be computed.
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
+#'
 #' @return
 #' A probability vector of length \code{length(alternatives)}.
+#'
 #' @keywords
 #' internal
 
@@ -147,14 +156,19 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
 }
 
 #' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r = 0}.
+#'
 #' @description
 #' This function computes the probit choice probability for alternative \code{j}
 #' in case of \code{P_f = 0} and \code{P_r = 0}.
+#'
 #' @inheritParams ccp_pfpr
+#'
 #' @return
 #' A probability.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 ccp <- function(j, J, Sigma_full) {
@@ -167,14 +181,19 @@ ccp <- function(j, J, Sigma_full) {
 }
 
 #' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r = 0}.
+#'
 #' @description
 #' This function computes the probit choice probability for alternative \code{j}
 #' in case of \code{P_f > 0} and \code{P_r = 0}.
+#'
 #' @inheritParams ccp_pfpr
+#'
 #' @return
 #' A probability.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 ccp_pf <- function(j, J, Sigma_full, X, alpha) {
@@ -187,14 +206,19 @@ ccp_pf <- function(j, J, Sigma_full, X, alpha) {
 }
 
 #' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r > 0}.
+#'
 #' @description
 #' This function computes the probit choice probability for alternative \code{j}
 #' in case of \code{P_f = 0} and \code{P_r > 0}.
+#'
 #' @inheritParams ccp_pfpr
+#'
 #' @return
 #' A probability.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
@@ -213,9 +237,11 @@ ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
 }
 
 #' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r > 0}.
+#'
 #' @description
 #' This function computes the probit choice probability for alternative \code{j}
 #' in case of \code{P_f > 0} and \code{P_r > 0}.
+#'
 #' @param j
 #' An integer between 1 and \code{J}.
 #' @inheritParams compute_choice_probabilities
@@ -225,10 +251,13 @@ ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
 #' \code{P_r} columns are connected to random coefficients.
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
+#'
 #' @return
 #' A probability.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
