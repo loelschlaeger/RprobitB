@@ -2,7 +2,7 @@
 #' @description
 #' This function guides through the process of model selection.
 #' @param ...
-#' One or more objects of class \code{RprobitB_model}.
+#' One or more objects of class \code{RprobitB_fit}.
 #' @return
 #' A matrix with each model's
 #' \itemize{
@@ -21,10 +21,10 @@ model_selection <- function(...) {
   ### get model names
   model_names <- unlist(lapply(sys.call()[-1], as.character))
 
-  ### check if models are of class "RprobitB_model"
+  ### check if models are of class "RprobitB_fit"
   for (i in seq_len(length(models))) {
-    if (!inherits(models[[i]], "RprobitB_model")) {
-      stop(paste0("Input '", model_names[i], "' is not of class 'RprobitB_model'."))
+    if (!inherits(models[[i]], "RprobitB_fit")) {
+      stop(paste0("Input '", model_names[i], "' is not of class 'RprobitB_fit'."))
     }
   }
 
