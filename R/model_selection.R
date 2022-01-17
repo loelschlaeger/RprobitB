@@ -1,8 +1,12 @@
 #' Compare fitted models.
+#'
 #' @description
-#' This function guides through the process of model selection.
+#' This function guides through the process of model selection by providing
+#' criteria for model comparison.
+#'
 #' @param ...
 #' One or more objects of class \code{RprobitB_fit}.
+#'
 #' @return
 #' A matrix with each model's
 #' \itemize{
@@ -11,6 +15,7 @@
 #'   \item AIC, and
 #'   \item BIC value.
 #' }
+#'
 #' @export
 
 model_selection <- function(...) {

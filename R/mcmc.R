@@ -1,10 +1,13 @@
 #' Markov chain Monte Carlo simulation for probit model fitting.
+#'
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting a
 #' (latent class) (mixed) (multinomial) probit model to discrete choice data.
+#'
 #' @details
 #' See the vignette "Model fitting" for more details:
 #' \code{vignette("model_fitting", package = "RprobitB")}.
+#'
 #' @param data
 #' An object of class \code{RprobitB_data}.
 #' @inheritParams RprobitB_normalization
@@ -23,8 +26,10 @@
 #' @inheritParams check_prior
 #' @param seed
 #' Set a seed for the Gibbs sampling.
+#'
 #' @return
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @examples
 #' \dontrun{
 #' ### probit model
@@ -52,6 +57,7 @@
 #' ### update of latent classes
 #' m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
 #' }
+#'
 #' @export
 
 mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
@@ -168,9 +174,11 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 }
 
 #' Check \code{prior}.
+#'
 #' @description
 #' This function checks the input \code{prior} and sets missing values to
 #' default values.
+#'
 #' @param prior
 #' A named list of parameters for the prior distributions of the normalized
 #' parameters:
@@ -204,8 +212,10 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 #'   Inverse Wishart prior for \code{Sigma}.
 #' }
 #' @inheritParams RprobitB_data
+#'
 #' @return
 #' The checked input \code{prior}
+#'
 #' @keywords
 #' internal
 
@@ -315,13 +325,18 @@ check_prior <- function(prior, P_f, P_r, J) {
 }
 
 #' Set initial values for the Gibbs sampler.
+#'
 #' @description
 #' This function sets initial values for the Gibbs sampler.
+#'
 #' @inheritParams RprobitB_data
+#'
 #' @param C
 #' The number (greater or equal 1) of latent classes.
+#'
 #' @return
 #' A list of initial values for the Gibbs sampler.
+#'
 #' @keywords
 #' internal
 
