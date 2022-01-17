@@ -7,10 +7,10 @@
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
-#' compute_log_likelihood(x)
+#' log_likelihood(x)
 #' @export
 
-compute_log_likelihood <- function(x, at_true = FALSE) {
+log_likelihood <- function(x, at_true = FALSE) {
   probs <- choice_probabilities(x = x, at_true = at_true)
   ll <- 0
   for (row in 1:nrow(probs)) {
