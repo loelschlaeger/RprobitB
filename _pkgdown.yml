@@ -39,6 +39,7 @@ reference:
   - model_selection
   - preference_classification
   - predict_choices
+  - plot.RprobitB_fit
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.
   contents:
