@@ -7,7 +7,7 @@
 #' A data frame with the deciders id and the latent class number.
 #' @export
 
-classify <- function(x) {
+preference_classification <- function(x) {
   if (is.null(x$classification)) {
     warning("No classification available.")
   } else {
