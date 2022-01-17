@@ -1,7 +1,9 @@
 #' Plot method for \code{RprobitB_fit}.
+#'
 #' @description
 #' This function is the plot method for an object of class
 #' \code{RprobitB_fit}.
+#'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
 #' @param type
@@ -17,8 +19,10 @@
 #' visualized.
 #' @param ...
 #' Ignored.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @export
 
 plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
@@ -207,19 +211,24 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
 }
 
 #' Autocorrelation plot of Gibbs samples.
+#'
 #' @description
 #' This function plots the autocorrelation of the Gibbs samples, including the
 #' total sample size \code{SS}, effective sample size \code{ESS} and the factor
 #' \code{SS/ESS}.
+#'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
 #' @param par_labels
 #' A character vector of length equal to the number of columns of
 #' \code{gibbs_samples}, containing labels for the Gibbs samples.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 plot_acf <- function(gibbs_samples, par_labels) {
@@ -242,17 +251,22 @@ plot_acf <- function(gibbs_samples, par_labels) {
 }
 
 #' Visualizing the linear effects.
+#'
 #' @description
 #' This function visualizes the linear effects of the covariates on the choices
 #' together with an uncertainty interval of plus / minus one standard deviation.
+#'
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param coeff_names
 #' A character vector of coefficient names.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 plot_effects <- function(gibbs_samples, coeff_names) {
@@ -282,9 +296,11 @@ plot_effects <- function(gibbs_samples, coeff_names) {
 }
 
 #' Plotting mixing distribution contours.
+#'
 #' @description
 #' This function plots contours of the estimated mixing distributions and adds
 #' the true beta values for comparison if available.
+#'
 #' @param mean_est
 #' A list of length \code{C}, where each element is a vector of two
 #' estimated class means.
@@ -297,10 +313,13 @@ plot_effects <- function(gibbs_samples, coeff_names) {
 #' Either \code{NULL} or a matrix of \code{C} rows with true \code{beta} values.
 #' @param cov_names
 #' Either \code{NULL} or a vector of two covariate names.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL,
@@ -379,10 +398,12 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 }
 
 #' Plotting marginal mixing distributions.
+#'
 #' @description
 #' This function plots the estimated mixing distributions with respect to one
 #' covariate and adds the true marginal mixing distribution for comparison if
 #' available.
+#'
 #' @param mean_est
 #' A list of length \code{C}, where each element is an estimated class mean.
 #' @param mean_true
@@ -401,10 +422,13 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 #' class standard deviation.
 #' @param cov_name
 #' Either \code{NULL} or the name of the corresponding covariate.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
@@ -496,17 +520,22 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
 }
 
 #' Visualizing the trace of Gibbs samples.
+#'
 #' @description
 #' This function plots traces of the Gibbs samples.
+#'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
 #' @param par_labels
 #' A character vector of length equal to the number of columns of
 #' \code{gibbs_samples}, containing labels for the Gibbs samples.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 plot_trace <- function(gibbs_samples, par_labels) {
