@@ -35,6 +35,9 @@
 #' train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
 #'
 #' @export
+#'
+#' @importFrom stats na.omit
+#' @importFrom utils tail
 
 train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
                        random = FALSE, seed = NULL) {
@@ -85,7 +88,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
     if (random) {
       ind_test <- sort(sample.int(x$N, size = size_test))
     } else {
-      ind_test <- tail(seq_len(x$N), size_test)
+      ind_test <- utils::tail(seq_len(x$N), size_test)
     }
     ind_train <- setdiff(seq_len(x$N), ind_test)
 
@@ -130,7 +133,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       if (random) {
         ind_test <- sort(sample.int(x$T[n], size = size_test))
       } else {
-        ind_test <- tail(seq_len(x$T[n]), size_test)
+        ind_test <- utils::tail(seq_len(x$T[n]), size_test)
       }
       ind_train <- setdiff(seq_len(x$T[n]), ind_test)
 
@@ -145,13 +148,13 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       ### remove elements from 'train'
       train$data[[n]] <- list("X" = train$data[[n]]$X[ind_train], "y" = train$data[[n]]$y[ind_train])
       train$choice_data[train$choice_data$id == n & !train$choice_data$idc %in% ind_train, ] <- NA
-      train$choice_data <- na.omit(train$choice_data)
+      train$choice_data <- stats::na.omit(train$choice_data)
       train$T[n] <- sum(ind_train != 0)
 
       ### remove elements from 'test'
       test$data[[n]] <- list("X" = test$data[[n]]$X[ind_test], "y" = test$data[[n]]$y[ind_test])
       test$choice_data[test$choice_data$id == n & !test$choice_data$idc %in% ind_test, ] <- NA
-      test$choice_data <- na.omit(test$choice_data)
+      test$choice_data <- stats::na.omit(test$choice_data)
       test$T[n] <- sum(ind_test != 0)
     }
   }

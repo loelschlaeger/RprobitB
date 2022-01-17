@@ -34,7 +34,7 @@ choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
       stop("True parameters are not available.")
     }
   } else {
-    parameter <- compute_point_estimates(x, FUN = mean)
+    parameter <- point_estimates(x, FUN = mean)
   }
 
   ### choose data

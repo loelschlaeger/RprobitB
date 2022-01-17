@@ -59,7 +59,7 @@ The threshold difference in means for joining latent classes
 (non-negative).
 }}
 
-\item{sufficient_statistics}{The output of \code{\link{compute_sufficient_statistics}}.}
+\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
 
 \item{prior}{A named list of parameters for the prior distributions of the normalized
 parameters:

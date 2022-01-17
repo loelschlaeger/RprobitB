@@ -51,6 +51,8 @@
 #'
 #' @keywords
 #' s3
+#'
+#' @importFrom stats runif rnorm
 
 RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
                                b = NULL, Omega = NULL, Sigma = NULL,
@@ -70,7 +72,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       alpha <- NA
     } else {
       if (is.null(alpha)) {
-        alpha <- round(runif(P_f, -3, 3), 1)
+        alpha <- round(stats::runif(P_f, -3, 3), 1)
       }
       if (length(alpha) != P_f || !is.numeric(alpha)) {
         stop("'alpha' must be a numeric vector of length ", P_f, ".")
@@ -118,7 +120,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
     } else {
       if (is.null(b)) {
         b <- matrix(0, nrow = P_r, ncol = C)
-        for (c in 1:C) b[, c] <- round(runif(P_r, -3, 3), 1)
+        for (c in 1:C) b[, c] <- round(stats::runif(P_r, -3, 3), 1)
       }
       b <- as.matrix(b)
       if (!is.numeric(b) || nrow(b) != P_r || ncol(b) != C) {
@@ -176,7 +178,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
         beta <- matrix(0, nrow = P_r, ncol = N)
         for (n in seq_len(N)) {
           beta[, n] <- b[, z[n]] +
-            t(chol(matrix(Omega[, z[n]], nrow = P_r, ncol = P_r))) %*% rnorm(P_r)
+            t(chol(matrix(Omega[, z[n]], nrow = P_r, ncol = P_r))) %*% stats::rnorm(P_r)
         }
       }
       if (!is.numeric(beta) || nrow(beta) != P_r ||

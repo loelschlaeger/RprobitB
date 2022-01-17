@@ -36,6 +36,8 @@
 #' )
 #'
 #' @export
+#'
+#' @importFrom stats rnorm
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
                              covariates = NULL, seed = NULL, ...) {
@@ -97,7 +99,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
         cov <- matrix(covariates[[var_alt]], ncol = 1)
         covariates[[var_alt]] <- NULL
       } else {
-        cov <- matrix(rnorm(n = sum(T)), ncol = 1)
+        cov <- matrix(stats::rnorm(n = sum(T)), ncol = 1)
       }
       colnames(cov) <- var_alt
       choice_data <- cbind(choice_data, cov)
@@ -108,7 +110,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       cov <- matrix(covariates[[var]], ncol = 1)
       covariates[[var]] <- NULL
     } else {
-      cov <- matrix(rnorm(n = sum(T)), ncol = 1)
+      cov <- matrix(stats::rnorm(n = sum(T)), ncol = 1)
     }
     colnames(cov) <- var
     choice_data <- cbind(choice_data, cov)
@@ -120,7 +122,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
         cov <- matrix(covariates[[var_alt]], ncol = 1)
         covariates[[var_alt]] <- NULL
       } else {
-        cov <- matrix(rnorm(n = sum(T)), ncol = 1)
+        cov <- matrix(stats::rnorm(n = sum(T)), ncol = 1)
       }
       colnames(cov) <- var_alt
       choice_data <- cbind(choice_data, cov)
@@ -233,7 +235,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       }
 
       ### compute utility and choice decision
-      eps <- L %*% rnorm(J)
+      eps <- L %*% stats::rnorm(J)
       if (P_f == 0 & P_r == 0) {
         U_nt <- eps
       } else {

@@ -24,6 +24,8 @@
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
+#'
+#' @importFrom graphics par
 
 plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
 
@@ -36,8 +38,8 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   }
 
   ### reset of 'par' settings
-  oldpar <- par(no.readonly = TRUE)
-  on.exit(suppressWarnings(par(oldpar)))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(suppressWarnings(graphics::par(oldpar)))
 
   ### determine 'par_names' and 'linear_coeffs'
   par_names <- c(
@@ -65,7 +67,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
     if (is.null(linear_coeffs$name) || all(!is.element(c("alpha", "b"), par_names))) {
       warning("Type 'effects' invalid because there are no effects.")
     } else {
-      par(
+      graphics::par(
         mfrow = c(1, 1), oma = c(0, 0, 0, 0),
         mar = c(3, 6, 1, 1), mgp = c(2, 1, 0), xpd = FALSE
       )
@@ -81,13 +83,13 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
     if (is.null(linear_coeffs_re_orig$name) || !is.element("b", par_names)) {
       warning("Type 'mixture' invalid because there are no random effects.")
     } else {
-      est <- compute_point_estimates(x, FUN = mean)
+      est <- point_estimates(x, FUN = mean)
       true <- x$data$true_parameter
       comb <- expand.grid(
         1:length(linear_coeffs_re_orig$name),
         1:length(linear_coeffs_re_orig$name)
       )
-      par(
+      graphics::par(
         mfrow = set_mfrow(nrow(comb)), oma = c(1, 1, 1, 1),
         mar = c(3, 3, 0, 0), mgp = c(2, 1, 0), xpd = NA
       )
@@ -164,7 +166,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
         C = x$latent_classes$C, cov_sym = FALSE,
         keep_par = par_names
       )$gibbs_samples_nbt
-      par(
+      graphics::par(
         mfrow = set_mfrow(length(par_names)), oma = c(0, 0, 0, 0),
         mar = c(3, 3, 1, 1), mgp = c(2, 1, 0), xpd = FALSE, las = 1
       )
@@ -194,7 +196,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
         C = x$latent_classes$C, cov_sym = FALSE,
         keep_par = keep_par
       )$gibbs_samples_nbt
-      par(
+      graphics::par(
         mfrow = set_mfrow(sum(sapply(gibbs_samples_nbt_filtered, ncol))),
         oma = c(0, 0, 0, 0), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0), xpd = FALSE,
         las = 1
@@ -230,17 +232,20 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom stats acf
+#' @importFrom graphics title legend
 
 plot_acf <- function(gibbs_samples, par_labels) {
   for (c in 1:ncol(gibbs_samples)) {
     ### compute autocorrelation and produce plot
-    rho <- acf(gibbs_samples[, c], las = 1, main = "")
-    title(par_labels[c], line = -1)
+    rho <- stats::acf(gibbs_samples[, c], las = 1, main = "")
+    graphics::title(par_labels[c], line = -1)
 
     ### compute effective sample size
     SS <- length(gibbs_samples[, c])
     ESS <- min(SS / (1 + 2 * sum(rho$acf)), SS)
-    legend("topright",
+    graphics::legend("topright",
       x.intersp = -0.5, bg = "white",
       legend = sprintf(
         "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
@@ -268,12 +273,15 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom stats sd
+#' @importFrom graphics axis segments abline
 
 plot_effects <- function(gibbs_samples, coeff_names) {
 
   ### extract means and sds
   means <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(mean))[c("alpha", "b")])
-  sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(sd))[c("alpha", "b")])
+  sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(stats::sd))[c("alpha", "b")])
 
   ### determine coefficient labels
   labels <- coeff_names
@@ -286,13 +294,13 @@ plot_effects <- function(gibbs_samples, coeff_names) {
   )
 
   ### add uncertainty interval
-  axis(2, at = 1:length(means), labels = labels, las = 1)
+  graphics::axis(2, at = 1:length(means), labels = labels, las = 1)
   for (n in 1:length(means)) {
-    segments(x0 = means[n] - sds[n], y0 = n, x1 = means[n] + sds[n], y1 = n)
+    graphics::segments(x0 = means[n] - sds[n], y0 = n, x1 = means[n] + sds[n], y1 = n)
   }
 
   ### mark zero
-  abline(v = 0, lty = 2)
+  graphics::abline(v = 0, lty = 2)
 }
 
 #' Plotting mixing distribution contours.
@@ -321,6 +329,8 @@ plot_effects <- function(gibbs_samples, coeff_names) {
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom graphics points contour
 
 plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL,
                                  cov_names = NULL) {
@@ -390,11 +400,11 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 
   ### add true beta values
   if (true_avail) {
-    points(x = beta_true[1, ], y = beta_true[2, ], pch = 16, col = "black")
+    graphics::points(x = beta_true[1, ], y = beta_true[2, ], pch = 16, col = "black")
   }
 
   ### add contour
-  contour(add = TRUE, grid_x, grid_y, prob, labcex = 0.75)
+  graphics::contour(add = TRUE, grid_x, grid_y, prob, labcex = 0.75)
 }
 
 #' Plotting marginal mixing distributions.
@@ -430,6 +440,9 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom stats dnorm
+#' @importFrom graphics title lines
 
 plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
                                   weight_true = NULL, sd_est, sd_true = NULL,
@@ -470,7 +483,7 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
   ### compute mixture components
   mixture_est <- matrix(NA, nrow = length(x), ncol = C_est)
   for (c in 1:C_est) {
-    mixture_est[, c] <- weight_est[c] * dnorm(x,
+    mixture_est[, c] <- weight_est[c] * stats::dnorm(x,
       mean = mean_est[[c]],
       sd = sd_est[[c]]
     )
@@ -478,7 +491,7 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
   if (true_avail) {
     mixture_true <- matrix(NA, nrow = length(x), ncol = C_true)
     for (c in 1:C_true) {
-      mixture_true[, c] <- weight_true[c] * dnorm(x,
+      mixture_true[, c] <- weight_true[c] * stats::dnorm(x,
         mean = mean_true[[c]],
         sd = sd_true[[c]]
       )
@@ -490,16 +503,16 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
 
   ### initialize plot
   plot(0, xlim = xlim, ylim = ylim, type = "n", main = "", xlab = "", ylab = "")
-  title(
+  graphics::title(
     main = "",
     xlab = bquote(paste(beta[.(cov_name)])),
     ylab = ""
   )
 
   ### add full mixture
-  lines(x, rowSums(mixture_est), col = "black", lty = 1, lwd = 2)
+  graphics::lines(x, rowSums(mixture_est), col = "black", lty = 1, lwd = 2)
   if (true_avail) {
-    lines(x, rowSums(mixture_true), col = "black", lty = 2, lwd = 2)
+    graphics::lines(x, rowSums(mixture_true), col = "black", lty = 2, lwd = 2)
   }
 
   ### add mixture components
@@ -537,6 +550,9 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom graphics legend axis
+#' @importFrom stats plot.ts
 
 plot_trace <- function(gibbs_samples, par_labels) {
 
@@ -544,13 +560,13 @@ plot_trace <- function(gibbs_samples, par_labels) {
   col <- viridis::magma(n = ncol(gibbs_samples), begin = 0.1, end = 0.9, alpha = 0.6)
 
   ### plot trace
-  plot.ts(gibbs_samples,
+  stats::plot.ts(gibbs_samples,
     plot.type = "single",
     ylim = c(min(gibbs_samples), max(gibbs_samples)),
     col = col, xlab = "", ylab = "", xaxt = "n", main = ""
   )
 
   ### add info
-  axis(side = 1, at = c(1, nrow(gibbs_samples)), labels = c("B+1", "R"))
-  legend("topright", legend = par_labels, lty = 1, col = col, cex = 0.75)
+  graphics::axis(side = 1, at = c(1, nrow(gibbs_samples)), labels = c("B+1", "R"))
+  graphics::legend("topright", legend = par_labels, lty = 1, col = col, cex = 0.75)
 }

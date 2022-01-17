@@ -59,6 +59,8 @@
 #' }
 #'
 #' @export
+#'
+#' @importFrom utils tail
 
 mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
                  R = 1e4, B = R / 2, Q = 1, print_progress = TRUE, prior = NULL,
@@ -117,7 +119,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 
   if (latent_classes$update) {
     ### update number of latent classes
-    latent_classes$C <- sum(tail(gibbs_samples$s, 1) != 0)
+    latent_classes$C <- sum(utils::tail(gibbs_samples$s, 1) != 0)
 
     ### remove zeros
     gibbs_samples$s <- gibbs_samples$s[, 1:latent_classes$C]

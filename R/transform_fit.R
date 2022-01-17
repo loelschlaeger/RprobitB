@@ -298,6 +298,8 @@ transform_parameter <- function(parameter, normalization) {
 #' internal
 #'
 #' @noRd
+#'
+#' @importFrom stats ecdf
 
 preference_flip <- function(model_old, model_new) {
   stopifnot(class(model_old) == "RprobitB_fit")
@@ -306,15 +308,15 @@ preference_flip <- function(model_old, model_new) {
   stopifnot(model_old$data$P_r == model_new$data$P_r)
   flag <- FALSE
   for (p in seq_len(model_old$data$P_f)) {
-    P1 <- ecdf(model_old$gibbs_samples$gibbs_samples_nbt$alpha[, p])
-    P2 <- ecdf(model_new$gibbs_samples$gibbs_samples_nbt$alpha[, p])
+    P1 <- stats::ecdf(model_old$gibbs_samples$gibbs_samples_nbt$alpha[, p])
+    P2 <- stats::ecdf(model_new$gibbs_samples$gibbs_samples_nbt$alpha[, p])
     if (P1(0) != P2(0)) {
       flag <- TRUE
     }
   }
   for (p in seq_len(model_old$data$P_r)) {
-    P1 <- ecdf(model_old$gibbs_samples$gibbs_samples_nbt$b[, p])
-    P2 <- ecdf(model_new$gibbs_samples$gibbs_samples_nbt$b[, p])
+    P1 <- stats::ecdf(model_old$gibbs_samples$gibbs_samples_nbt$b[, p])
+    P2 <- stats::ecdf(model_new$gibbs_samples$gibbs_samples_nbt$b[, p])
     if (P1(0) != P2(0)) {
       flag <- TRUE
     }

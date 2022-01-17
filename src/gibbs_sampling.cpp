@@ -355,7 +355,7 @@ List update_classes (int rep, int Cmax, double epsmin, double epsmax,
 //' @inheritParams mcmc
 //' @inheritParams RprobitB_data
 //' @param sufficient_statistics
-//' The output of \code{\link{compute_sufficient_statistics}}.
+//' The output of \code{\link{sufficient_statistics}}.
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return

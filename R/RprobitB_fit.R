@@ -61,9 +61,11 @@ print.RprobitB_fit <- function(x, ...) {
 #' Ignorded.
 #'
 #' @noRd
+#'
+#' @importFrom stats sd
 
 summary.RprobitB_fit <- function(object, FUN = c(
-                                     "mean" = mean, "sd" = sd,
+                                     "mean" = mean, "sd" = stats::sd,
                                      "R^" = R_hat
                                    ), ...) {
 

@@ -46,7 +46,7 @@ model_selection <- function(...) {
       models[[i]]$data$P_r^2 +
       models[[i]]$data$J * (models[[i]]$data$J - 1) / 2 - 1
     n_i <- sum(models[[i]]$data$T)
-    ll_i <- compute_log_likelihood(models[[i]])
+    ll_i <- log_likelihood(models[[i]])
     aic_i <- -2 * ll_i + 2 * par_i
     bic_i <- -2 * ll_i + par_i * log(n_i)
     output[i, "parameters"] <- par_i

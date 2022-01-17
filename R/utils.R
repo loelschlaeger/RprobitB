@@ -106,6 +106,8 @@ set_mfrow <- function(n) {
 #'
 #' @keywords
 #' utils
+#'
+#' @importFrom stats var
 
 R_hat <- function(samples, parts = 2) {
 
@@ -126,7 +128,7 @@ R_hat <- function(samples, parts = 2) {
   chain_means <- sapply(sub_chains, mean)
   grand_mean <- mean(chain_means)
   B <- 1 / (parts - 1) * sum((chain_means - grand_mean)^2)
-  chain_variances <- sapply(sub_chains, var)
+  chain_variances <- sapply(sub_chains, stats::var)
   W <- sum(chain_variances) / parts
   R_hat <- ((L - 1) / L * W + B) / W
   return(R_hat)
