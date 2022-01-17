@@ -9,7 +9,7 @@
 #' @keywords
 #' internal
 
-compute_sufficient_statistics <- function(data, normalization) {
+sufficient_statistics <- function(data, normalization) {
 
   ### check input
   if (!inherits(data, "RprobitB_data")) {
