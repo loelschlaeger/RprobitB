@@ -61,6 +61,7 @@
 #' @export
 #'
 #' @importFrom utils tail
+#' @import Rcpp
 
 mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
                  R = 1e4, B = R / 2, Q = 1, print_progress = TRUE, prior = NULL,
