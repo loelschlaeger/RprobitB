@@ -19,7 +19,7 @@
 #' An object of class \code{RprobitB_model}.
 #' @export
 
-transform_model <- function(x, B = NULL, Q = NULL, scale = NULL,
+transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
                             check_preference_flip = TRUE) {
 
   ### check inputs
@@ -50,7 +50,7 @@ transform_model <- function(x, B = NULL, Q = NULL, scale = NULL,
   } else {
     ### check if new scale flips preferences
     if (check_preference_flip) {
-      model_new <- transform_model(x = x, scale = scale, check_preference_flip = FALSE)
+      model_new <- transform_fit(x = x, scale = scale, check_preference_flip = FALSE)
       preference_flip(model_old = x, model_new = model_new)
     }
     normalization <- RprobitB_normalization(J = J, P_f = P_f, scale = scale)
