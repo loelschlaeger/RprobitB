@@ -1,9 +1,9 @@
-#' Plot method for \code{RprobitB_model}.
+#' Plot method for \code{RprobitB_fit}.
 #' @description
 #' This function is the plot method for an object of class
-#' \code{RprobitB_model}.
+#' \code{RprobitB_fit}.
 #' @param x
-#' An object of class \code{\link{RprobitB_model}}.
+#' An object of class \code{\link{RprobitB_fit}}.
 #' @param type
 #' The type of plot, which can be one or more of:
 #' \itemize{
@@ -21,11 +21,11 @@
 #' No return value. Draws a plot to the current device.
 #' @export
 
-plot.RprobitB_model <- function(x, type = "effects", ignore = NULL, ...) {
+plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
 
   ### check inputs
-  if (!inherits(x, "RprobitB_model")) {
-    stop("Not of class 'RprobitB_model'.")
+  if (!inherits(x, "RprobitB_fit")) {
+    stop("Not of class 'RprobitB_fit'.")
   }
   if (!(length(type) == 1 && type %in% c("effects", "mixture", "acf", "trace"))) {
     stop("Unknown 'type'.")
