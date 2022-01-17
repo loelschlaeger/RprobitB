@@ -38,6 +38,7 @@
 #' @export
 #'
 #' @importFrom stats rnorm
+#' @import Rcpp
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
                              covariates = NULL, seed = NULL, ...) {
