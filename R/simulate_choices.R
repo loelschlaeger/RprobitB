@@ -1,9 +1,12 @@
 #' Simulate choice data.
+#'
 #' @description
 #' This function simulates choice data for the RprobitB package.
+#'
 #' @details
 #' See the vignette "Choice data" for more details:
 #' \code{vignette("choice_data", package = "RprobitB")}.
+#'
 #' @inheritParams RprobitB_data
 #' @inheritParams check_form
 #' @param covariates
@@ -31,6 +34,7 @@
 #'   alpha = c(-1, 1),
 #'   C = 2
 #' )
+#'
 #' @export
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,

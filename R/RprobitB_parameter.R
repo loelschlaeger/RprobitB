@@ -1,8 +1,10 @@
 #' Create object of class \code{RprobitB_parameter}.
+#'
 #' @description
 #' This function creates an object of class \code{RprobitB_parameter}.
 #' If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 #' checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
+#'
 #' @inheritParams RprobitB_data
 #' @param alpha
 #' The fixed coefficient vector of length \code{P_f}.
@@ -41,10 +43,12 @@
 #' A boolean, if \code{TRUE} missing parameters get sampled.
 #' @param seed
 #' Set a seed for sampling missing parameters.
+#'
 #' @return
 #' An object of class \code{RprobitB_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
+#'
 #' @keywords
 #' s3
 
@@ -224,14 +228,6 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
   return(out)
 }
 
-#' Print method for \code{RprobitB_parameter}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{RprobitB_parameter}.
-#' @param x
-#' An object of class \code{RprobitB_parameter}.
-#' @param ...
-#' Ignored.
 #' @noRd
 
 print.RprobitB_parameter <- function(x, ...) {

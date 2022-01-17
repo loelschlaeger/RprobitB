@@ -1,6 +1,8 @@
 #' Create object of class \code{RprobitB_latent_classes}.
+#'
 #' @description
 #' This function creates an object of class \code{RprobitB_latent_classes}.
+#'
 #' @param latent_classes
 #' Either \code{NULL} or a list of parameters specifying the number and the
 #' latent classes:
@@ -25,8 +27,10 @@
 #'   The threshold difference in means for joining latent classes
 #'   (non-negative).
 #' }
+#'
 #' @return
 #' An object of class \code{RprobitB_latent_classes}.
+#'
 #' @keywords
 #' s3
 
@@ -112,14 +116,6 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   return(latent_classes)
 }
 
-#' Print method for \code{RprobitB_latent_classes}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{RprobitB_latent_classes}.
-#' @param x
-#' An object of class \code{RprobitB_latent_classes}.
-#' @param ...
-#' Ignored.
 #' @noRd
 
 print.RprobitB_latent_classes <- function(x, ...) {

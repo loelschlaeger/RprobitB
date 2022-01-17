@@ -1,7 +1,9 @@
 #' Transform differenced to non-differenced error term covariance matrix.
+#'
 #' @description
 #' This function transforms the differenced error term covariance matrix
 #' \code{Sigma} back to a non-differenced error term covariance matrix.
+#'
 #' @param Sigma
 #' An error term covariance matrix of dimension \code{J-1} x \code{J-1} which
 #' was differenced with respect to alternative \code{i}.
@@ -14,10 +16,12 @@
 #' If \code{TRUE} the function returns a positive matrix.
 #' @param labels
 #' If \code{TRUE} the function adds labels to the output matrix.
+#'
 #' @return
 #' A covariance matrix of dimension \code{J} x \code{J}. If this covariance
 #' matrix gets differenced with respect to alternative \code{i}, the results is
 #' again \code{Sigma}.
+#'
 #' @keywords
 #' internal
 

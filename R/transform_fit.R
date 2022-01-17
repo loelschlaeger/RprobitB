@@ -1,30 +1,35 @@
 #' Change the length of the burn-in period, the thinning factor and the scale
 #' after Gibbs sampling.
+#'
 #' @description
-#' Given an object of class \code{RprobitB_model}, this function can:
+#' Given an object of class \code{RprobitB_fit}, this function can:
 #' \itemize{
 #'   \item change the length \code{B} of the burn-in period,
 #'   \item change the the thinning factor \code{Q} of the Gibbs samples,
 #'   \item change the model \code{scale}.
 #' }
+#'
 #' @details
 #' See the vignette "Model fitting" for more details:
 #' \code{vignette("model_fitting", package = "RprobitB")}.
+#'
 #' @inheritParams mcmc
 #' @param x
-#' An object of class \code{\link{RprobitB_model}}.
+#' An object of class \code{\link{RprobitB_fit}}.
 #' @param check_preference_flip
 #' If \code{TRUE} check for flip in preferences with new scale.
+#'
 #' @return
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
+#'
 #' @export
 
 transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
                           check_preference_flip = TRUE) {
 
   ### check inputs
-  if (!inherits(x, "RprobitB_model")) {
-    stop("'x' must be of class 'RprobitB_model'.")
+  if (!inherits(x, "RprobitB_fit")) {
+    stop("'x' must be of class 'RprobitB_fit'.")
   }
   if (is.null(B)) {
     B <- x$B
@@ -71,13 +76,15 @@ transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
     )
   }
 
-  ### return 'RprobitB_model'
+  ### return 'RprobitB_fit'
   return(x)
 }
 
 #' Transformation of Gibbs samples.
+#'
 #' @description
 #' This function normalizes, burns and thins the Gibbs samples.
+#'
 #' @param gibbs_samples
 #' The output of \link{gibbs_sampling}.
 #' @inheritParams RprobitB_data
@@ -101,6 +108,7 @@ transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
 #'   A list of normalized, burned and thinned samples based on \code{normalization},
 #'   \code{B} and \code{Q}
 #' }
+#'
 #' @keywords
 #' internal
 
@@ -212,14 +220,18 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 }
 
 #' Transformation of parameter values.
+#'
 #' @description
 #' This function transforms parameter values based on \code{normalization}.
+#'
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
+#'
 #' @return
 #' An object of class \code{RprobitB_parameter}.
+#'
 #' @keywords
 #' internal
 
@@ -270,21 +282,26 @@ transform_parameter <- function(parameter, normalization) {
 }
 
 #' Check for flip in preferences after change in model scale.
+#'
 #' @description
 #' This function checks if a change in the model scale flipped the preferences.
+#'
 #' @param model_old
-#' An object of class \code{RprobitB_model}, the model before the scale change.
+#' An object of class \code{RprobitB_fit}, the model before the scale change.
 #' @param model_new
-#' An object of class \code{RprobitB_model}, the model after the scale change.
+#' An object of class \code{RprobitB_fit}, the model after the scale change.
+#'
 #' @return
 #' No return value, called for side-effects.
+#'
 #' @keywords
 #' internal
+#'
 #' @noRd
 
 preference_flip <- function(model_old, model_new) {
-  stopifnot(class(model_old) == "RprobitB_model")
-  stopifnot(class(model_new) == "RprobitB_model")
+  stopifnot(class(model_old) == "RprobitB_fit")
+  stopifnot(class(model_new) == "RprobitB_fit")
   stopifnot(model_old$data$P_f == model_new$data$P_f)
   stopifnot(model_old$data$P_r == model_new$data$P_r)
   flag <- FALSE

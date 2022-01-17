@@ -1,10 +1,13 @@
 #' Matrix difference operator.
+#'
 #' @description
 #' This function creates the difference operator matrix \code{delta} for
 #' subtracting a matrix row from the other matrix rows.
+#'
 #' @details
 #' Given a matrix \code{x} with \code{J} rows, then \code{delta(i,J) %*% x}
 #' computes differences with respect to row \code{i}.
+#'
 #' @param J
 #' The number of matrix rows.
 #' @param i
@@ -16,6 +19,7 @@
 #' J <- 2
 #' x <- matrix(1, nrow = J, ncol = 2)
 #' delta(J, 1) %*% x
+#'
 #' @keywords
 #' utils
 
@@ -35,17 +39,22 @@ delta <- function(J, i) {
 }
 
 #' Balancing visualization of multiple figures.
+#'
 #' @description
 #' This function finds a balanced setting for \code{par(mfrow)}.
+#'
 #' @param n
 #' The total number of figures.
 #' @return
 #' A vector of the form \code{c(nr,nc)}. If \code{par(mfrow = c(nr,nc))},
 #' subsequent figures will be drawn in an \code{nr} x \code{nc} array on the
 #' current device by rows.
+#'
 #' @export
+#'
 #' @examples
 #' set_mfrow(3)
+#'
 #' @keywords
 #' utils
 
@@ -63,18 +72,23 @@ set_mfrow <- function(n) {
 }
 
 #' Compute Gelman-Rubin statistic.
+#'
 #' @description
 #' This function computes the Gelman-Rubin statistic \code{R_hat}.
+#'
 #' @references
 #' <https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html>
+#'
 #' @param samples
 #' A vector or a matrix of samples from a Markov chain, e.g. Gibbs samples.
 #' If \code{samples} is a matrix, each column gives the samples for a separate
 #' run.
 #' @param parts
 #' The number of parts to divide each chain into sub-chains.
+#'
 #' @return
 #' The Gelman-Rubin statistic.
+#'
 #' @examples
 #' no_chains <- 2
 #' length_chains <- 1e3
@@ -87,7 +101,9 @@ set_mfrow <- function(n) {
 #'   }
 #' }
 #' R_hat(samples)
+#'
 #' @export
+#'
 #' @keywords
 #' utils
 
@@ -117,17 +133,23 @@ R_hat <- function(samples, parts = 2) {
 }
 
 #' Check covariance matrix properties.
+#'
 #' @description
 #' This function checks if the input is a proper covariance matrix, i.e. a
 #' symmetric, numeric matrix with non-negative eigenvalues.
+#'
 #' @param x
 #' A matrix.
+#'
 #' @return
 #' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
+#'
 #' @export
+#'
 #' @examples
 #' x <- diag(2)
 #' is_covariance_matrix(x)
+#'
 #' @keywords
 #' utils
 

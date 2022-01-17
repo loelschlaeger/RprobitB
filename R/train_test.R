@@ -1,9 +1,12 @@
 #' Split choice data.
+#'
 #' @description
 #' This function splits choice data into a train and a test part.
+#'
 #' @details
 #' See the vignette "Choice data" for more details:
 #' \code{vignette("choice_data", package = "RprobitB")}.
+#'
 #' @param x
 #' An object of class \code{RprobitB_data}.
 #' @param test_proportion
@@ -16,9 +19,11 @@
 #' If \code{TRUE}, the subsamples are build randomly.
 #' @param seed
 #' Set a seed for building the subsamples randomly.
+#'
 #' @return
 #' A list with two objects of class \code{RprobitB_data}, named \code{"train"}
 #' and \code{"test"}.
+#'
 #' @examples
 #' x <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #'
@@ -28,6 +33,7 @@
 #' # 2 randomly chosen choice occasions per decider in the test subsample, the rest
 #' # in the train subsample
 #' train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
+#'
 #' @export
 
 train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",

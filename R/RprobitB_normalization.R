@@ -1,6 +1,8 @@
 #' Create object of class \code{RprobitB_normalization}.
+#'
 #' @description
 #' This function creates an object of class \code{RprobitB_normalization}.
+#'
 #' @details
 #' Any choice model has to be normalized with respect to level and scale.
 #' \itemize{
@@ -12,6 +14,7 @@
 #'         Alternatively, any error-term variance or any linear coefficient can
 #'         be fixed.
 #' }
+#'
 #' @inheritParams RprobitB_data
 #' @param level
 #' The number of the alternative with respect which utility differences are
@@ -30,9 +33,11 @@
 #'   \item \code{value}:
 #'   The value for the fixed parameter.
 #' }
+#'
 #' @return
 #' An object of class \code{RprobitB_normalization}, which is a list of the
 #' elements \code{level} and \code{scale}.
+#'
 #' @keywords
 #' s3
 
@@ -93,14 +98,6 @@ RprobitB_normalization <- function(J, P_f, level = J,
   return(out)
 }
 
-#' Print method for \code{RprobitB_normalization}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{RprobitB_normalization}.
-#' @param x
-#' An object of class \code{RprobitB_normalization}.
-#' @param ...
-#' Ignored.
 #' @noRd
 
 print.RprobitB_normalization <- function(x, ...) {
