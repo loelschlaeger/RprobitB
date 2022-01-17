@@ -18,9 +18,9 @@ test_that("P", {
     ),
     check_preference_flip = FALSE
   )
-  expect_s3_class(model_new_B, "RprobitB_model")
-  expect_s3_class(model_new_Q, "RprobitB_model")
-  expect_s3_class(model_new_scale, "RprobitB_model")
+  expect_s3_class(model_new_B, "RprobitB_fit")
+  expect_s3_class(model_new_Q, "RprobitB_fit")
+  expect_s3_class(model_new_scale, "RprobitB_fit")
 })
 
 test_that("MNP", {
@@ -43,9 +43,9 @@ test_that("MNP", {
     ),
     check_preference_flip = FALSE
   )
-  expect_s3_class(model_new_B, "RprobitB_model")
-  expect_s3_class(model_new_Q, "RprobitB_model")
-  expect_s3_class(model_new_scale, "RprobitB_model")
+  expect_s3_class(model_new_B, "RprobitB_fit")
+  expect_s3_class(model_new_Q, "RprobitB_fit")
+  expect_s3_class(model_new_scale, "RprobitB_fit")
 })
 
 test_that("MMNP", {
@@ -70,9 +70,9 @@ test_that("MMNP", {
     ),
     check_preference_flip = FALSE
   )
-  expect_s3_class(model_new_B, "RprobitB_model")
-  expect_s3_class(model_new_Q, "RprobitB_model")
-  expect_s3_class(model_new_scale, "RprobitB_model")
+  expect_s3_class(model_new_B, "RprobitB_fit")
+  expect_s3_class(model_new_Q, "RprobitB_fit")
+  expect_s3_class(model_new_scale, "RprobitB_fit")
 })
 
 test_that("LCMMNP", {
@@ -99,9 +99,9 @@ test_that("LCMMNP", {
     ),
     check_preference_flip = FALSE
   )
-  expect_s3_class(model_new_B, "RprobitB_model")
-  expect_s3_class(model_new_Q, "RprobitB_model")
-  expect_s3_class(model_new_scale, "RprobitB_model")
+  expect_s3_class(model_new_B, "RprobitB_fit")
+  expect_s3_class(model_new_Q, "RprobitB_fit")
+  expect_s3_class(model_new_scale, "RprobitB_fit")
 })
 
 test_that("ULCMMNP", {
@@ -131,7 +131,7 @@ test_that("ULCMMNP", {
     ),
     check_preference_flip = FALSE
   )
-  expect_s3_class(model_new_B, "RprobitB_model")
-  expect_s3_class(model_new_Q, "RprobitB_model")
-  expect_s3_class(model_new_scale, "RprobitB_model")
+  expect_s3_class(model_new_B, "RprobitB_fit")
+  expect_s3_class(model_new_Q, "RprobitB_fit")
+  expect_s3_class(model_new_scale, "RprobitB_fit")
 })
