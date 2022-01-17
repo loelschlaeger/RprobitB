@@ -14,11 +14,11 @@
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' model <- mcmc(data)
-#' compute_point_estimates(model)
-#' compute_point_estimates(model, FUN = median)
+#' point_estimates(model)
+#' point_estimates(model, FUN = median)
 #' @export
 
-compute_point_estimates <- function(x, FUN = mean) {
+point_estimates <- function(x, FUN = mean) {
 
   ### check input
   if (!class(x) == "RprobitB_model") {
