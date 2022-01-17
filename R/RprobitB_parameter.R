@@ -235,17 +235,12 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
 #' @noRd
 
 print.RprobitB_parameter <- function(x, ...) {
-
   cat("RprobitB model parameter:\n\n")
 
-  for(i in seq_along(x)) {
-
-    if("numeric" %in% class(x[[i]]) || "integer" %in% class(x[[i]])) {
-
+  for (i in seq_along(x)) {
+    if ("numeric" %in% class(x[[i]]) || "integer" %in% class(x[[i]])) {
       cat(paste0(names(x)[i], ":"), x[[i]], "\n\n")
-
-    } else if("matrix" %in% class(x[[i]])) {
-
+    } else if ("matrix" %in% class(x[[i]])) {
       cat(paste0(names(x)[i], ": "))
 
       rowdots <- min(nrow(x[[i]]) - 1, 4)
@@ -254,7 +249,6 @@ print.RprobitB_parameter <- function(x, ...) {
       ramify::pprint(x[[i]], rowdots = rowdots, coldots = coldots)
       cat("\n")
     }
-
   }
 
   return(invisible(x))

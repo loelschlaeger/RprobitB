@@ -121,4 +121,3 @@ print.RprobitB_normalization <- function(x, ...) {
   ))
   return(invisible(x))
 }
-

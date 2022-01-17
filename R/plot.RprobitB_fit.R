@@ -232,11 +232,11 @@ plot_acf <- function(gibbs_samples, par_labels) {
     SS <- length(gibbs_samples[, c])
     ESS <- min(SS / (1 + 2 * sum(rho$acf)), SS)
     legend("topright",
-           x.intersp = -0.5, bg = "white",
-           legend = sprintf(
-             "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
-             c(SS, ESS, SS / ESS)
-           )
+      x.intersp = -0.5, bg = "white",
+      legend = sprintf(
+        "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
+        c(SS, ESS, SS / ESS)
+      )
     )
   }
 }
@@ -363,10 +363,10 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 
   ### initialize plot
   plot(0,
-       type = "n", xlim = xlim, ylim = ylim,
-       xlab = bquote(paste(beta[.(cov_names[1])])),
-       ylab = bquote(paste(beta[.(cov_names[2])])),
-       main = ""
+    type = "n", xlim = xlim, ylim = ylim,
+    xlab = bquote(paste(beta[.(cov_names[1])])),
+    ylab = bquote(paste(beta[.(cov_names[2])])),
+    main = ""
   )
 
   ### add true beta values
@@ -447,16 +447,16 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
   mixture_est <- matrix(NA, nrow = length(x), ncol = C_est)
   for (c in 1:C_est) {
     mixture_est[, c] <- weight_est[c] * dnorm(x,
-                                              mean = mean_est[[c]],
-                                              sd = sd_est[[c]]
+      mean = mean_est[[c]],
+      sd = sd_est[[c]]
     )
   }
   if (true_avail) {
     mixture_true <- matrix(NA, nrow = length(x), ncol = C_true)
     for (c in 1:C_true) {
       mixture_true[, c] <- weight_true[c] * dnorm(x,
-                                                  mean = mean_true[[c]],
-                                                  sd = sd_true[[c]]
+        mean = mean_true[[c]],
+        sd = sd_true[[c]]
       )
     }
   }
@@ -516,9 +516,9 @@ plot_trace <- function(gibbs_samples, par_labels) {
 
   ### plot trace
   plot.ts(gibbs_samples,
-          plot.type = "single",
-          ylim = c(min(gibbs_samples), max(gibbs_samples)),
-          col = col, xlab = "", ylab = "", xaxt = "n", main = ""
+    plot.type = "single",
+    ylim = c(min(gibbs_samples), max(gibbs_samples)),
+    col = col, xlab = "", ylab = "", xaxt = "n", main = ""
   )
 
   ### add info

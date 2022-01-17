@@ -20,7 +20,7 @@
 #' @export
 
 transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
-                            check_preference_flip = TRUE) {
+                          check_preference_flip = TRUE) {
 
   ### check inputs
   if (!inherits(x, "RprobitB_model")) {

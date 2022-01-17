@@ -234,7 +234,7 @@ check_prior <- function(prior, P_f, P_r, J) {
       prior$Psi <- diag(P_f)
     }
     if (!is.numeric(prior$Psi) || !is.matrix(prior$Psi) ||
-        any(dim(prior$Psi) != c(P_f, P_f))) {
+      any(dim(prior$Psi) != c(P_f, P_f))) {
       stop("'prior$Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.")
     }
   } else {
@@ -262,7 +262,7 @@ check_prior <- function(prior, P_f, P_r, J) {
       prior$D <- diag(P_r)
     }
     if (!is.numeric(prior$D) || !is.matrix(prior$D) ||
-        any(dim(prior$D) != c(P_r, P_r))) {
+      any(dim(prior$D) != c(P_r, P_r))) {
       stop("'prior$D' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
     }
 
@@ -279,7 +279,7 @@ check_prior <- function(prior, P_f, P_r, J) {
       prior$Theta <- diag(P_r)
     }
     if (!is.numeric(prior$Theta) || !is.matrix(prior$Theta) ||
-        any(dim(prior$Theta) != c(P_r, P_r))) {
+      any(dim(prior$Theta) != c(P_r, P_r))) {
       stop("'prior$Theta' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
     }
   } else {
@@ -303,7 +303,7 @@ check_prior <- function(prior, P_f, P_r, J) {
     prior$E <- diag(J - 1)
   }
   if (!is.numeric(prior$E) || !is.matrix(prior$E) ||
-      any(dim(prior$E) != c(J - 1, J - 1))) {
+    any(dim(prior$E) != c(J - 1, J - 1))) {
     stop("'prior$E' must be a numeric matrix of dimension 'J-1' x 'J-1'.")
   }
 
@@ -358,4 +358,3 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   ### return 'init'
   return(init)
 }
-

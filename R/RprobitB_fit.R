@@ -69,9 +69,9 @@ print.RprobitB_model <- function(x, ...) {
 #' @noRd
 
 summary.RprobitB_model <- function(object, FUN = c(
-  "mean" = mean, "sd" = sd,
-  "R^" = R_hat
-), ...) {
+                                     "mean" = mean, "sd" = sd,
+                                     "R^" = R_hat
+                                   ), ...) {
 
   ### check class of 'object'
   if (!inherits(object, "RprobitB_model")) {

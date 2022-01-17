@@ -142,8 +142,8 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, 
       rownames(out) <- sprintf("%6s", rownames(out))
       writeLines(paste("\n", par_name))
       print(formatC(out,
-                    format = "f", digits = digits, width = cw,
-                    flag = ""
+        format = "f", digits = digits, width = cw,
+        flag = ""
       ), quote = FALSE)
     }
   }

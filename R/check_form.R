@@ -42,7 +42,7 @@
 #' }
 #' @examples
 #' form <- choice ~ price + time + comfort + change | 1
-#' re <- re <- c("price","time")
+#' re <- re <- c("price", "time")
 #' check_form(form = form, re = re)
 #' @export
 
@@ -111,11 +111,12 @@ check_form <- function(form, re = NULL) {
 #' Invisibly \code{x}.
 #' @noRd
 
-print.RprobitB_formula <- function(x,...) {
+print.RprobitB_formula <- function(x, ...) {
   print(x$form)
   cat("- dependent variable:", x$choice, "\n")
-  for(i in 1:3)
-    cat("- type",i,"covariate(s):", paste(x$vars[[i]], collapse = ", "), "\n")
+  for (i in 1:3) {
+    cat("- type", i, "covariate(s):", paste(x$vars[[i]], collapse = ", "), "\n")
+  }
   cat("- random effects:", paste(x$re, collapse = ", "), "\n")
   cat("- ASC:", x$ASC, "\n")
   return(invisible(x))

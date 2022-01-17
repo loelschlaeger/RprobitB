@@ -22,9 +22,8 @@
 #' internal
 
 undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
-
   J <- nrow(Sigma) + 1
-  if(checks){
+  if (checks) {
     ### check inputs
     Sigma <- as.matrix(Sigma)
     if (!is_covariance_matrix(Sigma)) {
@@ -46,11 +45,11 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
   }
 
   ### add kernel element to make all elements non-zero
-  if(pos){
+  if (pos) {
     Sigma_full <- Sigma_full + 1
   }
 
-  if(checks){
+  if (checks) {
     ### check if 'Sigma_full' is a covariance matrix
     if (!is_covariance_matrix(Sigma_full)) {
       stop("Back-transformed matrix is no covariance matrix.")
@@ -64,7 +63,7 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
   }
 
   ### return undifferenced covariance matrix
-  if(labels){
+  if (labels) {
     names(Sigma_full) <- create_labels_Sigma(J + 1, cov_sym = TRUE)
   }
   return(Sigma_full)

@@ -70,7 +70,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   if (!id %in% colnames(choice_data)) {
     stop(paste0("Decider identification column '", id, "' not found in 'choice_data'."))
   }
-  if (!is.null(idc)){
+  if (!is.null(idc)) {
     if (!(is.character(idc) && length(idc) == 1)) {
       stop("'idc' must be a character.")
     }
@@ -81,8 +81,9 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 
   ### check if 'choice_data' contains choices
   choice_available <- (choice %in% colnames(choice_data))
-  if(!choice_available)
+  if (!choice_available) {
     warning("No choices found.")
+  }
 
   ### check if any data point is missing or infinite
   for (col in 1:ncol(choice_data)) {
@@ -103,7 +104,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   choice_data <- choice_data[order(choice_data[, "id"]), ]
 
   ### create choice occasion ids
-  if(!is.null(idc)){
+  if (!is.null(idc)) {
     choice_data[, "idc"] <- as.numeric(factor(choice_data[, idc], levels = unique(choice_data[, idc])))
   } else {
     choice_data[, "idc"] <- unlist(sapply(table(choice_data[, "id"]), seq_len))

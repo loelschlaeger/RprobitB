@@ -195,4 +195,3 @@ print.summary.RprobitB_data <- function(x, ...) {
   print(x$linear_coeffs)
   return(invisible(x))
 }
-

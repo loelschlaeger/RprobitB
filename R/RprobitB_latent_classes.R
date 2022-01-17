@@ -134,4 +134,3 @@ print.RprobitB_latent_classes <- function(x, ...) {
   }
   return(invisible(x))
 }
-

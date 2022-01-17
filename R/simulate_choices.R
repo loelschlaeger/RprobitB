@@ -28,7 +28,7 @@
 #'   re = c("cost", "time"),
 #'   alternatives = c("car", "bus"),
 #'   seed = 1,
-#'   alpha = c(-1,1),
+#'   alpha = c(-1, 1),
 #'   C = 2
 #' )
 #' @export
@@ -58,7 +58,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     stop("'J' must be a number greater or equal 2.")
   }
   if (is.null(alternatives)) {
-    if(J > 26){
+    if (J > 26) {
       stop("Please specify 'alternatives'.")
     } else {
       alternatives <- LETTERS[1:J]
@@ -68,7 +68,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     stop("'alternatives' must be a character (vector) of length 'J'.")
   }
   if (!is.null(covariates)) {
-    for(i in 1:length(covariates)) {
+    for (i in 1:length(covariates)) {
       if (length(covariates[[i]]) != sum(T)) {
         stop(paste0("In 'covariates', there must be ", sum(T), " values for '", names(covariates)[i], "'."))
       }
@@ -82,12 +82,14 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   if (!is.null(seed)) {
     set.seed(seed)
   }
-  choice_data <- data.frame("id" = rep(1:N, times = T),
-                            "idc" = unlist(sapply(T, seq_len, simplify = FALSE)))
+  choice_data <- data.frame(
+    "id" = rep(1:N, times = T),
+    "idc" = unlist(sapply(T, seq_len, simplify = FALSE))
+  )
   for (var in vars[[1]]) {
-    for(alt in alternatives) {
-      var_alt <- paste0(var,"_",alt)
-      if(var_alt %in% names(covariates)) {
+    for (alt in alternatives) {
+      var_alt <- paste0(var, "_", alt)
+      if (var_alt %in% names(covariates)) {
         cov <- matrix(covariates[[var_alt]], ncol = 1)
         covariates[[var_alt]] <- NULL
       } else {
@@ -98,7 +100,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     }
   }
   for (var in vars[[2]]) {
-    if(var %in% names(covariates)) {
+    if (var %in% names(covariates)) {
       cov <- matrix(covariates[[var]], ncol = 1)
       covariates[[var]] <- NULL
     } else {
@@ -108,9 +110,9 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     choice_data <- cbind(choice_data, cov)
   }
   for (var in vars[[3]]) {
-    for(alt in alternatives) {
-      var_alt <- paste0(var,"_",alt)
-      if(var_alt %in% names(covariates)) {
+    for (alt in alternatives) {
+      var_alt <- paste0(var, "_", alt)
+      if (var_alt %in% names(covariates)) {
         cov <- matrix(covariates[[var_alt]], ncol = 1)
         covariates[[var_alt]] <- NULL
       } else {
@@ -123,7 +125,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### report unsed elements in 'covariates'
   if (length(names(covariates)) > 0) {
-    warning(paste("The column(s)",paste(paste0("'",names(covariates),"'", collapse = ", ")), "in 'covariates' are ignored."))
+    warning(paste("The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")), "in 'covariates' are ignored."))
   }
 
   ### add ASCs (for all but the last alternative)

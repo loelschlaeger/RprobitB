@@ -98,9 +98,10 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
   J <- nrow(Sigma_full)
 
   ### check inputs
-  if (!(is.numeric(alternatives) && identical(alternatives,unique(alternatives)) &&
-        length(setdiff(alternatives, 1:J)) == 0))
+  if (!(is.numeric(alternatives) && identical(alternatives, unique(alternatives)) &&
+    length(setdiff(alternatives, 1:J)) == 0)) {
     stop("'alternatives' must be a vector with unique integers from 1 to 'J'.")
+  }
   if (P_f > 0 || P_r > 0) {
     if (!is.matrix(X)) {
       stop("'X' must be a matrix.")
@@ -114,7 +115,7 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
   }
 
   ### compute choice probabilities
-  probabilities <- rep(NA, J )
+  probabilities <- rep(NA, J)
   for (j in alternatives) {
     if (P_f > 0) {
       if (P_r > 0) {
@@ -135,7 +136,7 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
   }
 
   ### check if probabilities sum to 1
-  if(identical(alternatives, 1:J)){
+  if (identical(alternatives, 1:J)) {
     if (abs(sum(probabilities) - 1) > sqrt(.Machine$double.eps)) {
       warning("probabilities do not sum to 1.")
     }
@@ -198,7 +199,7 @@ ccp_pf <- function(j, J, Sigma_full, X, alpha) {
 
 ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
   out <- 0
-  for(c in seq_along(s)){
+  for (c in seq_along(s)) {
     out <- out + s[c] * mvtnorm::pmvnorm(
       lower = rep(-Inf, J - 1),
       upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
@@ -232,14 +233,14 @@ ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
 
 ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
   out <- 0
-  for(c in seq_along(s)){
+  for (c in seq_along(s)) {
     out <- out + s[c] * mvtnorm::pmvnorm(
       lower = rep(-Inf, J - 1),
       upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
       mean = rep(0, J - 1),
       sigma = delta(J, j) %*%
         (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*% t(X[, -(1:P_f)]) +
-           Sigma_full) %*% t(delta(J, j))
+          Sigma_full) %*% t(delta(J, j))
     )[1]
   }
   return(out)
