@@ -20,8 +20,10 @@
 #' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.
 #' @inheritParams prepare_data
+#'
 #' @return
 #' An object of class \code{RprobitB_data}.
+#'
 #' @examples
 #' data <- simulate_choices(
 #'   form = choice ~ cost | income | time,
@@ -34,6 +36,7 @@
 #'   alpha = c(-1, 1),
 #'   C = 2
 #' )
+#'
 #' @export
 #'
 #' @importFrom stats rnorm

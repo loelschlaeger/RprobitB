@@ -48,6 +48,7 @@ RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
 }
 
 #' @noRd
+#' @export
 
 print.RprobitB_fit <- function(x, ...) {
   cat("Probit model '", deparse1(x$data$form), "'.\n", sep = "")
@@ -63,6 +64,8 @@ print.RprobitB_fit <- function(x, ...) {
 #' @noRd
 #'
 #' @importFrom stats sd
+#'
+#' @export
 
 summary.RprobitB_fit <- function(object, FUN = c(
                                    "mean" = mean, "sd" = stats::sd,
@@ -121,6 +124,8 @@ summary.RprobitB_fit <- function(object, FUN = c(
 #' Ignored.
 #'
 #' @noRd
+#'
+#' @export
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   cat("Probit model '", deparse1(x$form), "'.\n\n", sep = "")

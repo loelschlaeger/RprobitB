@@ -1,6 +1,8 @@
 #' Create object of class \code{RprobitB_data}.
+#'
 #' @description
 #' This function creates an object of class \code{RprobitB_data}.
+#'
 #' @param data
 #' A list with the choice data.
 #' The list has \code{N} elements.
@@ -44,9 +46,11 @@
 #' @inheritParams prepare_data
 #' @param true_parameter
 #' An object of class \code{RprobitB_parameters}.
+#'
 #' @return
 #' An object of class \code{RprobitB_data} with the arguments of this function
 #' as elements.
+#'
 #' @keywords
 #' s3
 
@@ -92,16 +96,8 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   return(out)
 }
 
-#' Print method for \code{RprobitB_data}.
-#' @description
-#' This function is the print method for an object of class \code{RprobitB_data}.
-#' @param x
-#' An object of class \code{RprobitB_data}.
-#' @param ...
-#' Ignored.
-#' @return
-#' Invisibly \code{x}.
 #' @noRd
+#' @export
 
 print.RprobitB_data <- function(x, ...) {
   cat(
@@ -111,15 +107,8 @@ print.RprobitB_data <- function(x, ...) {
   return(invisible(x))
 }
 
-#' Summary method for \code{RprobitB_data}.
-#' @description
-#' This function is the summary method for an object of class
-#' \code{RprobitB_data}.
-#' @param object
-#' An object of class \code{RprobitB_data}.
-#' @param ...
-#' Ignored.
 #' @noRd
+#' @export
 
 summary.RprobitB_data <- function(object, ...) {
 
@@ -152,14 +141,7 @@ summary.RprobitB_data <- function(object, ...) {
 }
 
 
-#' Print method for the summary of \code{RprobitB_data}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{summary.RprobitB_data}.
-#' @param x
-#' An object of class \code{summary.RprobitB_data}.
-#' @param ...
-#' Ignored.
+#' @export
 #' @noRd
 
 print.summary.RprobitB_data <- function(x, ...) {

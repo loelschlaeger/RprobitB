@@ -1,7 +1,7 @@
 # MMNP
 
     Code
-      classify(model)
+      preference_classification(model)
     Output
          id class
       1   1     1
@@ -18,7 +18,7 @@
 # LCMMNP
 
     Code
-      classify(model)
+      preference_classification(model)
     Output
          id class
       1   1     1
@@ -55,7 +55,7 @@
 # ULCMMNP
 
     Code
-      classify(model)
+      preference_classification(model)
     Output
            id class
       1     1     2

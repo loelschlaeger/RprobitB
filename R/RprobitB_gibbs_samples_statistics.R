@@ -90,6 +90,8 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 #' Ignored.
 #'
 #' @noRd
+#'
+#' @export
 
 print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, ...) {
 

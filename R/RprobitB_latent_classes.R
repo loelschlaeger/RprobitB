@@ -117,6 +117,7 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 }
 
 #' @noRd
+#' @export
 
 print.RprobitB_latent_classes <- function(x, ...) {
   cat("Latent classes:", x$C, "\n")

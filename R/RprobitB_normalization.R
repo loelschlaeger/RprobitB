@@ -99,6 +99,7 @@ RprobitB_normalization <- function(J, P_f, level = J,
 }
 
 #' @noRd
+#' @export
 
 print.RprobitB_normalization <- function(x, ...) {
   cat("Normalization:\n")

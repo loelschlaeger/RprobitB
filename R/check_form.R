@@ -104,6 +104,7 @@ check_form <- function(form, re = NULL) {
 }
 
 #' @noRd
+#' @export
 
 print.RprobitB_formula <- function(x, ...) {
   print(x$form)
