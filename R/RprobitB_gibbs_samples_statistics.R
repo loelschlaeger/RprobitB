@@ -1,6 +1,8 @@
 #' Create object of class \code{RprobitB_gibbs_samples_statistics}.
+#'
 #' @description
 #' This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
+#'
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param FUN
@@ -15,10 +17,12 @@
 #'   \item \code{function(x) quantile(x, p)} for the \code{p}th quantile,
 #'   \item \code{R_hat} for the Gelman-Rubin statistic.
 #' }
+#'
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples_statistics}, which is a list
 #' of statistics from \code{gibbs_samples} obtained by applying the elements of
 #' \code{FUN}.
+#'
 #' @keywords
 #' s3
 
@@ -77,17 +81,14 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
   return(statistics)
 }
 
-#' Print method for \code{RprobitB_gibbs_samples_statistics}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{RprobitB_gibbs_samples_statistics}.
 #' @param x
 #' An object of class \code{RprobitB_gibbs_samples_statistics}.
 #' @param true
 #' Either \code{NULL} or an object of class \code{RprobitB_true_parameter}.
-#' @inheritParams print.summary.RprobitB_model
+#' @inheritParams print.summary.RprobitB_fit
 #' @param ...
 #' Ignored.
+#'
 #' @noRd
 
 print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, ...) {

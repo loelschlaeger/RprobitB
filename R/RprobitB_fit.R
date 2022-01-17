@@ -54,6 +54,12 @@ print.RprobitB_fit <- function(x, ...) {
   return(invisible(x))
 }
 
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#' @inheritParams RprobitB_gibbs_samples_statistics
+#' @param ...
+#' Ignorded.
+#'
 #' @noRd
 
 summary.RprobitB_fit <- function(object, FUN = c(
@@ -105,6 +111,13 @@ summary.RprobitB_fit <- function(object, FUN = c(
   return(out)
 }
 
+#' @param x
+#' An object of class \code{summary.RprobitB_fit}.
+#' @param digits
+#' The number of printed decimal places.
+#' @param ...
+#' Ignored.
+#'
 #' @noRd
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
