@@ -49,7 +49,7 @@ parameter_labels <- function(P_f, P_r, J, C, cov_sym,
 #' @description
 #' This function creates labels for the model parameter \code{alpha}.
 #'
-#' @inheritParams create_parameter_labels
+#' @inheritParams parameter_labels
 #'
 #' @return
 #' A vector of labels for the model parameter \code{alpha}.
@@ -66,7 +66,7 @@ create_labels_alpha <- function(P_f) {
 #' @description
 #' This function creates labels for the model parameter \code{s}.
 #'
-#' @inheritParams create_parameter_labels
+#' @inheritParams parameter_labels
 #'
 #' @return
 #' A vector of labels for the model parameter \code{s}.
@@ -83,7 +83,7 @@ create_labels_s <- function(P_r, C) {
 #' @description
 #' This function creates labels for the model parameter \code{b}.
 #'
-#' @inheritParams create_parameter_labels
+#' @inheritParams parameter_labels
 #'
 #' @return
 #' A vector of labels for the model parameter \code{b}.
@@ -107,7 +107,7 @@ create_labels_b <- function(P_r, C) {
 #' @description
 #' This function creates labels for the model parameter \code{Omega}.
 #'
-#' @inheritParams create_parameter_labels
+#' @inheritParams parameter_labels
 #'
 #' @return
 #' A vector of labels for the model parameter \code{Omega}.
@@ -139,7 +139,7 @@ create_labels_Omega <- function(P_r, C, cov_sym) {
 #' @description
 #' This function creates labels for the model parameter \code{Sigma}.
 #'
-#' @inheritParams create_parameter_labels
+#' @inheritParams parameter_labels
 #'
 #' @return
 #' A vector of labels for the model parameter \code{Sigma}.

@@ -97,9 +97,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   prior <- check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
 
   ### compute sufficient statistics
-  sufficient_statistics <- compute_sufficient_statistics(
-    data = data, normalization = normalization
-  )
+  ss <- sufficient_statistics(data = data, normalization = normalization)
 
   ### set initial values for the Gibbs sampler
   init <- set_initial_gibbs_values(
@@ -114,7 +112,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   gibbs_samples <- gibbs_sampling(
     R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
     P_f = data$P_f, P_r = data$P_r, latent_classes = unclass(latent_classes),
-    sufficient_statistics = sufficient_statistics, prior = prior, init = init
+    sufficient_statistics = ss, prior = prior, init = init
   )
 
   if (latent_classes$update) {
@@ -136,7 +134,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   }
 
   ### label Gibbs samples
-  labels <- create_parameter_labels(
+  labels <- parameter_labels(
     P_f = data$P_f, P_r = data$P_r, J = data$J,
     C = length(tail(gibbs_samples$s, 1)), cov_sym = TRUE,
     drop_par = NULL

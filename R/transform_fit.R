@@ -89,7 +89,7 @@ transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
 #' The output of \link{gibbs_sampling}.
 #' @inheritParams RprobitB_data
 #' @inheritParams mcmc
-#' @inheritParams compute_sufficient_statistics
+#' @inheritParams sufficient_statistics
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed
 #' Gibbs samples. Each element is a list, containing (if available) the
