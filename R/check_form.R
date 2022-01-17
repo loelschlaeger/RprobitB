@@ -1,6 +1,8 @@
 #' Check \code{form}.
+#'
 #' @description
 #' This function checks the input \code{form}.
+#'
 #' @param form
 #' A formula object that is used to specify the probit model.
 #' The structure is \code{choice ~ A | B | C}, where
@@ -18,11 +20,13 @@
 #' They can be removed by adding \code{+0} in the second spot.
 #' See the vignette \code{vignette("data_management", package = "RprobitB")}
 #' for more details.
+#'
 #' @param re
 #' A character (vector) of covariates of \code{form} with random effects.
 #' If \code{re = NULL} (the default), there are no random effects.
 #' To have random effects for the alternative specific constants, include
 #' \code{"ASC"} in \code{re}.
+#'
 #' @return
 #' An object of class \code{RprobitB_formula}, which is a list that contains the
 #' following elements:
@@ -40,6 +44,7 @@
 #'   \item \code{ASC}:
 #'   A boolean, determining whether the model has ASCs.
 #' }
+#'
 #' @examples
 #' form <- choice ~ price + time + comfort + change | 1
 #' re <- re <- c("price", "time")
@@ -99,16 +104,6 @@ check_form <- function(form, re = NULL) {
   return(out)
 }
 
-#' Print method for \code{RprobitB_formula}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{RprobitB_formula}.
-#' @param x
-#' An object of class \code{RprobitB_formula}.
-#' @param ...
-#' Ignored.
-#' @return
-#' Invisibly \code{x}.
 #' @noRd
 
 print.RprobitB_formula <- function(x, ...) {
