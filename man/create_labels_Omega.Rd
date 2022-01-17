@@ -6,6 +6,13 @@
 \usage{
 create_labels_Omega(P_r, C, cov_sym)
 }
+\arguments{
+\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+
+\item{C}{The number of latent classes.}
+
+\item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
+}
 \value{
 A vector of labels for the model parameter \code{Omega}.
 }

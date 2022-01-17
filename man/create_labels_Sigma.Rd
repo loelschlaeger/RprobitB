@@ -6,6 +6,11 @@
 \usage{
 create_labels_Sigma(J, cov_sym)
 }
+\arguments{
+\item{J}{The number (greater or equal 2) of choice alternatives.}
+
+\item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
+}
 \value{
 A vector of labels for the model parameter \code{Sigma}.
 }

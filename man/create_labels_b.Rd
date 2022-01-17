@@ -6,6 +6,11 @@
 \usage{
 create_labels_b(P_r, C)
 }
+\arguments{
+\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+
+\item{C}{The number of latent classes.}
+}
 \value{
 A vector of labels for the model parameter \code{b}.
 }

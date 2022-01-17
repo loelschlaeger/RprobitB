@@ -6,6 +6,9 @@
 \usage{
 create_labels_alpha(P_f)
 }
+\arguments{
+\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
+}
 \value{
 A vector of labels for the model parameter \code{alpha}.
 }
