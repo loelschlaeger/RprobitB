@@ -1,6 +1,8 @@
 #' Create parameters labels.
+#'
 #' @description
 #' This function creates labels for the model parameters.
+#'
 #' @inheritParams RprobitB_data
 #' @param C
 #' The number of latent classes.
@@ -10,8 +12,10 @@
 #' A vector of parameter names which are kept.
 #' @param drop_par
 #' A vector of parameter names which get dropped.
+#'
 #' @return
 #' A list of labels for the model parameters.
+#'
 #' @keywords
 #' internal
 
@@ -41,11 +45,15 @@ parameter_labels <- function(P_f, P_r, J, C, cov_sym,
 }
 
 #' Create labels for \code{alpha}.
+#'
 #' @description
 #' This function creates labels for the model parameter \code{alpha}.
+#'
 #' @inheritParams create_parameter_labels
+#'
 #' @return
 #' A vector of labels for the model parameter \code{alpha}.
+#'
 #' @keywords
 #' internal
 
@@ -54,11 +62,15 @@ create_labels_alpha <- function(P_f) {
 }
 
 #' Create labels for \code{s}.
+#'
 #' @description
 #' This function creates labels for the model parameter \code{s}.
+#'
 #' @inheritParams create_parameter_labels
+#'
 #' @return
 #' A vector of labels for the model parameter \code{s}.
+#'
 #' @keywords
 #' internal
 
@@ -67,11 +79,15 @@ create_labels_s <- function(P_r, C) {
 }
 
 #' Create labels for \code{b}.
+#'
 #' @description
 #' This function creates labels for the model parameter \code{b}.
+#'
 #' @inheritParams create_parameter_labels
+#'
 #' @return
 #' A vector of labels for the model parameter \code{b}.
+#'
 #' @keywords
 #' internal
 
@@ -87,11 +103,15 @@ create_labels_b <- function(P_r, C) {
 }
 
 #' Create labels for \code{Omega}.
+#'
 #' @description
 #' This function creates labels for the model parameter \code{Omega}.
+#'
 #' @inheritParams create_parameter_labels
+#'
 #' @return
 #' A vector of labels for the model parameter \code{Omega}.
+#'
 #' @keywords
 #' internal
 
@@ -115,11 +135,15 @@ create_labels_Omega <- function(P_r, C, cov_sym) {
 }
 
 #' Create labels for \code{Sigma}.
+#'
 #' @description
 #' This function creates labels for the model parameter \code{Sigma}.
+#'
 #' @inheritParams create_parameter_labels
+#'
 #' @return
 #' A vector of labels for the model parameter \code{Sigma}.
+#'
 #' @keywords
 #' internal
 
