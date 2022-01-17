@@ -1,28 +1,33 @@
-#' Compute point estimates of an \code{RprobitB_model}.
+#' Compute point estimates of an \code{RprobitB_fit}.
+#'
 #' @description
-#' This function computes the point estimates of an \code{\link{RprobitB_model}}.
+#' This function computes the point estimates of an \code{\link{RprobitB_fit}}.
 #' Per default, the \code{mean} of the Gibbs samples is used as a point estimate.
 #' However, any statistic that computes a single numeric value out of a vector of
 #' Gibbs samples can be specified for \code{FUN}.
+#'
 #' @param x
-#' An object of class \code{\link{RprobitB_model}}.
+#' An object of class \code{\link{RprobitB_fit}}.
 #' @param FUN
 #' A function that computes a single numeric value out of a vector of numeric
 #' values.
+#'
 #' @return
 #' An object of class \code{\link{RprobitB_parameter}}.
+#'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' model <- mcmc(data)
 #' point_estimates(model)
 #' point_estimates(model, FUN = median)
+#'
 #' @export
 
 point_estimates <- function(x, FUN = mean) {
 
   ### check input
-  if (!class(x) == "RprobitB_model") {
-    stop("'x' is not of class 'RprobitB_model'.")
+  if (!class(x) == "RprobitB_fit") {
+    stop("'x' is not of class 'RprobitB_fit'.")
   }
   if (!is.list(FUN)) {
     FUN <- list(FUN)

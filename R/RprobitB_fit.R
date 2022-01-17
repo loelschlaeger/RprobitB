@@ -1,6 +1,8 @@
-#' Create object of class \code{RprobitB_model}.
+#' Create object of class \code{RprobitB_fit}.
+#'
 #' @description
-#' This function creates an object of class \code{RprobitB_model}.
+#' This function creates an object of class \code{RprobitB_fit}.
+#'
 #' @inheritParams mcmc
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
@@ -8,13 +10,15 @@
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param classification
 #' The allocation variable of the estimated latent classes.
+#'
 #' @return
-#' An object of class \code{RprobitB_model}, i.e. a list with the arguments of
+#' An object of class \code{RprobitB_fit}, i.e. a list with the arguments of
 #' this function as elements.
+#'
 #' @keywords
 #' s3
 
-RprobitB_model <- function(data, normalization, R, B, Q, latent_classes, prior,
+RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
                            gibbs_samples, classification) {
 
   ### check inputs
@@ -27,7 +31,7 @@ RprobitB_model <- function(data, normalization, R, B, Q, latent_classes, prior,
   stopifnot(inherits(prior, "RprobitB_prior"))
   stopifnot(inherits(gibbs_samples, "RprobitB_gibbs_samples"))
 
-  ### create and return object of class "RprobitB_model"
+  ### create and return object of class "RprobitB_fit"
   out <- list(
     "data" = data,
     "normalization" = normalization,
@@ -39,43 +43,27 @@ RprobitB_model <- function(data, normalization, R, B, Q, latent_classes, prior,
     "gibbs_samples" = gibbs_samples,
     "classification" = classification
   )
-  class(out) <- "RprobitB_model"
+  class(out) <- "RprobitB_fit"
   return(out)
 }
 
-#' Print method for \code{RprobitB_model}.
-#' @description
-#' This function is the print method for an object of class \code{RprobitB_model}.
-#' @param x
-#' An object of class \code{RprobitB_model}.
-#' @param ...
-#' Ignored.
 #' @noRd
 
-print.RprobitB_model <- function(x, ...) {
+print.RprobitB_fit <- function(x, ...) {
   cat("Probit model '", deparse1(x$data$form), "'.\n", sep = "")
   return(invisible(x))
 }
 
-#' Summary method for \code{RprobitB_model}.
-#' @description
-#' This function is the summary method for an object of class
-#' \code{RprobitB_model}.
-#' @param object
-#' An object of class \code{RprobitB_model}.
-#' @inheritParams RprobitB_gibbs_samples_statistics
-#' @param ...
-#' Ignorded.
 #' @noRd
 
-summary.RprobitB_model <- function(object, FUN = c(
+summary.RprobitB_fit <- function(object, FUN = c(
                                      "mean" = mean, "sd" = sd,
                                      "R^" = R_hat
                                    ), ...) {
 
   ### check class of 'object'
-  if (!inherits(object, "RprobitB_model")) {
-    stop("Not of class 'RprobitB_model'.")
+  if (!inherits(object, "RprobitB_fit")) {
+    stop("Not of class 'RprobitB_fit'.")
   }
 
   ### compute statistics from 'gibbs_samples'
@@ -93,7 +81,7 @@ summary.RprobitB_model <- function(object, FUN = c(
     FUN = FUN
   )
 
-  ### build 'summary.RprobitB_model' object
+  ### build 'summary.RprobitB_fit' object
   out <- list(
     "form" = object$data$form,
     "R" = object$R,
@@ -111,25 +99,15 @@ summary.RprobitB_model <- function(object, FUN = c(
     "simulated" = object$data$simulated,
     "true_parameter" = object$data$true_parameter
   )
-  class(out) <- "summary.RprobitB_model"
+  class(out) <- "summary.RprobitB_fit"
 
-  ### return 'summary.RprobitB_model' object
+  ### return 'summary.RprobitB_fit' object
   return(out)
 }
 
-#' Print method for the summary of \code{RprobitB_model}.
-#' @description
-#' This function is the print method for an object of class
-#' \code{summary.RprobitB_model}.
-#' @param x
-#' An object of class \code{summary.RprobitB_model}.
-#' @param digits
-#' The number of printed decimal places.
-#' @param ...
-#' Ignored.
 #' @noRd
 
-print.summary.RprobitB_model <- function(x, digits = 2, ...) {
+print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   cat("Probit model '", deparse1(x$form), "'.\n\n", sep = "")
 
   ### summary of model

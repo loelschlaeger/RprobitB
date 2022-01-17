@@ -1,9 +1,12 @@
 #' Prepare empirical choice data.
+#'
 #' @description
 #' This function prepares empirical choice data for the RprobitB package.
+#'
 #' @details
 #' See the vignette "Choice data" for more details:
 #' \code{vignette("choice_data", package = "RprobitB")}.
+#'
 #' @inheritParams check_form
 #' @param choice_data
 #' A data frame of choice data with the following requirements:
@@ -35,8 +38,10 @@
 #' The default is \code{NULL}, in which case these identifier are generated
 #' automatically.
 #' @inheritParams RprobitB_data
+#'
 #' @return
 #' An object of class \code{RprobitB_data}.
+#'
 #' @examples
 #' data("Train", package = "mlogit")
 #' data <- prepare_data(
@@ -47,6 +52,7 @@
 #'   idc = "choiceid",
 #'   standardize = "all"
 #' )
+#'
 #' @export
 
 prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,

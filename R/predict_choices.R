@@ -1,19 +1,24 @@
 #' Predict choices.
+#'
 #' @description
 #' This function predicts the choices of decision makers.
+#'
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
 #' @param data
 #' Either \code{NULL} or an object of class \code{RprobitB_data}.
 #' @param overview
 #' If \code{TRUE}, aggregate the prediction in a table.
+#'
 #' @return
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
+#'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
 #' predict_choices(x, overview = TRUE)
 #' predict_choices(x, overview = FALSE)
+#'
 #' @export
 
 predict_choices <- function(x, data = NULL, overview = TRUE) {
