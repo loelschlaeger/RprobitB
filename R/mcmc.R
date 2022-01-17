@@ -24,7 +24,7 @@
 #' @param seed
 #' Set a seed for the Gibbs sampling.
 #' @return
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
 #' @examples
 #' \dontrun{
 #' ### probit model
@@ -152,8 +152,8 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     )
   }
 
-  ### build and return an 'RprobitB_model'
-  out <- RprobitB_model(
+  ### build and return an 'RprobitB_fit'
+  out <- RprobitB_fit(
     data = data,
     normalization = normalization,
     R = R,
