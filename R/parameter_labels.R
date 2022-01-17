@@ -15,9 +15,9 @@
 #' @keywords
 #' internal
 
-create_parameter_labels <- function(P_f, P_r, J, C, cov_sym,
-                                    keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
-                                    drop_par = NULL) {
+parameter_labels <- function(P_f, P_r, J, C, cov_sym,
+                             keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+                             drop_par = NULL) {
 
   ### check that 'C' is a number if 'P_r>0'
   if (P_r > 0) {
