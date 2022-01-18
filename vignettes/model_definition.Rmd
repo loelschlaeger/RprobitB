@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette defines the probit model.
+
 ## The probit model
 
 Assume that we observe the choices of $N$ decision makers which decide between $J$ alternatives at each of $T$ choice occasions.[^2] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P_f+P_r$ choice attributes that we use to explain the choices. The first $P_f$ attributes are connected to fixed coefficients, the other $P_r$ attributes to random coefficients following a joint distribution mixed across decision makers.
