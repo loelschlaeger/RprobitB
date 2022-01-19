@@ -46,6 +46,8 @@
 #' @inheritParams prepare_data
 #' @param true_parameter
 #' An object of class \code{RprobitB_parameters}.
+#' @param res_var_names
+#' A names list of reserved variable names in \code{choice_data}.
 #'
 #' @return
 #' An object of class \code{RprobitB_data} with the arguments of this function
@@ -56,7 +58,7 @@
 
 RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                           form, re, ASC, linear_coeffs, standardize, simulated,
-                          choice_available, true_parameter) {
+                          choice_available, true_parameter, res_var_names) {
 
   ### check inputs
   stopifnot(is.list(data))
@@ -90,7 +92,8 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
     "standardize" = standardize,
     "choice_available" = choice_available,
     "simulated" = simulated,
-    "true_parameter" = true_parameter
+    "true_parameter" = true_parameter,
+    "res_var_names" = res_var_names
   )
   class(out) <- "RprobitB_data"
   return(out)
