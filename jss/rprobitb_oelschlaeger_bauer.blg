@@ -4,46 +4,44 @@ The top-level auxiliary file: rprobitb_oelschlaeger_bauer.aux
 The style file: jss.bst
 Database file #1: refs.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Warning--empty journal in test:21
-You've used 1 entry,
+You've used 17 entries,
             3215 wiz_defined-function locations,
-            641 strings with 5192 characters,
-and the built_in function-call counts, 547 in all, are:
-= -- 40
-> -- 10
-< -- 1
-+ -- 4
-- -- 4
-* -- 30
-:= -- 83
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 5
-chr.to.int$ -- 2
-cite$ -- 2
-duplicate$ -- 53
-empty$ -- 48
-format.name$ -- 4
-if$ -- 101
+            743 strings with 8080 characters,
+and the built_in function-call counts, 13089 in all, are:
+= -- 1223
+> -- 301
+< -- 14
++ -- 127
+- -- 97
+* -- 882
+:= -- 1656
+add.period$ -- 68
+call.type$ -- 17
+change.case$ -- 101
+chr.to.int$ -- 18
+cite$ -- 17
+duplicate$ -- 1409
+empty$ -- 1074
+format.name$ -- 151
+if$ -- 2631
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 8
-newline$ -- 15
-num.names$ -- 4
-pop$ -- 31
+missing$ -- 166
+newline$ -- 96
+num.names$ -- 68
+pop$ -- 704
 preamble$ -- 1
-purify$ -- 5
+purify$ -- 100
 quote$ -- 0
-skip$ -- 18
+skip$ -- 301
 stack$ -- 0
-substring$ -- 26
-swap$ -- 12
+substring$ -- 1071
+swap$ -- 332
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 9
-warning$ -- 1
-while$ -- 4
+type$ -- 150
+warning$ -- 0
+while$ -- 83
 width$ -- 0
-write$ -- 20
-(There was 1 warning)
+write$ -- 229
