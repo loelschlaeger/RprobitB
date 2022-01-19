@@ -82,120 +82,17 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>      1000                                0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      2000                                0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      3000                                0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      6000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      7000                                1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      4000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      5000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      6000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      7000                                0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      8000                                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      9000                                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     10000 done, total time: 1 min</span>
 <span class="r-in"><span class="fu">predict_choices</span><span class="op">(</span><span class="va">x</span>, overview <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     predicted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> true  A  B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    A 52  3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    B  2 43</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in factor(true_choices, labels = data$alternatives):</span> invalid 'labels'; length 2 should be 1 or 1</span>
 <span class="r-in"><span class="fu">predict_choices</span><span class="op">(</span><span class="va">x</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     id idc            A            B true predicted correct</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1   1 1.000000e+00 1.087867e-10    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1   2 1.005209e-05 9.999899e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1   3 6.884691e-01 3.115309e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1   4 9.999932e-01 6.804206e-06    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1   5 3.105366e-02 9.689463e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1   6 3.398024e-01 6.601976e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    1   7 3.881890e-01 6.118110e-01    A         B   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    1   8 4.563100e-02 9.543690e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    1   9 1.417206e-10 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   1  10 9.991275e-01 8.724943e-04    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   2   1 1.000000e+00 1.978737e-09    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2   2 4.594517e-02 9.540548e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   2   3 9.999374e-01 6.261336e-05    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14   2   4 1.000000e+00 5.314364e-21    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   2   5 8.279002e-02 9.172100e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   2   6 2.153091e-03 9.978469e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17   2   7 3.021839e-01 6.978161e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   2   8 2.122659e-02 9.787734e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   2   9 1.000000e+00 1.537782e-19    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   2  10 3.105245e-10 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   3   1 2.185758e-07 9.999998e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   3   2 1.000000e+00 2.016487e-11    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   3   3 1.000000e+00 3.772979e-10    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3   4 7.517114e-09 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   3   5 2.979773e-08 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   3   6 7.360158e-04 9.992640e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   3   7 1.000000e+00 1.286670e-12    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   3   8 1.051928e-03 9.989481e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   3   9 9.801446e-02 9.019855e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   3  10 8.772660e-02 9.122734e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   4   1 7.570371e-02 9.242963e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32   4   2 9.141124e-01 8.588764e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33   4   3 1.000000e+00 3.078119e-10    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   4   4 5.431454e-03 9.945685e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35   4   5 9.999829e-01 1.708477e-05    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36   4   6 9.829929e-01 1.700708e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37   4   7 9.999454e-01 5.458872e-05    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   4   8 9.999997e-01 3.384983e-07    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39   4   9 2.303586e-01 7.696414e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40   4  10 1.000000e+00 3.278023e-15    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41   5   1 3.045699e-07 9.999997e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42   5   2 4.585846e-08 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43   5   3 2.719524e-02 9.728048e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   5   4 9.999918e-01 8.152366e-06    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45   5   5 1.756988e-04 9.998243e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46   5   6 6.016007e-02 9.398399e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47   5   7 1.009279e-03 9.989907e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48   5   8 1.000000e+00 1.196610e-50    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49   5   9 1.000000e+00 9.938692e-09    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   5  10 1.000000e+00 9.589046e-13    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51   6   1 1.367314e-03 9.986327e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52   6   2 1.000000e+00 2.592719e-27    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53   6   3 4.300792e-02 9.569921e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54   6   4 9.997640e-01 2.360194e-04    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55   6   5 1.000000e+00 9.527727e-31    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56   6   6 9.985846e-01 1.415397e-03    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57   6   7 2.292729e-01 7.707271e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58   6   8 1.000000e+00 2.554629e-16    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59   6   9 9.450359e-01 5.496408e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60   6  10 5.700433e-01 4.299567e-01    B         A   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61   7   1 9.989591e-01 1.040912e-03    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62   7   2 9.844222e-01 1.557782e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63   7   3 7.838064e-02 9.216194e-01    A         B   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64   7   4 9.999943e-01 5.749547e-06    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65   7   5 8.511136e-01 1.488864e-01    B         A   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66   7   6 1.016528e-01 8.983472e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67   7   7 4.575433e-01 5.424567e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68   7   8 1.000000e+00 6.522331e-18    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69   7   9 4.775881e-01 5.224119e-01    A         B   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70   7  10 2.923840e-12 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71   8   1 3.639019e-01 6.360981e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72   8   2 5.634499e-01 4.365501e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73   8   3 7.746708e-01 2.253292e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74   8   4 8.975106e-10 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75   8   5 8.982121e-01 1.017879e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76   8   6 9.508281e-01 4.917193e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77   8   7 8.158544e-01 1.841456e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78   8   8 9.999967e-01 3.340685e-06    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79   8   9 1.203661e-07 9.999999e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80   8  10 3.923728e-07 9.999996e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81   9   1 3.280436e-20 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82   9   2 1.000000e+00 4.786726e-11    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83   9   3 1.000000e+00 1.407638e-10    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84   9   4 9.661576e-03 9.903384e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85   9   5 9.988178e-01 1.182247e-03    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86   9   6 1.000000e+00 2.298127e-27    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87   9   7 7.391814e-06 9.999926e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88   9   8 9.999971e-01 2.948994e-06    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89   9   9 2.173204e-05 9.999783e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90   9  10 9.970933e-01 2.906711e-03    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91  10   1 1.000000e+00 3.342239e-15    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92  10   2 9.995574e-01 4.426281e-04    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93  10   3 1.964888e-14 1.000000e+00    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94  10   4 6.716550e-01 3.283450e-01    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95  10   5 9.624266e-01 3.757341e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96  10   6 4.700744e-03 9.952993e-01    B         B    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97  10   7 9.143086e-01 8.569137e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98  10   8 9.881049e-01 1.189514e-02    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99  10   9 1.000000e+00 1.008492e-29    A         A    TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100 10  10 1.000000e+00 2.206159e-16    A         A    TRUE</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in factor(true_choices, labels = data$alternatives):</span> invalid 'labels'; length 2 should be 1 or 1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
