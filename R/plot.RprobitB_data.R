@@ -13,7 +13,16 @@
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
+#'
+#' TODO: Remove ASC, choice, id and idc from plot. Change labels in legend.
 
 plot.RprobitB_data <- function(x, ...) {
-  plot(x$choice_data)
+
+  x = x$choice_data
+  xx = x %>% gather()
+  cc = as.factor(rep(x$choice, 9))
+  ggplot(xx, aes(x = value, colour = cc)) +
+    geom_histogram(alpha = 0.2, position="dodge") +
+    facet_wrap(~ key, scales = "free")
+
 }
