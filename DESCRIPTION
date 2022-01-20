@@ -28,7 +28,10 @@ Imports:
     Rcpp,
     mvtnorm,
     viridis,
-    ramify
+    ramify,
+    ggplot2,
+    tidyr,
+    rlang
 LinkingTo:
     Rcpp,
     RcppArmadillo

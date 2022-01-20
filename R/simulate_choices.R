@@ -34,6 +34,7 @@
 #'   alternatives = c("car", "bus"),
 #'   seed = 1,
 #'   alpha = c(-1, 1),
+#'   b = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
 #'   C = 2
 #' )
 #' @export

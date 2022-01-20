@@ -9,11 +9,11 @@
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
 
-\item{alpha}{Passed to \link\href{geom_histogram}{ggplot2}.}
+\item{alpha}{Passed to \link[ggplot2]{geom_histogram}.}
 
-\item{bins}{Passed to \link\href{geom_histogram}{ggplot2}.}
+\item{bins}{Passed to \link[ggplot2]{geom_histogram}.}
 
-\item{position}{Passed to \link\href{geom_histogram}{ggplot2}.}
+\item{position}{Passed to \link[ggplot2]{geom_histogram}.}
 
 \item{...}{Ignored.}
 }

@@ -91,7 +91,6 @@ data <- prepare_data(
   choice_data = Train,
   re = c("price", "time"),
   id = "id",
-  idc = "choiceid",
-  standardize = "all"
+  idc = "choiceid"
 )
 }
