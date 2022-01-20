@@ -4,10 +4,16 @@
 \alias{plot.RprobitB_data}
 \title{Plot method for \code{RprobitB_data}.}
 \usage{
-\method{plot}{RprobitB_data}(x, ...)
+\method{plot}{RprobitB_data}(x, alpha = 0.8, bins = 30, position = "dodge", ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
+
+\item{alpha}{Passed to \link\href{geom_histogram}{ggplot2}.}
+
+\item{bins}{Passed to \link\href{geom_histogram}{ggplot2}.}
+
+\item{position}{Passed to \link\href{geom_histogram}{ggplot2}.}
 
 \item{...}{Ignored.}
 }
