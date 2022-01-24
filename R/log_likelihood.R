@@ -18,8 +18,10 @@ log_likelihood <- function(x, at_true = FALSE) {
   probs <- choice_probabilities(x = x, at_true = at_true)
   ll <- 0
   for (row in 1:nrow(probs)) {
+    ### extract observed choice
     y_nt <- x$data$data[[probs[row, "id"]]]$y[probs[row, "idc"]]
-    ll <- ll + log(probs[row, 2 + y_nt])
+    ### add contribution
+    ll <- ll + log(probs[row, y_nt])
   }
   return(as.numeric(ll))
 }

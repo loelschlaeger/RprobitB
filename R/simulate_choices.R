@@ -245,7 +245,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
         V_nt <- X_nt %*% coeff
         U_nt <- V_nt + eps
       }
-      y_n[t] <- which.max(U_nt)
+      y_n[t] <- alternatives[which.max(U_nt)]
     }
 
     data[[n]][["y"]] <- y_n
