@@ -14,11 +14,10 @@
 #' The row number to which respect differences are computed.
 #' @return
 #' A matrix with \code{J-1} rows.
-#' @export
 #' @examples
 #' J <- 2
 #' x <- matrix(1, nrow = J, ncol = 2)
-#' delta(J, 1) %*% x
+#' RprobitB:::delta(J, 1) %*% x
 #' @keywords
 #' utils
 
@@ -49,10 +48,8 @@ delta <- function(J, i) {
 #' subsequent figures will be drawn in an \code{nr} x \code{nc} array on the
 #' current device by rows.
 #'
-#' @export
-#'
 #' @examples
-#' set_mfrow(3)
+#' RprobitB:::set_mfrow(3)
 #' @keywords
 #' utils
 
@@ -99,10 +96,11 @@ set_mfrow <- function(n) {
 #'   }
 #' }
 #' R_hat(samples)
-#' @export
 #'
 #' @keywords
 #' utils
+#'
+#' @export
 #'
 #' @importFrom stats var
 
@@ -143,11 +141,9 @@ R_hat <- function(samples, parts = 2) {
 #' @return
 #' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
 #'
-#' @export
-#'
 #' @examples
 #' x <- diag(2)
-#' is_covariance_matrix(x)
+#' RprobitB:::is_covariance_matrix(x)
 #' @keywords
 #' utils
 
@@ -157,4 +153,39 @@ is_covariance_matrix <- function(x) {
     ncol(x) == nrow(x) &&
     all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
+}
+
+#' Sample from multivariate normal distribution.
+#'
+#' @description
+#' This function returns a sample from a multivariate normal distribution
+#' specified by its mean vector \code{mu} and its covariance matrix \code{Sigma}.
+#'
+#' @param mu
+#' A numeric vector of length \code{n}.
+#' @param Sigma
+#' A covariance matrix of dimension \code{n} x \code{n}.
+#'
+#' @return
+#' A numeric vector of length \code{n}.
+#'
+#' @examples
+#' mu <- c(1,0)
+#' Sigma <- matrix(c(1,0.5,0.5,1),2,2)
+#' RprobitB:::mvn_draw(mu = mu, Sigma = Sigma)
+#'
+#' @keywords
+#' utils
+#'
+#' @importFrom stats rnorm
+
+mvn_draw <- function(mu, Sigma) {
+  stopifnot(is.numeric(mu), is.numeric(Sigma), is.matrix(Sigma))
+  n <- length(mu)
+  stopifnot(dim(Sigma) == c(n,n))
+  stopifnot(is_covariance_matrix(Sigma))
+  ### compute lower-triangular Choleski root of symmetric matrix 'Sigma'
+  L <- suppressWarnings(t(chol(Sigma, pivot = TRUE)))
+  ### return draw
+  as.numeric(L %*% stats::rnorm(n) + mu)
 }
