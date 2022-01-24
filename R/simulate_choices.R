@@ -252,7 +252,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### save choices in 'choice_data'
-  choice_data["choice"] <- unlist(lapply(data, function(x) x[["y"]]))
+  choice_data[choice] <- unlist(lapply(data, function(x) x[["y"]]))
 
   ### delete "ASC" from 'choice_data'
   if (ASC) {
@@ -277,7 +277,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     simulated = TRUE,
     choice_available = TRUE,
     true_parameter = true_parameter,
-    res_var_names = list("choice" = "choice", "id" = "id", "idc" = "idc")
+    res_var_names = list("choice" = choice, "id" = "id", "idc" = "idc")
   )
 
   ### return 'RprobitB_data' object
