@@ -160,9 +160,6 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     )
   )
 
-  ### compute lower-triangular Choleski root of 'Sigma_full'
-  L <- suppressWarnings(t(chol(true_parameter$Sigma_full, pivot = TRUE)))
-
   ### transform 'choice_data' in list format 'data'
   data <- list()
   ids <- unique(choice_data[, "id"])
@@ -238,7 +235,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       }
 
       ### compute utility and choice decision
-      eps <- L %*% stats::rnorm(J)
+      eps <- mvn_draw(mu = rep(0,J), Sigma = true_parameter$Sigma_full)
       if (P_f == 0 & P_r == 0) {
         U_nt <- eps
       } else {

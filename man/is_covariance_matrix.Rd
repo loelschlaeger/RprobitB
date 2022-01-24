@@ -18,6 +18,6 @@ symmetric, numeric matrix with non-negative eigenvalues.
 }
 \examples{
 x <- diag(2)
-is_covariance_matrix(x)
+RprobitB:::is_covariance_matrix(x)
 }
 \keyword{utils}
