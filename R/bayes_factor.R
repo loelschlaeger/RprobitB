@@ -26,5 +26,18 @@ naive_monte_carlo_estimator <- function(N) {
   sum(like)/N
 }
 
-### example
-data <- simulate_choices(form = y ~ x, N = 10, T = 10, J = 2, re = "x")
+
+# Example -----------------------------------------------------------------
+
+### simulate data
+b <- matrix(-1)
+Omega <- matrix(1)
+Sigma_full <- diag(2)
+form <- y ~ x | 0
+data <- simulate_choices(form = form, N = 10, T = 10, J = 2, re = "x",
+                         b = b, Omega = Omega, Sigma_full = Sigma_full)
+data$true_parameter
+choice_data <- data$choice_data
+
+### sparse model
+data_m1 <- prepare_data(form = form, choice_data = choice_data)
