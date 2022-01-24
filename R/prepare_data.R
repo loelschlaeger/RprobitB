@@ -113,7 +113,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     choice_data[, idc] <- as.numeric(factor(choice_data[, idc], levels = unique(choice_data[, idc])))
   } else {
     idc <- "idc"
-    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len))
+    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len, simplify = FALSE))
   }
 
   ### sort 'choice_data' first by column 'id' and second by column 'idc'
