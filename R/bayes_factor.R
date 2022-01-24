@@ -1,3 +1,21 @@
+### sample from prior distribution
+prior_samples <- function(prior) {
+
+  stopifnot(class(prior) == "RprobitB_prior")
+
+  ### alpha ~ MVN(eta,Psi)
+  L <- suppressWarnings(t(chol(prior$Psi, pivot = TRUE)))
+
+  ### s ~ D(delta)
+
+  ### b_c ~ MVN(xi,D)
+
+  ### Omega_c ~ IW(nu,Theta)
+
+  ### Sigma ~ IW(kappa,E)
+
+}
+
 ### compute Bayes factor
 bayes_factor <- function(marg_like1, marg_like2) {
   marg_like1 / marg_like2
