@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Choice data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
 ---
 
 ```{r, include = FALSE}
@@ -14,16 +15,12 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-This vignette explains how to handle choice data in RprobitB. We use the [Train data set from the mlogit package](https://cran.r-project.org/package=mlogit) for illustration.
-
-```{r setup}
 library(RprobitB)
 ```
 
+This vignette explains how to manage choice data in RprobitB. The [Train data set from the mlogit package](https://cran.r-project.org/package=mlogit) [@mlogit] is used for illustrations. The vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the RprobitB `r utils::packageVersion("RprobitB")` package.
 
-## Characteristics and requirements of choice data
+## Characteristics of choice data
 
 Choice data basically consists of
 
@@ -63,9 +60,9 @@ It is a data frame, each row represents one choice occasion, the columns `id` an
 [^1]: The data set contains 2929 stated choices by 235 Dutch individuals deciding between two train trip options based on the price, the travel time, the level of comfort, and the number of changes. 
 
 
-## Specify the model formula
+## The model formula
 
-We have to tell RprobitB which covariates we want to include in our model via specifying a `formula` object. The structure of such a `formula` object is `choice ~ A | B | C`, where
+We have to tell RprobitB about the covariates we want to include in our model via specifying a `formula` object. The structure of such a `formula` object is `choice ~ A | B | C`, where
 
 - `choice` is the dependent variable (the discrete choice we aim to explain),
 
@@ -117,7 +114,7 @@ check_form(form = form, re = re)
 
 ## The `prepare_data()` function in RprobitB
 
-Before model estimation with RprobitB, any empirical choice data set `choice_data`  must go through the `prepare_data()` function:
+Before model estimation with RprobitB, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
 
 ```{r, eval = FALSE}
 data <- prepare_data(form = form, choice_data = choice_data)
@@ -141,19 +138,22 @@ The function performs compatibility checks and data transformations and returns 
 Let's prepare the Train data set for estimation with our previous specification of `form` and `re`:
 
 ```{r prepare Train}
-data <- prepare_data(form = form, choice_data = Train, re = re)
+data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc = "choiceid")
 ```
 
-The `summary` function gives an overview over the data:
+The `summary` and `plot` methods give a quick data overview:
 
 ```{r summary Train}
 summary(data)
 ```
 
+```{r plot Train, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+plot(data)
+```
 
 ## Simulate choice data in RprobitB using the `simulate_choices()` function
 
-RprobitB provides the function `simulate_choices` that simulates discrete choice data. Say we want to simulate the choices of `N` deciders in `T` choice occasions[^3] among `J` alternatives from a model formulation `form`, we have to call
+RprobitB provides the function `simulate_choices` that simulates discrete choice data from a prespecified probit model. Say we want to simulate the choices of `N` deciders in `T` choice occasions[^3] among `J` alternatives from a model formulation `form`, we have to call
 
 ```{r, eval = FALSE}
 data <- simulate(form = form, N = N, T = T, J = J)
@@ -189,7 +189,7 @@ We can specify true parameter values[^4] by adding values for
 
 [^3]: `T` can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length `N` with decision maker specific numbers of choice occasions.
 
-[^4]: See the vignette "Introduction" for more details.
+[^4]: See the vignette on the model definition for more details, especially for the meaning of the parameters.
 
 
 ### Example
@@ -216,9 +216,9 @@ Finally, we may want to specify true parameter values. Parameter values that are
 overview_effects(form = form, re = re, alternatives = alternatives)
 ```
 
-Hence, the coefficient vector `alpha` must be of length 3, where the first coefficient is for `income_bus` and the second for `ASC_bus`. The matrix `b` must be of dimension `C` x 3, where by default `C = 1` and row 1 to 3 correspond to `cost`, `time_bus`, and `time_car`, respectively.
+Hence, the coefficient vector `alpha` must be of length 2, where the first coefficient is for `income_bus` and the second for `ASC_bus`. The matrix `b` must be of dimension `C` x 3, where by default `C = 1` and row 1 to 3 correspond to `cost`, `time_bus`, and `time_car`, respectively.
 
-An exemplary call of `simulate_choices()` looks like follows, where `summary()` can again be used to get an overview over the data:
+An exemplary call of `simulate_choices()` looks like follows, where the `summary()` method can again be used to get an overview over the data:
 
 ```{r data sim}
 data <- simulate_choices(
@@ -230,6 +230,7 @@ data <- simulate_choices(
   alternatives = c("car", "bus"),
   seed = 1,
   alpha = c(-1,1),
+  b = matrix(c(-1,-1,-0.5,-1.5,0,-1), ncol = 2),
   C = 2
 )
 summary(data)
@@ -237,7 +238,7 @@ summary(data)
 
 ## Train and test data set
 
-RprobitB provides the function `train_test()` that can be used to split the output of `prepare_data()` or `simulate_choices()` into a train and a test subset. This is useful when evaluating the prediction performace of a fitted model.
+RprobitB provides the function `train_test()` that can be used to split the output of `prepare_data()` or `simulate_choices()` into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model.
 
 For example, the following code puts 70% of deciders from `data` into the train subsample and 30% of deciders in the test subsample:
 
@@ -250,3 +251,5 @@ Alternatively, the following code puts 2 randomly chosen choice occasions per de
 ```{r data split occasions}
 train_test(data, test_number = 2, by = "T", random = TRUE, seed = 1)
 ```
+
+## References

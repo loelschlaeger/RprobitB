@@ -34,9 +34,9 @@
 #'   alternatives = c("car", "bus"),
 #'   seed = 1,
 #'   alpha = c(-1, 1),
+#'   b = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
 #'   C = 2
 #' )
-#'
 #' @export
 #'
 #' @importFrom stats rnorm
@@ -254,6 +254,11 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   ### save choices in 'choice_data'
   choice_data["choice"] <- unlist(lapply(data, function(x) x[["y"]]))
 
+  ### delete "ASC" from 'choice_data'
+  if (ASC) {
+    choice_data$ASC <- NULL
+  }
+
   ### create output
   out <- RprobitB_data(
     data = data,
@@ -271,7 +276,8 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     standardize = NULL,
     simulated = TRUE,
     choice_available = TRUE,
-    true_parameter = true_parameter
+    true_parameter = true_parameter,
+    res_var_names = list("choice" = "choice", "id" = "id", "idc" = "idc")
   )
 
   ### return 'RprobitB_data' object

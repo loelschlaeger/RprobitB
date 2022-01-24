@@ -49,8 +49,7 @@
 #'   choice_data = Train,
 #'   re = c("price", "time"),
 #'   id = "id",
-#'   idc = "choiceid",
-#'   standardize = "all"
+#'   idc = "choiceid"
 #' )
 #' @export
 
@@ -87,6 +86,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   ### check if 'choice_data' contains choices
   choice_available <- (choice %in% colnames(choice_data))
   if (!choice_available) {
+    choice <- NA
     warning("No choices found.")
   }
 
@@ -103,20 +103,21 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### convert decision maker ids to numeric
-  choice_data[, "id"] <- as.numeric(factor(choice_data[, id], levels = unique(choice_data[, id])))
+  choice_data[, id] <- as.numeric(factor(choice_data[, id], levels = unique(choice_data[, id])))
 
   ### sort 'choice_data' by column 'id'
-  choice_data <- choice_data[order(choice_data[, "id"]), ]
+  choice_data <- choice_data[order(choice_data[, id]), ]
 
   ### create choice occasion ids
   if (!is.null(idc)) {
-    choice_data[, "idc"] <- as.numeric(factor(choice_data[, idc], levels = unique(choice_data[, idc])))
+    choice_data[, idc] <- as.numeric(factor(choice_data[, idc], levels = unique(choice_data[, idc])))
   } else {
-    choice_data[, "idc"] <- unlist(sapply(table(choice_data[, "id"]), seq_len))
+    idc <- "idc"
+    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len))
   }
 
   ### sort 'choice_data' first by column 'id' and second by column 'idc'
-  choice_data <- choice_data[order(choice_data[, "id"], choice_data[, "idc"]), ]
+  choice_data <- choice_data[order(choice_data[, id], choice_data[, idc]), ]
 
   ### identify / filter, sort and count alternatives
   if (is.null(alternatives)) {
@@ -209,13 +210,13 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### transform 'choice_data' in list format 'data'
-  ids <- unique(choice_data[, "id"])
+  ids <- unique(choice_data[, id])
   N <- length(ids)
-  T <- as.numeric(table(choice_data[, "id"]))
+  T <- as.numeric(table(choice_data[, id]))
   data <- list()
   for (n in seq_len(N)) {
     data[[n]] <- list()
-    data_n <- choice_data[choice_data[, "id"] == ids[n], ]
+    data_n <- choice_data[choice_data[, id] == ids[n], ]
     X_n <- list()
 
     for (t in seq_len(T[n])) {
@@ -266,6 +267,11 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     data[[n]][["y"]] <- if (choice_available) data_n[[choice]] else NA
   }
 
+  ### delete "ASC" from 'choice_data'
+  if (ASC) {
+    choice_data$ASC <- NULL
+  }
+
   ### create output
   out <- RprobitB_data(
     data = data,
@@ -283,7 +289,8 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     standardize = standardize,
     simulated = FALSE,
     choice_available = choice_available,
-    true_parameter = NULL
+    true_parameter = NULL,
+    res_var_names = list("choice" = choice, "id" = id, "idc" = idc)
   )
 
   ### return 'RprobitB_data' object

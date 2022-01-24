@@ -20,7 +20,8 @@ RprobitB_data(
   standardize,
   simulated,
   choice_available,
-  true_parameter
+  true_parameter,
+  res_var_names
 )
 }
 \arguments{
@@ -107,6 +108,8 @@ If \code{standardize = "all"}, all covariates get standardized.}
 \item{choice_available}{A boolean, if \code{TRUE} then \code{data} contains observed choices.}
 
 \item{true_parameter}{An object of class \code{RprobitB_parameters}.}
+
+\item{res_var_names}{A names list of reserved variable names in \code{choice_data}.}
 }
 \value{
 An object of class \code{RprobitB_data} with the arguments of this function
