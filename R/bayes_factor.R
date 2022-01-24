@@ -36,8 +36,14 @@ Sigma_full <- diag(2)
 form <- y ~ x | 0
 data <- simulate_choices(form = form, N = 10, T = 10, J = 2, re = "x",
                          b = b, Omega = Omega, Sigma_full = Sigma_full)
-data$true_parameter
 choice_data <- data$choice_data
 
 ### sparse model
-data_m1 <- prepare_data(form = form, choice_data = choice_data)
+data_sparse_model <- prepare_data(form = form, choice_data = choice_data, re = NULL)
+sparse_model <- mcmc(data_sparse_model)
+log_likelihood(sparse_model)
+
+### mixed model
+data_mixed_model <- prepare_data(form = form, choice_data = choice_data, re = "x")
+mixed_model <- mcmc(data_mixed_model)
+log_likelihood(mixed_model)
