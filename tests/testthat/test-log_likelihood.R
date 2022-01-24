@@ -9,8 +9,8 @@ test_that("P", {
     alpha = 1:5, Sigma = 1
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(log_likelihood(x = model, at_true = FALSE))
-  expect_snapshot(log_likelihood(x = model, at_true = TRUE))
+  expect_snapshot(log_likelihood(x = model))
+  expect_snapshot(log_likelihood(x = model, par_set = "true"))
 })
 
 test_that("MNP", {
@@ -24,8 +24,8 @@ test_that("MNP", {
     alpha = 1:8
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(log_likelihood(x = model, at_true = FALSE))
-  expect_snapshot(log_likelihood(x = model, at_true = TRUE))
+  expect_snapshot(log_likelihood(x = model))
+  expect_snapshot(log_likelihood(x = model, par_set = "true"))
 })
 
 test_that("MMNP", {
@@ -41,8 +41,8 @@ test_that("MMNP", {
     Sigma = diag(2)
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(log_likelihood(x = model, at_true = FALSE))
-  expect_snapshot(log_likelihood(x = model, at_true = TRUE))
+  expect_snapshot(log_likelihood(x = model))
+  expect_snapshot(log_likelihood(x = model, par_set = "true"))
 })
 
 test_that("LCMMNP", {
@@ -60,8 +60,8 @@ test_that("LCMMNP", {
     R = 1000, print_progress = FALSE, seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(log_likelihood(x = model, at_true = FALSE))
-  expect_snapshot(log_likelihood(x = model, at_true = TRUE))
+  expect_snapshot(log_likelihood(x = model))
+  expect_snapshot(log_likelihood(x = model, par_set = "true"))
 })
 
 test_that("ULCMMNP", {
@@ -82,6 +82,6 @@ test_that("ULCMMNP", {
       "epsmax" = 0.9
     )
   )
-  expect_snapshot(log_likelihood(x = model, at_true = FALSE))
-  expect_snapshot(log_likelihood(x = model, at_true = TRUE))
+  expect_snapshot(log_likelihood(x = model))
+  expect_snapshot(log_likelihood(x = model, par_set = "true"))
 })

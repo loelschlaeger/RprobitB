@@ -4,13 +4,18 @@
 \alias{log_likelihood}
 \title{Compute log-likelihood of an \code{RprobitB_fit}.}
 \usage{
-log_likelihood(x, at_true = FALSE)
+log_likelihood(x, par_set = mean)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameter
-values (if they are available).}
+\item{par_set}{Specifying the parameter set for calculation and either
+\itemize{
+\item a function that computes a posterior point estimate (the default is
+\code{mean()}),
+\item \code{"true"} to select the true parameter set,
+\item an object of class \code{RprobitB_parameter}.
+}}
 }
 \value{
 The log-likelihood value.

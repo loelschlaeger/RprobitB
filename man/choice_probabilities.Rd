@@ -4,7 +4,7 @@
 \alias{choice_probabilities}
 \title{Return choice probabilities of an \code{RprobitB_fit}.}
 \usage{
-choice_probabilities(x, data = NULL, at_true = FALSE)
+choice_probabilities(x, data = NULL, par_set = mean)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
@@ -13,8 +13,13 @@ choice_probabilities(x, data = NULL, at_true = FALSE)
 case, choice probabilities are computed for the data that was used for model
 fitting. Alternatively, a new data set can be provided.}
 
-\item{at_true}{If \code{TRUE}, choice probabilities are computed at the true parameter
-values (if they are available).}
+\item{par_set}{Specifying the parameter set for calculation and either
+\itemize{
+\item a function that computes a posterior point estimate (the default is
+\code{mean()}),
+\item \code{"true"} to select the true parameter set,
+\item an object of class \code{RprobitB_parameter}.
+}}
 }
 \value{
 A data frame of choice probabilities with choice situations in rows and
