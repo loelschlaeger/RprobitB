@@ -56,16 +56,19 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_likelihood</span><span class="op">(</span><span class="va">x</span>, at_true <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">log_likelihood</span><span class="op">(</span><span class="va">x</span>, par_set <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>An object of class <code>RprobitB_fit</code>.</p></dd>
-<dt>at_true</dt>
-<dd><p>If <code>TRUE</code>, choice probabilities are computed at the true parameter
-values (if they are available).</p></dd>
+<dt>par_set</dt>
+<dd><p>Specifying the parameter set for calculation and either</p><ul><li><p>a function that computes a posterior point estimate (the default is
+<code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>),</p></li>
+<li><p><code>"true"</code> to select the true parameter set,</p></li>
+<li><p>an object of class <code>RprobitB_parameter</code>.</p></li>
+</ul></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -80,16 +83,16 @@ values (if they are available).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         0 started Gibbs sampling          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      1000                                0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      2000                                0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5000                                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      6000                                1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      4000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      5000                                0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      6000                                0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      7000                                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      8000                                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      9000                                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     10000 done, total time: 1 min</span>
 <span class="r-in"><span class="fu">log_likelihood</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -11.19633</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -28.62245</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
