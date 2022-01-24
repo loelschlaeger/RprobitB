@@ -242,7 +242,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       }
 
       ### sort covariates
-      X_nt <- X_nt[, linear_coeffs_names]
+      X_nt <- X_nt[, linear_coeffs_names, drop = FALSE]
 
       ### save in list
       X_n[[t]] <- X_nt
