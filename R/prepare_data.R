@@ -95,23 +95,17 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     for (row in 1:nrow(choice_data)) {
       if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
         stop(paste0(
-          "Please remove NAs, NaNs or infinite values in column '",
-          colnames(choice_data)[col], "', row number ", row, "."
+          "Please remove NAs, NaNs or infinite values in column '", colnames(choice_data)[col], "', row number ", row, "."
         ))
       }
     }
   }
 
-  ### convert decision maker ids to numeric
-  choice_data[, id] <- as.numeric(factor(choice_data[, id], levels = unique(choice_data[, id])))
-
   ### sort 'choice_data' by column 'id'
   choice_data <- choice_data[order(choice_data[, id]), ]
 
   ### create choice occasion ids
-  if (!is.null(idc)) {
-    choice_data[, idc] <- as.numeric(factor(choice_data[, idc], levels = unique(choice_data[, idc])))
-  } else {
+  if (is.null(idc)) {
     idc <- "idc"
     choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len, simplify = FALSE))
   }
@@ -164,15 +158,6 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   P_f <- sum(linear_coeffs$re == FALSE)
   P_r <- sum(linear_coeffs$re == TRUE)
   linear_coeffs_names <- linear_coeffs$name
-
-  ### decode choices to numeric (sorted alphabetically)
-  if (choice_available) {
-    choice_data[[choice]] <- as.character(choice_data[[choice]])
-    for (i in 1:J) {
-      choice_data[[choice]][choice_data[[choice]] == alternatives[i]] <- i
-    }
-    choice_data[[choice]] <- as.numeric(choice_data[[choice]])
-  }
 
   ### add ASCs
   if (ASC) {

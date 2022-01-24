@@ -123,10 +123,10 @@ summary.RprobitB_data <- function(object, ...) {
   ### summary of alternatives
   alt <- data.frame(matrix(NA, nrow = 0, ncol = 1))
   colnames(alt) <- "frequency"
-  for (i in 1:object$J) {
+  for (i in object$alternatives) {
     alt[nrow(alt) + 1, ] <-
       sum(unlist(lapply(object$data, function(x) x[["y"]])) == i)
-    rownames(alt)[nrow(alt)] <- object$alternatives[i]
+    rownames(alt)[nrow(alt)] <- i
   }
 
   ### build 'summary.RprobitB_data' object
