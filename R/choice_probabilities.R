@@ -9,9 +9,14 @@
 #' Either \code{NULL} or an object of class \code{RprobitB_data}. In the former
 #' case, choice probabilities are computed for the data that was used for model
 #' fitting. Alternatively, a new data set can be provided.
-#' @param at_true
-#' If \code{TRUE}, choice probabilities are computed at the true parameter
-#' values (if they are available).
+#' @param par_set
+#' Specifying the parameter set for calculation and either
+#' \itemize{
+#'   \item a function that computes a posterior point estimate (the default is
+#'         \code{mean()}),
+#'   \item \code{"true"} to select the true parameter set,
+#'   \item an object of class \code{RprobitB_parameter}.
+#' }
 #'
 #' @return
 #' A data frame of choice probabilities with choice situations in rows and
@@ -24,16 +29,20 @@
 #' choice_probabilities(x)
 #' @export
 
-choice_probabilities <- function(x, data = NULL, at_true = FALSE) {
+choice_probabilities <- function(x, data = NULL, par_set = mean) {
 
-  ### extract parameters
-  if (at_true) {
+  ### specify parameter set
+  if (is.function(par_set)){
+    parameter <- point_estimates(x, FUN = par_set)
+  } else if (identical(par_set, "true")) {
     parameter <- x$data$true_parameter
     if (is.null(parameter)) {
       stop("True parameters are not available.")
     }
+  } else if (class(par_set) == "RprobitB_parameter") {
+    parameter <- par_set
   } else {
-    parameter <- point_estimates(x, FUN = mean)
+    stop("'par_set' must be either a function, 'true' or an 'RprobitB_parameter' object.")
   }
 
   ### choose data
