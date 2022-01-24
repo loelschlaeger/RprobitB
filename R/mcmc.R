@@ -416,7 +416,8 @@ sufficient_statistics <- function(data, normalization) {
   ### compute sufficient statistics
   y <- matrix(0, nrow = N, ncol = max(T))
   for (n in 1:N) {
-    y_n <- data$data[[n]][[2]]
+    ### decode choice to numeric wrt appearance in data$alternatives
+    y_n <- match(data$data[[n]][[2]], data$alternatives)
     y[n, ] <- c(y_n, rep(NA, max(T) - length(y_n)))
   }
   W <- list()
