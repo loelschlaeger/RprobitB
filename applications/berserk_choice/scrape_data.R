@@ -34,7 +34,7 @@ berserk_choice <- data.frame(
 berserk_choice <- berserk_choice[!data_all$status %in% c("noStart","timeout"), ]
 
 ### save R dataset
-save(berserk_choice, file="data/berserk_choice.RData")
+save(berserk_choice, file="data/berserk_choice.RData", compress='xz')
 
 ### create documentation
 doc <- paste0("#' Choice of berserking
@@ -42,7 +42,7 @@ doc <- paste0("#' Choice of berserking
 #' @description
 #' This dataset includes the binary berserking choice of participants in the yearly
 #' bullet arena on the online chess platform \\url{https://lichess.org}.
-#' The tournament startet at ", t_start, " and lastet ", tournament_info$minutes, " minutes.
+#' The tournament startet at ", t_start, " and lasted ", tournament_info$minutes, " minutes.
 #'
 #' @details
 #' To 'berserk' is a feature on the online chess platform \\url{https://lichess.org}.
