@@ -73,7 +73,7 @@ for(i in 1:nrow(games)){
 }
 
 ### save R dataset
-save(opening_choice, file="data/opening_choice.RData")
+save(opening_choice, file="data/opening_choice.RData", compress='xz')
 
 ### create documentation
 doc <- paste0("#' Choice of a chess opening
