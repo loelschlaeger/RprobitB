@@ -109,7 +109,10 @@ doc <- paste0("#' Choice of a chess opening
 #' with the official FIDE rating list \\url{http://ratings.fide.com} on ", date_today, ".
 #' Ambiguous matches were dropped.
 #'
-'choice_opening'")
+#' @keywords
+#' dataset
+#'
+'opening_choice'")
 fileConn <- file("R/opening_choice-data.R")
 writeLines(doc, fileConn)
 close(fileConn)

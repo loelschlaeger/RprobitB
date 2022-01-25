@@ -31,4 +31,7 @@
 #' with the official FIDE rating list \url{http://ratings.fide.com} on 2022-01-25.
 #' Ambiguous matches were dropped.
 #'
-'choice_opening'
+#' @keywords
+#' dataset
+#'
+'opening_choice'
