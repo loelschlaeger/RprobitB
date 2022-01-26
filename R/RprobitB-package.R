@@ -4,6 +4,7 @@
 #'
 #' @docType package
 #' @name RprobitB
+#' @importFrom Rcpp sourceCpp
 #' @useDynLib RprobitB, .registration=TRUE
 #' @keywords
 #' internal
