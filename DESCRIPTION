@@ -31,7 +31,10 @@ Imports:
     ramify,
     ggplot2,
     tidyr,
-    rlang
+    rlang,
+    doSNOW,
+    foreach,
+    progress
 LinkingTo:
     Rcpp,
     RcppArmadillo
