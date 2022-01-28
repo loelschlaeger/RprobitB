@@ -14,8 +14,8 @@
 #' log_likelihood(x)
 #' @export
 
-log_likelihood <- function(x, at_true = FALSE) {
-  probs <- choice_probabilities(x = x, at_true = at_true)
+log_likelihood <- function(x, par_set = mean) {
+  probs <- choice_probabilities(x = x, par_set = par_set)
   ll <- 0
   for (row in 1:nrow(probs)) {
     ### extract observed choice
