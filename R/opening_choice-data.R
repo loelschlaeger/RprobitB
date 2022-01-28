@@ -1,0 +1,37 @@
+#' Choice of a chess opening
+#'
+#' @description
+#' This dataset includes first move choices of the White player in chess games.
+#'
+#' @docType data
+#'
+#' @usage data(opening_choice)
+#'
+#' @format
+#' A data frame containing first move choices of the White player in 549 chess games.
+#' It consists of the following columns:
+#' \itemize{
+#'   \item \code{fideid}, unique identifier for each player provided by FIDE,
+#'   \item \code{move}, the chosen first move,
+#'   \item \code{country}, the player's federation,
+#'   \item \code{sex}, the player's gender,
+#'   \item \code{age}, the player's age,
+#'   \item \code{rating}, the player's rating,
+#'   \item \code{opponent_country}, the opponent's federation,
+#'   \item \code{opponent_sex}, the opponent's gender,
+#'   \item \code{opponent_country}, the opponent's federation,
+#'   \item \code{age_difference}, the player's age minus the opponent's age,
+#'   \item \code{info}, a short description about the pairing.
+#' }
+#'
+#' @source
+#' The opening moves were scraped from The Week in Chess Archive
+#' \url{https://theweekinchess.com/twic} issues 1416, 1417, 1418, 1419, 1420.
+#' The player's metadata (country, sex, age, rating) were added by matching the pairings names
+#' with the official FIDE rating list \url{http://ratings.fide.com} on 2022-01-25.
+#' Ambiguous matches were dropped.
+#'
+#' @keywords
+#' dataset
+#'
+'opening_choice'
