@@ -28,12 +28,14 @@ vec cond_utility (vec U, vec mu, mat Sigmainv, int Jm1, int j) {
   int ind = Jm1*jm1;
   double tau_j = 1/Sigmainv(ind+jm1);
   double m = 0.0;
-  for(int i = 0; i<Jm1; i++)
-    if (i!=jm1)
+  for(int i = 0; i<Jm1; i++){
+    if(i!=jm1){
       m += - tau_j*Sigmainv(ind+i)*(U[i]-mu[i]);
-    out[0] = mu[jm1]+m;
-    out[1] = sqrt(tau_j);
-    return (out);
+    }
+  }
+  out[0] = mu[jm1]+m;
+  out[1] = sqrt(tau_j);
+  return (out);
 }
 
 vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
