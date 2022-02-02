@@ -3,10 +3,12 @@ pkgdown: 2.0.0
 pkgdown_sha: ~
 articles:
   choice_data: choice_data.html
-  data_management: data_management.html
-  introduction_to_RprobitB_and_model_formulation: introduction_to_RprobitB_and_model_formulation.html
+  choice_prediction: choice_prediction.html
+  introduction: introduction.html
+  model_definition: model_definition.html
   model_fitting: model_fitting.html
-last_built: 2021-12-02T11:43Z
+  model_selection: model_selection.html
+last_built: 2022-02-02T20:14Z
 urls:
   reference: https://loelschlaeger.github.io/RprobitB/reference
   article: https://loelschlaeger.github.io/RprobitB/articles

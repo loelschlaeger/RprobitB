@@ -25,9 +25,11 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/choice_data.html">Choice data</a>
-    <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
-    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
+    <a class="dropdown-item" href="../articles/choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
+    <a class="dropdown-item" href="../articles/model_selection.html">Model selection</a>
   </div>
 </li>
 <li class="nav-item">
@@ -70,7 +72,8 @@
   <span class="va">standardize</span>,
   <span class="va">simulated</span>,
   <span class="va">choice_available</span>,
-  <span class="va">true_parameter</span>
+  <span class="va">true_parameter</span>,
+  <span class="va">res_var_names</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -87,19 +90,23 @@ for one choice occasion.
 <code>y</code> is a vector of length <code>T</code> and contains the labels for the
 chosen alternatives.</p></dd>
 <dt>choice_data</dt>
-<dd><p>A data frame of choice data with the following requirements:</p><ul><li><p>It must be in "wide" format, i.e. each row represents one choice
+<dd><p>A data frame of choice data with the following requirements:</p><ul><li><p>It <strong>must</strong> be in "wide" format, i.e. each row represents one choice
 occasion.</p></li>
-<li><p>It must contain a column named <code>id</code> which contains unique
+<li><p>It <strong>must</strong> contain a column named <code>id</code> which contains unique
 identifier for each decision maker.</p></li>
-<li><p>It can contain a column named <code>choice</code> with the observed
+<li><p>It <strong>can</strong> contain a column named <code>idc</code> which contains unique
+identifier for each choice situation of each decision maker.
+If this information is missing, these identifier are generated
+automatically by the appearance of the choices in the data set.</p></li>
+<li><p>It <strong>can</strong> contain a column named <code>choice</code> with the observed
 choices, where <code>choice</code> must match the name of the dependent
 variable in <code>form</code>.
 Such a column is required for model fitting but not for prediction.</p></li>
-<li><p>For each alternative specific covariate <em>p</em> in <code>form</code> and each
-choice alternative <em>j</em> in <code>alternatives</code>, <code>choice_data</code>
-must contain a column named <em>p_j</em>.</p></li>
-<li><p>For each covariate <em>q</em> in <code>form</code> that is constant across
-alternatives, <code>choice_data</code> must contain a column named <em>q</em>.</p></li>
+<li><p>It <strong>must</strong> contain a column named <em>p_j</em> for each alternative
+specific covariate <em>p</em> in <code>form</code> and each choice alternative <em>j</em>
+in <code>alternatives</code>.</p></li>
+<li><p>It <strong>must</strong> contain a column named <em>q</em> for each covariate <em>q</em> in
+<code>form</code> that is constant across alternatives.</p></li>
 </ul></dd>
 <dt>N</dt>
 <dd><p>The number (greater or equal 1) of decision makers.</p></dd>
@@ -127,7 +134,7 @@ covariates with alternative specific coefficients.</p></li>
 By default, alternative specific constants (ASCs) are added to the model
 (for all except for the last alternative).
 They can be removed by adding <code>+0</code> in the second spot.
-See the vignette <code><a href="../articles/data_management.html">vignette("data_management", package = "RprobitB")</a></code>
+See the vignette <code>vignette("data_management", package = "RprobitB")</code>
 for more details.</p></dd>
 <dt>re</dt>
 <dd><p>A character (vector) of covariates of <code>form</code> with random effects.
@@ -151,6 +158,8 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></dd>
 <dd><p>A boolean, if <code>TRUE</code> then <code>data</code> contains observed choices.</p></dd>
 <dt>true_parameter</dt>
 <dd><p>An object of class <code>RprobitB_parameters</code>.</p></dd>
+<dt>res_var_names</dt>
+<dd><p>A names list of reserved variable names in <code>choice_data</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -163,7 +172,7 @@ as elements.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://www.oilbat.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
+  <p></p><p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -27,9 +27,11 @@ situation with J alternatives."><meta property="og:image" content="https://loels
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/choice_data.html">Choice data</a>
-    <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
-    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
+    <a class="dropdown-item" href="../articles/choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
+    <a class="dropdown-item" href="../articles/model_selection.html">Model selection</a>
   </div>
 </li>
 <li class="nav-item">
@@ -57,7 +59,7 @@ situation with <code>J</code> alternatives.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_choice_probabilities</span><span class="op">(</span><span class="va">X</span>, <span class="va">parameter</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_choice_probabilities</span><span class="op">(</span><span class="va">X</span>, <span class="va">alternatives</span>, <span class="va">parameter</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,12 +68,15 @@ situation with <code>J</code> alternatives.</p>
 <dd><p>A matrix of covariates with <code>J</code> rows and <code>P_f + P_r</code> columns, where
 the first <code>P_f</code> columns are connected to fixed coefficients and the last
 <code>P_r</code> columns are connected to random coefficients.</p></dd>
+<dt>alternatives</dt>
+<dd><p>A vector with unique integers from <code>1</code> to <code>J</code>, indicating the
+alternatives for which choice probabilities are to be computed.</p></dd>
 <dt>parameter</dt>
 <dd><p>An object of class <code>RprobitB_parameter</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A probability vector of length <code>J</code>.</p>
+    <p>A probability vector of length <code>length(alternatives)</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -79,7 +84,7 @@ the first <code>P_f</code> columns are connected to fixed coefficients and the l
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://www.oilbat.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
+  <p></p><p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -33,7 +33,7 @@ reference:
   contents:
   - mcmc
   - transform_fit
-  - plot.RprobitB_model
+  - plot.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:

@@ -27,9 +27,11 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/choice_data.html">Choice data</a>
-    <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
-    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
+    <a class="dropdown-item" href="../articles/choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
+    <a class="dropdown-item" href="../articles/model_selection.html">Model selection</a>
   </div>
 </li>
 <li class="nav-item">
@@ -105,8 +107,7 @@ The mean vector of length <code>P_f</code> of the normal prior for
 The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
 normal prior for <code>alpha</code>.</p></li>
 <li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for
-<code>s</code>.</p></li>
+The concentration parameter of length 1 of the Dirichlet prior for <code>s</code>.</p></li>
 <li><p><code>xi</code>:
 The mean vector of length <code>P_r</code> of the normal prior for each
 <code>b_c</code>.</p></li>
@@ -153,7 +154,7 @@ The threshold difference in means for joining latent classes
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>RprobitB_model</code>.</p>
+    <p>An object of class <code>RprobitB_fit</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -165,30 +166,31 @@ The threshold difference in means for joining latent classes
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="co">### probit model</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">mcmc</span><span class="op">(</span>data <span class="op">=</span> <span class="va">p</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### multinomial probit model</span></span>
-<span class="r-in"><span class="va">mnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">mcmc</span><span class="op">(</span>data <span class="op">=</span> <span class="va">mnp</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### mixed multinomial probit model</span></span>
-<span class="r-in"><span class="va">mmnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="va">mmnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
 <span class="r-in">  form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">var</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>, re <span class="op">=</span> <span class="st">"var"</span>,</span>
 <span class="r-in">  seed <span class="op">=</span> <span class="fl">1</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">mcmc</span><span class="op">(</span>data <span class="op">=</span> <span class="va">mmnp</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### mixed multinomial probit model with 2 latent classes</span></span>
-<span class="r-in"><span class="va">lcmmnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="va">lcmmnp</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
 <span class="r-in">  form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">var</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>,</span>
 <span class="r-in">  re <span class="op">=</span> <span class="st">"var"</span>, seed <span class="op">=</span> <span class="fl">1</span>, C <span class="op">=</span> <span class="fl">2</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="va">m4</span> <span class="op">&lt;-</span> <span class="fu">mcmc</span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### update of latent classes</span></span>
-<span class="r-in"><span class="va">m5</span> <span class="op">&lt;-</span> <span class="fu">mcmc</span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"update"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">m5</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lcmmnp</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"update"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -196,7 +198,7 @@ The threshold difference in means for joining latent classes
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://www.oilbat.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
+  <p></p><p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown-footer-right">

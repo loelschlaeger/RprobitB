@@ -25,9 +25,11 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/choice_data.html">Choice data</a>
-    <a class="dropdown-item" href="../articles/data_management.html">Data management</a>
-    <a class="dropdown-item" href="../articles/introduction_to_RprobitB_and_model_formulation.html">Introduction to RprobitB and model formulation</a>
+    <a class="dropdown-item" href="../articles/choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/model_fitting.html">Model fitting</a>
+    <a class="dropdown-item" href="../articles/model_selection.html">Model selection</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -49,18 +51,22 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0.9000" id="rprobitb-1009000">RprobitB 1.0.0.9000<a class="anchor" aria-label="anchor" href="#rprobitb-1009000"></a></h2>
-<ul><li><p>The function <code>compare</code> is now called <code><a href="../reference/model_selection.html">model_selection()</a></code> to make its functionality clearer.</p></li>
+<ul><li><p>Added print method for <code>RprobitB_parameter</code>.</p></li>
+<li><p>The function <code>choice_probs</code> is now called <code><a href="../reference/choice_probabilities.html">choice_probabilities()</a></code> to make its functionality clearer.</p></li>
+<li><p>Splitting the data set into a train and test part can now be done by the function <code><a href="../reference/train_test.html">train_test()</a></code>. Consequently, the argument <code>test_prob</code> was removed in <code><a href="../reference/prepare_data.html">prepare_data()</a></code> and <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code>.</p></li>
+<li><p>The function <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code> does not have the argument <code>distr</code> anymore. Instead, covariates can be supplied via the <code>covariates</code> argument. Consequently, the argument <code>standardize</code> was removed as well.</p></li>
+<li><p>The function <code>compare</code> is now called <code><a href="../reference/model_selection.html">model_selection()</a></code> to make its functionality clearer.</p></li>
 <li><p>The function <code>prepare</code> is now called <code><a href="../reference/prepare_data.html">prepare_data()</a></code> to make its functionality clearer.</p></li>
 <li><p>The function <code>simulate</code> is now called <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code> to not mask <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>.</p></li>
 <li><p>The function <code>predict</code> is now called <code><a href="../reference/predict_choices.html">predict_choices()</a></code> to not mask <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">stats::predict()</a></code>.</p></li>
-<li><p>The function <code>transform</code> is now called <code><a href="../reference/transform_model.html">transform_model()</a></code> to not mask <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">base::transform()</a></code>.</p></li>
-<li><p>We now have a README file in R Markdown.</p></li>
+<li><p>The function <code>transform</code> is now called <code>transform_model()</code> to not mask <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">base::transform()</a></code>.</p></li>
+<li><p>The README file is now in R Markdown format.</p></li>
 </ul></div>
   </main></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://www.oilbat.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
+  <p></p><p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, Dietmar Bauer.</p>
 </div>
 
 <div class="pkgdown-footer-right">
