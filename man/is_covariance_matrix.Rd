@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_covariance_matrix}
 \alias{is_covariance_matrix}
-\title{Check covariance matrix properties.}
+\title{Check covariance matrix properties}
 \usage{
 is_covariance_matrix(x)
 }

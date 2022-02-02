@@ -13,7 +13,9 @@ using namespace arma;
 using namespace Rcpp;
 
 void start_timer();
+
 void update_timer(int rep, int R);
+
 void end_timer(int R);
 
 #endif

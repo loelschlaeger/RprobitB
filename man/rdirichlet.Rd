@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{rdirichlet}
 \alias{rdirichlet}
-\title{Draw from Dirichlet}
+\title{Draw from Dirichlet distribution}
 \usage{
 rdirichlet(alpha)
 }
@@ -15,4 +15,4 @@ A vector, the sample from the Dirichlet distribution.
 \description{
 Function to draw from a Dirichlet distribution.
 }
-\keyword{utils}
+\keyword{dist}

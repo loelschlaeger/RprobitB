@@ -48,6 +48,14 @@ reference:
   desc: These functions construct the S3 classes of RprobitB.
   contents:
   - has_keyword("s3")
+- title: Distributions
+  desc: Implementation of distributions and number generating functions.
+  contents:
+  - has_keyword("dist")
+- title: Posterior draws of model paramters
+  desc: These functions draw from the posterior distribution of the model parameters.
+  contents:
+  - has_keyword("posterior")
 - title: Utilities
   desc: These functions may be useful beyond RprobitB.
   contents:

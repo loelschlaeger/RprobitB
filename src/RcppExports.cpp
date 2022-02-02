@@ -11,6 +11,32 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// euc_dist
+double euc_dist(arma::vec a, arma::vec b);
+RcppExport SEXP _RprobitB_euc_dist(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(euc_dist(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dmvnorm
+double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
+RcppExport SEXP _RprobitB_dmvnorm(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dmvnorm(x, mean, Sigma, log));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rdirichlet
 arma::vec rdirichlet(arma::vec alpha);
 RcppExport SEXP _RprobitB_rdirichlet(SEXP alphaSEXP) {
@@ -31,6 +57,44 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
     rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rmvnorm
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
+RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_s
+arma::vec update_s(int delta, arma::vec m);
+RcppExport SEXP _RprobitB_update_s(SEXP deltaSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_s(delta, m));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_z
+arma::vec update_z(arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega);
+RcppExport SEXP _RprobitB_update_z(SEXP sSEXP, SEXP betaSEXP, SEXP bSEXP, SEXP OmegaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_z(s, beta, b, Omega));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -55,11 +119,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rtnorm
+double rtnorm(double mu, double sig, double trunpt, bool above);
+RcppExport SEXP _RprobitB_rtnorm(SEXP muSEXP, SEXP sigSEXP, SEXP trunptSEXP, SEXP aboveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sig(sigSEXP);
+    Rcpp::traits::input_parameter< double >::type trunpt(trunptSEXP);
+    Rcpp::traits::input_parameter< bool >::type above(aboveSEXP);
+    rcpp_result_gen = Rcpp::wrap(rtnorm(mu, sig, trunpt, above));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
+    {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
+    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
+    {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
+    {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 11},
+    {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}
 };
 

@@ -15,7 +15,7 @@ clus2 <- MASS::mvrnorm(n = n, mu = means[[2]], Sigma = Sigmas[[2]])
 clus3 <- MASS::mvrnorm(n = n, mu = means[[3]], Sigma = Sigmas[[3]])
 clus4 <- MASS::mvrnorm(n = n, mu = means[[4]], Sigma = Sigmas[[4]])
 data <- rbind(clus1, clus2, clus3, clus4)
-#plot(data)
+plot(data)
 
 ### run Gibbs sampler
 alpha <- 0.01 # concentration parameter of Dirichlet distribution
@@ -28,7 +28,11 @@ results <- crp_gibbs(data = data, alpha = alpha, mu0 = mu0, sigma0 = sigma0,
                      sigma_y = sigma_y, c_init = c_init, maxIters = maxIters)
 
 ### assign classes that occur most often
-tab <- apply(results, 1, FUN = function(x) {tab <- table(x); names(tab[which.max(tab)])})
+tab <- apply(results, 1, FUN = function(x) {
+  tab <- table(x)
+  ans <- names(tab[which.max(tab)])
+  return(as.numeric(ans))
+})
 table(tab)
 
 ### Gibbs sampler definition
@@ -46,13 +50,21 @@ crp_gibbs <- function(data, alpha, mu0, sigma0, sigma_y, c_init, maxIters){
   z <- c_init
   n_k <- as.vector(table(z))
   Nclust <- length(n_k)
-  res <- matrix(NA, nrow = N, ncol = maxIters)
   pb <- txtProgressBar(min = 0, max = maxIters, style = 3)
+
+  ### storage of Gibbs samples
+  cms <- matrix(NA, nrow = N, ncol = maxIters)
+  cmeans <- list()
+  cvariances <- list()
 
   ### Gibbs sampler
   for(iter in 1:maxIters){
 
-    ###
+    ### add storage space
+    cmeans[[iter]] <- list()
+    cvariances[[iter]] <- list()
+
+    ### Dirichlet Process
     for(n in 1:N){
       ### un-assign initial class membership
       c_i <- z[n]
@@ -69,17 +81,34 @@ crp_gibbs <- function(data, alpha, mu0, sigma0, sigma_y, c_init, maxIters){
       ### ensure that z[n] does not get counted as a cluster
       z[n] <- -1
 
-      ### update cluster assignment
+      ### storage for cluster log-probabilities
       logp <- rep(NA, Nclust + 1)
+
+      ### update cluster characteristics
       for(c_i in 1:Nclust){
+
+        ### extract data points currently present in this cluster
+        y <- data[z == c_i, , drop = FALSE]
+
+        ### compute cluster precision and variance
         tau_p <- tau0 + n_k[c_i] * tau_y
         sig_p <- solve(tau_p)
-        y <- data[z == c_i, , drop = FALSE]
-        sum_data <- colSums(y)
-        mean_p <- sig_p %*% (tau_y %*% sum_data + tau0 %*% t(mu0))
-        sigma_p <- (sigma0 + crossprod(t(apply(y, 1, function(x) x - mean_p)))) / (n_k[c_i]+2-2-1)
+
+        ### compute / update cluster mean
+        mean_p <- sig_p %*% (tau_y %*% colSums(y) + tau0 %*% t(mu0))
+
+        ### update cluster covariance
+        sigma_p <- (sigma0 + crossprod(t(apply(y, 1, function(x) x - mean_p)))) / (n_k[c_i]+2-D-1)
+
+        ### save cluster means and variances
+        cmeans[[iter]][[c_i]] <- mean_p
+        cvariances[[iter]][[c_i]] <- sigma_p
+
+        ### compute cluster assignment probabilities for existing cluster (conditioned on existing clusters)
         logp[c_i] <- log(n_k[c_i]) + mvtnorm::dmvnorm(data[n,], mean = mean_p, sigma = sig_p + sigma_y, log = TRUE)
       }
+
+      ### compute probability for new cluster (conditioned on existing clusters)
       logp[Nclust+1] <- log(alpha) + mvtnorm::dmvnorm(data[n,], mean = mu0, sigma = sigma0 + sigma_y, log = TRUE)
 
       ### transform log-probabilities to probabilities
@@ -100,9 +129,9 @@ crp_gibbs <- function(data, alpha, mu0, sigma0, sigma_y, c_init, maxIters){
     }
 
     setTxtProgressBar(pb, iter)
-    res[, iter] <- z
+    cms[, iter] <- z
   }
 
   close(pb)
-  return(res)
+  return(list("cms" = cms, "cmeans" = cmeans, "cvariances" = cvariances))
 }

@@ -235,7 +235,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       }
 
       ### compute utility and choice decision
-      eps <- mvn_draw(mu = rep(0,J), Sigma = true_parameter$Sigma_full)
+      eps <- as.vector(rmvnorm(mu = rep(0,J), Sigma = true_parameter$Sigma_full))
       if (P_f == 0 & P_r == 0) {
         U_nt <- eps
       } else {

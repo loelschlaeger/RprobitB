@@ -25,8 +25,8 @@
     Output
              predicted
       true    bus car train
-        bus    20   1     0
-        car     1  24     0
+        bus    18   2     0
+        car     2  24     0
         train   0   0     9
 
 # MMNP
@@ -47,9 +47,9 @@
     Output
              predicted
       true    bus car train
-        bus    37  10    15
-        car    14  52    31
-        train  15  13   113
+        bus    35   8    13
+        car     8  69    23
+        train  15  15   114
 
 # ULCMMNP
 
@@ -58,7 +58,7 @@
     Output
              predicted
       true    bus car train
-        bus    68  28    19
-        car    34 115    30
-        train  21  26   159
+        bus    56  31    20
+        car    32 126    28
+        train  21  28   158
 

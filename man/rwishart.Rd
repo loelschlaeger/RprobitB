@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{rwishart}
 \alias{rwishart}
-\title{Draw from a Wishart}
+\title{Draw from Wishart distribution}
 \usage{
 rwishart(nu, V)
 }
@@ -12,10 +12,10 @@ rwishart(nu, V)
 \item{V}{A matrix, the scale matrix.}
 }
 \value{
-A list, the draw from the Wishart (W), inverted Wishart (IW), and
-corresponding Cholesky decomposition (C and CI)
+A list, the draws from the Wishart (W), inverted Wishart (IW), and
+corresponding Cholesky decompositions (C and CI).
 }
 \description{
-Function to draw from Wishart and inverted Wishart distribution.
+This function draws from a Wishart and inverted Wishart distribution.
 }
-\keyword{utils}
+\keyword{dist}

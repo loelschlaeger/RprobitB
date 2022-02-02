@@ -53,8 +53,7 @@ The mean vector of length \code{P_f} of the normal prior for
 The covariance matrix of dimension \code{P_f} x \code{P_f} of the
 normal prior for \code{alpha}.
 \item \code{delta}:
-The concentration parameter of length 1 of the Dirichlet prior for
-\code{s}.
+The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
 \item \code{xi}:
 The mean vector of length \code{P_r} of the normal prior for each
 \code{b_c}.

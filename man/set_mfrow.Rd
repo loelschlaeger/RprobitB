@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{set_mfrow}
 \alias{set_mfrow}
-\title{Balancing visualization of multiple figures.}
+\title{Balancing visualization of multiple figures}
 \usage{
 set_mfrow(n)
 }

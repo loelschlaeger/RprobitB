@@ -7,38 +7,84 @@
 #include <time.h>
 #include "timer.h"
 #include "distributions.h"
+#include "truncatednormal.h"
+#include "classupdate.h"
 using namespace arma;
 using namespace Rcpp;
 
-// HELPER FUNCTIONS
-vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P,
-              int Jm1) {
-  // oelschlaeger 04/2020
-  // Function to draw from posterior of linear regression
-  mat B1 = arma::inv(Omega_c_inv+foo_B1);
-  vec b1 = B1*(Omega_c_inv*b_c+foo_b1);
-  return (b1+trans(chol(B1))*vec(rnorm(P)));
+//' Update class weight vector
+//' @description
+//' This function updates the class weight vector by drawing from its posterior.
+//' @param delta
+//' The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
+//' @param m
+//' The vector of current class sizes.
+//' @return
+//' A draw from the Dirichlet posterior for \code{s}.
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_s (int delta, arma::vec m) {
+  int C = m.size();
+  return(rdirichlet(delta*ones(C)+m));
 }
 
+//' Update class allocation vector
+//' @description
+//' This function updates the class allocation vector independently for all observations
+//' by drawing from its conditional distribution.
+//' @inheritParams RprobitB_parameter
+//' @return
+//' An updated class allocation vector.
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
+  Rcpp::Function sample("sample");
+  int N = beta.n_cols;
+  int C = s.size();
+  int P_r = b.n_rows;
+  arma::vec z = zeros<vec>(N);
+  arma::vec prob_z = zeros<vec>(C);
+  for(int n = 0; n<N; n++){
+    for(int c = 0; c<C; c++){
+      prob_z[c] = s[c]*dmvnorm(beta(span::all,n),b(span::all,c),reshape(Omega(span::all,c),P_r,P_r));
+    }
+    z[n] = as<int>(sample(seq(0,C-1),1,false,prob_z));
+  }
+  return(z);
+}
+
+// Function to draw from posterior of linear regression
+vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P, int Jm1) {
+  mat B1 = arma::inv(Omega_c_inv + foo_B1);
+  vec b1 = B1 * (Omega_c_inv * b_c + foo_b1);
+  return (b1 + trans(chol(B1)) * vec(rnorm(P)));
+}
+
+// Function to compute conditional utility mean and standard deviation
 vec cond_utility (vec U, vec mu, mat Sigmainv, int Jm1, int j) {
-  // oelschlaeger 04/2020
-  // Function to compute conditional utility mean and standard deviation
   vec out(2);
   int jm1 = j-1;
   int ind = Jm1*jm1;
   double tau_j = 1/Sigmainv(ind+jm1);
   double m = 0.0;
-  for(int i = 0; i<Jm1; i++)
-    if (i!=jm1)
+  for(int i = 0; i<Jm1; i++){
+    if (i!=jm1){
       m += - tau_j*Sigmainv(ind+i)*(U[i]-mu[i]);
-    out[0] = mu[jm1]+m;
-    out[1] = sqrt(tau_j);
-    return (out);
+    }
+  }
+  out[0] = mu[jm1]+m;
+  out[1] = sqrt(tau_j);
+  return (out);
 }
 
+// Function to draw the utility vector
 vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
-  // oelschlaeger 04/2020
-  // Function to draw the utility vector
   bool above;
   double bound;
   vec out_U_nt = U;
@@ -56,112 +102,9 @@ vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
       above = true;
     //CMout[1] is mean, CMout[2] is sd
     vec CMout = cond_utility(out_U_nt,mu,Sigmainv,Jm1,i+1);
-    out_U_nt[i] = trunNorm(CMout[0],CMout[1],bound,above);
+    out_U_nt[i] = rtnorm(CMout[0],CMout[1],bound,above);
   }
   return (out_U_nt);
-}
-
-double euc_dist (vec a, vec b){
-  // oelschlaeger 04/2020
-  // Function to compute the euclidean distance
-  int N = a.size();
-  double euc_dist = 0;
-  for(int n=0; n<N; n++){
-    euc_dist += (a(n) - b(n)) * (a(n) - b(n));
-  }
-  return sqrt(euc_dist);
-}
-
-List update_classes (int rep, int Cmax, double epsmin, double epsmax,
-                     double distmin, vec s, vec m, mat b, mat Omega,
-                     bool print_progress) {
-  // oelschlaeger 04/2020
-  // Function to perform the class updating scheme
-  char buf[50];
-  bool flag = false;
-  int C = b.n_cols;
-  int P = b.n_rows;
-  mat stack = join_cols(trans(s),join_cols(trans(m),join_cols(b,Omega)));
-  //remove class
-  int id_min = index_min(stack(0,span::all));
-  if(stack(0,id_min)<epsmin){
-    stack.shed_col(id_min);
-    C -= 1;
-    if(print_progress){
-      sprintf(buf, "%9d removed class         \n", rep+1);
-      Rcout <<  buf;
-    }
-    flag = true;
-  }
-  //split class
-  if(flag==false){
-    int id_max = index_max(stack(0,span::all));
-    if(C<Cmax && stack(0,id_max)>epsmax){
-      mat max_class_Omega = reshape(stack(span(P+2,1+P+P*P),id_max),2,2);
-      vec largest_var = zeros<vec>(2);
-      for(int p=0; p<P; p++){
-        if(max_class_Omega(p,p)>largest_var[0]){
-          largest_var[0] = max_class_Omega(p,p);
-          largest_var[1] = p;
-        }
-      }
-      stack.insert_cols(id_max,stack(span::all,id_max));
-      stack(span(0,1),span(id_max,id_max+1)) /= 2;
-      stack(2+largest_var[1],id_max) -= largest_var[0]/2;
-      stack(2+largest_var[1],id_max+1) += largest_var[0]/2;
-      stack(span(P+2,1+P+P*P),span(id_max,id_max+1)) /= 2;
-      C += 1;
-      if(print_progress){
-        sprintf(buf, "%9d splitted class        \n", rep+1);
-        Rcout <<  buf;
-      }
-      flag = true;
-    }
-  }
-  //join classes
-  if(flag==false){
-    vec closest_classes = zeros<vec>(3);
-    closest_classes(0) = std::numeric_limits<int>::max();
-    for(int c1=0; c1<C; c1++){
-      for(int c2=0; c2<c1; c2++){
-        if(euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2)) <
-          closest_classes(0)) {
-          closest_classes(0) =
-            euc_dist(stack(span(2,2+P-1),c1),stack(span(2,2+P-1),c2));
-          closest_classes(1) = c1;
-          closest_classes(2) = c2;
-        }
-      }
-    }
-    if(closest_classes(0)<distmin){
-      int c1 = closest_classes(1);
-      int c2 = closest_classes(2);
-      stack(span(0,1),c1) += stack(span(0,1),c2);
-      stack(span(2,2+P-1),c1) += stack(span(2,2+P-1),c2);
-      stack(span(2,2+P-1),c1) /=2;
-      stack(span(2+P,2+P+P*P-1),c1) += stack(span(2+P,2+P+P*P-1),c2);
-      stack(span(2+P,2+P+P*P-1),c1) /=2;
-      stack.shed_col(c2);
-      C -= 1;
-      if(print_progress){
-        sprintf(buf, "%9d joined classes        \n", rep+1);
-        Rcout <<  buf;
-      }
-      flag = true;
-    }
-  }
-  //sort s ascending
-  stack = stack.cols(sort_index(stack(0,span::all),"descend"));
-  rowvec s_update = stack.row(0);
-  rowvec m_update = stack.row(1);
-  mat b_update = stack.rows(span(2,P+1));
-  mat Omega_update = stack.rows(span(P+2,1+P+P*P));
-  return List::create(Named("C") = C,
-                      Named("s") = s_update,
-                      Named("m") = m_update,
-                      Named("b") = b_update,
-                      Named("Omega") = Omega_update,
-                      Named("flag") = flag);
 }
 
 //' Gibbs sampler.
@@ -264,9 +207,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
   }
 
   // define helper variables and functions
-  Function sample("sample");
   vec s_cand;
-  vec prob_z(C);
   mat Omega_c_inv;
   mat foo_Omega;
   mat Omega_draw;
@@ -305,21 +246,13 @@ List gibbs_sampling (int R, int B, bool print_progress,
 
     if(P_r>0){
       // draw s, update only if draw is descending
-      s_cand = rdirichlet(delta*ones(C)+m);
-      if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>()))
+      arma::vec s_cand = update_s(delta,m);
+      if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
         s = s_cand;
+      }
 
       // draw z
-      z = zeros<vec>(N);
-      prob_z = zeros<vec>(C);
-      for(int n = 0; n<N; n++){
-        for(int c = 0; c<C; c++){
-          prob_z[c] =
-            s[c]*mvnpdf(beta(span::all,n),b(span::all,c),
-                        reshape(Omega(span::all,c),P_r,P_r));
-        }
-        z[n] = as<int>(sample(seq(0,C-1),1,false,prob_z));
-      }
+      z = update_z(s, beta, b, Omega);
 
       // update m
       m = ones(C);
@@ -328,6 +261,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
           if(z[n]==c) m[c] += 1;
         }
       }
+
       // update b_bar
       b_bar = zeros<mat>(P_r,C);
       for(int c = 0; c<C; c++){
