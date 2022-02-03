@@ -7,15 +7,27 @@
 rwishart(nu, V)
 }
 \arguments{
-\item{nu}{A double, the degrees of freedom.}
+\item{nu}{A numeric, the degrees of freedom. Must be at least the number of dimensions.}
 
 \item{V}{A matrix, the scale matrix.}
 }
 \value{
-A list, the draws from the Wishart (W), inverted Wishart (IW), and
-corresponding Cholesky decompositions (C and CI).
+A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
+corresponding Cholesky decompositions (\code{C} and \code{CI}).
 }
 \description{
 This function draws from a Wishart and inverted Wishart distribution.
 }
-\keyword{dist}
+\details{
+The Wishart distribution is a generalization to multiple dimensions of the
+gamma distributions and draws from the space of covariance matrices.
+Its expectation is \code{nu*V} and its variance increases both in \code{nu}
+and in the values of \code{V}.
+The Wishart distribution is the conjugate prior to the precision matrix of
+a multivariate normal distribution and proper if \code{nu} is greater than
+the number of dimensions.
+}
+\examples{
+rwishart(nu = 2, V = diag(2))
+}
+\keyword{distribution}

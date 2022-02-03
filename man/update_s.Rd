@@ -9,12 +9,33 @@ update_s(delta, m)
 \arguments{
 \item{delta}{The concentration parameter of length 1 of the Dirichlet prior for \code{s}.}
 
-\item{m}{The vector of current class sizes.}
+\item{m}{The vector of current class frequencies.}
 }
 \value{
-A draw from the Dirichlet posterior for \code{s}.
+A draw from the Dirichlet posterior distribution for \code{s}.
 }
 \description{
-This function updates the class weight vector by drawing from its posterior.
+This function updates the class weight vector by drawing from its posterior distribution.
+}
+\details{
+Let \eqn{m=(m_1,\dots,m_C)} be the frequencies of \eqn{C} classes.
+Given the class weight (probability) vector \eqn{s=(s_1,\dots,s_C)}, the distribution
+of \eqn{m} is multinomial and its likelihood is \deqn{L(m\mid s) \propto \prod_{i=1}^C s_i^{m_i}.}
+The conjugate prior \eqn{p(s)} for \eqn{s} is a Dirichlet distribution, which has a density function
+proportional to \deqn{\prod_{i=1}^C s_i^{\delta_i-1},} where \eqn{\delta = (\delta_1,\dots,\delta_C)}
+is the concentration parameter vector.
+Note that in RprobitB, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
+The posterior distribution of \eqn{s} is proportional to \deqn{p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},}
+which in turn is proportional to a Dirichlet distribution with parameters \eqn{\delta+m}.
+}
+\examples{
+### number of classes
+C <- 4
+### current class sizes
+m <- sample.int(C)
+### concentration parameter for Dirichlet prior (single-valued)
+delta <- 1
+### updated class weight vector
+update_s(delta = 1, m = m)
 }
 \keyword{posterior}

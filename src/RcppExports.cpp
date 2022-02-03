@@ -38,13 +38,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // rdirichlet
-arma::vec rdirichlet(arma::vec alpha);
-RcppExport SEXP _RprobitB_rdirichlet(SEXP alphaSEXP) {
+arma::vec rdirichlet(arma::vec delta);
+RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet(alpha));
+    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -98,6 +98,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_b
+arma::mat update_b(arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, arma::vec xi, arma::mat Dinv);
+RcppExport SEXP _RprobitB_update_b(SEXP betaSEXP, SEXP OmegaSEXP, SEXP zSEXP, SEXP mSEXP, SEXP xiSEXP, SEXP DinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m(mSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Dinv(DinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_b(beta, Omega, z, m, xi, Dinv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gibbs_sampling
 List gibbs_sampling(int R, int B, bool print_progress, int N, int J, int P_f, int P_r, List latent_classes, List sufficient_statistics, List prior, List init);
 RcppExport SEXP _RprobitB_gibbs_sampling(SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP NSEXP, SEXP JSEXP, SEXP P_fSEXP, SEXP P_rSEXP, SEXP latent_classesSEXP, SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP initSEXP) {
@@ -142,6 +158,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
+    {"_RprobitB_update_b", (DL_FUNC) &_RprobitB_update_b, 6},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 11},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}

@@ -51,7 +51,7 @@ reference:
 - title: Distributions
   desc: Implementation of distributions and number generating functions.
   contents:
-  - has_keyword("dist")
+  - has_keyword("distribution")
 - title: Posterior draws of model paramters
   desc: These functions draw from the posterior distribution of the model parameters.
   contents:

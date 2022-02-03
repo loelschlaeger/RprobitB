@@ -16,9 +16,16 @@ dmvnorm(x, mean, Sigma, log = FALSE)
 \item{log}{A boolean, if \code{TRUE} the logarithm of the density value is returned.}
 }
 \value{
-A density value.
+The density value.
 }
 \description{
 This function computes the density of a multivariate normal distribution.
 }
-\keyword{dist}
+\examples{
+x = c(0,0)
+mean = c(0,0)
+Sigma = diag(2)
+dmvnorm(x = x, mean = mean, Sigma = Sigma)
+dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
+}
+\keyword{distribution}

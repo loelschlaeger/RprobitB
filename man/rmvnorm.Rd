@@ -17,4 +17,16 @@ A numeric vector of length \code{n}.
 \description{
 This function draws from a multivariate normal distribution.
 }
-\keyword{dist}
+\details{
+The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+\eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+Choleski decomposition of \eqn{\Sigma}.
+}
+\examples{
+mu <- c(0,0)
+Sigma <- diag(2)
+rmvnorm(mu = mu, Sigma = Sigma)
+}
+\keyword{distribution}

@@ -30,10 +30,16 @@ euc_dist <- function(a, b) {
 #' @param log
 #' A boolean, if \code{TRUE} the logarithm of the density value is returned.
 #' @return
-#' A density value.
+#' The density value.
 #' @export
+#' @examples
+#' x = c(0,0)
+#' mean = c(0,0)
+#' Sigma = diag(2)
+#' dmvnorm(x = x, mean = mean, Sigma = Sigma)
+#' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
 #' @keywords
-#' dist
+#' distribution
 #'
 dmvnorm <- function(x, mean, Sigma, log = FALSE) {
     .Call(`_RprobitB_dmvnorm`, x, mean, Sigma, log)
@@ -42,31 +48,43 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
 #' Draw from Dirichlet distribution
 #' @description
 #' Function to draw from a Dirichlet distribution.
-#' @param alpha
+#' @param delta
 #' A vector, the concentration parameter.
 #' @return
-#' A vector, the sample from the Dirichlet distribution.
+#' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
 #' @export
+#' @examples
+#' rdirichlet(delta = 1:3)
 #' @keywords
-#' dist
+#' distribution
 #'
-rdirichlet <- function(alpha) {
-    .Call(`_RprobitB_rdirichlet`, alpha)
+rdirichlet <- function(delta) {
+    .Call(`_RprobitB_rdirichlet`, delta)
 }
 
 #' Draw from Wishart distribution
 #' @description
 #' This function draws from a Wishart and inverted Wishart distribution.
+#' @details
+#' The Wishart distribution is a generalization to multiple dimensions of the
+#' gamma distributions and draws from the space of covariance matrices.
+#' Its expectation is \code{nu*V} and its variance increases both in \code{nu}
+#' and in the values of \code{V}.
+#' The Wishart distribution is the conjugate prior to the precision matrix of
+#' a multivariate normal distribution and proper if \code{nu} is greater than
+#' the number of dimensions.
 #' @param nu
-#' A double, the degrees of freedom.
+#' A numeric, the degrees of freedom. Must be at least the number of dimensions.
 #' @param V
 #' A matrix, the scale matrix.
 #' @return
-#' A list, the draws from the Wishart (W), inverted Wishart (IW), and
-#' corresponding Cholesky decompositions (C and CI).
+#' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
+#' corresponding Cholesky decompositions (\code{C} and \code{CI}).
 #' @export
+#' @examples
+#' rwishart(nu = 2, V = diag(2))
 #' @keywords
-#' dist
+#' distribution
 #'
 rwishart <- function(nu, V) {
     .Call(`_RprobitB_rwishart`, nu, V)
@@ -75,6 +93,12 @@ rwishart <- function(nu, V) {
 #' Draw from multivariate normal distribution
 #' @description
 #' This function draws from a multivariate normal distribution.
+#' @details
+#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+#' Choleski decomposition of \eqn{\Sigma}.
 #' @param mu
 #' The mean vector of length \code{n}.
 #' @param Sigma
@@ -82,8 +106,12 @@ rwishart <- function(nu, V) {
 #' @return
 #' A numeric vector of length \code{n}.
 #' @export
+#' @examples
+#' mu <- c(0,0)
+#' Sigma <- diag(2)
+#' rmvnorm(mu = mu, Sigma = Sigma)
 #' @keywords
-#' dist
+#' distribution
 #'
 rmvnorm <- function(mu, Sigma) {
     .Call(`_RprobitB_rmvnorm`, mu, Sigma)
@@ -91,13 +119,32 @@ rmvnorm <- function(mu, Sigma) {
 
 #' Update class weight vector
 #' @description
-#' This function updates the class weight vector by drawing from its posterior.
+#' This function updates the class weight vector by drawing from its posterior distribution.
 #' @param delta
 #' The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
 #' @param m
-#' The vector of current class sizes.
+#' The vector of current class frequencies.
 #' @return
-#' A draw from the Dirichlet posterior for \code{s}.
+#' A draw from the Dirichlet posterior distribution for \code{s}.
+#' @details
+#' Let \eqn{m=(m_1,\dots,m_C)} be the frequencies of \eqn{C} classes.
+#' Given the class weight (probability) vector \eqn{s=(s_1,\dots,s_C)}, the distribution
+#' of \eqn{m} is multinomial and its likelihood is \deqn{L(m\mid s) \propto \prod_{i=1}^C s_i^{m_i}.}
+#' The conjugate prior \eqn{p(s)} for \eqn{s} is a Dirichlet distribution, which has a density function
+#' proportional to \deqn{\prod_{i=1}^C s_i^{\delta_i-1},} where \eqn{\delta = (\delta_1,\dots,\delta_C)}
+#' is the concentration parameter vector.
+#' Note that in RprobitB, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
+#' The posterior distribution of \eqn{s} is proportional to \deqn{p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},}
+#' which in turn is proportional to a Dirichlet distribution with parameters \eqn{\delta+m}.
+#' @examples
+#' ### number of classes
+#' C <- 4
+#' ### current class sizes
+#' m <- sample.int(C)
+#' ### concentration parameter for Dirichlet prior (single-valued)
+#' delta <- 1
+#' ### updated class weight vector
+#' update_s(delta = 1, m = m)
 #' @export
 #' @keywords
 #' posterior
@@ -108,17 +155,78 @@ update_s <- function(delta, m) {
 
 #' Update class allocation vector
 #' @description
-#' This function updates the class allocation vector independently for all observations
-#' by drawing from its conditional distribution.
+#' This function updates the class allocation vector independently for all observations by drawing from its conditional distribution.
 #' @inheritParams RprobitB_parameter
+#' @details
+#' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
+#' Independently for each \eqn{n}, the conditional probability \eqn{\Pr(z_n = c \mid s,\beta_n,b,\Omega)} of having \eqn{\beta_n}
+#' allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class covariance
+#' matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
 #' @return
-#' An updated class allocation vector.
+#' An updated class allocation vector. Values starting from 0, i.e. \eqn{z_n = 0} means
+#' that \eqn{\beta_n} is allocated to class \eqn{1}.
+#' @examples
+#' ### class weights for C = 2 classes
+#' s <- rdirichlet(c(1,1))
+#' ### coefficient vector for N = 1 decider and P_r = 2 random coefficients
+#' beta <- matrix(c(1,1), ncol = 1)
+#' ### class means and covariances
+#' b <- cbind(c(0,0),c(1,1))
+#' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
+#' ### updated class allocation vector (starting from 0)
+#' update_z(s = s, beta = beta, b = b, Omega = Omega)
 #' @export
 #' @keywords
 #' posterior
 #'
 update_z <- function(s, beta, b, Omega) {
     .Call(`_RprobitB_update_z`, s, beta, b, Omega)
+}
+
+#' Update class means
+#' @description
+#' This function updates the class means independent of the other classes.
+#' @inheritParams RprobitB_parameter
+#' @param m
+#' The vector of class sizes of length \code{C}.
+#' @param xi
+#' The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+#' @param Dinv
+#' The precision matrix (i.e. the inverse of the covariance matrix) of dimension \code{P_r} x \code{P_r}
+#' of the normal prior for each \code{b_c}.
+#' @details
+#' The following holds independently for each class \eqn{c}.
+#' Let \eqn{b_c} be the mean of class number \code{c}. A priori, we assume that \eqn{b_c} is normally distributed
+#' with mean vector \eqn{\xi} and covariance matrix \eqn{D}.
+#' Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
+#' \eqn{m_c} the class size, and \eqn{\bar{b}_c} their arithmetic mean.
+#' Assuming independence across draws, \eqn{(\beta_n)_{z_n=c}} has
+#' a normal likelihood of \deqn{\prod_n \phi(\beta_n \mid b_c,\Omega_c),} where the product is over the values \eqn{n}
+#' for which \eqn{z_n=c} holds.
+#' Due to the conjugacy of the prior, the posterior \eqn{\Pr(b_c \mid (\beta_n)_{z_n=c})} follows a normal distribution
+#' with mean \deqn{(D^{-1} + m_c\Omega_c^{-1})^{-1}(D^{-1}\xi + m_c\Omega_c^{-1}\bar{b}_c)} and covariance matrix
+#' \deqn{(D^{-1} + m_c \Omega_c^{-1})^{-1}.}
+#' @return
+#' A matrix of updated means for each class in columns.
+#' @examples
+#' ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
+#' beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1))
+#' ### class covariances for C = 2 classes
+#' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
+#' ### class allocation vector (starting from 0) and class sizes
+#' z <- c(0,0,1,1)
+#' m <- as.numeric(table(z))
+#' ### prior mean vector and precision matrix (inverse of covariance matrix)
+#' xi <- c(0,0)
+#' Dinv <- diag(2)
+#' ### updated class means (in columns)
+#' update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_b <- function(beta, Omega, z, m, xi, Dinv) {
+    .Call(`_RprobitB_update_b`, beta, Omega, z, m, xi, Dinv)
 }
 
 #' Gibbs sampler.
