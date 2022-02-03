@@ -89,7 +89,7 @@ arma::vec rdirichlet(arma::vec delta) {
 //' A matrix, the scale matrix.
 //' @return
 //' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
-//' corresponding Cholesky decompositions (\code{C} and \code{CI}).
+//' corresponding Choleski decomposition (\code{C} and \code{CI}).
 //' @export
 //' @examples
 //' rwishart(nu = 2, V = diag(2))

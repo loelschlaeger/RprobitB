@@ -70,7 +70,23 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of length <code>n</code>.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The function builds upon the following fact: If \(\epsilon = (\epsilon_1,\dots,\epsilon_n)\),
+where each \(\epsilon_i\) is drawn independently from a standard normal distribution,
+then \(\mu+L\epsilon\) is a draw from the multivariate normal distribution
+\(N(\mu,\Sigma)\), where \(L\) is the lower triangular factor of the
+Choleski decomposition of \(\Sigma\).</p>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">rmvnorm</span><span class="op">(</span>mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">Sigma</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rmvnorm(mu = mu, Sigma = Sigma):</span> could not find function "rmvnorm"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

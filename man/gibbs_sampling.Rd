@@ -61,36 +61,8 @@ The threshold difference in means for joining latent classes
 
 \item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
 
-\item{prior}{A named list of parameters for the prior distributions of the normalized
-parameters:
-\itemize{
-\item \code{eta}:
-The mean vector of length \code{P_f} of the normal prior for
-\code{alpha}.
-\item \code{Psi}:
-The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-normal prior for \code{alpha}.
-\item \code{delta}:
-The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
-\item \code{xi}:
-The mean vector of length \code{P_r} of the normal prior for each
-\code{b_c}.
-\item \code{D}:
-The covariance matrix of dimension \code{P_r} x \code{P_r} of the
-normal prior for each \code{b_c}.
-\item \code{nu}:
-The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.
-\item \code{Theta}:
-The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.
-\item \code{kappa}:
-The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.
-\item \code{E}:
-The scale matrix of dimension \code{J-1} x \code{J-1} of the
-Inverse Wishart prior for \code{Sigma}.
-}}
+\item{prior}{A named list of parameters for the prior distributions. See the documentation
+of \code{\link{check_prior}} for details about which parameters can be specified.}
 
 \item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
 }

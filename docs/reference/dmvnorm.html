@@ -72,9 +72,20 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A density value.</p>
+    <p>The density value.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mean</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">Sigma</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">dmvnorm</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mean <span class="op">=</span> <span class="va">mean</span>, Sigma <span class="op">=</span> <span class="va">Sigma</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dmvnorm(x = x, mean = mean, Sigma = Sigma):</span> could not find function "dmvnorm"</span>
+<span class="r-in"><span class="fu">dmvnorm</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, mean <span class="op">=</span> <span class="va">mean</span>, Sigma <span class="op">=</span> <span class="va">Sigma</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE):</span> could not find function "dmvnorm"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

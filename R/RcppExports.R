@@ -79,7 +79,7 @@ rdirichlet <- function(delta) {
 #' A matrix, the scale matrix.
 #' @return
 #' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
-#' corresponding Cholesky decompositions (\code{C} and \code{CI}).
+#' corresponding Choleski decomposition (\code{C} and \code{CI}).
 #' @export
 #' @examples
 #' rwishart(nu = 2, V = diag(2))
@@ -120,8 +120,7 @@ rmvnorm <- function(mu, Sigma) {
 #' Update class weight vector
 #' @description
 #' This function updates the class weight vector by drawing from its posterior distribution.
-#' @param delta
-#' The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
+#' @inheritParams check_prior
 #' @param m
 #' The vector of current class frequencies.
 #' @return
@@ -155,7 +154,7 @@ update_s <- function(delta, m) {
 
 #' Update class allocation vector
 #' @description
-#' This function updates the class allocation vector independently for all observations by drawing from its conditional distribution.
+#' This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
 #' @inheritParams RprobitB_parameter
 #' @details
 #' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
@@ -185,12 +184,11 @@ update_z <- function(s, beta, b, Omega) {
 
 #' Update class means
 #' @description
-#' This function updates the class means independent of the other classes.
+#' This function updates the class means (independent from the other classes).
 #' @inheritParams RprobitB_parameter
 #' @param m
 #' The vector of class sizes of length \code{C}.
-#' @param xi
-#' The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+#' @inheritParams check_prior
 #' @param Dinv
 #' The precision matrix (i.e. the inverse of the covariance matrix) of dimension \code{P_r} x \code{P_r}
 #' of the normal prior for each \code{b_c}.
@@ -229,6 +227,48 @@ update_b <- function(beta, Omega, z, m, xi, Dinv) {
     .Call(`_RprobitB_update_b`, beta, Omega, z, m, xi, Dinv)
 }
 
+#' Update class covariances
+#' @description
+#' This function updates the class covariances (independent from the other classes).
+#' @inheritParams RprobitB_parameter
+#' @param m
+#' The vector of class sizes of length \code{C}.
+#' @inheritParams check_prior
+#' @details
+#' The following holds independently for each class \eqn{c}.
+#' Let \eqn{\Omega_c} be the covariance matrix of class number \code{c}.
+#' A priori, we assume that \eqn{\Omega_c} is inverse Wishart distributed
+#' with \eqn{\nu} degrees of freedom and scale matrix \eqn{\Theta}.
+#' Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
+#' \eqn{m_c} the size of class \eqn{c}, and \eqn{b_c} the class mean vector.
+#' Due to the conjugacy of the prior, the posterior \eqn{\Pr(\Omega_c \mid (\beta_n)_{z_n=c})} follows an inverted Wishart distribution
+#' with \eqn{\nu + m_c} degrees of freedom and scale matrix \eqn{\Theta^{-1} + \sum_n (\beta_n - b_c)(\beta_n - b_c)'}, where
+#' the product is over the values \eqn{n} for which \eqn{z_n=c} holds.
+#' @return
+#' A matrix of updated covariance matrices for each class in columns.
+#' @examples
+#' ### coefficient vector for N = 10 decider and P_r = 2 random coefficients
+#' N <- 10
+#' beta <- cbind(matrix(rnorm(N,0,0.1), nrow = 2, ncol = N/2),
+#'               matrix(rnorm(N,1,0.1), nrow = 2, ncol = N/2))
+#' ### class means for C = 2 classes
+#' b <- cbind(c(0,0),c(1,1))
+#' ### class allocation vector (starting from 0) and class sizes
+#' z <- c(rep(0,N/2),rep(1,N/2))
+#' m <- as.numeric(table(z))
+#' ### degrees of freedom and scale matrix for the Wishart prior
+#' nu <- 1
+#' Theta <- diag(2)
+#' ### updated class means (in columns)
+#' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_Omega <- function(beta, b, z, m, nu, Theta) {
+    .Call(`_RprobitB_update_Omega`, beta, b, z, m, nu, Theta)
+}
+
 #' Gibbs sampler.
 #' @description
 #' This function performs Gibbs sampling for the RprobitB package.
@@ -263,8 +303,14 @@ gibbs_sampling <- function(R, B, print_progress, N, J, P_f, P_r, latent_classes,
 #' @return
 #' A numeric value.
 #' @export
+#' @examples
+#' ### draw R samples from a standard normal truncated at 1 from above
+#' R <- 1e4
+#' draws <- replicate(R, rtnorm(1,1,1,TRUE))
+#' ### draw the density
+#' plot(density(draws))
 #' @keywords
-#' dist
+#' distribution
 #'
 rtnorm <- function(mu, sig, trunpt, above) {
     .Call(`_RprobitB_rtnorm`, mu, sig, trunpt, above)

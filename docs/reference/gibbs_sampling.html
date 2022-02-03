@@ -114,34 +114,8 @@ The threshold difference in means for joining latent classes
 <dt>sufficient_statistics</dt>
 <dd><p>The output of <code><a href="sufficient_statistics.html">sufficient_statistics</a></code>.</p></dd>
 <dt>prior</dt>
-<dd><p>A named list of parameters for the prior distributions of the normalized
-parameters:</p><ul><li><p><code>eta</code>:
-The mean vector of length <code>P_f</code> of the normal prior for
-<code>alpha</code>.</p></li>
-<li><p><code>Psi</code>:
-The covariance matrix of dimension <code>P_f</code> x <code>P_f</code> of the
-normal prior for <code>alpha</code>.</p></li>
-<li><p><code>delta</code>:
-The concentration parameter of length 1 of the Dirichlet prior for <code>s</code>.</p></li>
-<li><p><code>xi</code>:
-The mean vector of length <code>P_r</code> of the normal prior for each
-<code>b_c</code>.</p></li>
-<li><p><code>D</code>:
-The covariance matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>nu</code>:
-The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>:
-The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>:
-The degrees of freedom (a natural number greater than <code>J-1</code>) of
-the Inverse Wishart prior for <code>Sigma</code>.</p></li>
-<li><p><code>E</code>:
-The scale matrix of dimension <code>J-1</code> x <code>J-1</code> of the
-Inverse Wishart prior for <code>Sigma</code>.</p></li>
-</ul></dd>
+<dd><p>A named list of parameters for the prior distributions. See the documentation
+of <code><a href="check_prior.html">check_prior</a></code> for details about which parameters can be specified.</p></dd>
 <dt>init</dt>
 <dd><p>The output of <code><a href="set_initial_gibbs_values.html">set_initial_gibbs_values</a></code>.</p></dd>
 </dl></div>

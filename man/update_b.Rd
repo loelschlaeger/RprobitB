@@ -29,7 +29,7 @@ of the normal prior for each \code{b_c}.}
 A matrix of updated means for each class in columns.
 }
 \description{
-This function updates the class means independent of the other classes.
+This function updates the class means (independent from the other classes).
 }
 \details{
 The following holds independently for each class \eqn{c}.

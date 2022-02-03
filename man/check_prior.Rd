@@ -2,53 +2,75 @@
 % Please edit documentation in R/mcmc.R
 \name{check_prior}
 \alias{check_prior}
-\title{Check \code{prior}.}
+\title{Check prior parameters}
 \usage{
-check_prior(prior, P_f, P_r, J)
+check_prior(
+  P_f,
+  P_r,
+  J,
+  eta = numeric(P_f),
+  Psi = diag(P_f),
+  delta = 1,
+  xi = numeric(P_r),
+  D = diag(P_r),
+  nu = P_r + 2,
+  Theta = diag(P_r),
+  kappa = J + 1,
+  E = diag(J - 1)
+)
 }
 \arguments{
-\item{prior}{A named list of parameters for the prior distributions of the normalized
-parameters:
-\itemize{
-\item \code{eta}:
-The mean vector of length \code{P_f} of the normal prior for
-\code{alpha}.
-\item \code{Psi}:
-The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-normal prior for \code{alpha}.
-\item \code{delta}:
-The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
-\item \code{xi}:
-The mean vector of length \code{P_r} of the normal prior for each
-\code{b_c}.
-\item \code{D}:
-The covariance matrix of dimension \code{P_r} x \code{P_r} of the
-normal prior for each \code{b_c}.
-\item \code{nu}:
-The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.
-\item \code{Theta}:
-The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.
-\item \code{kappa}:
-The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.
-\item \code{E}:
-The scale matrix of dimension \code{J-1} x \code{J-1} of the
-Inverse Wishart prior for \code{Sigma}.
-}}
-
 \item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
 
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
+
+\item{eta}{The mean vector of length \code{P_f} of the normal prior for \code{alpha}.}
+
+\item{Psi}{The covariance matrix of dimension \code{P_f} x \code{P_f} of the
+normal prior for \code{alpha}.}
+
+\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)}
+of the Dirichlet prior for \code{s}.}
+
+\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.}
+
+\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal
+prior for each \code{b_c}.}
+
+\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of
+the Inverse Wishart prior for each \code{Omega_c}.}
+
+\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the
+Inverse Wishart prior for each \code{Omega_c}.}
+
+\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of
+the Inverse Wishart prior for \code{Sigma}.}
+
+\item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
+prior for \code{Sigma}.}
 }
 \value{
-The checked input \code{prior}
+A list containing all prior parameters. Parameters that are not relevant
+for the model configuration are set to \code{NA}.
 }
 \description{
-This function checks the input \code{prior} and sets missing values to
-default values.
+This function checks compatibility of submitted parameters for the prior distributions
+and sets missing values to default values.
 }
-\keyword{internal}
+\details{
+A priori, we assume that the model parameters follow these distributions:
+\itemize{
+\item \eqn{\alpha \sim N(\eta, \Psi)}
+\item \eqn{s \sim Dir(\delta)}
+\item \eqn{b_c \sim N(\xi, D)} for all classes \eqn{c}
+\item \eqn{\Omega_c \sim IW(\nu,\Theta)} for all classes \eqn{c}
+\item \eqn{\Sigma \sim IW(\kappa,E)}
+}
+where \eqn{N} denotes the normal, \eqn{Dir} the Dirichlet, and \eqn{IW}
+the Inverted Wishart distribution.
+}
+\examples{
+check_prior(P_f = 1, P_r = 2, J = 3)
+}

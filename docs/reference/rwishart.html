@@ -62,16 +62,51 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>nu</dt>
-<dd><p>A double, the degrees of freedom.</p></dd>
+<dd><p>A numeric, the degrees of freedom. Must be at least the number of dimensions.</p></dd>
 <dt>V</dt>
 <dd><p>A matrix, the scale matrix.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list, the draws from the Wishart (W), inverted Wishart (IW), and
-corresponding Cholesky decompositions (C and CI).</p>
+    <p>A list, the draws from the Wishart (<code>W</code>), inverted Wishart (<code>IW</code>), and
+corresponding Choleski decomposition (<code>C</code> and <code>CI</code>).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The Wishart distribution is a generalization to multiple dimensions of the
+gamma distributions and draws from the space of covariance matrices.
+Its expectation is <code>nu*V</code> and its variance increases both in <code>nu</code>
+and in the values of <code>V</code>.
+The Wishart distribution is the conjugate prior to the precision matrix of
+a multivariate normal distribution and proper if <code>nu</code> is greater than
+the number of dimensions.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">rwishart</span><span class="op">(</span>nu <span class="op">=</span> <span class="fl">2</span>, V <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.7666155 -1.240209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.2402090  4.049603</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $IW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.5853426 0.7917728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.7917728 0.4894218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.8755658 -1.416466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0000000  1.429415</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.142119 1.1317720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000 0.6995868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

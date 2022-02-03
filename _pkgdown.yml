@@ -31,6 +31,7 @@ reference:
 - title: Model fitting
   desc: Use these function for model estimation.
   contents:
+  - check_prior
   - mcmc
   - transform_fit
   - plot.RprobitB_fit

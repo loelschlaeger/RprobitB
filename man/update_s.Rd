@@ -7,7 +7,8 @@
 update_s(delta, m)
 }
 \arguments{
-\item{delta}{The concentration parameter of length 1 of the Dirichlet prior for \code{s}.}
+\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)}
+of the Dirichlet prior for \code{s}.}
 
 \item{m}{The vector of current class frequencies.}
 }

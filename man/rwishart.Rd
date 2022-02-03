@@ -13,7 +13,7 @@ rwishart(nu, V)
 }
 \value{
 A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
-corresponding Cholesky decompositions (\code{C} and \code{CI}).
+corresponding Choleski decomposition (\code{C} and \code{CI}).
 }
 \description{
 This function draws from a Wishart and inverted Wishart distribution.

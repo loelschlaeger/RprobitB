@@ -21,4 +21,11 @@ A numeric value.
 \description{
 This function draws from a truncated univariate normal distribution.
 }
-\keyword{dist}
+\examples{
+### draw R samples from a standard normal truncated at 1 from above
+R <- 1e4
+draws <- replicate(R, rtnorm(1,1,1,TRUE))
+### draw the density
+plot(density(draws))
+}
+\keyword{distribution}

@@ -28,7 +28,7 @@ RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
   stopifnot(is.numeric(B), B %% 1 == 0, B > 0)
   stopifnot(is.numeric(Q), Q %% 1 == 0, Q > 0)
   stopifnot(inherits(latent_classes, "RprobitB_latent_classes"))
-  stopifnot(inherits(prior, "RprobitB_prior"))
+  stopifnot(is.list(prior))
   stopifnot(inherits(gibbs_samples, "RprobitB_gibbs_samples"))
 
   ### create and return object of class "RprobitB_fit"

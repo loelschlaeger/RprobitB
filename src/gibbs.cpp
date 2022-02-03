@@ -15,8 +15,7 @@ using namespace Rcpp;
 //' Update class weight vector
 //' @description
 //' This function updates the class weight vector by drawing from its posterior distribution.
-//' @param delta
-//' The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
+//' @inheritParams check_prior
 //' @param m
 //' The vector of current class frequencies.
 //' @return
@@ -52,7 +51,7 @@ arma::vec update_s (int delta, arma::vec m) {
 
 //' Update class allocation vector
 //' @description
-//' This function updates the class allocation vector independently for all observations by drawing from its conditional distribution.
+//' This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
 //' @inheritParams RprobitB_parameter
 //' @details
 //' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
@@ -95,12 +94,11 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 
 //' Update class means
 //' @description
-//' This function updates the class means independent of the other classes.
+//' This function updates the class means (independent from the other classes).
 //' @inheritParams RprobitB_parameter
 //' @param m
 //' The vector of class sizes of length \code{C}.
-//' @param xi
-//' The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+//' @inheritParams check_prior
 //' @param Dinv
 //' The precision matrix (i.e. the inverse of the covariance matrix) of dimension \code{P_r} x \code{P_r}
 //' of the normal prior for each \code{b_c}.
@@ -153,6 +151,63 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
     b_draw(span::all,c) = rmvnorm(arma::inv(Dinv+m[c]*Omega_c_inv) * (Dinv*xi+m[c]*Omega_c_inv*b_bar(span::all,c)), arma::inv(Dinv+m[c]*Omega_c_inv));
   }
   return(b_draw);
+}
+
+//' Update class covariances
+//' @description
+//' This function updates the class covariances (independent from the other classes).
+//' @inheritParams RprobitB_parameter
+//' @param m
+//' The vector of class sizes of length \code{C}.
+//' @inheritParams check_prior
+//' @details
+//' The following holds independently for each class \eqn{c}.
+//' Let \eqn{\Omega_c} be the covariance matrix of class number \code{c}.
+//' A priori, we assume that \eqn{\Omega_c} is inverse Wishart distributed
+//' with \eqn{\nu} degrees of freedom and scale matrix \eqn{\Theta}.
+//' Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
+//' \eqn{m_c} the size of class \eqn{c}, and \eqn{b_c} the class mean vector.
+//' Due to the conjugacy of the prior, the posterior \eqn{\Pr(\Omega_c \mid (\beta_n)_{z_n=c})} follows an inverted Wishart distribution
+//' with \eqn{\nu + m_c} degrees of freedom and scale matrix \eqn{\Theta^{-1} + \sum_n (\beta_n - b_c)(\beta_n - b_c)'}, where
+//' the product is over the values \eqn{n} for which \eqn{z_n=c} holds.
+//' @return
+//' A matrix of updated covariance matrices for each class in columns.
+//' @examples
+//' ### coefficient vector for N = 10 decider and P_r = 2 random coefficients
+//' N <- 10
+//' beta <- cbind(matrix(rnorm(N,0,0.1), nrow = 2, ncol = N/2),
+//'               matrix(rnorm(N,1,0.1), nrow = 2, ncol = N/2))
+//' ### class means for C = 2 classes
+//' b <- cbind(c(0,0),c(1,1))
+//' ### class allocation vector (starting from 0) and class sizes
+//' z <- c(rep(0,N/2),rep(1,N/2))
+//' m <- as.numeric(table(z))
+//' ### degrees of freedom and scale matrix for the Wishart prior
+//' nu <- 1
+//' Theta <- diag(2)
+//' ### updated class means (in columns)
+//' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, int nu, arma::mat Theta) {
+  int P_r = beta.n_rows;
+  int C = m.size();
+  int N = beta.n_cols;
+  arma::mat Omega = zeros<mat>(P_r*P_r,C);
+  for(int c = 0; c<C; c++){
+    arma::mat sum_sp = zeros<mat>(P_r,P_r);
+    for(int n = 0; n<N; n++){
+      if(z[n]==c){
+        sum_sp += (beta(span::all,n)-b(span::all,c)) * trans(beta(span::all,n)-b(span::all,c));
+      }
+    }
+    arma::mat Omega_draw = as<mat>(rwishart(nu+m[c],arma::inv(Theta+sum_sp))["IW"]);
+    Omega(span::all,c) = reshape(Omega_draw,P_r*P_r,1);
+  }
+  return(Omega);
 }
 
 // Function to draw from posterior of linear regression

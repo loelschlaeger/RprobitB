@@ -73,8 +73,14 @@ double trunNormBelow(double const& a){
 //' @return
 //' A numeric value.
 //' @export
+//' @examples
+//' ### draw R samples from a standard normal truncated at 1 from above
+//' R <- 1e4
+//' draws <- replicate(R, rtnorm(1,1,1,TRUE))
+//' ### draw the density
+//' plot(density(draws))
 //' @keywords
-//' dist
+//' distribution
 //'
 // [[Rcpp::export]]
 double rtnorm(double mu, double sig, double trunpt, bool above){

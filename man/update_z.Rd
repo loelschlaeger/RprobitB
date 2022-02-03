@@ -27,7 +27,7 @@ An updated class allocation vector. Values starting from 0, i.e. \eqn{z_n = 0} m
 that \eqn{\beta_n} is allocated to class \eqn{1}.
 }
 \description{
-This function updates the class allocation vector independently for all observations by drawing from its conditional distribution.
+This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
 }
 \details{
 Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
