@@ -1,4 +1,4 @@
-url: https://loelschlaeger.github.io/RprobitB/
+url: https://loelschlaeger.de/RprobitB/
 
 home:
   title: Probit models for choice data
@@ -6,6 +6,9 @@ home:
 authors:
   Lennart Oelschläger:
     href: https://loelschlaeger.de
+  Dietmar Bauer:
+    href: https://de.wikipedia.org/wiki/Dietmar_Bauer
+
 
 template:
   bootstrap: 5
