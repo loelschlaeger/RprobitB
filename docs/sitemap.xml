@@ -166,6 +166,9 @@
     <loc>https://loelschlaeger.github.io/RprobitB/reference/predict.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/predict.RprobitB_fit.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/predict_choices.html</loc>
   </url>
   <url>
@@ -266,6 +269,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.github.io/RprobitB/reference/transform.RprobitB_fit.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.github.io/RprobitB/reference/transform_fit.html</loc>

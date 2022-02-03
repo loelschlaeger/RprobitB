@@ -9,7 +9,7 @@ test_that("P", {
     alpha = 1:5, Sigma = 1
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict_choices(model, overview = TRUE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("P train test", {
@@ -24,7 +24,7 @@ test_that("P train test", {
   )
   data <- train_test(data, test_proportion = 0.3)
   model <- mcmc(data$train, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict_choices(model, data = data$test, overview = TRUE))
+  expect_snapshot(predict(model, data = data$test, overview = TRUE))
 })
 
 test_that("MNP", {
@@ -38,7 +38,7 @@ test_that("MNP", {
     alpha = 1:8
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict_choices(model, overview = TRUE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("MMNP", {
@@ -54,7 +54,7 @@ test_that("MMNP", {
     Sigma = diag(2)
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(predict_choices(model, overview = TRUE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("LCMMNP", {
@@ -72,7 +72,7 @@ test_that("LCMMNP", {
     R = 1000, print_progress = FALSE, seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(predict_choices(model, overview = TRUE))
+  expect_snapshot(predict(model, overview = TRUE))
 })
 
 test_that("ULCMMNP", {
@@ -93,5 +93,5 @@ test_that("ULCMMNP", {
       "epsmax" = 0.9
     )
   )
-  expect_snapshot(predict_choices(model, overview = TRUE))
+  expect_snapshot(predict(model, overview = TRUE))
 })

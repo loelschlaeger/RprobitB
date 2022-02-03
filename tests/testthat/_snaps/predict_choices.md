@@ -1,7 +1,7 @@
 # P
 
     Code
-      predict_choices(model, overview = TRUE)
+      predict(model, overview = TRUE)
     Output
            predicted
       true  bus car
@@ -11,7 +11,7 @@
 # P train test
 
     Code
-      predict_choices(model, data = data$test, overview = TRUE)
+      predict(model, data = data$test, overview = TRUE)
     Output
            predicted
       true  bus car
@@ -21,7 +21,7 @@
 # MNP
 
     Code
-      predict_choices(model, overview = TRUE)
+      predict(model, overview = TRUE)
     Output
              predicted
       true    bus car train
@@ -32,7 +32,7 @@
 # MMNP
 
     Code
-      predict_choices(model, overview = TRUE)
+      predict(model, overview = TRUE)
     Output
              predicted
       true    bus car train
@@ -43,7 +43,7 @@
 # LCMMNP
 
     Code
-      predict_choices(model, overview = TRUE)
+      predict(model, overview = TRUE)
     Output
              predicted
       true    bus car train
@@ -54,7 +54,7 @@
 # ULCMMNP
 
     Code
-      predict_choices(model, overview = TRUE)
+      predict(model, overview = TRUE)
     Output
              predicted
       true    bus car train

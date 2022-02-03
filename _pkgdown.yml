@@ -33,7 +33,7 @@ reference:
   contents:
   - check_prior
   - mcmc
-  - transform_fit
+  - transform.RprobitB_fit
   - plot.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.
@@ -43,7 +43,7 @@ reference:
   - log_likelihood
   - model_selection
   - preference_classification
-  - predict_choices
+  - predict.RprobitB_fit
   - plot.RprobitB_fit
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.

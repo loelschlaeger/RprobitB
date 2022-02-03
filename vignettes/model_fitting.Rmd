@@ -183,7 +183,7 @@ Alternatively, the samples can be normalized such that any variance of $\Sigma$ 
 The normalization of a fitted model can be changed afterwards via
 
 ```{r, eval = FALSE}
-model = transform(model = model, scale = scale)
+model <- transform(model, scale = scale)
 ``` 
 
 where `model` is the output of `mcmc()` and `scale` is a named list of three elements, determining the parameter normalization, as described above. 

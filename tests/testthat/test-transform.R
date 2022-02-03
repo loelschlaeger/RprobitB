@@ -9,9 +9,9 @@ test_that("P", {
     alpha = 1:5, Sigma = 1
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  model_new_B <- transform_fit(model, B = 2)
-  model_new_Q <- transform_fit(model, Q = 2)
-  model_new_scale <- transform_fit(model,
+  model_new_B <- transform.RprobitB_fit(model, B = 2)
+  model_new_Q <- transform.RprobitB_fit(model, Q = 2)
+  model_new_scale <- transform.RprobitB_fit(model,
     scale = list(
       "parameter" = "a",
       "index" = 1, "value" = 1
@@ -34,9 +34,9 @@ test_that("MNP", {
     alpha = 1:8
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  model_new_B <- transform_fit(model, B = 2)
-  model_new_Q <- transform_fit(model, Q = 2)
-  model_new_scale <- transform_fit(model,
+  model_new_B <- transform.RprobitB_fit(model, B = 2)
+  model_new_Q <- transform.RprobitB_fit(model, Q = 2)
+  model_new_scale <- transform.RprobitB_fit(model,
     scale = list(
       "parameter" = "a",
       "index" = 1, "value" = 1
@@ -61,9 +61,9 @@ test_that("MMNP", {
     Sigma = diag(2)
   )
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  model_new_B <- transform_fit(model, B = 2)
-  model_new_Q <- transform_fit(model, Q = 2)
-  model_new_scale <- transform_fit(model,
+  model_new_B <- transform.RprobitB_fit(model, B = 2)
+  model_new_Q <- transform.RprobitB_fit(model, Q = 2)
+  model_new_scale <- transform.RprobitB_fit(model,
     scale = list(
       "parameter" = "a",
       "index" = 1, "value" = 1
@@ -90,9 +90,9 @@ test_that("LCMMNP", {
     R = 1000, print_progress = FALSE, seed = 1,
     latent_classes = list("C" = 2)
   )
-  model_new_B <- transform_fit(model, B = 2)
-  model_new_Q <- transform_fit(model, Q = 2)
-  model_new_scale <- transform_fit(model,
+  model_new_B <- transform.RprobitB_fit(model, B = 2)
+  model_new_Q <- transform.RprobitB_fit(model, Q = 2)
+  model_new_scale <- transform.RprobitB_fit(model,
     scale = list(
       "parameter" = "a",
       "index" = 1, "value" = 1
@@ -122,9 +122,9 @@ test_that("ULCMMNP", {
       "epsmax" = 0.9
     )
   )
-  model_new_B <- transform_fit(model, B = 2)
-  model_new_Q <- transform_fit(model, Q = 2)
-  model_new_scale <- transform_fit(model,
+  model_new_B <- transform.RprobitB_fit(model, B = 2)
+  model_new_Q <- transform.RprobitB_fit(model, Q = 2)
+  model_new_scale <- transform.RprobitB_fit(model,
     scale = list(
       "parameter" = "a",
       "index" = 1, "value" = 1

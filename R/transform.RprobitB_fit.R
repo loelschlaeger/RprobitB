@@ -14,20 +14,23 @@
 #' \code{vignette("model_fitting", package = "RprobitB")}.
 #'
 #' @inheritParams mcmc
-#' @param x
+#' @param _data
 #' An object of class \code{\link{RprobitB_fit}}.
 #' @param check_preference_flip
 #' If \code{TRUE} check for flip in preferences with new scale.
+#' @param ...
+#' Ignored.
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}.
 #'
 #' @export
 
-transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
-                          check_preference_flip = TRUE) {
+transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
+                                   check_preference_flip = TRUE, ...) {
 
   ### check inputs
+  x <- `_data`
   if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit'.")
   }
@@ -55,7 +58,7 @@ transform_fit <- function(x, B = NULL, Q = NULL, scale = NULL,
   } else {
     ### check if new scale flips preferences
     if (check_preference_flip) {
-      model_new <- transform_fit(x = x, scale = scale, check_preference_flip = FALSE)
+      model_new <- transform.RprobitB_fit(x, scale = scale, check_preference_flip = FALSE)
       preference_flip(model_old = x, model_new = model_new)
     }
     normalization <- RprobitB_normalization(J = J, P_f = P_f, scale = scale)

@@ -52,28 +52,32 @@ First, load the package.
 ``` r
 library(RprobitB)
 #> Thanks for using RprobitB 1.0.0.9000, happy choice modeling!
-#> See https://loelschlaeger.github.io/RprobitB for help.
+#> See https://loelschlaeger.de/RprobitB for help.
 #> Type 'citation("RprobitB")' for citing this R package.
 ```
 
 Then, prepare choice data, for example the Train dataset from the mlogit
-package. Here, we put 30 percent of data aside for later out-of-sample
-prediction.
+package.
 
 ``` r
 data("Train", package = "mlogit")
-data = prepare_data(
+data <- prepare_data(
   form = choice ~ price | 0 | time + comfort + change,
   choice_data = Train,
   re = "price",
-  standardize = "all",
-  test_prop = 0.3)
+  standardize = "all")
+```
+
+We split the dataset into a train (70%) and test subset (30%).
+
+``` r
+data <- train_test(data, test_proportion = 0.3)
 ```
 
 Call the `mcmc` function to estimate the model.
 
 ``` r
-model = mcmc(data$train)
+model <- mcmc(data$train)
 #> Iteration Info                   ETA (min)
 #>         0 started Gibbs sampling          
 #>      1000                                2
@@ -125,12 +129,12 @@ summary(model)
 #>           mean      sd      R^
 #>  alpha
 #>                               
-#>      1   -0.85    0.08    1.04
-#>      2   -0.87    0.08    1.04
-#>      3   -0.52    0.05    1.03
-#>      4   -0.50    0.05    1.04
-#>      5   -0.27    0.04    1.02
-#>      6   -0.23    0.05    1.02
+#>      1   -0.82    0.08    1.02
+#>      2   -0.85    0.08    1.01
+#>      3   -0.52    0.05    1.01
+#>      4   -0.50    0.05    1.00
+#>      5   -0.26    0.05    1.01
+#>      6   -0.21    0.05    1.00
 #> 
 #>  s
 #>                               
@@ -138,11 +142,11 @@ summary(model)
 #> 
 #>  b
 #>                               
-#>    1.1   -2.24    0.27    1.11
+#>    1.1   -2.19    0.26    1.02
 #> 
 #>  Omega
 #>                               
-#>  1.1,1    3.32    0.93    1.02
+#>  1.1,1    3.10    0.87    1.01
 #> 
 #>  Sigma
 #>                               
@@ -162,9 +166,9 @@ The `predict` function makes choice predictions and compares the
 prediction to the actual choices.
 
 ``` r
-predict_choices(model, data$test)
+predict(model, data$test)
 #>     predicted
 #> true   A   B
-#>    A 306 128
-#>    B 147 309
+#>    A 299 127
+#>    B 144 304
 ```
