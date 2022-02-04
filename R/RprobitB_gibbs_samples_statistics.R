@@ -24,7 +24,7 @@
 #' \code{FUN}.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 

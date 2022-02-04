@@ -17,7 +17,8 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{normalization}{An object of class \code{RprobitB_normalization}.}
+\item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
+via \code{\link{RprobitB_normalization}}.}
 }
 \value{
 An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed

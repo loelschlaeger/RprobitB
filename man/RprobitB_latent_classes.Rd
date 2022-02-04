@@ -37,4 +37,4 @@ An object of class \code{RprobitB_latent_classes}.
 \description{
 This function creates an object of class \code{RprobitB_latent_classes}.
 }
-\keyword{s3}
+\keyword{constructor}

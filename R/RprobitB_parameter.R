@@ -50,7 +50,7 @@
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
 #'
 #' @keywords
-#' s3
+#' constructor
 #'
 #' @importFrom stats runif rnorm
 

@@ -16,7 +16,7 @@
 #' this function as elements.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
                          gibbs_samples, classification) {

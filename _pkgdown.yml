@@ -37,7 +37,6 @@ reference:
   - check_prior
   - mcmc
   - transform.RprobitB_fit
-  - plot.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:
@@ -51,7 +50,7 @@ reference:
 - title: S3 classes
   desc: These functions construct the S3 classes of RprobitB.
   contents:
-  - has_keyword("s3")
+  - has_keyword("constructor")
 - title: Distributions
   desc: Implementation of distributions and number generating functions.
   contents:

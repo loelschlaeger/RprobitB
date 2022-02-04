@@ -258,26 +258,49 @@ vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
   return (out_U_nt);
 }
 
-//' Gibbs sampler.
+//' Gibbs sampler
+//'
 //' @description
-//' This function performs Gibbs sampling for the RprobitB package.
-//' @inheritParams mcmc
-//' @inheritParams RprobitB_data
+//' This function draws Gibbs samples from the posterior distribution of the
+//' multinomial probit model parameters.
+//'
 //' @param sufficient_statistics
 //' The output of \code{\link{sufficient_statistics}}.
+//' @inheritParams mcmc
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return
 //' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
 //' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
 //' (if \code{P_r>0}).
+//'
 //' @keywords
 //' internal
 //'
 // [[Rcpp::export]]
-List gibbs_sampling (int R, int B, bool print_progress,
-                     int N, int J, int P_f, int P_r, List latent_classes,
-                     List sufficient_statistics, List prior, List init) {
+List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes,
+                     List init, int R, int B, bool print_progress) {
+
+  // extract 'sufficient_statistics' parameters
+  int N = as<int>(sufficient_statistics["N"]);
+  int J = as<int>(sufficient_statistics["J"]);
+  int P_f = as<int>(sufficient_statistics["P_f"]);
+  int P_r = as<int>(sufficient_statistics["P_r"]);
+  vec Tvec = as<vec>(sufficient_statistics["Tvec"]);
+  vec csTvec = as<vec>(sufficient_statistics["csTvec"]);
+  List W;
+  List X;
+  mat y = as<mat>(sufficient_statistics["y"]);
+  mat WkW;
+  List XkX;
+  if(P_f>0){
+    W = as<List>(sufficient_statistics["W"]);
+    WkW = as<mat>(sufficient_statistics["WkW"]);
+  }
+  if(P_r>0){
+    X = as<List>(sufficient_statistics["X"]);
+    XkX = as<List>(sufficient_statistics["XkX"]);
+  }
 
   // extract 'latent_classes' parameters
   int C = as<int>(latent_classes["C"]);
@@ -298,23 +321,6 @@ List gibbs_sampling (int R, int B, bool print_progress,
     epsmin = as<double>(latent_classes["epsmin"]);
     epsmax = as<double>(latent_classes["epsmax"]);
     distmin = as<double>(latent_classes["distmin"]);
-  }
-
-  // extract 'sufficient_statistics' parameters
-  vec Tvec = as<vec>(sufficient_statistics["Tvec"]);
-  vec csTvec = as<vec>(sufficient_statistics["csTvec"]);
-  List W;
-  List X;
-  mat y = as<mat>(sufficient_statistics["y"]);
-  mat WkW;
-  List XkX;
-  if(P_f>0){
-    W = as<List>(sufficient_statistics["W"]);
-    WkW = as<mat>(sufficient_statistics["WkW"]);
-  }
-  if(P_r>0){
-    X = as<List>(sufficient_statistics["X"]);
-    XkX = as<List>(sufficient_statistics["XkX"]);
   }
 
   // extract 'prior' parameters
@@ -360,8 +366,6 @@ List gibbs_sampling (int R, int B, bool print_progress,
   // define helper variables and functions
   vec s_cand;
   mat Omega_c_inv;
-  mat foo_Omega;
-  mat Omega_draw;
   vec b_c;
   mat S;
   mat IW;
@@ -416,16 +420,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
       b = update_b(beta, Omega, z, m, xi, Dinv);
 
       // draw Omega
-      for(int c = 0; c<C; c++){
-        foo_Omega = zeros<mat>(P_r,P_r);
-        for(int n = 0; n<N; n++){
-          if(z[n]==c)
-            foo_Omega += (beta(span::all,n)-b(span::all,c)) *
-              trans(beta(span::all,n)-b(span::all,c));
-        }
-        Omega_draw = as<mat>(rwishart(nu+m[c],arma::inv(Theta+foo_Omega))["IW"]);
-        Omega(span::all,c) = reshape(Omega_draw,P_r*P_r,1);
-      }
+      Omega = update_Omega(beta, b, z, m, nu, Theta);
 
       // draw beta
       for(int n = 0; n<N; n++){
@@ -479,8 +474,7 @@ List gibbs_sampling (int R, int B, bool print_progress,
           if(P_r==0)
             foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
           if(P_r>0)
-            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-
-              as<mat>(X[ind])*beta(span::all,n));
+            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
         }
       }
       alpha = draw_reg(foo_A1,foo_a1,eta,Psiinv,P_f,Jm1);

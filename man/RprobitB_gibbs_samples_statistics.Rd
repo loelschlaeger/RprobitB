@@ -29,4 +29,4 @@ of statistics from \code{gibbs_samples} obtained by applying the elements of
 \description{
 This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
 }
-\keyword{s3}
+\keyword{constructor}

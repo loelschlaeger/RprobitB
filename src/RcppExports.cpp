@@ -131,23 +131,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // gibbs_sampling
-List gibbs_sampling(int R, int B, bool print_progress, int N, int J, int P_f, int P_r, List latent_classes, List sufficient_statistics, List prior, List init);
-RcppExport SEXP _RprobitB_gibbs_sampling(SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP NSEXP, SEXP JSEXP, SEXP P_fSEXP, SEXP P_rSEXP, SEXP latent_classesSEXP, SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP initSEXP) {
+List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, List init, int R, int B, bool print_progress);
+RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type sufficient_statistics(sufficient_statisticsSEXP);
+    Rcpp::traits::input_parameter< List >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< List >::type latent_classes(latent_classesSEXP);
+    Rcpp::traits::input_parameter< List >::type init(initSEXP);
     Rcpp::traits::input_parameter< int >::type R(RSEXP);
     Rcpp::traits::input_parameter< int >::type B(BSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type J(JSEXP);
-    Rcpp::traits::input_parameter< int >::type P_f(P_fSEXP);
-    Rcpp::traits::input_parameter< int >::type P_r(P_rSEXP);
-    Rcpp::traits::input_parameter< List >::type latent_classes(latent_classesSEXP);
-    Rcpp::traits::input_parameter< List >::type sufficient_statistics(sufficient_statisticsSEXP);
-    Rcpp::traits::input_parameter< List >::type prior(priorSEXP);
-    Rcpp::traits::input_parameter< List >::type init(initSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init));
+    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(sufficient_statistics, prior, latent_classes, init, R, B, print_progress));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -176,7 +172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_b", (DL_FUNC) &_RprobitB_update_b, 6},
     {"_RprobitB_update_Omega", (DL_FUNC) &_RprobitB_update_Omega, 6},
-    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 11},
+    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 7},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}
 };

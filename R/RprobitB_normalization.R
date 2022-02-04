@@ -1,4 +1,4 @@
-#' Create object of class \code{RprobitB_normalization}.
+#' Create object of class \code{RprobitB_normalization}
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_normalization}.
@@ -6,12 +6,12 @@
 #' @details
 #' Any choice model has to be normalized with respect to level and scale.
 #' \itemize{
-#'   \item For level normalization, we takes utility differences with respect to
+#'   \item For level normalization, RprobitB takes utility differences with respect to
 #'         one alternative.
-#'   \item For scale normalization, we fix a model parameter. Per default, the
+#'   \item For scale normalization, RprobitB fixes a model parameter. Per default, the
 #'         first error-term variance is fixed to \code{1}, i.e.
 #'         \code{scale = list("parameter" = "s", "index" = 1, "value" = 1)}.
-#'         Alternatively, any error-term variance or any linear coefficient can
+#'         Alternatively, any error-term variance or any non-random linear coefficient can
 #'         be fixed.
 #' }
 #'
@@ -38,14 +38,15 @@
 #' An object of class \code{RprobitB_normalization}, which is a list of the
 #' elements \code{level} and \code{scale}.
 #'
+#' @examples
+#' RprobitB:::RprobitB_normalization(
+#'   J = 2, P_f = 1, level = 2, scale = list("parameter" = "s", "index" = 1, "value" = 1)
+#' )
+#'
 #' @keywords
-#' s3
+#' constructor
 
-RprobitB_normalization <- function(J, P_f, level = J,
-                                   scale = list(
-                                     "parameter" = "s", "index" = 1,
-                                     "value" = 1
-                                   )) {
+RprobitB_normalization <- function(J, P_f, level = J, scale = list("parameter" = "s", "index" = 1, "value" = 1)) {
 
   ### check 'level' and 'scale' based on 'J' and 'P_f' and set default values
   if (level != J) {

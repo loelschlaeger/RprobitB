@@ -269,24 +269,27 @@ update_Omega <- function(beta, b, z, m, nu, Theta) {
     .Call(`_RprobitB_update_Omega`, beta, b, z, m, nu, Theta)
 }
 
-#' Gibbs sampler.
+#' Gibbs sampler
+#'
 #' @description
-#' This function performs Gibbs sampling for the RprobitB package.
-#' @inheritParams mcmc
-#' @inheritParams RprobitB_data
+#' This function draws Gibbs samples from the posterior distribution of the
+#' multinomial probit model parameters.
+#'
 #' @param sufficient_statistics
 #' The output of \code{\link{sufficient_statistics}}.
+#' @inheritParams mcmc
 #' @param init
 #' The output of \code{\link{set_initial_gibbs_values}}.
 #' @return
 #' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
 #' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
 #' (if \code{P_r>0}).
+#'
 #' @keywords
 #' internal
 #'
-gibbs_sampling <- function(R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init) {
-    .Call(`_RprobitB_gibbs_sampling`, R, B, print_progress, N, J, P_f, P_r, latent_classes, sufficient_statistics, prior, init)
+gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, init, R, B, print_progress) {
+    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, init, R, B, print_progress)
 }
 
 #' Draw from truncated normal

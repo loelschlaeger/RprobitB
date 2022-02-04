@@ -2,38 +2,23 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler.}
+\title{Gibbs sampler}
 \usage{
 gibbs_sampling(
-  R,
-  B,
-  print_progress,
-  N,
-  J,
-  P_f,
-  P_r,
-  latent_classes,
   sufficient_statistics,
   prior,
-  init
+  latent_classes,
+  init,
+  R,
+  B,
+  print_progress
 )
 }
 \arguments{
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
-
-\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
-estimated remaining computation time.}
-
-\item{N}{The number (greater or equal 1) of decision makers.}
-
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
-
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+\item{prior}{A named list of parameters for the prior distributions. See the documentation
+of \code{\link{check_prior}} for details about which parameters can be specified.}
 
 \item{latent_classes}{Either \code{NULL} or a list of parameters specifying the number and the
 latent classes:
@@ -59,12 +44,15 @@ The threshold difference in means for joining latent classes
 (non-negative).
 }}
 
-\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
-
-\item{prior}{A named list of parameters for the prior distributions. See the documentation
-of \code{\link{check_prior}} for details about which parameters can be specified.}
-
 \item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
+
+\item{R}{The number of iterations of the Gibbs sampler.}
+
+\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
+be discarded.}
+
+\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
+estimated remaining computation time.}
 }
 \value{
 A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
@@ -72,6 +60,7 @@ and \code{s}, \code{b}, \code{Omega} and a vector of classifications
 (if \code{P_r>0}).
 }
 \description{
-This function performs Gibbs sampling for the RprobitB package.
+This function draws Gibbs samples from the posterior distribution of the
+multinomial probit model parameters.
 }
 \keyword{internal}

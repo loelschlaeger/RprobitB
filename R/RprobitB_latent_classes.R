@@ -32,7 +32,7 @@
 #' An object of class \code{RprobitB_latent_classes}.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_latent_classes <- function(latent_classes = NULL) {
 

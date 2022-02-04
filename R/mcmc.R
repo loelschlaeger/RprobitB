@@ -108,13 +108,10 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   )
 
   ### perform Gibbs sampling
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+  if (!is.null(seed)) set.seed(seed)
   gibbs_samples <- gibbs_sampling(
-    R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
-    P_f = data$P_f, P_r = data$P_r, latent_classes = unclass(latent_classes),
-    sufficient_statistics = ss, prior = prior, init = init
+    sufficient_statistics = ss, prior = prior, latent_classes = unclass(latent_classes),
+    init = init, R = R, B = B, print_progress = print_progress
   )
 
   if (latent_classes$update) {
@@ -351,16 +348,49 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   return(init)
 }
 
-#' Compute sufficient statistics.
+#' Compute sufficient statistics
 #'
 #' @description
-#' This function computes sufficient statistics from \code{data} for estimation.
+#' This function computes sufficient statistics from \code{data} for the Gibbs sampler.
 #'
-#' @inheritParams mcmc
+#' @details
+#' The function provides a set of sufficient statistics from the \code{data} object
+#' for the estimation routine to save computation time.
+#'
+#' @param data
+#' An object of class \code{RprobitB_data}.
 #' @param normalization
-#' An object of class \code{RprobitB_normalization}.
+#' An object of class \code{RprobitB_normalization}, which can be created
+#' via \code{\link{RprobitB_normalization}}.
+#'
 #' @return
-#' A list of sufficient statistics.
+#' A list of sufficient statistics on the data for Gibbs sampling, containing
+#' \itemize{
+#'   \item the elements \code{N}, \code{T}, \code{J}, \code{P_f} and \code{P_r} from \code{data},
+#'   \item \code{Tvec}, the vector of choice occasions for each decider of length \code{N},
+#'   \item \code{csTvec}, a vector of length \code{N} with the cumulated sums of \code{Tvec} starting from \code{0},
+#'   \item \code{W}, a list of design matrices differenced with respect to
+#'         alternative number \code{normalization$level}
+#'         for each decider in each choice occasion with covariates that
+#'         are linked to a fixed coefficient (or \code{NA} if \code{P_f = 0}),
+#'   \item \code{X}, a list of design matrices differenced with respect to
+#'         alternative number \code{normalization$level}
+#'         for each decider in each choice occasion with covariates that
+#'         are linked to a random coefficient (or \code{NA} if \code{P_r = 0}),
+#'   \item \code{y}, a matrix of dimension \code{N} x \code{max(Tvec)} with the observed choices
+#'         of deciders in rows and choice occasions in columns, decoded to numeric values with respect
+#'         to their appearance in \code{data$alternatives}, where rows are filled with \code{NA} in case
+#'         of an unbalanced panel,
+#'   \item \code{WkW}, a matrix of dimension \code{P_f^2} x \code{(J-1)^2}, the sum over
+#'         Kronecker products of each transposed element in \code{W} with itself,
+#'   \item \code{XkX}, a list of length \code{N}, each element is constructed in the same way
+#'         as \code{WkW} but with the elements in \code{X} and separately for each decider.
+#' }
+#'
+#' @examples
+#' data <- simulate_choices(form = choice ~ v1 | v2 + 0, N = 2, T = 1:2, J = 3, re = "v2")
+#' normalization <- RprobitB:::RprobitB_normalization(J = data$J, P_f = data$P_f)
+#' RprobitB:::sufficient_statistics(data = data, normalization = normalization)
 #'
 #' @keywords
 #' internal
@@ -375,93 +405,97 @@ sufficient_statistics <- function(data, normalization) {
     stop("'normalization' must be of class 'RprobitB_normalization'.")
   }
 
+  ### make a copy of 'data'
+  data_copy <- data
+
   ### extract parameters
-  N <- data$N
-  T <- if (length(data$T) == 1) rep(data$T, N) else data$T
-  J <- data$J
-  P_r <- data$P_r
-  P_f <- data$P_f
+  N <- data_copy$N
+  T <- data_copy$T
+  Tvec <- if (length(T) == 1) rep(T, N) else T
+  J <- data_copy$J
+  P_f <- data_copy$P_f
+  P_r <- data_copy$P_r
 
   ### compute utility differences with respect to 'normalization$level'
   for (n in seq_len(N)) {
-    for (t in seq_len(T[n])) {
-      data$data[[n]]$X[[t]] <- delta(J, normalization$level) %*% data$data[[n]]$X[[t]]
+    for (t in seq_len(Tvec[n])) {
+      data_copy$data[[n]]$X[[t]] <- delta(J, normalization$level) %*% data_copy$data[[n]]$X[[t]]
     }
   }
 
-  ### compute sufficient statistics
-  y <- matrix(0, nrow = N, ncol = max(T))
+  ### decode choice to numeric with respect to appearance in 'data_copy$alternatives'
+  y <- matrix(0, nrow = N, ncol = max(Tvec))
   for (n in 1:N) {
-    ### decode choice to numeric wrt appearance in data$alternatives
-    y_n <- match(data$data[[n]][[2]], data$alternatives)
-    y[n, ] <- c(y_n, rep(NA, max(T) - length(y_n)))
+    y_n <- match(data_copy$data[[n]][[2]], data_copy$alternatives)
+    y[n, ] <- c(y_n, rep(NA, max(Tvec) - length(y_n)))
   }
+
+  ### extract covariates linked to fixed ('W') and to random coefficients ('X')
   W <- list()
   X <- list()
   if (P_f > 0 & P_r > 0) {
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        W[[sum(T[seq_len(n - 1)]) + t]] <-
-          data$data[[n]][[1]][[t]][, seq_len(P_f), drop = FALSE]
-        X[[sum(T[seq_len(n - 1)]) + t]] <-
-          data$data[[n]][[1]][[t]][, -seq_len(P_f), drop = FALSE]
+      for (t in seq_len(Tvec[n])) {
+        W[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][, seq_len(P_f), drop = FALSE]
+        X[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][, -seq_len(P_f), drop = FALSE]
       }
     }
   }
   if (P_f > 0 & P_r == 0) {
     X <- NA
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        W[[sum(T[seq_len(n - 1)]) + t]] <- data$data[[n]][[1]][[t]]
+      for (t in seq_len(Tvec[n])) {
+        W[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]]
       }
     }
   }
   if (P_f == 0 & P_r > 0) {
     W <- NA
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        X[[sum(T[seq_len(n - 1)]) + t]] <- data$data[[n]][[1]][[t]]
+      for (t in seq_len(Tvec[n])) {
+        X[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]]
       }
     }
   }
-  XkX <- NA
-  if (P_r > 0) {
-    XkX <- list()
-    for (n in seq_len(N)) {
-      XnkXn <- 0
-      for (t in seq_len(T[n])) {
-        XnkXn <- XnkXn +
-          kronecker(
-            t(X[[sum(T[seq_len(n - 1)]) + t]]),
-            t(X[[sum(T[seq_len(n - 1)]) + t]])
-          )
-      }
-      XkX[[n]] <- XnkXn
-    }
-  }
+
+  ### compute \sum kronecker(t(W_nt),t(W_nt)) for each W_nt in W
   WkW <- NA
   if (P_f > 0) {
     WkW <- matrix(0, nrow = P_f^2, ncol = (J - 1)^2)
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        WkW <- WkW +
-          kronecker(
-            t(W[[sum(T[seq_len(n - 1)]) + t]]),
-            t(W[[sum(T[seq_len(n - 1)]) + t]])
-          )
+      for (t in seq_len(Tvec[n])) {
+        WkW <- WkW + kronecker(t(W[[sum(Tvec[seq_len(n - 1)]) + t]]), t(W[[sum(Tvec[seq_len(n - 1)]) + t]]))
       }
+    }
+  }
+
+  ### for each fixed n, compute \sum kronecker(t(X_nt),t(X_nt))
+  XkX <- NA
+  if (P_r > 0) {
+    XkX <- list()
+    for (n in seq_len(N)) {
+      XnkXn <- matrix(0, nrow = P_r^2, ncol = (J - 1)^2)
+      for (t in seq_len(Tvec[n])) {
+        XnkXn <- XnkXn + kronecker(t(X[[sum(Tvec[seq_len(n - 1)]) + t]]), t(X[[sum(Tvec[seq_len(n - 1)]) + t]]))
+      }
+      XkX[[n]] <- XnkXn
     }
   }
 
   ### build and return 'suff_statistics'
   suff_statistics <- list(
-    "Tvec" = T,
-    "csTvec" = cumsum(T) - T,
+    "N" = N,
+    "T" = T,
+    "J" = J,
+    "P_f" = P_f,
+    "P_r" = P_r,
+    "Tvec" = Tvec,
+    "csTvec" = cumsum(Tvec) - Tvec,
     "W" = W,
     "X" = X,
     "y" = y,
-    "XkX" = XkX,
-    "WkW" = WkW
+    "WkW" = WkW,
+    "XkX" = XkX
   )
   return(suff_statistics)
 }

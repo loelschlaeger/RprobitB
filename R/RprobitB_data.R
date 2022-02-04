@@ -54,7 +54,7 @@
 #' as elements.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
                           form, re, ASC, linear_coeffs, standardize, simulated,
