@@ -130,6 +130,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_reg
+arma::vec update_reg(arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU);
+RcppExport SEXP _RprobitB_update_reg(SEXP mu0SEXP, SEXP Tau0SEXP, SEXP XSigXSEXP, SEXP XSigUSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Tau0(Tau0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type XSigX(XSigXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type XSigU(XSigUSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_reg(mu0, Tau0, XSigX, XSigU));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_Sigma
+arma::mat update_Sigma(int kappa, arma::mat E, int N, arma::mat S);
+RcppExport SEXP _RprobitB_update_Sigma(SEXP kappaSEXP, SEXP ESEXP, SEXP NSEXP, SEXP SSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type E(ESEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_Sigma(kappa, E, N, S));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gibbs_sampling
 List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, List init, int R, int B, bool print_progress);
 RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP) {
@@ -172,6 +200,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_b", (DL_FUNC) &_RprobitB_update_b, 6},
     {"_RprobitB_update_Omega", (DL_FUNC) &_RprobitB_update_Omega, 6},
+    {"_RprobitB_update_reg", (DL_FUNC) &_RprobitB_update_reg, 4},
+    {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 7},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}

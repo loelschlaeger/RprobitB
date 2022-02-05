@@ -124,7 +124,7 @@ rmvnorm <- function(mu, Sigma) {
 #' @param m
 #' The vector of current class frequencies.
 #' @return
-#' A draw from the Dirichlet posterior distribution for \code{s}.
+#' A vector, a draw from the Dirichlet posterior distribution for \code{s}.
 #' @details
 #' Let \eqn{m=(m_1,\dots,m_C)} be the frequencies of \eqn{C} classes.
 #' Given the class weight (probability) vector \eqn{s=(s_1,\dots,s_C)}, the distribution
@@ -267,6 +267,114 @@ update_b <- function(beta, Omega, z, m, xi, Dinv) {
 #'
 update_Omega <- function(beta, b, z, m, nu, Theta) {
     .Call(`_RprobitB_update_Omega`, beta, b, z, m, nu, Theta)
+}
+
+#' Update coefficient vector of multiple linear regression
+#' @description
+#' This function updates the coefficient vector of a multiple linear regression.
+#' @param mu0
+#' The mean vector of the normal prior distribution for the coefficient vector.
+#' @param Tau0
+#' The precision matrix (i.e. inverted covariance matrix) of the normal prior distribution for the coefficient vector.
+#' @param XSigX
+#' The matrix \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}X_n}. See below for details.
+#' @param XSigU
+#' The vector \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}U_n}. See below for details.
+#' @details
+#' This function draws from the posterior distribution of \eqn{\beta} in the linear utility
+#' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
+#' (latent, but here assumed to be known) utility vector of decider \eqn{n = 1,\dots,N}, \eqn{X_n}
+#' is the design matrix build from the choice characteristics faced by \eqn{n},
+#' \eqn{\beta} is the unknown coefficient vector (this can be either the fixed
+#' coefficient vector \eqn{\alpha} or the decider-specific coefficient vector \eqn{\beta_n}),
+#' and \eqn{\epsilon_n} is the error term assumed to be normally distributed with mean \eqn{0}
+#' and (known) covariance matrix \eqn{\Sigma}.
+#' A priori we assume the (conjugate) normal prior distribution \deqn{\beta \sim N(\mu_0,\Tau_0)}
+#' with mean vector \eqn{\mu_0} and precision matrix (i.e. inverted covariance matrix) \eqn{\Tau_0}.
+#' The posterior distribution for \eqn{\beta} is normal with
+#' covariance matrix \deqn{\Sigma_1 = (\Tau_0 + \sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1}} and mean vector
+#' \deqn{\mu_1 = \Sigma_1(\Tau_0\mu_0 + \sum_{n=1}^N X_n'\Sigma^{-1}U_n)}.
+#' Note the analogy of \eqn{\mu_1} to the generalized least squares estimator
+#' \deqn{\hat{\beta}_\text{GLS} = (\sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1} \sum_{n=1}^N X_n'\Sigma^{-1}U_n} which
+#' becomes weighted by the prior parameters \eqn{\mu_0} and \eqn{\Tau_0}.
+#' @return
+#' A vector, a draw from the normal posterior distribution of the coefficient
+#' vector in a multiple linear regression.
+#' @examples
+#' ### true coefficient vector
+#' beta_true <- matrix(c(-1,1), ncol=1)
+#' ### error term covariance matrix
+#' Sigma <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+#' ### draw data
+#' N <- 100
+#' X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
+#' eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma), simplify = FALSE)
+#' U <- mapply(function(X, eps) X %*% beta_true + eps, X, eps, SIMPLIFY = FALSE)
+#' ### prior parameters for coefficient vector
+#' mu0 <- c(0,0)
+#' Tau0 <- diag(2)
+#' ### draw from posterior of coefficient vector
+#' XSigX <- Reduce(`+`, lapply(X, function(X) t(X) %*% solve(Sigma) %*% X))
+#' XSigU <- Reduce(`+`, mapply(function(X, U) t(X) %*% solve(Sigma) %*% U, X, U, SIMPLIFY = FALSE))
+#' beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
+#' rowMeans(beta_draws)
+#' @export
+#' @importFrom stats sd
+#' @keywords
+#' posterior
+#'
+update_reg <- function(mu0, Tau0, XSigX, XSigU) {
+    .Call(`_RprobitB_update_reg`, mu0, Tau0, XSigX, XSigU)
+}
+
+#' Update error term covariance matrix of multiple linear regression
+#' @description
+#' This function updates the error term covariance matrix of a multiple linear regression.
+#' @param N
+#' The draw size.
+#' @param S
+#' A matrix, the sum over the outer products of the residuals \eqn{(\epsilon_n)_{n=1,\dots,N}}.
+#' @inheritParams check_prior
+#' @details
+#' This function draws from the posterior distribution of the covariance matrix \eqn{\Sigma} in the linear utility
+#' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
+#' (latent, but here assumed to be known) utility vector of decider \eqn{n = 1,\dots,N}, \eqn{X_n}
+#' is the design matrix build from the choice characteristics faced by \eqn{n},
+#' \eqn{\beta} is the coefficient vector, and \eqn{\epsilon_n} is the error term assumed to be
+#' normally distributed with mean \eqn{0} and unknown covariance matrix \eqn{\Sigma}.
+#' A priori we assume the (conjugate) Inverse Wishart distribution \deqn{\Sigma \sim W(\kappa,E)}
+#' with \eqn{\kappa} degrees of freedom and scale matrix \eqn{E}.
+#' The posterior for \eqn{\Sigma} is the Inverted Wishart distribution with \eqn{\kappa + N} degrees of freedom
+#' and scale matrix \eqn{E^{-1}+S}, where \eqn{S = \sum_{n=1}^{N} \epsilon_n \epsilon_n'} is the sum over
+#' the outer products of the residuals \eqn{(\epsilon_n = U_n - X_n\beta)_n}.
+#' @return
+#' A matrix, a draw from the Inverse Wishart posterior distribution of the error term
+#' covariance matrix in a multiple linear regression.
+#' @examples
+#' ### true error term covariance matrix
+#' Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+#' ### coefficient vector
+#' beta <- matrix(c(-1,1), ncol=1)
+#' ### draw data
+#' N <- 100
+#' X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
+#' eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma_true), simplify = FALSE)
+#' U <- mapply(function(X, eps) X %*% beta + eps, X, eps, SIMPLIFY = FALSE)
+#' ### prior parameters for covariance matrix
+#' kappa <- 4
+#' E <- diag(3)
+#' ### draw from posterior of coefficient vector
+#' outer_prod <- function(X, U) (U - X %*% beta) %*% t(U - X %*% beta)
+#' S <- Reduce(`+`, mapply(outer_prod, X, U, SIMPLIFY = FALSE))
+#' Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
+#' apply(Sigma_draws, 1:2, mean)
+#' apply(Sigma_draws, 1:2, stats::sd)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_Sigma <- function(kappa, E, N, S) {
+    .Call(`_RprobitB_update_Sigma`, kappa, E, N, S)
 }
 
 #' Gibbs sampler

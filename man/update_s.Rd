@@ -13,7 +13,7 @@ of the Dirichlet prior for \code{s}.}
 \item{m}{The vector of current class frequencies.}
 }
 \value{
-A draw from the Dirichlet posterior distribution for \code{s}.
+A vector, a draw from the Dirichlet posterior distribution for \code{s}.
 }
 \description{
 This function updates the class weight vector by drawing from its posterior distribution.

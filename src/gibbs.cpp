@@ -19,7 +19,7 @@ using namespace Rcpp;
 //' @param m
 //' The vector of current class frequencies.
 //' @return
-//' A draw from the Dirichlet posterior distribution for \code{s}.
+//' A vector, a draw from the Dirichlet posterior distribution for \code{s}.
 //' @details
 //' Let \eqn{m=(m_1,\dots,m_C)} be the frequencies of \eqn{C} classes.
 //' Given the class weight (probability) vector \eqn{s=(s_1,\dots,s_C)}, the distribution
@@ -210,11 +210,116 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
   return(Omega);
 }
 
-// Function to draw from posterior of linear regression
-vec draw_reg (mat foo_B1, vec foo_b1, vec b_c, mat Omega_c_inv, int P, int Jm1) {
-  mat B1 = arma::inv(Omega_c_inv + foo_B1);
-  vec b1 = B1 * (Omega_c_inv * b_c + foo_b1);
-  return (b1 + trans(chol(B1)) * vec(rnorm(P)));
+//' Update coefficient vector of multiple linear regression
+//' @description
+//' This function updates the coefficient vector of a multiple linear regression.
+//' @param mu0
+//' The mean vector of the normal prior distribution for the coefficient vector.
+//' @param Tau0
+//' The precision matrix (i.e. inverted covariance matrix) of the normal prior distribution for the coefficient vector.
+//' @param XSigX
+//' The matrix \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}X_n}. See below for details.
+//' @param XSigU
+//' The vector \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}U_n}. See below for details.
+//' @details
+//' This function draws from the posterior distribution of \eqn{\beta} in the linear utility
+//' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
+//' (latent, but here assumed to be known) utility vector of decider \eqn{n = 1,\dots,N}, \eqn{X_n}
+//' is the design matrix build from the choice characteristics faced by \eqn{n},
+//' \eqn{\beta} is the unknown coefficient vector (this can be either the fixed
+//' coefficient vector \eqn{\alpha} or the decider-specific coefficient vector \eqn{\beta_n}),
+//' and \eqn{\epsilon_n} is the error term assumed to be normally distributed with mean \eqn{0}
+//' and (known) covariance matrix \eqn{\Sigma}.
+//' A priori we assume the (conjugate) normal prior distribution \deqn{\beta \sim N(\mu_0,\Tau_0)}
+//' with mean vector \eqn{\mu_0} and precision matrix (i.e. inverted covariance matrix) \eqn{\Tau_0}.
+//' The posterior distribution for \eqn{\beta} is normal with
+//' covariance matrix \deqn{\Sigma_1 = (\Tau_0 + \sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1}} and mean vector
+//' \deqn{\mu_1 = \Sigma_1(\Tau_0\mu_0 + \sum_{n=1}^N X_n'\Sigma^{-1}U_n)}.
+//' Note the analogy of \eqn{\mu_1} to the generalized least squares estimator
+//' \deqn{\hat{\beta}_\text{GLS} = (\sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1} \sum_{n=1}^N X_n'\Sigma^{-1}U_n} which
+//' becomes weighted by the prior parameters \eqn{\mu_0} and \eqn{\Tau_0}.
+//' @return
+//' A vector, a draw from the normal posterior distribution of the coefficient
+//' vector in a multiple linear regression.
+//' @examples
+//' ### true coefficient vector
+//' beta_true <- matrix(c(-1,1), ncol=1)
+//' ### error term covariance matrix
+//' Sigma <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+//' ### draw data
+//' N <- 100
+//' X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
+//' eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma), simplify = FALSE)
+//' U <- mapply(function(X, eps) X %*% beta_true + eps, X, eps, SIMPLIFY = FALSE)
+//' ### prior parameters for coefficient vector
+//' mu0 <- c(0,0)
+//' Tau0 <- diag(2)
+//' ### draw from posterior of coefficient vector
+//' XSigX <- Reduce(`+`, lapply(X, function(X) t(X) %*% solve(Sigma) %*% X))
+//' XSigU <- Reduce(`+`, mapply(function(X, U) t(X) %*% solve(Sigma) %*% U, X, U, SIMPLIFY = FALSE))
+//' beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
+//' rowMeans(beta_draws)
+//' @export
+//' @importFrom stats sd
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU) {
+  arma::mat Sigma1 = arma::inv(Tau0 + XSigX);
+  arma::mat mu1 = Sigma1 * (Tau0 * mu0 + XSigU);
+  return(rmvnorm(mu1, Sigma1));
+}
+
+//' Update error term covariance matrix of multiple linear regression
+//' @description
+//' This function updates the error term covariance matrix of a multiple linear regression.
+//' @param N
+//' The draw size.
+//' @param S
+//' A matrix, the sum over the outer products of the residuals \eqn{(\epsilon_n)_{n=1,\dots,N}}.
+//' @inheritParams check_prior
+//' @details
+//' This function draws from the posterior distribution of the covariance matrix \eqn{\Sigma} in the linear utility
+//' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
+//' (latent, but here assumed to be known) utility vector of decider \eqn{n = 1,\dots,N}, \eqn{X_n}
+//' is the design matrix build from the choice characteristics faced by \eqn{n},
+//' \eqn{\beta} is the coefficient vector, and \eqn{\epsilon_n} is the error term assumed to be
+//' normally distributed with mean \eqn{0} and unknown covariance matrix \eqn{\Sigma}.
+//' A priori we assume the (conjugate) Inverse Wishart distribution \deqn{\Sigma \sim W(\kappa,E)}
+//' with \eqn{\kappa} degrees of freedom and scale matrix \eqn{E}.
+//' The posterior for \eqn{\Sigma} is the Inverted Wishart distribution with \eqn{\kappa + N} degrees of freedom
+//' and scale matrix \eqn{E^{-1}+S}, where \eqn{S = \sum_{n=1}^{N} \epsilon_n \epsilon_n'} is the sum over
+//' the outer products of the residuals \eqn{(\epsilon_n = U_n - X_n\beta)_n}.
+//' @return
+//' A matrix, a draw from the Inverse Wishart posterior distribution of the error term
+//' covariance matrix in a multiple linear regression.
+//' @examples
+//' ### true error term covariance matrix
+//' Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+//' ### coefficient vector
+//' beta <- matrix(c(-1,1), ncol=1)
+//' ### draw data
+//' N <- 100
+//' X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
+//' eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma_true), simplify = FALSE)
+//' U <- mapply(function(X, eps) X %*% beta + eps, X, eps, SIMPLIFY = FALSE)
+//' ### prior parameters for covariance matrix
+//' kappa <- 4
+//' E <- diag(3)
+//' ### draw from posterior of coefficient vector
+//' outer_prod <- function(X, U) (U - X %*% beta) %*% t(U - X %*% beta)
+//' S <- Reduce(`+`, mapply(outer_prod, X, U, SIMPLIFY = FALSE))
+//' Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
+//' apply(Sigma_draws, 1:2, mean)
+//' apply(Sigma_draws, 1:2, stats::sd)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
+  return(as<mat>(rwishart(kappa+N,arma::inv(E+S))["IW"]));
 }
 
 // Function to compute conditional utility mean and standard deviation
@@ -352,7 +457,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat Omega0;
   mat beta0;
   mat U0 = as<mat>(init["U0"]);
-  mat Sigma0inv = arma::inv(as<mat>(init["Sigma0"]));
+  mat Sigma0 = as<mat>(init["Sigma0"]);
   if(P_f>0){
     alpha0 = as<vec>(init["alpha0"]);
   }
@@ -370,7 +475,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat S;
   mat IW;
   vec eps;
-  List Wish;
   int ind;
   char buf[50];
   int nprint = round(R/10);
@@ -392,7 +496,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat U = U0;
   vec alpha = alpha0;
   mat beta = beta0;
-  mat Sigmainv = Sigma0inv;
+  mat Sigmainv = arma::inv(Sigma0);
 
   // start loop
   if(print_progress) start_timer();
@@ -419,10 +523,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       // update b
       b = update_b(beta, Omega, z, m, xi, Dinv);
 
-      // draw Omega
+      // update Omega
       Omega = update_Omega(beta, b, z, m, nu, Theta);
 
-      // draw beta
+      // update beta
       for(int n = 0; n<N; n++){
         for(int c = 0; c<C; c++){
           if(z[n]==c){
@@ -430,18 +534,16 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
             b_c = b(span::all,c);
           }
         }
-        mat foo_B1 =
-          reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
-        vec foo_b1 = zeros<vec>(P_r);
+        mat XSigX = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
+        vec XSigU = zeros<vec>(P_r);
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
           if(P_f==0)
-            foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
+            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
           if(P_f>0)
-            foo_b1 += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-
-              trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
+            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
         }
-        beta(span::all,n) = draw_reg(foo_B1,foo_b1,b_c,Omega_c_inv,P_r,Jm1);
+        beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
       }
 
       // update classes
@@ -450,8 +552,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
           sprintf(buf, "%9d started class updating\n", rep+1);
           Rcout << buf;
         }
-        List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,
-                                           Omega,print_progress);
+        List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,Omega,print_progress);
         C = as<int>(class_update["C"]);
         s = as<vec>(class_update["s"]);
         m = as<vec>(class_update["m"]);
@@ -465,22 +566,22 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     }
 
     if(P_f>0){
-      // draw alpha
-      mat foo_A1 = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
-      vec foo_a1 = zeros<vec>(P_f);
+      // update alpha
+      mat WSigW = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
+      vec WSigU = zeros<vec>(P_f);
       for(int n = 0; n<N; n++){
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
           if(P_r==0)
-            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
+            WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
           if(P_r>0)
-            foo_a1 += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+            WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
         }
       }
-      alpha = draw_reg(foo_A1,foo_a1,eta,Psiinv,P_f,Jm1);
+      alpha = update_reg(eta,Psiinv,WSigW,WSigU);
     }
 
-    // draw U
+    // update U
     for(int n = 0; n<N; n++){
       for(int t = 0; t<Tvec[n]; t++){
         ind = csTvec[n]+t;
@@ -502,14 +603,13 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       }
     }
 
-    // draw Sigma
+    // update Sigma
     S = zeros<mat>(Jm1,Jm1);
     for(int n = 0; n<N; n++){
       for(int t = 0; t<Tvec[n]; t++){
         ind = csTvec[n]+t;
         if(P_f>0 && P_r>0)
-          eps = U(span::all,ind) - as<mat>(W[ind])*alpha -
-            as<mat>(X[ind])*beta(span::all,n);
+          eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
         if(P_f>0 && P_r==0)
           eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
         if(P_f==0 && P_r>0)
@@ -519,8 +619,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         S += eps * trans(eps);
       }
     }
-    Wish = rwishart(kappa+sum(Tvec),arma::inv(E+S));
-    Sigmainv = as<mat>(Wish["W"]);
+    arma::mat Sigma = update_Sigma(kappa, E, sum(Tvec), S);
+    Sigmainv = arma::inv(Sigma);
 
     // save draws
     if(P_f>0)
@@ -533,8 +633,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       Omega_draws(rep,span(0,vectorise_Omega.size()-1)) =
         trans(vectorise_Omega);
     }
-    IW = as<mat>(Wish["IW"]);
-    Sigma_draws(rep,span::all) = trans(vectorise(IW));
+    Sigma_draws(rep,span::all) = trans(vectorise(Sigma));
 
     // print time to completion
     if(print_progress)
