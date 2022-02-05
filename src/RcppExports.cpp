@@ -158,6 +158,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_U
+arma::vec update_U(arma::vec U, int y, arma::vec sys, arma::mat Sigmainv);
+RcppExport SEXP _RprobitB_update_U(SEXP USEXP, SEXP ySEXP, SEXP sysSEXP, SEXP SigmainvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type U(USEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sys(sysSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Sigmainv(SigmainvSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_U(U, y, sys, Sigmainv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gibbs_sampling
 List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, List init, int R, int B, bool print_progress);
 RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP) {
@@ -202,6 +216,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_Omega", (DL_FUNC) &_RprobitB_update_Omega, 6},
     {"_RprobitB_update_reg", (DL_FUNC) &_RprobitB_update_reg, 4},
     {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
+    {"_RprobitB_update_U", (DL_FUNC) &_RprobitB_update_U, 4},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 7},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}

@@ -194,7 +194,7 @@ update_z <- function(s, beta, b, Omega) {
 #' of the normal prior for each \code{b_c}.
 #' @details
 #' The following holds independently for each class \eqn{c}.
-#' Let \eqn{b_c} be the mean of class number \code{c}. A priori, we assume that \eqn{b_c} is normally distributed
+#' Let \eqn{b_c} be the mean of class number \eqn{c}. A priori, we assume that \eqn{b_c} is normally distributed
 #' with mean vector \eqn{\xi} and covariance matrix \eqn{D}.
 #' Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
 #' \eqn{m_c} the class size, and \eqn{\bar{b}_c} their arithmetic mean.
@@ -208,7 +208,7 @@ update_z <- function(s, beta, b, Omega) {
 #' A matrix of updated means for each class in columns.
 #' @examples
 #' ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-#' beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1))
+#' (beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
 #' ### class covariances for C = 2 classes
 #' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
 #' ### class allocation vector (starting from 0) and class sizes
@@ -352,7 +352,7 @@ update_reg <- function(mu0, Tau0, XSigX, XSigU) {
 #' covariance matrix in a multiple linear regression.
 #' @examples
 #' ### true error term covariance matrix
-#' Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+#' (Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3))
 #' ### coefficient vector
 #' beta <- matrix(c(-1,1), ncol=1)
 #' ### draw data
@@ -377,11 +377,57 @@ update_Sigma <- function(kappa, E, N, S) {
     .Call(`_RprobitB_update_Sigma`, kappa, E, N, S)
 }
 
-#' Gibbs sampler
+#' Update latent utility vector
+#' @description
+#' This function updates the latent utility vector, where (independent across deciders and choice occasions)
+#' the utility for each alternative is updated conditional on the other utilities.
+#' @param U
+#' The current utility vector of length \code{J-1}.
+#' @param y
+#' An integer from \code{1} to \code{J}, the index of the chosen alternative.
+#' @param sys
+#' A vector of length \code{J-1}, the systematic utility part.
+#' @param Sigmainv
+#' The inverted error term covariance matrix of dimension \code{J-1} x \code{J-1}.
+#' @details
+#' The key ingredient to Gibbs sampling for probit models is considering the latent utilities
+#' as parameters themselves which can be updated (data augmentation).
+#' Independently for all deciders \eqn{n=1,\dots,N} and choice occasions \eqn{t=1,...,T_n},
+#' the utility vectors \eqn{(U_{nt})_{n,t}} in the linear utility equation \eqn{U_{nt} = X_{nt} \beta + \epsilon_{nt}}
+#' follow a \eqn{J-1}-dimensional truncated normal distribution, where \eqn{J} is the number of alternatives,
+#' \eqn{X_{nt} \beta} the systematic (i.e. non-random) part of the utility and \eqn{\epsilon_{nt} \sim N(0,\Sigma)} the error term.
+#' The truncation points are determined by the choices \eqn{y_{nt}}. To draw from a truncated multivariate
+#' normal distribution, this function implemented the approach of Geweke (1998) to conditionally draw each component
+#' separately from a univariate truncated normal distribution. See Oelschläger (2020) for the concrete formulas.
+#' @references
+#' See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal and Student-t Distributions Subject
+#' to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs sampling
+#' from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
+#' of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
+#' @return
+#' An updated utility vector of length \code{J-1}.
+#' @examples
+#' U <- c(0,0,0)
+#' y <- 3
+#' sys <- c(0,0,0)
+#' Sigmainv <- solve(diag(3))
+#' update_U(U, y, sys, Sigmainv)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_U <- function(U, y, sys, Sigmainv) {
+    .Call(`_RprobitB_update_U`, U, y, sys, Sigmainv)
+}
+
+#' Gibbs sampler for the (mixed) multinomial probit model
 #'
 #' @description
 #' This function draws Gibbs samples from the posterior distribution of the
-#' multinomial probit model parameters.
+#' (mixed) multinomial probit model parameters.
+#'
+#' @details
+#' This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
 #'
 #' @param sufficient_statistics
 #' The output of \code{\link{sufficient_statistics}}.
@@ -389,9 +435,17 @@ update_Sigma <- function(kappa, E, N, S) {
 #' @param init
 #' The output of \code{\link{set_initial_gibbs_values}}.
 #' @return
-#' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-#' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
-#' (if \code{P_r>0}).
+#' A list of Gibbs samples for
+#' \itemize{
+#'   \item \code{Sigma},
+#'   \item \code{alpha} (if \code{P_f>0}),
+#'   \item \code{s} (if \code{P_r>0}),
+#'   \item \code{b} (if \code{P_r>0}),
+#'   \item \code{Omega} (if \code{P_r>0}),
+#' }
+#' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
+#' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
+#' latent classes after iteration \code{r}.
 #'
 #' @keywords
 #' internal

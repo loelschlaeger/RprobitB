@@ -39,7 +39,7 @@ the outer products of the residuals \eqn{(\epsilon_n = U_n - X_n\beta)_n}.
 }
 \examples{
 ### true error term covariance matrix
-Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
+(Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3))
 ### coefficient vector
 beta <- matrix(c(-1,1), ncol=1)
 ### draw data

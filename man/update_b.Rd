@@ -33,7 +33,7 @@ This function updates the class means (independent from the other classes).
 }
 \details{
 The following holds independently for each class \eqn{c}.
-Let \eqn{b_c} be the mean of class number \code{c}. A priori, we assume that \eqn{b_c} is normally distributed
+Let \eqn{b_c} be the mean of class number \eqn{c}. A priori, we assume that \eqn{b_c} is normally distributed
 with mean vector \eqn{\xi} and covariance matrix \eqn{D}.
 Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
 \eqn{m_c} the class size, and \eqn{\bar{b}_c} their arithmetic mean.
@@ -46,7 +46,7 @@ with mean \deqn{(D^{-1} + m_c\Omega_c^{-1})^{-1}(D^{-1}\xi + m_c\Omega_c^{-1}\ba
 }
 \examples{
 ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1))
+(beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
 ### class covariances for C = 2 classes
 Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
 ### class allocation vector (starting from 0) and class sizes

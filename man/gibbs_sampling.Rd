@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler}
+\title{Gibbs sampler for the (mixed) multinomial probit model}
 \usage{
 gibbs_sampling(
   sufficient_statistics,
@@ -55,12 +55,23 @@ be discarded.}
 estimated remaining computation time.}
 }
 \value{
-A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-and \code{s}, \code{b}, \code{Omega} and a vector of classifications
-(if \code{P_r>0}).
+A list of Gibbs samples for
+\itemize{
+\item \code{Sigma},
+\item \code{alpha} (if \code{P_f>0}),
+\item \code{s} (if \code{P_r>0}),
+\item \code{b} (if \code{P_r>0}),
+\item \code{Omega} (if \code{P_r>0}),
+}
+and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
+a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
+latent classes after iteration \code{r}.
 }
 \description{
 This function draws Gibbs samples from the posterior distribution of the
-multinomial probit model parameters.
+(mixed) multinomial probit model parameters.
+}
+\details{
+This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
 }
 \keyword{internal}

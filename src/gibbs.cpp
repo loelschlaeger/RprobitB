@@ -322,52 +322,83 @@ arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
   return(as<mat>(rwishart(kappa+N,arma::inv(E+S))["IW"]));
 }
 
-// Function to compute conditional utility mean and standard deviation
-vec cond_utility (vec U, vec mu, mat Sigmainv, int Jm1, int j) {
-  vec out(2);
-  int jm1 = j-1;
-  int ind = Jm1*jm1;
-  double tau_j = 1/Sigmainv(ind+jm1);
-  double m = 0.0;
-  for(int i = 0; i<Jm1; i++){
-    if (i!=jm1){
-      m += - tau_j*Sigmainv(ind+i)*(U[i]-mu[i]);
-    }
-  }
-  out[0] = mu[jm1]+m;
-  out[1] = sqrt(tau_j);
-  return (out);
-}
-
-// Function to draw the utility vector
-vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
+//' Update latent utility vector
+//' @description
+//' This function updates the latent utility vector, where (independent across deciders and choice occasions)
+//' the utility for each alternative is updated conditional on the other utilities.
+//' @param U
+//' The current utility vector of length \code{J-1}.
+//' @param y
+//' An integer from \code{1} to \code{J}, the index of the chosen alternative.
+//' @param sys
+//' A vector of length \code{J-1}, the systematic utility part.
+//' @param Sigmainv
+//' The inverted error term covariance matrix of dimension \code{J-1} x \code{J-1}.
+//' @details
+//' The key ingredient to Gibbs sampling for probit models is considering the latent utilities
+//' as parameters themselves which can be updated (data augmentation).
+//' Independently for all deciders \eqn{n=1,\dots,N} and choice occasions \eqn{t=1,...,T_n},
+//' the utility vectors \eqn{(U_{nt})_{n,t}} in the linear utility equation \eqn{U_{nt} = X_{nt} \beta + \epsilon_{nt}}
+//' follow a \eqn{J-1}-dimensional truncated normal distribution, where \eqn{J} is the number of alternatives,
+//' \eqn{X_{nt} \beta} the systematic (i.e. non-random) part of the utility and \eqn{\epsilon_{nt} \sim N(0,\Sigma)} the error term.
+//' The truncation points are determined by the choices \eqn{y_{nt}}. To draw from a truncated multivariate
+//' normal distribution, this function implemented the approach of Geweke (1998) to conditionally draw each component
+//' separately from a univariate truncated normal distribution. See Oelschläger (2020) for the concrete formulas.
+//' @references
+//' See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal and Student-t Distributions Subject
+//' to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs sampling
+//' from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
+//' of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
+//' @return
+//' An updated utility vector of length \code{J-1}.
+//' @examples
+//' U <- c(0,0,0)
+//' y <- 3
+//' sys <- c(0,0,0)
+//' Sigmainv <- solve(diag(3))
+//' update_U(U, y, sys, Sigmainv)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
+  int Jm1 = U.size();
   bool above;
   double bound;
-  vec out_U_nt = U;
+  double m;
+  vec U_update = U;
   vec maxInd(2);
   for(int i = 0; i<Jm1; i++){
     bound = 0.0;
     for(int j = 0; j<Jm1; j++) if(j!=i) {
       maxInd[0] = bound;
-      maxInd[1] = out_U_nt[j];
+      maxInd[1] = U_update[j];
       bound = max(maxInd);
     }
     if (y==(i+1))
       above = false;
     else
       above = true;
-    //CMout[1] is mean, CMout[2] is sd
-    vec CMout = cond_utility(out_U_nt,mu,Sigmainv,Jm1,i+1);
-    out_U_nt[i] = rtnorm(CMout[0],CMout[1],bound,above);
+    m = 0.0;
+    for(int k = 0; k<Jm1; k++){
+      if (k!=i){
+        m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
+      }
+    }
+    U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), bound, above);
   }
-  return (out_U_nt);
+  return (U_update);
 }
 
-//' Gibbs sampler
+//' Gibbs sampler for the (mixed) multinomial probit model
 //'
 //' @description
 //' This function draws Gibbs samples from the posterior distribution of the
-//' multinomial probit model parameters.
+//' (mixed) multinomial probit model parameters.
+//'
+//' @details
+//' This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
 //'
 //' @param sufficient_statistics
 //' The output of \code{\link{sufficient_statistics}}.
@@ -375,9 +406,17 @@ vec draw_utility (vec U, vec mu, mat Sigmainv, int Jm1, int y) {
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return
-//' A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-//' and \code{s}, \code{b}, \code{Omega} and a vector of classifications
-//' (if \code{P_r>0}).
+//' A list of Gibbs samples for
+//' \itemize{
+//'   \item \code{Sigma},
+//'   \item \code{alpha} (if \code{P_f>0}),
+//'   \item \code{s} (if \code{P_r>0}),
+//'   \item \code{b} (if \code{P_r>0}),
+//'   \item \code{Omega} (if \code{P_r>0}),
+//' }
+//' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
+//' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
+//' latent classes after iteration \code{r}.
 //'
 //' @keywords
 //' internal
@@ -500,7 +539,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
   // start loop
   if(print_progress) start_timer();
-  for(int rep = 0; rep<R; rep++) {
+  for(int r = 0; r<R; r++) {
 
     if(P_r>0){
       // update s (but only if draw is descending)
@@ -547,19 +586,19 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       }
 
       // update classes
-      if(update==true && (rep+1)>=(B/2) && (rep+1)<=B && (rep+1)%buffer==0){
-        if(print_progress && rep+1==B/2){
-          sprintf(buf, "%9d started class updating\n", rep+1);
+      if(update==true && (r+1)>=(B/2) && (r+1)<=B && (r+1)%buffer==0){
+        if(print_progress && r+1==B/2){
+          sprintf(buf, "%9d started class updating\n", r+1);
           Rcout << buf;
         }
-        List class_update = update_classes(rep,Cmax,epsmin,epsmax,distmin,s,m,b,Omega,print_progress);
+        List class_update = update_classes(r,Cmax,epsmin,epsmax,distmin,s,m,b,Omega,print_progress);
         C = as<int>(class_update["C"]);
         s = as<vec>(class_update["s"]);
         m = as<vec>(class_update["m"]);
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
-        if(print_progress && rep+1==B){
-          sprintf(buf, "%9d ended class updating (C = %d)\n", rep+1, C);
+        if(print_progress && r+1==B){
+          sprintf(buf, "%9d ended class updating (C = %d)\n", r+1, C);
           Rcout << buf;
         }
       }
@@ -586,20 +625,15 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       for(int t = 0; t<Tvec[n]; t++){
         ind = csTvec[n]+t;
         if(P_f>0 && P_r>0)
-          U(span::all,ind) = draw_utility(U(span::all,ind),
-            as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv,
-            Jm1, y(n,t));
+          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
         if(P_f>0 && P_r==0)
-          U(span::all,ind) = draw_utility(U(span::all,ind),
-            as<mat>(W[ind])*alpha, Sigmainv, Jm1, y(n,t));
+          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha, Sigmainv);
         if(P_f==0 && P_r>0)
-          U(span::all,ind) = draw_utility(U(span::all,ind),
-            as<mat>(X[ind])*beta(span::all,n), Sigmainv, Jm1, y(n,t));
+          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(X[ind])*beta(span::all,n), Sigmainv);
         if(P_f==0 && P_r==0){
-          vec mu_null(Jm1);
-          U(span::all,ind) = draw_utility(U(span::all,ind),mu_null, Sigmainv,
-            Jm1, y(n,t));
-        };
+          arma::vec mu_null(Jm1);
+          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), mu_null, Sigmainv);
+        }
       }
     }
 
@@ -624,21 +658,21 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
     // save draws
     if(P_f>0)
-      alpha_draws(rep,span::all) = trans(alpha);
+      alpha_draws(r,span::all) = trans(alpha);
     if(P_r>0){
-      s_draws(rep,span(0,s.size()-1)) = trans(s);
+      s_draws(r,span(0,s.size()-1)) = trans(s);
       vec vectorise_b = vectorise(b);
-      b_draws(rep,span(0,vectorise_b.size()-1)) = trans(vectorise_b);
+      b_draws(r,span(0,vectorise_b.size()-1)) = trans(vectorise_b);
       vec vectorise_Omega = vectorise(Omega);
-      Omega_draws(rep,span(0,vectorise_Omega.size()-1)) =
+      Omega_draws(r,span(0,vectorise_Omega.size()-1)) =
         trans(vectorise_Omega);
     }
-    Sigma_draws(rep,span::all) = trans(vectorise(Sigma));
+    Sigma_draws(r,span::all) = trans(vectorise(Sigma));
 
     // print time to completion
     if(print_progress)
-      if((rep+1)%nprint==0 && rep+1 != R)
-        update_timer(rep, R);
+      if((r+1)%nprint==0 && r+1 != R)
+        update_timer(r, R);
   }
 
   if(print_progress)
