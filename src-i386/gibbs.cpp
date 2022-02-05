@@ -104,7 +104,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' of the normal prior for each \code{b_c}.
 //' @details
 //' The following holds independently for each class \eqn{c}.
-//' Let \eqn{b_c} be the mean of class number \eqn{c}. A priori, we assume that \eqn{b_c} is normally distributed
+//' Let \eqn{b_c} be the mean of class number \code{c}. A priori, we assume that \eqn{b_c} is normally distributed
 //' with mean vector \eqn{\xi} and covariance matrix \eqn{D}.
 //' Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
 //' \eqn{m_c} the class size, and \eqn{\bar{b}_c} their arithmetic mean.
@@ -118,7 +118,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' A matrix of updated means for each class in columns.
 //' @examples
 //' ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-//' (beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
+//' beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1))
 //' ### class covariances for C = 2 classes
 //' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
 //' ### class allocation vector (starting from 0) and class sizes
@@ -296,7 +296,7 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 //' covariance matrix in a multiple linear regression.
 //' @examples
 //' ### true error term covariance matrix
-//' (Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3))
+//' Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
 //' ### coefficient vector
 //' beta <- matrix(c(-1,1), ncol=1)
 //' ### draw data

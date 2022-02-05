@@ -47,7 +47,7 @@ reference:
   - preference_classification
   - predict.RprobitB_fit
   - plot.RprobitB_fit
-- title: S3 classes
+- title: Constructor functions
   desc: These functions construct the S3 classes of RprobitB.
   contents:
   - has_keyword("constructor")
@@ -55,8 +55,8 @@ reference:
   desc: Implementation of distributions and number generating functions.
   contents:
   - has_keyword("distribution")
-- title: Posterior draws of model paramters
-  desc: These functions draw from the posterior distribution of the model parameters.
+- title: Posterior samplers
+  desc: These functions draw from the conditional posterior distributions of the model parameters.
   contents:
   - has_keyword("posterior")
 - title: Utilities
