@@ -1,27 +1,29 @@
-set.seed(11)
+set.seed(1)
 
 ### draw data
-n <- 60
-b <- matrix(c(1.5,1.5,1.5,-1.5,-1.5,1.5,-1.5,-1.5), ncol = 4)
-Omega <- matrix(c(0.3, 0.05, 0.05, 0.3, 0.5, -0.08, -0.08, 0.2, 0.1, 0.03, 0.03, 0.1, 0.8, 0.5, 0.5, 0.8), ncol = 4)
+b_true <- matrix(c(1.5,1.5,1.5,-1.5,-1.5,1.5), ncol = 3)
+Omega_true <- matrix(c(0.3, 0.05, 0.05, 0.3, 0.5, -0.08, -0.08, 0.2, 0.8, 0.5, 0.5, 0.8), ncol = 3)
 data <- c()
-for(c in 1:4){
-  data <- rbind(data, MASS::mvrnorm(n = 60, mu = b[,c], Sigma = matrix(Omega[,c], ncol = 2)))
+for(c in 1:3){
+  data <- rbind(data, MASS::mvrnorm(n = 50, mu = b_true[,c], Sigma = matrix(Omega_true[,c], ncol = 2)))
 }
 plot(data)
 
 ### prior settings
 delta <- 0.01 # concentration parameter of Dirichlet distribution
-xi <- matrix(rep(0, 2), ncol = 2) # prior mean for class means
-D <- diag(2) * 9 # prior variance for class means
-sigma_y <- diag(2) # data variance (assumed known and same for all classes)
+xi <- matrix(rep(0, 2), ncol = 2) # prior mean for each b_c
+D <- diag(2) # prior covariance for each b_c
+nu <- 4 # prior mean for each Omega_c
+Theta <- diag(2) # prior covariance for each Omega_c
 
 ### initial values
 z0 <- rep(1, nrow(data)) # initial data point assignment
 
 ### run Gibbs sampler
-results <- crp_gibbs(data = data, delta = delta, xi = xi, D = D,
-                     sigma_y = sigma_y, z0 = z0, R = 1000)
+results <- crp_gibbs(data = data,
+                     delta = delta, xi = xi, D = D, nu = nu, Theta = Theta,
+                     z0 = z0,
+                     R = 1000)
 
 ### assign classes that occur most often
 tab <- apply(results$z_samples, 1, FUN = function(x) {
@@ -32,7 +34,9 @@ tab <- apply(results$z_samples, 1, FUN = function(x) {
 table(tab)
 
 ### Gibbs sampler definition
-crp_gibbs <- function(data, delta, xi, D, sigma_y, z0, R){
+crp_gibbs <- function(data,
+                      delta, xi, D, nu, Theta,
+                      z0, R, Cmax = 100){
 
   ### data dimension
   N <- nrow(data)
@@ -41,6 +45,8 @@ crp_gibbs <- function(data, delta, xi, D, sigma_y, z0, R){
   z <- z0
   m <- as.vector(table(z))
   C <- length(m)
+  b <- matrix(0, nrow = 2, ncol = Cmax)
+  Omega <- matrix(rep(diag(2), C), nrow = 4, ncol = Cmax)
   pb <- txtProgressBar(min = 0, max = R, style = 3)
 
   ### storage of Gibbs samples
@@ -71,25 +77,30 @@ crp_gibbs <- function(data, delta, xi, D, sigma_y, z0, R){
       ### update cluster characteristics
       for(c in 1:C){
 
-        ### extract data points currently present in this cluster
-        y <- data[z == c, , drop = FALSE]
+        ### extract data points currently allocated to cluster c
+        y_c <- data[z == c, , drop = FALSE]
 
-        ### compute cluster precision and variance
-        tau_p <- solve(D) + m[c] * solve(sigma_y)
-        sig_p <- solve(tau_p)
+        ### update Omega_c via mean of its posterior distribution
+        Omega_c <- (Theta + crossprod(t(apply(y_c, 1, function(x) x - b[,c])))) / (m[c]+nu-ncol(data)-1)
+        Omega[,c] <- as.vector(Omega_c)
 
-        ### update cluster covariance
-        Omega_c <- (D + crossprod(t(apply(y, 1, function(x) x - mean_p)))) / (m[c]+2-ncol(data)-1)
+        ### compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
+        sig_b <- solve(solve(D) + m[c] * solve(matrix(Omega_c, 2, 2)))
+        mu_b <- sig_b %*% (solve(matrix(Omega_c, 2, 2)) %*% colSums(y_c) + solve(D) %*% t(xi))
 
-        ### update cluster mean
-        mean_p <- sig_p %*% (solve(sigma_y) %*% colSums(y) + solve(D) %*% t(xi))
+        ### update b_c via mean of its posterior distribution
+        b[,c] <- mu_b
+
+        ### compute log-density of data point n from its posterior predictive distribution
+        density_n <- dmvnorm(data[n,], mean = mu_b, Sigma = sig_b + Omega_c, log = TRUE)
 
         ### compute cluster assignment probabilities for existing cluster (conditioned on existing clusters)
-        logp[c] <- log(m[c]) + mvtnorm::dmvnorm(data[n,], mean = mean_p, sigma = sig_p + sigma_y, log = TRUE)
+        logp[c] <- log(m[c]) + density_n
       }
 
       ### compute probability for new cluster (conditioned on existing clusters)
-      logp[C+1] <- log(delta) + mvtnorm::dmvnorm(data[n,], mean = xi, sigma = D + sigma_y, log = TRUE)
+      est_Omega <- matrix(Omega[,1:C, drop = FALSE] %*% (m/sum(m)), ncol = 2)
+      logp[C+1] <- log(delta) + mvtnorm::dmvnorm(data[n,], mean = xi, sigma = D + est_Omega, log = TRUE)
 
       ### transform log-probabilities to probabilities
       max_logp <- max(logp)
