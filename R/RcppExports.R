@@ -45,6 +45,33 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
     .Call(`_RprobitB_dmvnorm`, x, mean, Sigma, log)
 }
 
+#' Draw from multivariate normal distribution
+#' @description
+#' This function draws from a multivariate normal distribution.
+#' @details
+#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+#' Choleski decomposition of \eqn{\Sigma}.
+#' @param mu
+#' The mean vector of length \code{n}.
+#' @param Sigma
+#' The covariance matrix of dimension \code{n} x \code{n}.
+#' @return
+#' A numeric vector of length \code{n}.
+#' @export
+#' @examples
+#' mu <- c(0,0)
+#' Sigma <- diag(2)
+#' rmvnorm(mu = mu, Sigma = Sigma)
+#' @keywords
+#' distribution
+#'
+rmvnorm <- function(mu, Sigma) {
+    .Call(`_RprobitB_rmvnorm`, mu, Sigma)
+}
+
 #' Draw from Dirichlet distribution
 #' @description
 #' Function to draw from a Dirichlet distribution.
@@ -88,33 +115,6 @@ rdirichlet <- function(delta) {
 #'
 rwishart <- function(nu, V) {
     .Call(`_RprobitB_rwishart`, nu, V)
-}
-
-#' Draw from multivariate normal distribution
-#' @description
-#' This function draws from a multivariate normal distribution.
-#' @details
-#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
-#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
-#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
-#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
-#' Choleski decomposition of \eqn{\Sigma}.
-#' @param mu
-#' The mean vector of length \code{n}.
-#' @param Sigma
-#' The covariance matrix of dimension \code{n} x \code{n}.
-#' @return
-#' A numeric vector of length \code{n}.
-#' @export
-#' @examples
-#' mu <- c(0,0)
-#' Sigma <- diag(2)
-#' rmvnorm(mu = mu, Sigma = Sigma)
-#' @keywords
-#' distribution
-#'
-rmvnorm <- function(mu, Sigma) {
-    .Call(`_RprobitB_rmvnorm`, mu, Sigma)
 }
 
 #' Update class weight vector

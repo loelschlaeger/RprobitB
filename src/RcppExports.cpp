@@ -37,6 +37,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rmvnorm
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
+RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rdirichlet
 arma::vec rdirichlet(arma::vec delta);
 RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
@@ -57,18 +69,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
     rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rmvnorm
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
-RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -207,9 +207,9 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
     {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
+    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
-    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_b", (DL_FUNC) &_RprobitB_update_b, 6},
