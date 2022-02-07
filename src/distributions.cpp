@@ -43,6 +43,37 @@ double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma
   return(out);
 }
 
+//' Draw from multivariate normal distribution
+//' @description
+//' This function draws from a multivariate normal distribution.
+//' @details
+//' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+//' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+//' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+//' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+//' Choleski decomposition of \eqn{\Sigma}.
+//' @param mu
+//' The mean vector of length \code{n}.
+//' @param Sigma
+//' The covariance matrix of dimension \code{n} x \code{n}.
+//' @return
+//' A numeric vector of length \code{n}.
+//' @export
+//' @examples
+//' mu <- c(0,0)
+//' Sigma <- diag(2)
+//' rmvnorm(mu = mu, Sigma = Sigma)
+//' @keywords
+//' distribution
+//'
+// [[Rcpp::export]]
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
+  int n = mu.size();
+  arma::mat L = trans(chol(Sigma));
+  arma::vec eps = Rcpp::rnorm(n,0.0,1.0);
+  return(L * eps + mu);
+}
+
 //' Draw from Dirichlet distribution
 //' @description
 //' Function to draw from a Dirichlet distribution.
@@ -111,35 +142,4 @@ List rwishart(double nu, arma::mat const& V){
   arma::mat C = trans(T)*chol(V);
   arma::mat CI = solve(trimatu(C),eye(m,m));
   return List::create(Named("W") = trans(C) * C, Named("IW") = CI * trans(CI), Named("C") = C, Named("CI") = CI);
-}
-
-//' Draw from multivariate normal distribution
-//' @description
-//' This function draws from a multivariate normal distribution.
-//' @details
-//' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
-//' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
-//' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
-//' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
-//' Choleski decomposition of \eqn{\Sigma}.
-//' @param mu
-//' The mean vector of length \code{n}.
-//' @param Sigma
-//' The covariance matrix of dimension \code{n} x \code{n}.
-//' @return
-//' A numeric vector of length \code{n}.
-//' @export
-//' @examples
-//' mu <- c(0,0)
-//' Sigma <- diag(2)
-//' rmvnorm(mu = mu, Sigma = Sigma)
-//' @keywords
-//' distribution
-//'
-// [[Rcpp::export]]
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
-  int n = mu.size();
-  arma::mat L = trans(chol(Sigma));
-  arma::vec eps = Rcpp::rnorm(n,0.0,1.0);
-  return(L * eps + mu);
 }
