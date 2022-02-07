@@ -33,7 +33,8 @@ Imports:
     ramify,
     ggplot2,
     tidyr,
-    rlang
+    rlang,
+    mixtools
 LinkingTo:
     Rcpp,
     RcppArmadillo
