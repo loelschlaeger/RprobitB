@@ -30,7 +30,8 @@ s <- 0.92
 m <- 94
 b <- matrix(1:3,ncol=1)
 Omega <- matrix(1:9,ncol=1)
-update_classes(rep = rep, Cmax = Cmax, epsmin = epsmin, epsmax = epsmax, distmin = distmin, s = s, m = m, b = b, Omega = Omega, print_progress = TRUE)
+update_classes(rep = rep, Cmax = Cmax, epsmin = epsmin, epsmax = epsmax, distmin = distmin,
+               s = s, m = m, b = b, Omega = Omega, print_progress = TRUE)
 
 }
 \keyword{internal}

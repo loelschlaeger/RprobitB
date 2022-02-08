@@ -59,7 +59,7 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -355.6293
+      [1] -351.3812
 
 ---
 
