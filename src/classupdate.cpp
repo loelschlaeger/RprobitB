@@ -17,8 +17,6 @@ using namespace Rcpp;
 //' @return
 //' The euclidean distance.
 //' @export
-//' @examples
-//' euc_dist(c(0,0),c(1,1))
 //' @keywords
 //' utils
 //'
@@ -32,44 +30,26 @@ double euc_dist (arma::vec a, arma::vec b){
   return sqrt(euc_dist);
 }
 
-
-//' Weight-based update of latent classes
-//' @description
-//' This function updates the latent classes based on their class weights.
-//' @param Cmax
-//'
-//' @param epsmin
-//'
-//' @param epsmax
-//'
-//' @param distmin
-//'
-//' @inheritParams RprobitB_parameter
-//' @return
-//' A list of updated values for \code{s}, \code{b}, \code{Omega},
-//' @export
-//' @examples
-//' euc_dist(c(0,0),c(1,1))
-//' @keywords
-//' internal
-//'
-// [[Rcpp::export]]
-Rcpp::List class_update_wb (int Cmax, double epsmin, double epsmax, double distmin,
-                            arma::vec s, arma::vec m, arma::mat b, arma::mat Omega) {
-
+Rcpp::List update_classes (int rep, int Cmax,
+                           double epsmin, double epsmax, double distmin,
+                           arma::vec s, arma::vec m, arma::mat b, arma::mat Omega,
+                           bool print_progress) {
+  char buf[50];
   bool flag = false;
   int C = b.n_cols;
   int P = b.n_rows;
   mat stack = join_cols(trans(s),join_cols(trans(m),join_cols(b,Omega)));
-
   //remove class
   int id_min = index_min(stack(0,span::all));
   if(stack(0,id_min)<epsmin){
     stack.shed_col(id_min);
     C -= 1;
+    if(print_progress){
+      sprintf(buf, "%9d removed class         \n", rep+1);
+      Rcout <<  buf;
+    }
     flag = true;
   }
-
   //split class
   if(flag==false){
     int id_max = index_max(stack(0,span::all));
@@ -88,10 +68,13 @@ Rcpp::List class_update_wb (int Cmax, double epsmin, double epsmax, double distm
       stack(2+largest_var[1],id_max+1) += largest_var[0]/2;
       stack(span(P+2,1+P+P*P),span(id_max,id_max+1)) /= 2;
       C += 1;
+      if(print_progress){
+        sprintf(buf, "%9d splitted class        \n", rep+1);
+        Rcout <<  buf;
+      }
       flag = true;
     }
   }
-
   //join classes
   if(flag==false){
     vec closest_classes = zeros<vec>(3);
@@ -115,18 +98,23 @@ Rcpp::List class_update_wb (int Cmax, double epsmin, double epsmax, double distm
       stack(span(2+P,2+P+P*P-1),c1) /=2;
       stack.shed_col(c2);
       C -= 1;
+      if(print_progress){
+        sprintf(buf, "%9d joined classes        \n", rep+1);
+        Rcout <<  buf;
+      }
       flag = true;
     }
   }
-
   //sort s ascending
   stack = stack.cols(sort_index(stack(0,span::all),"descend"));
   rowvec s_update = stack.row(0);
   rowvec m_update = stack.row(1);
   mat b_update = stack.rows(span(2,P+1));
   mat Omega_update = stack.rows(span(P+2,1+P+P*P));
-  return List::create(Named("s") = s_update,
+  return List::create(Named("C") = C,
+                      Named("s") = s_update,
                       Named("m") = m_update,
                       Named("b") = b_update,
-                      Named("Omega") = Omega_update);
+                      Named("Omega") = Omega_update,
+                      Named("flag") = flag);
 }

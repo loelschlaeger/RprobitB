@@ -11,37 +11,11 @@
 #' @return
 #' The euclidean distance.
 #' @export
-#' @examples
-#' euc_dist(c(0,0),c(1,1))
 #' @keywords
 #' utils
 #'
 euc_dist <- function(a, b) {
     .Call(`_RprobitB_euc_dist`, a, b)
-}
-
-#' Weight-based update of latent classes
-#' @description
-#' This function updates the latent classes based on their class weights.
-#' @param Cmax
-#'
-#' @param epsmin
-#'
-#' @param epsmax
-#'
-#' @param distmin
-#'
-#' @inheritParams RprobitB_parameter
-#' @return
-#' A list of updated values for \code{s}, \code{b}, \code{Omega},
-#' @export
-#' @examples
-#' euc_dist(c(0,0),c(1,1))
-#' @keywords
-#' internal
-#'
-class_update_wb <- function(Cmax, epsmin, epsmax, distmin, s, m, b, Omega) {
-    .Call(`_RprobitB_class_update_wb`, Cmax, epsmin, epsmax, distmin, s, m, b, Omega)
 }
 
 #' Density of multivariate normal distribution

@@ -106,7 +106,7 @@ lcmmnp <- simulate_choices(
 m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 
 ### update of latent classes
-m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
+m5 <- simulate_choices(data = lcmmnp, latent_classes = list("weight_update" = TRUE), seed = 1)
 }
 
 }

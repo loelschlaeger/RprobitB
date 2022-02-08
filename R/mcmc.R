@@ -57,7 +57,7 @@
 #' m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 #'
 #' ### update of latent classes
-#' m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
+#' m5 <- simulate_choices(data = lcmmnp, latent_classes = list("weight_update" = TRUE), seed = 1)
 #' }
 #'
 #' @export
@@ -114,7 +114,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     init = init, R = R, B = B, print_progress = print_progress
   )
 
-  if (latent_classes$weight_update || latent_classes$dp_update) {
+  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     ### update number of latent classes
     latent_classes$C <- sum(utils::tail(gibbs_samples$s, 1) != 0)
 
