@@ -18,6 +18,26 @@ euc_dist <- function(a, b) {
     .Call(`_RprobitB_euc_dist`, a, b)
 }
 
+#' @examples
+#' rep <- 1
+#' Cmax <- 10
+#' epsmin <- 0.1
+#' epsmax <- 0.9
+#' distmin <- 0.1
+#' s <- 0.92
+#' m <- 94
+#' b <- matrix(1:3,ncol=1)
+#' Omega <- matrix(1:9,ncol=1)
+#' update_classes(rep = rep, Cmax = Cmax, epsmin = epsmin, epsmax = epsmax, distmin = distmin, s = s, m = m, b = b, Omega = Omega, print_progress = TRUE)
+#'
+#' @export
+#' @keywords
+#' internal
+#'
+update_classes <- function(rep, Cmax, epsmin, epsmax, distmin, s, m, b, Omega, print_progress) {
+    .Call(`_RprobitB_update_classes`, rep, Cmax, epsmin, epsmax, distmin, s, m, b, Omega, print_progress)
+}
+
 #' Density of multivariate normal distribution
 #' @description
 #' This function computes the density of a multivariate normal distribution.

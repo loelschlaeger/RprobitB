@@ -23,6 +23,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_classes
+Rcpp::List update_classes(int rep, int Cmax, double epsmin, double epsmax, double distmin, arma::vec s, arma::vec m, arma::mat b, arma::mat Omega, bool print_progress);
+RcppExport SEXP _RprobitB_update_classes(SEXP repSEXP, SEXP CmaxSEXP, SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP distminSEXP, SEXP sSEXP, SEXP mSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP print_progressSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type rep(repSEXP);
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmin(epsminSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmax(epsmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type distmin(distminSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m(mSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes(rep, Cmax, epsmin, epsmax, distmin, s, m, b, Omega, print_progress));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dmvnorm
 double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
 RcppExport SEXP _RprobitB_dmvnorm(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
@@ -218,6 +238,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
+    {"_RprobitB_update_classes", (DL_FUNC) &_RprobitB_update_classes, 10},
     {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
     {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},

@@ -576,12 +576,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       z = update_z(s, beta, b, Omega);
 
       // update m
-      m = ones(C);
-      for(int c = 0; c<C; c++){
-        for(int n = 0; n<N; n++){
-          if(z[n]==c) m[c] += 1;
-        }
-      }
+      m = update_m(C, z);
 
       // update b
       b = update_b(beta, Omega, z, m, xi, Dinv);
@@ -610,7 +605,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       }
 
       // update classes
-      if(weight_update==true && (r+1)>=(B/2) && (r+1)<=B && (r+1)%buffer==0){
+      if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
         if(print_progress && r+1==B/2){
           sprintf(buf, "%9d started class updating\n", r+1);
           Rcout << buf;
