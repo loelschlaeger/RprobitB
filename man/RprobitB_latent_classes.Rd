@@ -7,34 +7,76 @@
 RprobitB_latent_classes(latent_classes = NULL)
 }
 \arguments{
-\item{latent_classes}{Either \code{NULL} or a list of parameters specifying the number and the
-latent classes:
+\item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying
+the number of latent classes and their updating scheme:
 \itemize{
-\item \code{C}:
-The number (greater or equal 1) of latent classes, which is set to 1 per
-default and is ignored if \code{P_r = 0}.
-If \code{update = TRUE}, \code{C} equals the initial number of classes.
-\item \code{update}:
-A boolean, determining whether to update \code{C}.
-Ignored if \code{P_r = 0}.
-If \code{update = FALSE}, all of the following elements are ignored.
-\item \code{Cmax}:
-The maximum number of latent classes.
-\item \code{buffer}:
-The updating buffer (number of iterations to wait before the next update).
-\item \code{epsmin}:
-The threshold weight for removing latent classes (between 0 and 1).
-\item \code{epsmax}:
-The threshold weight for splitting latent classes (between 0 and 1).
-\item \code{distmin}:
-The threshold difference in means for joining latent classes
-(non-negative).
+\item \code{C}: The fixed number (greater or equal 1) of latent classes,
+which is set to 1 per default. If either \code{weight_update = TRUE}
+or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
+equals the initial number of latent classes.
+\item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
+update the latent classes. See ... for details.
+\item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
+classes based on a Dirichlet process. See ... for details.
+\item \code{Cmax}: The maximum number of latent classes.
+\item \code{buffer}: The number of iterations to wait before a next
+weight-based update of the latent classes.
+\item \code{epsmin}: The threshold weight (between 0 and 1) for removing
+a latent class in the weight-based updating scheme.
+\item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
+a latent class in the weight-based updating scheme.
+\item \code{distmin}: The (non-negative) threshold difference in class means
+for joining two latent classes in the weight-based updating scheme.
 }}
 }
 \value{
 An object of class \code{RprobitB_latent_classes}.
 }
 \description{
-This function creates an object of class \code{RprobitB_latent_classes}.
+This function creates an object of class \code{RprobitB_latent_classes} which
+can be passed to \code{\link{mcmc}} to determine the number of latent classes
+and their updating scheme. The \code{RprobitB_latent_classes}-object generated
+by this function is only of relevance if the model possesses at least one
+random coefficient, i.e. if \code{P_r>0}.
+}
+\details{
+\subsection{Why update latent classes?}{
+
+In order not to have to specify the number of latent classes before estimation.
+}
+
+\subsection{What options to update latent classes exist?}{
+
+Currently two updating schemes are implemented, weight-based (see ...) and
+via a Dirichlet process (see ...).
+}
+
+\subsection{What is the default behaviour?}{
+
+One latent class without updates is specified per default. Print an
+\code{RprobitB_latent_classes}-object to see a summary of all relevant (default)
+parameter settings.
+}
+
+\subsection{Why is \code{Cmax} required?}{
+
+The implementation requires an upper bound on the number of latent classes
+for saving the Gibbs samples. However, this is not a restriction since the
+number of latent classes is bounded by the number of deciders in any case.
+The function ... visualizes the sequence of class numbers after estimation
+and can be used to check if \code{Cmax} was reached.
+}
+}
+\examples{
+### default setting
+RprobitB:::RprobitB_latent_classes()
+
+### setting for a fixed number of two latent classes
+RprobitB:::RprobitB_latent_classes(list(C = 2))
+
+### setting for weight-based on Dirichlet process-based updates
+RprobitB:::RprobitB_latent_classes(list("weight_update" = TRUE,
+                                        "dp_update" = TRUE))
+
 }
 \keyword{constructor}

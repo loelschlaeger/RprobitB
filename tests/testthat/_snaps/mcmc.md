@@ -147,8 +147,7 @@
       7    ASC_bus  TRUE
       8    ASC_car  TRUE
       
-      Latent classes: 1 
-      - Update: FALSE 
+      Number of latent classes: 1 
       
       Parameter statistics:
                 true    mean      sd      R^
@@ -225,8 +224,7 @@
       7    ASC_bus  TRUE
       8    ASC_car  TRUE
       
-      Latent classes: 2 
-      - Update: FALSE 
+      Number of latent classes: 2 
       
       Parameter statistics:
                 true    mean      sd      R^
@@ -308,10 +306,11 @@
       2 ASC_bus TRUE
       3 ASC_car TRUE
       
-      Latent classes: 2 
-      - Update: TRUE 
-      - Maximum number: 10 
-      - Buffer: 100 
+      DP-based update: FALSE 
+      Weight-based update: TRUE 
+      - Initial classes: 2 
+      - Maximum classes: 10 
+      - Updating buffer: 100 
       - Minimum class weight: 0.1 
       - Maximum class weight: 0.9 
       - Mimumum class distance: 0.1 

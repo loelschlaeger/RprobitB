@@ -92,6 +92,30 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
   return(z);
 }
 
+//' Update class sizes
+//' @description
+//' This function updates the class size vector.
+//' @inheritParams RprobitB_parameter
+//' @return
+//' An updated class size vector.
+//' @examples
+//' update_m(C = 3, z = c(0,1,1,2,2,2))
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_m (int C, arma::vec z) {
+  int N = z.size();
+  arma::vec m = ones(C);
+  for(int c = 0; c<C; c++){
+    for(int n = 0; n<N; n++){
+      if(z[n]==c) m[c] += 1;
+    }
+  }
+  return(m);
+}
+
 //' Update class means
 //' @description
 //' This function updates the class means (independent from the other classes).
@@ -454,8 +478,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   double epsmin = 0.01;
   double epsmax = 0.99;
   double distmin = 0.1;
-  bool update = as<bool>(latent_classes["update"]);
-  if(update==false){
+  bool weight_update = as<bool>(latent_classes["weight_update"]);
+  if(weight_update==false){
     Cdrawsize = C;
   }
   else{
@@ -552,12 +576,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       z = update_z(s, beta, b, Omega);
 
       // update m
-      m = ones(C);
-      for(int c = 0; c<C; c++){
-        for(int n = 0; n<N; n++){
-          if(z[n]==c) m[c] += 1;
-        }
-      }
+      m = update_m(C, z);
 
       // update b
       b = update_b(beta, Omega, z, m, xi, Dinv);
@@ -586,7 +605,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       }
 
       // update classes
-      if(update==true && (r+1)>=(B/2) && (r+1)<=B && (r+1)%buffer==0){
+      if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
         if(print_progress && r+1==B/2){
           sprintf(buf, "%9d started class updating\n", r+1);
           Rcout << buf;

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{set_initial_gibbs_values}
 \alias{set_initial_gibbs_values}
-\title{Set initial values for the Gibbs sampler.}
+\title{Set initial values for the Gibbs sampler}
 \usage{
 set_initial_gibbs_values(N, T, J, P_f, P_r, C)
 }

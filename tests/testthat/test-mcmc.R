@@ -78,7 +78,7 @@ test_that("ULCMMNP", {
   model <- mcmc(data,
     R = 2000, print_progress = F, seed = 1,
     latent_classes = list(
-      "C" = 8, "update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
+      "C" = 8, "weight_update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
     )
   )
   expect_snapshot(print(model))
