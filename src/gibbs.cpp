@@ -92,6 +92,30 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
   return(z);
 }
 
+//' Update class sizes
+//' @description
+//' This function updates the class size vector.
+//' @inheritParams RprobitB_parameter
+//' @return
+//' An updated class size vector.
+//' @examples
+//' update_m(C = 3, z = c(0,1,1,2,2,2))
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_m (int C, arma::vec z) {
+  int N = z.size();
+  arma::vec m = ones(C);
+  for(int c = 0; c<C; c++){
+    for(int n = 0; n<N; n++){
+      if(z[n]==c) m[c] += 1;
+    }
+  }
+  return(m);
+}
+
 //' Update class means
 //' @description
 //' This function updates the class means (independent from the other classes).
@@ -446,27 +470,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     XkX = as<List>(sufficient_statistics["XkX"]);
   }
 
-  // extract 'latent_classes' parameters
-  int C = as<int>(latent_classes["C"]);
-  int Cmax = 10;
-  int Cdrawsize;
-  int buffer = 50;
-  double epsmin = 0.01;
-  double epsmax = 0.99;
-  double distmin = 0.1;
-  bool update = as<bool>(latent_classes["update"]);
-  if(update==false){
-    Cdrawsize = C;
-  }
-  else{
-    Cmax = as<int>(latent_classes["Cmax"]);
-    Cdrawsize = Cmax;
-    buffer = as<int>(latent_classes["buffer"]);
-    epsmin = as<double>(latent_classes["epsmin"]);
-    epsmax = as<double>(latent_classes["epsmax"]);
-    distmin = as<double>(latent_classes["distmin"]);
-  }
-
   // extract 'prior' parameters
   int delta = 1;
   vec eta;
@@ -489,7 +492,30 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     Theta = as<mat>(prior["Theta"]);
   }
 
+  // extract 'latent_classes' parameters
+  int C = as<int>(latent_classes["C"]);
+  int Cmax = 10;
+  int Cdrawsize;
+  int buffer = 50;
+  double epsmin = 0.01;
+  double epsmax = 0.99;
+  double distmin = 0.1;
+  bool weight_update = as<bool>(latent_classes["weight_update"]);
+  bool dp_update = as<bool>(latent_classes["dp_update"]);
+  if(weight_update==false && dp_update==false){
+    Cdrawsize = C;
+  }
+  else{
+    Cmax = as<int>(latent_classes["Cmax"]);
+    Cdrawsize = Cmax;
+    buffer = as<int>(latent_classes["buffer"]);
+    epsmin = as<double>(latent_classes["epsmin"]);
+    epsmax = as<double>(latent_classes["epsmax"]);
+    distmin = as<double>(latent_classes["distmin"]);
+  }
+
   // extract 'init' parameters
+  vec z0;
   vec m0;
   vec alpha0;
   mat b0;
@@ -501,6 +527,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     alpha0 = as<vec>(init["alpha0"]);
   }
   if(P_r>0){
+    z0 = as<vec>(init["z0"]);
     m0 = as<vec>(init["m0"]);
     b0 = as<mat>(init["b0"]);
     Omega0 = as<mat>(init["Omega0"]);
@@ -519,7 +546,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   int nprint = round(R/10);
   int Jm1 = J - 1;
 
-  // allocate space for draws
+  // allocate space for Gibbs samples
   mat alpha_draws = zeros<mat>(R,P_f);
   mat s_draws = zeros<mat>(R,Cdrawsize);
   mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
@@ -528,7 +555,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
   // define updating variables and set initial values
   vec s(C);
-  vec z(N);
+  vec z = z0;
   vec m = m0;
   mat b = b0;
   mat Omega = Omega0;
@@ -537,33 +564,34 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat beta = beta0;
   mat Sigmainv = arma::inv(Sigma0);
 
-  // start loop
+  // start Gibbs sampling loop
   if(print_progress) start_timer();
   for(int r = 0; r<R; r++) {
 
     if(P_r>0){
-      // update s (but only if draw is descending)
-      arma::vec s_cand = update_s(delta,m);
-      if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
-        s = s_cand;
-      }
 
-      // update z
-      z = update_z(s, beta, b, Omega);
-
-      // update m
-      m = ones(C);
-      for(int c = 0; c<C; c++){
-        for(int n = 0; n<N; n++){
-          if(z[n]==c) m[c] += 1;
+      if(dp_update==true && r+1<=B){
+        // DP update
+        // returns s, z, m, b, Omega
+      } else {
+        // update s (but only if draw is descending)
+        arma::vec s_cand = update_s(delta, m);
+        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
+          s = s_cand;
         }
+
+        // update z
+        z = update_z(s, beta, b, Omega);
+
+        // update m
+        m = update_m(C, z);
+
+        // update b
+        b = update_b(beta, Omega, z, m, xi, Dinv);
+
+        // update Omega
+        Omega = update_Omega(beta, b, z, m, nu, Theta);
       }
-
-      // update b
-      b = update_b(beta, Omega, z, m, xi, Dinv);
-
-      // update Omega
-      Omega = update_Omega(beta, b, z, m, nu, Theta);
 
       // update beta
       for(int n = 0; n<N; n++){
@@ -585,22 +613,24 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
       }
 
-      // update classes
-      if(update==true && (r+1)>=(B/2) && (r+1)<=B && (r+1)%buffer==0){
+      if(weight_update==true && r+1<=B && (r+1)%buffer==0){
+        // class weight update
         if(print_progress && r+1==B/2){
           sprintf(buf, "%9d started class updating\n", r+1);
           Rcout << buf;
         }
-        List class_update = update_classes(r,Cmax,epsmin,epsmax,distmin,s,m,b,Omega,print_progress);
-        C = as<int>(class_update["C"]);
+        List class_update = class_update_wb(Cmax,epsmin,epsmax,distmin,s,m,b,Omega);
         s = as<vec>(class_update["s"]);
-        m = as<vec>(class_update["m"]);
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
+        C = s.size();
+        z = update_z(s, beta, b, Omega);
+        m = update_m(C, z);
         if(print_progress && r+1==B){
           sprintf(buf, "%9d ended class updating (C = %d)\n", r+1, C);
           Rcout << buf;
         }
+
       }
     }
 

@@ -17,4 +17,7 @@ The euclidean distance.
 \description{
 This function computes the euclidean distance between two vectors.
 }
+\examples{
+euc_dist(c(0,0),c(1,1))
+}
 \keyword{utils}

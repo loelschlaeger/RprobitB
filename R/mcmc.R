@@ -1,4 +1,4 @@
-#' Markov chain Monte Carlo simulation for probit model fitting.
+#' Probit model fitting via Markov chain Monte Carlo simulation.
 #'
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting a
@@ -114,7 +114,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     init = init, R = R, B = B, print_progress = print_progress
   )
 
-  if (latent_classes$update) {
+  if (latent_classes$weight_update || latent_classes$dp_update) {
     ### update number of latent classes
     latent_classes$C <- sum(utils::tail(gibbs_samples$s, 1) != 0)
 
@@ -298,7 +298,7 @@ check_prior <- function(P_f, P_r, J, eta = numeric(P_f), Psi = diag(P_f),
   return(prior)
 }
 
-#' Set initial values for the Gibbs sampler.
+#' Set initial values for the Gibbs sampler
 #'
 #' @description
 #' This function sets initial values for the Gibbs sampler.
@@ -325,6 +325,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
 
   ### define initial values
   alpha0 <- if (P_f > 0) numeric(P_f) else NA
+  z0 <- if (P_r > 0) rep(0, N) else NA
   m0 <- if (P_r > 0) round(rep(N, C) * 2^(C:1 - 1) / sum(2^(C:1 - 1))) else NA
   b0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = C) else NA
   Omega0 <-
@@ -336,6 +337,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   ### define 'init'
   init <- list(
     "alpha0" = alpha0,
+    "z0" = z0,
     "m0" = m0,
     "b0" = b0,
     "Omega0" = Omega0,

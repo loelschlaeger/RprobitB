@@ -11,11 +11,37 @@
 #' @return
 #' The euclidean distance.
 #' @export
+#' @examples
+#' euc_dist(c(0,0),c(1,1))
 #' @keywords
 #' utils
 #'
 euc_dist <- function(a, b) {
     .Call(`_RprobitB_euc_dist`, a, b)
+}
+
+#' Weight-based update of latent classes
+#' @description
+#' This function updates the latent classes based on their class weights.
+#' @param Cmax
+#'
+#' @param epsmin
+#'
+#' @param epsmax
+#'
+#' @param distmin
+#'
+#' @inheritParams RprobitB_parameter
+#' @return
+#' A list of updated values for \code{s}, \code{b}, \code{Omega},
+#' @export
+#' @examples
+#' euc_dist(c(0,0),c(1,1))
+#' @keywords
+#' internal
+#'
+class_update_wb <- function(Cmax, epsmin, epsmax, distmin, s, m, b, Omega) {
+    .Call(`_RprobitB_class_update_wb`, Cmax, epsmin, epsmax, distmin, s, m, b, Omega)
 }
 
 #' Density of multivariate normal distribution
@@ -180,6 +206,22 @@ update_s <- function(delta, m) {
 #'
 update_z <- function(s, beta, b, Omega) {
     .Call(`_RprobitB_update_z`, s, beta, b, Omega)
+}
+
+#' Update class sizes
+#' @description
+#' This function updates the class size vector.
+#' @inheritParams RprobitB_parameter
+#' @return
+#' An updated class size vector.
+#' @examples
+#' update_m(C = 3, z = c(0,1,1,2,2,2))
+#' @export
+#' @keywords
+#' posterior
+#'
+update_m <- function(C, z) {
+    .Call(`_RprobitB_update_m`, C, z)
 }
 
 #' Update class means
