@@ -30,6 +30,9 @@ double euc_dist (arma::vec a, arma::vec b){
   return sqrt(euc_dist);
 }
 
+//' Weight-based update of latent classes
+//' @description
+//' This function updates the latent classes based on their class weights.
 //' @examples
 //' rep <- 1
 //' Cmax <- 10
