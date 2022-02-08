@@ -66,9 +66,9 @@ test_that("LCMMNP", {
 
 test_that("ULCMMNP", {
   data <- simulate_choices(
-    form = choice ~ cost | income | time,
+    form = choice ~ cost,
     N = 100,
-    T = 5,
+    T = 10,
     J = 3,
     re = c("cost", "ASC"),
     alternatives = c("train", "bus", "car"),
@@ -76,9 +76,9 @@ test_that("ULCMMNP", {
     C = 2
   )
   model <- mcmc(data,
-    R = 1000, print_progress = F, seed = 1,
+    R = 2000, print_progress = T, seed = 1,
     latent_classes = list(
-      "C" = 8, "update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
+      "C" = 8, "weight_update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
     )
   )
   expect_snapshot(print(model))
