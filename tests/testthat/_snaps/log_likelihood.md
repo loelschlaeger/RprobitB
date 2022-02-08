@@ -31,7 +31,7 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -20.62704
+      [1] -16.54749
 
 ---
 
@@ -45,7 +45,7 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -193.9059
+      [1] -185.2571
 
 ---
 
@@ -59,7 +59,7 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -358.5129
+      [1] -355.6293
 
 ---
 
