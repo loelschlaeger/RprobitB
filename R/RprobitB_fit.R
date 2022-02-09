@@ -10,6 +10,8 @@
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param classification
 #' The allocation variable of the estimated latent classes.
+#' @param class_sequence
+#' The sequence of class numbers of length \code{R}.
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}, i.e. a list with the arguments of
@@ -19,7 +21,7 @@
 #' constructor
 
 RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
-                         gibbs_samples, classification) {
+                         gibbs_samples, classification, class_sequence) {
 
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
@@ -41,7 +43,8 @@ RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
     "latent_classes" = latent_classes,
     "prior" = prior,
     "gibbs_samples" = gibbs_samples,
-    "classification" = classification
+    "classification" = classification,
+    "class_sequence" = class_sequence
   )
   class(out) <- "RprobitB_fit"
   return(out)

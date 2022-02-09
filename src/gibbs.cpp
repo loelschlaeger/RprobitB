@@ -549,6 +549,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
   mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
+  arma::vec class_sequence(R);
 
   // define updating variables and set initial values
   vec s(C);
@@ -688,6 +689,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         trans(vectorise_Omega);
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
+    class_sequence[r] = C;
 
     // print time to completion
     if(print_progress)
@@ -706,7 +708,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,
-                       Named("classification") = z);
+                       Named("classification") = z,
+                       Named("class_sequence") = class_sequence);
   if(P_f>0 && P_r==0)
     out = List::create(Named("alpha") = alpha_draws,
                        Named("Sigma") = Sigma_draws);
@@ -715,7 +718,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,
-                       Named("classification") = z);
+                       Named("classification") = z,
+                       Named("class_sequence") = class_sequence);
   if(P_f==0 && P_r==0)
     out = List::create(Named("Sigma") = Sigma_draws);
   return out;

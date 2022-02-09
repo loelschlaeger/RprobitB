@@ -104,7 +104,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   ### set initial values for the Gibbs sampler
   init <- set_initial_gibbs_values(
     N = data$N, T = data$T, J = data$J, P_f = data$P_f, P_r = data$P_r,
-    C = latent_classes$C
+    C = latent_classes[["C"]]
   )
 
   ### perform Gibbs sampling
@@ -116,20 +116,28 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 
   if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     ### update number of latent classes
-    latent_classes$C <- sum(utils::tail(gibbs_samples$s, 1) != 0)
+    latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
 
     ### remove zeros
-    gibbs_samples$s <- gibbs_samples$s[, 1:latent_classes$C]
-    gibbs_samples$b <- gibbs_samples$b[, 1:(data$P_r * latent_classes$C)]
-    gibbs_samples$Omega <- gibbs_samples$Omega[, 1:(data$P_r^2 * latent_classes$C)]
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, 1:latent_classes[["C"]]]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * latent_classes[["C"]])]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * latent_classes[["C"]])]
   }
 
   ### save classification
-  if (!is.null(gibbs_samples$classification)) {
-    classification <- gibbs_samples$classification + 1
+  if (!is.null(gibbs_samples[["classification"]])) {
+    classification <- gibbs_samples[["classification"]] + 1
     gibbs_samples <- within(gibbs_samples, rm(classification))
   } else {
     classification <- NULL
+  }
+
+  ### save class sequence
+  if (!is.null(gibbs_samples[["class_sequence"]])) {
+    class_sequence <- as.vector(gibbs_samples[["class_sequence"]])
+    gibbs_samples <- within(gibbs_samples, rm(class_sequence))
+  } else {
+    class_sequence <- NULL
   }
 
   ### label Gibbs samples
@@ -165,7 +173,8 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     latent_classes = latent_classes,
     prior = prior,
     gibbs_samples = gibbs_samples,
-    classification = classification
+    classification = classification,
+    class_sequence = class_sequence
   )
   return(out)
 }
@@ -304,7 +313,6 @@ check_prior <- function(P_f, P_r, J, eta = numeric(P_f), Psi = diag(P_f),
 #' This function sets initial values for the Gibbs sampler.
 #'
 #' @inheritParams RprobitB_data
-#'
 #' @param C
 #' The number (greater or equal 1) of latent classes.
 #'
@@ -328,8 +336,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   z0 <- if (P_r > 0) rep(0, N) else NA
   m0 <- if (P_r > 0) round(rep(N, C) * 2^(C:1 - 1) / sum(2^(C:1 - 1))) else NA
   b0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = C) else NA
-  Omega0 <-
-    if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r, ncol = C) else NA
+  Omega0 <- if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r, ncol = C) else NA
   beta0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = N) else NA
   U0 <- matrix(0, nrow = J - 1, ncol = N * max(T))
   Sigma0 <- diag(J - 1)
