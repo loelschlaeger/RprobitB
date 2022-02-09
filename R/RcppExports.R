@@ -21,25 +21,62 @@ euc_dist <- function(a, b) {
 #' Weight-based update of latent classes
 #' @description
 #' This function updates the latent classes based on their class weights.
+#' @param Cmax
+#' The maximum number of classes.
+#' @param epsmin
+#' The threshold weight (between 0 and 1) for removing a class.
+#' @param epsmax
+#' The threshold weight (between 0 and 1) for splitting a class.
+#' @param distmin
+#' The (non-negative) threshold difference in class means for joining two classes.
+#' @inheritParams RprobitB_parameter
+#' @details
+#' The updating scheme bases on the following rules:
+#' \itemize{
+#'   \item We remove class \eqn{c}, if \eqn{s_c<\epsilon_{\text{min}}}, i.e. if the
+#'         class weight \eqn{s_c} drops below some threshold \eqn{\epsilon_{\text{min}}}.
+#'         This case indicates that class \eqn{c} has a negligible impact on the mixing distribution.
+#'   \item We split class \eqn{c} into two classes \eqn{c_1} and \eqn{c_2}, if \eqn{s_c>\epsilon_\text{max}}.
+#'         This case indicates that class \eqn{c} has a high influence on the mixing
+#'         distribution whose approximation can potentially be improved by
+#'         increasing the resolution in directions of high variance.
+#'         Therefore, the class means \eqn{b_{c_1}} and \eqn{b_{c_2}} of the new classes
+#'         \eqn{c_1} and \eqn{c_2} are shifted in opposite directions from the class mean
+#'         \eqn{b_c} of the old class \eqn{c} in the direction of the highest variance.
+#'   \item We join two classes \eqn{c_1} and \eqn{c_2} to one class \eqn{c}, if
+#'         \eqn{\lVert b_{c_1} - b_{c_2} \rVert<\epsilon_{\text{distmin}}}, i.e. if
+#'         the euclidean distance between the class means \eqn{b_{c_1}} and \eqn{b_{c_2}}
+#'         drops below some threshold \eqn{\epsilon_{\text{distmin}}}. This case indicates
+#'         location redundancy which should be repealed. The parameters of \eqn{c}
+#'         are assigned by adding the values of \eqn{s} from \eqn{c_1} and \eqn{c_2} and
+#'         averaging the values for \eqn{b} and \eqn{\Omega}.
+#' }
+#' The rules are executed in the above order, but only one rule per iteration
+#' and only if \code{Cmax} is not exceeded.
 #' @examples
-#' rep <- 1
-#' Cmax <- 10
-#' epsmin <- 0.1
-#' epsmax <- 0.9
-#' distmin <- 0.1
-#' s <- 0.92
-#' m <- 94
-#' b <- matrix(1:3,ncol=1)
-#' Omega <- matrix(1:9,ncol=1)
-#' update_classes(rep = rep, Cmax = Cmax, epsmin = epsmin, epsmax = epsmax, distmin = distmin,
-#'                s = s, m = m, b = b, Omega = Omega, print_progress = TRUE)
+#' ### parameter settings
+#' s <- c(0.8,0.2)
+#' b <- matrix(c(1,1,1,-1), ncol=2)
+#' Omega <- matrix(c(0.5,0.3,0.3,0.5,1,-0.1,-0.1,0.8), ncol=2)
 #'
-#' @export
+#' ### Remove class 2
+#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.3, epsmax = 0.9, distmin = 1,
+#'                              s = s, b = b, Omega = Omega)
+#'
+#' ### Split class 1
+#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.7, distmin = 1,
+#'                              s = s, b = b, Omega = Omega)
+#'
+#' ### Join classes
+#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.9, distmin = 3,
+#'                              s = s, b = b, Omega = Omega)
+#' @return
+#' A list of updated values for \code{s}, \code{b}, and \code{Omega}.
 #' @keywords
 #' internal
 #'
-update_classes <- function(rep, Cmax, epsmin, epsmax, distmin, s, m, b, Omega, print_progress) {
-    .Call(`_RprobitB_update_classes`, rep, Cmax, epsmin, epsmax, distmin, s, m, b, Omega, print_progress)
+update_classes_wb <- function(Cmax, epsmin, epsmax, distmin, s, b, Omega) {
+    .Call(`_RprobitB_update_classes_wb`, Cmax, epsmin, epsmax, distmin, s, b, Omega)
 }
 
 #' Density of multivariate normal distribution

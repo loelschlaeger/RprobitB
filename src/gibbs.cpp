@@ -610,12 +610,13 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
           sprintf(buf, "%9d started class updating\n", r+1);
           Rcout << buf;
         }
-        List class_update = update_classes(r,Cmax,epsmin,epsmax,distmin,s,m,b,Omega,print_progress);
-        C = as<int>(class_update["C"]);
+        List class_update = update_classes_wb(Cmax,epsmin,epsmax,distmin,s,b,Omega);
         s = as<vec>(class_update["s"]);
-        m = as<vec>(class_update["m"]);
+        C = s.size();
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
+        z = update_z(s, beta, b, Omega);
+        m = update_m(C, z);
         if(print_progress && r+1==B){
           sprintf(buf, "%9d ended class updating (C = %d)\n", r+1, C);
           Rcout << buf;

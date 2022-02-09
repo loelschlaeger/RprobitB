@@ -58,7 +58,7 @@
     Output
              predicted
       true    bus car train
-        bus    55  31    21
-        car    32 125    29
-        train  20  28   159
+        bus    56  31    20
+        car    32 127    27
+        train  19  27   161
 

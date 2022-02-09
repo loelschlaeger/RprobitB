@@ -11,7 +11,7 @@ using namespace Rcpp;
 
 double euc_dist (arma::vec a, arma::vec b);
 
-Rcpp::List update_classes (int rep, int Cmax, double epsmin, double epsmax, double distmin,
-                           arma::vec s, arma::vec m, arma::mat b, arma::mat Omega, bool print_progress);
+Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double distmin,
+                              arma::vec s, arma::mat b, arma::mat Omega);
 
 #endif

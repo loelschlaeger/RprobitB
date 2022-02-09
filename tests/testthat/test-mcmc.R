@@ -76,7 +76,7 @@ test_that("ULCMMNP", {
     C = 2
   )
   model <- mcmc(data,
-    R = 2000, print_progress = F, seed = 1,
+    R = 2000, print_progress = T, seed = 1,
     latent_classes = list(
       "C" = 8, "weight_update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
     )
