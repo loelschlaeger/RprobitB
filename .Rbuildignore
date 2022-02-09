@@ -13,5 +13,4 @@ LICENSE
 ^Meta$
 jss/
 applications/
-sandbox.R
-TODO.md
+build/
