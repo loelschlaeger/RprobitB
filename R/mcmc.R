@@ -126,7 +126,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 
   ### save classification
   if (!is.null(gibbs_samples[["classification"]])) {
-    classification <- gibbs_samples[["classification"]] + 1
+    classification <- gibbs_samples[["classification"]]
     gibbs_samples <- within(gibbs_samples, rm(classification))
   } else {
     classification <- NULL
@@ -333,7 +333,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
 
   ### define initial values
   alpha0 <- if (P_f > 0) numeric(P_f) else NA
-  z0 <- if (P_r > 0) rep(0, N) else NA
+  z0 <- if (P_r > 0) rep(1, N) else NA
   m0 <- if (P_r > 0) round(rep(N, C) * 2^(C:1 - 1) / sum(2^(C:1 - 1))) else NA
   b0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = C) else NA
   Omega0 <- if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r, ncol = C) else NA

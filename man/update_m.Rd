@@ -23,6 +23,6 @@ An updated class size vector.
 This function updates the class size vector.
 }
 \examples{
-update_m(C = 3, z = c(0,1,1,2,2,2))
+update_m(C = 3, z = c(1,1,1,2,2,3))
 }
 \keyword{posterior}

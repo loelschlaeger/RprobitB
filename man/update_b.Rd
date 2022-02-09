@@ -45,13 +45,13 @@ with mean \deqn{(D^{-1} + m_c\Omega_c^{-1})^{-1}(D^{-1}\xi + m_c\Omega_c^{-1}\ba
 \deqn{(D^{-1} + m_c \Omega_c^{-1})^{-1}.}
 }
 \examples{
-### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-(beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
-### class covariances for C = 2 classes
-Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-### class allocation vector (starting from 0) and class sizes
-z <- c(0,0,1,1)
+### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+N <- 100
+(b_true <- cbind(c(0,0),c(1,1)))
+Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+z <- c(rep(1,N/2),rep(2,N/2))
 m <- as.numeric(table(z))
+beta <- sapply(z, function(z) rmvnorm(b_true[,z], matrix(Omega[,z],2,2)))
 ### prior mean vector and precision matrix (inverse of covariance matrix)
 xi <- c(0,0)
 Dinv <- diag(2)

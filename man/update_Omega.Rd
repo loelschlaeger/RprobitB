@@ -43,19 +43,17 @@ with \eqn{\nu + m_c} degrees of freedom and scale matrix \eqn{\Theta^{-1} + \sum
 the product is over the values \eqn{n} for which \eqn{z_n=c} holds.
 }
 \examples{
-### coefficient vector for N = 10 decider and P_r = 2 random coefficients
-N <- 10
-beta <- cbind(matrix(rnorm(N,0,0.1), nrow = 2, ncol = N/2),
-              matrix(rnorm(N,1,0.1), nrow = 2, ncol = N/2))
-### class means for C = 2 classes
+### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+N <- 100
 b <- cbind(c(0,0),c(1,1))
-### class allocation vector (starting from 0) and class sizes
-z <- c(rep(0,N/2),rep(1,N/2))
+(Omega_true <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2))
+z <- c(rep(1,N/2),rep(2,N/2))
 m <- as.numeric(table(z))
+beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega_true[,z],2,2)))
 ### degrees of freedom and scale matrix for the Wishart prior
 nu <- 1
 Theta <- diag(2)
-### updated class means (in columns)
+### updated class covariance matrices (in columns)
 update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
 }
 \keyword{posterior}

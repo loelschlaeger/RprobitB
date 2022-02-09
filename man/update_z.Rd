@@ -23,11 +23,11 @@ Set to \code{NA} if \code{P_r = 0}.}
 Set to \code{NA} if \code{P_r = 0}.}
 }
 \value{
-An updated class allocation vector. Values starting from 0, i.e. \eqn{z_n = 0} means
-that \eqn{\beta_n} is allocated to class \eqn{1}.
+An updated class allocation vector.
 }
 \description{
-This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
+This function updates the class allocation vector (independently for all observations)
+by drawing from its conditional distribution.
 }
 \details{
 Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
@@ -43,7 +43,7 @@ beta <- matrix(c(1,1), ncol = 1)
 ### class means and covariances
 b <- cbind(c(0,0),c(1,1))
 Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-### updated class allocation vector (starting from 0)
+### updated class allocation vector
 update_z(s = s, beta = beta, b = b, Omega = Omega)
 }
 \keyword{posterior}

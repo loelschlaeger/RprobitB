@@ -215,7 +215,8 @@ update_s <- function(delta, m) {
 
 #' Update class allocation vector
 #' @description
-#' This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
+#' This function updates the class allocation vector (independently for all observations)
+#' by drawing from its conditional distribution.
 #' @inheritParams RprobitB_parameter
 #' @details
 #' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
@@ -223,8 +224,7 @@ update_s <- function(delta, m) {
 #' allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class covariance
 #' matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
 #' @return
-#' An updated class allocation vector. Values starting from 0, i.e. \eqn{z_n = 0} means
-#' that \eqn{\beta_n} is allocated to class \eqn{1}.
+#' An updated class allocation vector.
 #' @examples
 #' ### class weights for C = 2 classes
 #' s <- rdirichlet(c(1,1))
@@ -233,7 +233,7 @@ update_s <- function(delta, m) {
 #' ### class means and covariances
 #' b <- cbind(c(0,0),c(1,1))
 #' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-#' ### updated class allocation vector (starting from 0)
+#' ### updated class allocation vector
 #' update_z(s = s, beta = beta, b = b, Omega = Omega)
 #' @export
 #' @keywords
@@ -253,7 +253,7 @@ update_z <- function(s, beta, b, Omega) {
 #' @return
 #' An updated class size vector.
 #' @examples
-#' update_m(C = 3, z = c(0,1,1,2,2,2))
+#' update_m(C = 3, z = c(1,1,1,2,2,3))
 #' @export
 #' @keywords
 #' posterior
@@ -287,13 +287,13 @@ update_m <- function(C, z, nozero = FALSE) {
 #' @return
 #' A matrix of updated means for each class in columns.
 #' @examples
-#' ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-#' (beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
-#' ### class covariances for C = 2 classes
-#' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-#' ### class allocation vector (starting from 0) and class sizes
-#' z <- c(0,0,1,1)
+#' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+#' N <- 100
+#' (b_true <- cbind(c(0,0),c(1,1)))
+#' Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+#' z <- c(rep(1,N/2),rep(2,N/2))
 #' m <- as.numeric(table(z))
+#' beta <- sapply(z, function(z) rmvnorm(b_true[,z], matrix(Omega[,z],2,2)))
 #' ### prior mean vector and precision matrix (inverse of covariance matrix)
 #' xi <- c(0,0)
 #' Dinv <- diag(2)
@@ -327,19 +327,17 @@ update_b <- function(beta, Omega, z, m, xi, Dinv) {
 #' @return
 #' A matrix of updated covariance matrices for each class in columns.
 #' @examples
-#' ### coefficient vector for N = 10 decider and P_r = 2 random coefficients
-#' N <- 10
-#' beta <- cbind(matrix(rnorm(N,0,0.1), nrow = 2, ncol = N/2),
-#'               matrix(rnorm(N,1,0.1), nrow = 2, ncol = N/2))
-#' ### class means for C = 2 classes
+#' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+#' N <- 100
 #' b <- cbind(c(0,0),c(1,1))
-#' ### class allocation vector (starting from 0) and class sizes
-#' z <- c(rep(0,N/2),rep(1,N/2))
+#' (Omega_true <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2))
+#' z <- c(rep(1,N/2),rep(2,N/2))
 #' m <- as.numeric(table(z))
+#' beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega_true[,z],2,2)))
 #' ### degrees of freedom and scale matrix for the Wishart prior
 #' nu <- 1
 #' Theta <- diag(2)
-#' ### updated class means (in columns)
+#' ### updated class covariance matrices (in columns)
 #' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
 #' @export
 #' @keywords

@@ -51,7 +51,8 @@ arma::vec update_s (int delta, arma::vec m) {
 
 //' Update class allocation vector
 //' @description
-//' This function updates the class allocation vector (independently for all observations) by drawing from its conditional distribution.
+//' This function updates the class allocation vector (independently for all observations)
+//' by drawing from its conditional distribution.
 //' @inheritParams RprobitB_parameter
 //' @details
 //' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
@@ -59,8 +60,7 @@ arma::vec update_s (int delta, arma::vec m) {
 //' allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class covariance
 //' matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
 //' @return
-//' An updated class allocation vector. Values starting from 0, i.e. \eqn{z_n = 0} means
-//' that \eqn{\beta_n} is allocated to class \eqn{1}.
+//' An updated class allocation vector.
 //' @examples
 //' ### class weights for C = 2 classes
 //' s <- rdirichlet(c(1,1))
@@ -69,7 +69,7 @@ arma::vec update_s (int delta, arma::vec m) {
 //' ### class means and covariances
 //' b <- cbind(c(0,0),c(1,1))
 //' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-//' ### updated class allocation vector (starting from 0)
+//' ### updated class allocation vector
 //' update_z(s = s, beta = beta, b = b, Omega = Omega)
 //' @export
 //' @keywords
@@ -87,7 +87,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
     for(int c = 0; c<C; c++){
       prob_z[c] = s[c]*dmvnorm(beta(span::all,n),b(span::all,c),reshape(Omega(span::all,c),P_r,P_r));
     }
-    z[n] = as<int>(sample(seq(0,C-1),1,false,prob_z));
+    z[n] = as<int>(sample(seq(1,C),1,false,prob_z));
   }
   return(z);
 }
@@ -102,7 +102,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' @return
 //' An updated class size vector.
 //' @examples
-//' update_m(C = 3, z = c(0,1,1,2,2,2))
+//' update_m(C = 3, z = c(1,1,1,2,2,3))
 //' @export
 //' @keywords
 //' posterior
@@ -113,7 +113,7 @@ arma::vec update_m (int C, arma::vec z, bool nozero = false) {
   arma::vec m(C);
   for(int c = 0; c<C; c++){
     for(int n = 0; n<N; n++){
-      if(z[n]==c) m[c] += 1;
+      if(z[n]==c+1) m[c] += 1;
     }
   }
   if(nozero==true){
@@ -149,13 +149,13 @@ arma::vec update_m (int C, arma::vec z, bool nozero = false) {
 //' @return
 //' A matrix of updated means for each class in columns.
 //' @examples
-//' ### coefficient vector for N = 4 decider and P_r = 2 random coefficients
-//' (beta <- cbind(c(0,0),c(0,0),c(1,1),c(1,1)))
-//' ### class covariances for C = 2 classes
-//' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-//' ### class allocation vector (starting from 0) and class sizes
-//' z <- c(0,0,1,1)
+//' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+//' N <- 100
+//' (b_true <- cbind(c(0,0),c(1,1)))
+//' Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+//' z <- c(rep(1,N/2),rep(2,N/2))
 //' m <- as.numeric(table(z))
+//' beta <- sapply(z, function(z) rmvnorm(b_true[,z], matrix(Omega[,z],2,2)))
 //' ### prior mean vector and precision matrix (inverse of covariance matrix)
 //' xi <- c(0,0)
 //' Dinv <- diag(2)
@@ -174,7 +174,7 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
   arma::mat b_bar = zeros<mat>(P_r,C);
   for(int c = 0; c<C; c++){
     for(int n = 0; n<N; n++){
-      if(z[n]==c) b_bar(span::all,c) += beta(span::all,n);
+      if(z[n]==c+1) b_bar(span::all,c) += beta(span::all,n);
     }
     b_bar(span::all,c) /= m[c];
   }
@@ -205,19 +205,17 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
 //' @return
 //' A matrix of updated covariance matrices for each class in columns.
 //' @examples
-//' ### coefficient vector for N = 10 decider and P_r = 2 random coefficients
-//' N <- 10
-//' beta <- cbind(matrix(rnorm(N,0,0.1), nrow = 2, ncol = N/2),
-//'               matrix(rnorm(N,1,0.1), nrow = 2, ncol = N/2))
-//' ### class means for C = 2 classes
+//' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
+//' N <- 100
 //' b <- cbind(c(0,0),c(1,1))
-//' ### class allocation vector (starting from 0) and class sizes
-//' z <- c(rep(0,N/2),rep(1,N/2))
+//' (Omega_true <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2))
+//' z <- c(rep(1,N/2),rep(2,N/2))
 //' m <- as.numeric(table(z))
+//' beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega_true[,z],2,2)))
 //' ### degrees of freedom and scale matrix for the Wishart prior
 //' nu <- 1
 //' Theta <- diag(2)
-//' ### updated class means (in columns)
+//' ### updated class covariance matrices (in columns)
 //' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
 //' @export
 //' @keywords
@@ -232,7 +230,7 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
   for(int c = 0; c<C; c++){
     arma::mat sum_sp = zeros<mat>(P_r,P_r);
     for(int n = 0; n<N; n++){
-      if(z[n]==c){
+      if(z[n]==c+1){
         sum_sp += (beta(span::all,n)-b(span::all,c)) * trans(beta(span::all,n)-b(span::all,c));
       }
     }
@@ -523,6 +521,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
   // extract 'init' parameters
   vec m0;
+  vec z0;
   vec alpha0;
   mat b0;
   mat Omega0;
@@ -534,6 +533,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   }
   if(P_r>0){
     m0 = as<vec>(init["m0"]);
+    z0 = as<vec>(init["z0"]);
     b0 = as<mat>(init["b0"]);
     Omega0 = as<mat>(init["Omega0"]);
     beta0 = as<mat>(init["beta0"]);
@@ -561,7 +561,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
   // define updating variables and set initial values
   vec s(C);
-  vec z(N);
+  vec z = z0;
   vec m = m0;
   mat b = b0;
   mat Omega = Omega0;
@@ -596,7 +596,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       // update beta
       for(int n = 0; n<N; n++){
         for(int c = 0; c<C; c++){
-          if(z[n]==c){
+          if(z[n]==c+1){
             Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
             b_c = b(span::all,c);
           }
