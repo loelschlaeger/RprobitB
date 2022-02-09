@@ -3,7 +3,7 @@ set.seed(1)
 ### draw beta
 P_r <- 2
 C_true <- 3
-N <- sample(50:100, C_true)
+N <- sample(40:100, C_true)
 b_true <- replicate(C_true, rnorm(P_r))
 Omega_true <- replicate(C_true, rwishart(P_r, 0.1*diag(P_r))$W, simplify = TRUE)
 beta <- c()
@@ -30,7 +30,7 @@ Omega0 <- matrix(rep(diag(P_r), C0), nrow = P_r*P_r, ncol = C0)
 results <- crp_gibbs(beta = beta,
                      delta = delta, xi = xi, D = D, nu = nu, Theta = Theta,
                      z0, b0, Omega0,
-                     R = 1000)
+                     R = 1000, Cmax = 10)
 
 ### assign classes that occur most often
 tab <- apply(results$z_samples, 1, FUN = function(x) {
@@ -44,7 +44,7 @@ table(tab)
 crp_gibbs <- function(beta,
                       delta, xi, D, nu, Theta,
                       z0, b0, Omega0,
-                      R){
+                      R, Cmax, plot = TRUE, ...){
 
   ### initialization
   z <- z0
@@ -60,12 +60,18 @@ crp_gibbs <- function(beta,
   for(r in 1:R){
 
     ### Dirichlet Process
-    out_dp <- update_z_dp(beta = beta, z = z, b = b, Omega = Omega,
-                          delta = delta, xi = xi, D = D, nu = nu, Theta = Theta,
-                          plot = TRUE, r = r)
+    out_dp <- update_classes_dp(beta = beta, z = z, b = b, Omega = Omega,
+                                delta = delta, xi = xi, D = D, nu = nu, Theta = Theta,
+                                Cmax = Cmax)
+    s <- out_dp$s
+    C <- length(s)
     z <- out_dp$z
+    m <- update_m(C, z)
     b <- out_dp$b
     Omega <- out_dp$Omega
+
+    ### draw a plot of current class allocation
+    if(plot) plot_class_allocation(beta, z, b, Omega, m, r = r, ...)
 
     ### save samples
     z_samples[,r] <- z

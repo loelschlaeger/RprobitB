@@ -247,6 +247,9 @@ update_z <- function(s, beta, b, Omega) {
 #' @description
 #' This function updates the class size vector.
 #' @inheritParams RprobitB_parameter
+#' @param nozero
+#' If \code{TRUE}, each element in the output vector \code{m} is at least one
+#' (for numerical stability).
 #' @return
 #' An updated class size vector.
 #' @examples
@@ -255,8 +258,8 @@ update_z <- function(s, beta, b, Omega) {
 #' @keywords
 #' posterior
 #'
-update_m <- function(C, z) {
-    .Call(`_RprobitB_update_m`, C, z)
+update_m <- function(C, z, nozero = FALSE) {
+    .Call(`_RprobitB_update_m`, C, z, nozero)
 }
 
 #' Update class means

@@ -4,7 +4,7 @@
 \alias{update_m}
 \title{Update class sizes}
 \usage{
-update_m(C, z)
+update_m(C, z, nozero = FALSE)
 }
 \arguments{
 \item{C}{The number (greater or equal 1) of latent classes of decision makers.
@@ -12,6 +12,9 @@ Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
 
 \item{z}{The vector of the allocation variables of length \code{N}.
 Set to \code{NA} if \code{P_r = 0}.}
+
+\item{nozero}{If \code{TRUE}, each element in the output vector \code{m} is at least one
+(for numerical stability).}
 }
 \value{
 An updated class size vector.

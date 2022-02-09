@@ -1,10 +1,36 @@
+#' Dirichlet-process based update of latent classes
+#'
+#' @description
+#' This function updates the latent classes based on a Dirichlet process.
+#'
+#' @details
+#' To be added.
+#'
+#' @param Cmax
+#' The maximum number of classes.
 #' @inheritParams RprobitB_parameter
 #' @inheritParams check_prior
-#' @param plot
-#' A boolean, set to \code{TRUE} to plot the class allocation of \code{beta}.
-#' @inheritParams plot_class_allocation
+#'
+#' @return
+#' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+#'
+#' @examples
+#' set.seed(1)
+#' z <- c(rep(1,20),rep(2,30))
+#' b <- matrix(c(1,1,1,-1), ncol=2)
+#' Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+#' beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega[,z],2,2)))
+#' delta <- 1
+#' xi <- numeric(2)
+#' D <- diag(2)
+#' nu <- 4
+#' Theta <- diag(2)
+#' update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+#'                   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
+#'
+#' @keyword internal
 
-update_z_dp <- function(beta, z, b, Omega, delta, xi, D, nu, Theta, plot = FALSE, ...) {
+update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) {
 
   ### class sizes
   m <- as.vector(table(z))
@@ -63,7 +89,11 @@ update_z_dp <- function(beta, z, b, Omega, delta, xi, D, nu, Theta, plot = FALSE
     loc_probs <- loc_probs / sum(loc_probs)
 
     ### draw new class membership
-    newz <- sample(1:(C+1), 1, prob = loc_probs)
+    if(C == Cmax){
+      newz <- sample(1:C, 1, prob = loc_probs[1:C])
+    } else {
+      newz <- sample(1:(C+1), 1, prob = loc_probs)
+    }
     if(newz == C + 1){
       ### spawn new class
       m <- c(m, 0)
@@ -76,9 +106,17 @@ update_z_dp <- function(beta, z, b, Omega, delta, xi, D, nu, Theta, plot = FALSE
     m[newz] <- m[newz] + 1
   }
 
-  ### draw a plot of current class allocation
-  if(plot) plot_class_allocation(beta, z, b, Omega, m, ...)
+  ### compute class weights
+  s <- m / sum(m)
+
+  ### sort draws with respect to a descending s
+  order_s <- order(s, decreasing = TRUE)
+  s <- s[order_s]
+  b <- b[,order_s]
+  Omega <- Omega[,order_s]
+  z <- z + Cmax
+  for(c in 1:C) z <- replace(z, z == (Cmax + c), order_s[c])
 
   ### return updated parameters
-  return(list("z" = z, "m" = m, "b" = b, "Omega" = Omega))
+  return(list("z" = z, "b" = b, "Omega" = Omega, "s" = s))
 }

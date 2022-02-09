@@ -116,14 +116,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_m
-arma::vec update_m(int C, arma::vec z);
-RcppExport SEXP _RprobitB_update_m(SEXP CSEXP, SEXP zSEXP) {
+arma::vec update_m(int C, arma::vec z, bool nozero);
+RcppExport SEXP _RprobitB_update_m(SEXP CSEXP, SEXP zSEXP, SEXP nozeroSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type C(CSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_m(C, z));
+    Rcpp::traits::input_parameter< bool >::type nozero(nozeroSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_m(C, z, nozero));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -242,7 +243,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
-    {"_RprobitB_update_m", (DL_FUNC) &_RprobitB_update_m, 2},
+    {"_RprobitB_update_m", (DL_FUNC) &_RprobitB_update_m, 3},
     {"_RprobitB_update_b", (DL_FUNC) &_RprobitB_update_b, 6},
     {"_RprobitB_update_Omega", (DL_FUNC) &_RprobitB_update_Omega, 6},
     {"_RprobitB_update_reg", (DL_FUNC) &_RprobitB_update_reg, 4},

@@ -96,6 +96,9 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' @description
 //' This function updates the class size vector.
 //' @inheritParams RprobitB_parameter
+//' @param nozero
+//' If \code{TRUE}, each element in the output vector \code{m} is at least one
+//' (for numerical stability).
 //' @return
 //' An updated class size vector.
 //' @examples
@@ -105,12 +108,17 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' posterior
 //'
 // [[Rcpp::export]]
-arma::vec update_m (int C, arma::vec z) {
+arma::vec update_m (int C, arma::vec z, bool nozero = false) {
   int N = z.size();
-  arma::vec m = ones(C);
+  arma::vec m(C);
   for(int c = 0; c<C; c++){
     for(int n = 0; n<N; n++){
       if(z[n]==c) m[c] += 1;
+    }
+  }
+  if(nozero==true){
+    for(int c = 0; c<C; c++){
+      if(m[c]==0) m[c] = 1;
     }
   }
   return(m);
@@ -577,7 +585,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       z = update_z(s, beta, b, Omega);
 
       // update m
-      m = update_m(C, z);
+      m = update_m(C, z, true);
 
       // update b
       b = update_b(beta, Omega, z, m, xi, Dinv);
@@ -617,7 +625,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
         z = update_z(s, beta, b, Omega);
-        m = update_m(C, z);
+        m = update_m(C, z, true);
         if(print_progress && r+1==B){
           sprintf(buf, "%9d ended class updating (C = %d)\n", r+1, C);
           Rcout << buf;
