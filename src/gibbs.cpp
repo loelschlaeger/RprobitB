@@ -7,8 +7,8 @@
 #include <time.h>
 #include "timer.h"
 #include "distributions.h"
-#include "truncatednormal.h"
-#include "classupdate.h"
+#include "truncated_normal.h"
+#include "class_update.h"
 using namespace arma;
 using namespace Rcpp;
 
@@ -485,12 +485,15 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   double epsmax = 0.99;
   double distmin = 0.1;
   bool weight_update = as<bool>(latent_classes["weight_update"]);
-  if(weight_update==false){
+  bool dp_update = as<bool>(latent_classes["dp_update"]);
+  if(weight_update==false && dp_update==false){
     Cdrawsize = C;
   }
   else{
     Cmax = as<int>(latent_classes["Cmax"]);
     Cdrawsize = Cmax;
+  }
+  if(weight_update==true){
     buffer = as<int>(latent_classes["buffer"]);
     epsmin = as<double>(latent_classes["epsmin"]);
     epsmax = as<double>(latent_classes["epsmax"]);
@@ -504,6 +507,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   int nu = P_r+2;
   mat Theta;
   vec xi;
+  mat D;
   mat Dinv;
   int kappa = as<int>(prior["kappa"]);
   mat E = as<mat>(prior["E"]);
@@ -514,7 +518,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   if(P_r>0){
     delta = as<int>(prior["delta"]);
     xi = as<vec>(prior["xi"]);
-    Dinv = arma::inv(as<mat>(prior["D"]));
+    D = as<mat>(prior["D"]);
+    Dinv = arma::inv(D);
     nu = as<int>(prior["nu"]);
     Theta = as<mat>(prior["Theta"]);
   }
@@ -550,6 +555,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   char buf[50];
   int nprint = round(R/10);
   int Jm1 = J - 1;
+  Rcpp::Environment package_env("package:RprobitB");
+  Rcpp::Function update_classes_dp = package_env["update_classes_dp"];
 
   // allocate space for draws
   mat alpha_draws = zeros<mat>(R,P_f);
@@ -575,23 +582,27 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   for(int r = 0; r<R; r++) {
 
     if(P_r>0){
-      // update s (but only if draw is descending)
-      arma::vec s_cand = update_s(delta,m);
-      if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
-        s = s_cand;
+
+      // update s, z, m, b, Omega by posterior draws only if no DP or outside burning period
+      if(dp_update == false || r+1 > B){
+        // update s (but only if draw is descending)
+        arma::vec s_cand = update_s(delta,m);
+        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
+          s = s_cand;
+        }
+
+        // update z
+        z = update_z(s, beta, b, Omega);
+
+        // update m
+        m = update_m(C, z, true);
+
+        // update b
+        b = update_b(beta, Omega, z, m, xi, Dinv);
+
+        // update Omega
+        Omega = update_Omega(beta, b, z, m, nu, Theta);
       }
-
-      // update z
-      z = update_z(s, beta, b, Omega);
-
-      // update m
-      m = update_m(C, z, true);
-
-      // update b
-      b = update_b(beta, Omega, z, m, xi, Dinv);
-
-      // update Omega
-      Omega = update_Omega(beta, b, z, m, nu, Theta);
 
       // update beta
       for(int n = 0; n<N; n++){
@@ -613,10 +624,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
       }
 
-      // update classes
+      // weight-based update of classes
       if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
-        if(print_progress && r+1==B/2){
-          sprintf(buf, "%9d started class updating\n", r+1);
+        if(print_progress && r==0){
+          sprintf(buf, "%9d started weight-based class updating\n", r+1);
           Rcout << buf;
         }
         List class_update = update_classes_wb(Cmax,epsmin,epsmax,distmin,s,b,Omega);
@@ -627,9 +638,24 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         z = update_z(s, beta, b, Omega);
         m = update_m(C, z, true);
         if(print_progress && r+1==B){
-          sprintf(buf, "%9d ended class updating (C = %d)\n", r+1, C);
+          sprintf(buf, "%9d ended weight-based class updating (C = %d)\n", r+1, C);
           Rcout << buf;
         }
+      }
+
+      // dp-based update of classes
+      if(dp_update==true && (r+1)<=B){
+        if(print_progress && r==0){
+          sprintf(buf, "%9d started dp-based class updating\n", r+1);
+          Rcout << buf;
+        }
+        List class_update = update_classes_dp(Cmax,beta,z,b,Omega,delta,xi,D,nu,Theta);
+        z = as<vec>(class_update["z"]);
+        b = as<mat>(class_update["b"]);
+        Omega = as<mat>(class_update["Omega"]);
+        s = as<vec>(class_update["s"]);
+        C = s.size();
+        m = update_m(C, z, true);
       }
     }
 

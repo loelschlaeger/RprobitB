@@ -28,13 +28,15 @@
 #' update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
 #'                   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
 #'
-#' @keyword internal
+#' @keywords
+#' internal
 
 update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) {
 
-  ### class sizes
+  ### sizes
   m <- as.vector(table(z))
   C <- length(m)
+  P_r <- nrow(b)
 
   ### update Dirichlet process
   for(n in 1:length(z)){
@@ -67,8 +69,8 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) 
       Omega[,c] <- as.vector(Omega_c)
 
       ### compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
-      sig_b <- solve(solve(D) + m[c] * solve(matrix(Omega_c, 2, 2)))
-      mu_b <- sig_b %*% (solve(matrix(Omega_c, 2, 2)) %*% rowSums(beta_c) + solve(D) %*% xi)
+      sig_b <- solve(solve(D) + m[c] * solve(matrix(Omega_c, P_r, P_r)))
+      mu_b <- sig_b %*% (solve(matrix(Omega_c, P_r, P_r)) %*% rowSums(beta_c) + solve(D) %*% xi)
 
       ### update b_c via mean of its posterior distribution
       b[,c] <- mu_b
@@ -78,7 +80,7 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) 
     }
 
     ### compute log-probability for new class
-    Omega_new <- matrix(Omega[,1:C, drop = FALSE] %*% (m/sum(m)), ncol = nrow(Omega)/2)
+    Omega_new <- matrix(Omega[,1:C, drop = FALSE] %*% (m/sum(m)), ncol = P_r)
     b_new <- xi
     logp[C+1] <- log(delta) + dmvnorm(beta[,n], mean = b_new, Sigma = D + Omega_new, log = TRUE)
 
@@ -112,8 +114,8 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) 
   ### sort draws with respect to a descending s
   order_s <- order(s, decreasing = TRUE)
   s <- s[order_s]
-  b <- b[,order_s]
-  Omega <- Omega[,order_s]
+  b <- b[,order_s,drop=FALSE]
+  Omega <- Omega[,order_s,drop=FALSE]
   z <- z + Cmax
   for(c in 1:C) z <- replace(z, z == (Cmax + c), order_s[c])
 

@@ -1,5 +1,5 @@
-#ifndef CLASSUPDATE_H
-#define CLASSUPDATE_H
+#ifndef CLASS_UPDATE_H
+#define CLASS_UPDATE_H
 
 #include <RcppArmadillo.h>
 #include <stdio.h>

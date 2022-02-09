@@ -594,12 +594,12 @@ plot_trace <- function(gibbs_samples, par_labels) {
 #' @noRd
 #'
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot aes geom_line labs theme_minimal expand_limits
+#' @importFrom ggplot2 ggplot aes geom_point labs theme_minimal expand_limits
 
 plot_class_seq <- function(class_sequence) {
   data <- data.frame(i = 1:length(class_sequence), c = class_sequence)
   plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data$i, y = .data$c)) +
-    ggplot2::geom_line() +
+    ggplot2::geom_point() +
     ggplot2::labs(x = "Iteration", y = "Number of classes") +
     ggplot2::theme_minimal() +
     ggplot2::expand_limits(y=0)
