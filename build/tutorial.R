@@ -66,7 +66,7 @@ crp_gibbs <- function(beta,
     s <- out_dp$s
     C <- length(s)
     z <- out_dp$z
-    m <- update_m(C, z)
+    m <- as.numeric(table(z))
     b <- out_dp$b
     Omega <- out_dp$Omega
 
