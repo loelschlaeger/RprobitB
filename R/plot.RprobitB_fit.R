@@ -12,7 +12,8 @@
 #'   \item \code{"effects"} (the default) for visualizing the linear effects,
 #'   \item \code{"mixture"} for visualizing the mixture distribution,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
-#'   \item \code{"trace"} for trace plots of the Gibbs samples.
+#'   \item \code{"trace"} for trace plots of the Gibbs samples,
+#'   \item \code{"class_seq"} for visualizing the sequence of class numbers.
 #' }
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
@@ -33,7 +34,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   if (!inherits(x, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.")
   }
-  if (!(length(type) == 1 && type %in% c("effects", "mixture", "acf", "trace"))) {
+  if (!(length(type) == 1 && type %in% c("effects", "mixture", "acf", "trace", "class_seq"))) {
     stop("Unknown 'type'.")
   }
 
@@ -209,6 +210,11 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
         )
       }
     }
+  }
+
+  ### make plot type 'class_seq'
+  if (type == "class_seq") {
+    plot_class_seq(x[["class_sequence"]])
   }
 }
 
@@ -570,3 +576,33 @@ plot_trace <- function(gibbs_samples, par_labels) {
   graphics::axis(side = 1, at = c(1, nrow(gibbs_samples)), labels = c("B+1", "R"))
   graphics::legend("topright", legend = par_labels, lty = 1, col = col, cex = 0.75)
 }
+
+#' Visualizing the number of classes during Gibbs sampling
+#'
+#' @description
+#' This function plots the number of latent Glasses during Gibbs sampling
+#' to visualize the class updating.
+#'
+#' @inheritParams RprobitB_fit
+#'
+#' @return
+#' No return value. Draws a plot to the current device.
+#'
+#' @keywords
+#' internal
+#'
+#' @noRd
+#'
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes geom_line labs theme_minimal expand_limits
+
+plot_class_seq <- function(class_sequence) {
+  data <- data.frame(i = 1:length(class_sequence), c = class_sequence)
+  plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data$i, y = .data$c)) +
+    ggplot2::geom_line() +
+    ggplot2::labs(x = "Iteration", y = "Number of classes") +
+    ggplot2::theme_minimal() +
+    ggplot2::expand_limits(y=0)
+  print(plot)
+}
+
