@@ -40,6 +40,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_classes_dp
+Rcpp::List update_classes_dp(int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, int delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, bool s_desc);
+RcppExport SEXP _RprobitB_update_classes_dp(SEXP CmaxSEXP, SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP s_descSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< int >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type D(DSEXP);
+    Rcpp::traits::input_parameter< int >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Theta(ThetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type s_desc(s_descSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_dp(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dmvnorm
 double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
 RcppExport SEXP _RprobitB_dmvnorm(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
@@ -237,6 +258,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
     {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
+    {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
     {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
     {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
     {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},

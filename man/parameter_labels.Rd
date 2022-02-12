@@ -8,7 +8,6 @@ parameter_labels(
   P_f,
   P_r,
   J,
-  N,
   C,
   cov_sym,
   keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
@@ -21,8 +20,6 @@ parameter_labels(
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{cov_sym}{Set to \code{TRUE} for labels of symmetric covariance elements.}
 

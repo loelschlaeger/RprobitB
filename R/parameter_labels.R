@@ -20,7 +20,7 @@
 #' @keywords
 #' internal
 
-parameter_labels <- function(P_f, P_r, J, N, C, cov_sym,
+parameter_labels <- function(P_f, P_r, J, C, cov_sym,
                              keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
                              drop_par = NULL) {
 

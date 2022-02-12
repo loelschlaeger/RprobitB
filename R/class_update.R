@@ -31,7 +31,7 @@
 #' @keywords
 #' internal
 
-update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) {
+update_classes_dp_r <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) {
 
   ### sizes
   m <- as.vector(table(z))
@@ -44,7 +44,7 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) 
     ### un-assign initial class membership
     m[z[n]] <- m[z[n]] - 1
 
-    ### remove empty table
+    ### remove empty classes
     if(m[z[n]] == 0) {
       m[z[n]] <- m[C]
       z[z == C] <- z[n]
@@ -65,7 +65,10 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta) 
       beta_c <- beta[, z == c, drop = FALSE]
 
       ### update Omega_c via mean of its posterior distribution
-      Omega_c <- (Theta + crossprod(t(apply(beta_c, 2, function(x) x - b[,c,drop=FALSE])))) / (m[c]+nu-nrow(beta)-1)
+      beta_c_diff_b <- apply(beta_c, 2, function(x) x - b[,c,drop=FALSE])
+      beta_c_diff_b <- matrix(beta_c_diff_b, nrow = nrow(beta_c), ncol = ncol(beta_c))
+      cp <- beta_c_diff_b %*% t(beta_c_diff_b)
+      Omega_c <- (Theta + cp) / (m[c]+nu-nrow(beta)-1)
       Omega[,c] <- as.vector(Omega_c)
 
       ### compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c

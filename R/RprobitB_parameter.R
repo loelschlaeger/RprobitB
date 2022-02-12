@@ -6,12 +6,12 @@
 #' checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 #'
 #' @inheritParams RprobitB_data
-#' @param alpha
-#' The fixed coefficient vector of length \code{P_f}.
-#' Set to \code{NA} if \code{P_f = 0}.
 #' @param C
 #' The number (greater or equal 1) of latent classes of decision makers.
 #' Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.
+#' @param alpha
+#' The fixed coefficient vector of length \code{P_f}.
+#' Set to \code{NA} if \code{P_f = 0}.
 #' @param s
 #' The vector of class weights of length \code{C}.
 #' Set to \code{NA} if \code{P_r = 0}.

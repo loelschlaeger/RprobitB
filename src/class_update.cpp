@@ -4,6 +4,7 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
+#include "gibbs.h"
 using namespace arma;
 using namespace Rcpp;
 
@@ -173,4 +174,108 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
   return List::create(Named("s") = s_update,
                       Named("b") = b_update,
                       Named("Omega") = Omega_update);
+}
+
+//' Dirichlet process-based update of latent classes
+//' @description
+//' This function updates the latent classes based on a Dirichlet process.
+//' @details
+//' To be added.
+//' @param Cmax
+//' The maximum number of classes.
+//' @inheritParams RprobitB_parameter
+//' @inheritParams check_prior
+//' @param s_desc
+//' If \code{TRUE}, sort the classes in descending class weight.
+//' @examples
+//' # To be added.
+//' @return
+//' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+//' @keywords
+//' internal
+//'
+// [[Rcpp::export]]
+Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+                              int delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
+                              bool s_desc = true) {
+
+  // sizes
+  int N = z.size();
+  int C = b.n_cols;
+  int P_r = b.n_rows;
+  arma::vec m = update_m(C, z);
+
+  // Dirichlet process
+  for(int n = 0; n<N; n++) {
+
+    // un-assign initial class membership
+    m[z[n]-1] -= 1;
+
+    if(m[z[n]-1] == 0){
+      // remove empty classes
+      m[z[n]-1] = m[C-1];
+      arma::uvec ids = find(z == C-1);
+      z.elem(ids).fill(z[n]);
+      m = m.rows(0,C-2);
+      C -= 1;
+    }
+    return(List::create(Named("N") = N,
+                        Named("C") = C,
+                        Named("P_r") = P_r,
+                        Named("m") = m));
+
+    // ensure that z[n] does not get counted
+    z[n] = -1;
+
+    // storage for class log-probabilities
+    arma::vec logp(C+1);
+
+    // update class characteristics
+    for(int c = 0; c<C; c++) {
+
+      // extract beta points currently allocated to class c
+
+
+      // update Omega_c via mean of its posterior distribution
+
+      // compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
+
+      // update b_c via mean of its posterior distribution
+
+      // compute class assignment log-probabilities for existing classes from PPD
+
+    }
+
+    // compute log-probability for new class
+
+    // transform log-probabilities to probabilities
+
+    // draw new class membership
+    if(C == Cmax){
+
+    } else {
+
+    }
+
+    // spawn new class (but only if 'Cmax' is not exceeded)
+    if(true) {
+
+    }
+
+  }
+
+  // compute class weights
+  arma::vec s;
+
+  // sort updates with respect to descending class weights s
+  if(s_desc){
+
+
+  }
+
+  // return updates
+  return(List::create(Named("z") = z,
+                      Named("b") = b,
+                      Named("Omega") = Omega,
+                      Named("s") = s));
 }

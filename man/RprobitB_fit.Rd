@@ -13,7 +13,6 @@ RprobitB_fit(
   latent_classes,
   prior,
   gibbs_samples,
-  classification,
   class_sequence
 )
 }
@@ -57,9 +56,7 @@ of \code{\link{check_prior}} for details about which parameters can be specified
 
 \item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}.}
 
-\item{classification}{The allocation variable of the estimated latent classes.}
-
-\item{class_sequence}{The sequence of class numbers of length \code{R}.}
+\item{class_sequence}{The sequence of class numbers during Gibbs sampling of length \code{R}.}
 }
 \value{
 An object of class \code{RprobitB_fit}, i.e. a list with the arguments of

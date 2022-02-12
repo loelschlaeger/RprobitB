@@ -35,18 +35,18 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
     stop("'x' must be of class 'RprobitB_fit'.")
   }
   if (is.null(B)) {
-    B <- x$B
+    B <- x[["B"]]
   } else {
-    x$B <- B
+    x[["B"]] <- B
   }
   if (is.null(Q)) {
-    Q <- x$Q
+    Q <- x[["Q"]]
   } else {
-    x$Q <- Q
+    x[["Q"]] <- Q
   }
-  R <- x$R
-  P_f <- x$data$P_f
-  J <- x$data$J
+  R <- x[["R"]]
+  P_f <- x[["data"]][["P_f"]]
+  J <- x[["data"]][["J"]]
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
     stop("'B' must be a positive integer smaller than 'R'.")
   }
@@ -54,7 +54,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
     stop("'Q' must be a positive integer smaller than 'R'.")
   }
   if (is.null(scale)) {
-    normalization <- x$normalization
+    normalization <- x[["normalization"]]
   } else {
     ### check if new scale flips preferences
     if (check_preference_flip) {
@@ -62,20 +62,20 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
       preference_flip(model_old = x, model_new = model_new)
     }
     normalization <- RprobitB_normalization(J = J, P_f = P_f, scale = scale)
-    x$normalization <- normalization
+    x[["normalization"]] <- normalization
   }
 
   ### scale, burn and thin Gibbs samples
   gibbs_samples <- transform_gibbs_samples(
-    gibbs_samples = x$gibbs_samples$gibbs_samples, R = R, B = B, Q = Q,
+    gibbs_samples = x[["gibbs_samples"]][["gibbs_samples"]], R = R, B = B, Q = Q,
     normalization = normalization
   )
-  x$gibbs_samples <- gibbs_samples
+  x[["gibbs_samples"]] <- gibbs_samples
 
   ### scale true parameters
-  if (x$data$simulated) {
-    x$data$true_parameter <- transform_parameter(
-      parameter = x$data$true_parameter, normalization = normalization
+  if (x[["data"]][["simulated"]]) {
+    x[["data"]][["true_parameter"]] <- transform_parameter(
+      parameter = x[["data"]][["true_parameter"]], normalization = normalization
     )
   }
 
@@ -89,7 +89,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 #' This function normalizes, burns and thins the Gibbs samples.
 #'
 #' @param gibbs_samples
-#' The output of \link{gibbs_sampling}.
+#' The output of \code{\link{gibbs_sampling}}.
 #' @inheritParams RprobitB_data
 #' @inheritParams mcmc
 #' @inheritParams sufficient_statistics
@@ -118,7 +118,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### check inputs
-  if (!inherits(normalization, "RprobitB_normalization")) {
+  if (class(normalization) != "RprobitB_normalization") {
     stop("'normalization' must be of class 'RprobitB_normalization'.")
   }
 
@@ -127,26 +127,33 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     if (is.null(samples)) NULL else samples * factor
   }
 
-  ### scaling of samples
-  scale <- normalization$scale
-  s_n <- scaling(gibbs_samples$s, 1)
-  if (scale$parameter == "a") {
-    factor <- scale$value / gibbs_samples$alpha[, scale$index]
-    alpha_n <- scaling(gibbs_samples$alpha, factor)
-    b_n <- scaling(gibbs_samples$b, factor)
-    Omega_n <- scaling(gibbs_samples$Omega, factor^2)
-    Sigma_n <- scaling(gibbs_samples$Sigma, factor^2)
+  ### normalization (scaling) of samples
+  scale <- normalization[["scale"]]
+  s_n <- scaling(gibbs_samples[["s"]], 1)
+  z_n <- scaling(gibbs_samples[["z"]], 1)
+  if (scale[["parameter"]] == "a") {
+    factor <- scale[["value"]] / gibbs_samples[["alpha"]][, scale[["index"]]]
+    alpha_n <- scaling(gibbs_samples[["alpha"]], factor)
+    b_n <- scaling(gibbs_samples[["b"]], factor)
+    Omega_n <- scaling(gibbs_samples[["Omega"]], factor^2)
+    Sigma_n <- scaling(gibbs_samples[["Sigma"]], factor^2)
+    beta_n <- gibbs_samples[["beta"]]
+    for(i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
   }
-  if (scale$parameter == "s") {
-    factor <- scale$value / gibbs_samples$Sigma[, paste0(scale$index, ",", scale$index)]
-    alpha_n <- scaling(gibbs_samples$alpha, sqrt(factor))
-    b_n <- scaling(gibbs_samples$b, sqrt(factor))
-    Omega_n <- scaling(gibbs_samples$Omega, factor)
-    Sigma_n <- scaling(gibbs_samples$Sigma, factor)
+  if (scale[["parameter"]] == "s") {
+    factor <- scale[["value"]] / gibbs_samples[["Sigma"]][, paste0(scale[["index"]], ",", scale[["index"]])]
+    alpha_n <- scaling(gibbs_samples[["alpha"]], sqrt(factor))
+    b_n <- scaling(gibbs_samples[["b"]], sqrt(factor))
+    Omega_n <- scaling(gibbs_samples[["Omega"]], factor)
+    Sigma_n <- scaling(gibbs_samples[["Sigma"]], factor)
+    beta_n <- gibbs_samples[["beta"]]
+    for(i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
   }
   gibbs_samples_n <- list(
     "s" = s_n,
+    "z" = z_n,
     "alpha" = alpha_n,
+    "beta" = beta_n,
     "b" = b_n,
     "Omega" = Omega_n,
     "Sigma" = Sigma_n
@@ -155,18 +162,31 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### function to burn samples
   burn <- function(samples) {
-    if (is.null(samples)) NULL else samples[(B + 1):R, , drop = FALSE]
+    if (is.null(samples)){
+      return(NULL)
+    } else {
+      if(!is.list(samples)){
+        return(samples[(B + 1):R, , drop = FALSE])
+      }
+      if(is.list(samples)){
+        return(samples[(B + 1):R])
+      }
+    }
   }
 
   ### burning of normalized samples
   s_nb <- burn(s_n)
+  z_nb <- burn(z_n)
   alpha_nb <- burn(alpha_n)
   b_nb <- burn(b_n)
   Omega_nb <- burn(Omega_n)
   Sigma_nb <- burn(Sigma_n)
+  beta_nb <- burn(beta_n)
   gibbs_samples_nb <- list(
     "s" = s_nb,
+    "z" = z_nb,
     "alpha" = alpha_nb,
+    "beta" = beta_nb,
     "b" = b_nb,
     "Omega" = Omega_nb,
     "Sigma" = Sigma_nb
@@ -175,18 +195,31 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### function to thin samples
   thin <- function(samples, end) {
-    if (any(is.null(samples))) NULL else samples[seq(1, end, Q), , drop = FALSE]
+    if (identical(samples,NULL)){
+      return(NULL)
+    } else {
+      if(!is.list(samples)){
+        return(samples[seq(1, end, Q), , drop = FALSE])
+      }
+      if(is.list(samples)){
+        return(samples[seq(1, end, Q)])
+      }
+    }
   }
 
   ### thinning of normalized samples
   s_nt <- thin(s_n, R)
+  z_nt <- thin(z_n, R)
   alpha_nt <- thin(alpha_n, R)
   b_nt <- thin(b_n, R)
   Omega_nt <- thin(Omega_n, R)
   Sigma_nt <- thin(Sigma_n, R)
+  beta_nt <- thin(beta_n, R)
   gibbs_samples_nt <- list(
     "s" = s_nt,
+    "z" = z_nt,
     "alpha" = alpha_nt,
+    "beta" = beta_nt,
     "b" = b_nt,
     "Omega" = Omega_nt,
     "Sigma" = Sigma_nt
@@ -195,13 +228,17 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### thinning of normalized and burned samples
   s_nbt <- thin(s_nb, R - B)
+  z_nbt <- thin(z_nb, R - B)
   alpha_nbt <- thin(alpha_nb, R - B)
   b_nbt <- thin(b_nb, R - B)
   Omega_nbt <- thin(Omega_nb, R - B)
   Sigma_nbt <- thin(Sigma_nb, R - B)
+  beta_nbt <- thin(beta_nb, R - B)
   gibbs_samples_nbt <- list(
     "s" = s_nbt,
+    "z" = z_nbt,
     "alpha" = alpha_nbt,
+    "beta" = beta_nbt,
     "b" = b_nbt,
     "Omega" = Omega_nbt,
     "Sigma" = Sigma_nbt
@@ -261,23 +298,23 @@ transform_parameter <- function(parameter, normalization) {
   }
 
   ### scale elements of 'parameter'
-  scale <- normalization$scale
-  if (scale$parameter == "a") {
-    factor <- scale$value / parameter$alpha[scale$index]
-    parameter$alpha <- scaling(parameter$alpha, factor)
-    parameter$b <- scaling(parameter$b, factor)
-    parameter$Omega <- scaling(parameter$Omega, factor^2)
-    parameter$Sigma <- scaling(parameter$Sigma, factor^2)
-    parameter$beta <- scaling(parameter$beta, factor)
+  scale <- normalization[["scale"]]
+  if (scale[["parameter"]] == "a") {
+    factor <- scale[["value"]] / parameter[["alpha"]][scale[["index"]]]
+    parameter[["alpha"]] <- scaling(parameter[["alpha"]], factor)
+    parameter[["b"]] <- scaling(parameter[["b"]], factor)
+    parameter[["Omega"]] <- scaling(parameter[["Omega"]], factor^2)
+    parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor^2)
+    parameter[["beta"]] <- scaling(parameter[["beta"]], factor)
   }
-  if (scale$parameter == "s") {
-    factor <- scale$value / parameter$Sigma[scale$index, scale$index]
-    parameter$alpha <- scaling(parameter$alpha, sqrt(factor))
-    parameter$b <- scaling(parameter$b, sqrt(factor))
-    parameter$Omega <- scaling(parameter$Omega, factor)
-    parameter$Sigma <- scaling(parameter$Sigma, factor)
-    parameter$beta <- scaling(parameter$beta, sqrt(factor))
-    parameter$Sigma_full <- undiff_Sigma(parameter$Sigma, normalization$level)
+  if (scale[["parameter"]] == "s") {
+    factor <- scale[["value"]] / parameter[["Sigma"]][scale[["index"]], scale[["index"]]]
+    parameter[["alpha"]] <- scaling(parameter[["alpha"]], sqrt(factor))
+    parameter[["b"]] <- scaling(parameter[["b"]], sqrt(factor))
+    parameter[["Omega"]] <- scaling(parameter[["Omega"]], factor)
+    parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor)
+    parameter[["beta"]] <- scaling(parameter[["beta"]], sqrt(factor))
+    parameter[["Sigma_full"]] <- undiff_Sigma(parameter[["Sigma"]], normalization[["level"]])
   }
 
   ### return 'parameter'
@@ -307,27 +344,26 @@ transform_parameter <- function(parameter, normalization) {
 preference_flip <- function(model_old, model_new) {
   stopifnot(class(model_old) == "RprobitB_fit")
   stopifnot(class(model_new) == "RprobitB_fit")
-  stopifnot(model_old$data$P_f == model_new$data$P_f)
-  stopifnot(model_old$data$P_r == model_new$data$P_r)
+  stopifnot(model_old[["data"]][["P_f"]] == model_new[["data"]][["P_f"]])
+  stopifnot(model_old[["data"]][["P_r"]] == model_new[["data"]][["P_r"]])
   flag <- FALSE
-  for (p in seq_len(model_old$data$P_f)) {
-    P1 <- stats::ecdf(model_old$gibbs_samples$gibbs_samples_nbt$alpha[, p])
-    P2 <- stats::ecdf(model_new$gibbs_samples$gibbs_samples_nbt$alpha[, p])
+  for (p in seq_len(model_old[["data"]][["P_f"]])) {
+    P1 <- stats::ecdf(model_old[["gibbs_samples"]][["gibbs_samples_nbt"]][["alpha"]][, p])
+    P2 <- stats::ecdf(model_new[["gibbs_samples"]][["gibbs_samples_nbt"]][["alpha"]][, p])
     if (P1(0) != P2(0)) {
       flag <- TRUE
     }
   }
-  for (p in seq_len(model_old$data$P_r)) {
-    P1 <- stats::ecdf(model_old$gibbs_samples$gibbs_samples_nbt$b[, p])
-    P2 <- stats::ecdf(model_new$gibbs_samples$gibbs_samples_nbt$b[, p])
+  for (p in seq_len(model_old[["data"]][["P_r"]])) {
+    P1 <- stats::ecdf(model_old[["gibbs_samples"]][["gibbs_samples_nbt"]][["b"]][, p])
+    P2 <- stats::ecdf(model_new[["gibbs_samples"]][["gibbs_samples_nbt"]][["b"]][, p])
     if (P1(0) != P2(0)) {
       flag <- TRUE
     }
   }
   if (flag) {
     stop(
-      "Caution, this transformation may flip preferences. ",
-      "Set 'check_preference_flip = FALSE' to transform anyway."
+      "Caution, this transformation may flip preferences. Set 'check_preference_flip = FALSE' to transform anyway."
     )
   }
 }

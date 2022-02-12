@@ -79,6 +79,28 @@ update_classes_wb <- function(Cmax, epsmin, epsmax, distmin, s, b, Omega) {
     .Call(`_RprobitB_update_classes_wb`, Cmax, epsmin, epsmax, distmin, s, b, Omega)
 }
 
+#' Dirichlet process-based update of latent classes
+#' @description
+#' This function updates the latent classes based on a Dirichlet process.
+#' @details
+#' To be added.
+#' @param Cmax
+#' The maximum number of classes.
+#' @inheritParams RprobitB_parameter
+#' @inheritParams check_prior
+#' @param s_desc
+#' If \code{TRUE}, sort the classes in descending class weight.
+#' @examples
+#' # To be added.
+#' @return
+#' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+#' @keywords
+#' internal
+#'
+update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE) {
+    .Call(`_RprobitB_update_classes_dp`, Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc)
+}
+
 #' Density of multivariate normal distribution
 #' @description
 #' This function computes the density of a multivariate normal distribution.
@@ -517,9 +539,7 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' \itemize{
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),
-#'   \item \code{s} (if \code{P_r>0}),
-#'   \item \code{b} (if \code{P_r>0}),
-#'   \item \code{Omega} (if \code{P_r>0}),
+#'   \item \code{s}, \code{b}, \code{Omega} (if \code{P_r>0}),
 #' }
 #' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
 #' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of

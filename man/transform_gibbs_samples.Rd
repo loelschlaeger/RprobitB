@@ -7,7 +7,7 @@
 transform_gibbs_samples(gibbs_samples, R, B, Q, normalization)
 }
 \arguments{
-\item{gibbs_samples}{The output of \link{gibbs_sampling}.}
+\item{gibbs_samples}{The output of \code{\link{gibbs_sampling}}.}
 
 \item{R}{The number of iterations of the Gibbs sampler.}
 

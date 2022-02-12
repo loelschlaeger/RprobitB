@@ -440,9 +440,7 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' \itemize{
 //'   \item \code{Sigma},
 //'   \item \code{alpha} (if \code{P_f>0}),
-//'   \item \code{s} (if \code{P_r>0}),
-//'   \item \code{b} (if \code{P_r>0}),
-//'   \item \code{Omega} (if \code{P_r>0}),
+//'   \item \code{s}, \code{b}, \code{Omega} (if \code{P_r>0}),
 //' }
 //' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
 //' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
@@ -558,11 +556,13 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   Rcpp::Environment package_env("package:RprobitB");
   Rcpp::Function update_classes_dp = package_env["update_classes_dp"];
 
-  // allocate space for draws
-  mat alpha_draws = zeros<mat>(R,P_f);
-  mat s_draws = zeros<mat>(R,Cdrawsize);
-  mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
-  mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
+  // allocate space for output
+  arma::mat s_draws = zeros<mat>(R,Cdrawsize);
+  arma::mat z_draws = zeros<mat>(R,N);
+  arma::mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
+  arma::mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
+  arma::mat alpha_draws = zeros<mat>(R,P_f);
+  Rcpp::List beta_draws(R);
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
   arma::vec class_sequence(R);
 
@@ -716,14 +716,16 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       alpha_draws(r,span::all) = trans(alpha);
     if(P_r>0){
       s_draws(r,span(0,s.size()-1)) = trans(s);
+      z_draws(r,span::all) = trans(z);
       vec vectorise_b = vectorise(b);
       b_draws(r,span(0,vectorise_b.size()-1)) = trans(vectorise_b);
       vec vectorise_Omega = vectorise(Omega);
       Omega_draws(r,span(0,vectorise_Omega.size()-1)) =
         trans(vectorise_Omega);
+      beta_draws[r] = beta;
+      class_sequence[r] = C;
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
-    class_sequence[r] = C;
 
     // print time to completion
     if(print_progress)
@@ -738,21 +740,23 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   List out;
   if(P_f>0 && P_r>0)
     out = List::create(Named("s") = s_draws,
+                       Named("z") = z_draws,
                        Named("alpha") = alpha_draws,
+                       Named("beta") = beta_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,
-                       Named("classification") = z,
                        Named("class_sequence") = class_sequence);
   if(P_f>0 && P_r==0)
     out = List::create(Named("alpha") = alpha_draws,
                        Named("Sigma") = Sigma_draws);
   if(P_f==0 && P_r>0)
     out = List::create(Named("s") = s_draws,
+                       Named("z") = z_draws,
+                       Named("beta") = beta_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,
-                       Named("classification") = z,
                        Named("class_sequence") = class_sequence);
   if(P_f==0 && P_r==0)
     out = List::create(Named("Sigma") = Sigma_draws);
