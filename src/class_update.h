@@ -14,4 +14,8 @@ double euc_dist (arma::vec a, arma::vec b);
 Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double distmin,
                               arma::vec s, arma::mat b, arma::mat Omega);
 
+Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b,
+                              arma::mat Omega, double delta, arma::vec xi, arma::mat D,
+                              int nu, arma::mat Theta, bool s_desc);
+
 #endif

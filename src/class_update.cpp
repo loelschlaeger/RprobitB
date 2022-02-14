@@ -188,7 +188,18 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
 //' @param s_desc
 //' If \code{TRUE}, sort the classes in descending class weight.
 //' @examples
-//' # To be added.
+//' set.seed(1)
+//' z <- c(rep(1,20),rep(2,30))
+//' b <- matrix(c(1,1,1,-1), ncol=2)
+//' Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+//' beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega[,z],2,2)))
+//' delta <- 1
+//' xi <- numeric(2)
+//' D <- diag(2)
+//' nu <- 4
+//' Theta <- diag(2)
+//' RprobitB:::update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+//'                              delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
 //' @return
 //' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
 //' @keywords
@@ -196,33 +207,40 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
 //'
 // [[Rcpp::export]]
 Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
-                              int delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
+                              double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
                               bool s_desc = true) {
+
+  // helper variables and functions
+  Rcpp::Function sample("sample");
 
   // sizes
   int N = z.size();
   int C = b.n_cols;
   int P_r = b.n_rows;
-  arma::vec m = update_m(C, z);
+
+  // space allocation for class characteristics
+  arma::mat b_full(P_r,Cmax);
+  b_full(span::all,span(0,C-1)) = b;
+  arma::mat Omega_full(P_r*P_r,Cmax);
+  Omega_full(span::all,span(0,C-1)) = Omega;
+  arma::vec m_full(Cmax);
+  m_full(span(0,C-1)) = update_m(C, z);
 
   // Dirichlet process
   for(int n = 0; n<N; n++) {
 
     // un-assign initial class membership
-    m[z[n]-1] -= 1;
+    m_full[z[n]-1] -= 1;
 
-    if(m[z[n]-1] == 0){
+    if(m_full[z[n]-1] == 0){
       // remove empty classes
-      m[z[n]-1] = m[C-1];
-      arma::uvec ids = find(z == C-1);
-      z.elem(ids).fill(z[n]);
-      m = m.rows(0,C-2);
+      m_full[z[n]-1] = m_full[C-1];
+      z.elem(find(z == C)).fill(z[n]);
+      m_full[C-1] = 0;
       C -= 1;
+      b_full(span::all,z[n]-1) = zeros<vec>(P_r);
+      Omega_full(span::all,z[n]-1) = zeros<vec>(P_r*P_r);
     }
-    return(List::create(Named("N") = N,
-                        Named("C") = C,
-                        Named("P_r") = P_r,
-                        Named("m") = m));
 
     // ensure that z[n] does not get counted
     z[n] = -1;
@@ -234,48 +252,71 @@ Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b
     for(int c = 0; c<C; c++) {
 
       // extract beta points currently allocated to class c
-
+      arma::mat beta_c = beta.cols(find(z == c+1));
 
       // update Omega_c via mean of its posterior distribution
+      arma::mat beta_c_diff_b = beta_c.each_col() - b_full.col(c);
+      arma::mat Omega_c = (Theta + beta_c_diff_b * trans(beta_c_diff_b)) / (m_full[c] + nu - P_r - 1);
 
       // compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
-
-      // update b_c via mean of its posterior distribution
+      arma::mat sig_b = arma::inv(arma::inv(D) + m_full[c] * arma::inv(Omega_c));
+      arma::vec mu_b = sig_b * (arma::inv(Omega_c) * arma::sum(beta_c, 1) + arma::inv(D) * xi);
 
       // compute class assignment log-probabilities for existing classes from PPD
+      logp[c] = log(m_full[c]) + dmvnorm(beta(span::all,n), mu_b, sig_b + Omega_c, true);
 
+      // save updates
+      b_full(span::all,c) = mu_b;
+      Omega_full(span::all,c) = reshape(Omega_c, P_r*P_r, 1);
     }
 
     // compute log-probability for new class
+    arma::vec b_new = xi;
+    arma::mat Omega_new = reshape(Omega_full(span::all,span(0,C-1)) * (m_full(span(0,C-1))/sum(m_full(span(0,C-1)))), P_r, P_r);
+    logp[C] = log(delta) + dmvnorm(beta(span::all,n), b_new, D + Omega_new, true);
 
     // transform log-probabilities to probabilities
+    arma::vec loc_probs = exp(logp - max(logp));
+    loc_probs = loc_probs / sum(loc_probs);
 
-    // draw new class membership
+    // draw new class membership (prevent 'Cmax' from exceeding)
+    int newz;
     if(C == Cmax){
-
+      newz = as<int>(sample(seq(1,C),1,false,loc_probs(span(0,C-1))));
     } else {
-
+      newz = as<int>(sample(seq(1,C+1),1,false,loc_probs(span(0,C))));
     }
-
     // spawn new class (but only if 'Cmax' is not exceeded)
-    if(true) {
-
+    if(newz == C+1) {
+      b_full(span::all,C) = b_new;
+      Omega_full(span::all,C) = reshape(Omega_new, P_r*P_r, 1);
+      C += 1;
     }
-
+    z[n] = newz;
+    m_full[newz-1] += 1;
   }
 
   // compute class weights
-  arma::vec s;
+  arma::vec s_full = m_full / sum(m_full);
 
   // sort updates with respect to descending class weights s
   if(s_desc){
-
-
+    arma::uvec sortind = arma::sort_index(s_full, "descend");
+    s_full = s_full(sortind);
+    b_full = b_full.cols(sortind);
+    Omega_full = Omega_full.cols(sortind);
+    z += Cmax;
+    arma::vec sortind_vec = arma::conv_to<arma::vec>::from(sortind);
+    for(int c = 0; c<C; c++) {
+      for(int n = 0; n<N; n++) {
+        if(z[n] == c+1+Cmax) z[n] = sortind_vec[c] + 1;
+      }
+    }
   }
 
   // return updates
   return(List::create(Named("z") = z,
-                      Named("b") = b,
-                      Named("Omega") = Omega,
-                      Named("s") = s));
+                      Named("b") = b_full(span::all,span(0,C-1)),
+                      Named("Omega") = Omega_full(span::all,span(0,C-1)),
+                      Named("s") = s_full(span(0,C-1))));
 }

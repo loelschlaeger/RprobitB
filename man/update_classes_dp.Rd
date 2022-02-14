@@ -61,6 +61,17 @@ This function updates the latent classes based on a Dirichlet process.
 To be added.
 }
 \examples{
-# To be added.
+set.seed(1)
+z <- c(rep(1,20),rep(2,30))
+b <- matrix(c(1,1,1,-1), ncol=2)
+Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
+beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega[,z],2,2)))
+delta <- 1
+xi <- numeric(2)
+D <- diag(2)
+nu <- 4
+Theta <- diag(2)
+RprobitB:::update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+                             delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
 }
 \keyword{internal}

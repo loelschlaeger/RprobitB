@@ -12,7 +12,7 @@ for(c in 1:C_true) for(n in 1:N[c])
   beta <- cbind(beta, rmvnorm(mu = b_true[,c,drop=F], Sigma = matrix(Omega_true[,c,drop=F], ncol = P_r)))
 
 ### prior parameters
-delta <- 1
+delta <- 0.5
 xi <- numeric(P_r)
 D <- diag(P_r)
 nu <- P_r + 2
@@ -25,14 +25,15 @@ b <- matrix(0, nrow = P_r, ncol = C)
 Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
 ### Dirichlet process
-pb <- txtProgressBar(min = 0, max = 100, style = 3)
-for(r in 1:100){
+pb <- txtProgressBar(min = 0, max = 1000, style = 3)
+for(r in 1:1000){
   dp <- update_classes_dp(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta)
   z <- dp$z
   b <- dp$b
   Omega <- dp$Omega
   plot_class_allocation(beta, z, b, Omega, r = r)
   setTxtProgressBar(pb, r)
+  Sys.sleep(0.1)
 }
 
 # Simulate choices --------------------------------------------------------
@@ -81,19 +82,21 @@ for(c in 1:C_true) for(n in 1:N[c])
   beta <- cbind(beta, rmvnorm(mu = b_true[,c,drop=F], Sigma = matrix(Omega_true[,c,drop=F], ncol = P_r)))
 
 ### prior parameters
-delta <- 1
+delta <- 0.5
 xi <- numeric(P_r)
 D <- diag(P_r)
 nu <- P_r + 2
 Theta <- diag(P_r)
 
 ### initial values
-z <- rep(1, ncol(beta))
+z <- rep(1, ncol(beta)); z <- c(2,rep(1,29))
 C <- length(unique(z))
 b <- matrix(0, nrow = P_r, ncol = C)
 Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
+set.seed(1)
 dpr <- update_classes_dp_r(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta)
+set.seed(1)
 dpc <- update_classes_dp(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta)
 
 
