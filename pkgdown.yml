@@ -2,14 +2,14 @@ pandoc: 2.7.3
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
-  choice_data: choice_data.html
-  choice_prediction: choice_prediction.html
-  introduction: introduction.html
-  model_definition: model_definition.html
-  model_fitting: model_fitting.html
-  model_selection: model_selection.html
-last_built: 2022-01-26T14:05Z
+  RprobitB: RprobitB.html
+  v01_model_definition: v01_model_definition.html
+  v02_choice_data: v02_choice_data.html
+  v03_model_fitting: v03_model_fitting.html
+  v04_model_selection: v04_model_selection.html
+  v05_choice_prediction: v05_choice_prediction.html
+last_built: 2022-02-14T18:45Z
 urls:
-  reference: https://loelschlaeger.github.io/RprobitB/reference
-  article: https://loelschlaeger.github.io/RprobitB/articles
+  reference: https://loelschlaeger.de/RprobitB/reference
+  article: https://loelschlaeger.de/RprobitB/articles
 
