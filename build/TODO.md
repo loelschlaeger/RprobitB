@@ -1,7 +1,7 @@
 # Gibbs sampler
 
-- [ ] Implement `update_classes_dp()` in C++.
-- [ ] Implement progress bar.
+- [x] Implement `update_classes_dp()` in C++.
+- [x] Implement progress bar.
 - [ ] Check and document R_hat implementation (How is chain splitted?).
 
 # Model selection criteria
@@ -18,3 +18,19 @@
 # Prediction
 
 - [ ] Implement prediction based on single predictor value.
+
+# Documentation
+
+- [] Document Dirichlet Process in `update_classes_dp()`.
+
+# Bugs
+
+- [] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
+
+# Test
+
+- [] Add tests for `update_classes_dp()`.
+
+# Package ingredients
+
+- [] Add precompiled models.
