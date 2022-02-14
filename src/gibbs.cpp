@@ -710,8 +710,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
     // print progress
     if(print_progress && (r+1)%10 == 0){
-      std::cout << "Iteration " << r+1 << " of " << R << "\r";
-      std::cout.flush();
+      Rcpp::Rcout << "Iteration " << r+1 << " of " << R << "\r";
+      Rcpp::Rcout.flush();
     }
 
     // check for code interruption
@@ -719,7 +719,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   }
 
   // close print line
-  if(print_progress) std::cout << std::endl;
+  if(print_progress) Rcpp::Rcout << std::endl;
 
   // build and return output list 'out'
   List out;
