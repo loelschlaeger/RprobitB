@@ -6,9 +6,6 @@
 #'
 #' @param x
 #' An object of class \code{RprobitB_model}.
-#' @param stat
-#'
-#'
 #'
 #' @return
 #' A data frame with the deciders id and the latent class number.
