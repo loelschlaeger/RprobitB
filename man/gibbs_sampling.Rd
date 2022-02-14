@@ -2,23 +2,48 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler.}
+\title{Gibbs sampler for the (mixed) multinomial probit model}
 \usage{
 gibbs_sampling(
-  R,
-  B,
-  print_progress,
-  N,
-  J,
-  P_f,
-  P_r,
-  latent_classes,
   sufficient_statistics,
   prior,
-  init
+  latent_classes,
+  init,
+  R,
+  B,
+  print_progress
 )
 }
 \arguments{
+\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
+
+\item{prior}{A named list of parameters for the prior distributions. See the documentation
+of \code{\link{check_prior}} for details about which parameters can be specified.}
+
+\item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying
+the number of latent classes and their updating scheme:
+\itemize{
+\item \code{C}: The fixed number (greater or equal 1) of latent classes,
+which is set to 1 per default. If either \code{weight_update = TRUE}
+or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
+equals the initial number of latent classes.
+\item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
+update the latent classes. See ... for details.
+\item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
+classes based on a Dirichlet process. See ... for details.
+\item \code{Cmax}: The maximum number of latent classes.
+\item \code{buffer}: The number of iterations to wait before a next
+weight-based update of the latent classes.
+\item \code{epsmin}: The threshold weight (between 0 and 1) for removing
+a latent class in the weight-based updating scheme.
+\item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
+a latent class in the weight-based updating scheme.
+\item \code{distmin}: The (non-negative) threshold difference in class means
+for joining two latent classes in the weight-based updating scheme.
+}}
+
+\item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
+
 \item{R}{The number of iterations of the Gibbs sampler.}
 
 \item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
@@ -26,81 +51,23 @@ be discarded.}
 
 \item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
 estimated remaining computation time.}
-
-\item{N}{The number (greater or equal 1) of decision makers.}
-
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
-
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
-
-\item{latent_classes}{Either \code{NULL} or a list of parameters specifying the number and the
-latent classes:
-\itemize{
-\item \code{C}:
-The number (greater or equal 1) of latent classes, which is set to 1 per
-default and is ignored if \code{P_r = 0}.
-If \code{update = TRUE}, \code{C} equals the initial number of classes.
-\item \code{update}:
-A boolean, determining whether to update \code{C}.
-Ignored if \code{P_r = 0}.
-If \code{update = FALSE}, all of the following elements are ignored.
-\item \code{Cmax}:
-The maximum number of latent classes.
-\item \code{buffer}:
-The updating buffer (number of iterations to wait before the next update).
-\item \code{epsmin}:
-The threshold weight for removing latent classes (between 0 and 1).
-\item \code{epsmax}:
-The threshold weight for splitting latent classes (between 0 and 1).
-\item \code{distmin}:
-The threshold difference in means for joining latent classes
-(non-negative).
-}}
-
-\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
-
-\item{prior}{A named list of parameters for the prior distributions of the normalized
-parameters:
-\itemize{
-\item \code{eta}:
-The mean vector of length \code{P_f} of the normal prior for
-\code{alpha}.
-\item \code{Psi}:
-The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-normal prior for \code{alpha}.
-\item \code{delta}:
-The concentration parameter of length 1 of the Dirichlet prior for
-\code{s}.
-\item \code{xi}:
-The mean vector of length \code{P_r} of the normal prior for each
-\code{b_c}.
-\item \code{D}:
-The covariance matrix of dimension \code{P_r} x \code{P_r} of the
-normal prior for each \code{b_c}.
-\item \code{nu}:
-The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.
-\item \code{Theta}:
-The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.
-\item \code{kappa}:
-The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.
-\item \code{E}:
-The scale matrix of dimension \code{J-1} x \code{J-1} of the
-Inverse Wishart prior for \code{Sigma}.
-}}
-
-\item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
 }
 \value{
-A list of Gibbs samples for \code{Sigma}, \code{alpha} (if \code{P_f>0})
-and \code{s}, \code{b}, \code{Omega} and a vector of classifications
-(if \code{P_r>0}).
+A list of Gibbs samples for
+\itemize{
+\item \code{Sigma},
+\item \code{alpha} (if \code{P_f>0}),
+\item \code{s}, \code{b}, \code{Omega} (if \code{P_r>0}),
+}
+and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
+a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
+latent classes after iteration \code{r}.
 }
 \description{
-This function performs Gibbs sampling for the RprobitB package.
+This function draws Gibbs samples from the posterior distribution of the
+(mixed) multinomial probit model parameters.
+}
+\details{
+This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
 }
 \keyword{internal}

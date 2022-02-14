@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc.R
 \name{mcmc}
 \alias{mcmc}
-\title{Markov chain Monte Carlo simulation for probit model fitting.}
+\title{Probit model fitting via Markov chain Monte Carlo simulation.}
 \usage{
 mcmc(
   data,
@@ -43,60 +43,29 @@ sample is kept.}
 \item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
 estimated remaining computation time.}
 
-\item{prior}{A named list of parameters for the prior distributions of the normalized
-parameters:
-\itemize{
-\item \code{eta}:
-The mean vector of length \code{P_f} of the normal prior for
-\code{alpha}.
-\item \code{Psi}:
-The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-normal prior for \code{alpha}.
-\item \code{delta}:
-The concentration parameter of length 1 of the Dirichlet prior for
-\code{s}.
-\item \code{xi}:
-The mean vector of length \code{P_r} of the normal prior for each
-\code{b_c}.
-\item \code{D}:
-The covariance matrix of dimension \code{P_r} x \code{P_r} of the
-normal prior for each \code{b_c}.
-\item \code{nu}:
-The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.
-\item \code{Theta}:
-The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.
-\item \code{kappa}:
-The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.
-\item \code{E}:
-The scale matrix of dimension \code{J-1} x \code{J-1} of the
-Inverse Wishart prior for \code{Sigma}.
-}}
+\item{prior}{A named list of parameters for the prior distributions. See the documentation
+of \code{\link{check_prior}} for details about which parameters can be specified.}
 
-\item{latent_classes}{Either \code{NULL} or a list of parameters specifying the number and the
-latent classes:
+\item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying
+the number of latent classes and their updating scheme:
 \itemize{
-\item \code{C}:
-The number (greater or equal 1) of latent classes, which is set to 1 per
-default and is ignored if \code{P_r = 0}.
-If \code{update = TRUE}, \code{C} equals the initial number of classes.
-\item \code{update}:
-A boolean, determining whether to update \code{C}.
-Ignored if \code{P_r = 0}.
-If \code{update = FALSE}, all of the following elements are ignored.
-\item \code{Cmax}:
-The maximum number of latent classes.
-\item \code{buffer}:
-The updating buffer (number of iterations to wait before the next update).
-\item \code{epsmin}:
-The threshold weight for removing latent classes (between 0 and 1).
-\item \code{epsmax}:
-The threshold weight for splitting latent classes (between 0 and 1).
-\item \code{distmin}:
-The threshold difference in means for joining latent classes
-(non-negative).
+\item \code{C}: The fixed number (greater or equal 1) of latent classes,
+which is set to 1 per default. If either \code{weight_update = TRUE}
+or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
+equals the initial number of latent classes.
+\item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
+update the latent classes. See ... for details.
+\item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
+classes based on a Dirichlet process. See ... for details.
+\item \code{Cmax}: The maximum number of latent classes.
+\item \code{buffer}: The number of iterations to wait before a next
+weight-based update of the latent classes.
+\item \code{epsmin}: The threshold weight (between 0 and 1) for removing
+a latent class in the weight-based updating scheme.
+\item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
+a latent class in the weight-based updating scheme.
+\item \code{distmin}: The (non-negative) threshold difference in class means
+for joining two latent classes in the weight-based updating scheme.
 }}
 
 \item{seed}{Set a seed for the Gibbs sampling.}
@@ -137,7 +106,7 @@ lcmmnp <- simulate_choices(
 m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 
 ### update of latent classes
-m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
+m5 <- simulate_choices(data = lcmmnp, latent_classes = list("weight_update" = TRUE), seed = 1)
 }
 
 }

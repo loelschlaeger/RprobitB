@@ -13,3 +13,5 @@ LICENSE
 ^Meta$
 jss/
 applications/
+build/
+TODO.md

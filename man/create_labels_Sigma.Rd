@@ -2,19 +2,29 @@
 % Please edit documentation in R/parameter_labels.R
 \name{create_labels_Sigma}
 \alias{create_labels_Sigma}
-\title{Create labels for \code{Sigma}.}
+\title{Create labels for \code{Sigma}}
 \usage{
 create_labels_Sigma(J, cov_sym)
 }
 \arguments{
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
-\item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
+\item{cov_sym}{Set to \code{TRUE} for labels of symmetric covariance elements.}
 }
 \value{
-A vector of labels for the model parameter \code{Sigma}.
+A vector of labels for the model parameter \code{Sigma} of length
+\code{(J-1)^2} if \code{cov_sym = TRUE} or of length \code{P_r*(P_r+1)/2*C}
+if \code{cov_sym = FALSE}.
 }
 \description{
 This function creates labels for the model parameter \code{Sigma}.
+}
+\details{
+The labels are of the form \code{"j1,j2"}, where \code{j1,j2} are indices
+of two alternatives.
+}
+\examples{
+RprobitB:::create_labels_Sigma(3, cov_sym = TRUE)
+RprobitB:::create_labels_Sigma(4, cov_sym = FALSE)
 }
 \keyword{internal}

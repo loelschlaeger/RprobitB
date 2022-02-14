@@ -13,12 +13,18 @@
 #' @export
 
 preference_classification <- function(x) {
-  if (is.null(x$classification)) {
+  if (is.null(x$gibbs_samples$gibbs_samples_nbt$z)) {
     warning("No classification available.")
   } else {
+    class <- apply(x$gibbs_samples$gibbs_samples_nbt$z, 2,
+                   FUN = function(x) {
+                     tab <- table(x)
+                    ans <- names(tab[which.max(tab)])
+                    return(as.numeric(ans))
+                    })
     data.frame(
       id = unique(x$data$choice_data$id),
-      class = x$classification
+      class = class
     )
   }
 }

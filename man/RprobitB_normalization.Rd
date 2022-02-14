@@ -2,7 +2,7 @@
 % Please edit documentation in R/RprobitB_normalization.R
 \name{RprobitB_normalization}
 \alias{RprobitB_normalization}
-\title{Create object of class \code{RprobitB_normalization}.}
+\title{Create object of class \code{RprobitB_normalization}}
 \usage{
 RprobitB_normalization(
   J,
@@ -43,13 +43,19 @@ This function creates an object of class \code{RprobitB_normalization}.
 \details{
 Any choice model has to be normalized with respect to level and scale.
 \itemize{
-\item For level normalization, we takes utility differences with respect to
+\item For level normalization, RprobitB takes utility differences with respect to
 one alternative.
-\item For scale normalization, we fix a model parameter. Per default, the
+\item For scale normalization, RprobitB fixes a model parameter. Per default, the
 first error-term variance is fixed to \code{1}, i.e.
 \code{scale = list("parameter" = "s", "index" = 1, "value" = 1)}.
-Alternatively, any error-term variance or any linear coefficient can
+Alternatively, any error-term variance or any non-random linear coefficient can
 be fixed.
 }
 }
-\keyword{s3}
+\examples{
+RprobitB:::RprobitB_normalization(
+  J = 2, P_f = 1, level = 2, scale = list("parameter" = "s", "index" = 1, "value" = 1)
+)
+
+}
+\keyword{constructor}

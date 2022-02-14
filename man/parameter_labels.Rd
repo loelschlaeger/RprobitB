@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameter_labels.R
 \name{parameter_labels}
 \alias{parameter_labels}
-\title{Create parameters labels.}
+\title{Create parameters labels}
 \usage{
 parameter_labels(
   P_f,
@@ -21,18 +21,20 @@ parameter_labels(
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
-\item{C}{The number of latent classes.}
-
-\item{cov_sym}{If \code{TRUE} considers symmetric covariance matrix elements.}
+\item{cov_sym}{Set to \code{TRUE} for labels of symmetric covariance elements.}
 
 \item{keep_par}{A vector of parameter names which are kept.}
 
 \item{drop_par}{A vector of parameter names which get dropped.}
 }
 \value{
-A list of labels for the model parameters.
+A list of labels for the selected model parameters.
 }
 \description{
-This function creates labels for the model parameters.
+This function model parameter labels.
+}
+\examples{
+RprobitB:::parameter_labels(P_f = 1, P_r = 2, J = 3, C = 2, cov_sym = TRUE)
+
 }
 \keyword{internal}

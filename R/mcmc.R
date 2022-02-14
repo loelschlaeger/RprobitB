@@ -1,4 +1,4 @@
-#' Markov chain Monte Carlo simulation for probit model fitting.
+#' Probit model fitting via Markov chain Monte Carlo simulation.
 #'
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting a
@@ -22,8 +22,10 @@
 #' @param print_progress
 #' A boolean, determining whether to print the Gibbs sampler progress and the
 #' estimated remaining computation time.
+#' @param prior
+#' A named list of parameters for the prior distributions. See the documentation
+#' of \code{\link{check_prior}} for details about which parameters can be specified.
 #' @inheritParams RprobitB_latent_classes
-#' @inheritParams check_prior
 #' @param seed
 #' Set a seed for the Gibbs sampling.
 #'
@@ -55,7 +57,7 @@
 #' m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
 #'
 #' ### update of latent classes
-#' m5 <- simulate_choices(data = lcmmnp, latent_classes = list("update" = TRUE), seed = 1)
+#' m5 <- simulate_choices(data = lcmmnp, latent_classes = list("weight_update" = TRUE), seed = 1)
 #' }
 #'
 #' @export
@@ -92,12 +94,9 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   if (!is.logical(print_progress)) {
     stop("'progress' must be a boolean.")
   }
-  normalization <- RprobitB_normalization(
-    J = data$J, P_f = data$P_f,
-    scale = scale
-  )
+  normalization <- RprobitB_normalization(J = data$J, P_f = data$P_f, scale = scale)
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
-  prior <- check_prior(prior = prior, P_f = data$P_f, P_r = data$P_r, J = data$J)
+  prior <- do.call(what = check_prior, args = c(list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J), prior))
 
   ### compute sufficient statistics
   ss <- sufficient_statistics(data = data, normalization = normalization)
@@ -105,51 +104,45 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   ### set initial values for the Gibbs sampler
   init <- set_initial_gibbs_values(
     N = data$N, T = data$T, J = data$J, P_f = data$P_f, P_r = data$P_r,
-    C = latent_classes$C
+    C = latent_classes[["C"]]
   )
 
   ### perform Gibbs sampling
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+  if (!is.null(seed)) set.seed(seed)
   gibbs_samples <- gibbs_sampling(
-    R = R, B = B, print_progress = print_progress, N = data$N, J = data$J,
-    P_f = data$P_f, P_r = data$P_r, latent_classes = unclass(latent_classes),
-    sufficient_statistics = ss, prior = prior, init = init
+    sufficient_statistics = ss, prior = prior, latent_classes = unclass(latent_classes),
+    init = init, R = R, B = B, print_progress = print_progress
   )
 
-  if (latent_classes$update) {
+  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     ### update number of latent classes
-    latent_classes$C <- sum(utils::tail(gibbs_samples$s, 1) != 0)
+    latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
 
-    ### remove zeros
-    gibbs_samples$s <- gibbs_samples$s[, 1:latent_classes$C]
-    gibbs_samples$b <- gibbs_samples$b[, 1:(data$P_r * latent_classes$C)]
-    gibbs_samples$Omega <- gibbs_samples$Omega[, 1:(data$P_r^2 * latent_classes$C)]
+    ### remove zeros for unoccupied classes
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, 1:latent_classes[["C"]]]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * latent_classes[["C"]])]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * latent_classes[["C"]])]
   }
 
-  ### save classification
-  if (!is.null(gibbs_samples$classification)) {
-    classification <- gibbs_samples$classification + 1
-    gibbs_samples <- within(gibbs_samples, rm(classification))
+  ### save class sequence
+  if (!is.null(gibbs_samples[["class_sequence"]])) {
+    class_sequence <- as.vector(gibbs_samples[["class_sequence"]])
+    gibbs_samples <- within(gibbs_samples, rm(class_sequence))
   } else {
-    classification <- NULL
+    class_sequence <- NULL
   }
 
   ### label Gibbs samples
   labels <- parameter_labels(
-    P_f = data$P_f, P_r = data$P_r, J = data$J,
-    C = length(tail(gibbs_samples$s, 1)), cov_sym = TRUE,
-    drop_par = NULL
+    P_f = data$P_f, P_r = data$P_r, J = data$J, C = latent_classes[["C"]], cov_sym = TRUE, drop_par = NULL
   )
-  for (par in names(gibbs_samples)) {
+  for (par in names(labels)) {
     colnames(gibbs_samples[[par]]) <- labels[[par]]
   }
 
   ### normalize, burn and thin 'gibbs_samples'
   gibbs_samples <- transform_gibbs_samples(
-    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q,
-    normalization = normalization
+    gibbs_samples = gibbs_samples, R = R, B = B, Q = Q, normalization = normalization
   )
 
   ### normalize true model parameters based on 'normalization'
@@ -169,169 +162,145 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     latent_classes = latent_classes,
     prior = prior,
     gibbs_samples = gibbs_samples,
-    classification = classification
+    class_sequence = class_sequence
   )
   return(out)
 }
 
-#' Check \code{prior}.
+#' Check prior parameters
 #'
 #' @description
-#' This function checks the input \code{prior} and sets missing values to
-#' default values.
+#' This function checks compatibility of submitted parameters for the prior distributions
+#' and sets missing values to default values.
 #'
-#' @param prior
-#' A named list of parameters for the prior distributions of the normalized
-#' parameters:
-#' \itemize{
-#'   \item \code{eta}:
-#'   The mean vector of length \code{P_f} of the normal prior for
-#'   \code{alpha}.
-#'   \item \code{Psi}:
-#'   The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-#'   normal prior for \code{alpha}.
-#'   \item \code{delta}:
-#'   The concentration parameter of length 1 of the Dirichlet prior for
-#'   \code{s}.
-#'   \item \code{xi}:
-#'   The mean vector of length \code{P_r} of the normal prior for each
-#'   \code{b_c}.
-#'   \item \code{D}:
-#'   The covariance matrix of dimension \code{P_r} x \code{P_r} of the
-#'   normal prior for each \code{b_c}.
-#'   \item \code{nu}:
-#'   The degrees of freedom (a natural number greater than \code{P_r}) of
-#'   the Inverse Wishart prior for each \code{Omega_c}.
-#'   \item \code{Theta}:
-#'   The scale matrix of dimension \code{P_r} x \code{P_r} of the
-#'   Inverse Wishart prior for each \code{Omega_c}.
-#'   \item \code{kappa}:
-#'   The degrees of freedom (a natural number greater than \code{J-1}) of
-#'   the Inverse Wishart prior for \code{Sigma}.
-#'   \item \code{E}:
-#'   The scale matrix of dimension \code{J-1} x \code{J-1} of the
-#'   Inverse Wishart prior for \code{Sigma}.
-#' }
 #' @inheritParams RprobitB_data
+#' @param eta
+#' The mean vector of length \code{P_f} of the normal prior for \code{alpha}.
+#' @param Psi
+#' The covariance matrix of dimension \code{P_f} x \code{P_f} of the
+#' normal prior for \code{alpha}.
+#' @param delta
+#' A numeric for the concentration parameter vector \code{rep(delta,C)}
+#' of the Dirichlet prior for \code{s}.
+#' @param xi
+#' The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+#' @param D
+#' The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal
+#' prior for each \code{b_c}.
+#' @param nu
+#' The degrees of freedom (a natural number greater than \code{P_r}) of
+#' the Inverse Wishart prior for each \code{Omega_c}.
+#' @param Theta
+#' The scale matrix of dimension \code{P_r} x \code{P_r} of the
+#' Inverse Wishart prior for each \code{Omega_c}.
+#' @param kappa
+#' The degrees of freedom (a natural number greater than \code{J-1}) of
+#' the Inverse Wishart prior for \code{Sigma}.
+#' @param E
+#' The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
+#' prior for \code{Sigma}.
+#'
+#' @details
+#' A priori, we assume that the model parameters follow these distributions:
+#' \itemize{
+#'   \item \eqn{\alpha \sim N(\eta, \Psi)}
+#'   \item \eqn{s \sim Dir(\delta)}
+#'   \item \eqn{b_c \sim N(\xi, D)} for all classes \eqn{c}
+#'   \item \eqn{\Omega_c \sim IW(\nu,\Theta)} for all classes \eqn{c}
+#'   \item \eqn{\Sigma \sim IW(\kappa,E)}
+#' }
+#' where \eqn{N} denotes the normal, \eqn{Dir} the Dirichlet, and \eqn{IW}
+#' the Inverted Wishart distribution.
 #'
 #' @return
-#' The checked input \code{prior}
+#' A list containing all prior parameters. Parameters that are not relevant
+#' for the model configuration are set to \code{NA}.
 #'
-#' @keywords
-#' internal
+#' @export
+#'
+#' @examples
+#' check_prior(P_f = 1, P_r = 2, J = 3)
 
-check_prior <- function(prior, P_f, P_r, J) {
+check_prior <- function(P_f, P_r, J, eta = numeric(P_f), Psi = diag(P_f),
+                        delta = 1, xi = numeric(P_r), D = diag(P_r),
+                        nu = P_r + 2, Theta = diag(P_r), kappa = J + 1, E = diag(J - 1)) {
 
-  ### check if prior is a list
-  if (!is.null(prior)) {
-    if (!is.list(prior)) {
-      stop("'prior' must be either 'NULL' or a list.")
-    }
-  } else {
-    prior <- list()
-  }
+  ### initialize prior list
+  prior <- list()
 
-  ### check supplied and set missing prior parameters
+  ### check supplied values and set missing prior parameters to default values
   if (P_f > 0) {
 
     ### alpha ~ MVN(eta,Psi)
-    if (is.null(prior$eta)) {
-      prior$eta <- numeric(P_f)
+    if (!is.numeric(eta) || length(eta) != P_f) {
+      stop("'eta' must be a numeric vector of length 'P_f'.")
     }
-    if (!is.numeric(prior$eta) || length(prior$eta) != P_f) {
-      stop("'prior$eta' must be a numeric vector of length 'P_f'.")
-    }
-    if (is.null(prior$Psi)) {
-      prior$Psi <- diag(P_f)
-    }
-    if (!is.numeric(prior$Psi) || !is.matrix(prior$Psi) ||
-      any(dim(prior$Psi) != c(P_f, P_f))) {
-      stop("'prior$Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.")
+    if (!is.numeric(Psi) || !is.matrix(Psi) || any(dim(Psi) != c(P_f, P_f))) {
+      stop("'Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.")
     }
   } else {
-    prior$eta <- NA
-    prior$Psi <- NA
+    eta <- NA
+    Psi <- NA
   }
   if (P_r > 0) {
 
     ### s ~ D(delta)
-    if (is.null(prior$delta)) {
-      prior$delta <- 1
-    }
-    if (!is.numeric(prior$delta) || length(prior$delta) != 1) {
-      stop("'prior$delta' must be a single numeric value.")
+    if (!is.numeric(delta) || length(delta) != 1) {
+      stop("'delta' must be a single numeric value.")
     }
 
     ### b_c ~ MVN(xi,D)
-    if (is.null(prior$xi)) {
-      prior$xi <- numeric(P_r)
+    if (!is.numeric(xi) || length(xi) != P_r) {
+      stop("'xi' must be a numeric vector of length 'P_r'.")
     }
-    if (!is.numeric(prior$xi) || length(prior$xi) != P_r) {
-      stop("'prior$xi' must be a numeric vector of length 'P_r'.")
-    }
-    if (is.null(prior$D)) {
-      prior$D <- diag(P_r)
-    }
-    if (!is.numeric(prior$D) || !is.matrix(prior$D) ||
-      any(dim(prior$D) != c(P_r, P_r))) {
-      stop("'prior$D' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
+    if (!is.numeric(D) || !is.matrix(D) ||
+      any(dim(D) != c(P_r, P_r))) {
+      stop("'D' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
     }
 
     ### Omega_c ~ IW(nu,Theta)
-    if (is.null(prior$nu)) {
-      ### nu must exceed P_r; more diffuse with lower nu;
-      ### if nu = P_r+2, Theta represents the mean
-      prior$nu <- P_r + 2
+    if (!is.numeric(nu) || length(nu) != 1 || nu <= P_r) {
+      stop("'nu' must be a single numeric value greater 'P_r'.")
     }
-    if (!is.numeric(prior$nu) || length(prior$nu) != 1 || prior$nu <= P_r) {
-      stop("'prior$nu' must be a single numeric value greater 'P_r'.")
-    }
-    if (is.null(prior$Theta)) {
-      prior$Theta <- diag(P_r)
-    }
-    if (!is.numeric(prior$Theta) || !is.matrix(prior$Theta) ||
-      any(dim(prior$Theta) != c(P_r, P_r))) {
-      stop("'prior$Theta' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
+    if (!is.numeric(Theta) || !is.matrix(Theta) || any(dim(Theta) != c(P_r, P_r))) {
+      stop("'Theta' must be a numeric matrix of dimension 'P_r' x 'P_r'.")
     }
   } else {
-    prior$delta <- NA
-    prior$xi <- NA
-    prior$D <- NA
-    prior$nu <- NA
-    prior$Theta <- NA
+    delta <- NA
+    xi <- NA
+    D <- NA
+    nu <- NA
+    Theta <- NA
   }
 
   ### Sigma ~ IW(kappa,E)
-  if (is.null(prior$kappa)) {
-    ### kappa must exceed J-1; more diffuse with lower kappa;
-    ### if kappa = J-1+2, E represents the mean
-    prior$kappa <- J - 1 + 2
+  if (!is.numeric(kappa) || length(kappa) != 1 || kappa <= J - 1) {
+    stop("'kappa' must be a single numeric value greater 'J-1'.")
   }
-  if (!is.numeric(prior$kappa) || length(prior$kappa) != 1 || prior$kappa <= J - 1) {
-    stop("'prior$kappa' must be a single numeric value greater 'J-1'.")
-  }
-  if (is.null(prior$E)) {
-    prior$E <- diag(J - 1)
-  }
-  if (!is.numeric(prior$E) || !is.matrix(prior$E) ||
-    any(dim(prior$E) != c(J - 1, J - 1))) {
-    stop("'prior$E' must be a numeric matrix of dimension 'J-1' x 'J-1'.")
+  if (!is.numeric(E) || !is.matrix(E) ||
+    any(dim(E) != c(J - 1, J - 1))) {
+    stop("'E' must be a numeric matrix of dimension 'J-1' x 'J-1'.")
   }
 
-  ### add class to 'prior'
-  class(prior) <- "RprobitB_prior"
-
-  ### return prior
+  ### build and return prior parameters
+  prior <- list("eta" = eta,
+                "Psi" = Psi,
+                "delta" = delta,
+                "xi" = xi,
+                "D" = D,
+                "nu" = nu,
+                "Theta" = Theta,
+                "kappa" = kappa,
+                "E" = E)
   return(prior)
 }
 
-#' Set initial values for the Gibbs sampler.
+#' Set initial values for the Gibbs sampler
 #'
 #' @description
 #' This function sets initial values for the Gibbs sampler.
 #'
 #' @inheritParams RprobitB_data
-#'
 #' @param C
 #' The number (greater or equal 1) of latent classes.
 #'
@@ -352,10 +321,10 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
 
   ### define initial values
   alpha0 <- if (P_f > 0) numeric(P_f) else NA
+  z0 <- if (P_r > 0) rep(1, N) else NA
   m0 <- if (P_r > 0) round(rep(N, C) * 2^(C:1 - 1) / sum(2^(C:1 - 1))) else NA
   b0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = C) else NA
-  Omega0 <-
-    if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r, ncol = C) else NA
+  Omega0 <- if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r, ncol = C) else NA
   beta0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = N) else NA
   U0 <- matrix(0, nrow = J - 1, ncol = N * max(T))
   Sigma0 <- diag(J - 1)
@@ -363,6 +332,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   ### define 'init'
   init <- list(
     "alpha0" = alpha0,
+    "z0" = z0,
     "m0" = m0,
     "b0" = b0,
     "Omega0" = Omega0,
@@ -375,16 +345,49 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   return(init)
 }
 
-#' Compute sufficient statistics.
+#' Compute sufficient statistics
 #'
 #' @description
-#' This function computes sufficient statistics from \code{data} for estimation.
+#' This function computes sufficient statistics from \code{data} for the Gibbs sampler.
 #'
-#' @inheritParams mcmc
+#' @details
+#' The function provides a set of sufficient statistics from the \code{data} object
+#' for the estimation routine to save computation time.
+#'
+#' @param data
+#' An object of class \code{RprobitB_data}.
 #' @param normalization
-#' An object of class \code{RprobitB_normalization}.
+#' An object of class \code{RprobitB_normalization}, which can be created
+#' via \code{\link{RprobitB_normalization}}.
+#'
 #' @return
-#' A list of sufficient statistics.
+#' A list of sufficient statistics on the data for Gibbs sampling, containing
+#' \itemize{
+#'   \item the elements \code{N}, \code{T}, \code{J}, \code{P_f} and \code{P_r} from \code{data},
+#'   \item \code{Tvec}, the vector of choice occasions for each decider of length \code{N},
+#'   \item \code{csTvec}, a vector of length \code{N} with the cumulated sums of \code{Tvec} starting from \code{0},
+#'   \item \code{W}, a list of design matrices differenced with respect to
+#'         alternative number \code{normalization$level}
+#'         for each decider in each choice occasion with covariates that
+#'         are linked to a fixed coefficient (or \code{NA} if \code{P_f = 0}),
+#'   \item \code{X}, a list of design matrices differenced with respect to
+#'         alternative number \code{normalization$level}
+#'         for each decider in each choice occasion with covariates that
+#'         are linked to a random coefficient (or \code{NA} if \code{P_r = 0}),
+#'   \item \code{y}, a matrix of dimension \code{N} x \code{max(Tvec)} with the observed choices
+#'         of deciders in rows and choice occasions in columns, decoded to numeric values with respect
+#'         to their appearance in \code{data$alternatives}, where rows are filled with \code{NA} in case
+#'         of an unbalanced panel,
+#'   \item \code{WkW}, a matrix of dimension \code{P_f^2} x \code{(J-1)^2}, the sum over
+#'         Kronecker products of each transposed element in \code{W} with itself,
+#'   \item \code{XkX}, a list of length \code{N}, each element is constructed in the same way
+#'         as \code{WkW} but with the elements in \code{X} and separately for each decider.
+#' }
+#'
+#' @examples
+#' data <- simulate_choices(form = choice ~ v1 | v2 + 0, N = 2, T = 1:2, J = 3, re = "v2")
+#' normalization <- RprobitB:::RprobitB_normalization(J = data$J, P_f = data$P_f)
+#' RprobitB:::sufficient_statistics(data = data, normalization = normalization)
 #'
 #' @keywords
 #' internal
@@ -399,93 +402,97 @@ sufficient_statistics <- function(data, normalization) {
     stop("'normalization' must be of class 'RprobitB_normalization'.")
   }
 
+  ### make a copy of 'data'
+  data_copy <- data
+
   ### extract parameters
-  N <- data$N
-  T <- if (length(data$T) == 1) rep(data$T, N) else data$T
-  J <- data$J
-  P_r <- data$P_r
-  P_f <- data$P_f
+  N <- data_copy$N
+  T <- data_copy$T
+  Tvec <- if (length(T) == 1) rep(T, N) else T
+  J <- data_copy$J
+  P_f <- data_copy$P_f
+  P_r <- data_copy$P_r
 
   ### compute utility differences with respect to 'normalization$level'
   for (n in seq_len(N)) {
-    for (t in seq_len(T[n])) {
-      data$data[[n]]$X[[t]] <- delta(J, normalization$level) %*% data$data[[n]]$X[[t]]
+    for (t in seq_len(Tvec[n])) {
+      data_copy$data[[n]]$X[[t]] <- delta(J, normalization$level) %*% data_copy$data[[n]]$X[[t]]
     }
   }
 
-  ### compute sufficient statistics
-  y <- matrix(0, nrow = N, ncol = max(T))
+  ### decode choice to numeric with respect to appearance in 'data_copy$alternatives'
+  y <- matrix(0, nrow = N, ncol = max(Tvec))
   for (n in 1:N) {
-    ### decode choice to numeric wrt appearance in data$alternatives
-    y_n <- match(data$data[[n]][[2]], data$alternatives)
-    y[n, ] <- c(y_n, rep(NA, max(T) - length(y_n)))
+    y_n <- match(data_copy$data[[n]][[2]], data_copy$alternatives)
+    y[n, ] <- c(y_n, rep(NA, max(Tvec) - length(y_n)))
   }
+
+  ### extract covariates linked to fixed ('W') and to random coefficients ('X')
   W <- list()
   X <- list()
   if (P_f > 0 & P_r > 0) {
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        W[[sum(T[seq_len(n - 1)]) + t]] <-
-          data$data[[n]][[1]][[t]][, seq_len(P_f), drop = FALSE]
-        X[[sum(T[seq_len(n - 1)]) + t]] <-
-          data$data[[n]][[1]][[t]][, -seq_len(P_f), drop = FALSE]
+      for (t in seq_len(Tvec[n])) {
+        W[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][, seq_len(P_f), drop = FALSE]
+        X[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][, -seq_len(P_f), drop = FALSE]
       }
     }
   }
   if (P_f > 0 & P_r == 0) {
     X <- NA
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        W[[sum(T[seq_len(n - 1)]) + t]] <- data$data[[n]][[1]][[t]]
+      for (t in seq_len(Tvec[n])) {
+        W[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]]
       }
     }
   }
   if (P_f == 0 & P_r > 0) {
     W <- NA
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        X[[sum(T[seq_len(n - 1)]) + t]] <- data$data[[n]][[1]][[t]]
+      for (t in seq_len(Tvec[n])) {
+        X[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]]
       }
     }
   }
-  XkX <- NA
-  if (P_r > 0) {
-    XkX <- list()
-    for (n in seq_len(N)) {
-      XnkXn <- 0
-      for (t in seq_len(T[n])) {
-        XnkXn <- XnkXn +
-          kronecker(
-            t(X[[sum(T[seq_len(n - 1)]) + t]]),
-            t(X[[sum(T[seq_len(n - 1)]) + t]])
-          )
-      }
-      XkX[[n]] <- XnkXn
-    }
-  }
+
+  ### compute \sum kronecker(t(W_nt),t(W_nt)) for each W_nt in W
   WkW <- NA
   if (P_f > 0) {
     WkW <- matrix(0, nrow = P_f^2, ncol = (J - 1)^2)
     for (n in seq_len(N)) {
-      for (t in seq_len(T[n])) {
-        WkW <- WkW +
-          kronecker(
-            t(W[[sum(T[seq_len(n - 1)]) + t]]),
-            t(W[[sum(T[seq_len(n - 1)]) + t]])
-          )
+      for (t in seq_len(Tvec[n])) {
+        WkW <- WkW + kronecker(t(W[[sum(Tvec[seq_len(n - 1)]) + t]]), t(W[[sum(Tvec[seq_len(n - 1)]) + t]]))
       }
+    }
+  }
+
+  ### for each fixed n, compute \sum kronecker(t(X_nt),t(X_nt))
+  XkX <- NA
+  if (P_r > 0) {
+    XkX <- list()
+    for (n in seq_len(N)) {
+      XnkXn <- matrix(0, nrow = P_r^2, ncol = (J - 1)^2)
+      for (t in seq_len(Tvec[n])) {
+        XnkXn <- XnkXn + kronecker(t(X[[sum(Tvec[seq_len(n - 1)]) + t]]), t(X[[sum(Tvec[seq_len(n - 1)]) + t]]))
+      }
+      XkX[[n]] <- XnkXn
     }
   }
 
   ### build and return 'suff_statistics'
   suff_statistics <- list(
-    "Tvec" = T,
-    "csTvec" = cumsum(T) - T,
+    "N" = N,
+    "T" = T,
+    "J" = J,
+    "P_f" = P_f,
+    "P_r" = P_r,
+    "Tvec" = Tvec,
+    "csTvec" = cumsum(Tvec) - Tvec,
     "W" = W,
     "X" = X,
     "y" = y,
-    "XkX" = XkX,
-    "WkW" = WkW
+    "WkW" = WkW,
+    "XkX" = XkX
   )
   return(suff_statistics)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameter_labels.R
 \name{create_labels_alpha}
 \alias{create_labels_alpha}
-\title{Create labels for \code{alpha}.}
+\title{Create labels for \code{alpha}}
 \usage{
 create_labels_alpha(P_f)
 }
@@ -10,9 +10,13 @@ create_labels_alpha(P_f)
 \item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
 }
 \value{
-A vector of labels for the model parameter \code{alpha}.
+A vector of labels for the model parameter \code{alpha} of length \code{P_f}
+if \code{P_f > 0} and \code{NULL} otherwise.
 }
 \description{
 This function creates labels for the model parameter \code{alpha}.
+}
+\examples{
+RprobitB:::create_labels_alpha(P_f = 3)
 }
 \keyword{internal}

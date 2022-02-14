@@ -2,7 +2,7 @@
 % Please edit documentation in R/RprobitB_gibbs_samples_statistics.R
 \name{RprobitB_gibbs_samples_statistics}
 \alias{RprobitB_gibbs_samples_statistics}
-\title{Create object of class \code{RprobitB_gibbs_samples_statistics}.}
+\title{Create object of class \code{RprobitB_gibbs_samples_statistics}}
 \usage{
 RprobitB_gibbs_samples_statistics(gibbs_samples, FUN)
 }
@@ -29,4 +29,4 @@ of statistics from \code{gibbs_samples} obtained by applying the elements of
 \description{
 This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
 }
-\keyword{s3}
+\keyword{constructor}

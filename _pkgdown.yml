@@ -1,4 +1,4 @@
-url: https://loelschlaeger.github.io/RprobitB/
+url: https://loelschlaeger.de/RprobitB/
 
 home:
   title: Probit models for choice data
@@ -6,6 +6,9 @@ home:
 authors:
   Lennart Oelschläger:
     href: https://loelschlaeger.de
+  Dietmar Bauer:
+    href: https://de.wikipedia.org/wiki/Dietmar_Bauer
+
 
 template:
   bootstrap: 5
@@ -31,9 +34,9 @@ reference:
 - title: Model fitting
   desc: Use these function for model estimation.
   contents:
+  - check_prior
   - mcmc
-  - transform_fit
-  - plot.RprobitB_model
+  - transform.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:
@@ -42,12 +45,20 @@ reference:
   - log_likelihood
   - model_selection
   - preference_classification
-  - predict_choices
+  - predict.RprobitB_fit
   - plot.RprobitB_fit
-- title: S3 classes
+- title: Constructor functions
   desc: These functions construct the S3 classes of RprobitB.
   contents:
-  - has_keyword("s3")
+  - has_keyword("constructor")
+- title: Distributions
+  desc: Implementation of distributions and number generating functions.
+  contents:
+  - has_keyword("distribution")
+- title: Posterior samplers
+  desc: These functions draw from the conditional posterior distributions of the model parameters.
+  contents:
+  - has_keyword("posterior")
 - title: Utilities
   desc: These functions may be useful beyond RprobitB.
   contents:

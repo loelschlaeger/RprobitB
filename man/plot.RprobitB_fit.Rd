@@ -14,7 +14,8 @@
 \item \code{"effects"} (the default) for visualizing the linear effects,
 \item \code{"mixture"} for visualizing the mixture distribution,
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
-\item \code{"trace"} for trace plots of the Gibbs samples.
+\item \code{"trace"} for trace plots of the Gibbs samples,
+\item \code{"class_seq"} for visualizing the sequence of class numbers.
 }}
 
 \item{ignore}{A character (vector) of covariate or parameter names that do not get

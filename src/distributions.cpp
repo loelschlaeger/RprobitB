@@ -4,123 +4,96 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
-#include <time.h>
 using namespace arma;
 using namespace Rcpp;
 
-// DRAW FROM TRUNCATED NORMAL
-double dexpr(double const& a) {
-  // rossi 10/2016
-  // Function to draw from a truncated normal using rejection sampling
-  double x,e,e1;
-  int success;
-  success=0;
-  while(success == 0){
-    e = -log(runif(1)[0]);
-    e1 = -log(runif(1)[0]);
-    if(pow(e,2) <= 2.0*e1*pow(a,2)){
-      x = a + e/a;
-      success = 1;
-    }
-  }
-  return(x);
-}
-
-double invCdfNorm(double const& a) {
-  // rossi 10/2016
-  // Function to draw from a normal truncated below using inverse CDF method
-  double Phia,unif,arg,z;
-  Phia = R::pnorm(a,0.0,1.0,1,0);
-  unif = runif(1)[0];
-  arg = unif*(1.0-Phia)+Phia;
-  z = R::qnorm(arg,0.0,1.0,1,0);
-  return(z);
-}
-
-double dnr(double const& a) {
-  // rossi 10/2016
-  // Function to draw from a standard normal truncated below using rejection
-  // sampling
-  double candz,z;
-  int success;
-  success=0;
-  while(success == 0){
-    candz=rnorm(1)[0];
-    if(candz >= a){
-      z=candz;
-      success =1;
-    }
-  }
-  return(z);
-}
-
-double trunNormBelow(double const& a){
-  // rossi 10/2016
-  // Function to draw from standard normal truncated below
-  double z;
-  if (a > 4){
-    // tail sampling using exponential rejection
-    z=dexpr(a);
-  }
-  else {
-    if (a <= -4){
-      // normal rejection sampling
-      z=dnr(a);
-    }
-    // -4 < a <=4
-    z=invCdfNorm(a);
-  }
-  return(z);
-}
-
-double trunNorm(double mu, double sig, double trunpt, bool above){
-  // rossi 10/2016
-  // Function to draw draw from truncated normal
-  double a,z,draw;
-  if(!above){
-    a=(trunpt-mu)/sig;
-    z= trunNormBelow(a);
-    draw = sig*z + mu;
-  }
-  else {
-    a=(mu-trunpt)/sig;
-    z= trunNormBelow(a);
-    draw = -sig*z + mu;
-  }
-  return(draw);
-}
-
-// MULTIVARIATE NORMAL COMPUTATION
-double mvnpdf(arma::vec const& x, arma::vec const& mean,
-              arma::mat const& Sigma) {
-  // oelschlaeger 04/2020
-  // Function to compute the PDF of a multivariate normal
-  int n = x.size();
-  double sqrt2pi = sqrt(2*M_PI);
-  mat quadform  = trans(x-mean) * solve(Sigma,eye(n,n)) * (x-mean);
-  double norm = pow(sqrt2pi,-n) * pow(det(Sigma),-0.5);
-  return(norm * exp(-0.5*quadform(0,0)));
-}
-
-//' Draw from Dirichlet
+//' Density of multivariate normal distribution
 //' @description
-//' Function to draw from a Dirichlet distribution.
-//' @param alpha
-//' A vector, the concentration parameter.
+//' This function computes the density of a multivariate normal distribution.
+//' @param x
+//' A quantile vector of length \code{n}.
+//' @param mean
+//' The mean vector of length \code{n}.
+//' @param Sigma
+//' The covariance matrix of dimension \code{n} x \code{n}.
+//' @param log
+//' A boolean, if \code{TRUE} the logarithm of the density value is returned.
 //' @return
-//' A vector, the sample from the Dirichlet distribution.
+//' The density value.
 //' @export
+//' @examples
+//' x = c(0,0)
+//' mean = c(0,0)
+//' Sigma = diag(2)
+//' dmvnorm(x = x, mean = mean, Sigma = Sigma)
+//' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
 //' @keywords
-//' utils
+//' distribution
 //'
 // [[Rcpp::export]]
-arma::vec rdirichlet(arma::vec alpha) {
-  // oelschlaeger 04/2020
-  int n = alpha.n_elem;
+double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log = false) {
+  int n = x.size();
+  double sqrt2pi = std::sqrt(2.0*M_PI);
+  arma::mat quadform  = trans(x-mean) * solve(Sigma,eye(n,n)) * (x-mean);
+  double norm = pow(sqrt2pi,-n) * pow(det(Sigma),-0.5);
+  double out = norm * exp(-0.5*quadform(0,0));
+  if(log){
+    out = std::log(out);
+  }
+  return(out);
+}
+
+//' Draw from multivariate normal distribution
+//' @description
+//' This function draws from a multivariate normal distribution.
+//' @details
+//' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+//' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+//' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+//' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+//' Choleski decomposition of \eqn{\Sigma}.
+//' @param mu
+//' The mean vector of length \code{n}.
+//' @param Sigma
+//' The covariance matrix of dimension \code{n} x \code{n}.
+//' @return
+//' A numeric vector of length \code{n}.
+//' @export
+//' @examples
+//' mu <- c(0,0)
+//' Sigma <- diag(2)
+//' rmvnorm(mu = mu, Sigma = Sigma)
+//' @keywords
+//' distribution
+//'
+// [[Rcpp::export]]
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
+  int n = mu.size();
+  arma::mat L = trans(chol(Sigma));
+  arma::vec eps = Rcpp::rnorm(n,0.0,1.0);
+  return(L * eps + mu);
+}
+
+//' Draw from Dirichlet distribution
+//' @description
+//' Function to draw from a Dirichlet distribution.
+//' @param delta
+//' A vector, the concentration parameter.
+//' @return
+//' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
+//' @export
+//' @examples
+//' rdirichlet(delta = 1:3)
+//' @keywords
+//' distribution
+//'
+// [[Rcpp::export]]
+arma::vec rdirichlet(arma::vec delta) {
+  int n = delta.n_elem;
   arma::vec draw = zeros(n);
   double sum_term = 0;
   for (int j = 0; j < n; ++j) {
-    double cur = R::rgamma(alpha[j],1.0);
+    double cur = R::rgamma(delta[j],1.0);
     draw(j) = cur;
     sum_term += cur;
   }
@@ -130,38 +103,43 @@ arma::vec rdirichlet(arma::vec alpha) {
   return(draw);
 }
 
-//' Draw from a Wishart
+//' Draw from Wishart distribution
 //' @description
-//' Function to draw from Wishart and inverted Wishart distribution.
+//' This function draws from a Wishart and inverted Wishart distribution.
+//' @details
+//' The Wishart distribution is a generalization to multiple dimensions of the
+//' gamma distributions and draws from the space of covariance matrices.
+//' Its expectation is \code{nu*V} and its variance increases both in \code{nu}
+//' and in the values of \code{V}.
+//' The Wishart distribution is the conjugate prior to the precision matrix of
+//' a multivariate normal distribution and proper if \code{nu} is greater than
+//' the number of dimensions.
 //' @param nu
-//' A double, the degrees of freedom.
+//' A numeric, the degrees of freedom. Must be at least the number of dimensions.
 //' @param V
 //' A matrix, the scale matrix.
 //' @return
-//' A list, the draw from the Wishart (W), inverted Wishart (IW), and
-//' corresponding Cholesky decomposition (C and CI)
+//' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
+//' corresponding Choleski decomposition (\code{C} and \code{CI}).
 //' @export
+//' @examples
+//' rwishart(nu = 2, V = diag(2))
 //' @keywords
-//' utils
+//' distribution
 //'
 // [[Rcpp::export]]
 List rwishart(double nu, arma::mat const& V){
-  // Wayne Taylor 7/2015
   int m = V.n_rows;
-  mat T = zeros(m,m);
+  arma::mat T = zeros(m,m);
   for(int i = 0; i < m; i++) {
-    T(i,i) = sqrt(rchisq(1,nu-i)[0]);
+    T(i,i) = std::sqrt(R::rchisq(nu-i));
   }
   for(int j = 0; j < m; j++) {
     for(int i = j+1; i < m; i++) {
       T(i,j) = rnorm(1)[0];
-    }}
-  mat C = trans(T)*chol(V);
-  mat CI = solve(trimatu(C),eye(m,m));
-  // W is Wishart draw, IW is W^-1
-  return List::create(
-    Named("W") = trans(C) * C,
-    Named("IW") = CI * trans(CI),
-    Named("C") = C,
-    Named("CI") = CI);
+    }
+  }
+  arma::mat C = trans(T)*chol(V);
+  arma::mat CI = solve(trimatu(C),eye(m,m));
+  return List::create(Named("W") = trans(C) * C, Named("IW") = CI * trans(CI), Named("C") = C, Named("CI") = CI);
 }

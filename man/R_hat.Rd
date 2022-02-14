@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{R_hat}
 \alias{R_hat}
-\title{Compute Gelman-Rubin statistic.}
+\title{Compute Gelman-Rubin statistic}
 \usage{
 R_hat(samples, parts = 2)
 }

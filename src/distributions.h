@@ -8,17 +8,16 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
-#include <time.h>
 using namespace arma;
 using namespace Rcpp;
 
-double dexpr(double const& a);
-double invCdfNorm(double const& a);
-double dnr(double const& a);
-double trunNormBelow(double const& a);
-double trunNorm(double mu, double sig, double trunpt, bool above);
-double mvnpdf(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma);
-arma::vec rdirichlet(arma::vec alpha);
+double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma,
+               bool log = false);
+
+arma::vec rdirichlet(arma::vec delta);
+
 List rwishart(double nu, arma::mat const& V);
+
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
 
 #endif

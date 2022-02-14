@@ -2,19 +2,21 @@
 % Please edit documentation in R/parameter_labels.R
 \name{create_labels_s}
 \alias{create_labels_s}
-\title{Create labels for \code{s}.}
+\title{Create labels for \code{s}}
 \usage{
 create_labels_s(P_r, C)
 }
 \arguments{
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
-
-\item{C}{The number of latent classes.}
 }
 \value{
-A vector of labels for the model parameter \code{s}.
+A vector of labels for the model parameter \code{s} of length \code{C} if
+\code{P_r > 0} and \code{NULL} otherwise.
 }
 \description{
 This function creates labels for the model parameter \code{s}.
+}
+\examples{
+RprobitB:::create_labels_s(1,3)
 }
 \keyword{internal}
