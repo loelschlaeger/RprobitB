@@ -2,6 +2,7 @@
 
 - [ ] Implement `update_classes_dp()` in C++.
 - [ ] Implement progress bar.
+- [ ] Check and document R_hat implementation (How is chain splitted?).
 
 # Model selection criteria
 
