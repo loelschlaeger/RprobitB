@@ -35,7 +35,7 @@
 #' @keywords
 #' dataset
 #'
-'berserk_choice'
+"berserk_choice"
 
 #' Choice of a chess opening
 #'
@@ -73,4 +73,4 @@
 #' @keywords
 #' dataset
 #'
-'opening_choice'
+"opening_choice"

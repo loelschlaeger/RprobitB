@@ -138,7 +138,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     Omega_n <- scaling(gibbs_samples[["Omega"]], factor^2)
     Sigma_n <- scaling(gibbs_samples[["Sigma"]], factor^2)
     beta_n <- gibbs_samples[["beta"]]
-    for(i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
+    for (i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
   }
   if (scale[["parameter"]] == "s") {
     factor <- scale[["value"]] / gibbs_samples[["Sigma"]][, paste0(scale[["index"]], ",", scale[["index"]])]
@@ -147,7 +147,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     Omega_n <- scaling(gibbs_samples[["Omega"]], factor)
     Sigma_n <- scaling(gibbs_samples[["Sigma"]], factor)
     beta_n <- gibbs_samples[["beta"]]
-    for(i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
+    for (i in 1:length(beta_n)) beta_n[[i]] <- scaling(beta_n[[i]], factor[i])
   }
   gibbs_samples_n <- list(
     "s" = s_n,
@@ -162,13 +162,13 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### function to burn samples
   burn <- function(samples) {
-    if (is.null(samples)){
+    if (is.null(samples)) {
       return(NULL)
     } else {
-      if(!is.list(samples)){
+      if (!is.list(samples)) {
         return(samples[(B + 1):R, , drop = FALSE])
       }
-      if(is.list(samples)){
+      if (is.list(samples)) {
         return(samples[(B + 1):R])
       }
     }
@@ -195,13 +195,13 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### function to thin samples
   thin <- function(samples, end) {
-    if (identical(samples,NULL)){
+    if (identical(samples, NULL)) {
       return(NULL)
     } else {
-      if(!is.list(samples)){
+      if (!is.list(samples)) {
         return(samples[seq(1, end, Q), , drop = FALSE])
       }
-      if(is.list(samples)){
+      if (is.list(samples)) {
         return(samples[seq(1, end, Q)])
       }
     }

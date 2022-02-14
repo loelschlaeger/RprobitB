@@ -47,7 +47,7 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
   ### build 'RprobitB_gibbs_sample_statistics'
   statistics <- list()
   for (par in names(gibbs_samples$gibbs_samples)) {
-    if("list" %in% class(gibbs_samples$gibbs_samples[[par]])) next
+    if ("list" %in% class(gibbs_samples$gibbs_samples[[par]])) next
     statistics[[par]] <- matrix(
       NA,
       nrow = ncol(gibbs_samples$gibbs_samples_nbt[[par]]), ncol = 0,

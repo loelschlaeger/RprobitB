@@ -97,10 +97,10 @@ test_that("LCMMNP DP update", {
     C = 2
   )
   model <- mcmc(data,
-                R = 500, print_progress = FALSE, seed = 1,
-                latent_classes = list(
-                  "C" = 8, "Cmax" = 10, "dp_update" = TRUE
-                )
+    R = 500, print_progress = FALSE, seed = 1,
+    latent_classes = list(
+      "C" = 8, "Cmax" = 10, "dp_update" = TRUE
+    )
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
@@ -118,10 +118,10 @@ test_that("LCMMNP weight and DP update", {
     C = 2
   )
   model <- mcmc(data,
-                R = 500, print_progress = FALSE, seed = 1,
-                latent_classes = list(
-                  "C" = 8, "weight_update" = TRUE, "dp_update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
-                )
+    R = 500, print_progress = FALSE, seed = 1,
+    latent_classes = list(
+      "C" = 8, "weight_update" = TRUE, "dp_update" = TRUE, "epsmin" = 0.1, "epsmax" = 0.9
+    )
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
