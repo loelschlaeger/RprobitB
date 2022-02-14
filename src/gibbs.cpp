@@ -553,8 +553,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   char buf[50];
   int nprint = round(R/10);
   int Jm1 = J - 1;
-  Rcpp::Environment package_env("package:RprobitB");
-  Rcpp::Function update_classes_dp = package_env["update_classes_dp"];
 
   // allocate space for output
   arma::mat s_draws = zeros<mat>(R,Cdrawsize);
@@ -649,7 +647,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
           sprintf(buf, "%9d started dp-based class updating\n", r+1);
           Rcout << buf;
         }
-        List class_update = update_classes_dp(Cmax,beta,z,b,Omega,delta,xi,D,nu,Theta);
+        List class_update = update_classes_dp(Cmax,beta,z,b,Omega,delta,xi,D,nu,Theta,true);
         z = as<vec>(class_update["z"]);
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
