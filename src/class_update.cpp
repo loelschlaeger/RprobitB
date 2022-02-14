@@ -91,7 +91,6 @@ double euc_dist (arma::vec a, arma::vec b){
 // [[Rcpp::export]]
 Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double distmin,
                               arma::vec s, arma::mat b, arma::mat Omega) {
-  char buf[50];
   bool flag = false;
   int C = b.n_cols;
   int P = b.n_rows;
@@ -104,8 +103,6 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
     double share_weight = stack(0,id_min) / C;
     stack.shed_col(id_min);
     stack(0,span::all) += share_weight;
-    sprintf(buf, "removed class\n");
-    Rcout << buf;
     flag = true;
   }
 
@@ -131,8 +128,6 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
       stack(1+largest_var[1],id_max+1) += largest_var[0]/2;
       stack(span(P+1,P+1+P*P-1),span(id_max,id_max+1)) /= 2;
       C += 1;
-      sprintf(buf, "splitted class\n");
-      Rcout << buf;
       flag = true;
     }
   }
@@ -160,8 +155,6 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
       stack(span(1+P,1+P+P*P-1),c1) /=2;
       stack.shed_col(c2);
       C -= 1;
-      sprintf(buf, "joined classes\n");
-      Rcout <<  buf;
       flag = true;
     }
   }

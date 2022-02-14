@@ -4,8 +4,6 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
-#include <time.h>
-#include "timer.h"
 #include "distributions.h"
 #include "truncated_normal.h"
 #include "class_update.h"
@@ -550,8 +548,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat IW;
   vec eps;
   int ind;
-  char buf[50];
-  int nprint = round(R/10);
   int Jm1 = J - 1;
 
   // allocate space for output
@@ -576,7 +572,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat Sigmainv = arma::inv(Sigma0);
 
   // start loop
-  if(print_progress) start_timer();
   for(int r = 0; r<R; r++) {
 
     if(P_r>0){
@@ -624,10 +619,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
       // weight-based update of classes
       if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
-        if(print_progress && r==0){
-          sprintf(buf, "%9d started weight-based class updating\n", r+1);
-          Rcout << buf;
-        }
         List class_update = update_classes_wb(Cmax,epsmin,epsmax,distmin,s,b,Omega);
         s = as<vec>(class_update["s"]);
         C = s.size();
@@ -635,18 +626,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         Omega = as<mat>(class_update["Omega"]);
         z = update_z(s, beta, b, Omega);
         m = update_m(C, z, true);
-        if(print_progress && r+1==B){
-          sprintf(buf, "%9d ended weight-based class updating (C = %d)\n", r+1, C);
-          Rcout << buf;
-        }
       }
 
       // dp-based update of classes
       if(dp_update==true && (r+1)<=B){
-        if(print_progress && r==0){
-          sprintf(buf, "%9d started dp-based class updating\n", r+1);
-          Rcout << buf;
-        }
         List class_update = update_classes_dp(Cmax,beta,z,b,Omega,delta,xi,D,nu,Theta,true);
         z = as<vec>(class_update["z"]);
         b = as<mat>(class_update["b"]);
@@ -725,14 +708,18 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
 
-    // print time to completion
-    if(print_progress)
-      if((r+1)%nprint==0 && r+1 != R)
-        update_timer(r, R);
+    // print progress
+    if(print_progress && (r+1)%10 == 0){
+      std::cout << "Iteration " << r+1 << " of " << R << "\r";
+      std::cout.flush();
+    }
+
+    // check for code interruption
+    Rcpp::checkUserInterrupt();
   }
 
-  if(print_progress)
-    end_timer(R);
+  // close print line
+  if(print_progress) std::cout << std::endl;
 
   // build and return output list 'out'
   List out;
