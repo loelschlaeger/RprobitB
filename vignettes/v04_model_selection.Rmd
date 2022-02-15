@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Model selection}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
 ---
 
 ```{r, include = FALSE}
@@ -77,17 +78,19 @@ The model's log-likelihood value at the estimated parameters.
 
 ### `WAIC`
 
-WAIC is short for Widely Applicable Information Criterion. The smaller its value the better the model. Its definition is
+WAIC is short for *Widely Applicable (or Watanabe-Akaike) Information Criterion*. As for AIC and BIC, the smaller the WAIC value the better the model. Its definition is
 
 $$\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),$$
-where $\text{lppd}$ is the log-pointwise-predictive-density and $p_\text{WAIC}$ is a penalty term sometimes called effective number of parameters.
+where $\text{lppd}$ stands for *log pointwise predictive density* and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called *effective number of parameters*, see @McElreath:16 page 220.
 
-The $\text{lppd}$ is computed as follows. Let $p_{is} = \Pr(y_i\mid \theta_s)$ be the probability of observation $y_i$ given the $s$-th set of sampled parameter values from the posterior distribution $\theta_s$. Then
+The $\text{lppd}$ is computed as follows. Let $$p_{is} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
 
 $$\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.$$
 The penalty term is computed as the sum over the variances in log-probability for each observation:
-$$p_\text{WAIC} = \sum_i \text{var}_{\theta} \log p_{si}. $$
-Note that each individual observation has its own penalty term in the $p_\text{WAIC}$, which provides an interesting opportunity to study how different observations contribute to overfitting.
+$$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right]. $$
+Since the calculation of $\text{WAIC}$ is pointwise over the $n$ observations $y_i$, it has an (approximate) standard error $\text{SE}$, which is computed as 
+$$\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]}.$$
+The internal function `waic()` provides all the components given an `RprobitB_model` object. 
 
 ## Bayes factors
 

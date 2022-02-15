@@ -232,6 +232,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
 
 #' @noRd
 #' @export
+#' @importFrom ramify pprint
 
 print.RprobitB_parameter <- function(x, ...) {
   cat("RprobitB model parameter:\n\n")

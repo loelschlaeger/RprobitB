@@ -35,6 +35,9 @@ Imports:
     tidyr,
     rlang,
     mixtools
+    doSNOW,
+    foreach,
+    progress
 LinkingTo:
     Rcpp,
     RcppArmadillo
