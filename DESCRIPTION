@@ -34,7 +34,7 @@ Imports:
     ggplot2,
     tidyr,
     rlang,
-    mixtools
+    mixtools,
     doSNOW,
     foreach,
     progress
