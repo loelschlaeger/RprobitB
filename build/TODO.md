@@ -4,7 +4,7 @@
 - [x] Implement progress bar.
 - [ ] Check and document R_hat implementation (How is chain splitted?).
 
-# Model selection criteria
+# Model selection
 
 - [x] WAIC
 - [ ] Prediction accuracy
@@ -37,6 +37,10 @@
 
 - [ ] Implement prediction based on single predictor value.
 
+# Ordered Probit
+
+- [ ] Implement ordered probit model.
+
 # Documentation
 
 - [] Document Dirichlet Process in `update_classes_dp()`.
@@ -45,7 +49,7 @@
 
 - [] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
 
-# Test
+# Tests
 
 - [] Add tests for `update_classes_dp()`.
 
