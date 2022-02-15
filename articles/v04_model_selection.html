@@ -159,10 +159,10 @@
 <h3 id="waic">
 <code>WAIC</code><a class="anchor" aria-label="anchor" href="#waic"></a>
 </h3>
-<p>WAIC is short for Widely Applicable Information Criterion. The smaller its value the better the model. Its definition is</p>
-<p><span class="math display">\[\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),\]</span> where <span class="math inline">\(\text{lppd}\)</span> is the log-pointwise-predictive-density and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term sometimes called effective number of parameters.</p>
-<p>The <span class="math inline">\(\text{lppd}\)</span> is computed as follows. Let <span class="math inline">\(p_{is} = \Pr(y_i\mid \theta_s)\)</span> be the probability of observation <span class="math inline">\(y_i\)</span> given the <span class="math inline">\(s\)</span>-th set of sampled parameter values from the posterior distribution <span class="math inline">\(\theta_s\)</span>. Then</p>
-<p><span class="math display">\[\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.\]</span> The penalty term is computed as the sum over the variances in log-probability for each observation: <span class="math display">\[p_\text{WAIC} = \sum_i \text{var}_{\theta} \log p_{si}. \]</span> Note that each individual observation has its own penalty term in the <span class="math inline">\(p_\text{WAIC}\)</span>, which provides an interesting opportunity to study how different observations contribute to overfitting.</p>
+<p>WAIC is short for <em>Widely Applicable (or Watanabe-Akaike) Information Criterion</em>. As for AIC and BIC, the smaller the WAIC value the better the model. Its definition is</p>
+<p><span class="math display">\[\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),\]</span> where <span class="math inline">\(\text{lppd}\)</span> stands for <em>log pointwise predictive density</em> and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term proportional to the variance in the posterior distribution that is sometimes called <em>effective number of parameters</em>, see <span class="citation">McElreath (2020)</span> page 220.</p>
+<p>The <span class="math inline">\(\text{lppd}\)</span> is computed as follows. Let <span class="math display">\[p_{is} = \Pr(y_i\mid \theta_s)\]</span> be the probability of observation <span class="math inline">\(y_i\)</span> given the <span class="math inline">\(s\)</span>-th set <span class="math inline">\(\theta_s\)</span> of parameter samples from the posterior. Then</p>
+<p><span class="math display">\[\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.\]</span> The penalty term is computed as the sum over the variances in log-probability for each observation: <span class="math display">\[p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right]. \]</span> Since the calculation of <span class="math inline">\(\text{WAIC}\)</span> is pointwise over the <span class="math inline">\(n\)</span> observations <span class="math inline">\(y_i\)</span>, it has an (approximate) standard error <span class="math inline">\(\text{SE}\)</span>, which is computed as <span class="math display">\[\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]}.\]</span> The internal function <code><a href="../reference/waic.html">waic()</a></code> provides all the components given an <code>RprobitB_model</code> object.</p>
 </div>
 </div>
 <div class="section level2">
@@ -173,9 +173,14 @@
 <h2 id="prediction-accuracy">Prediction accuracy<a class="anchor" aria-label="anchor" href="#prediction-accuracy"></a>
 </h2>
 </div>
-<div class="section level2">
+<div class="section level2 unnumbered">
 <h2 id="likelihood-ratio-test">Likelihood ratio test<a class="anchor" aria-label="anchor" href="#likelihood-ratio-test"></a>
 </h2>
+<div id="refs" class="references">
+<div id="ref-McElreath:16">
+<p>McElreath, Richard. 2020. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. 2. ed. Chapman; Hall/CRC.</p>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
