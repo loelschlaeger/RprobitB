@@ -1,0 +1,252 @@
+---
+title: "Model fitting"
+author: "Lennart Oelschläger"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model fitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+**RprobitB** estimates a (latent class) (mixed) (multinomial) probit model in a [Bayesian framework via Gibbs sampling](#bayes-estimation-of-the-probit-model-via-gibbs-sampling).
+
+To fit a model to choice data, apply the function
+
+```{r, eval = FALSE}
+model = mcmc(data = data)
+```
+
+where `data` must be the output of either `prepare()` or `simulate()`, see [the vignette about data management](data_management.html).
+
+The function `mcmc()` has the following optional arguments:
+
+- `scale`: A named list of three elements, determining the parameter normalization with respect to the utility scale (see [the introductory vignette](introduction_to_RprobitB_and_model_formulation.html))[^1]: 
+
+  - `parameter`: Either `"a"` (for a linear coefficient of `"alpha"`) or `"s"` (for a variance of the error-term covariance matrix `"Sigma"`).
+  
+  - `index`: The index of the parameter that gets fixed.
+  
+  - `value`: The value for the fixed parameter.
+
+- `R`: The number of iterations of the Gibbs sampler.
+
+- `B`: The length of the burn-in period, i.e. a non-negative number of samples to be discarded. See [below](#burning-and-thinning) for details.
+
+- `Q`: The thinning factor for the Gibbs samples, i.e. only every `Q`th sample is kept. See [below](#burning-and-thinning) for details.
+
+- `print_progress`: A boolean, determining whether to print the Gibbs sampler progress and the estimated remaining computation time.
+
+- `prior`: A named list of parameters for the [prior distributions of the normalized parameters](#prior-settings):
+
+  - `eta`: The mean vector of length `P_f` of the normal prior for `alpha`.
+  
+  - `Psi`: The covariance matrix of dimension `P_f` x `P_f` of the normal prior for `alpha`.
+   
+  - `delta`: The concentration parameter of length 1 of the Dirichlet prior for `s`.
+  
+  - `xi`: The mean vector of length `P_r` of the normal prior for each `b_c`.
+  
+  - `D`: The covariance matrix of dimension `P_r` x `P_r` of the normal prior for each `b_c`.
+  
+  - `nu`: The degrees of freedom (a natural number greater than `P_r`) of the Inverse Wishart prior for each `Omega_c`.
+  
+  - `Theta`: The scale matrix of dimension `P_r` x `P_r` of the Inverse Wishart prior for each `Omega_c`.
+   
+  - `kappa`: The degrees of freedom (a natural number greater than `J-1`) of the Inverse Wishart prior for `Sigma`.
+  
+  - `E`: The scale matrix of dimension `J-1` x `J-1` of the Inverse Wishart prior for `Sigma`.
+
+- `latent_classes`: A list of parameters specifying the number and [the updating scheme of latent classes](#updating-the-number-of-latent-classes):
+
+  - `C`: The number (greater or equal 1) of latent classes. Set to 1 per default and is ignored if `P_r = 0`
+  
+  - `update`: A boolean, determining whether to update `C`. Ignored if `P_r = 0`. If `update = FALSE`, all of the following elements are ignored.
+  
+  - `Cmax`: The maximum number of latent classes. 
+  
+  - `buffer`: The updating buffer (number of iterations to wait before the next update).
+  
+  - `epsmin`: The threshold weight for removing latent classes (between 0 and 1).
+  
+  - `epsmax`: The threshold weight for splitting latent classes (between 0 and 1).
+  
+  - `distmin`: The threshold difference in means for joining latent classes (non-negative). 
+
+[^1]: Per default, the first error-term variance is fixed to 1, i.e. `scale = list("parameter" = "s", "index" = 1, "value" = 1)`. Note that you can set `"parameter" = "a"` only if the model has parameters with a fixed coefficient (i.e. `P_f>0`). 
+
+## Prior settings
+
+Bayesian analysis enables to impose prior beliefs on the model parameters. It is possible to either express strong prior knowledge using informative prior distributions or to express vague knowledge using diffuse prior distributions. **RprobitB** applies the following conjugate priors:
+
+- $(s_1,\dots,s_C)\sim D_C(\delta)$, where $D_C(\delta)$ denotes the $C$-dimensional Dirichlet distribution with concentration parameter vector $\delta = (\delta_1,\dots,\delta_C)$,
+
+- $\alpha\sim \text{MVN}{P_f}(\psi,\Psi)$,
+
+- $b_c \sim \text{MVN}{P_r}(\xi,\Xi)$, independent for all $c$,
+
+- $\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)$, independent for all $c$, where $W^{-1}_{P_r}(\nu,\Theta)$ denotes the $P_r$-dimensional inverse Wishart distribution with $\nu$ degrees of freedom and scale matrix $\Theta$,
+
+- and $\Sigma \sim W^{-1}_{J-1}(\kappa,\Lambda)$.
+
+Per default, **RprobitB** applies the diffuse prior approach, setting $\delta_1=\dots=\delta_C=1$; $\psi$ and $\xi$ equal to the zero vector; $\Psi$ and $\Xi$ equal to the identity matrix; $\nu$ and $\kappa$ equal to $P_r+2$ and $J+1$, respectively (to obtain proper priors); $\Theta$ and $\Lambda$ equal to the identity matrix.
+
+Alternatively, the parameters can be chosen based on estimation results of similar choice settings, resulting in informative priors.
+
+## Bayes estimation of the probit model via Gibbs sampling
+
+The Bayesian analysis of the (latent class) (mixed) (multinomial) probit model builds upon the work of [@McCulloch:94], [@Nobile:98], [@Allenby:98], and [@Imai:05]. A key ingredient is the concept of data augmentation, cf. [@Albert:93], which treats the latent utilities as parameters themselves. Conditional on the latent utilities, the multinomial probit model constitutes a standard Bayesian linear regression set-up, which renders drawing from the posterior distribution feasible without the need to evaluate any likelihood.
+
+Gibbs sampling from the joint posterior distribution of a latent class mixed multinomial probit model proceeds by iteratively drawing and updating each model parameter conditional on the other parameters. 
+
+- The class weights are drawn from the Dirichlet distribution
+\begin{equation}
+(s_1,\dots,s_C)\mid \delta,z \sim D_C(\delta_1+m_1,\dots,\delta_C+m_C),
+\end{equation}
+where for $c=1,\dots,C$, $m_c=\#\{n:z_n=c\}$ denotes the current absolute class size. Mind that the model is invariant to permutations of the class labels $1,\dots,C$. For that reason, we accept an update only if the ordering $s_1<\dots<s_C$ holds, thereby ensuring a unique labeling of the classes.
+
+- Independently for all $n$, we update the allocation variables $(z_n)_n$ from their conditional distribution
+\begin{equation}
+\text{Prob}(z_n=c\mid s,\beta,b,\Omega )=\frac{s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}{\sum_c s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}.
+\end{equation}
+
+- The class means $(b_c)_c$ are updated independently for all $c$ via
+\begin{equation}
+b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
+\end{equation}
+where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)$, $\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}$, $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
+
+- The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
+\begin{equation}
+\Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
+\end{equation}
+where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
+
+- Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of \trbcite{Geweke:98}:
+\begin{equation}
+U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta 
+\sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
+1(U_{ntj}>\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}=j\\
+1(U_{ntj}<\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}\neq j
+\end{cases},
+\end{equation}
+where $U_{nt(-j)}$ denotes the vector $(U_{nt:})$ without the element $U_{ntj}$, $\mathcal{N}$ denotes the univariate normal distribution, $\Sigma_{U_{ntj}} = 1/(\Sigma^{-1})_{jj}$ and
+\begin{equation}
+\mu_{U_{ntj}} = W_{ntj}'\alpha + X_{ntj}'\beta_n - \Sigma_{U_{ntj}} (\Sigma^{-1})_{j(-j)}   (U_{nt(-j)} - W_{nt(-j)}'\alpha - X_{nt(-j)}' \beta_n ),
+\end{equation}
+where $(\Sigma^{-1})_{jj}$ denotes the $(j,j)$th element of $\Sigma^{-1}$, $(\Sigma^{-1})_{j(-j)}$ the $j$th row without the $j$th entry, $W_{nt(-j)}$ and $X_{nt(-j)}$ the coefficient matrices $W_{nt}$ and $X_{nt}$, respectively, without the $j$th column.
+
+- Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
+\begin{equation}
+\alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}{P_f}(\mu_\alpha,\Sigma_\alpha),
+\end{equation}
+where $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ and $\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
+
+- Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via 
+\begin{equation}
+\beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
+\end{equation}
+where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
+
+- The error term covariance matrix $\Sigma$ is updated by means of 
+\begin{equation}
+\Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
+\end{equation}
+where $S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'$ and $\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n$.
+
+## Parameter normalization
+
+Samples obtained from the scheme described above still lack identification (see [the introductory vignette](introduction_to_RprobitB_and_model_formulation.html)). Therefore, subsequent to the sampling, the normalizations
+
+- $\alpha^{(i)}/\sqrt{(\Sigma^{(i)})_{11}}$,
+
+- $b_c^{(i)}/\sqrt{(\Sigma^{(i)})_{11}}$,
+
+- $\Omega_c^{(i)}/(\Sigma^{(i)})_{11}$, $c=1,\dots,C$ and
+
+- $\Sigma^{(i)}/(\Sigma^{(i)})_{11}$ 
+
+are required for the $i$th updates in each iterations $i$, cf. [@Imai:05], where $(\Sigma^{(i)})_{11}$ denotes the top-left element of $\Sigma^{(i)}$.
+
+The draws for $s$ and $z$ do not need to be normalized. The draws for $U$ and $\beta$ could be normalized if the results are of interest in the analysis.
+
+Alternatively, the samples can be normalized such that any variance of $\Sigma$ or any element of $\alpha$ equals any fixed non-negative value.
+
+The normalization of a fitted model can be changed afterwards via
+
+```{r, eval = FALSE}
+model <- transform(model, scale = scale)
+``` 
+
+where `model` is the output of `mcmc()` and `scale` is a named list of three elements, determining the parameter normalization, as described above. 
+
+## Burning and thinning
+
+The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme can be considered as a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first $B$ out of $R$ samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every $Q$th sample when averaging values to compute parameter statistics like expectation and standard deviation. 
+
+Adequate values for $R$, $B$ and $Q$ depend on the complexity of the considered Bayesian framework. Per default, **RprobitB** sets `R = 1e4`, `B = R/2` and `Q = 10`.
+
+The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots.
+
+## Updating the number of latent classes
+
+Updating the number $C$ of latent classes is done within the Gibbs sampler by executing the following weight-based updating scheme within the second half of the burn-in period[^2]: 
+
+[^2]: It is reasonable to wait a certain number of iterations before the next update to allow for readjustments, which is implemented via the `latent_classes$buffer` argument.
+
+- We remove class $c$, if $s_c<\varepsilon_{\text{min}}$, i.e. if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
+
+- We split class $c$ into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the highest variance.
+
+- We join two classes $c_1$ and $c_2$ to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
+
+These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, **RprobitB** sets 
+
+- `epsmin = 0.01`,
+
+- `epsmax = 0.99`, and
+
+- `distmin = 0.1`. 
+
+## Examples
+
+```{r, eval = FALSE}
+### probit model
+p = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 2)
+m1 = mcmc(data = p)
+```
+
+```{r, eval = FALSE}
+### multinomial probit model
+mnp = simulate(form = choice ~ var | 0, N = 100, T = 10, J = 3)
+m2 = mcmc(data = mnp)
+```
+
+```{r, eval = FALSE}
+### mixed multinomial probit model
+mmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var")
+m3 = mcmc(data = mmnp)
+```
+
+```{r, eval = FALSE}
+### latent classes mixed multinomial probit model
+lcmmnp = simulate(form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
+                  parm = list("C" = 2))
+m4 = mcmc(data = lcmmnp, latent_classes = list("C" = 2))
+```
+
+```{r, eval = FALSE}
+### update of latent classes
+m5 = mcmc(data = lcmmnp, latent_classes = list("update" = TRUE))
+```
+
+
+## References

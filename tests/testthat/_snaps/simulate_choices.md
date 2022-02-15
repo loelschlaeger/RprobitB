@@ -18,8 +18,8 @@
       
       Alternatives
           frequency
-      bus        39
-      car        16
+      bus        36
+      car        19
       
       Linear coefficients
               name    re
@@ -49,8 +49,8 @@
       
       Alternatives
             frequency
-      bus          21
-      car          25
+      bus          20
+      car          26
       train         9
       
       Linear coefficients
@@ -120,8 +120,8 @@
       Alternatives
             frequency
       bus           7
-      car          20
-      train        28
+      car          22
+      train        26
       
       Linear coefficients
               name    re

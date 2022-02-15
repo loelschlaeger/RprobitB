@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{delta}
 \alias{delta}
-\title{Matrix difference operator.}
+\title{Matrix difference operator}
 \usage{
 delta(J, i)
 }

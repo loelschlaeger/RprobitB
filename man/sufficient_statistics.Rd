@@ -2,19 +2,51 @@
 % Please edit documentation in R/mcmc.R
 \name{sufficient_statistics}
 \alias{sufficient_statistics}
-\title{Compute sufficient statistics.}
+\title{Compute sufficient statistics}
 \usage{
 sufficient_statistics(data, normalization)
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
 
-\item{normalization}{An object of class \code{RprobitB_normalization}.}
+\item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
+via \code{\link{RprobitB_normalization}}.}
 }
 \value{
-A list of sufficient statistics.
+A list of sufficient statistics on the data for Gibbs sampling, containing
+\itemize{
+\item the elements \code{N}, \code{T}, \code{J}, \code{P_f} and \code{P_r} from \code{data},
+\item \code{Tvec}, the vector of choice occasions for each decider of length \code{N},
+\item \code{csTvec}, a vector of length \code{N} with the cumulated sums of \code{Tvec} starting from \code{0},
+\item \code{W}, a list of design matrices differenced with respect to
+alternative number \code{normalization$level}
+for each decider in each choice occasion with covariates that
+are linked to a fixed coefficient (or \code{NA} if \code{P_f = 0}),
+\item \code{X}, a list of design matrices differenced with respect to
+alternative number \code{normalization$level}
+for each decider in each choice occasion with covariates that
+are linked to a random coefficient (or \code{NA} if \code{P_r = 0}),
+\item \code{y}, a matrix of dimension \code{N} x \code{max(Tvec)} with the observed choices
+of deciders in rows and choice occasions in columns, decoded to numeric values with respect
+to their appearance in \code{data$alternatives}, where rows are filled with \code{NA} in case
+of an unbalanced panel,
+\item \code{WkW}, a matrix of dimension \code{P_f^2} x \code{(J-1)^2}, the sum over
+Kronecker products of each transposed element in \code{W} with itself,
+\item \code{XkX}, a list of length \code{N}, each element is constructed in the same way
+as \code{WkW} but with the elements in \code{X} and separately for each decider.
+}
 }
 \description{
-This function computes sufficient statistics from \code{data} for estimation.
+This function computes sufficient statistics from \code{data} for the Gibbs sampler.
+}
+\details{
+The function provides a set of sufficient statistics from the \code{data} object
+for the estimation routine to save computation time.
+}
+\examples{
+data <- simulate_choices(form = choice ~ v1 | v2 + 0, N = 2, T = 1:2, J = 3, re = "v2")
+normalization <- RprobitB:::RprobitB_normalization(J = data$J, P_f = data$P_f)
+RprobitB:::sufficient_statistics(data = data, normalization = normalization)
+
 }
 \keyword{internal}

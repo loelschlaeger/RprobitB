@@ -2,17 +2,20 @@
 % Please edit documentation in R/RcppExports.R
 \name{rdirichlet}
 \alias{rdirichlet}
-\title{Draw from Dirichlet}
+\title{Draw from Dirichlet distribution}
 \usage{
-rdirichlet(alpha)
+rdirichlet(delta)
 }
 \arguments{
-\item{alpha}{A vector, the concentration parameter.}
+\item{delta}{A vector, the concentration parameter.}
 }
 \value{
-A vector, the sample from the Dirichlet distribution.
+A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
 }
 \description{
 Function to draw from a Dirichlet distribution.
 }
-\keyword{utils}
+\examples{
+rdirichlet(delta = 1:3)
+}
+\keyword{distribution}

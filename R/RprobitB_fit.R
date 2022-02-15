@@ -8,18 +8,18 @@
 #' An object of class \code{RprobitB_normalization}.
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
-#' @param classification
-#' The allocation variable of the estimated latent classes.
+#' @param class_sequence
+#' The sequence of class numbers during Gibbs sampling of length \code{R}.
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}, i.e. a list with the arguments of
 #' this function as elements.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
-                         gibbs_samples, classification) {
+                         gibbs_samples, class_sequence) {
 
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
@@ -28,7 +28,7 @@ RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
   stopifnot(is.numeric(B), B %% 1 == 0, B > 0)
   stopifnot(is.numeric(Q), Q %% 1 == 0, Q > 0)
   stopifnot(inherits(latent_classes, "RprobitB_latent_classes"))
-  stopifnot(inherits(prior, "RprobitB_prior"))
+  stopifnot(is.list(prior))
   stopifnot(inherits(gibbs_samples, "RprobitB_gibbs_samples"))
 
   ### create and return object of class "RprobitB_fit"
@@ -41,7 +41,7 @@ RprobitB_fit <- function(data, normalization, R, B, Q, latent_classes, prior,
     "latent_classes" = latent_classes,
     "prior" = prior,
     "gibbs_samples" = gibbs_samples,
-    "classification" = classification
+    "class_sequence" = class_sequence
   )
   class(out) <- "RprobitB_fit"
   return(out)
@@ -85,7 +85,7 @@ summary.RprobitB_fit <- function(object, FUN = c(
   }
   statistics <- RprobitB_gibbs_samples_statistics(
     gibbs_samples = filter_gibbs_samples(
-      object$gibbs_samples,
+      x = object$gibbs_samples,
       P_f = object$data$P_f, P_r = object$data$P_r,
       J = object$data$J, C = C, cov_sym = FALSE, drop_par = NULL
     ),

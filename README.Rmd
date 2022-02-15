@@ -28,13 +28,13 @@ The package differs from comparable packages in two ways: Bayesian estimation an
 
 You can install the released version of RprobitB from [CRAN](https://CRAN.R-project.org) with:
 
-``` r
+```{r, eval = FALSE}
 install.packages("RprobitB")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
 
-``` r
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("loelschlaeger/RprobitB")
 ```
@@ -43,7 +43,7 @@ devtools::install_github("loelschlaeger/RprobitB")
 
 The package is documented in several vignettes:
 
-```r
+```{r, eval = FALSE}
 browseVignettes("RprobitB")
 ```
 
@@ -56,20 +56,24 @@ First, load the package.
 library(RprobitB)
 ``` 
 
-Then, prepare choice data, for example the Train dataset from the mlogit package. Here, we put 30 percent of data aside for later out-of-sample prediction.
+Then, prepare choice data, for example the Train dataset from the mlogit package. 
 ```{r data}
 data("Train", package = "mlogit")
-data = prepare_data(
+data <- prepare_data(
   form = choice ~ price | 0 | time + comfort + change,
   choice_data = Train,
   re = "price",
-  standardize = "all",
-  test_prop = 0.3)
+  standardize = "all")
+```
+
+We split the dataset into a train (70\%) and test subset (30\%).
+```{r train-test}
+data <- train_test(data, test_proportion = 0.3)
 ```
 
 Call the `mcmc` function to estimate the model.
 ```{r fit}
-model = mcmc(data$train)
+model <- mcmc(data$train)
 ```
 
 The summary method gives an overview over the estimates.
@@ -84,5 +88,5 @@ plot(model, type = "mixture")
 
 The `predict` function makes choice predictions and compares the prediction to the actual choices.
 ```{r prediction}
-predict_choices(model, data$test)
+predict(model, data$test)
 ```

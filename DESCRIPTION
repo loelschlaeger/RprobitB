@@ -1,6 +1,6 @@
 Package: RprobitB
 Type: Package
-Title: Bayes Estimation of Latent Class Mixed Multinomial Probit Models
+Title: Bayes Estimation of Mixed Multinomial Probit Models
 Version: 1.0.0.9000
 Date: 2021-11-11
 Authors@R: c(
@@ -22,6 +22,8 @@ Description:
     classes can be updated within the algorithm on a weight-based strategy. 
     For a reference on the method see Oelschlaeger and Bauer (2021) 
     <https://trid.trb.org/view/1759753>.
+URL: https://loelschlaeger.de/RprobitB/
+BugReports: https://github.com/loelschlaeger/RprobitB/issues
 License: GPL-3
 Encoding: UTF-8
 Imports:
@@ -32,6 +34,7 @@ Imports:
     ggplot2,
     tidyr,
     rlang,
+    mixtools,
     doSNOW,
     foreach,
     progress

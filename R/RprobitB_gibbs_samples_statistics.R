@@ -1,4 +1,4 @@
-#' Create object of class \code{RprobitB_gibbs_samples_statistics}.
+#' Create object of class \code{RprobitB_gibbs_samples_statistics}
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
@@ -24,7 +24,7 @@
 #' \code{FUN}.
 #'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 
@@ -40,7 +40,6 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
       names(FUN)[i] <- paste0("FUN", i)
     }
   }
-
   if (any(sapply(FUN, class) != "function")) {
     stop("Not all elements of 'FUN' are functions.")
   }
@@ -48,6 +47,7 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
   ### build 'RprobitB_gibbs_sample_statistics'
   statistics <- list()
   for (par in names(gibbs_samples$gibbs_samples)) {
+    if ("list" %in% class(gibbs_samples$gibbs_samples[[par]])) next
     statistics[[par]] <- matrix(
       NA,
       nrow = ncol(gibbs_samples$gibbs_samples_nbt[[par]]), ncol = 0,
@@ -151,4 +151,38 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, 
     }
   }
   return(invisible(x))
+}
+
+#' Filter Gibbs samples
+#'
+#' @description
+#' This is a helper function that filters Gibbs samples.
+#'
+#' @param x
+#' An object of class \code{RprobitB_gibbs_samples}.
+#' @inheritParams parameter_labels
+#'
+#' @return
+#' An object of class \code{RprobitB_gibbs_samples} filtered by the labels of
+#' \code{parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)}.
+#'
+#' @keywords
+#' internal
+
+filter_gibbs_samples <- function(x, P_f, P_r, J, C, cov_sym,
+                                 keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+                                 drop_par = NULL) {
+  labels <- parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)
+  for (gs in names(x)) {
+    for (par in names(x[[gs]])) {
+      if (!par %in% names(labels)) {
+        x[[gs]][[par]] <- NULL
+      } else {
+        cols <- intersect(colnames(x[[gs]][[par]]), labels[[par]])
+        x[[gs]][[par]] <- x[[gs]][[par]][, cols, drop = FALSE]
+      }
+      x[[gs]] <- x[[gs]][lengths(x[[gs]]) != 0]
+    }
+  }
+  return(x)
 }

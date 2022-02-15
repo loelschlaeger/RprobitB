@@ -1,4 +1,4 @@
-#' Matrix difference operator.
+#' Matrix difference operator
 #'
 #' @description
 #' This function creates the difference operator matrix \code{delta} for
@@ -36,7 +36,7 @@ delta <- function(J, i) {
   return(Delta)
 }
 
-#' Balancing visualization of multiple figures.
+#' Balancing visualization of multiple figures
 #'
 #' @description
 #' This function finds a balanced setting for \code{par(mfrow)}.
@@ -66,7 +66,7 @@ set_mfrow <- function(n) {
   return(c(nr, nc))
 }
 
-#' Compute Gelman-Rubin statistic.
+#' Compute Gelman-Rubin statistic
 #'
 #' @description
 #' This function computes the Gelman-Rubin statistic \code{R_hat}.
@@ -129,7 +129,7 @@ R_hat <- function(samples, parts = 2) {
   return(R_hat)
 }
 
-#' Check covariance matrix properties.
+#' Check covariance matrix properties
 #'
 #' @description
 #' This function checks if the input is a proper covariance matrix, i.e. a
@@ -153,39 +153,4 @@ is_covariance_matrix <- function(x) {
     ncol(x) == nrow(x) &&
     all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
-}
-
-#' Sample from multivariate normal distribution.
-#'
-#' @description
-#' This function returns a sample from a multivariate normal distribution
-#' specified by its mean vector \code{mu} and its covariance matrix \code{Sigma}.
-#'
-#' @param mu
-#' A numeric vector of length \code{n}.
-#' @param Sigma
-#' A covariance matrix of dimension \code{n} x \code{n}.
-#'
-#' @return
-#' A numeric vector of length \code{n}.
-#'
-#' @examples
-#' mu <- c(1,0)
-#' Sigma <- matrix(c(1,0.5,0.5,1),2,2)
-#' RprobitB:::mvn_draw(mu = mu, Sigma = Sigma)
-#'
-#' @keywords
-#' utils
-#'
-#' @importFrom stats rnorm
-
-mvn_draw <- function(mu, Sigma) {
-  stopifnot(is.numeric(mu), is.numeric(Sigma), is.matrix(Sigma))
-  n <- length(mu)
-  stopifnot(dim(Sigma) == c(n,n))
-  stopifnot(is_covariance_matrix(Sigma))
-  ### compute lower-triangular Choleski root of symmetric matrix 'Sigma'
-  L <- suppressWarnings(t(chol(Sigma, pivot = TRUE)))
-  ### return draw
-  as.numeric(L %*% stats::rnorm(n) + mu)
 }

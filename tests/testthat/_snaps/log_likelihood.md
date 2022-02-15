@@ -17,21 +17,21 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -9.30257
+      [1] -10.39175
 
 ---
 
     Code
       log_likelihood(x = model, par_set = "true")
     Output
-      [1] -15.4757
+      [1] -16.42174
 
 # MMNP
 
     Code
       log_likelihood(x = model)
     Output
-      [1] -16.54749
+      [1] -17.86007
 
 ---
 
@@ -45,26 +45,26 @@
     Code
       log_likelihood(x = model)
     Output
-      [1] -209.4369
+      [1] -183.066
 
 ---
 
     Code
       log_likelihood(x = model, par_set = "true")
     Output
-      [1] -214.6362
+      [1] -189.803
 
 # ULCMMNP
 
     Code
       log_likelihood(x = model)
     Output
-      [1] -346.2811
+      [1] -349.5675
 
 ---
 
     Code
       log_likelihood(x = model, par_set = "true")
     Output
-      [1] -349.9253
+      [1] -353.2176
 

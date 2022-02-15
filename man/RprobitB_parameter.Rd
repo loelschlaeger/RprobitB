@@ -78,4 +78,4 @@ This function creates an object of class \code{RprobitB_parameter}.
 If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 }
-\keyword{s3}
+\keyword{constructor}

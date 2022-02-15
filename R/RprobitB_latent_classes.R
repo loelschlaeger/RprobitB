@@ -1,42 +1,72 @@
 #' Create object of class \code{RprobitB_latent_classes}.
 #'
 #' @description
-#' This function creates an object of class \code{RprobitB_latent_classes}.
+#' This function creates an object of class \code{RprobitB_latent_classes} which
+#' can be passed to \code{\link{mcmc}} to determine the number of latent classes
+#' and their updating scheme. The \code{RprobitB_latent_classes}-object generated
+#' by this function is only of relevance if the model possesses at least one
+#' random coefficient, i.e. if \code{P_r>0}.
+#'
+#' @details
+#' ## Why update latent classes?
+#' In order not to have to specify the number of latent classes before estimation.
+#' ## What options to update latent classes exist?
+#' Currently two updating schemes are implemented, weight-based (see ...) and
+#' via a Dirichlet process (see ...).
+#' ## What is the default behaviour?
+#' One latent class without updates is specified per default. Print an
+#' \code{RprobitB_latent_classes}-object to see a summary of all relevant (default)
+#' parameter settings.
+#' ## Why is \code{Cmax} required?
+#' The implementation requires an upper bound on the number of latent classes
+#' for saving the Gibbs samples. However, this is not a restriction since the
+#' number of latent classes is bounded by the number of deciders in any case.
+#' The function ... visualizes the sequence of class numbers after estimation
+#' and can be used to check if \code{Cmax} was reached.
 #'
 #' @param latent_classes
-#' Either \code{NULL} or a list of parameters specifying the number and the
-#' latent classes:
+#' Either \code{NULL} (for no latent classes) or a list of parameters specifying
+#' the number of latent classes and their updating scheme:
 #' \itemize{
-#'   \item \code{C}:
-#'   The number (greater or equal 1) of latent classes, which is set to 1 per
-#'   default and is ignored if \code{P_r = 0}.
-#'   If \code{update = TRUE}, \code{C} equals the initial number of classes.
-#'   \item \code{update}:
-#'   A boolean, determining whether to update \code{C}.
-#'   Ignored if \code{P_r = 0}.
-#'   If \code{update = FALSE}, all of the following elements are ignored.
-#'   \item \code{Cmax}:
-#'   The maximum number of latent classes.
-#'   \item \code{buffer}:
-#'   The updating buffer (number of iterations to wait before the next update).
-#'   \item \code{epsmin}:
-#'   The threshold weight for removing latent classes (between 0 and 1).
-#'   \item \code{epsmax}:
-#'   The threshold weight for splitting latent classes (between 0 and 1).
-#'   \item \code{distmin}:
-#'   The threshold difference in means for joining latent classes
-#'   (non-negative).
+#'   \item \code{C}: The fixed number (greater or equal 1) of latent classes,
+#'         which is set to 1 per default. If either \code{weight_update = TRUE}
+#'         or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
+#'         equals the initial number of latent classes.
+#'   \item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
+#'         update the latent classes. See ... for details.
+#'   \item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
+#'         classes based on a Dirichlet process. See ... for details.
+#'   \item \code{Cmax}: The maximum number of latent classes.
+#'   \item \code{buffer}: The number of iterations to wait before a next
+#'         weight-based update of the latent classes.
+#'   \item \code{epsmin}: The threshold weight (between 0 and 1) for removing
+#'         a latent class in the weight-based updating scheme.
+#'   \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
+#'         a latent class in the weight-based updating scheme.
+#'   \item \code{distmin}: The (non-negative) threshold difference in class means
+#'         for joining two latent classes in the weight-based updating scheme.
 #' }
 #'
 #' @return
 #' An object of class \code{RprobitB_latent_classes}.
 #'
+#' @examples
+#' ### default setting
+#' RprobitB:::RprobitB_latent_classes()
+#'
+#' ### setting for a fixed number of two latent classes
+#' RprobitB:::RprobitB_latent_classes(list(C = 2))
+#'
+#' ### setting for weight-based on Dirichlet process-based updates
+#' RprobitB:::RprobitB_latent_classes(list("weight_update" = TRUE,
+#'                                         "dp_update" = TRUE))
+#'
 #' @keywords
-#' s3
+#' constructor
 
 RprobitB_latent_classes <- function(latent_classes = NULL) {
 
-  ### check if 'latent_classes' is a list
+  ### check if 'latent_classes' is 'NULL' or a list
   if (!is.null(latent_classes)) {
     if (!is.list(latent_classes)) {
       stop("'latent_classes' must be either 'NULL' or a list.")
@@ -50,44 +80,51 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
     latent_classes[["C"]] <- 1
   }
 
-  ### determine whether latent classes should be updated
-  latent_classes$update <-
-    ifelse(is.na(latent_classes$update) || !is.logical(latent_classes$update),
-      FALSE, latent_classes$update
+  ### determine whether latent classes should be weight-based updated
+  latent_classes[["weight_update"]] <-
+    ifelse(is.na(latent_classes[["weight_update"]]) || !is.logical(latent_classes[["weight_update"]]),
+      FALSE, latent_classes[["weight_update"]]
     )
 
-  if (!latent_classes$update) {
-    ### remove other parameters if 'latent_classes$update = FALSE'
-    latent_classes <- list("C" = latent_classes[["C"]], "update" = FALSE)
+  ### determine whether latent classes should be DP-based updated
+  latent_classes[["dp_update"]] <-
+    ifelse(is.na(latent_classes[["dp_update"]]) || !is.logical(latent_classes[["dp_update"]]),
+           FALSE, latent_classes[["dp_update"]]
+    )
+
+  if (!latent_classes[["weight_update"]] && !latent_classes[["dp_update"]]) {
+    ### remove other parameters in case of no updates
+    latent_classes <- list("C" = latent_classes[["C"]],
+                           "weight_update" = FALSE,
+                           "dp_update" = FALSE)
   } else {
-    ### set missing parameters to default values
+    ### specify updating parameters
     if (is.null(latent_classes[["Cmax"]])) latent_classes[["Cmax"]] <- 10
+
+    ### set missing parameters to default values
     if (is.null(latent_classes[["buffer"]])) latent_classes[["buffer"]] <- 100
     if (is.null(latent_classes[["epsmin"]])) latent_classes[["epsmin"]] <- 0.01
     if (is.null(latent_classes[["epsmax"]])) latent_classes[["epsmax"]] <- 0.99
     if (is.null(latent_classes[["distmin"]])) latent_classes[["distmin"]] <- 0.1
 
     ### remove redundant parameters
-    names <- c("C", "update", "Cmax", "buffer", "epsmin", "epsmax", "distmin")
-    latent_classes[!names(latent_classes) %in% names] <- NULL
+    req_names <- c("C", "weight_update", "dp_update", "Cmax")
+    if(latent_classes[["weight_update"]]){
+      req_names <- c(req_names, "buffer", "epsmin", "epsmax", "distmin")
+    }
+    latent_classes[!names(latent_classes) %in% req_names] <- NULL
   }
 
   ### check 'latent_classes'
-  if (latent_classes$update) {
-    if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 ||
-      !latent_classes$C > 0 || !latent_classes$C <= latent_classes$Cmax) {
-      stop(
-        "'latent_classes$C' must be a positive integer less or equal than",
-        "'latent_classes$Cmax'."
-      )
+  if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 || !latent_classes$C > 0) {
+    stop("'latent_classes$C' must be a positive integer.")
+  }
+  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
+    if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 || !latent_classes$Cmax > 0) {
+      stop("'latent_classes$Cmax' must be a positive integer.")
     }
-    if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 ||
-      !latent_classes$Cmax > 0 || !latent_classes$C <= latent_classes$Cmax) {
-      stop(
-        "'latent_classes$Cmax' must be a positive integer greater or equal",
-        "than 'latent_classes$C'."
-      )
-    }
+  }
+  if (latent_classes[["weight_update"]]) {
     if (!is.numeric(latent_classes$buffer) || !latent_classes$buffer %% 1 == 0 ||
       !latent_classes$buffer > 0) {
       stop("'latent_classes$buffer' must be a positive integer.")
@@ -120,14 +157,19 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 #' @export
 
 print.RprobitB_latent_classes <- function(x, ...) {
-  cat("Latent classes:", x$C, "\n")
-  cat(paste("- Update:", x$update, "\n"))
-  if (x$update) {
-    cat(paste("- Maximum number:", x$Cmax, "\n"))
-    cat(paste("- Buffer:", x$buffer, "\n"))
-    cat(paste("- Minimum class weight:", x$epsmin, "\n"))
-    cat(paste("- Maximum class weight:", x$epsmax, "\n"))
-    cat(paste("- Mimumum class distance:", x$distmin, "\n"))
+  if(!x[["weight_update"]] && !x[["dp_update"]]){
+    cat("Number of latent classes:", x$C, "\n")
+  } else {
+    cat("DP-based update:",x[["dp_update"]],"\n")
+    cat("Weight-based update:",x[["weight_update"]],"\n")
+    cat(paste("- Initial classes:", x$C, "\n"))
+    cat(paste("- Maximum classes:", x$Cmax, "\n"))
+    if(x[["weight_update"]]){
+      cat(paste("- Updating buffer:", x$buffer, "\n"))
+      cat(paste("- Minimum class weight:", x$epsmin, "\n"))
+      cat(paste("- Maximum class weight:", x$epsmax, "\n"))
+      cat(paste("- Mimumum class distance:", x$distmin, "\n"))
+    }
   }
   return(invisible(x))
 }
