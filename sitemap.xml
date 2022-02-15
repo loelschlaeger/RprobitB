@@ -76,6 +76,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/compute_choice_probabilities.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/compute_p_si.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/create_labels_Omega.html</loc>
   </url>
   <url>
@@ -218,5 +221,8 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_z.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/waic.html</loc>
   </url>
 </urlset>
