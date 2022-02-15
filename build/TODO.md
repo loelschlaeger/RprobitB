@@ -6,6 +6,24 @@
 
 # Model selection criteria
 
+- [x] WAIC
+- [ ] Prediction accuracy
+- [ ] Bayes factor
+  - [ ] Monte-Carlo Estimator
+  - [ ] Importance Sampling
+  - [ ] Harmonic Mean
+  - [ ] Bridge Sampling
+  - [ ] Thermodynamic integration
+  
+# Missingness
+
+- [ ] Missing data
+  - [ ] complete-case analysis
+  - [ ] zero-out
+  - [ ] mean
+  - [ ] Bayesian imputation
+- [ ] Variable choice set
+
 # Visualization
 
 - [ ] Visualize beta sampling and clustering.
