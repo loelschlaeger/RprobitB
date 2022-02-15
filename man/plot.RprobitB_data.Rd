@@ -2,18 +2,16 @@
 % Please edit documentation in R/plot.RprobitB_data.R
 \name{plot.RprobitB_data}
 \alias{plot.RprobitB_data}
-\title{Plot method for \code{RprobitB_data}.}
+\title{Plot method for \code{RprobitB_data}}
 \usage{
-\method{plot}{RprobitB_data}(x, alpha = 0.8, bins = 30, position = "dodge", ...)
+\method{plot}{RprobitB_data}(x, alpha = 0.9, position = "identity", ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
 
-\item{alpha}{Passed to \link[ggplot2]{geom_histogram}.}
+\item{alpha}{Passed to \link[ggplot2]{geom_density}.}
 
-\item{bins}{Passed to \link[ggplot2]{geom_histogram}.}
-
-\item{position}{Passed to \link[ggplot2]{geom_histogram}.}
+\item{position}{Passed to \link[ggplot2]{geom_density}.}
 
 \item{...}{Ignored.}
 }
@@ -21,6 +19,16 @@
 No return value. Draws a plot to the current device.
 }
 \description{
-This function is the plot method for an object of class
-\code{RprobitB_data}.
+This function is the plot method for an object of class \code{RprobitB_data}.
+}
+\examples{
+data <- simulate_choices(
+ form = choice ~ cost | 0,
+ N = 100,
+ T = 10,
+ J = 2,
+ alternatives = c("bus", "car"),
+ alpha = -1
+)
+plot(data)
 }
