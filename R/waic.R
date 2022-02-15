@@ -1,26 +1,25 @@
-#' Compute WAIC value.
+#' Compute WAIC value
 #'
 #' @description
-#' This function computes the WAIC value of an \code{RprobitB_model}.
+#' This function computes the WAIC value of an \code{RprobitB_fit}-object.
 #'
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
 #' @param S
-#' The number of posterior samples used for the calculation of WAIC. Must be
-#' greater or equal two for variance computation.
-#' @param progress
-#' A boolean whether to print computation progress.
+#' The number of posterior samples used for the calculation of the WAIC value.
+#' Must be greater or equal two for variance computation.
+#' @param print_progress
+#' Set to \code{TRUE} to print computation progress.
 #' @param check_conv
-#' A boolean, determining whether to plot the convergence behavior of the WAIC
-#' calculation.
+#' Set to \code{TRUE} to plot the convergence behavior of the WAIC calculation.
 #' @param ncores
-#' Computation of \code{p_si} is parallized, set the number of cores.
+#' Computation is parallelized, set the number of cores.
 #'
 #' @return
 #' Invisibly returns a list of
 #' \itemize{
 #'   \item \code{waic}, the WAIC value,
-#'   \item \code{se_waic}, the standard error of \code{waic}
+#'   \item \code{se_waic}, the standard error of \code{waic},
 #'   \item \code{p_si}, the matrix of probabilities of each observation for the
 #'         \code{S} different posterior samples,
 #'   \item \code{S}, the number of posterior samples,
@@ -28,9 +27,6 @@
 #'   \item \code{p_waic}, the effective number of parameters,
 #'   \item \code{p_waic_i}, the vector of summands of \code{p_waic}.
 #' }
-#'
-#' @keywords
-#' internal
 #'
 #' @examples
 #' data <- simulate_choices(
@@ -41,21 +37,39 @@
 #'   seed = 1
 #' )
 #' x <- mcmc(data)
-#' RprobitB:::waic(x = x, S = 10, progress = TRUE, check_conv = TRUE, ncores = 2)
+#' RprobitB:::waic(x = x, S = 10, check_conv = TRUE)
+#'
+#' @keywords
+#' internal
 #'
 #' @importFrom progress progress_bar
 #' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs theme_minimal
 
-waic <- function(x, S = 1000, progress = TRUE, check_conv = FALSE,
-                 ncores = parallel::detectCores() - 1) {
+waic <- function(x, S = 1000, print_progress = TRUE, check_conv = TRUE, ncores = 1) {
 
   ### check input
-  stopifnot(class(x) == "RprobitB_fit")
-  stopifnot(is.numeric(S), length(S) == 1, S%%1==0)
-  S <- max(2, S)
+  if(class(x) != "RprobitB_fit"){
+    stop("'x' must be an object of class 'RprobitB_fit'.")
+  }
+  if(!(is.numeric(S) && length(S) == 1 && S > 0 && S%%1==0)){
+    stop("'S' must be a positive integer.")
+  }
+  if(S < 2){
+    warning("Set 'S' to 2.")
+    S <- max(2, S)
+  }
+  if(!(length(print_progress) == 1 && class(print_progress) == "logical")){
+    stop("'print_progress' must be a boolean.")
+  }
+  if(!(length(check_conv) == 1 && class(check_conv) == "logical")){
+    stop("'check_conv' must be a boolean.")
+  }
+  if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
+    stop("'ncores' must be a positive integer.")
+  }
 
   ### calculate p_si and log(p_si)
-  p_si <- compute_p_si(x = x, S = S, progress = progress, ncores = ncores)
+  p_si <- compute_p_si(x = x, S = S, print_progress = print_progress, ncores = ncores)
   log_p_si <- log(p_si)
 
   ### calculate WAIC
@@ -67,16 +81,18 @@ waic <- function(x, S = 1000, progress = TRUE, check_conv = FALSE,
 
   if(check_conv){
     ### print progress
-    if(progress){
-      pb <- progress::progress_bar$new(format = "Preparing WAIC convergence graphic: :percent",
-                                       total = S-1, clear = FALSE)
+    if(print_progress){
+      pb <- progress::progress_bar$new(
+        format = "Preparing WAIC convergence graphic: :percent",
+        total = S-1,
+        clear = FALSE)
     }
 
     ### compute sequence of waic value for progressive sets of posterior samples
     waic_seq <- numeric(S)
     se_waic_seq <- numeric(S)
     for(s in 2:S){
-      if(progress){
+      if(print_progress){
         pb$tick()
       }
       lppd_temp <- sum(log(rowSums(p_si[,1:s,drop=FALSE])) - log(s))
@@ -92,9 +108,10 @@ waic <- function(x, S = 1000, progress = TRUE, check_conv = FALSE,
       ggplot2::geom_line() +
       ggplot2::geom_ribbon(ggplot2::aes(ymin = waic_seq - se_waic_seq,
                            ymax = waic_seq + se_waic_seq), alpha=0.2) +
-      ggplot2::labs(x = "Number of posterior samples",
-                    y = "WAIC",
-                    title = "The WAIC value for different sizes of posterior samples") +
+      ggplot2::labs(
+        x = "Number of posterior samples",
+        y = "WAIC",
+        title = "The WAIC value for different sizes of posterior samples") +
       ggplot2::theme_minimal()
     print(p)
   }
@@ -110,11 +127,11 @@ waic <- function(x, S = 1000, progress = TRUE, check_conv = FALSE,
   return(invisible(out))
 }
 
-#' Compute probability for each observation for different samples from the posterior.
+#' Compute probability for each observation for different posterior samples
 #'
 #' @description
-#' This function computes the probability for each observation for different samples
-#' from the posterior.
+#' This function computes the probability for each observation for different
+#' samples from the posterior.
 #'
 #' @inheritParams waic
 #'
@@ -129,14 +146,95 @@ waic <- function(x, S = 1000, progress = TRUE, check_conv = FALSE,
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom progress progress_bar
 
-compute_p_si <- function(x, S, progress = TRUE, ncores = parallel::detectCores() - 1) {
+compute_p_si <- function(x, S, print_progress = TRUE, ncores = 1) {
 
   ### check input
-  stopifnot(class(x) == "RprobitB_fit")
-  stopifnot(is.numeric(S), length(S) == 1, S%%1==0)
-  stopifnot(class(progress) == "logical", length(progress) == 1)
+  if(class(x) != "RprobitB_fit"){
+    stop("'x' must be an object of class 'RprobitB_fit'.")
+  }
+  if(!(is.numeric(S) && length(S) == 1 && S > 0 && S%%1==0)){
+    stop("'S' must be a positive integer.")
+  }
+  if(!(length(print_progress) == 1 && class(print_progress) == "logical")){
+    stop("'print_progress' must be a boolean.")
+  }
+  if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
+    stop("'ncores' must be a positive integer.")
+  }
+
+  ### extract pars from Gibbs samples
+  pars <- posterior_pars(x, S)
+
+  ### register parallel backend
+  cluster <- parallel::makeCluster(ncores)
+  doSNOW::registerDoSNOW(cluster)
+
+  ### register progress bar
+  if(print_progress){
+    pb <- progress::progress_bar$new(
+      format = "Computing p_si: :percent",
+      total = length(pars),
+      clear = FALSE)
+    opts <- list(progress = function(n) pb$tick())
+  } else {
+    opts <- list()
+  }
+
+  ### compute probability for each observation i (rows) for each sample s (columns)
+  p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB",
+                           .combine = "cbind", .options.snow = opts) %dopar% {
+    out <- c()
+    for(n in 1:x$data$N){
+      X_n = x$data$data[[n]]$X
+      y_n = x$data$data[[n]]$y
+      for(t in 1:x$data$T[n]) {
+        X_nt = X_n[[t]]
+        y_nt = y_n[t]
+        alt_index <- which(x$data$alternatives == y_nt)
+        out <- c(out, compute_choice_probabilities(
+          X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index])
+      }
+    }
+    out
+  }
+
+  ### stop parallel backend
+  parallel::stopCluster(cluster)
+
+  ### return p_si
+  return(p_si)
+}
+
+#' Parameter sets from posterior samples
+#'
+#' @description
+#' This function builds parameter sets based on posterior samples.
+#'
+#' @param x
+#' An object of class \code{RprobitB_fit}.
+#' @param S
+#' The size of parameter sets.
+#'
+#' @return
+#' A list of \code{RprobitB_parameter}-objects.
+#'
+#' @keywords
+#' internal
+
+posterior_pars <- function(x, S){
+
+  ### check input
+  if(class(x) != "RprobitB_fit"){
+    stop("'x' must be an object of class 'RprobitB_fit'.")
+  }
+  if(!(is.numeric(S) && length(S) == 1 && S > 0 && S%%1==0)){
+    stop("'S' must be a positive integer.")
+  }
   S_max <- (x$R - x$B) / x$Q
-  S <- min(S, S_max)
+  if (S > S_max){
+    warning(paste0("Only ",S_max," posterior samples available, set 'S' = ",S_max,"."))
+    S <- S_max
+  }
   s_vec <- sort(sample.int(n = S_max, size = S))
 
   ### extract meta parameters
@@ -147,7 +245,7 @@ compute_p_si <- function(x, S, progress = TRUE, ncores = parallel::detectCores()
   P_r = x$data$P_r
   C = x$latent_classes$C
 
-  ### extract Gibbs samples
+  ### extract samples
   gibbs_samples_nbt = x$gibbs_samples$gibbs_samples_nbt
   Sigma_samples = gibbs_samples_nbt$Sigma[s_vec, , drop = FALSE]
   alpha_samples = gibbs_samples_nbt$alpha[s_vec, , drop = FALSE]
@@ -168,39 +266,6 @@ compute_p_si <- function(x, S, progress = TRUE, ncores = parallel::detectCores()
       sample = FALSE)
   }
 
-  ### register parallel backend
-  cluster <- parallel::makeCluster(ncores)
-  doSNOW::registerDoSNOW(cluster)
-
-  ### register progress bar
-  if(progress){
-    pb <- progress::progress_bar$new(format = "Computing p_si: :percent", total = S, clear = FALSE)
-    opts <- list(progress = function(n) pb$tick())
-  } else {
-    opts <- list()
-  }
-
-  ### compute probability for each observation i (rows) for each sample s (columns)
-  p_si <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind",
-                           .options.snow = opts) %dopar% {
-                             out <- c()
-                             for(n in 1:N){
-                               X_n = x$data$data[[n]]$X
-                               y_n = x$data$data[[n]]$y
-                               for(t in 1:T[n]) {
-                                 X_nt = X_n[[t]]
-                                 y_nt = y_n[t]
-                                 alt_index <- which(x$data$alternatives == y_nt)
-                                 out <- c(out, compute_choice_probabilities(
-                                   X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index])
-                               }
-                             }
-                             out
-                           }
-
-  ### stop parallel backend
-  parallel::stopCluster(cluster)
-
-  ### return p_si
-  return(p_si)
+  ### return 'pars'
+  return(pars)
 }

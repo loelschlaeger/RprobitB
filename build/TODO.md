@@ -9,9 +9,10 @@
 - [x] WAIC
 - [ ] Prediction accuracy
 - [ ] Bayes factor
-  - [ ] Monte-Carlo Estimator
+- [x] Marginal model likelihood approximation
+  - [x] Prior arithmetic mean estimator
   - [ ] Importance Sampling
-  - [ ] Harmonic Mean
+  - [x] Posterior harmonic mean estimator
   - [ ] Bridge Sampling
   - [ ] Thermodynamic integration
   
@@ -51,4 +52,4 @@
 
 # Package ingredients
 
-- [] Add precompiled models.
+- [] Add pre-compiled models.

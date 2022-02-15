@@ -2,25 +2,25 @@
 % Please edit documentation in R/waic.R
 \name{compute_p_si}
 \alias{compute_p_si}
-\title{Compute probability for each observation for different samples from the posterior.}
+\title{Compute probability for each observation for different posterior samples}
 \usage{
-compute_p_si(x, S, progress = TRUE, ncores = parallel::detectCores() - 1)
+compute_p_si(x, S, print_progress = TRUE, ncores = 1)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{S}{The number of posterior samples used for the calculation of WAIC. Must be
-greater or equal two for variance computation.}
+\item{S}{The number of posterior samples used for the calculation of the WAIC value.
+Must be greater or equal two for variance computation.}
 
-\item{progress}{A boolean whether to print computation progress.}
+\item{print_progress}{Set to \code{TRUE} to print computation progress.}
 
-\item{ncores}{Computation of \code{p_si} is parallized, set the number of cores.}
+\item{ncores}{Computation is parallelized, set the number of cores.}
 }
 \value{
 A matrix, observations in rows and posterior samples in columns.
 }
 \description{
-This function computes the probability for each observation for different samples
-from the posterior.
+This function computes the probability for each observation for different
+samples from the posterior.
 }
 \keyword{internal}

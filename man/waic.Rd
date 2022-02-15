@@ -2,34 +2,27 @@
 % Please edit documentation in R/waic.R
 \name{waic}
 \alias{waic}
-\title{Compute WAIC value.}
+\title{Compute WAIC value}
 \usage{
-waic(
-  x,
-  S = 1000,
-  progress = TRUE,
-  check_conv = FALSE,
-  ncores = parallel::detectCores() - 1
-)
+waic(x, S = 1000, print_progress = TRUE, check_conv = TRUE, ncores = 1)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{S}{The number of posterior samples used for the calculation of WAIC. Must be
-greater or equal two for variance computation.}
+\item{S}{The number of posterior samples used for the calculation of the WAIC value.
+Must be greater or equal two for variance computation.}
 
-\item{progress}{A boolean whether to print computation progress.}
+\item{print_progress}{Set to \code{TRUE} to print computation progress.}
 
-\item{check_conv}{A boolean, determining whether to plot the convergence behavior of the WAIC
-calculation.}
+\item{check_conv}{Set to \code{TRUE} to plot the convergence behavior of the WAIC calculation.}
 
-\item{ncores}{Computation of \code{p_si} is parallized, set the number of cores.}
+\item{ncores}{Computation is parallelized, set the number of cores.}
 }
 \value{
 Invisibly returns a list of
 \itemize{
 \item \code{waic}, the WAIC value,
-\item \code{se_waic}, the standard error of \code{waic}
+\item \code{se_waic}, the standard error of \code{waic},
 \item \code{p_si}, the matrix of probabilities of each observation for the
 \code{S} different posterior samples,
 \item \code{S}, the number of posterior samples,
@@ -39,7 +32,7 @@ Invisibly returns a list of
 }
 }
 \description{
-This function computes the WAIC value of an \code{RprobitB_model}.
+This function computes the WAIC value of an \code{RprobitB_fit}-object.
 }
 \examples{
 data <- simulate_choices(
@@ -50,7 +43,7 @@ data <- simulate_choices(
   seed = 1
 )
 x <- mcmc(data)
-RprobitB:::waic(x = x, S = 10, progress = TRUE, check_conv = TRUE, ncores = 2)
+RprobitB:::waic(x = x, S = 10, check_conv = TRUE)
 
 }
 \keyword{internal}
