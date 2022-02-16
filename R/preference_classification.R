@@ -13,7 +13,7 @@
 #' @export
 
 preference_classification <- function(x) {
-  if (class(x) != "RprobitB_fit"){
+  if (class(x) != "RprobitB_fit") {
     stop("'x' must be of class 'RprobitB_fit'.")
   }
   if (is.null(x$gibbs_samples$gibbs_samples_nbt$z)) {
