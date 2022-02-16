@@ -56,3 +56,4 @@
 # Package ingredients
 
 - [] Add precompiled models.
+- [] `rpb()` for demonstration.
