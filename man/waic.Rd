@@ -42,7 +42,7 @@ data <- simulate_choices(
   J = 2,
   seed = 1
 )
-x <- mcmc(data)
+x <- mcmc(data, R = 1000)
 RprobitB:::waic(x = x, S = 10, check_conv = TRUE)
 
 }

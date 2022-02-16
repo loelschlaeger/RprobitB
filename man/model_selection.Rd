@@ -4,21 +4,40 @@
 \alias{model_selection}
 \title{Compare fitted models.}
 \usage{
-model_selection(...)
+model_selection(
+  ...,
+  criteria = c("AIC", "BIC", "WAIC", "npar", "LL", "BF", "PA"),
+  sort_by = NULL,
+  S = 100,
+  print_progress = TRUE,
+  ncores = 1
+)
 }
 \arguments{
 \item{...}{One or more objects of class \code{RprobitB_fit}.}
+
+\item{criteria}{A vector of one or more of the following characters:
+\itemize{
+\item \code{"AIC"} for the AIC value,
+\item \code{"BIC"} for the BIC value,
+\item \code{"WAIC"} for the WAIC value,
+\item \code{"npar"} for the number of model parameters.
+\item \code{"LL"} for the log-likelihood value,
+\item \code{"BF"} for the Bayes factor,
+\item \code{"PA"} for the prediction accuracy (explaining the observed choices),
+}}
+
+\item{sort_by}{Either \code{NULL} or one element of \code{criteria}, after which the output is sorted.}
+
+\item{S, print_progress, ncores}{Passed on to \code{\link{waic}} and \code{\link{mml}}.}
 }
 \value{
-A matrix with each model's
-\itemize{
-\item number of parameters,
-\item log-likelihood,
-\item AIC, and
-\item BIC value.
-}
+A data frame, models in rows, criteria in columns.
 }
 \description{
 This function guides through the process of model selection by providing
 criteria for model comparison.
+}
+\details{
+See the vignette on model selection for more details about the criteria.
 }

@@ -46,7 +46,7 @@ The model's marginal likelihood \eqn{p(y\mid M)} for a model \eqn{M} and data
 \eqn{y} is required for the computation of Bayes factors. In general, the term
 has no closed form and must be approximated numerically. This function offers
 the following approximation methods. The strong law of large numbers garantees
-(almost surly), that the following approximations converge to the model's
+(almost surely), that the following approximations converge to the model's
 marginal likelihood as the sample size \code{S} goes to infinity.
 \subsection{The prior arithmetic mean estimator}{
 
@@ -74,7 +74,8 @@ data <- simulate_choices(
   J = 2,
   seed = 1
 )
-x <- mcmc(data)
+x <- mcmc(data, R = 1000)
 RprobitB:::mml(x = x, S = 10, method = "pame", check_conv = TRUE)
 
 }
+\keyword{internal}

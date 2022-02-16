@@ -19,5 +19,6 @@ This function returns a sample from each parameter's prior distribution.
 }
 \examples{
 prior <- check_prior(P_f = 1, P_r = 2, J = 3)
-draw_from_prior(prior)
+RprobitB:::draw_from_prior(prior)
 }
+\keyword{internal}

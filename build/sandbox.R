@@ -99,40 +99,24 @@ dpr <- update_classes_dp_r(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta
 set.seed(1)
 dpc <- update_classes_dp(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta)
 
-# Bayes factor -------------------------------------------------------------
+# Model selection ---------------------------------------------------------
 
 ### simulate data
-set.seed(1)
-b <- matrix(-1)
-Omega <- matrix(1)
-Sigma_full <- diag(2)
-form <- y ~ x | 0
-data <- simulate_choices(form = form, N = 20, T = 20, J = 2, re = "x",
-                         b = b, Omega = Omega, Sigma_full = Sigma_full)
-choice_data <- data$choice_data
+data <- simulate_choices(form = y ~ x | 0,
+                         N = 100,
+                         T = 10,
+                         J = 2,
+                         re = "x",
+                         seed = 1,
+                         s = c(0.6,0.4),
+                         C = 2)
 
 ### sparse model
-data_sparse_model <- prepare_data(form = form, choice_data = choice_data, re = NULL)
-sparse_model <- mcmc(data_sparse_model)
-log_likelihood(sparse_model)
+sparse_model <- mcmc(data, R = 2000, latent_classes = list(C = 1))
 
-### mixed model
-data_mixed_model <- prepare_data(form = form, choice_data = choice_data, re = "x")
-mixed_model <- mcmc(data_mixed_model)
-log_likelihood(mixed_model)
+### complex model
+complex_model <- mcmc(data, R = 2000, latent_classes = list(C = 2))
 
-### compute mml
-mml_sparse_pame <- mml(sparse_model, S = 1000, method = "pame")
-mml_sparse_phme <- mml(sparse_model, S = 1000, method = "phme")
-
-as.numeric(mml_sparse_pame)
-as.numeric(mml_sparse_phme)
-
-mml_mixed_pame <- mml(mixed_model, S = 1000, method = "pame")
-mml_mixed_phme <- mml(mixed_model, S = 1000, method = "phme")
-
-as.numeric(mml_mixed_pame)
-as.numeric(mml_mixed_phme)
 
 
 
