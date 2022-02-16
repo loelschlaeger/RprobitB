@@ -7,7 +7,7 @@
 preference_classification(x)
 }
 \arguments{
-\item{x}{An object of class \code{RprobitB_model}.}
+\item{x}{An object of class \code{RprobitB_fit}.}
 }
 \value{
 A data frame with the deciders id and the latent class number.

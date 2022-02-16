@@ -9,9 +9,10 @@
 - [x] WAIC
 - [ ] Prediction accuracy
 - [ ] Bayes factor
-  - [ ] Monte-Carlo Estimator
+- [x] Marginal model likelihood approximation
+  - [x] Prior arithmetic mean estimator
   - [ ] Importance Sampling
-  - [ ] Harmonic Mean
+  - [x] Posterior harmonic mean estimator
   - [ ] Bridge Sampling
   - [ ] Thermodynamic integration
   
@@ -23,6 +24,10 @@
   - [ ] mean
   - [ ] Bayesian imputation
 - [ ] Variable choice set
+
+# Console outputs
+
+- [ ] Make summary output of `RprobitB_fit` more compact. Provide option to show different model aspects.
 
 # Visualization
 
@@ -43,17 +48,19 @@
 
 # Documentation
 
-- [] Document Dirichlet Process in `update_classes_dp()`.
+- [ ] Document Dirichlet Process in `update_classes_dp()`.
 
 # Bugs
 
-- [] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
+- [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
+- [ ] Sometimes error in printing `RprobitB_parameter` objects.
+- [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
 
 # Tests
 
-- [] Add tests for `update_classes_dp()`.
+- [ ] Add tests for `update_classes_dp()`.
 
 # Package ingredients
 
-- [] Add precompiled models.
-- [] `rpb()` for demonstration.
+- [ ] Add precompiled models.
+- [ ] `rpb()` for demonstration.

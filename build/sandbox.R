@@ -99,6 +99,23 @@ dpr <- update_classes_dp_r(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta
 set.seed(1)
 dpc <- update_classes_dp(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta)
 
+# Model selection ---------------------------------------------------------
+
+### simulate data
+data <- simulate_choices(form = y ~ x | 0,
+                         N = 100,
+                         T = 10,
+                         J = 2,
+                         re = "x",
+                         seed = 1,
+                         s = c(0.6,0.4),
+                         C = 2)
+
+### sparse model
+sparse_model <- mcmc(data, R = 2000, latent_classes = list(C = 1))
+
+### complex model
+complex_model <- mcmc(data, R = 2000, latent_classes = list(C = 2))
 
 
 

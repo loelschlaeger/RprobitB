@@ -5,7 +5,7 @@
 #' latent classes.
 #'
 #' @param x
-#' An object of class \code{RprobitB_model}.
+#' An object of class \code{RprobitB_fit}.
 #'
 #' @return
 #' A data frame with the deciders id and the latent class number.
@@ -13,6 +13,9 @@
 #' @export
 
 preference_classification <- function(x) {
+  if (class(x) != "RprobitB_fit"){
+    stop("'x' must be of class 'RprobitB_fit'.")
+  }
   if (is.null(x$gibbs_samples$gibbs_samples_nbt$z)) {
     warning("No classification available.")
   } else {

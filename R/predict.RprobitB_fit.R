@@ -38,7 +38,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 
   ### check if true choices are available
   if (data$choice_available) {
-    true_choices <- data$choice_data[["choice"]]
+    true_choices <- data$choice_data[[data$res_var_names$choice]]
     true_choices <- factor(true_choices, labels = data$alternatives)
   }
 

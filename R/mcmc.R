@@ -292,6 +292,7 @@ check_prior <- function(P_f, P_r, J, eta = numeric(P_f), Psi = diag(P_f),
                 "Theta" = Theta,
                 "kappa" = kappa,
                 "E" = E)
+  class(prior) <- "RprobitB_prior"
   return(prior)
 }
 
