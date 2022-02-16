@@ -57,7 +57,7 @@
 #'   J = 2,
 #'   seed = 1
 #' )
-#' x <- mcmc(data)
+#' x <- mcmc(data, R = 1000)
 #' RprobitB:::mml(x = x, S = 10, method = "pame", check_conv = TRUE)
 #'
 #' @keywords
@@ -104,6 +104,7 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
   }
 
   ### loop over samples
+  s <- NULL
   if(method == "pame"){
     cont <- foreach::foreach(s = 1:S, .packages = "RprobitB",
                              .combine = "cbind", .options.snow = opts) %dopar% {

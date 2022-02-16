@@ -36,7 +36,7 @@
 #'   J = 2,
 #'   seed = 1
 #' )
-#' x <- mcmc(data)
+#' x <- mcmc(data, R = 1000)
 #' RprobitB:::waic(x = x, S = 10, check_conv = TRUE)
 #'
 #' @keywords
@@ -181,6 +181,7 @@ compute_p_si <- function(x, S, print_progress = TRUE, ncores = 1) {
   }
 
   ### compute probability for each observation i (rows) for each sample s (columns)
+  s <- NULL
   p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB",
                            .combine = "cbind", .options.snow = opts) %dopar% {
     out <- c()
