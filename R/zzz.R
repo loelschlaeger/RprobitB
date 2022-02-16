@@ -2,7 +2,7 @@
 #' @importFrom utils packageVersion
 
 .onAttach <- function(lib, pkg) {
-  # startup message
+  ### startup message
   msg <- paste0(
     "Thanks for using RprobitB ", utils::packageVersion("RprobitB"),
     ", happy choice modeling!\n",
