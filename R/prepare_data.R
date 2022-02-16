@@ -1,4 +1,4 @@
-#' Prepare empirical choice data.
+#' Prepare empirical choice data
 #'
 #' @description
 #' This function prepares empirical choice data for the RprobitB package.
@@ -38,6 +38,15 @@
 #' The default is \code{NULL}, in which case these identifier are generated
 #' automatically.
 #' @inheritParams RprobitB_data
+#' @param missing_data
+#' Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in
+#' \code{choice_data}. The following options are available:
+#' \itemize{
+#'   \item \code{"complete_cases"}, with removes rows containing missing entries,
+#'   \item \code{"zero_out"}, with replaces missing entries by zero,
+#'   \item \code{"mean"}, with imputes missing entries by the covariate mean.
+#' }
+#'
 #'
 #' @return
 #' An object of class \code{RprobitB_data}.
@@ -54,7 +63,14 @@
 #' @export
 
 prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
-                         id = "id", idc = NULL, standardize = NULL) {
+                         id = "id", idc = NULL, standardize = NULL,
+                         missing_data = "complete_cases") {
+
+  ### check input
+  if(!(is.character(missing_data) && length(missing_data) == 1 &&
+       missing_data %in% c("complete_cases","zero_out","mean"))) {
+    stop("'missing_data' must be one of 'complete_cases', 'zero_out' and 'mean'.")
+  }
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)
@@ -90,19 +106,44 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     warning("No choices found.")
   }
 
-  ### check if any data point is missing or infinite
-  for (col in 1:ncol(choice_data)) {
-    for (row in 1:nrow(choice_data)) {
-      if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
-        stop(paste0(
-          "Please remove NAs, NaNs or infinite values in column '", colnames(choice_data)[col], "', row number ", row, "."
-        ))
+  ### handle missing data
+  if(missing_data == "complete_cases"){
+    bad_rows <- c()
+    for (col in 1:ncol(choice_data)) {
+      for (row in 1:nrow(choice_data)) {
+        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
+          bad_rows <- c(bad_rows, row)
+        }
+      }
+    }
+    if(length(bad_rows) > 0){
+      choice_data <- choice_data[-unique(bad_rows),,drop=FALSE]
+    }
+  } else if(missing_data == "zero_out"){
+    for (col in 1:ncol(choice_data)) {
+      for (row in 1:nrow(choice_data)) {
+        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
+          if(is.numeric(choice_data[, col])){
+            choice_data[row, col] <- 0
+          } else {
+            stop("In 'choice_data', cannot apply 'zero_out' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.")
+          }
+        }
+      }
+    }
+  } else if(missing_data == "mean"){
+    for (col in 1:ncol(choice_data)) {
+      for (row in 1:nrow(choice_data)) {
+        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
+          if(is.numeric(choice_data[, col])){
+            choice_data[row, col] <- mean(choice_data[, col, na.rm = TRUE])
+          } else {
+            stop("In 'choice_data', cannot apply 'mean' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.")
+          }
+        }
       }
     }
   }
-
-  ### sort 'choice_data' by column 'id'
-  choice_data <- choice_data[order(choice_data[, id]), ]
 
   ### create choice occasion ids
   if (is.null(idc)) {
@@ -139,16 +180,22 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     stop("At least two alternatives are required.")
   }
 
-  ### check if all required covariates are present in 'choice_data'
+  ### check if all required covariates are present in 'choice_data' and numerics
   for (var in vars[[2]]) {
     if (!var %in% names(choice_data)) {
-      stop(paste0("Column '", var, "' not found in choice_data."))
+      stop(paste0("Column '", var, "' not found in 'choice_data'."))
+    }
+    if (!is.numeric(choice_data[,var])){
+      stop(paste0("Column '", var, "' in 'choice_data' is not numeric."))
     }
   }
   for (var in c(vars[[1]], vars[[3]])) {
     for (j in alternatives) {
       if (!paste0(var, "_", j) %in% names(choice_data)) {
         stop(paste0("Column '", paste0(var, "_", j), "' not found in 'choice_data'."))
+      }
+      if (!is.numeric(choice_data[,paste0(var, "_", j)])){
+        stop(paste0("Column '", paste0(var, "_", j), "' in 'choice_data' is not numeric."))
       }
     }
   }

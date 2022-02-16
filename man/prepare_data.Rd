@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_data.R
 \name{prepare_data}
 \alias{prepare_data}
-\title{Prepare empirical choice data.}
+\title{Prepare empirical choice data}
 \usage{
 prepare_data(
   form,
@@ -11,7 +11,8 @@ prepare_data(
   alternatives = NULL,
   id = "id",
   idc = NULL,
-  standardize = NULL
+  standardize = NULL,
+  missing_data = "complete_cases"
 )
 }
 \arguments{
@@ -73,6 +74,14 @@ automatically.}
 Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
+
+\item{missing_data}{Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in
+\code{choice_data}. The following options are available:
+\itemize{
+\item \code{"complete_cases"}, with removes rows containing missing entries,
+\item \code{"zero_out"}, with replaces missing entries by zero,
+\item \code{"mean"}, with imputes missing entries by the covariate mean.
+}}
 }
 \value{
 An object of class \code{RprobitB_data}.
