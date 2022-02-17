@@ -54,24 +54,40 @@ plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
 #' @description
 #' This function is the plot method for an object of class \code{RprobitB_fit}.
 #'
+#' @details
+#' Some plot types have additional options that can be specified via
+#' submitting the following parameters as ellipsis arguments.
+#'
+#' ## \code{"type = class_allocation"}
+#' \itemize{
+#'   \item A numeric vector \code{iterations} for plotting the class allocation
+#'         at different iterations of the Gibbs sampler.
+#'   \item A numeric \code{perc} between 0 and 1 to draw the \code{perc} percentile
+#'         ellipsoids for the underlying Gaussian distributions
+#'         (\code{perc = 0.95} per default).
+#'   \item A numeric \code{sleep}, the number of seconds to pause after plotting.
+#'         The default is 1.
+#' }
+#'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
-#'   \item \code{"effects"} (the default) for visualizing the linear effects,
-#'   \item \code{"mixture"} for visualizing the mixture distribution,
-#'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
-#'   \item \code{"trace"} for trace plots of the Gibbs samples,
-#'   \item \code{"class_seq"} for visualizing the sequence of class numbers,
+#'   \item \code{"effects"} (the default) for visualizing the linear effects.
+#'   \item \code{"mixture"} for visualizing the mixture distribution.
+#'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples.
+#'   \item \code{"trace"} for trace plots of the Gibbs samples.
+#'   \item \code{"class_seq"} for visualizing the sequence of class numbers.
 #'   \item \code{"class_allocation"} for visualizing the class allocation
-#'         (only if \code{P_r = 2}).
+#'         (only if \code{P_r = 2}) at the final Gibbs sampler iteration.
+#'         See the details section for visualization options.
 #' }
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
 #' visualized.
 #' @param ...
-#' Ignored.
+#' Additional parameters, see the details section.
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -92,6 +108,9 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   if (!type %in% c("effects", "mixture", "acf", "trace", "class_seq", "class_allocation")) {
     stop("Unknown 'type'.")
   }
+
+  ### read ellipsis arguments
+  add_par <- list(...)
 
   ### reset of 'par' settings
   oldpar <- graphics::par(no.readonly = TRUE)
@@ -278,12 +297,28 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
       stop("Plot type 'class_allocation' only available  if P_r = 2.")
     }
     gibbs_samples <- x[["gibbs_samples"]][["gibbs_samples_n"]]
+    if(is.null(add_par[["iterations"]])){
+      iterations <- x$R
+    } else {
+      iterations <- unique(add_par[["iterations"]])
+      iterations <- iterations[iterations <= x$R]
+    }
+    if(is.null(add_par[["perc"]])){
+      perc <- 0.95
+    } else {
+      perc <- add_par[["perc"]]
+    }
+    if(is.null(add_par[["sleep"]])){
+      sleep <- 1
+    } else {
+      sleep <- add_par[["sleep"]]
+    }
     for (r in iterations) {
       beta <- gibbs_samples[["beta"]][[r]]
       z <- gibbs_samples[["z"]][r,]
       b <- matrix(gibbs_samples[["b"]][r,], nrow = 2)
       Omega <- matrix(gibbs_samples[["Omega"]][r,], nrow = 4)
-      plot_class_allocation(beta, z, b, Omega)
+      plot_class_allocation(beta, z, b, Omega, r = r, perc = perc, sleep = sleep)
     }
   }
 }
