@@ -119,9 +119,9 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
 
     ### remove zeros for unoccupied classes
-    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, 1:latent_classes[["C"]]]
-    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * latent_classes[["C"]])]
-    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * latent_classes[["C"]])]
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, 1:latent_classes[["C"]], drop = FALSE]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * latent_classes[["C"]]), drop = FALSE]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * latent_classes[["C"]]), drop = FALSE]
   }
 
   ### save class sequence
