@@ -55,6 +55,7 @@
 - [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
 - [ ] Sometimes error in printing `RprobitB_parameter` objects.
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
+- [ ] Error in `mml()` for `method == "pame"`: Bad prior draws.
 
 # Tests
 
