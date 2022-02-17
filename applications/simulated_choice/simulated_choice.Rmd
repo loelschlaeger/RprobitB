@@ -1,18 +1,138 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Application: Simulated choices"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
-```{r, cache = TRUE}
-plot(cars)
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>", 
+  echo = TRUE, 
+  fig.height = 3,
+  fig.width = 6,
+  fig.align = "center"
+)
+library(RprobitB)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+# Simulate data
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+```{r, simulate data, cache = TRUE}
+data <- simulate_choices(
+  form = x ~ 0 | 1 | y,
+  N = 200,
+  T = 10,
+  J = 2,
+  re = c("y"),
+  alternatives = c("A", "B"),
+  seed = 1,
+  s = c(0.7,0.3),
+  alpha = -0.5,
+  b = matrix(c(1,-1,2,-1), ncol = 2),
+  Sigma = 1,
+  C = 2
+)
+summary(data)
+```
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# Train and test subset
+
+```{r, split in test and train}
+(data <- train_test(data, test_proportion = 0.3))
+data_test <- data$test
+data <- data$train
+```
+
+# Print parameters
+
+```{r, parameters}
+data$true_parameter
+```
+
+# Visualize data
+
+```{r, visualize data}
+plot(data)
+``` 
+
+# Estimate model
+
+```{r, estimate models, cache = TRUE}
+mod0 <- mcmc(data, R = 1000, print_progress = FALSE)
+mod1 <- mcmc(data, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
+mod2 <- mcmc(data, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
+mod3 <- mcmc(data, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
+```
+
+# Summarize models
+
+```{r, summarize models}
+summary(mod0)
+summary(mod1)
+summary(mod2)
+summary(mod3)
+```
+
+# Visualize classes
+
+```{r, visualize classes, fig.height=6}
+plot(mod2, "class_seq")
+plot(mod2, "class_allocation")
+plot(mod3, "class_seq")
+plot(mod3, "class_allocation")
+```
+
+# Prediction
+
+```{r, predict, cache = TRUE}
+predict(mod2)
+predict(mod2, data = data_test)
+head(predict(mod2, data = data_test, overview = FALSE))
+predict(mod3)
+```
+
+# Class allocation
+
+```{r, class allocation}
+head(preference_classification(mod3))
+```
+
+# Model comparison
+
+```{r, model selection, cache = TRUE}
+model_selection(mod0, mod1, criteria = c("AIC", "BIC", "WAIC", "npar", "LL", "PA"), S = 10, ncores = 1)
+```
+
+# WAIC
+
+```{r, waic, cache = TRUE}
+RprobitB:::waic(mod2, S = 100, check_conv = TRUE, ncores = 7)
+```
+
+# Bayes factor
+
+```{r, new model, cache = TRUE}
+data <- simulate_choices(
+  form = choice ~ cov | 0,
+  N = 10,
+  T = 10,
+  J = 2,
+  seed = 1
+)
+x <- mcmc(data, R = 1000, print_progress = FALSE)
+```
+
+Prior arithmetic mean estimator
+
+```{r, bayes factor pame, cache = TRUE}
+RprobitB:::mml(x, S = 1000, method = "pame", check_conv = TRUE, ncores = 7)
+```
+
+Posterior harmonic mean estimator (`S` = 500)
+
+```{r, bayes factor phme, cache = TRUE}
+RprobitB:::mml(x, S = 500, method = "phme", check_conv = TRUE, ncores = 7)
+```
+
