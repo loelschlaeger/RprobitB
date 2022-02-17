@@ -1,7 +1,11 @@
-#' Predict choices
+#' Choice prediction
 #'
 #' @description
 #' This function predicts the choices of decision makers.
+#'
+#' @details
+#' Predictions are made based on the maximum predicted probability for each
+#' choice alternative.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
