@@ -1,19 +1,71 @@
-#' Plot method for \code{RprobitB_fit}.
+#' Plot method for \code{RprobitB_data}
 #'
 #' @description
-#' This function is the plot method for an object of class
-#' \code{RprobitB_fit}.
+#' This function is the plot method for an object of class \code{RprobitB_data}.
+#'
+#' @param x
+#' An object of class \code{RprobitB_data}.
+#' @param alpha
+#' Passed to \link[ggplot2]{geom_density}.
+#' @param position
+#' Passed to \link[ggplot2]{geom_density}.
+#' @param ...
+#' Ignored.
+#'
+#' @return
+#' No return value. Draws a plot to the current device.
+#'
+#' @export
+#'
+#' @importFrom tidyr gather
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes scale_color_hue geom_density facet_wrap labs
+#'
+#' @examples
+#' data <- simulate_choices(
+#'  form = choice ~ cost | 0,
+#'  N = 100,
+#'  T = 10,
+#'  J = 2,
+#'  alternatives = c("bus", "car"),
+#'  alpha = -1
+#' )
+#' plot(data)
+
+plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
+  vis_data <- x$choice_data
+  vis_data[unlist(x$res_var_names)] <- NULL
+  vis_data <- tidyr::gather(vis_data)
+  choices_extended <- rep(
+    x$choice_data[[x$res_var_names$choice]],
+    (dim(vis_data) / dim(x$choice_data))[1]
+  )
+  alternatives <- x$alternatives
+  ggplot2::ggplot(vis_data, ggplot2::aes(x = .data$value, fill = as.factor(choices_extended))) +
+    ggplot2::scale_fill_hue(labels = alternatives) +
+    ggplot2::geom_density(alpha = alpha, position = position) +
+    ggplot2::facet_wrap(~key, scales = "free") +
+    ggplot2::labs(fill = "alternatives") +
+    ggplot2::theme_bw()
+}
+
+#' Plot method for \code{RprobitB_fit}
+#'
+#' @description
+#' This function is the plot method for an object of class \code{RprobitB_fit}.
 #'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
 #' @param type
-#' The type of plot, which can be one or more of:
+#' The type of plot, which can be one of:
 #' \itemize{
 #'   \item \code{"effects"} (the default) for visualizing the linear effects,
 #'   \item \code{"mixture"} for visualizing the mixture distribution,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples,
-#'   \item \code{"class_seq"} for visualizing the sequence of class numbers.
+#'   \item \code{"class_seq"} for visualizing the sequence of class numbers,
+#'   \item \code{"class_allocation"} for visualizing the class allocation
+#'         (only if \code{P_r = 2}).
 #' }
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
@@ -34,7 +86,10 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   if (!inherits(x, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.")
   }
-  if (!(length(type) == 1 && type %in% c("effects", "mixture", "acf", "trace", "class_seq"))) {
+  if (!(is.character(type) && length(type) == 1)) {
+    stop("'type' must be a (single) character.")
+  }
+  if (!type %in% c("effects", "mixture", "acf", "trace", "class_seq", "class_allocation")) {
     stop("Unknown 'type'.")
   }
 
@@ -215,6 +270,21 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   ### make plot type 'class_seq'
   if (type == "class_seq") {
     plot_class_seq(x[["class_sequence"]])
+  }
+
+  ### make plot type 'class_allocation'
+  if (type == "class_allocation") {
+    if (x[["data"]][["P_r"]] != 2) {
+      stop("Plot type 'class_allocation' only available  if P_r = 2.")
+    }
+    gibbs_samples <- x[["gibbs_samples"]][["gibbs_samples_n"]]
+    for (r in iterations) {
+      beta <- gibbs_samples[["beta"]][[r]]
+      z <- gibbs_samples[["z"]][r,]
+      b <- matrix(gibbs_samples[["b"]][r,], nrow = 2)
+      Omega <- matrix(gibbs_samples[["Omega"]][r,], nrow = 4)
+      plot_class_allocation(beta, z, b, Omega)
+    }
   }
 }
 
@@ -559,6 +629,7 @@ plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
 #'
 #' @importFrom graphics legend axis
 #' @importFrom stats plot.ts
+#' @importFrom viridis magma
 
 plot_trace <- function(gibbs_samples, par_labels) {
 
