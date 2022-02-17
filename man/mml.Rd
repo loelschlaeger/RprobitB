@@ -59,7 +59,7 @@ are drawn from the model's prior distribution. Then,
 
 \subsection{The posterior harmonic mean estimator}{
 
-Set \code{method = "pame"} to compute the posterior harmonic mean estimate.
+Set \code{method = "phme"} to compute the posterior harmonic mean estimate.
 For this approach, \code{S} samples \eqn{\theta_1,\dots,\theta_S}
 are drawn from the model's posterior distribution. Then,
 \deqn{p(y\mid M) = \left(\mathbb{E}_\text{posterior} p(y\mid \theta,M)^{-1}
