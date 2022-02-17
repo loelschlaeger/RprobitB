@@ -20,7 +20,7 @@
 #' \sum_s p(y\mid \theta_n,M)}.
 #'
 #' ## The posterior harmonic mean estimator
-#' Set \code{method = "pame"} to compute the posterior harmonic mean estimate.
+#' Set \code{method = "phme"} to compute the posterior harmonic mean estimate.
 #' For this approach, \code{S} samples \eqn{\theta_1,\dots,\theta_S}
 #' are drawn from the model's posterior distribution. Then,
 #' \deqn{p(y\mid M) = \left(\mathbb{E}_\text{posterior} p(y\mid \theta,M)^{-1}
@@ -192,14 +192,14 @@ draw_from_prior <- function(prior) {
   if(identical(prior$xi,NA) || identical(prior$D,NA)){
     b <- NULL
   } else {
-    b <- rmvnorm(mu = prior$xi, Sigma = prior$D)
+    b <- matrix(rmvnorm(mu = prior$xi, Sigma = prior$D), ncol = 1)
   }
 
   ### Omega_c ~ IW(nu,Theta)
   if(identical(prior$nu,NA) || identical(prior$Theta,NA)){
     Omega <- NULL
   } else {
-    Omega <- rwishart(nu = prior$nu, V = prior$Theta)$IW
+    Omega <- matrix(rwishart(nu = prior$nu, V = prior$Theta)$IW, ncol = 1)
   }
 
   ### Sigma ~ IW(kappa,E)
