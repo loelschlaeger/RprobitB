@@ -12,11 +12,11 @@
 #' @param criteria
 #' A vector of one or more of the following characters:
 #' \itemize{
-#'   \item \code{"AIC"} for the AIC value,
-#'   \item \code{"BIC"} for the BIC value,
 #'   \item \code{"WAIC"} for the WAIC value,
 #'   \item \code{"npar"} for the number of model parameters.
 #'   \item \code{"LL"} for the log-likelihood value,
+#'   \item \code{"AIC"} for the AIC value,
+#'   \item \code{"BIC"} for the BIC value,
 #'   \item \code{"BF"} for the Bayes factor,
 #'   \item \code{"PA"} for the prediction accuracy (explaining the observed choices),
 #' }
@@ -30,7 +30,7 @@
 #'
 #' @export
 
-model_selection <- function(..., criteria = c("AIC", "BIC", "WAIC", "npar", "LL", "BF", "PA"),
+model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC", "BF", "PA"),
                             sort_by = NULL, S = 100, print_progress = TRUE, ncores = 1) {
 
   ### check inputs
@@ -74,12 +74,6 @@ model_selection <- function(..., criteria = c("AIC", "BIC", "WAIC", "npar", "LL"
 
   ### fill output
   for (crit in unique(criteria)) {
-    if (crit == "AIC") {
-      output <- cbind(output, "AIC" = mapply(function(ll, npar) -2 * ll + 2 * npar, ll, npar))
-    }
-    if (crit == "BIC") {
-      output <- cbind(output, "BIC" = mapply(function(ll, npar, nobs) -2 * ll + npar * log(nobs), ll, npar, nobs))
-    }
     if (crit == "WAIC") {
       waic_out <- lapply(models, waic, S = S, print_progress = print_progress, check_conv = FALSE, ncores = ncores)
       output <- cbind(output, "WAIC" = sapply(waic_out, function(x) x[["waic"]]))
@@ -91,6 +85,12 @@ model_selection <- function(..., criteria = c("AIC", "BIC", "WAIC", "npar", "LL"
     }
     if (crit == "LL") {
       output <- cbind(output, "LL" = ll)
+    }
+    if (crit == "AIC") {
+      output <- cbind(output, "AIC" = mapply(function(ll, npar) -2 * ll + 2 * npar, ll, npar))
+    }
+    if (crit == "BIC") {
+      output <- cbind(output, "BIC" = mapply(function(ll, npar, nobs) -2 * ll + npar * log(nobs), ll, npar, nobs))
     }
     if (crit == "BF") {
       mml_out <- sapply(models, mml, S = S, method = "pame", print_progress = print_progress, check_conv = FALSE, ncores = ncores, seq = FALSE)
