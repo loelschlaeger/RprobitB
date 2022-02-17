@@ -6,7 +6,7 @@
 \usage{
 model_selection(
   ...,
-  criteria = c("AIC", "BIC", "WAIC", "npar", "LL", "BF", "PA"),
+  criteria = c("WAIC", "npar", "LL", "AIC", "BIC", "BF", "PA"),
   sort_by = NULL,
   S = 100,
   print_progress = TRUE,
@@ -18,11 +18,11 @@ model_selection(
 
 \item{criteria}{A vector of one or more of the following characters:
 \itemize{
-\item \code{"AIC"} for the AIC value,
-\item \code{"BIC"} for the BIC value,
 \item \code{"WAIC"} for the WAIC value,
 \item \code{"npar"} for the number of model parameters.
 \item \code{"LL"} for the log-likelihood value,
+\item \code{"AIC"} for the AIC value,
+\item \code{"BIC"} for the BIC value,
 \item \code{"BF"} for the Bayes factor,
 \item \code{"PA"} for the prediction accuracy (explaining the observed choices),
 }}

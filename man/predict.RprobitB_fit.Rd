@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.RprobitB_fit.R
 \name{predict.RprobitB_fit}
 \alias{predict.RprobitB_fit}
-\title{Predict choices}
+\title{Choice prediction}
 \usage{
 \method{predict}{RprobitB_fit}(object, data = NULL, overview = TRUE, ...)
 }
@@ -20,6 +20,10 @@ Either a table if \code{overview = TRUE} or a data frame otherwise.
 }
 \description{
 This function predicts the choices of decision makers.
+}
+\details{
+Predictions are made based on the maximum predicted probability for each
+choice alternative.
 }
 \examples{
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
