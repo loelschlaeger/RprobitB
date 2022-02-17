@@ -41,6 +41,7 @@
 # Prediction
 
 - [ ] Implement prediction based on single predictor value.
+- [ ] ROC curve.
 
 # Ordered Probit
 
