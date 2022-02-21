@@ -18,6 +18,12 @@ test_that("parameter checks work", {
   }
 })
 
-test_that("reproducibility works", {
-  expect_snapshot(RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1))
+test_that("parameter reproducibility works", {
+  x <- RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1)
+  expect_snapshot(unclass(x))
+})
+
+test_that("parameter printing works", {
+  x <- RprobitB_parameter(P_f = 1, P_r = 0, J = 2, N = 100, seed = 1)
+  expect_snapshot(x)
 })
