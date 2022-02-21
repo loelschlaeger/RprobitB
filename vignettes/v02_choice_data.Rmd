@@ -1,7 +1,5 @@
 ---
 title: "Choice data"
-author: "Lennart Oelschläger"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Choice data}
@@ -18,28 +16,35 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-This vignette explains how to manage choice data in RprobitB. The [Train data set from the mlogit package](https://cran.r-project.org/package=mlogit) [@mlogit] is used for illustrations. The vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the RprobitB `r utils::packageVersion("RprobitB")` package.
+No choice model without choice data, so this vignette^[This vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] explains data management in {RprobitB}. For illustration, we use the popular [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the mlogit package [@mlogit]. The following functions will be introduced:
 
-## Characteristics of choice data
+- `check_form()`
+- `overview_effects()`
+- `prepare_data()`
+- `simulate_choices()`
+- `train_test()`
+
+
+## Requirements to choice data
 
 Choice data basically consists of
 
-1. an identifier for each decider and optionally for each choice situation,
+1. an identifier for each decider (and optionally for each choice situation),
 
 2. the choices,
 
 3. alternative and decider specific covariates.
 
 
-Consequently, RprobitB requests the following requirements to provided choice data:
-
+{RprobitB} wants to receive choice data in the following format:
+  
 1. It **must** be of class `data.frame`.
 
-2. It **must** be in "wide" format, i.e. each row represents one choice occasion.
+2. It **must** be in "wide" format, i.e. each row represents one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) to transform a data set in this format.]
 
 3. It **must** contain a column with unique identifier for each decision maker. 
 
-4. It **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set. 
+4. It **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
 
 5. It **can** contain a column with the observed choices. Such a column is required for model fitting but not for prediction.
 
@@ -48,7 +53,7 @@ Consequently, RprobitB requests the following requirements to provided choice da
 
 ### Example
 
-We can check that the Train data set[^1] fulfills these requirements:
+We check that the Train data set^[The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two train trip options based on the price, the travel time, the level of comfort, and the number of changes.] fulfills these requirements:
 
 ```{r overview Train data}
 data("Train", package = "mlogit")
@@ -57,12 +62,10 @@ str(Train)
 
 It is a data frame, each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. We see four alternative-specific covariates, namely `price`, `time`, `change` and `comfort`. There values are given for each alternative.
 
-[^1]: The data set contains 2929 stated choices by 235 Dutch individuals deciding between two train trip options based on the price, the travel time, the level of comfort, and the number of changes. 
-
 
 ## The model formula
 
-We have to tell RprobitB about the covariates we want to include in our model via specifying a `formula` object. The structure of such a `formula` object is `choice ~ A | B | C`, where
+We have to inform {RprobitB} about the covariates we want to include in our model via specifying a `formula` object. The structure of such a `formula` object is `choice ~ A | B | C`, where
 
 - `choice` is the dependent variable (the discrete choice we aim to explain),
 
@@ -74,7 +77,7 @@ We have to tell RprobitB about the covariates we want to include in our model vi
 alternative specific coefficients (we call them covariates of type 3).
 
 
-Specifying a `formula` object for RprobitB must be consistent with the following rules:
+Specifying a `formula` object for {RprobitB} must be consistent with the following rules:
 
 - By default, alternative specific constants (ASCs) are added to the model[^2]. They can be removed by adding `+ 0` in the second spot, e.g. `choice ~ A | B + 0`.
 
@@ -105,22 +108,22 @@ Additionally, we specify random effects for `price` and `time` (because we would
 re <- c("price","time")
 ```
 
-RprobitB provides the function `check_form()` which can be used to check if `form` and `re` are correctly interpreted:
+{RprobitB} provides the function `check_form()` which can be used to check if `form` and `re` are correctly interpreted:
 
 ```{r check form}
 check_form(form = form, re = re)
 ```
 
 
-## The `prepare_data()` function in RprobitB
+## The `prepare_data()` function
 
-Before model estimation with RprobitB, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
+Before model estimation with {RprobitB}, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
 
 ```{r, eval = FALSE}
 data <- prepare_data(form = form, choice_data = choice_data)
 ```
 
-The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine. The following arguments are optional:
+The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `mcmc`. The following arguments are optional:
 
 - `re`: The character vector of variable names of `form` with random effects.
 
@@ -132,6 +135,13 @@ The function performs compatibility checks and data transformations and returns 
 
 - `standardize`: A character vector of variable names of `form` that get standardized. Covariates of type 1 or 3 have to be addressed by `<covariate>_<alternative>`. If `standardize = "all"`, all covariates get standardized.
 
+- `missing_data`: Specifies how to handle missing entries (`NA, NaN, -Inf, Inf`) in `choice_data`. The following options are available:
+
+  - `"complete_cases"`, which removes rows containing missing entries (the default),
+  
+  - `"zero_out"`, which replaces missing entries by zero,
+  
+  - `"mean"`, which imputes missing entries by the covariate mean.
 
 ### Example
 
@@ -141,25 +151,25 @@ Let's prepare the Train data set for estimation with our previous specification 
 data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc = "choiceid")
 ```
 
-The `summary` and `plot` methods give a quick data overview:
+The `summary` and `plot` methods provide a quick data overview:
 
 ```{r summary Train}
 summary(data)
 ```
 
 ```{r plot Train, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-plot(data)
+plot(data, alpha = 0.8)
 ```
 
-## Simulate choice data in RprobitB using the `simulate_choices()` function
+## Simulate choices using the `simulate_choices()` function
 
-RprobitB provides the function `simulate_choices` that simulates discrete choice data from a prespecified probit model. Say we want to simulate the choices of `N` deciders in `T` choice occasions[^3] among `J` alternatives from a model formulation `form`, we have to call
+The `simulate_choices` function simulates discrete choice data from a prespecified probit model. Say we want to simulate the choices of `N` deciders in `T` choice occasions[^3] among `J` alternatives from a model formulation `form`, we have to call
 
 ```{r, eval = FALSE}
-data <- simulate(form = form, N = N, T = T, J = J)
+data <- simulate_choices(form = form, N = N, T = T, J = J)
 ```
 
-The function `simulate()` has the following optional arguments:
+The function `simulate_choices()` has the following optional arguments:
 
 - `re`: The character vector of variable names of `form` with random effects.
 
@@ -185,7 +195,11 @@ We can specify true parameter values[^4] by adding values for
   
 - `Sigma`, the differenced error term covariance matrix,
   
-- `Sigma_full`, the full error term covariance matrix.
+- `Sigma_full`, the full error term covariance matrix,
+
+- `beta`, the matrix of the decision-maker specific coefficient vectors,
+
+- `z`, the class allocation vector.
 
 [^3]: `T` can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length `N` with decision maker specific numbers of choice occasions.
 
@@ -210,15 +224,15 @@ form <- choice ~ cost | income | time
 re <- c("cost", "time")
 ```
 
-Finally, we may want to specify true parameter values. Parameter values that are not specified get randomly drawn. RprobitB provides the function `overview_effects()` which can be used to get an overview over the effects for which parameters can be specified. Below, the column `re` contains booleans that indicate whether the effect is connected to a random effect.
+Finally, we may want to specify true parameter values. Parameter values that are not specified get randomly drawn. {RprobitB} provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified. Below, the column `re` contains booleans that indicate whether the effect is connected to a random effect.
 
 ```{r data sim overview}
 overview_effects(form = form, re = re, alternatives = alternatives)
 ```
 
-Hence, the coefficient vector `alpha` must be of length 2, where the first coefficient is for `income_bus` and the second for `ASC_bus`. The matrix `b` must be of dimension `C` x 3, where by default `C = 1` and row 1 to 3 correspond to `cost`, `time_bus`, and `time_car`, respectively.
+Hence, the coefficient vector `alpha` must be of length 2, where the first coefficient is for `income_bus` and the second for `ASC_bus`. The matrix `b` must be of dimension 3 x `C`, where by default `C = 1` and row 1 to 3 correspond to `cost`, `time_bus`, and `time_car`, respectively.
 
-An exemplary call of `simulate_choices()` looks like follows, where the `summary()` method can again be used to get an overview over the data:
+An exemplary call of `simulate_choices()` looks like follows, where the `summary()` method again is useful for an overview:
 
 ```{r data sim}
 data <- simulate_choices(
@@ -238,7 +252,7 @@ summary(data)
 
 ## Train and test data set
 
-RprobitB provides the function `train_test()` that can be used to split the output of `prepare_data()` or `simulate_choices()` into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model.
+{RprobitB} provides the function `train_test()` that can be used to split the output of `prepare_data()` or `simulate_choices()` into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model.
 
 For example, the following code puts 70% of deciders from `data` into the train subsample and 30% of deciders in the test subsample:
 
