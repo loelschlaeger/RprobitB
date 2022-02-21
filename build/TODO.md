@@ -75,4 +75,4 @@ The following tasks are on our agenda and will be tackled as time permits.
 ## Package ingredients
 
 - [ ] Add precompiled models.
-- [ ] `rpb()` for demonstration.
+- [ ] `rpb()` for demonstration with console feedback.
