@@ -63,7 +63,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 ## Bugs
 
 - [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
-- [ ] Sometimes error in printing `RprobitB_parameter` objects.
+- [ ] Error in printing `RprobitB_parameter` objects when they have matrices with one row because `ramify::pprint` cannot handle this case. Idea: Implement function that abbreviates matrix printing myself.
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
 - [x] Error in `mml()` for `method == "pame"`: Bad prior draws. Fixed: Prior draws had to depend on `C`.
 - [ ] Error in `mml()` for `method == "pame"` and `C > 1`: Bad `s` draws.
@@ -76,3 +76,8 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 - [ ] Add precompiled models.
 - [ ] `rpb()` for demonstration with console feedback.
+
+## Website
+
+- [ ] Does not find NEWS.
+- [ ] Does not find TODOs.
