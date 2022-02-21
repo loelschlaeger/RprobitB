@@ -85,8 +85,12 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
 
   ### helper variables
   cont <- numeric(S)
-  add_args <- list(P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-                   N = x$data$N, sample = FALSE)
+  add_args <- list(P_f = x$data$P_f,
+                   P_r = x$data$P_r,
+                   J = x$data$J,
+                   N = x$data$N,
+                   C = x$latent_classes$C,
+                   sample = FALSE)
 
   ### register parallel backend
   cluster <- parallel::makeCluster(ncores)
@@ -106,22 +110,20 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
   ### loop over samples
   s <- NULL
   if(method == "pame"){
-    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB",
-                             .combine = "cbind", .options.snow = opts) %dopar% {
-                               prior_sample <- draw_from_prior(x$prior)
-                               par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
-                               exp(log_likelihood(x, par_set = par))
-                             }
+    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
+      prior_sample <- draw_from_prior(x$prior, C  = x$latent_classes$C)
+      par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
+      exp(log_likelihood(x, par_set = par))
+    }
     mml_value <- sum(cont)/S
     approx_seq <- cumsum(cont)/seq_along(cont)
     if(seq) attr(mml_value, "seq") <- approx_seq
   }
   if(method == "phme"){
     posterior_samples <- posterior_pars(x = x, S = S)
-    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB",
-                             .combine = "cbind", .options.snow = opts) %dopar% {
-                               1/exp(log_likelihood(x, par_set = posterior_samples[[s]]))
-                             }
+    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
+      1/exp(log_likelihood(x, par_set = posterior_samples[[s]]))
+    }
     mml_value <- 1/(sum(cont)/S)
     approx_seq <- 1/(cumsum(cont)/seq_along(cont))
     if(seq) attr(mml_value, "seq") <- approx_seq
@@ -155,6 +157,8 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
 #' @param prior
 #' An object of class \code{RprobitB_prior}, which is the output of
 #' \code{\link{check_prior}}.
+#' @param C
+#' The number of latent classes.
 #'
 #' @return
 #' A list of draws for \code{alpha}, \code{s}, \code{b}, \code{Omega}, and
@@ -165,9 +169,9 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
 #'
 #' @examples
 #' prior <- check_prior(P_f = 1, P_r = 2, J = 3)
-#' RprobitB:::draw_from_prior(prior)
+#' RprobitB:::draw_from_prior(prior, C = 2)
 
-draw_from_prior <- function(prior) {
+draw_from_prior <- function(prior, C = 1) {
 
   ### input checks
   if(class(prior) != "RprobitB_prior"){
@@ -185,21 +189,21 @@ draw_from_prior <- function(prior) {
   if(identical(prior$delta,NA)){
     s <- NULL
   } else {
-    s <- rdirichlet(prior$delta)
+    s <- sort(rdirichlet(rep(prior$delta,C)), decreasing = TRUE)
   }
 
-  ### b_c ~ MVN(xi,D)
+  ### b_c ~ MVN(xi,D) for all c
   if(identical(prior$xi,NA) || identical(prior$D,NA)){
     b <- NULL
   } else {
-    b <- matrix(rmvnorm(mu = prior$xi, Sigma = prior$D), ncol = 1)
+    b <- matrix(replicate(C, rmvnorm(mu = prior$xi, Sigma = prior$D)), ncol = C)
   }
 
-  ### Omega_c ~ IW(nu,Theta)
+  ### Omega_c ~ IW(nu,Theta) for all c
   if(identical(prior$nu,NA) || identical(prior$Theta,NA)){
     Omega <- NULL
   } else {
-    Omega <- matrix(rwishart(nu = prior$nu, V = prior$Theta)$IW, ncol = 1)
+    Omega <- matrix(replicate(C, rwishart(nu = prior$nu, V = prior$Theta)$IW), ncol = C)
   }
 
   ### Sigma ~ IW(kappa,E)

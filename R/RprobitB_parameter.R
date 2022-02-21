@@ -107,8 +107,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       if (is.null(s)) {
         s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
       }
-      if (length(s) != C || !is.numeric(s) ||
-        abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
+      if (length(s) != C || !is.numeric(s) || abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
         stop("'s' must be a non-ascending numeric vector of length ", C, " which sums up to 1.")
       }
       names(s) <- create_labels_s(P_r, C)

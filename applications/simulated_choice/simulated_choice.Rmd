@@ -41,29 +41,27 @@ summary(data)
 
 ```{r, split in test and train}
 (data <- train_test(data, test_proportion = 0.3))
-data_test <- data$test
-data <- data$train
 ```
 
 # Print parameters
 
 ```{r, parameters}
-data$true_parameter
+data$train$true_parameter
 ```
 
 # Visualize data
 
 ```{r, visualize data}
-plot(data)
+plot(data$train)
 ``` 
 
 # Estimate model
 
 ```{r, estimate models, cache = TRUE}
-mod0 <- mcmc(data, R = 1000, print_progress = FALSE)
-mod1 <- mcmc(data, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
-mod2 <- mcmc(data, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
-mod3 <- mcmc(data, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
+mod0 <- mcmc(data$train, R = 1000, print_progress = FALSE)
+mod1 <- mcmc(data$train, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
+mod2 <- mcmc(data$train, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
+mod3 <- mcmc(data$train, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
 ```
 
 # Summarize models
@@ -88,8 +86,8 @@ plot(mod3, "class_allocation")
 
 ```{r, predict, cache = TRUE}
 predict(mod2)
-predict(mod2, data = data_test)
-head(predict(mod2, data = data_test, overview = FALSE))
+predict(mod2, data = data$test)
+head(predict(mod2, data = data$test, overview = FALSE))
 predict(mod3)
 ```
 
@@ -102,37 +100,26 @@ head(preference_classification(mod3))
 # Model comparison
 
 ```{r, model selection, cache = TRUE}
-model_selection(mod0, mod1, criteria = c("AIC", "BIC", "WAIC", "npar", "LL", "PA"), S = 10, ncores = 1)
+model_selection(mod0, mod1, mod2, mod3, S = 10, ncores = 7)
 ```
 
 # WAIC
 
 ```{r, waic, cache = TRUE}
-RprobitB:::waic(mod2, S = 100, check_conv = TRUE, ncores = 7)
+RprobitB:::waic(mod3, S = 100, check_conv = TRUE, ncores = 7)
 ```
 
 # Bayes factor
 
-```{r, new model, cache = TRUE}
-data <- simulate_choices(
-  form = choice ~ cov | 0,
-  N = 10,
-  T = 10,
-  J = 2,
-  seed = 1
-)
-x <- mcmc(data, R = 1000, print_progress = FALSE)
-```
-
 Prior arithmetic mean estimator
 
 ```{r, bayes factor pame, cache = TRUE}
-RprobitB:::mml(x, S = 1000, method = "pame", check_conv = TRUE, ncores = 7)
+RprobitB:::mml(mod3, S = 100, method = "pame", check_conv = TRUE, ncores = 7)
 ```
 
 Posterior harmonic mean estimator (`S` = 500)
 
 ```{r, bayes factor phme, cache = TRUE}
-RprobitB:::mml(x, S = 500, method = "phme", check_conv = TRUE, ncores = 7)
+RprobitB:::mml(mod3, S = 500, method = "phme", check_conv = TRUE, ncores = 7)
 ```
 
