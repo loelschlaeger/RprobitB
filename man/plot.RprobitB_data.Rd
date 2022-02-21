@@ -9,9 +9,7 @@
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
 
-\item{alpha}{Passed to \link[ggplot2]{geom_density}.}
-
-\item{position}{Passed to \link[ggplot2]{geom_density}.}
+\item{alpha, position}{Passed to \code{\link[ggplot2]{ggplot}}.}
 
 \item{...}{Ignored.}
 }
