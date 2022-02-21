@@ -6,6 +6,9 @@
 \usage{
 RprobitB_demo()
 }
+\value{
+An object of class \code{RprobitB_fit}.
+}
 \description{
 This function demonstrates the functionality of RprobitB.
 }

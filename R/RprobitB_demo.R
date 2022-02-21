@@ -3,7 +3,8 @@
 #' @description
 #' This function demonstrates the functionality of RprobitB.
 #'
-#' @export
+#' @return
+#' An object of class \code{RprobitB_fit}.
 
 RprobitB_demo <- function() {
   warning("Not yet implemented.")
