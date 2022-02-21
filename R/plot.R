@@ -5,10 +5,8 @@
 #'
 #' @param x
 #' An object of class \code{RprobitB_data}.
-#' @param alpha
-#' Passed to \link[ggplot2]{geom_density}.
-#' @param position
-#' Passed to \link[ggplot2]{geom_density}.
+#' @param alpha,position
+#' Passed to \code{\link[ggplot2]{ggplot}}.
 #' @param ...
 #' Ignored.
 #'
@@ -17,9 +15,9 @@
 #'
 #' @export
 #'
-#' @importFrom tidyr gather
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot aes scale_color_hue geom_density facet_wrap labs
+#' @importFrom ggplot2 ggplot theme_bw theme geom_bar aes geom_histogram geom_density
+#' @importFrom gridExtra grid.arrange
 #'
 #' @examples
 #' data <- simulate_choices(
@@ -33,20 +31,36 @@
 #' plot(data)
 
 plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
-  vis_data <- x$choice_data
-  vis_data[unlist(x$res_var_names)] <- NULL
-  vis_data <- tidyr::gather(vis_data)
-  choices_extended <- rep(
-    x$choice_data[[x$res_var_names$choice]],
-    (dim(vis_data) / dim(x$choice_data))[1]
-  )
-  alternatives <- x$alternatives
-  ggplot2::ggplot(vis_data, ggplot2::aes(x = .data$value, fill = as.factor(choices_extended))) +
-    ggplot2::scale_fill_hue(labels = alternatives) +
-    ggplot2::geom_density(alpha = alpha, position = position) +
-    ggplot2::facet_wrap(~key, scales = "free") +
-    ggplot2::labs(fill = "alternatives") +
-    ggplot2::theme_bw()
+
+  data_red <- cbind(x$choice_data[!names(x$choice_data) %in% x$res_var_names[c("id","idc")]])
+
+  base_plot <- ggplot2::ggplot(data = data_red) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position="none")
+
+  plots <- list()
+
+  plots[[1]] <-  base_plot + ggplot2::geom_bar(
+    mapping = ggplot2::aes(x = .data[[x$res_var_names$choice]],
+                           fill = .data[[x$res_var_names$choice]]),
+    position = position, alpha = alpha)
+
+  for(cov in setdiff(names(data_red), x$res_var_names$choice)) {
+
+    if(length(unique(data_red[[cov]])) < 0.2 * length(data_red[[cov]])){
+      p <- ggplot2::geom_histogram(mapping = ggplot2::aes(x = .data[[cov]],
+                                                          fill = .data[[x$res_var_names$choice]]),
+                                   position = position, alpha = alpha)
+    } else {
+      p <- ggplot2::geom_density(mapping = ggplot2::aes(x = .data[[cov]],
+                                                        fill = .data[[x$res_var_names$choice]]),
+                                 position = position, alpha = alpha)
+    }
+
+    plots[[length(plots)+1]] <- base_plot + p
+  }
+
+  gridExtra::grid.arrange(grobs = plots)
 }
 
 #' Plot method for \code{RprobitB_fit}
