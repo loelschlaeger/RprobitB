@@ -9,13 +9,24 @@ authors:
   Dietmar Bauer:
     href: https://de.wikipedia.org/wiki/Dietmar_Bauer
 
-
 template:
   bootstrap: 5
   bslib:
     primary: "#0054AD"
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news, plans]
+    right: [search, github]
+  components:
+    news:
+      text: Updates
+      href: NEWS.md
+    plans:
+      text: Plans
+      href: build/TODO.md
 
 reference:
 - title: Datasets
