@@ -12,12 +12,17 @@
 #' The number of matrix rows.
 #' @param i
 #' The row number to which respect differences are computed.
+#'
 #' @return
 #' A matrix with \code{J-1} rows.
+#'
 #' @examples
 #' J <- 2
 #' x <- matrix(1, nrow = J, ncol = 2)
 #' RprobitB:::delta(J, 1) %*% x
+#'
+#' @export
+#'
 #' @keywords
 #' utils
 
