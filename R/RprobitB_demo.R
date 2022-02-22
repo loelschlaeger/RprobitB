@@ -1,10 +1,4 @@
-#' A demonstration of RprobitB
-#'
-#' @description
-#' This function demonstrates the functionality of RprobitB.
-#'
-#' @return
-#' An object of class \code{RprobitB_fit}.
+#' @noRd
 
 RprobitB_demo <- function() {
   warning("Not yet implemented.")
