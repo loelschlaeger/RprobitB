@@ -30,7 +30,6 @@ Imports:
     Rcpp,
     mvtnorm,
     viridis,
-    ramify,
     ggplot2,
     tidyr,
     rlang,

@@ -101,19 +101,35 @@
     Code
       x
     Output
-      RprobitB model parameter:
+      RprobitB model parameter
       
-      alpha: -1.4 
+      alpha : -1.4
       
-      Sigma: 1 x 1 matrix of doubles: 
+      C : 1
       
-                [,1]
-      [1,] 0.3074643
+      s : 1
       
-      Sigma_full: 2 x 2 matrix of doubles: 
+      b : -1.8
+      
+      Omega : 2.849231
+      
+      Sigma : 0.4539793
+      
+      Sigma_full : 2 x 2 matrix of doubles 
       
                 [,1]      [,2]
-      [1,] 0.5918505 0.2534963
-      [2,] 0.2534963 0.2226064
+      [1,] 0.6751573 0.2612002
+      [2,] 0.2612002 0.3012224
+      
+      
+      beta : 1 x 100 matrix of doubles 
+      
+              [,1]    [,2]    [,3] ...  [,100]
+      [1,] -1.3778 -0.7564 -2.0914 ... -0.2967
+      
+      
+      z : integer vector of length 100 
+      
+      1 1 1 ... 1
       
 

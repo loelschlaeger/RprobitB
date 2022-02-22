@@ -154,3 +154,143 @@ is_covariance_matrix <- function(x) {
     all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
 }
+
+#' Print abbreviated matrices and vectors
+#'
+#' @description
+#' This function prints abbreviated matrices and vectors.
+#'
+#' @references
+#' This function is a modified version of \code{\link[ramify]{pprint}}.
+#'
+#' @param x
+#' A (numeric or character) matrix or a vector.
+#' @param rowdots
+#' The row number which is replaced by dots.
+#' @param coldots
+#' The column number which is replaced by dots.
+#' @param digits
+#' If \code{x} is numeric, sets the number of decimal places.
+#' @param name
+#' Either \code{NULL} or a label for \code{x}. Only printed of \code{desc = TRUE}.
+#' @param desc
+#' Set to \code{TRUE} to print the name and the dimension of \code{x}.
+#' @return
+#' Invisibly returns \code{x}.
+#'
+#' @examples
+#' RprobitB:::pprint(x = 1, name = "single integer")
+#' RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
+#' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1), name = "single column matrix")
+#' RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
+#' RprobitB:::RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
+#'
+#' @keywords
+#' utils
+
+pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL, desc = TRUE) {
+
+  ### Add dots
+  add_dots <- function(x, pos = 3) {
+    if (length(x) > pos) {
+      c(x[seq_len(pos-1)], "...", x[length(x)])
+    } else {
+      x
+    }
+  }
+
+  ### Distinguish between single numbers, vectors and matrices
+  if(length(x) == 1){
+    if(desc) if(!is.null(name)) cat(name, ": ")
+    cat(x)
+  } else if(!is.matrix(x)) {
+    if(desc) if(!is.null(name)) cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
+    res <- if(is.numeric(x)) round(x,digits) else x
+    cat(noquote(add_dots(res, coldots)))
+  } else {
+
+    ### Row labels
+    row_labels <- if (is.null(rownames(x))) {
+      paste0("[", seq_len(nrow(x)), ",]")
+    } else {
+      rownames(x)
+    }
+
+    ### Columns labels
+    col_labels <- if (is.null(colnames(x))) {
+      paste0("[,", seq_len(ncol(x)), "]")
+    } else {
+      colnames(x)
+    }
+
+    ### Adjust values for 'coldots' and 'rowdots'
+    coldots <- max(1,min(ncol(x)-1, coldots))
+    rowdots <- max(1,min(nrow(x)-1, rowdots))
+
+    ### Omit all values that will not be printed
+    x2 <- if(nrow(x) == 1) {
+      cbind(x[1, 1:coldots, drop = FALSE], x[1, ncol(x), drop = FALSE])
+    } else if(ncol(x) == 1) {
+      rbind(x[1:rowdots, 1, drop = FALSE], x[nrow(x), 1, drop = FALSE])
+    } else {
+      rbind(cbind(x[1:rowdots, 1:coldots, drop = FALSE],
+                  x[1:rowdots, ncol(x), drop = FALSE]),
+            cbind(x[nrow(x), 1:coldots, drop = FALSE],
+                  x[nrow(x), ncol(x), drop = FALSE]))
+    }
+
+    ### Convert to character matrix (after rounding, if appropriate)
+    charx <- if (typeof(x2) == "character") {
+      x2
+    } else if (typeof(x2) %in% c("integer", "logical")) {
+      as.character(x2)
+    } else {
+      sprintf(paste0("%.", digits, "f"), x2)
+    }
+    dim(charx) <- dim(x2)
+
+    ### Case 1: rows and columns do not have dots
+    if (nrow(x) <= rowdots + 1 && ncol(x) <= coldots + 1) {
+      res <- x
+    }
+
+    ### Case 2: rows have dots, columns do not
+    if (nrow(x) > rowdots + 1 && ncol(x) <= coldots + 1) {
+      res <- rbind(as.matrix(charx[seq_len(rowdots - 1), ]),
+                   rep("...", ncol(charx)),
+                   charx[nrow(charx), ])
+      row_labels <- add_dots(row_labels, pos = rowdots)
+    }
+
+    ### Case 3: rows do not have dots, columns have dots
+    if (nrow(x) <= rowdots + 1 && ncol(x) > coldots + 1) {
+      res <- t(apply(charx, 1, add_dots, pos = coldots))
+      col_labels <- add_dots(col_labels, pos = coldots)
+    }
+
+    ### Case 4: rows and columns have dots
+    if (nrow(x) > rowdots + 1 && ncol(x) > coldots + 1) {
+      # Add first rowdots-1 rows
+      smallx <- t(apply(charx[seq_len(rowdots - 1), ], 1, add_dots,
+                        pos = coldots))
+      res <- rbind(smallx,
+                   rep("...", ncol(smallx)),
+                   add_dots(charx[nrow(charx), ], pos = coldots))
+      row_labels <- add_dots(row_labels, pos = rowdots)
+      col_labels <- add_dots(col_labels, pos = coldots)
+    }
+
+    ### Print "pretty" matrix
+    if(desc){
+      if(!is.null(name)){
+        cat(name,": ")
+      }
+      cat(paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"), "\n\n")
+    }
+    prmatrix(res, rowlab = row_labels, collab = col_labels, quote = FALSE,
+             right = TRUE)
+  }
+
+  ### Return a (temporarily) invisible copy of x
+  invisible(x)
+}

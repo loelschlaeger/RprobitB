@@ -230,25 +230,23 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
 }
 
 #' @noRd
+#' @param ...
+#' Names of parameters to be printed. If not specified, all parameters are printed.
+#' @param digits
+#' The number of printed decimal places.
 #' @export
-#' @importFrom ramify pprint
 
-print.RprobitB_parameter <- function(x, ...) {
-  cat("RprobitB model parameter:\n\n")
-
-  for (i in seq_along(x)) {
-    if ("numeric" %in% class(x[[i]]) || "integer" %in% class(x[[i]])) {
-      cat(paste0(names(x)[i], ":"), x[[i]], "\n\n")
-    } else if ("matrix" %in% class(x[[i]])) {
-      cat(paste0(names(x)[i], ": "))
-
-      rowdots <- min(nrow(x[[i]]) - 1, 4)
-      coldots <- min(ncol(x[[i]]) - 1, 4)
-
-      ramify::pprint(x[[i]], rowdots = rowdots, coldots = coldots)
-      cat("\n")
-    }
+print.RprobitB_parameter <- function(x, ..., digits = 4) {
+  cat("RprobitB model parameter\n\n")
+  pars <- list(...)
+  ind <- if(length(pars) != 0) {
+    sapply(pars, function(par) which(names(x) == par))
+  } else {
+    seq_along(x)
   }
-
+  for (i in ind) {
+    pprint(x[[i]], name = names(x)[i], desc = TRUE)
+    cat("\n\n")
+  }
   return(invisible(x))
 }
