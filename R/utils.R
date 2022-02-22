@@ -183,7 +183,7 @@ is_covariance_matrix <- function(x) {
 #' RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
 #' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1), name = "single column matrix")
 #' RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
-#' RprobitB:::RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
+#' RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 #'
 #' @keywords
 #' utils
