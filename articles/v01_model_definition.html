@@ -96,52 +96,41 @@
 
     
     
-<p>This vignette defines the probit model implemented in RprobitB.</p>
+<p>The {RprobitB} package provides functionality for Bayesian estimation of the multinomial probit model. This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette was build using R 4.1.2 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a> is dedicated to introduce the model.</p>
 <div class="section level2">
-<h2 id="the-probit-model-assumptions">The probit model assumptions<a class="anchor" aria-label="anchor" href="#the-probit-model-assumptions"></a>
+<h2 id="the-probit-model">The probit model<a class="anchor" aria-label="anchor" href="#the-probit-model"></a>
 </h2>
-<p>Assume that we observe the choices of <span class="math inline">\(N\)</span> decision makers which decide between <span class="math inline">\(J\)</span> alternatives at each of <span class="math inline">\(T\)</span> choice occasions.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For notational simplicity, the number of choice occasions &lt;span class="math inline"&gt;\(T\)&lt;/span&gt; is assumed to be the same for each decision maker here. However, RprobitB allows for unbalanced panels, i.e. varying &lt;span class="math inline"&gt;\(T\)&lt;/span&gt;.&lt;/p&gt;'><sup>1</sup></a> Specific to each decision maker, alternative and choice occasion, we furthermore observe <span class="math inline">\(P_f + P_r\)</span> choice attributes that we use to explain the choices. The first <span class="math inline">\(P_f\)</span> attributes are connected to fixed coefficients, the other <span class="math inline">\(P_r\)</span> attributes to random coefficients following a joint distribution mixed across decision makers.</p>
-<p>Person <span class="math inline">\(n\)</span>’s utility <span class="math inline">\(\tilde{U}_{ntj}\)</span> for alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span> is modeled as</p>
+<p>The probit model<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The name &lt;em&gt;probit&lt;/em&gt; is a portmanteau of &lt;em&gt;prob&lt;/em&gt;ability and un&lt;em&gt;it&lt;/em&gt;.&lt;/p&gt;"><sup>2</sup></a> is a regression model where the dependent variable only takes a finite number of values and the error term is normally distributed. [Citation] Its purpose is to estimate the probability that the dependent variable takes a certain (discrete) value. The estimation typically relies on a set of explanatory variables.</p>
+<p>The most common application of probit models are discrete choice scenarios. The dependent variable here is one of finitely many and mutually exclusive alternatives. Explanatory variables typically are characteristics of the deciders or the alternatives.</p>
+<p>To be more concrete, assume that we possess data of <span class="math inline">\(N\)</span> decision makers which choose between <span class="math inline">\(J \geq 2\)</span> alternatives<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;To be precise, the model name gets the prefix &lt;em&gt;multinomial&lt;/em&gt; in the case &lt;span class="math inline"&gt;\(J &amp;gt; 2\)&lt;/span&gt;.&lt;/p&gt;'><sup>3</sup></a> at each of <span class="math inline">\(T\)</span> choice occasions.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For notational simplicity, the number of choice occasions &lt;span class="math inline"&gt;\(T\)&lt;/span&gt; is assumed to be the same for each decision maker here. However, we are not restricted to this case: {RprobitB} allows for unbalanced panels, i.e. varying &lt;span class="math inline"&gt;\(T\)&lt;/span&gt;. Of course, the cross-sectional case &lt;span class="math inline"&gt;\(T = 1\)&lt;/span&gt; is possible.&lt;/p&gt;'><sup>4</sup></a> Specific to each decision maker, alternative and choice occasion, we furthermore observe <span class="math inline">\(P\)</span> choice attributes that we use to explain the choices.</p>
+<p>The continuous choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider’s utility. Decider <span class="math inline">\(n\)</span>’s utility <span class="math inline">\(\tilde{U}_{ntj}\)</span> for alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span> is modeled as</p>
 <p><span class="math display">\[\begin{equation}
-\tilde{U}_{ntj} = \tilde{W}_{ntj}'\alpha + \tilde{X}_{ntj}'\beta_n + \tilde{\epsilon}_{ntj}
+  \tilde{U}_{ntj} = \tilde{x}_{ntj}'\beta + \tilde{\epsilon}_{ntj}
 \end{equation}\]</span></p>
 <p>for <span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J\)</span>, where</p>
 <ul>
-<li><p><span class="math inline">\(\tilde{W}_{ntj}\)</span> is a vector of <span class="math inline">\(P_f\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span> corresponding to the fixed coefficient vector <span class="math inline">\(\alpha \in {\mathbb R}^{P_f}\)</span>,</p></li>
-<li><p><span class="math inline">\(\tilde{X}_{ntj}\)</span> is a vector of <span class="math inline">\(P_r\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span> corresponding to the random, decision maker-specific coefficient vector <span class="math inline">\(\beta_n \in {\mathbb R}^{P_r}\)</span>, where <span class="math inline">\(\beta_n\)</span> is distributed according to some <span class="math inline">\(P_r\)</span>-variate distribution <span class="math inline">\(g_{P_r}\)</span>,</p></li>
+<li><p><span class="math inline">\(\tilde{x}_{ntj}\)</span> is a vector of <span class="math inline">\(P\)</span> characteristics of <span class="math inline">\(j\)</span> as faced by <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span>,</p></li>
+<li><p><span class="math inline">\(\beta \in {\mathbb R}^{P}\)</span> is a vector of linear coefficients,</p></li>
 <li><p>and <span class="math inline">\((\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},\dots,\tilde{\epsilon}_{ntJ})' \sim \text{MVN}_{J} (0,\tilde{\Sigma})\)</span> is the models’ error term vector for <span class="math inline">\(n\)</span> at <span class="math inline">\(t\)</span>, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix <span class="math inline">\(\tilde{\Sigma}\)</span>.</p></li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="normalization">Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
-</h2>
-<p>As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified <span class="citation">(Train 2009)</span>. Therefore, we consider the transformed model</p>
-<p><span class="math display">\[\begin{equation}
-U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
-\end{equation}\]</span></p>
-<p><span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J-1\)</span>, where (choosing <span class="math inline">\(J\)</span> as the reference alternative) <span class="math inline">\(U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}\)</span>, <span class="math inline">\(W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}\)</span>, <span class="math inline">\(X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}\)</span> and <span class="math inline">\(\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}\)</span>, where <span class="math inline">\((\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})' \sim \text{MVN}_{J-1} (0,\Sigma)\)</span> and <span class="math inline">\(\Sigma\)</span> denotes a covariance matrix with the top-left element restricted to one.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;RprobitB provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of &lt;span class="math inline"&gt;\(\alpha\)&lt;/span&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
-</div>
-<div class="section level2">
-<h2 id="linking-the-latent-utilities-to-the-choices">Linking the latent utilities to the choices<a class="anchor" aria-label="anchor" href="#linking-the-latent-utilities-to-the-choices"></a>
-</h2>
-<p>Let <span class="math inline">\(y_{nt}=j\)</span> denote the event that decision maker <span class="math inline">\(n\)</span> chooses alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span>. Assuming utility maximizing behavior of the decision makers, the decisions are linked to the utilities via</p>
+<p>Now let <span class="math inline">\(y_{nt}=j\)</span> denote the event that decision maker <span class="math inline">\(n\)</span> chooses alternative <span class="math inline">\(j\)</span> at choice occasion <span class="math inline">\(t\)</span>. Assuming utility maximizing behavior of the decision makers<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This in fact is a critical assumption because many studies show that humans do not decide in this rational sense in general.&lt;/p&gt;"><sup>5</sup></a>, the decisions are linked to the utilities via</p>
 <p><span class="math display">\[\begin{equation}
 y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + J \cdot 1\left (U_{ntj}&lt;0 ~\text{for all}~j\right),
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(1(A)\)</span> equals <span class="math inline">\(1\)</span> if condition <span class="math inline">\(A\)</span> is true and <span class="math inline">\(0\)</span> else.</p>
 </div>
 <div class="section level2">
-<h2 id="approximating-the-mixing-distribution">Approximating the mixing distribution<a class="anchor" aria-label="anchor" href="#approximating-the-mixing-distribution"></a>
+<h2 id="choice-behavior-heterogeneity">Choice behavior heterogeneity<a class="anchor" aria-label="anchor" href="#choice-behavior-heterogeneity"></a>
 </h2>
-<p>RprobitB implemented the approach of <span class="citation">(Oelschläger and Bauer 2020)</span> to approximate the underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution <span class="math inline">\(g_{P_r}\)</span> for the random coefficients<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;We use the abbreviation &lt;span class="math inline"&gt;\((\beta_n)_n\)&lt;/span&gt; as a shortcut to &lt;span class="math inline"&gt;\((\beta_n)_{n =1,...,N}\)&lt;/span&gt; the collection of vectors &lt;span class="math inline"&gt;\(\beta_n,n=1,...,N\)&lt;/span&gt;.&lt;/p&gt;'><sup>3</sup></a> <span class="math inline">\(\beta=(\beta_n)_{n}\)</span> is approximated by a mixture of <span class="math inline">\(P_r\)</span>-variate normal densities <span class="math inline">\(\phi_{P_r}\)</span> with mean vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span> using <span class="math inline">\(C\)</span> components, i.e.</p>
+<p>Note that <span class="math inline">\(\beta\)</span> in the above definition is constant across decision makers. This assumption is too restrictive for most applications. For example, consider the case of modeling the choice of a means of transportation to work. It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.</p>
+<p>The established way to model such choice behavior heterogeneity is to impose a distribution on <span class="math inline">\(\beta\)</span> such that each decider can have his own sensitivities. This distribution is commonly called mixing distribution.</p>
+<p>Formally and to allow for different specifications, we define <span class="math inline">\(\beta = (\alpha, \beta_n)\)</span>, where <span class="math inline">\(\alpha\)</span> are the first <span class="math inline">\(P_f\)</span> coefficients that are constant across deciders and <span class="math inline">\(\beta_n\)</span> the last <span class="math inline">\(P_r\)</span> coefficients that are decider-specific. Consequently, <span class="math inline">\(P = P_f + P_r\)</span>. Now if <span class="math inline">\(P_r&gt;0\)</span>, <span class="math inline">\(\beta_n\)</span> is distributed according to some <span class="math inline">\(P_r\)</span>-variate distribution, which typically constitute the (multivariate) normal distribution.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Popular alternatives including the truncated normal and the uniform distribution are presented in the literature but are not implemented in {RprobitB}.&lt;/p&gt;"><sup>6</sup></a></p>
+<p>Sometimes, even a normal mixing distribution is not flexible enough to model the underlying choice behavior heterogeneity…</p>
+<p>RprobitB implemented the approach of <span class="citation">(Oelschläger and Bauer 2020)</span> to approximate the underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution <span class="math inline">\(g_{P_r}\)</span> for the random coefficients<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;We use the abbreviation &lt;span class="math inline"&gt;\((\beta_n)_n\)&lt;/span&gt; as a shortcut to &lt;span class="math inline"&gt;\((\beta_n)_{n =1,...,N}\)&lt;/span&gt; the collection of vectors &lt;span class="math inline"&gt;\(\beta_n,n=1,...,N\)&lt;/span&gt;.&lt;/p&gt;'><sup>7</sup></a> <span class="math inline">\(\beta=(\beta_n)_{n}\)</span> is approximated by a mixture of <span class="math inline">\(P_r\)</span>-variate normal densities <span class="math inline">\(\phi_{P_r}\)</span> with mean vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span> using <span class="math inline">\(C\)</span> components, i.e.</p>
 <p><span class="math display">\[\begin{equation}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c),
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\((s_c)_{c}\)</span> are weights satisfying <span class="math inline">\(0 &lt; s_c\leq 1\)</span> for <span class="math inline">\(c=1,\dots,C\)</span> and <span class="math inline">\(\sum_c s_c=1\)</span>.</p>
-</div>
-<div class="section level2">
-<h2 id="interpreting-the-latent-classes">Interpreting the latent classes<a class="anchor" aria-label="anchor" href="#interpreting-the-latent-classes"></a>
-</h2>
 <p>One interpretation of the latent class model is obtained by introducing variables <span class="math inline">\(z=(z_n)_n\)</span> allocating each decision maker <span class="math inline">\(n\)</span> to class <span class="math inline">\(c\)</span> with probability <span class="math inline">\(s_c\)</span>, i.e.</p>
 <p><span class="math display">\[\begin{equation}
 \text{Prob}(z_n=c)=s_c \quad \text{and} \quad \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
@@ -149,9 +138,26 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}&gt;0 \right) + 
 <p>This interpretation leads to a classification of deciders based on heterogeneous choice behavior.</p>
 </div>
 <div class="section level2">
+<h2 id="model-normalization">Model normalization<a class="anchor" aria-label="anchor" href="#model-normalization"></a>
+</h2>
+<p>As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified <span class="citation">(Train 2009)</span>. Therefore, we consider the transformed model</p>
+<p><span class="math display">\[\begin{equation}
+U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
+\end{equation}\]</span></p>
+<p><span class="math inline">\(n=1,\dots,N\)</span>, <span class="math inline">\(t=1,\dots,T\)</span> and <span class="math inline">\(j=1,\dots,J-1\)</span>, where (choosing <span class="math inline">\(J\)</span> as the reference alternative) <span class="math inline">\(U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}\)</span>, <span class="math inline">\(W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}\)</span>, <span class="math inline">\(X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}\)</span> and <span class="math inline">\(\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}\)</span>, where <span class="math inline">\((\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})' \sim \text{MVN}_{J-1} (0,\Sigma)\)</span> and <span class="math inline">\(\Sigma\)</span> denotes a covariance matrix with the top-left element restricted to one.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;RprobitB provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of &lt;span class="math inline"&gt;\(\alpha\)&lt;/span&gt;.&lt;/p&gt;'><sup>8</sup></a></p>
+</div>
+<div class="section level2">
 <h2 id="model-complexities">Model complexities<a class="anchor" aria-label="anchor" href="#model-complexities"></a>
 </h2>
 <p>We call the defined model the <em>latent class mixed multinomial probit model</em>. Note that the model collapses to the <em>(normally) mixed multinomial probit model</em> if <span class="math inline">\(P_r&gt;0\)</span> and <span class="math inline">\(C=1\)</span>, to the <em>multinomial probit model</em> if <span class="math inline">\(P_r=0\)</span> and to the <em>binary probit model</em> if additionally <span class="math inline">\(J=2\)</span>.</p>
+</div>
+<div class="section level2">
+<h2 id="introduce-rprobitb_parameter-">Introduce <code>RprobitB_parameter</code>.<a class="anchor" aria-label="anchor" href="#introduce-rprobitb_parameter-"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
