@@ -239,7 +239,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
 print.RprobitB_parameter <- function(x, ..., digits = 4) {
   cat("RprobitB model parameter\n\n")
   pars <- list(...)
-  ind <- if(length(pars) != 0) {
+  ind <- if (length(pars) != 0) {
     sapply(pars, function(par) which(names(x) == par))
   } else {
     seq_along(x)
