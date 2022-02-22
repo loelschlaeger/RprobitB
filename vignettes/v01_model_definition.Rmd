@@ -15,39 +15,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette defines the probit model implemented in RprobitB.
+The {RprobitB} package provides functionality for Bayesian estimation of the multinomial probit model. This vignette^[This vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is dedicated to introduce the model.
 
-## The probit model assumptions
+## The probit model
 
-Assume that we observe the choices of $N$ decision makers which decide between $J$ alternatives at each of $T$ choice occasions.[^1] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P_f + P_r$ choice attributes that we use to explain the choices. The first $P_f$ attributes are connected to fixed coefficients, the other $P_r$ attributes to random coefficients following a joint distribution mixed across decision makers.
+The probit model^[The name *probit* is a portmanteau of *prob*ability and un*it*.] is a regression model where the dependent variable only takes a finite number of values and the error term is normally distributed. [Citation] Its purpose is to estimate the probability that the dependent variable takes a certain (discrete) value. The estimation typically relies on a set of explanatory variables.
 
-Person $n$'s utility $\tilde{U}_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
+The most common application of probit models are discrete choice scenarios. The dependent variable here is one of finitely many and mutually exclusive alternatives. Explanatory variables typically are characteristics of the deciders or the alternatives.
+
+To be more concrete, assume that we possess data of $N$ decision makers which choose between $J \geq 2$ alternatives^[To be precise, the model name gets the prefix *multinomial* in the case $J > 2$.] at each of $T$ choice occasions.^[For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, we are not restricted to this case: {RprobitB} allows for unbalanced panels, i.e. varying $T$. Of course, the cross-sectional case $T = 1$ is possible.] Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ choice attributes that we use to explain the choices. 
+
+The continuous choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility. Decider $n$'s utility $\tilde{U}_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
 
 \begin{equation}
-\tilde{U}_{ntj} = \tilde{W}_{ntj}'\alpha + \tilde{X}_{ntj}'\beta_n + \tilde{\epsilon}_{ntj}
+  \tilde{U}_{ntj} = \tilde{x}_{ntj}'\beta + \tilde{\epsilon}_{ntj}
 \end{equation}
 
 for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$, where
 
-- $\tilde{W}_{ntj}$ is a vector of $P_f$ characteristics of $j$ as faced by $n$ at $t$ corresponding to the fixed coefficient vector $\alpha \in {\mathbb R}^{P_f}$,
+- $\tilde{x}_{ntj}$ is a vector of $P$ characteristics of $j$ as faced by $n$ at $t$,
 
-- $\tilde{X}_{ntj}$ is a vector of $P_r$ characteristics of $j$ as faced by  $n$ at $t$ corresponding to the random, decision maker-specific coefficient vector $\beta_n \in {\mathbb R}^{P_r}$, where $\beta_n$ is distributed according to some $P_r$-variate distribution $g_{P_r}$,
+- $\beta \in {\mathbb R}^{P}$ is a vector of linear coefficients,
 
 - and $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},\dots,\tilde{\epsilon}_{ntJ})' \sim \text{MVN}_{J} (0,\tilde{\Sigma})$ is the models' error term vector for $n$ at $t$, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix $\tilde{\Sigma}$.
 
-## Normalization
-
-As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified [@Train:09]. Therefore, we consider the transformed model
-
-\begin{equation}
-U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
-\end{equation}
-
-$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the reference alternative) $U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}$, $W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}$, $X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}$ and $\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}$, where $(\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})'  \sim \text{MVN}_{J-1} (0,\Sigma)$ and $\Sigma$ denotes a covariance matrix with the top-left element restricted to one.[^2]
-
-## Linking the latent utilities to the choices
-
-Let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers, the decisions are linked to the utilities via
+Now let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers^[This in fact is a critical assumption because many studies show that humans do not decide in this rational sense in general.], the decisions are linked to the utilities via
 
 \begin{equation}
 y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}>0 \right) + J \cdot 1\left (U_{ntj}<0 ~\text{for all}~j\right),
@@ -55,7 +47,15 @@ y_{nt} = \sum_{j=1}^{J-1} j\cdot 1 \left (U_{ntj}=\max_i U_{nti}>0 \right) + J \
 
 where $1(A)$ equals $1$ if condition $A$ is true and $0$ else.
 
-## Approximating the mixing distribution
+## Choice behavior heterogeneity
+
+Note that $\beta$ in the above definition is constant across decision makers. This assumption is too restrictive for most applications. For example, consider the case of modeling the choice of a means of transportation to work. It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time. 
+
+The established way to model such choice behavior heterogeneity is to impose a distribution on $\beta$ such that each decider can have his own sensitivities. This distribution is commonly called mixing distribution.
+
+Formally and to allow for different specifications, we define $\beta = (\alpha, \beta_n)$, where $\alpha$ are the first $P_f$ coefficients that are constant across deciders and $\beta_n$ the last $P_r$ coefficients that are decider-specific. Consequently, $P = P_f + P_r$. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, which typically constitute the (multivariate) normal distribution.^[Popular alternatives including the truncated normal and the uniform distribution are presented in the literature but are not implemented in {RprobitB}.]
+
+Sometimes, even a normal mixing distribution is not flexible enough to model the underlying choice behavior heterogeneity...
 
 RprobitB implemented the approach of [@Oel:20] to approximate the underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution $g_{P_r}$ for the random coefficients[^3] $\beta=(\beta_n)_{n}$ is approximated by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components, i.e.
 
@@ -65,8 +65,6 @@ RprobitB implemented the approach of [@Oel:20] to approximate the underlying mix
 
 where $(s_c)_{c}$ are weights satisfying $0 < s_c\leq 1$ for $c=1,\dots,C$ and $\sum_c s_c=1$.
 
-## Interpreting the latent classes
-
 One interpretation of the latent class model is obtained by introducing variables $z=(z_n)_n$ allocating each decision maker $n$ to class $c$ with probability $s_c$, i.e.
 
 \begin{equation}
@@ -75,14 +73,26 @@ One interpretation of the latent class model is obtained by introducing variable
 
 This interpretation leads to a classification of deciders based on heterogeneous choice behavior.
 
+## Model normalization
+
+As is well known, any utility model needs to be normalized with respect to level and scale in order to be identified [@Train:09]. Therefore, we consider the transformed model
+
+\begin{equation}
+U_{ntj} = W_{ntj}'\alpha + X_{ntj}'\beta_n + \epsilon_{ntj},
+\end{equation}
+
+$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the reference alternative) $U_{ntj}=\tilde{U}_{ntj} - \tilde{U}_{ntJ}$, $W_{ntj}=\tilde{W}_{ntj}-\tilde{W}_{ntJ}$, $X_{ntj}=\tilde{X}_{ntj}-\tilde{X}_{ntJ}$ and $\epsilon_{ntj}=\tilde{\epsilon}_{ntj}-\tilde{\epsilon}_{ntJ}$, where $(\epsilon_{nt:}) = (\epsilon_{nt1},...,\epsilon_{nt(J-1)})'  \sim \text{MVN}_{J-1} (0,\Sigma)$ and $\Sigma$ denotes a covariance matrix with the top-left element restricted to one.[^2]
+
 ## Model complexities
 
 We call the defined model the *latent class mixed multinomial probit model*. Note that the model collapses to the *(normally) mixed multinomial probit model* if $P_r>0$ and $C=1$, to the *multinomial probit model* if $P_r=0$ and to the *binary probit model* if additionally $J=2$.
 
-[^1]: For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, RprobitB allows for unbalanced panels, i.e. varying $T$.
-
 [^2]: RprobitB provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of $\alpha$.
 
 [^3]: We use the abbreviation $(\beta_n)_n$ as a shortcut to $(\beta_n)_{n =1,...,N}$ the collection of vectors $\beta_n,n=1,...,N$.
+
+## Introduce `RprobitB_parameter`.
+
+## Example
 
 ## References
