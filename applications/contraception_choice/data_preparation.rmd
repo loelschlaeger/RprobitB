@@ -1,150 +1,149 @@
 ---
-title: "Documentation of Pairfam Project"
-author: "Lennart OelschlC$ger"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+title: "Data preparation of pairfam"
+author: "Lennart Oelschläger"
+date: "`r Sys.Date()`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warnings = FALSE, eval = FALSE)
-library(dplyr)
-library(ggplot2)
-library(stringr)
-library(reshape2)
-```
+The purpose of this document is to prepare the pairfam dataset for modeling contraception choice.
 
-## The "pairfam" dataset
-"Pairfam" means "Panel Analysis of Intimate Relationships and Family Dynamics" and is a longitudinal study of German family processes. The data is collected annually via surveys from a nationwide random sample of 12,402 persons of the three birth cohorts 1971-73, 1981-83, 1991-93 and their partners, parents and children (multi-actor study). Main respondents are called anchors. 
+## The pairfam dataset
+
+*Pairfam* means *Panel Analysis of Intimate Relationships and Family Dynamics* and is a longitudinal study of German family processes. The data is collected annually via surveys from a nationwide random sample of 12,402 persons of the three birth cohorts 1971-73, 1981-83, 1991-93 and their partners, parents and children (multi-actor study). Main respondents are called anchors. 
 
 ## Read SPSS data and save in R-format
+
 ```{r}
-data = list()
-waves = 11
-for(wave in 1:waves){
+### save data of each wave (11) as one list element
+data <- list()
+for(wave in 1:11){
+  ### path to achors of the 'wave'th wave
+  path <- paste0("data/SPSS/English/anchor",wave,".sav")
   ### convert from SPSS to R
-  data[[wave]] = foreign::read.spss(paste0("data/SPSS/English/anchor",wave,".sav"), to.data.frame=TRUE)
+  data[[wave]] <- foreign::read.spss(file = path, to.data.frame = TRUE)
   ### save columns as character except for id column
-  data[[wave]][,-1] = mutate_all(data[[wave]][,-1],as.character)
+  data[[wave]][,-1] <- dplyr::mutate_all(data[[wave]][,-1], as.character)
 }
-### bind wave rows together
-data = bind_rows(data)
-### sort by id
-data = arrange(data, id)
+### bind rows of waves together
+data <- dplyr::bind_rows(data)
+### sort rows by id
+data <- dplyr::arrange(data, id)
 ### save data
-saveRDS(data,"data/data_from_spss.rds")
+saveRDS(data, "data/data_from_spss.rds")
 ```
 
-### Select relevant covariates
+### Filter for relevant covariates
+
 ```{r}
-data = readRDS("data/data_from_spss.rds")
-data = data %>% select(id, # person id
-                       age, # age
-                       relstat, # relation status
-                       sex5, # use of contraception
-                       sex6i1,sex6i2,sex6i3,sex6i4,sex6i5,sex6i6,sex6i7,sex6i8,sex6i9,sex6i10,sex6i11 # contraception method
-                       )
+data <- readRDS("data/data_from_spss.rds")
+data <- data %>% dplyr::select(
+  id, # person id
+  age, # age
+  relstat, # relation status
+  sex5, # use of contraception
+  sex6i1,sex6i2,sex6i3,sex6i4,sex6i5,sex6i6,sex6i7,sex6i8,sex6i9,sex6i10,sex6i11 # contraception methods
+)
 saveRDS(data,"data/data_filtered.rds")
 ```
 
 ### Encode covariates
-```{r}
-data = readRDS("data/data_filtered.rds")
 
-### Relationstatus
+```{r}
+data <- readRDS("data/data_filtered.rds")
+
+### Relationship status
 ### Covariate: relstat
-### Levels: 0 (single), 1 (relationship)
+### Original levels: 
+### -  1 Never married single
+### -  2 Never married living apart together
+### -  3 Never married cohabiting
+### -  4 Married cohabiting
+### -  5 Married noncohabiting
+### -  6 Divorced/separated single
+### -  7 Divorced/separated living apart together
+### -  8 Divorced/separated cohabiting
+### -  9 Widowed single
+### - 10 Widowed living apart together
+### - 11 Widowed cohabiting
+### New levels: 
+### -  0 single (1, 6, 7, 9)
+### -  1 relationship (2, 3, 4, 5, 8, 10, 11)
 for(row in 1:nrow(data)){
-  x = as.numeric(str_extract(data[row,"relstat"],"[[:digit:]]+"))
-  if(x %in% c(3,4,5,7,8,11)){
-    data[row,"relstat"] = 1
-  } else if(x %in% c(1,6,9)){
-    data[row,"relstat"] = 0
+  x <- as.numeric(stringr::str_extract(data[row,"relstat"],"[[:digit:]]+"))
+  if(x %in% c(2,3,4,5,8,10,11)){
+    data[row,"relstat"] <- 1
+  } else if(x %in% c(1,6,7,9)){
+    data[row,"relstat"] <- 0
   } else {
-    data[row,"relstat"] = NA
+    data[row,"relstat"] <- NA
   }
 }
-data[,"relstat"] = as.numeric(data[,"relstat"])
+data[,"relstat"] <- as.numeric(data[,"relstat"])
 
 ### Contraception: Did you or your partner use some form of contraception in the past three months? 
 ### Covariate: sex5
-### Levels: 1 (yes), 2 (no)
+### Levels: 
+### - 1 (yes)
+### - 2 (no)
+### New covariate: cu (contraception usage)
+### New levels:
+### Levels: 
+### - 0 (no)
+### - 1 (yes)
 for(row in 1:nrow(data)){
-  data[row,"sex5"] = str_extract(data[row,"sex5"],"[[:digit:]]+")
+  data[row,"sex5"] <- stringr::str_extract(data[row,"sex5"],"[[:digit:]]+")
 }
-data[,"sex5"] = as.numeric(data[,"sex5"])
+data[,"cu"] <- as.numeric(data[,"sex5"])
+data <- dplyr::mutate(data, cu = replace(sex5, sex5==2, 0))
+data <- dplyr::select(data, !sex5)
 
 ### Contraception methods: What method(s) did you use primarily? Multiple answers are possible.
-### Birth control pill, mini-pill (sex6i1)
-### Condom (sex6i2)
-### Hormone preparations (sex6i3)
-### Intrauterine devise (IUD) (sex6i4)
-### Diaphragm, foam, suppository, gel (sex6i5)
-### Natural birth control (standard days method, rhythm method) (sex6i6)
-### Hysterectomy/female sterilization (sex6i7)
-### Vasectomy/male sterilization (sex6i8)
-### Withdrawal method, coitus interruptus (sex6i9)
-### The morning-after pill (sex6i10)
-### Something else (sex6i11)
-### Levels: 0 (not mentioned), 1 (mentioned)
-contraception_cov = paste0("sex6i",1:11)
+### Covariates (each level 0: not mentioned and 1: mentioned):
+### - Birth control pill, mini-pill (sex6i1)
+### - Condom (sex6i2)
+### - Hormone preparations (sex6i3)
+### - Intrauterine devise (IUD) (sex6i4)
+### - Diaphragm, foam, suppository, gel (sex6i5)
+### - Natural birth control (standard days method, rhythm method) (sex6i6)
+### - Hysterectomy/female sterilization (sex6i7)
+### - Vasectomy/male sterilization (sex6i8)
+### - Withdrawal method, coitus interruptus (sex6i9)
+### - The morning-after pill (sex6i10)
+### - Something else (sex6i11)
+### New covariates:
+### - cm (levels: combination of '*' in 'sex6i*' and '0' for none)
+### - pill (levels: 1 if 'sex6i1' is 1 and 0 else)
+### - condom (levels: 1 if 'sex6i2' is 1 and 0 else)
+contraception_cov <- paste0("sex6i",1:11)
 for(row in 1:nrow(data)){
   for(cov in contraception_cov){
-    data[row,cov] = str_extract(data[row,cov],"[[:digit:]]+")
+    data[row,cov] <- stringr::str_extract(data[row,cov],"[[:digit:]]+")
   }
 }
 for(cov in contraception_cov){
-  data[,cov] = as.numeric(data[,cov])
+  data[,cov] <- as.numeric(data[,cov])
 }
 for(row in 1:nrow(data)){
-  cm = paste(which(data[row,contraception_cov]==1),collapse="_")
-  if(cm == "") 
-    cm = "none"
-  data[row,"cm"] = cm
+  cm <- paste(which(data[row,contraception_cov]==1), collapse = "|")
+  if(cm == "") cm <- "0"
+  data[row,"cm"] <- cm
 }
+data[, "pill"] <- data[, "sex6i1"]
+data[, "condom"] <- data[, "sex6i2"]
+data <- dplyr::select(data, !contraception_cov)
 
 ### age
-data$age = as.numeric(data$age)
+data$age <- as.numeric(data$age)
 
 saveRDS(data,"data/data_encoded.rds")
 ```
 
-### Histogram of contraception
-```{r, eval = TRUE}
-data = readRDS("data/data_encoded.rds")
-ggplot(data, aes(sex5)) +
-  scale_x_discrete(limits = c("1","2"), labels = c("yes","no")) +
-  geom_bar() +
-  theme_classic() +
-  xlab("Did you or your partner use some form of contraception in the past three months?") +
-  ylab("")
+## Overview
+
+```{r}
+pillar::glimpse(data)
 ```
 
-### Histogram of most frequent contraception method
-```{r, eval = TRUE}
-data = readRDS("data/data_encoded.rds")
-ncon = 8
-data = data %>% filter(cm != "none")
-prom_con = names(sort(table(data$cm),decreasing=TRUE))[1:(ncon-1)]
-for(row in 1:nrow(data)){
-  if(!data[row,"cm"] %in% prom_con || data[row,"cm"] == "11") 
-    data[row,"cm"] = "others"
-}
-ggplot(data, aes(cm)) +
-  geom_bar() +
-  theme_classic() +
-  xlab("Choice of contraception") +
-  ylab("")
-```
-
-### Select decision makers and choice set and model fit
-```{r, eval=TRUE}
-data = readRDS("data/data_encoded.rds")
-data = data[complete.cases(data),]
-data = filter(data, cm != "none")
-data = filter(data, cm %in% c("1","2"))
-data$choice = data$cm
-data = data %>% select(id, choice, age, relstat)
-data = prepare(form = choice ~ 0 | age + relstat + 1, choice_data = data, standardize = "age_1")
-model = mcmc(data)
-predict(model)
-```
+## Checks
