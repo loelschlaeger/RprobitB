@@ -30,8 +30,9 @@
     <a class="dropdown-item" href="../articles/v01_model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
-    <a class="dropdown-item" href="../articles/v04_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
+    <a class="dropdown-item" href="../articles/v05_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
   </div>
 </li>
 <li class="nav-item">
@@ -89,28 +90,28 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_prior.html">check_prior</a></span><span class="op">(</span>P_f <span class="op">=</span> <span class="fl">1</span>, P_r <span class="op">=</span> <span class="fl">2</span>, J <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">draw_from_prior</span><span class="op">(</span><span class="va">prior</span>, C <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.24216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -1.021404</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $s</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7198217 0.2801783</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6028698 0.3971302</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -1.33191121 -2.026042</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.07803845  2.203605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]       [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.07275104  1.8475316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.85167049 -0.1483676</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Omega</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.5267822 0.12195913</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.2835140 0.02664509</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.2835140 0.02664509</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.2065988 0.09819330</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]        [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.4241498  0.23424764</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.4101732 -0.05758353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.4101732 -0.05758353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.5861983  0.32021572</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Sigma</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3275682 0.3862662</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.3862662 0.6890913</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.1475962 -0.6539086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.6539086  1.0417471</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

@@ -6,9 +6,10 @@ articles:
   v01_model_definition: v01_model_definition.html
   v02_choice_data: v02_choice_data.html
   v03_model_fitting: v03_model_fitting.html
-  v04_model_selection: v04_model_selection.html
-  v05_choice_prediction: v05_choice_prediction.html
-last_built: 2022-02-23T12:32Z
+  v04_modeling_heterogeneity: v04_modeling_heterogeneity.html
+  v05_model_selection: v05_model_selection.html
+  v06_choice_prediction: v06_choice_prediction.html
+last_built: 2022-02-23T15:49Z
 urls:
   reference: https://loelschlaeger.de/RprobitB/reference
   article: https://loelschlaeger.de/RprobitB/articles
