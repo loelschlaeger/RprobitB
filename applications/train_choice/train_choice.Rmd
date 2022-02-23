@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library("mlogit")
+library("RprobitB")
+```
+
+See https://cran.r-project.org/web/packages/mlogit/vignettes/c5.mxl.html.
+
+```{r}
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 * 2.20371
+Train$price_B <- Train$price_B / 100 * 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
+```
+
+```{r}
+Train$choiceid <- 1:nrow(Train)
+Tr <- dfidx(Train, choice = "choice", varying = 4:11, sep = "_",
+            opposite = c("price", "comfort", "time", "change"),
+            idx = list(c("choiceid", "id")), idnames = c("chid", "alt"))
+form <- choice ~ price + time + change + comfort | - 1
+mod_mlogit <- mlogit(formula = form, data = Tr)
+coef(summary(mod_mlogit))
+```
+
+```{r}
+form <- choice ~ price + time + change + comfort | 0
+data <- prepare_data(form = form, choice_data = Train)
+mod_RprobitB <- mcmc(data = data)
+summary(mod_RprobitB)
+```
