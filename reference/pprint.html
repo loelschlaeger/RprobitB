@@ -96,7 +96,36 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"single integer"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> single integer : 1</span>
+<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">26</span><span class="op">]</span>, name <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> letters : character vector of length 26 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A B C ... Z</span>
+<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"single column matrix"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> single column matrix : 100 x 1 matrix of doubles </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0.5323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]   -0.5233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]   -0.6566</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...        ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100,] -0.6835</span>
+<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"single row matrix"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> single row matrix : 1 x 100 matrix of integers </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] ... [,100]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    2    3 ...    100</span>
+<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">]</span>, ncol <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"big matrix"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> big matrix : 4 x 6 matrix of characters </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] ... [,6]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    A    E    I ...    U</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    B    F    J ...    V</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    C    G    K ...    W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    D    H    L ...    X</span>
+<span class="r-in"></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
