@@ -9,3 +9,8 @@
 #' @keywords
 #' internal
 NULL
+
+#' @noRd
+rpb <- function() {
+  .Deprecated()
+}
