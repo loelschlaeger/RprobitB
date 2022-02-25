@@ -77,8 +77,9 @@ summary.RprobitB_fit <- function(object, FUN = c(
       P_r = object$data$P_r,
       J = object$data$J,
       C = ifelse(object$data$simulated,
-                 max(object$latent_classes$C, object$data$true_parameter$C),
-                 object$latent_classes$C),
+        max(object$latent_classes$C, object$data$true_parameter$C),
+        object$latent_classes$C
+      ),
       cov_sym = FALSE,
       drop_par = NULL
     ),
