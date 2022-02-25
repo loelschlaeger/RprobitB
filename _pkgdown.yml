@@ -51,6 +51,7 @@ reference:
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:
+  - coef
   - point_estimates
   - choice_probabilities
   - log_likelihood
