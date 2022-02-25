@@ -88,7 +88,6 @@ plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
-#'   \item \code{"effects"} (the default) for visualizing the linear effects.
 #'   \item \code{"mixture"} for visualizing the mixture distribution.
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples.
 #'   \item \code{"trace"} for trace plots of the Gibbs samples.
@@ -110,7 +109,7 @@ plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
 #'
 #' @importFrom graphics par
 
-plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
+plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 
   ### check inputs
   if (!inherits(x, "RprobitB_fit")) {
@@ -119,7 +118,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   if (!(is.character(type) && length(type) == 1)) {
     stop("'type' must be a (single) character.")
   }
-  if (!type %in% c("effects", "mixture", "acf", "trace", "class_seq", "class_allocation")) {
+  if (!type %in% c("mixture", "acf", "trace", "class_seq", "class_allocation")) {
     stop("Unknown 'type'.")
   }
 
@@ -150,22 +149,6 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
     }
   }
   linear_coefs <- rbind(linear_coefs_fe, linear_coefs_re)
-
-  ### make plot type 'effects'
-  if (type == "effects") {
-    if (is.null(linear_coefs$name) || all(!is.element(c("alpha", "b"), par_names))) {
-      warning("Type 'effects' invalid because there are no effects.")
-    } else {
-      graphics::par(
-        mfrow = c(1, 1), oma = c(0, 0, 0, 0),
-        mar = c(3, 6, 1, 1), mgp = c(2, 1, 0), xpd = FALSE
-      )
-      plot_effects(
-        gibbs_samples = x$gibbs_samples,
-        coef_names = linear_coefs$name
-      )
-    }
-  }
 
   ### make plot type 'mixture'
   if (type == "mixture") {
@@ -378,54 +361,6 @@ plot_acf <- function(gibbs_samples, par_labels) {
       )
     )
   }
-}
-
-#' Visualizing the linear effects.
-#'
-#' @description
-#' This function visualizes the linear effects of the covariates on the choices
-#' together with an uncertainty interval of plus / minus one standard deviation.
-#'
-#' @param gibbs_samples
-#' An object of class \code{RprobitB_gibbs_samples}.
-#' @param coef_names
-#' A character vector of coefficient names.
-#'
-#' @return
-#' No return value. Draws a plot to the current device.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-#'
-#' @importFrom stats sd
-#' @importFrom graphics axis segments abline
-
-plot_effects <- function(gibbs_samples, coef_names) {
-
-  ### extract means and sds
-  means <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(mean))[c("alpha", "b")])
-  sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(stats::sd))[c("alpha", "b")])
-
-  ### determine coefficient labels
-  labels <- coef_names
-
-  ### plot means
-  xlim <- c(min(c(means - sds), 0), max(c(means + sds), 0))
-  plot(
-    x = means, y = 1:length(means),
-    yaxt = "n", ylab = "", xlab = "", xlim = xlim, main = ""
-  )
-
-  ### add uncertainty interval
-  graphics::axis(2, at = 1:length(means), labels = labels, las = 1)
-  for (n in 1:length(means)) {
-    graphics::segments(x0 = means[n] - sds[n], y0 = n, x1 = means[n] + sds[n], y1 = n)
-  }
-
-  ### mark zero
-  graphics::abline(v = 0, lty = 2)
 }
 
 #' Plotting mixing distribution contours.

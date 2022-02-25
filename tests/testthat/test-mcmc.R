@@ -11,6 +11,7 @@ test_that("P", {
   model <- mcmc(data, R = 2000, print_progress = FALSE, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("MNP", {
@@ -26,6 +27,7 @@ test_that("MNP", {
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("MMNP", {
@@ -43,6 +45,7 @@ test_that("MMNP", {
   model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("LCMMNP", {
@@ -62,6 +65,7 @@ test_that("LCMMNP", {
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("LCMMNP weight update", {
@@ -83,6 +87,7 @@ test_that("LCMMNP weight update", {
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("LCMMNP DP update", {
@@ -104,6 +109,7 @@ test_that("LCMMNP DP update", {
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })
 
 test_that("LCMMNP weight and DP update", {
@@ -125,4 +131,5 @@ test_that("LCMMNP weight and DP update", {
   )
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
 })

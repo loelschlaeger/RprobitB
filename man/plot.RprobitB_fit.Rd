@@ -4,14 +4,13 @@
 \alias{plot.RprobitB_fit}
 \title{Plot method for \code{RprobitB_fit}}
 \usage{
-\method{plot}{RprobitB_fit}(x, type = "effects", ignore = NULL, ...)
+\method{plot}{RprobitB_fit}(x, type, ignore = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{\link{RprobitB_fit}}.}
 
 \item{type}{The type of plot, which can be one of:
 \itemize{
-\item \code{"effects"} (the default) for visualizing the linear effects.
 \item \code{"mixture"} for visualizing the mixture distribution.
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples.
 \item \code{"trace"} for trace plots of the Gibbs samples.
