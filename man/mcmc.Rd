@@ -82,31 +82,8 @@ See the vignette "Model fitting" for more details:
 \code{vignette("model_fitting", package = "RprobitB")}.
 }
 \examples{
-\dontrun{
-### probit model
-p <- simulate_choices(form = choice ~ var | 0, N = 100, T = 10, J = 2, seed = 1)
-m1 <- mcmc(data = p, seed = 1)
-
-### multinomial probit model
-mnp <- simulate_choices(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
-m2 <- mcmc(data = mnp, seed = 1)
-
-### mixed multinomial probit model
-mmnp <- simulate_choices(
-  form = choice ~ 0 | var, N = 100, T = 10, J = 3, re = "var",
-  seed = 1
-)
-m3 <- mcmc(data = mmnp, seed = 1)
-
-### mixed multinomial probit model with 2 latent classes
-lcmmnp <- simulate_choices(
-  form = choice ~ 0 | var, N = 100, T = 10, J = 3,
-  re = "var", seed = 1, C = 2
-)
-m4 <- mcmc(data = lcmmnp, latent_classes = list("C" = 2), seed = 1)
-
-### update of latent classes
-m5 <- simulate_choices(data = lcmmnp, latent_classes = list("weight_update" = TRUE), seed = 1)
-}
+data <- simulate_choices(form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1)
+mod <- mcmc(data = data, R = 1000, seed = 1)
+summary(mod)
 
 }

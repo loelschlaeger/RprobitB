@@ -55,16 +55,8 @@ print.RprobitB_fit <- function(x, ...) {
   return(invisible(x))
 }
 
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#' @inheritParams RprobitB_gibbs_samples_statistics
-#' @param ...
-#' Ignorded.
-#'
 #' @noRd
-#'
 #' @importFrom stats sd
-#'
 #' @export
 
 summary.RprobitB_fit <- function(object, FUN = c(
@@ -78,16 +70,17 @@ summary.RprobitB_fit <- function(object, FUN = c(
   }
 
   ### compute statistics from 'gibbs_samples'
-  if (object$data$simulated) {
-    C <- max(object$latent_classes$C, object$data$true_parameter$C)
-  } else {
-    C <- object$latent_classes$C
-  }
   statistics <- RprobitB_gibbs_samples_statistics(
     gibbs_samples = filter_gibbs_samples(
       x = object$gibbs_samples,
-      P_f = object$data$P_f, P_r = object$data$P_r,
-      J = object$data$J, C = C, cov_sym = FALSE, drop_par = NULL
+      P_f = object$data$P_f,
+      P_r = object$data$P_r,
+      J = object$data$J,
+      C = ifelse(object$data$simulated,
+                 max(object$latent_classes$C, object$data$true_parameter$C),
+                 object$latent_classes$C),
+      cov_sym = FALSE,
+      drop_par = NULL
     ),
     FUN = FUN
   )
@@ -100,7 +93,7 @@ summary.RprobitB_fit <- function(object, FUN = c(
     "Q" = object$Q,
     "P_f" = object$data$P_f,
     "P_r" = object$data$P_r,
-    "linear_coeffs" = object$data$linear_coeffs,
+    "linear_coefs" = object$data$linear_coefs,
     "J" = object$data$J,
     "alternatives" = object$data$alternatives,
     "normalization" = object$normalization,
@@ -116,15 +109,9 @@ summary.RprobitB_fit <- function(object, FUN = c(
   return(out)
 }
 
-#' @param x
-#' An object of class \code{summary.RprobitB_fit}.
 #' @param digits
 #' The number of printed decimal places.
-#' @param ...
-#' Ignored.
-#'
 #' @noRd
-#'
 #' @export
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
@@ -148,7 +135,7 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 
   ### legend of linear coefficients
   cat("Legend of linear coefficients:\n")
-  print(x$linear_coeffs)
+  print(x$linear_coefs)
   cat("\n")
 
   ### legend of latent classes

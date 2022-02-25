@@ -45,6 +45,7 @@ overview_effects <- function(form, re = NULL, alternatives) {
     }
   }
   colnames(overview) <- c("name", "re")
+  overview$re <- as.logical(overview$re)
 
   ### sort 'overview', first by 'random' and second by appearance in formula
   overview <- overview[order(overview$re, rownames(overview)), ]

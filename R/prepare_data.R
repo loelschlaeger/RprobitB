@@ -201,10 +201,10 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### determine number and names of linear coefficients
-  linear_coeffs <- overview_effects(form, re, alternatives)
-  P_f <- sum(linear_coeffs$re == FALSE)
-  P_r <- sum(linear_coeffs$re == TRUE)
-  linear_coeffs_names <- linear_coeffs$name
+  linear_coefs <- overview_effects(form, re, alternatives)
+  P_f <- sum(linear_coefs$re == FALSE)
+  P_r <- sum(linear_coefs$re == TRUE)
+  linear_coefs_names <- linear_coefs$name
 
   ### add ASCs
   if (ASC) {
@@ -289,7 +289,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       }
 
       ### sort covariates
-      X_nt <- X_nt[, linear_coeffs_names, drop = FALSE]
+      X_nt <- X_nt[, linear_coefs_names, drop = FALSE]
 
       ### save in list
       X_n[[t]] <- X_nt
@@ -317,7 +317,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     form = form,
     re = re,
     ASC = ASC,
-    linear_coeffs = linear_coeffs,
+    linear_coefs = linear_coefs,
     standardize = standardize,
     simulated = FALSE,
     choice_available = choice_available,

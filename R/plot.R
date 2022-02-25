@@ -130,30 +130,30 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
   oldpar <- graphics::par(no.readonly = TRUE)
   on.exit(suppressWarnings(graphics::par(oldpar)))
 
-  ### determine 'par_names' and 'linear_coeffs'
+  ### determine 'par_names' and 'linear_coefs'
   par_names <- c(
     if (x$data$P_f > 0) "alpha",
     if (x$data$P_r > 0) c("s", "b", "Omega"), "Sigma"
   )
   par_names <- setdiff(par_names, ignore)
-  linear_coeffs <- x$data$linear_coeffs[!x$data$linear_coeffs$name %in% ignore, ]
-  linear_coeffs_fe <- linear_coeffs[linear_coeffs$re == FALSE, ]
-  linear_coeffs_re <- linear_coeffs[linear_coeffs$re == TRUE, ]
-  linear_coeffs_re_orig <- linear_coeffs_re
+  linear_coefs <- x$data$linear_coefs[!x$data$linear_coefs$name %in% ignore, ]
+  linear_coefs_fe <- linear_coefs[linear_coefs$re == FALSE, ]
+  linear_coefs_re <- linear_coefs[linear_coefs$re == TRUE, ]
+  linear_coefs_re_orig <- linear_coefs_re
   if (x$latent_classes$C > 1) {
     for (i in 1:x$data$P_r) {
       for (c in 1:x$latent_classes$C) {
-        linear_coeffs_re[nrow(linear_coeffs_re) + 1, ] <-
-          c(paste0(linear_coeffs_re[1, "name"], "_", c), linear_coeffs_re[1, "re"])
+        linear_coefs_re[nrow(linear_coefs_re) + 1, ] <-
+          c(paste0(linear_coefs_re[1, "name"], "_", c), linear_coefs_re[1, "re"])
       }
-      linear_coeffs_re <- linear_coeffs_re[-1, ]
+      linear_coefs_re <- linear_coefs_re[-1, ]
     }
   }
-  linear_coeffs <- rbind(linear_coeffs_fe, linear_coeffs_re)
+  linear_coefs <- rbind(linear_coefs_fe, linear_coefs_re)
 
   ### make plot type 'effects'
   if (type == "effects") {
-    if (is.null(linear_coeffs$name) || all(!is.element(c("alpha", "b"), par_names))) {
+    if (is.null(linear_coefs$name) || all(!is.element(c("alpha", "b"), par_names))) {
       warning("Type 'effects' invalid because there are no effects.")
     } else {
       graphics::par(
@@ -162,21 +162,21 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
       )
       plot_effects(
         gibbs_samples = x$gibbs_samples,
-        coeff_names = linear_coeffs$name
+        coef_names = linear_coefs$name
       )
     }
   }
 
   ### make plot type 'mixture'
   if (type == "mixture") {
-    if (is.null(linear_coeffs_re_orig$name) || !is.element("b", par_names)) {
+    if (is.null(linear_coefs_re_orig$name) || !is.element("b", par_names)) {
       warning("Type 'mixture' invalid because there are no random effects.")
     } else {
       est <- point_estimates(x, FUN = mean)
       true <- x$data$true_parameter
       comb <- expand.grid(
-        1:length(linear_coeffs_re_orig$name),
-        1:length(linear_coeffs_re_orig$name)
+        1:length(linear_coefs_re_orig$name),
+        1:length(linear_coefs_re_orig$name)
       )
       graphics::par(
         mfrow = set_mfrow(nrow(comb)), oma = c(1, 1, 1, 1),
@@ -215,7 +215,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
             weight_true = weight_true,
             sd_est = sd_est,
             sd_true = sd_true,
-            cov_name = linear_coeffs_re$name[p1]
+            cov_name = linear_coefs_re$name[p1]
           )
         } else {
           ### contour plots
@@ -238,7 +238,7 @@ plot.RprobitB_fit <- function(x, type = "effects", ignore = NULL, ...) {
             weight_est = est$s,
             cov_est = cov_est,
             beta_true = beta_true,
-            cov_names = linear_coeffs_re_orig$name[c(p1, p2)]
+            cov_names = linear_coefs_re_orig$name[c(p1, p2)]
           )
         }
       }
@@ -388,7 +388,7 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #'
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
-#' @param coeff_names
+#' @param coef_names
 #' A character vector of coefficient names.
 #'
 #' @return
@@ -402,14 +402,14 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' @importFrom stats sd
 #' @importFrom graphics axis segments abline
 
-plot_effects <- function(gibbs_samples, coeff_names) {
+plot_effects <- function(gibbs_samples, coef_names) {
 
   ### extract means and sds
   means <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(mean))[c("alpha", "b")])
   sds <- unlist(RprobitB_gibbs_samples_statistics(gibbs_samples, list(stats::sd))[c("alpha", "b")])
 
   ### determine coefficient labels
-  labels <- coeff_names
+  labels <- coef_names
 
   ### plot means
   xlim <- c(min(c(means - sds), 0), max(c(means + sds), 0))

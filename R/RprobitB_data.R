@@ -29,7 +29,7 @@
 #' If not specified, the choice set is defined by the observed choices.
 #' @param ASC
 #' A boolean, determining whether the model has ASCs.
-#' @param linear_coeffs
+#' @param linear_coefs
 #' A data frame with the coefficient names and booleans indicating whether
 #' they are connected to random effects.
 #' @param standardize
@@ -57,7 +57,7 @@
 #' constructor
 
 RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                          form, re, ASC, linear_coeffs, standardize, simulated,
+                          form, re, ASC, linear_coefs, standardize, simulated,
                           choice_available, true_parameter, res_var_names) {
 
   ### check inputs
@@ -88,7 +88,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
     "form" = form,
     "re" = re,
     "ASC" = ASC,
-    "linear_coeffs" = linear_coeffs,
+    "linear_coefs" = linear_coefs,
     "standardize" = standardize,
     "choice_available" = choice_available,
     "simulated" = simulated,
@@ -134,7 +134,7 @@ summary.RprobitB_data <- function(object, ...) {
     "simulated" = object$simulated,
     "N" = object$N,
     "T" = object$T,
-    "linear_coeffs" = object$linear_coeffs,
+    "linear_coefs" = object$linear_coefs,
     "alternatives" = alt
   )
   class(out) <- "summary.RprobitB_data"
@@ -177,6 +177,6 @@ print.summary.RprobitB_data <- function(x, ...) {
 
   ### summary of covariates
   cat("Linear coefficients\n")
-  print(x$linear_coeffs)
+  print(x$linear_coefs)
   return(invisible(x))
 }

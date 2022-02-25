@@ -143,10 +143,10 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### determine number and names of linear coefficients
-  linear_coeffs <- overview_effects(form, re, alternatives)
-  P_f <- sum(linear_coeffs$re == FALSE)
-  P_r <- sum(linear_coeffs$re == TRUE)
-  linear_coeffs_names <- linear_coeffs$name
+  linear_coefs <- overview_effects(form, re, alternatives)
+  P_f <- sum(linear_coefs$re == FALSE)
+  P_r <- sum(linear_coefs$re == TRUE)
+  linear_coefs_names <- linear_coefs$name
 
   ### check supplied and draw missing model parameters
   true_parameter <- do.call(
@@ -215,23 +215,23 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       }
 
       ### sort covariates
-      X_nt <- X_nt[, linear_coeffs_names, drop = FALSE]
+      X_nt <- X_nt[, linear_coefs_names, drop = FALSE]
 
       ### save in list
       data[[n]][["X"]][[t]] <- X_nt
 
       ### build coefficient vector
       if (P_f > 0 & P_r > 0) {
-        coeff <- c(true_parameter$alpha, true_parameter$beta[, n])
+        coef <- c(true_parameter$alpha, true_parameter$beta[, n])
       }
       if (P_f > 0 & P_r == 0) {
-        coeff <- true_parameter$alpha
+        coef <- true_parameter$alpha
       }
       if (P_f == 0 & P_r > 0) {
-        coeff <- true_parameter$beta[, n]
+        coef <- true_parameter$beta[, n]
       }
       if (P_f == 0 & P_r == 0) {
-        coeff <- NA
+        coef <- NA
       }
 
       ### compute utility and choice decision
@@ -239,7 +239,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       if (P_f == 0 & P_r == 0) {
         U_nt <- eps
       } else {
-        V_nt <- X_nt %*% coeff
+        V_nt <- X_nt %*% coef
         U_nt <- V_nt + eps
       }
       y_n[t] <- alternatives[which.max(U_nt)]
@@ -269,7 +269,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     form = form,
     re = re,
     ASC = ASC,
-    linear_coeffs = linear_coeffs,
+    linear_coefs = linear_coefs,
     standardize = NULL,
     simulated = TRUE,
     choice_available = TRUE,
