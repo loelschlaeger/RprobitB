@@ -34,5 +34,5 @@ coef(summary(mod_mlogit))
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
 mod_RprobitB <- mcmc(data = data)
-summary(mod_RprobitB)
+coef(mod_RprobitB)
 ```

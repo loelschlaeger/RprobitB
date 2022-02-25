@@ -8,20 +8,15 @@
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
+#' @param scale
+#' A factor by which the coefficients are multiplied.
 #' @param ...
 #' Ignored.
 #'
 #' @export
-
-coef <- function(object, ...) {
-  UseMethod("coef", object)
-}
-
-#' @noRd
-#' @export
 #' @importFrom stats sd
 
-coef.RprobitB_fit <- function(object, ...) {
+coef.RprobitB_fit <- function(object, scale = 1, ...) {
 
   ### compute Gibbs samples statistics
   C <- object$latent_classes$C
@@ -62,6 +57,9 @@ coef.RprobitB_fit <- function(object, ...) {
     coef_class <- c(coef_class, 1:C)
   }
 
+  ### scale
+  coef <- c(scale, scale, scale^2, scale^2) * coef
+
   ### create output
   rownames(coef) <- coef_name
   colnames(coef) <- c("mean_mean", "mean_sd", "sd_mean", "sd_sd")
@@ -83,16 +81,25 @@ print.RprobitB_coef <- function(x, ...) {
     sprintf("%.2f (%.2f)", x[, "mean_mean"], x[, "mean_sd"]),
     sprintf("%.2f (%.2f)", x[, "sd_mean"], x[, "sd_sd"])
   )
-  colnames(out) <- c(" ", "Average Effect", "Variability")
+  colnames(out) <- c(" ", "Average Effect", "Variance")
+  if(all(is.na(x[,c("sd_mean","sd_sd")]))){
+    out <- out[,1:2]
+  }
   print(out)
 }
 
+#' @param sd
+#' The number of standard deviations to display.
+#' @param het
+#' Set to \code{FALSE} to show the standard deviation of the estimate.
+#' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
 #' @noRd
 #' @export
-#' @importFrom ggplot2 aes ggplot geom_vline geom_point geom_errorbar position_dodge theme_minimal labs
+#' @importFrom ggplot2 aes ggplot geom_vline geom_point geom_errorbar
+#' position_dodge theme_minimal labs
 #' @importFrom rlang .data
 
-plot.RprobitB_coef <- function(x, ...) {
+plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
   x <- data.frame(
     "name" = rownames(x),
     "cl" = attr(x, "coef_class"),
@@ -107,21 +114,25 @@ plot.RprobitB_coef <- function(x, ...) {
     ggplot2::geom_vline(aes(xintercept = 0), linetype = 2) +
     ggplot2::geom_point(
       size = 2,
-      position = ggplot2::position_dodge(width = 0.3)
+      position = ggplot2::position_dodge(width = -0.3)
     ) +
     ggplot2::geom_errorbar(ggplot2::aes(
-      xmin = .data$mean_mean - .data$mean_sd,
-      xmax = .data$mean_mean + .data$mean_sd,
-      width = 0.2
+      xmin = .data$mean_mean - sd * .data[[if(het) "sd_mean" else "mean_sd"]] ,
+      xmax = .data$mean_mean + sd * .data[[if(het) "sd_mean" else "mean_sd"]],
+      width = 0
     ),
-    position = ggplot2::position_dodge(width = 0.3)
+    position = ggplot2::position_dodge(width = -0.3)
     ) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       x = "",
       y = "",
       title = "Average effects",
+      subtitle = paste("The horizontal lines show \u00B1", sd,
+                       "standard deviation of the",
+                       ifelse(het, "mixing distribution", "estimate")),
       color = "Class"
     )
-  print(p)
+  suppressWarnings(print(p))
 }
+

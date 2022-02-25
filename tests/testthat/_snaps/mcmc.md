@@ -53,12 +53,12 @@
     Code
       print(coef(model))
     Output
-                    Average Effect Variability
-      1       cost    -0.08 (0.29)     NA (NA)
-      2 income_bus     1.62 (0.68)     NA (NA)
-      3    ASC_bus     1.43 (0.47)     NA (NA)
-      4   time_bus     2.57 (0.74)     NA (NA)
-      5   time_car     2.94 (0.85)     NA (NA)
+                    Average Effect
+      1       cost    -0.08 (0.29)
+      2 income_bus     1.62 (0.68)
+      3    ASC_bus     1.43 (0.47)
+      4   time_bus     2.57 (0.74)
+      5   time_car     2.94 (0.85)
 
 # MNP
 
@@ -124,15 +124,15 @@
     Code
       print(coef(model))
     Output
-                    Average Effect Variability
-      1       cost     0.88 (0.39)     NA (NA)
-      2 income_bus     0.91 (0.58)     NA (NA)
-      3 income_car     0.59 (0.59)     NA (NA)
-      4    ASC_bus     2.53 (0.99)     NA (NA)
-      5    ASC_car     2.60 (0.96)     NA (NA)
-      6   time_bus     3.00 (0.98)     NA (NA)
-      7   time_car     2.48 (0.87)     NA (NA)
-      8 time_train     4.43 (1.40)     NA (NA)
+                    Average Effect
+      1       cost     0.88 (0.39)
+      2 income_bus     0.91 (0.58)
+      3 income_car     0.59 (0.59)
+      4    ASC_bus     2.53 (0.99)
+      5    ASC_car     2.60 (0.96)
+      6   time_bus     3.00 (0.98)
+      7   time_car     2.48 (0.87)
+      8 time_train     4.43 (1.40)
 
 # MMNP
 
@@ -216,7 +216,7 @@
     Code
       print(coef(model))
     Output
-                    Average Effect Variability
+                    Average Effect    Variance
       1 income_bus    -0.13 (0.37)     NA (NA)
       2 income_car     0.77 (0.52)     NA (NA)
       3   time_bus     2.13 (1.26)     NA (NA)
@@ -318,7 +318,7 @@
     Code
       print(coef(model))
     Output
-                     Average Effect Variability
+                     Average Effect    Variance
       1  income_bus    -1.40 (0.48)     NA (NA)
       2  income_car    -1.11 (0.40)     NA (NA)
       3    time_bus     0.29 (0.17)     NA (NA)
@@ -457,7 +457,7 @@
     Code
       print(coef(model))
     Output
-                     Average Effect Variability
+                     Average Effect    Variance
       1     cost [1]    1.64 (0.29) 0.39 (0.18)
       2     cost [2]    1.89 (0.35) 0.44 (0.25)
       3     cost [3]    1.11 (1.05) 0.97 (1.04)
@@ -569,7 +569,7 @@
     Code
       print(coef(model))
     Output
-                    Average Effect Variability
+                    Average Effect    Variance
       1    cost [1]    1.79 (0.22) 0.59 (0.18)
       2    cost [2]    0.29 (0.39) 1.01 (0.69)
       3    cost [3]    0.62 (1.11) 1.78 (2.58)
@@ -716,7 +716,7 @@
     Code
       print(coef(model))
     Output
-                     Average Effect Variability
+                     Average Effect    Variance
       1     cost [1]    1.90 (0.29) 0.71 (0.35)
       2     cost [2]    0.81 (0.88) 1.66 (1.41)
       3     cost [3]    1.05 (1.43) 1.94 (3.16)
