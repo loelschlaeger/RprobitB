@@ -82,8 +82,8 @@ print.RprobitB_coef <- function(x, ...) {
     sprintf("%.2f (%.2f)", x[, "sd_mean"], x[, "sd_sd"])
   )
   colnames(out) <- c(" ", "Average Effect", "Variance")
-  if(all(is.na(x[,c("sd_mean","sd_sd")]))){
-    out <- out[,1:2]
+  if (all(is.na(x[, c("sd_mean", "sd_sd")]))) {
+    out <- out[, 1:2]
   }
   print(out)
 }
@@ -117,8 +117,8 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
       position = ggplot2::position_dodge(width = -0.3)
     ) +
     ggplot2::geom_errorbar(ggplot2::aes(
-      xmin = .data$mean_mean - sd * .data[[if(het) "sd_mean" else "mean_sd"]] ,
-      xmax = .data$mean_mean + sd * .data[[if(het) "sd_mean" else "mean_sd"]],
+      xmin = .data$mean_mean - sd * .data[[if (het) "sd_mean" else "mean_sd"]],
+      xmax = .data$mean_mean + sd * .data[[if (het) "sd_mean" else "mean_sd"]],
       width = 0
     ),
     position = ggplot2::position_dodge(width = -0.3)
@@ -128,11 +128,12 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
       x = "",
       y = "",
       title = "Average effects",
-      subtitle = paste("The horizontal lines show \u00B1", sd,
-                       "standard deviation of the",
-                       ifelse(het, "mixing distribution", "estimate")),
+      subtitle = paste(
+        "The horizontal lines show \u00B1", sd,
+        "standard deviation of the",
+        ifelse(het, "mixing distribution", "estimate")
+      ),
       color = "Class"
     )
   suppressWarnings(print(p))
 }
-
