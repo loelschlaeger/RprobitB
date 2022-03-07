@@ -1,7 +1,5 @@
 ---
 title: "Introduction"
-author: "Lennart Oelschläger"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction}
@@ -16,38 +14,27 @@ knitr::opts_chunk$set(
 )
 ```
 
-Welcome to RprobitB!
+Welcome to {RprobitB}^[The package name is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).], an R package for Bayesian estimation of [the probit model](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html).
 
-## For what tasks is this package designed?
+## The package purpose
 
-With RprobitB[^1] you can 
+1. With {RprobitB}, you can model the driving factors of choices which were made by deciders among a discrete set of alternatives. For example, think of tourists that want to book a flight to their holiday destination. The knowledge why they prefer a certain route over another is of great value for airlines, especially the customer's willingness to pay for say a faster or more comfortable flight alternative.
 
-1. analyze choices made by deciders among a discrete set of alternatives,
+2. Different deciders value different choice attributes differently. For example, it is imaginable that business people place a higher value on flight time and are willing to pay more for a faster route alternative than vacationers. Such choice behavior heterogeneity can be addressed. Furthermore, the package enables to identify groups of decider that share similar preferences.
 
-2. estimate [(latent class) (mixed) (multinomial) probit models](#levels-of-model-complexity) in a Bayesian framework,
+3. Finally, the package enables the prediction of choice behavior when certain choice attributes change, for example the proportion of customers who will choose the competitor's product in the event of a price increase.
 
-3. model heterogeneity by approximating any underlying mixing distributions through a mixture of normal distributions,
+## The workflow
 
-4. identify latent classes of decision makers.
+The functions of {RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. A typical workflow is as follows:
 
-Run `install.packages("RprobitB")` in your R console to install the latest version of RprobitB.
+1. Prepare a choice data set via the `prepare_data()` function or simulate data via `simulate_choices()`. See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html) for details. Both functions return an `RprobitB_data` object that can be fed into the estimation routine.
 
-[^1]: The package name RprobitB is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).
+2. The estimation routine is called `mcmc()` and returns an `RprobitB_fit` object. See the vignettes [on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html) and [on modeling heterogeneity fitting](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html). 
 
-Why the notation **(latent class) (mixed) (multinomial) probit model**? Because RprobitB can fit probit models of increasing complexity:
+3. The `RprobitB_fit` object can be fed into `coef()` to show the covariate effects on the choices and into `predict()` to compute choice probabilities and forecast choice behavior if choice characteristics would change, see [the vignette on choice prediction](https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html).
+   
+4. The function `model_selection()` receives arbitrary many competing `RprobitB_fit` objects and guides through the process of model selection, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-- Most basic, modelling the choice between two alternatives (the **probit model**).
+![The flowchart of {RprobitB}.](flowchart.png){width=80%}
 
-- Considering more than two alternatives leads to the **multinomial probit model**.
-
-- If we incorporate random effects, the model gets the prefix *mixed*.
-
-- The most general model is the **latent class mixed multinomial probit model**, which approximates the mixing distribution through a mixiture of normal distributions.
-
-## A package overview
-
-1. [How is the model defined?](#the-model)
-
-2. [How to prepare or simulate choice data?](data_management.html)
-
-3. [How to fit a model?](model_fitting.html)
