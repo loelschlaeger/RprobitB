@@ -68,7 +68,9 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   probabilities <- as.data.frame(probabilities)
 
   ### add decision maker ids
-  probabilities <- cbind(data$choice_data$id, data$choice_data$idc, probabilities)
+  probabilities <- cbind(data$choice_data[[data$res_var_names[["id"]]]],
+                         data$choice_data[[data$res_var_names[["idc"]]]],
+                         probabilities)
   colnames(probabilities) <- c("id", "idc", data$alternatives)
   rownames(probabilities) <- NULL
 
