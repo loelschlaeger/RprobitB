@@ -4,10 +4,12 @@
 \alias{plot.RprobitB_data}
 \title{Plot method for \code{RprobitB_data}}
 \usage{
-\method{plot}{RprobitB_data}(x, alpha = 0.9, position = "identity", ...)
+\method{plot}{RprobitB_data}(x, by_choice = FALSE, alpha = 1, position = "dodge", ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
+
+\item{by_choice}{Set to \code{TRUE} to group the covariates by the chosen alternatives.}
 
 \item{alpha, position}{Passed to \code{\link[ggplot2]{ggplot}}.}
 

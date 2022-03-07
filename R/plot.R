@@ -30,7 +30,7 @@
 #'  alternatives = c("bus", "car"),
 #'  alpha = -1
 #' )
-#' plot(data)
+#' plot(data, by_choice = TRUE)
 
 plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1, position = "dodge", ...) {
 
