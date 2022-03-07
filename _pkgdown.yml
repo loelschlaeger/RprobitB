@@ -23,10 +23,9 @@ navbar:
   components:
     news:
       text: Updates
-      href: NEWS.md
     plans:
       text: Plans
-      href: build/TODO.md
+      href: https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md
 
 reference:
 - title: Datasets
