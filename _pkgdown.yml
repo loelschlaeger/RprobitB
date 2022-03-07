@@ -51,7 +51,7 @@ reference:
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:
-  - coef
+  - coef.RprobitB_fit
   - point_estimates
   - choice_probabilities
   - log_likelihood
