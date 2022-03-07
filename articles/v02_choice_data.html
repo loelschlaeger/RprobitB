@@ -216,34 +216,25 @@
 <p>The <code>summary</code> and <code>plot</code> methods provide a quick data overview:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt; Summary of empirical choice data</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 235 decision makers </span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Summary of empirical choice data</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>235 decision makers </span>
 <span class="co">#&gt; 5 to 19 choice occasions each </span>
 <span class="co">#&gt; 2929 choices in total</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Alternatives</span>
-<span class="co">#&gt;   frequency</span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Alternatives</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>  frequency</span>
 <span class="co">#&gt; A      1474</span>
 <span class="co">#&gt; B      1455</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Linear coefficients</span>
-<span class="co">#&gt;      name    re</span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Linear coefficients</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>     name    re</span>
 <span class="co">#&gt; 1 comfort FALSE</span>
 <span class="co">#&gt; 2  change FALSE</span>
 <span class="co">#&gt; 3   ASC_A FALSE</span>
 <span class="co">#&gt; 4   price  TRUE</span>
 <span class="co">#&gt; 5    time  TRUE</span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
-<span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></code></pre></div>
 <p><img src="v02_choice_data_files/figure-html/plot%20Train-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -311,19 +302,18 @@
   C <span class="op">=</span> <span class="fl">2</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt; Summary of simulated choice data</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 100 decision makers </span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Summary of simulated choice data</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>100 decision makers </span>
 <span class="co">#&gt; 10 choice occasions each </span>
 <span class="co">#&gt; 1000 choices in total</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Alternatives</span>
-<span class="co">#&gt;     frequency</span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Alternatives</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>    frequency</span>
 <span class="co">#&gt; bus       561</span>
 <span class="co">#&gt; car       439</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Linear coefficients</span>
-<span class="co">#&gt;         name    re</span>
+<span class="co">#&gt; <span style="text-decoration: underline;">Linear coefficients</span></span>
+<span class="co"><span style="text-decoration: underline;">#&gt; </span>        name    re</span>
 <span class="co">#&gt; 1 income_bus FALSE</span>
 <span class="co">#&gt; 2    ASC_bus FALSE</span>
 <span class="co">#&gt; 3       cost  TRUE</span>
