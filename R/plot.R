@@ -5,6 +5,8 @@
 #'
 #' @param x
 #' An object of class \code{RprobitB_data}.
+#' @param by_choice
+#' Set to \code{TRUE} to group the covariates by the chosen alternatives.
 #' @param alpha,position
 #' Passed to \code{\link[ggplot2]{ggplot}}.
 #' @param ...
@@ -30,37 +32,53 @@
 #' )
 #' plot(data)
 
-plot.RprobitB_data <- function(x, alpha = 0.9, position = "identity", ...) {
+plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1, position = "dodge", ...) {
 
+  ### extract the data to be plotted
   data_red <- cbind(x$choice_data[!names(x$choice_data) %in% x$res_var_names[c("id","idc")]])
 
+  ### transform covariates with less than 10 values to factors
+  for(i in 1:ncol(data_red)){
+    if(length(unique(data_red[,i])) < 10){
+      data_red[,i] <- as.factor(data_red[,i])
+    }
+  }
+
+  ### create basis of plot
   base_plot <- ggplot2::ggplot(data = data_red) +
     ggplot2::theme_bw() +
-    ggplot2::theme(legend.position="none")
+    ggplot2::scale_fill_brewer(palette="Set1") +
+    ggplot2::scale_color_brewer(palette="Set1") +
+    ggplot2::theme(legend.position="none") +
+    ggplot2::labs(y = "")
 
   plots <- list()
 
   plots[[1]] <-  base_plot + ggplot2::geom_bar(
     mapping = ggplot2::aes(x = .data[[x$res_var_names$choice]],
-                           fill = .data[[x$res_var_names$choice]]),
+                           fill = if(by_choice) .data[[x$res_var_names$choice]] else NULL),
     position = position, alpha = alpha)
 
   for(cov in setdiff(names(data_red), x$res_var_names$choice)) {
 
-    if(length(unique(data_red[[cov]])) < 0.2 * length(data_red[[cov]])){
-      p <- ggplot2::geom_histogram(mapping = ggplot2::aes(x = .data[[cov]],
-                                                          fill = .data[[x$res_var_names$choice]]),
-                                   position = position, alpha = alpha)
+    if(is.factor(data_red[[cov]])){
+      p <- ggplot2::geom_bar(
+        mapping = ggplot2::aes(x = .data[[cov]],
+                               fill = if(by_choice) .data[[x$res_var_names$choice]] else NULL),
+        position = position, alpha = alpha
+        )
     } else {
-      p <- ggplot2::geom_density(mapping = ggplot2::aes(x = .data[[cov]],
-                                                        fill = .data[[x$res_var_names$choice]]),
-                                 position = position, alpha = alpha)
+      p <- ggplot2::geom_freqpoly(
+        mapping = ggplot2::aes(x = .data[[cov]],
+                               color = if(by_choice) .data[[x$res_var_names$choice]] else NULL),
+        alpha = alpha
+        )
     }
 
     plots[[length(plots)+1]] <- base_plot + p
   }
 
-  gridExtra::grid.arrange(grobs = plots)
+  suppressMessages(gridExtra::grid.arrange(grobs = plots))
 }
 
 #' Plot method for \code{RprobitB_fit}
