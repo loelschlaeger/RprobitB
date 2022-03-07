@@ -1,4 +1,4 @@
-#' Create object of class \code{RprobitB_parameter}.
+#' Create object of class \code{RprobitB_parameter}
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_parameter}.
@@ -231,7 +231,8 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
 
 #' @noRd
 #' @param ...
-#' Names of parameters to be printed. If not specified, all parameters are printed.
+#' Names of parameters to be printed. If not specified, all parameters are
+#' printed.
 #' @param digits
 #' The number of printed decimal places.
 #' @export
