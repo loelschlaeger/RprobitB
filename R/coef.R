@@ -83,7 +83,7 @@ print.RprobitB_coef <- function(x, ...) {
     sprintf("%.2f", x[, "sd_mean"]),
     sprintf("(%.2f)", x[, "sd_sd"])
   )
-  colnames(out) <- c(" ", "Estimate", "(sd)", "Variance",  "(sd)")
+  colnames(out) <- c(" ", "Estimate", "(sd)", "Variance", "(sd)")
   if (all(is.na(x[, c("sd_mean", "sd_sd")]))) {
     out <- out[, 1:3]
   }
