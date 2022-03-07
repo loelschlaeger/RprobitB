@@ -152,8 +152,7 @@ print.summary.RprobitB_data <- function(x, ...) {
   cat(crayon::underline(
     "Summary of", ifelse(x$simulated, "simulated", "empirical"),
     "choice data\n"
-  )
-  )
+  ))
 
   ### summary of decision makers
   cat(x$N, paste0("decision maker", ifelse(x$N == 1, "", "s")), "\n")
