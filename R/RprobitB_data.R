@@ -145,12 +145,14 @@ summary.RprobitB_data <- function(object, ...) {
 
 
 #' @export
+#' @importFrom crayon underline
 #' @noRd
 
 print.summary.RprobitB_data <- function(x, ...) {
-  cat(
+  cat(crayon::underline(
     "Summary of", ifelse(x$simulated, "simulated", "empirical"),
-    "choice data\n\n"
+    "choice data\n"
+  )
   )
 
   ### summary of decision makers
@@ -171,12 +173,12 @@ print.summary.RprobitB_data <- function(x, ...) {
   cat("\n")
 
   ### summary of alternatives
-  cat("Alternatives\n")
+  cat(crayon::underline("Alternatives\n"))
   print(x$alternatives)
   cat("\n")
 
   ### summary of covariates
-  cat("Linear coefficients\n")
+  cat(crayon::underline("Linear coefficients\n"))
   print(x$linear_coefs)
   return(invisible(x))
 }
