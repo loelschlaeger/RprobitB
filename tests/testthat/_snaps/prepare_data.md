@@ -11,7 +11,6 @@
       summary(data)
     Output
       Summary of empirical choice data
-      
       235 decision makers 
       5 to 19 choice occasions each 
       2929 choices in total
@@ -44,7 +43,6 @@
       summary(data)
     Output
       Summary of empirical choice data
-      
       235 decision makers 
       5 to 19 choice occasions each 
       2929 choices in total
@@ -77,7 +75,6 @@
       summary(data)
     Output
       Summary of empirical choice data
-      
       235 decision makers 
       5 to 19 choice occasions each 
       2929 choices in total
@@ -122,7 +119,6 @@
       summary(data[[i]])
     Output
       Summary of empirical choice data
-      
       165 decision makers 
       5 to 19 choice occasions each 
       2055 choices in total
@@ -155,7 +151,6 @@
       summary(data[[i]])
     Output
       Summary of empirical choice data
-      
       70 decision makers 
       5 to 18 choice occasions each 
       874 choices in total

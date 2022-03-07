@@ -11,7 +11,6 @@
       summary(data)
     Output
       Summary of simulated choice data
-      
       10 decision makers 
       1 to 10 choice occasions each 
       55 choices in total
@@ -42,7 +41,6 @@
       summary(data)
     Output
       Summary of simulated choice data
-      
       10 decision makers 
       1 to 10 choice occasions each 
       55 choices in total
@@ -77,7 +75,6 @@
       summary(data)
     Output
       Summary of simulated choice data
-      
       10 decision makers 
       1 to 10 choice occasions each 
       55 choices in total
@@ -112,7 +109,6 @@
       summary(data)
     Output
       Summary of simulated choice data
-      
       10 decision makers 
       1 to 10 choice occasions each 
       55 choices in total
