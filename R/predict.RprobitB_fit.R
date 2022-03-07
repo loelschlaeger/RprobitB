@@ -47,9 +47,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
   }
 
   ### predict
-  prediction <- factor(apply(choice_probs[data$alternatives], 1, which.max),
-    labels = data$alternatives
-  )
+  prediction <- data$alternatives[apply(choice_probs[data$alternatives], 1, which.max)]
 
   ### create and return output
   if (overview) {
