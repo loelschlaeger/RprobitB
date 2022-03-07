@@ -92,6 +92,7 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 #' @noRd
 #'
 #' @export
+#' @importFrom crayon underline
 
 print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, ...) {
 
@@ -116,7 +117,7 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, 
     cw <- max(digits + 5, max(nchar(cols)) + 1)
 
     ### print header of table
-    cat("Parameter statistics:\n")
+    cat(crayon::underline("Parameter statistics\n"))
     header <- sprintf("%6s", " ")
     if (!is.null(true)) {
       header <- paste0(header, sprintf(paste0("%", cw + 1, "s"), "true"))

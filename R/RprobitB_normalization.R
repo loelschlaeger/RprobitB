@@ -101,21 +101,22 @@ RprobitB_normalization <- function(J, P_f, level = J, scale = list("parameter" =
 
 #' @noRd
 #' @export
+#' @importFrom crayon underline
 
 print.RprobitB_normalization <- function(x, ...) {
-  cat("Normalization:\n")
+  cat(crayon::underline("Normalization\n"))
   cat(paste0(
-    "- Level: Utility differences with respect to alternative ",
+    "Level: Utility differences with respect to alternative ",
     x$level, ".\n"
   ))
   if (x$scale$parameter == "a") {
-    norm_scale <- paste0(x$cov_fix[x$scale$index], " (alpha_", x$scale$index, ")")
+    norm_scale <- paste0("alpha_", x$scale$index)
   }
   if (x$scale$parameter == "s") {
     norm_scale <- paste0("the ", x$scale$index, ". error term variance in Sigma")
   }
   cat(paste0(
-    "- Scale: Coefficient of ", norm_scale, " fixed to ", x$scale$value,
+    "Scale: Coefficient of ", norm_scale, " fixed to ", x$scale$value,
     ".\n"
   ))
   return(invisible(x))

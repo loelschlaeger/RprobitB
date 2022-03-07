@@ -1,4 +1,4 @@
-#' Compute point estimates of an \code{RprobitB_fit}.
+#' Compute point estimates of an \code{RprobitB_fit}
 #'
 #' @description
 #' This function computes the point estimates of an \code{\link{RprobitB_fit}}.

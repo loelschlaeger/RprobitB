@@ -116,27 +116,15 @@ summary.RprobitB_fit <- function(object, FUN = c(
 #' @export
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
-  cat("Probit model '", deparse1(x$form), "'.\n\n", sep = "")
-
-  ### summary of model
-  cat("MCMC settings:\n")
-  cat("- R:", x$R, "\n")
-  cat("- B:", x$B, "\n")
-  cat("- Q:", x$Q, "\n")
+  cat(crayon::underline("Probit model\n"))
+  cat(deparse1(x$form), "\n")
+  cat("R:", x$R, "\n")
+  cat("B:", x$B, "\n")
+  cat("Q:", x$Q, "\n")
   cat("\n")
 
   ### summary of normalization
   print(x$normalization)
-  cat("\n")
-
-  ### legend of alternatives
-  cat("Legend of alternatives:\n")
-  print(data.frame("name" = x$alternatives))
-  cat("\n")
-
-  ### legend of linear coefficients
-  cat("Legend of linear coefficients:\n")
-  print(x$linear_coefs)
   cat("\n")
 
   ### legend of latent classes

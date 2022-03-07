@@ -200,7 +200,8 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
 
 check_prior <- function(P_f, P_r, J, eta = numeric(P_f), Psi = diag(P_f),
                         delta = 1, xi = numeric(P_r), D = diag(P_r),
-                        nu = P_r + 2, Theta = diag(P_r), kappa = J + 1, E = diag(J - 1)) {
+                        nu = P_r + 2, Theta = diag(P_r), kappa = J + 1,
+                        E = diag(J - 1)) {
 
   ### initialize prior list
   prior <- list()

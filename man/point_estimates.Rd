@@ -2,7 +2,7 @@
 % Please edit documentation in R/point_estimates.R
 \name{point_estimates}
 \alias{point_estimates}
-\title{Compute point estimates of an \code{RprobitB_fit}.}
+\title{Compute point estimates of an \code{RprobitB_fit}}
 \usage{
 point_estimates(x, FUN = mean)
 }
