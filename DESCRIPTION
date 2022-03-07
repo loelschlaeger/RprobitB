@@ -37,7 +37,8 @@ Imports:
     doSNOW,
     foreach,
     progress,
-    gridExtra
+    gridExtra,
+    crayon
 LinkingTo:
     Rcpp,
     RcppArmadillo

@@ -30,5 +30,5 @@ data <- simulate_choices(
  alternatives = c("bus", "car"),
  alpha = -1
 )
-plot(data)
+plot(data, by_choice = TRUE)
 }
