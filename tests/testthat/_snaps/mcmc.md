@@ -10,31 +10,17 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost | income | time'.
+      Probit model
+      choice ~ cost | income | time 
+      R: 2000 
+      B: 1000 
+      Q: 1 
       
-      MCMC settings:
-      - R: 2000 
-      - B: 1000 
-      - Q: 1 
+      Normalization
+      Level: Utility differences with respect to alternative 2.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
-      Normalization:
-      - Level: Utility differences with respect to alternative 2.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-        name
-      1  bus
-      2  car
-      
-      Legend of linear coefficients:
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3    ASC_bus FALSE
-      4   time_bus FALSE
-      5   time_car FALSE
-      
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -53,12 +39,12 @@
     Code
       print(coef(model))
     Output
-                    Average Effect
-      1       cost    -0.08 (0.29)
-      2 income_bus     1.62 (0.68)
-      3    ASC_bus     1.43 (0.47)
-      4   time_bus     2.57 (0.74)
-      5   time_car     2.94 (0.85)
+                    Estimate   (sd)
+      1       cost     -0.08 (0.29)
+      2 income_bus      1.62 (0.68)
+      3    ASC_bus      1.43 (0.47)
+      4   time_bus      2.57 (0.74)
+      5   time_car      2.94 (0.85)
 
 # MNP
 
@@ -72,35 +58,17 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost | income | time'.
+      Probit model
+      choice ~ cost | income | time 
+      R: 1000 
+      B: 500 
+      Q: 1 
       
-      MCMC settings:
-      - R: 1000 
-      - B: 500 
-      - Q: 1 
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-              name    re
-      1       cost FALSE
-      2 income_bus FALSE
-      3 income_car FALSE
-      4    ASC_bus FALSE
-      5    ASC_car FALSE
-      6   time_bus FALSE
-      7   time_car FALSE
-      8 time_train FALSE
-      
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -124,15 +92,15 @@
     Code
       print(coef(model))
     Output
-                    Average Effect
-      1       cost     0.88 (0.39)
-      2 income_bus     0.91 (0.58)
-      3 income_car     0.59 (0.59)
-      4    ASC_bus     2.53 (0.99)
-      5    ASC_car     2.60 (0.96)
-      6   time_bus     3.00 (0.98)
-      7   time_car     2.48 (0.87)
-      8 time_train     4.43 (1.40)
+                    Estimate   (sd)
+      1       cost      0.88 (0.39)
+      2 income_bus      0.91 (0.58)
+      3 income_car      0.59 (0.59)
+      4    ASC_bus      2.53 (0.99)
+      5    ASC_car      2.60 (0.96)
+      6   time_bus      3.00 (0.98)
+      7   time_car      2.48 (0.87)
+      8 time_train      4.43 (1.40)
 
 # MMNP
 
@@ -146,37 +114,19 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost | income | time'.
+      Probit model
+      choice ~ cost | income | time 
+      R: 1000 
+      B: 500 
+      Q: 1 
       
-      MCMC settings:
-      - R: 1000 
-      - B: 500 
-      - Q: 1 
-      
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-              name    re
-      1 income_bus FALSE
-      2 income_car FALSE
-      3   time_bus FALSE
-      4   time_car FALSE
-      5 time_train FALSE
-      6       cost  TRUE
-      7    ASC_bus  TRUE
-      8    ASC_car  TRUE
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       Number of latent classes: 1 
       
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -216,15 +166,15 @@
     Code
       print(coef(model))
     Output
-                    Average Effect    Variance
-      1 income_bus    -0.13 (0.37)     NA (NA)
-      2 income_car     0.77 (0.52)     NA (NA)
-      3   time_bus     2.13 (1.26)     NA (NA)
-      4   time_car     3.96 (2.54)     NA (NA)
-      5 time_train     2.37 (1.55)     NA (NA)
-      6    cost [1]    0.92 (0.80) 1.79 (2.43)
-      7 ASC_bus [1]    0.82 (0.91) 1.30 (2.06)
-      8 ASC_car [1]    1.06 (0.80) 1.35 (2.68)
+                    Estimate   (sd) Variance   (sd)
+      1 income_bus     -0.13 (0.37)       NA   (NA)
+      2 income_car      0.77 (0.52)       NA   (NA)
+      3   time_bus      2.13 (1.26)       NA   (NA)
+      4   time_car      3.96 (2.54)       NA   (NA)
+      5 time_train      2.37 (1.55)       NA   (NA)
+      6    cost [1]     0.92 (0.80)     1.79 (2.43)
+      7 ASC_bus [1]     0.82 (0.91)     1.30 (2.06)
+      8 ASC_car [1]     1.06 (0.80)     1.35 (2.68)
 
 # LCMMNP
 
@@ -238,37 +188,19 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost | income | time'.
+      Probit model
+      choice ~ cost | income | time 
+      R: 500 
+      B: 250 
+      Q: 1 
       
-      MCMC settings:
-      - R: 500 
-      - B: 250 
-      - Q: 1 
-      
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-              name    re
-      1 income_bus FALSE
-      2 income_car FALSE
-      3   time_bus FALSE
-      4   time_car FALSE
-      5 time_train FALSE
-      6       cost  TRUE
-      7    ASC_bus  TRUE
-      8    ASC_car  TRUE
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       Number of latent classes: 2 
       
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -318,18 +250,18 @@
     Code
       print(coef(model))
     Output
-                     Average Effect    Variance
-      1  income_bus    -1.40 (0.48)     NA (NA)
-      2  income_car    -1.11 (0.40)     NA (NA)
-      3    time_bus     0.29 (0.17)     NA (NA)
-      4    time_car     1.77 (0.50)     NA (NA)
-      5  time_train    -1.47 (0.38)     NA (NA)
-      6     cost [1]   -2.11 (0.80) 1.84 (1.43)
-      7     cost [2]    0.19 (0.37) 0.71 (0.64)
-      8  ASC_bus [1]   -1.29 (0.56) 0.73 (0.70)
-      9  ASC_bus [2]   -0.11 (0.48) 0.71 (0.58)
-      10 ASC_car [1]   -1.56 (0.72) 0.88 (0.66)
-      11 ASC_car [2]    0.84 (0.49) 1.43 (2.24)
+                     Estimate   (sd) Variance   (sd)
+      1  income_bus     -1.40 (0.48)       NA   (NA)
+      2  income_car     -1.11 (0.40)       NA   (NA)
+      3    time_bus      0.29 (0.17)       NA   (NA)
+      4    time_car      1.77 (0.50)       NA   (NA)
+      5  time_train     -1.47 (0.38)       NA   (NA)
+      6     cost [1]    -2.11 (0.80)     1.84 (1.43)
+      7     cost [2]     0.19 (0.37)     0.71 (0.64)
+      8  ASC_bus [1]    -1.29 (0.56)     0.73 (0.70)
+      9  ASC_bus [2]    -0.11 (0.48)     0.71 (0.58)
+      10 ASC_car [1]    -1.56 (0.72)     0.88 (0.66)
+      11 ASC_car [2]     0.84 (0.49)     1.43 (2.24)
 
 # LCMMNP weight update
 
@@ -343,28 +275,15 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost'.
+      Probit model
+      choice ~ cost 
+      R: 500 
+      B: 250 
+      Q: 1 
       
-      MCMC settings:
-      - R: 500 
-      - B: 250 
-      - Q: 1 
-      
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-           name   re
-      1    cost TRUE
-      2 ASC_bus TRUE
-      3 ASC_car TRUE
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       DP-based update: FALSE 
       Weight-based update: TRUE 
@@ -375,7 +294,7 @@
       - Maximum class weight: 0.9 
       - Mimumum class distance: 0.1 
       
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        s
                                             
@@ -457,25 +376,25 @@
     Code
       print(coef(model))
     Output
-                     Average Effect    Variance
-      1     cost [1]    1.64 (0.29) 0.39 (0.18)
-      2     cost [2]    1.89 (0.35) 0.44 (0.25)
-      3     cost [3]    1.11 (1.05) 0.97 (1.04)
-      4     cost [4]    0.48 (0.83) 1.16 (0.97)
-      5     cost [5]    0.38 (0.93) 1.21 (1.38)
-      6     cost [6]    0.13 (0.76) 1.25 (2.07)
-      7  ASC_bus [1]    2.71 (0.54) 1.85 (0.75)
-      8  ASC_bus [2]    1.05 (0.48) 0.53 (0.33)
-      9  ASC_bus [3]   -0.71 (1.15) 1.18 (0.94)
-      10 ASC_bus [4]   -1.34 (1.09) 1.48 (2.03)
-      11 ASC_bus [5]    0.08 (0.99) 1.45 (2.84)
-      12 ASC_bus [6]    0.14 (0.89) 0.99 (1.33)
-      13 ASC_car [1]    0.78 (0.22) 0.37 (0.22)
-      14 ASC_car [2]    0.79 (0.28) 0.30 (0.16)
-      15 ASC_car [3]   -0.81 (1.20) 1.31 (2.01)
-      16 ASC_car [4]   -1.69 (0.97) 1.63 (1.71)
-      17 ASC_car [5]   -0.16 (1.00) 1.36 (1.56)
-      18 ASC_car [6]   -0.01 (0.80) 1.11 (1.68)
+                     Estimate   (sd) Variance   (sd)
+      1     cost [1]     1.64 (0.29)     0.39 (0.18)
+      2     cost [2]     1.89 (0.35)     0.44 (0.25)
+      3     cost [3]     1.11 (1.05)     0.97 (1.04)
+      4     cost [4]     0.48 (0.83)     1.16 (0.97)
+      5     cost [5]     0.38 (0.93)     1.21 (1.38)
+      6     cost [6]     0.13 (0.76)     1.25 (2.07)
+      7  ASC_bus [1]     2.71 (0.54)     1.85 (0.75)
+      8  ASC_bus [2]     1.05 (0.48)     0.53 (0.33)
+      9  ASC_bus [3]    -0.71 (1.15)     1.18 (0.94)
+      10 ASC_bus [4]    -1.34 (1.09)     1.48 (2.03)
+      11 ASC_bus [5]     0.08 (0.99)     1.45 (2.84)
+      12 ASC_bus [6]     0.14 (0.89)     0.99 (1.33)
+      13 ASC_car [1]     0.78 (0.22)     0.37 (0.22)
+      14 ASC_car [2]     0.79 (0.28)     0.30 (0.16)
+      15 ASC_car [3]    -0.81 (1.20)     1.31 (2.01)
+      16 ASC_car [4]    -1.69 (0.97)     1.63 (1.71)
+      17 ASC_car [5]    -0.16 (1.00)     1.36 (1.56)
+      18 ASC_car [6]    -0.01 (0.80)     1.11 (1.68)
 
 # LCMMNP DP update
 
@@ -489,35 +408,22 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost'.
+      Probit model
+      choice ~ cost 
+      R: 500 
+      B: 250 
+      Q: 1 
       
-      MCMC settings:
-      - R: 500 
-      - B: 250 
-      - Q: 1 
-      
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-           name   re
-      1    cost TRUE
-      2 ASC_bus TRUE
-      3 ASC_car TRUE
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       DP-based update: TRUE 
       Weight-based update: FALSE 
       - Initial classes: 3 
       - Maximum classes: 10 
       
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        s
                                             
@@ -569,16 +475,16 @@
     Code
       print(coef(model))
     Output
-                    Average Effect    Variance
-      1    cost [1]    1.79 (0.22) 0.59 (0.18)
-      2    cost [2]    0.29 (0.39) 1.01 (0.69)
-      3    cost [3]    0.62 (1.11) 1.78 (2.58)
-      4 ASC_bus [1]    1.81 (0.23) 1.42 (0.56)
-      5 ASC_bus [2]   -1.69 (0.58) 1.26 (1.29)
-      6 ASC_bus [3]    1.02 (1.34) 1.79 (3.03)
-      7 ASC_car [1]    0.79 (0.17) 0.28 (0.15)
-      8 ASC_car [2]   -1.90 (0.67) 1.83 (2.08)
-      9 ASC_car [3]    0.21 (1.30) 1.44 (1.51)
+                    Estimate   (sd) Variance   (sd)
+      1    cost [1]     1.79 (0.22)     0.59 (0.18)
+      2    cost [2]     0.29 (0.39)     1.01 (0.69)
+      3    cost [3]     0.62 (1.11)     1.78 (2.58)
+      4 ASC_bus [1]     1.81 (0.23)     1.42 (0.56)
+      5 ASC_bus [2]    -1.69 (0.58)     1.26 (1.29)
+      6 ASC_bus [3]     1.02 (1.34)     1.79 (3.03)
+      7 ASC_car [1]     0.79 (0.17)     0.28 (0.15)
+      8 ASC_car [2]    -1.90 (0.67)     1.83 (2.08)
+      9 ASC_car [3]     0.21 (1.30)     1.44 (1.51)
 
 # LCMMNP weight and DP update
 
@@ -592,28 +498,15 @@
     Code
       summary(model)
     Output
-      Probit model 'choice ~ cost'.
+      Probit model
+      choice ~ cost 
+      R: 500 
+      B: 250 
+      Q: 1 
       
-      MCMC settings:
-      - R: 500 
-      - B: 250 
-      - Q: 1 
-      
-      Normalization:
-      - Level: Utility differences with respect to alternative 3.
-      - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-      
-      Legend of alternatives:
-         name
-      1   bus
-      2   car
-      3 train
-      
-      Legend of linear coefficients:
-           name   re
-      1    cost TRUE
-      2 ASC_bus TRUE
-      3 ASC_car TRUE
+      Normalization
+      Level: Utility differences with respect to alternative 3.
+      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
       DP-based update: TRUE 
       Weight-based update: TRUE 
@@ -624,7 +517,7 @@
       - Maximum class weight: 0.9 
       - Mimumum class distance: 0.1 
       
-      Parameter statistics:
+      Parameter statistics
                 true    mean      sd      R^
        s
                                             
@@ -716,26 +609,26 @@
     Code
       print(coef(model))
     Output
-                     Average Effect    Variance
-      1     cost [1]    1.90 (0.29) 0.71 (0.35)
-      2     cost [2]    0.81 (0.88) 1.66 (1.41)
-      3     cost [3]    1.05 (1.43) 1.94 (3.16)
-      4     cost [4]    0.54 (1.27) 2.46 (2.91)
-      5     cost [5]    0.33 (1.09) 2.25 (3.55)
-      6     cost [6]    0.10 (0.94) 2.28 (3.45)
-      7     cost [7]    0.17 (1.19) 2.25 (3.21)
-      8  ASC_bus [1]    1.88 (0.34) 1.47 (0.43)
-      9  ASC_bus [2]   -0.15 (2.05) 2.17 (2.90)
-      10 ASC_bus [3]   -0.75 (1.45) 1.92 (2.26)
-      11 ASC_bus [4]    0.75 (2.11) 2.13 (2.65)
-      12 ASC_bus [5]   -0.54 (1.50) 2.08 (2.41)
-      13 ASC_bus [6]    0.05 (1.15) 2.24 (3.32)
-      14 ASC_bus [7]   -0.18 (1.26) 2.03 (4.00)
-      15 ASC_car [1]    0.81 (0.26) 0.34 (0.16)
-      16 ASC_car [2]   -0.90 (1.72) 1.81 (1.82)
-      17 ASC_car [3]   -1.12 (1.48) 1.97 (2.40)
-      18 ASC_car [4]   -0.30 (1.32) 2.06 (2.29)
-      19 ASC_car [5]   -0.90 (1.62) 2.31 (3.37)
-      20 ASC_car [6]   -0.07 (1.10) 2.60 (4.68)
-      21 ASC_car [7]   -0.18 (1.21) 2.13 (3.53)
+                     Estimate   (sd) Variance   (sd)
+      1     cost [1]     1.90 (0.29)     0.71 (0.35)
+      2     cost [2]     0.81 (0.88)     1.66 (1.41)
+      3     cost [3]     1.05 (1.43)     1.94 (3.16)
+      4     cost [4]     0.54 (1.27)     2.46 (2.91)
+      5     cost [5]     0.33 (1.09)     2.25 (3.55)
+      6     cost [6]     0.10 (0.94)     2.28 (3.45)
+      7     cost [7]     0.17 (1.19)     2.25 (3.21)
+      8  ASC_bus [1]     1.88 (0.34)     1.47 (0.43)
+      9  ASC_bus [2]    -0.15 (2.05)     2.17 (2.90)
+      10 ASC_bus [3]    -0.75 (1.45)     1.92 (2.26)
+      11 ASC_bus [4]     0.75 (2.11)     2.13 (2.65)
+      12 ASC_bus [5]    -0.54 (1.50)     2.08 (2.41)
+      13 ASC_bus [6]     0.05 (1.15)     2.24 (3.32)
+      14 ASC_bus [7]    -0.18 (1.26)     2.03 (4.00)
+      15 ASC_car [1]     0.81 (0.26)     0.34 (0.16)
+      16 ASC_car [2]    -0.90 (1.72)     1.81 (1.82)
+      17 ASC_car [3]    -1.12 (1.48)     1.97 (2.40)
+      18 ASC_car [4]    -0.30 (1.32)     2.06 (2.29)
+      19 ASC_car [5]    -0.90 (1.62)     2.31 (3.37)
+      20 ASC_car [6]    -0.07 (1.10)     2.60 (4.68)
+      21 ASC_car [7]    -0.18 (1.21)     2.13 (3.53)
 
