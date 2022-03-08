@@ -28,15 +28,21 @@ b <- matrix(0, nrow = P_r, ncol = C)
 Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
 ### Dirichlet process
-for(r in 1:1000){
+png("build/app/foo%02d.png")
+for(r in 1:50){
   dp <- RprobitB:::update_classes_dp(Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = FALSE)
   z <- dp$z
   b <- dp$b
   Omega <- dp$Omega
+
   RprobitB:::plot_class_allocation(beta, z, b, Omega, r = r, perc = 0.95, sleep = 0.1)
 }
+dev.off()
 
-
-
-
+### create gif
+imgs <- list.files("build/app", full.names = TRUE)
+img_list <- lapply(imgs, magick::image_read)
+img_joined <- magick::image_join(img_list)
+img_animated <- magick::image_animate(img_joined, fps = 5)
+magick::image_write(image = img_animated, path = "build/progress.gif")
 
