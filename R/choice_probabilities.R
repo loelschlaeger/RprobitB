@@ -71,7 +71,9 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   probabilities <- cbind(data$choice_data[[data$res_var_names[["id"]]]],
                          data$choice_data[[data$res_var_names[["idc"]]]],
                          probabilities)
-  colnames(probabilities) <- c("id", "idc", data$alternatives)
+  colnames(probabilities) <- c(x$data$res_var_names[["id"]],
+                               x$data$res_var_names[["idc"]],
+                               data$alternatives)
   rownames(probabilities) <- NULL
 
   ### return probabilities

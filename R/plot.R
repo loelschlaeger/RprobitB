@@ -32,10 +32,12 @@
 #' )
 #' plot(data, by_choice = TRUE)
 
-plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1, position = "dodge", ...) {
+plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
+                               position = "dodge", ...) {
 
   ### extract the data to be plotted
-  data_red <- cbind(x$choice_data[!names(x$choice_data) %in% x$res_var_names[c("id","idc")]])
+  data_red <- x$choice_data[names(x$choice_data) %in%
+                              unlist(x$res_var_names[c("choice","cov")])]
 
   ### transform covariates with less than 10 values to factors
   for(i in 1:ncol(data_red)){

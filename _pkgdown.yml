@@ -21,8 +21,6 @@ navbar:
     left: [intro, reference, articles, news, plans]
     right: [search, github]
   components:
-    news:
-      text: Updates
     plans:
       text: Plans
       href: https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md

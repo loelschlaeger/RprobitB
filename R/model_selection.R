@@ -20,8 +20,6 @@
 #'   \item \code{"BF"} for the Bayes factor,
 #'   \item \code{"PA"} for the prediction accuracy (explaining the observed choices),
 #' }
-#' @param sort_by
-#' Either \code{NULL} or one element of \code{criteria}, after which the output is sorted.
 #' @param S,print_progress,ncores
 #' Passed on to \code{\link{waic}} and \code{\link{mml}}.
 #'
@@ -31,7 +29,7 @@
 #' @export
 
 model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC", "BF", "PA"),
-                            sort_by = NULL, S = 100, print_progress = TRUE, ncores = 1) {
+                            S = 100, print_progress = TRUE, ncores = 1) {
 
   ### check inputs
   if (!(length(print_progress) == 1 && class(print_progress) == "logical")) {
@@ -42,11 +40,6 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
   }
   if (!is.character(criteria)) {
     stop("'criteria' must be a character vector.")
-  }
-  if (!is.null(sort_by)) {
-    if (!(is.character(sort_by) && length(sort_by) == 1 && sort_by %in% criteria)) {
-      stop("'sort_by' must be one element of 'criteria'.")
-    }
   }
 
   ### read models
@@ -63,6 +56,7 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
   ### create output matrix
   output <- matrix(NA, nrow = length(models), ncol = 0)
   rownames(output) <- model_names
+  output <- cbind(output, "form" = sapply(models, function(x) deparse1(x$data$form)))
 
   ### pre-compute 'npar', number of observations, and 'LL' for each model
   npar <- sapply(models, function(mod) {
@@ -75,7 +69,8 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
   ### fill output
   for (crit in unique(criteria)) {
     if (crit == "WAIC") {
-      waic_out <- lapply(models, waic, S = S, print_progress = print_progress, check_conv = FALSE, ncores = ncores)
+      waic_out <- lapply(models, waic, S = S, print_progress = print_progress,
+                         check_conv = FALSE, ncores = ncores)
       output <- cbind(output, "WAIC" = sapply(waic_out, function(x) x[["waic"]]))
       output <- cbind(output, "se(WAIC)" = sapply(waic_out, function(x) x[["se_waic"]]))
       output <- cbind(output, "pWAIC" = sapply(waic_out, function(x) x[["p_waic"]]))
@@ -98,7 +93,7 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
       for (nmod in seq_len(length(models))) {
         colnames_old <- colnames(output)
         output <- cbind(output, exp(log(mml_out) - log(mml_out[nmod])))
-        colnames(output) <- c(colnames_old, paste0("BF(", model_names[nmod], ")"))
+        colnames(output) <- c(colnames_old, paste0("BF:", model_names[nmod]))
       }
     }
     if (crit == "PA") {
@@ -110,11 +105,54 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
   ### transform output to data frame
   output <- as.data.frame(output)
 
-  ### sort output rows based on 'sort_by'
-  if (!is.null(sort_by)) {
-    mod_order <- order(output[, sort_by], decreasing = ifelse(sort_by %in% c("AIC", "BIC", "WAIC"), FALSE, TRUE))
-    output <- output[mod_order, ]
-  }
-
+  class(output) <- c("RprobitB_model_selection", "data.frame")
   return(output)
+}
+
+#' @noRd
+#' @export
+
+print.RprobitB_model_selection <- function(x, digits = 2, ...) {
+  for(col in colnames(x)){
+    if (col == "form") {
+      x[, "form"] <- sprintf(paste0("%-",max(nchar(x[, "form"])),"s"), x[, "form"])
+    }
+    if (col == "WAIC") {
+      x[, "WAIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "WAIC"]))
+    }
+    if (col == "se(WAIC)") {
+      x[, "se(WAIC)"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "se(WAIC)"]))
+    }
+    if (col == "pWAIC") {
+      x[, "pWAIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "pWAIC"]))
+    }
+    if (col == "LL") {
+      x[, "LL"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "LL"]))
+    }
+    if (col == "AIC") {
+      x[, "AIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "AIC"]))
+    }
+    if (col == "BIC") {
+      x[, "BIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "BIC"]))
+    }
+    if (col == "MML") {
+      x[, "MML"] <- sprintf(paste0("%.",digits,"e"), as.numeric(x[, "MML"]))
+    }
+    if (startsWith(col,"BF:")) {
+      x[, col] <- as.numeric(sprintf(paste0("%.",digits,"f"), as.numeric(x[, col])))
+      for(row in 1:nrow(x)){
+        if(as.numeric(x[row,col]) < 1/100) {
+          x[row,col] <- "< 0.01"
+        } else if(as.numeric(x[row,col]) > 100) {
+          x[row,col] <- "> 100"
+        }
+      }
+    }
+    if (col == "PA") {
+      x[, "PA"] <- sprintf(paste0("%.",digits,"f%%"), as.numeric(x[, "PA"])*100)
+    }
+  }
+  colnames(x)[which(colnames(x) == "form")] <- ""
+  class(x) <- "data.frame"
+  print(x)
 }

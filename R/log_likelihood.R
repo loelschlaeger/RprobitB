@@ -16,12 +16,8 @@
 
 log_likelihood <- function(x, par_set = mean) {
   probs <- choice_probabilities(x = x, par_set = par_set)
+  choices <- as.character(unlist(sapply(x$data$data, `[[`, "y")))
   ll <- 0
-  for (row in 1:nrow(probs)) {
-    ### extract observed choice
-    y_nt <- x$data$data[[probs[row, "id"]]]$y[probs[row, "idc"]]
-    ### add contribution
-    ll <- ll + log(probs[row, y_nt])
-  }
+  for (row in 1:nrow(probs)) ll <- ll + log(probs[row, choices[row]])
   return(as.numeric(ll))
 }

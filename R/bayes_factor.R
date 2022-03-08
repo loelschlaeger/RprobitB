@@ -92,28 +92,22 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
                    C = x$latent_classes$C,
                    sample = FALSE)
 
-  ### register parallel backend
-  cluster <- parallel::makeCluster(ncores)
-  doSNOW::registerDoSNOW(cluster)
-
   ### progress bar
   if(print_progress){
     pb <- progress_bar$new(
       format = "Computing mml: :percent",
       total = S,
       clear = FALSE)
-    opts <- list(progress = function(n) pb$tick())
-  } else {
-    opts <- list()
   }
 
   ### loop over samples
-  s <- NULL
   if(method == "pame"){
-    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
+    cont <- numeric(S)
+    for(s in 1:S) {
+      if(print_progress) pb$tick()
       prior_sample <- draw_from_prior(x$prior, C  = x$latent_classes$C)
       par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
-      exp(log_likelihood(x, par_set = par))
+      cont[s] <- exp(log_likelihood(x, par_set = par))
     }
     mml_value <- sum(cont)/S
     approx_seq <- cumsum(cont)/seq_along(cont)
@@ -121,16 +115,15 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
   }
   if(method == "phme"){
     posterior_samples <- posterior_pars(x = x, S = S)
-    cont <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
-      1/exp(log_likelihood(x, par_set = posterior_samples[[s]]))
+    cont <- numeric(S)
+    for(s in 1:S) {
+      if(print_progress) pb$tick()
+      cont[s] <- 1/exp(log_likelihood(x, par_set = posterior_samples[[s]]))
     }
     mml_value <- 1/(sum(cont)/S)
     approx_seq <- 1/(cumsum(cont)/seq_along(cont))
     if(seq) attr(mml_value, "seq") <- approx_seq
   }
-
-  ### stop parallel backend
-  parallel::stopCluster(cluster)
 
   ### plot sequence
   if(check_conv){

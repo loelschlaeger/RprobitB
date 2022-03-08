@@ -7,7 +7,6 @@
 model_selection(
   ...,
   criteria = c("WAIC", "npar", "LL", "AIC", "BIC", "BF", "PA"),
-  sort_by = NULL,
   S = 100,
   print_progress = TRUE,
   ncores = 1
@@ -26,8 +25,6 @@ model_selection(
 \item \code{"BF"} for the Bayes factor,
 \item \code{"PA"} for the prediction accuracy (explaining the observed choices),
 }}
-
-\item{sort_by}{Either \code{NULL} or one element of \code{criteria}, after which the output is sorted.}
 
 \item{S, print_progress, ncores}{Passed on to \code{\link{waic}} and \code{\link{mml}}.}
 }

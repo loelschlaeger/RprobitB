@@ -145,11 +145,21 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     }
   }
 
+  ### transform 'id' of 'choice_data' to factor
+  choice_data[, id] <- as.factor(choice_data[, id])
+
+  ### sort 'choice_data' by 'id'
+  choice_data <- choice_data[order(choice_data[, id]), ]
+
   ### create choice occasion ids
   if (is.null(idc)) {
     idc <- "idc"
-    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len, simplify = FALSE))
+    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]),
+                                        seq_len, simplify = FALSE))
   }
+
+  ### transform 'idc' of 'choice_data' to factor
+  choice_data[, idc] <- as.factor(choice_data[, idc])
 
   ### sort 'choice_data' first by column 'id' and second by column 'idc'
   choice_data <- choice_data[order(choice_data[, id], choice_data[, idc]), ]
@@ -167,6 +177,9 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     }
     if (choice_available) {
       choice_data <- choice_data[choice_data[[choice]] %in% alternatives, ]
+      ### drop unused factor levels
+      choice_data[,id] <- droplevels(choice_data[,id])
+      choice_data[,idc] <- droplevels(choice_data[,idc])
       if (nrow(choice_data) == 0) {
         stop(paste(
           "No choices for", paste(alternatives, collapse = ", "), "found."
@@ -304,6 +317,14 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     choice_data$ASC <- NULL
   }
 
+  ### save cov names
+  cov_names <- c(
+    if(length(vars[[1]]) > 0)
+      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_"),
+    vars[[2]],
+    if(length(vars[[3]]) > 0)
+      paste(rep(vars[[3]], each = length(alternatives)), alternatives, sep = "_"))
+
   ### create output
   out <- RprobitB_data(
     data = data,
@@ -322,7 +343,10 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     simulated = FALSE,
     choice_available = choice_available,
     true_parameter = NULL,
-    res_var_names = list("choice" = choice, "id" = id, "idc" = idc)
+    res_var_names = list("choice" = choice,
+                         "cov" = cov_names,
+                         "id" = id,
+                         "idc" = idc)
   )
 
   ### return 'RprobitB_data' object
