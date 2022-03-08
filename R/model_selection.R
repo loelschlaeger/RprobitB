@@ -69,8 +69,10 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
   ### fill output
   for (crit in unique(criteria)) {
     if (crit == "WAIC") {
-      waic_out <- lapply(models, waic, S = S, print_progress = print_progress,
-                         check_conv = FALSE, ncores = ncores)
+      waic_out <- lapply(models, waic,
+        S = S, print_progress = print_progress,
+        check_conv = FALSE, ncores = ncores
+      )
       output <- cbind(output, "WAIC" = sapply(waic_out, function(x) x[["waic"]]))
       output <- cbind(output, "se(WAIC)" = sapply(waic_out, function(x) x[["se_waic"]]))
       output <- cbind(output, "pWAIC" = sapply(waic_out, function(x) x[["p_waic"]]))
@@ -113,43 +115,43 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
 #' @export
 
 print.RprobitB_model_selection <- function(x, digits = 2, ...) {
-  for(col in colnames(x)){
+  for (col in colnames(x)) {
     if (col == "form") {
-      x[, "form"] <- sprintf(paste0("%-",max(nchar(x[, "form"])),"s"), x[, "form"])
+      x[, "form"] <- sprintf(paste0("%-", max(nchar(x[, "form"])), "s"), x[, "form"])
     }
     if (col == "WAIC") {
-      x[, "WAIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "WAIC"]))
+      x[, "WAIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "WAIC"]))
     }
     if (col == "se(WAIC)") {
-      x[, "se(WAIC)"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "se(WAIC)"]))
+      x[, "se(WAIC)"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "se(WAIC)"]))
     }
     if (col == "pWAIC") {
-      x[, "pWAIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "pWAIC"]))
+      x[, "pWAIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "pWAIC"]))
     }
     if (col == "LL") {
-      x[, "LL"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "LL"]))
+      x[, "LL"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "LL"]))
     }
     if (col == "AIC") {
-      x[, "AIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "AIC"]))
+      x[, "AIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "AIC"]))
     }
     if (col == "BIC") {
-      x[, "BIC"] <- sprintf(paste0("%.",digits,"f"), as.numeric(x[, "BIC"]))
+      x[, "BIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "BIC"]))
     }
     if (col == "MML") {
-      x[, "MML"] <- sprintf(paste0("%.",digits,"e"), as.numeric(x[, "MML"]))
+      x[, "MML"] <- sprintf(paste0("%.", digits, "e"), as.numeric(x[, "MML"]))
     }
-    if (startsWith(col,"BF:")) {
-      x[, col] <- as.numeric(sprintf(paste0("%.",digits,"f"), as.numeric(x[, col])))
-      for(row in 1:nrow(x)){
-        if(as.numeric(x[row,col]) < 1/100) {
-          x[row,col] <- "< 0.01"
-        } else if(as.numeric(x[row,col]) > 100) {
-          x[row,col] <- "> 100"
+    if (startsWith(col, "BF:")) {
+      x[, col] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[, col])))
+      for (row in 1:nrow(x)) {
+        if (as.numeric(x[row, col]) < 1 / 100) {
+          x[row, col] <- "< 0.01"
+        } else if (as.numeric(x[row, col]) > 100) {
+          x[row, col] <- "> 100"
         }
       }
     }
     if (col == "PA") {
-      x[, "PA"] <- sprintf(paste0("%.",digits,"f%%"), as.numeric(x[, "PA"])*100)
+      x[, "PA"] <- sprintf(paste0("%.", digits, "f%%"), as.numeric(x[, "PA"]) * 100)
     }
   }
   colnames(x)[which(colnames(x) == "form")] <- ""
