@@ -37,7 +37,9 @@ criteria for model comparison."><meta property="og:image" content="https://loels
     <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
   </div>
 </li>
-<h6 class="dropdown-header" data-toc-skip>Updates</h6>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
 <li class="nav-item">
   <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md">Plans</a>
 </li>
@@ -72,7 +74,6 @@ criteria for model comparison.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">model_selection</span><span class="op">(</span>
   <span class="va">...</span>,
   criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WAIC"</span>, <span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"BF"</span>, <span class="st">"PA"</span><span class="op">)</span>,
-  sort_by <span class="op">=</span> <span class="cn">NULL</span>,
   S <span class="op">=</span> <span class="fl">100</span>,
   print_progress <span class="op">=</span> <span class="cn">TRUE</span>,
   ncores <span class="op">=</span> <span class="fl">1</span>
@@ -92,8 +93,6 @@ criteria for model comparison.</p>
 <li><p><code>"BF"</code> for the Bayes factor,</p></li>
 <li><p><code>"PA"</code> for the prediction accuracy (explaining the observed choices),</p></li>
 </ul></dd>
-<dt>sort_by</dt>
-<dd><p>Either <code>NULL</code> or one element of <code>criteria</code>, after which the output is sorted.</p></dd>
 <dt>S, print_progress, ncores</dt>
 <dd><p>Passed on to <code><a href="waic.html">waic</a></code> and <code><a href="mml.html">mml</a></code>.</p></dd>
 </dl></div>
