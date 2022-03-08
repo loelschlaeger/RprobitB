@@ -38,14 +38,13 @@ which is a vector containing the approximation sequence.}
 The model's marginal likelihood value.
 }
 \description{
-This function approximates the model's marginal likelihood via different
-approximation methods.
+This function approximates the model's marginal likelihood.
 }
 \details{
 The model's marginal likelihood \eqn{p(y\mid M)} for a model \eqn{M} and data
 \eqn{y} is required for the computation of Bayes factors. In general, the term
 has no closed form and must be approximated numerically. This function offers
-the following approximation methods. The strong law of large numbers garantees
+the following approximation methods. The strong law of large numbers guarantees
 (almost surely), that the following approximations converge to the model's
 marginal likelihood as the sample size \code{S} goes to infinity.
 \subsection{The prior arithmetic mean estimator}{
@@ -54,7 +53,7 @@ Set \code{method = "pame"} to compute the prior arithmetic mean estimate.
 For this approach, \code{S} samples \eqn{\theta_1,\dots,\theta_S}
 are drawn from the model's prior distribution. Then,
 \deqn{p(y\mid M) = \mathbb{E}_\text{prior} p(y\mid \theta,M) \approx \frac{1}{S}
-\sum_s p(y\mid \theta_n,M)}.
+\sum_s p(y\mid \theta_s,M).}
 }
 
 \subsection{The posterior harmonic mean estimator}{
@@ -63,7 +62,7 @@ Set \code{method = "phme"} to compute the posterior harmonic mean estimate.
 For this approach, \code{S} samples \eqn{\theta_1,\dots,\theta_S}
 are drawn from the model's posterior distribution. Then,
 \deqn{p(y\mid M) = \left(\mathbb{E}_\text{posterior} p(y\mid \theta,M)^{-1}
-\right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/p(y\mid \theta_n,M) \right) ^{-1}}.
+\right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/p(y\mid \theta_s,M) \right) ^{-1}.}
 }
 }
 \examples{
@@ -74,7 +73,8 @@ data <- simulate_choices(
   J = 2,
   seed = 1
 )
-x <- mcmc(data, R = 1000)
+x <- mcmc(data, R = 1000, print_progress = FALSE)
+### S = 10 is too small for a good approximation
 RprobitB:::mml(x = x, S = 10, method = "pame", check_conv = TRUE)
 
 }
