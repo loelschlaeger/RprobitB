@@ -136,10 +136,10 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
     )
 
   ### add class proportions
-  if (!all(is.na(x$cl))){
+  if (!all(is.na(x$cl))) {
     p <- p + ggplot2::scale_color_discrete(
-                labels = sprintf("%s (%.2f%%)", 1:nrow(s), s[,"mean"])
-             )
+      labels = sprintf("%s (%.2f%%)", 1:nrow(s), s[, "mean"])
+    )
   }
 
   suppressWarnings(print(p))
