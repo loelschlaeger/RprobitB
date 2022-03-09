@@ -1,0 +1,42 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library("RprobitB")
+```
+
+```{r}
+pairfam <- readRDS("applications/contraception_choice/data/data_encoded.rds")
+pairfam <- pairfam[pairfam$sex_gen == "F",]
+pairfam <- pairfam[!is.na(pairfam$age),]
+pairfam <- pairfam[!is.na(pairfam$frt7),]
+pairfam <- pairfam[!is.na(pairfam$relstat),]
+pairfam <- pairfam[which(xor(pairfam$pill == 1, pairfam$condom == 1)),]
+pairfam[, "pill_condom"] <- sapply(pairfam$pill, function(x) if(x == 1) "pill" else "condom")
+pairfam[, "cwish"] <- pairfam[, "frt7"]
+pairfam <- pairfam[, c("id", "wave", "age", "relstat", "cwish", "pill_condom")]
+
+data <- prepare_data(
+  form = pill_condom ~ 0 | age + cwish + relstat,
+  re = c("cwish", "relstat"),
+  choice_data = pairfam
+  )
+plot(data, by_choice = TRUE)
+
+model <- mcmc(data, 
+              latent_classes = list("C" = 10, "dp_update" = TRUE), 
+              R = 1000,
+              B = 900,
+              prior = list("delta" = 0.8),
+              seed = 1)
+saveRDS(model, "model.rds")
+
+plot(coef(model))
+plot(model, type = "class_seq")
+```

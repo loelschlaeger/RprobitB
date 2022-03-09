@@ -73,7 +73,10 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   }
   normalization <- RprobitB_normalization(J = data$J, P_f = data$P_f, scale = scale)
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
-  prior <- do.call(what = check_prior, args = c(list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J), prior))
+  prior <- do.call(
+    what = check_prior,
+    args = c(list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J), prior)
+    )
 
   ### compute sufficient statistics
   ss <- sufficient_statistics(data = data, normalization = normalization)
@@ -87,7 +90,8 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
   ### perform Gibbs sampling
   if (!is.null(seed)) set.seed(seed)
   gibbs_samples <- gibbs_sampling(
-    sufficient_statistics = ss, prior = prior, latent_classes = unclass(latent_classes),
+    sufficient_statistics = ss, prior = prior,
+    latent_classes = unclass(latent_classes),
     init = init, R = R, B = B, print_progress = print_progress
   )
 

@@ -574,10 +574,28 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   // start loop
   for(int r = 0; r<R; r++) {
 
+    // print progress
+    if(print_progress && ((r+1)%10 == 0 || r == 0)){
+      if(weight_update==false && dp_update==false){
+        Rcpp::Rcout << "Iteration " << r+1 << " of " << R << "\r";
+      } else {
+        Rcpp::Rcout << "Iteration " << r+1 << " of " << R << " (C = " << C <<")\r";
+      }
+      Rcpp::Rcout.flush();
+    }
+
+    // check for code interruption by user
+    Rcpp::checkUserInterrupt();
+
     if(P_r>0){
 
-      // update s, z, m, b, Omega by posterior draws only if no DP or outside burning period
-      if(dp_update == false || r+1 > B){
+      // save number of classes in each iteration
+      class_sequence[r] = C;
+
+      // update s, z, m, b, Omega by posterior draws if
+      // - no DP or
+      // - outside updating period
+      if(dp_update == false || r+1 > B || r == 0){
         // update s (but only if draw is descending)
         arma::vec s_cand = update_s(delta,m);
         if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
@@ -635,9 +653,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         b = as<mat>(class_update["b"]);
         Omega = as<mat>(class_update["Omega"]);
         s = as<vec>(class_update["s"]);
-        C = s.size();
+        C = as<int>(class_update["C"]);
         m = update_m(C, z, true);
       }
+
     }
 
     if(P_f>0){
@@ -704,18 +723,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       Omega_draws(r,span(0,vectorise_Omega.size()-1)) =
         trans(vectorise_Omega);
       beta_draws[r] = beta;
-      class_sequence[r] = C;
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
-
-    // print progress
-    if(print_progress && (r+1)%10 == 0){
-      Rcpp::Rcout << "Iteration " << r+1 << " of " << R << "\r";
-      Rcpp::Rcout.flush();
-    }
-
-    // check for code interruption
-    Rcpp::checkUserInterrupt();
   }
 
   // close print line

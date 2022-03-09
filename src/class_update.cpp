@@ -191,10 +191,13 @@ Rcpp::List update_classes_wb (int Cmax, double epsmin, double epsmax, double dis
 //' D <- diag(2)
 //' nu <- 4
 //' Theta <- diag(2)
-//' RprobitB:::update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
-//'                              delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
+//' RprobitB:::update_classes_dp(
+//'   Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+//'   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+//' )
 //' @return
-//' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+//' A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
+//' and \code{C}.
 //' @keywords
 //' internal
 //'
@@ -311,5 +314,6 @@ Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b
   return(List::create(Named("z") = z,
                       Named("b") = b_full(span::all,span(0,C-1)),
                       Named("Omega") = Omega_full(span::all,span(0,C-1)),
-                      Named("s") = s_full(span(0,C-1))));
+                      Named("s") = s_full(span(0,C-1)),
+                      Named("C") = C));
 }

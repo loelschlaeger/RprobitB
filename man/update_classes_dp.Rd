@@ -52,7 +52,8 @@ Inverse Wishart prior for each \code{Omega_c}.}
 \item{s_desc}{If \code{TRUE}, sort the classes in descending class weight.}
 }
 \value{
-A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
+and \code{C}.
 }
 \description{
 This function updates the latent classes based on a Dirichlet process.
@@ -71,7 +72,9 @@ xi <- numeric(2)
 D <- diag(2)
 nu <- 4
 Theta <- diag(2)
-RprobitB:::update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
-                             delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
+RprobitB:::update_classes_dp(
+  Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+  delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+)
 }
 \keyword{internal}

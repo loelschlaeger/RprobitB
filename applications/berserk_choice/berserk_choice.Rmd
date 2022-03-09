@@ -1,0 +1,21 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library("RprobitB")
+```
+
+```{r}
+berserk_choice$rating_diff <- berserk_choice$rating_white - berserk_choice$rating_black
+form <- berserk_white ~ 0 | rating_diff + minutes_remaining
+data <- prepare_data(form = form,
+                     choice_data = berserk_choice,
+                     id = "id_white",
+                     standardize = c("rating_diff","minutes_remaining"))
+model <- mcmc(data, R = 200)
+plot(coef(model))
+```

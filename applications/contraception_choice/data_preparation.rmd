@@ -38,12 +38,15 @@ saveRDS(data, "data/data_from_spss.rds")
 
 ```{r}
 data <- readRDS("data/data_from_spss.rds")
-data <- data %>% dplyr::select(
+data <- dplyr::select(data,
   id, # person id
+  wave, # wave number
   age, # age
+  sex_gen, # sex
   relstat, # relation status
   sex5, # use of contraception
-  sex6i1,sex6i2,sex6i3,sex6i4,sex6i5,sex6i6,sex6i7,sex6i8,sex6i9,sex6i10,sex6i11 # contraception methods
+  sex6i1,sex6i2,sex6i3,sex6i4,sex6i5,sex6i6,sex6i7,sex6i8,sex6i9,sex6i10,sex6i11, # contraception methods
+  frt7 # intention to become mother/father within next 2 years
 )
 saveRDS(data,"data/data_filtered.rds")
 ```
@@ -52,6 +55,17 @@ saveRDS(data,"data/data_filtered.rds")
 
 ```{r}
 data <- readRDS("data/data_filtered.rds")
+
+### id
+data$id <- as.numeric(data$id)
+
+### age
+data$age <- as.numeric(data$age)
+
+### Gender: M (male), F (female)
+data[, "sex_gen"] <- as.factor(data[["sex_gen"]])
+levels(data[, "sex_gen"])[levels(data[, "sex_gen"]) == "1 Male"] <- "M"
+levels(data[, "sex_gen"])[levels(data[, "sex_gen"]) == "2 Female"] <- "F"
 
 ### Relationship status
 ### Covariate: relstat
@@ -134,8 +148,28 @@ data[, "pill"] <- data[, "sex6i1"]
 data[, "condom"] <- data[, "sex6i2"]
 data <- dplyr::select(data, !contraception_cov)
 
-### age
-data$age <- as.numeric(data$age)
+### Intention to become mother/father within next 2 years
+### Covariate: frt7
+### Original levels: 
+### -  1 Yes, definitely
+### -  2 Yes, perheps
+### -  3 No, probably not
+### -  4 No, definitely not
+### -  7 I haven't thought about that yet
+### New levels: 
+### -  1 yes (1, 2)
+### -  0 no (3, 4)
+for(row in 1:nrow(data)){
+  x <- as.numeric(stringr::str_extract(data[row,"frt7"],"[[:digit:]]+"))
+  if(x %in% c(1,2)){
+    data[row,"frt7"] <- 1
+  } else if(x %in% c(3,4)){
+    data[row,"frt7"] <- 0
+  } else {
+    data[row,"frt7"] <- NA
+  }
+}
+data[,"frt7"] <- as.numeric(data[,"frt7"])
 
 saveRDS(data,"data/data_encoded.rds")
 ```
@@ -143,7 +177,7 @@ saveRDS(data,"data/data_encoded.rds")
 ## Overview
 
 ```{r}
-pillar::glimpse(data)
+str(data)
 ```
 
 ## Checks

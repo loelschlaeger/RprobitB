@@ -101,10 +101,13 @@ update_classes_wb <- function(Cmax, epsmin, epsmax, distmin, s, b, Omega) {
 #' D <- diag(2)
 #' nu <- 4
 #' Theta <- diag(2)
-#' RprobitB:::update_classes_dp(Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
-#'                              delta = delta, xi = xi, D = D, nu = nu, Theta = Theta)
+#' RprobitB:::update_classes_dp(
+#'   Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
+#'   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+#' )
 #' @return
-#' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{s}.
+#' A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
+#' and \code{C}.
 #' @keywords
 #' internal
 #'

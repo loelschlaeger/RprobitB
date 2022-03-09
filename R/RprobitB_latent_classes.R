@@ -155,20 +155,22 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
 #' @noRd
 #' @export
+#' @importFrom crayon underline
 
 print.RprobitB_latent_classes <- function(x, ...) {
+  cat(crayon::underline("Latent classes\n"))
   if(!x[["weight_update"]] && !x[["dp_update"]]){
-    cat("Number of latent classes:", x$C, "\n")
+    cat("C =", x$C, "\n")
   } else {
-    cat("DP-based update:",x[["dp_update"]],"\n")
-    cat("Weight-based update:",x[["weight_update"]],"\n")
-    cat(paste("- Initial classes:", x$C, "\n"))
-    cat(paste("- Maximum classes:", x$Cmax, "\n"))
+    cat("DP-based update:", x[["dp_update"]], "\n")
+    cat("Weight-based update:", x[["weight_update"]], "\n")
+    cat("Initial classes:", x$C, "\n")
+    cat("Maximum classes:", x$Cmax, "\n")
     if(x[["weight_update"]]){
-      cat(paste("- Updating buffer:", x$buffer, "\n"))
-      cat(paste("- Minimum class weight:", x$epsmin, "\n"))
-      cat(paste("- Maximum class weight:", x$epsmax, "\n"))
-      cat(paste("- Mimumum class distance:", x$distmin, "\n"))
+      cat("Updating buffer:", x$buffer, "\n")
+      cat("Minimum class weight:", x$epsmin, "\n")
+      cat("Maximum class weight:", x$epsmax, "\n")
+      cat("Mimumum class distance:", x$distmin, "\n")
     }
   }
   return(invisible(x))

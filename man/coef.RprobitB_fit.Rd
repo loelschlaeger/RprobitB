@@ -4,12 +4,10 @@
 \alias{coef.RprobitB_fit}
 \title{Linear coefficients}
 \usage{
-\method{coef}{RprobitB_fit}(object, scale = 1, ...)
+\method{coef}{RprobitB_fit}(object, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
-
-\item{scale}{A factor by which the coefficients are multiplied.}
 
 \item{...}{Ignored.}
 }

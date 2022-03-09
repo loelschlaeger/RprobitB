@@ -27,12 +27,13 @@ Tr <- dfidx(Train, choice = "choice", varying = 4:11, sep = "_",
             idx = list(c("choiceid", "id")), idnames = c("chid", "alt"))
 form <- choice ~ price + time + change + comfort | - 1
 mod_mlogit <- mlogit(formula = form, data = Tr)
-coef(summary(mod_mlogit))
+coef(mod_mlogit) / coef(mod_mlogit)[1]
 ```
 
 ```{r}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
-mod_RprobitB <- mcmc(data = data)
+mod_RprobitB <- mcmc(data = data,
+                     scale = list("parameter" = "a", index = 1, value = -1))
 coef(mod_RprobitB)
 ```

@@ -305,7 +305,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 
   ### make plot type 'class_seq'
   if (type == "class_seq") {
-    plot_class_seq(x[["class_sequence"]])
+    plot_class_seq(x[["class_sequence"]], B = x$B)
   }
 
   ### make plot type 'class_allocation'
@@ -671,13 +671,24 @@ plot_trace <- function(gibbs_samples, par_labels) {
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot aes geom_point labs theme_minimal expand_limits
 
-plot_class_seq <- function(class_sequence) {
+plot_class_seq <- function(class_sequence, B) {
   data <- data.frame(i = 1:length(class_sequence), c = class_sequence)
   plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data$i, y = .data$c)) +
-    ggplot2::geom_point() +
-    ggplot2::labs(x = "Iteration", y = "Number of classes") +
+    ggplot2::geom_line() +
+    ggplot2::labs(title = "Number of classes during Gibbs sampling",
+                  subtitle = "The grey area shows the updating phase",
+                  x = "Iteration",
+                  y = "") +
     ggplot2::theme_minimal() +
-    ggplot2::expand_limits(y=0)
+    ggplot2::scale_x_continuous() +
+    ggplot2::scale_y_continuous(
+      breaks = 1:max(class_sequence),
+      labels = as.character(1:max(class_sequence)),
+      minor_breaks = NULL) +
+    ggplot2::expand_limits(y = 1) +
+    ggplot2::annotate(geom = "rect",
+                      xmin = 0, xmax = B, ymin = -Inf, ymax = Inf,
+                      fill = "grey", alpha = 0.2)
   print(plot)
 }
 

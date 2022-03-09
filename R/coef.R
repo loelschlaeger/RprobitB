@@ -8,15 +8,13 @@
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
-#' @param scale
-#' A factor by which the coefficients are multiplied.
 #' @param ...
 #' Ignored.
 #'
 #' @export
 #' @importFrom stats sd
 
-coef.RprobitB_fit <- function(object, scale = 1, ...) {
+coef.RprobitB_fit <- function(object, ...) {
 
   ### compute Gibbs samples statistics
   C <- object$latent_classes$C
@@ -57,13 +55,11 @@ coef.RprobitB_fit <- function(object, scale = 1, ...) {
     coef_class <- c(coef_class, 1:C)
   }
 
-  ### scale
-  coef <- c(scale, scale, scale^2, scale^2) * coef
-
   ### create output
   rownames(coef) <- coef_name
   colnames(coef) <- c("mean_mean", "mean_sd", "sd_mean", "sd_sd")
   attr(coef, "coef_class") <- coef_class
+  attr(coef, "s") <- statistics[["s"]]
   class(coef) <- "RprobitB_coef"
   return(coef)
 }
@@ -102,6 +98,7 @@ print.RprobitB_coef <- function(x, ...) {
 #' @importFrom rlang .data
 
 plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
+  s <- attr(x, "s")
   x <- data.frame(
     "name" = rownames(x),
     "cl" = attr(x, "coef_class"),
@@ -137,5 +134,13 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
       ),
       color = "Class"
     )
+
+  ### add class proportions
+  if (!all(is.na(x$cl))){
+    p <- p + ggplot2::scale_color_discrete(
+                labels = sprintf("%s (%.2f%%)", 1:nrow(s), s[,"mean"])
+             )
+  }
+
   suppressWarnings(print(p))
 }

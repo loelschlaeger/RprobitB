@@ -1,0 +1,58 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library("RprobitB")
+```
+
+```{r}
+data(opening_choice)
+opening_choice$sex <- ifelse(opening_choice$sex == "M", 0, 1)
+```
+
+```{r, mod0}
+form <- move ~ 0 | 1
+data <- prepare_data(form = form, 
+                     choice_data = opening_choice, 
+                     id = "fideid", 
+                     alternatives = c("d4","e4"))
+mod0 <- mcmc(data)
+```
+
+```{r, mod1}
+form <- move ~ 0 | rating
+data <- prepare_data(form = form, 
+                     choice_data = opening_choice, 
+                     id = "fideid", 
+                     alternatives = c("d4","e4"),
+                     standardize = c("rating"))
+mod1 <- mcmc(data)
+```
+
+```{r, mod2}
+form <- move ~ 0 | rating + age
+data <- prepare_data(form = form, 
+                     choice_data = opening_choice, 
+                     id = "fideid", 
+                     alternatives = c("d4","e4"),
+                     standardize = c("rating", "age"))
+mod2 <- mcmc(data)
+```
+
+```{r, mod3}
+form <- move ~ 0 | rating + age + sex
+data <- prepare_data(form = form, 
+                     choice_data = opening_choice, 
+                     id = "fideid", 
+                     alternatives = c("d4","e4"),
+                     standardize = c("rating", "age"))
+mod3 <- mcmc(data)
+```
+
+```{r, model selection}
+x <- model_selection(mod0, mod1, mod2, mod3, S = 2000)
+```

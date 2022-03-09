@@ -3,21 +3,23 @@
     Code
       RprobitB_latent_classes(list(C = 2))
     Output
-      Number of latent classes: 2 
+      Latent classes
+      C = 2 
 
 ---
 
     Code
       (out <- RprobitB_latent_classes(list(weight_update = TRUE, dp_update = TRUE)))
     Output
+      Latent classes
       DP-based update: TRUE 
       Weight-based update: TRUE 
-      - Initial classes: 1 
-      - Maximum classes: 10 
-      - Updating buffer: 100 
-      - Minimum class weight: 0.01 
-      - Maximum class weight: 0.99 
-      - Mimumum class distance: 0.1 
+      Initial classes: 1 
+      Maximum classes: 10 
+      Updating buffer: 100 
+      Minimum class weight: 0.01 
+      Maximum class weight: 0.99 
+      Mimumum class distance: 0.1 
 
 ---
 
