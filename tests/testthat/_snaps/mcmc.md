@@ -20,7 +20,7 @@
       Level: Utility differences with respect to alternative 2.
       Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -68,7 +68,7 @@
       Level: Utility differences with respect to alternative 3.
       Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -127,7 +127,7 @@
       Latent classes
       C = 1 
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -202,7 +202,7 @@
       Latent classes
       C = 2 
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        alpha
                                             
@@ -297,7 +297,7 @@
       Maximum class weight: 0.9 
       Mimumum class distance: 0.1 
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        s
                                             
@@ -427,7 +427,7 @@
       Initial classes: 4 
       Maximum classes: 10 
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        s
                                             
@@ -535,7 +535,7 @@
       Maximum class weight: 0.9 
       Mimumum class distance: 0.1 
       
-      Parameter statistics
+      Gibbs sample statistics
                 true    mean      sd      R^
        s
                                             
