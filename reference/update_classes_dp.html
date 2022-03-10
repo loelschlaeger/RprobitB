@@ -120,7 +120,8 @@ Inverse Wishart prior for each <code>Omega_c</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of updated values for <code>z</code>, <code>b</code>, <code>Omega</code>, and <code>s</code>.</p>
+    <p>A list of updated values for <code>z</code>, <code>b</code>, <code>Omega</code>, <code>s</code>,
+and <code>C</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -139,8 +140,10 @@ Inverse Wishart prior for each <code>Omega_c</code>.</p></dd>
 <span class="r-in"><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
 <span class="r-in"><span class="va">Theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">update_classes_dp</span><span class="op">(</span>Cmax <span class="op">=</span> <span class="fl">10</span>, beta <span class="op">=</span> <span class="va">beta</span>, z <span class="op">=</span> <span class="va">z</span>, b <span class="op">=</span> <span class="va">b</span>, Omega <span class="op">=</span> <span class="va">Omega</span>,</span>
-<span class="r-in">                             delta <span class="op">=</span> <span class="va">delta</span>, xi <span class="op">=</span> <span class="va">xi</span>, D <span class="op">=</span> <span class="va">D</span>, nu <span class="op">=</span> <span class="va">nu</span>, Theta <span class="op">=</span> <span class="va">Theta</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">update_classes_dp</span><span class="op">(</span></span>
+<span class="r-in">  Cmax <span class="op">=</span> <span class="fl">10</span>, beta <span class="op">=</span> <span class="va">beta</span>, z <span class="op">=</span> <span class="va">z</span>, b <span class="op">=</span> <span class="va">b</span>, Omega <span class="op">=</span> <span class="va">Omega</span>,</span>
+<span class="r-in">  delta <span class="op">=</span> <span class="va">delta</span>, xi <span class="op">=</span> <span class="va">xi</span>, D <span class="op">=</span> <span class="va">D</span>, nu <span class="op">=</span> <span class="va">nu</span>, Theta <span class="op">=</span> <span class="va">Theta</span></span>
+<span class="r-in"><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $z</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]    2</span>
@@ -208,6 +211,9 @@ Inverse Wishart prior for each <code>Omega_c</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.60 0.34 0.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
