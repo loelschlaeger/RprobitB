@@ -56,6 +56,8 @@ The following tasks are on our agenda and will be tackled as time permits.
   - [x] Revise true parameter transformations for beta and z.
   - [x] Implement plot function for beta visualization (with sleep?).
   - [x] Revise class allocation: based on last assignment or argmax of z? Update in `preference_classification()`.
+- [ ] ACF of Gibbs samples
+  - [ ] Exclude parameter wrt which the model is normalized.
 
 ## Performance
 
@@ -79,12 +81,13 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Vignettes
 
-- [ ] Introductory Vignette.
-- [ ] Model definition.
-- [ ] Choice data.
-- [ ] Model fitting.
-- [ ] Model selection.
-- [ ] Choice prediction.
+- [x] Introductory vignette
+- [x] Model definition
+- [x] Choice data
+- [x] Model fitting
+- [ ] Modeling heterogeneity
+- [ ] Choice prediction
+- [ ] Model selection
 
 ### Demos
 
@@ -93,8 +96,8 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Website
 
-- [ ] Does not find NEWS.
-- [ ] Does not find TODOs.
+- [x] Does not find NEWS.
+- [x] Does not find TODOs.
 
 ### Function documentation
 
