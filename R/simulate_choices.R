@@ -256,6 +256,14 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     choice_data$ASC <- NULL
   }
 
+  ### save cov names
+  cov_names <- c(
+    if(length(vars[[1]]) > 0)
+      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_"),
+    vars[[2]],
+    if(length(vars[[3]]) > 0)
+      paste(rep(vars[[3]], each = length(alternatives)), alternatives, sep = "_"))
+
   ### create output
   out <- RprobitB_data(
     data = data,
@@ -274,7 +282,10 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     simulated = TRUE,
     choice_available = TRUE,
     true_parameter = true_parameter,
-    res_var_names = list("choice" = choice, "id" = "id", "idc" = "idc")
+    res_var_names = list("choice" = choice,
+                         "cov" = cov_names,
+                         "id" = "id",
+                         "idc" = "idc")
   )
 
   ### return 'RprobitB_data' object
