@@ -13,22 +13,34 @@
 #' @export
 
 preference_classification <- function(x) {
-  if (class(x) != "RprobitB_fit") {
+  if (!inherits(x,"RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit'.")
   }
-  if (is.null(x$gibbs_samples$gibbs_samples_nbt$z)) {
-    warning("No classification available.")
+  if (x$data$P_r %in% c(0,1)){
+    stop("No classification available.")
   } else {
-    class <- apply(x$gibbs_samples$gibbs_samples_nbt$z, 2,
-      FUN = function(x) {
-        tab <- table(x)
-        ans <- names(tab[which.max(tab)])
-        return(as.numeric(ans))
+    beta_samples <- x$gibbs_samples$gibbs_samples_nbt$beta
+    beta_samples_mean <- Reduce("+", beta_samples) / length(beta_samples)
+    pe <- point_estimates(x)
+    b_est <- apply(pe$b, 2, as.numeric, simplify = FALSE)
+    Omega_est <- apply(pe$Omega, 2, matrix, nrow = x$latent_classes$C,
+                       simplify = FALSE)
+    class_prob <- matrix(NA, nrow = x$data$N, ncol = x$latent_classes$C)
+    for(n in 1:x$data$N){
+      for(c in 1:x$latent_classes$C){
+        class_prob[n,c] <- dmvnorm(beta_samples_mean[,n], b_est[[c]],
+                                   Omega_est[[c]])
       }
-    )
-    data.frame(
-      id = unique(x$data$choice_data$id),
-      class = class
-    )
+    }
+    class_prob <- class_prob / rowSums(class_prob)
+    classification <- apply(class_prob, 1, which.max)
+    out <- data.frame(
+      unique(x$data$choice_data$id),
+      class_prob,
+      classification
+      )
+    colnames(out) <- c(x$data$res_var_names$id,
+                       paste("class", 1:x$latent_classes$C), "max")
+    return(out)
   }
 }
