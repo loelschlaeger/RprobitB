@@ -44,7 +44,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Console outputs
 
-- [ ] Make summary output of `RprobitB_fit` more compact. Provide option to show different model aspects.
+- [x] Make summary output of `RprobitB_fit` more compact. Provide option to show different model aspects.
 - [ ] Print model formula with `check_form()`.
 - [ ] (Standardized) Progress bar for all computations that potentially last longer.
 
