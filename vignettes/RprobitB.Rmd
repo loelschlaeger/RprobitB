@@ -26,7 +26,9 @@ Welcome to {RprobitB}^[The package name is a portmanteau, combining **R** (the p
 
 ## The workflow
 
-The functions of {RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. A typical workflow is as follows:
+The functions of {RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion. {RprobitB} supports these functions.
+
+A typical workflow is as follows:
 
 1. Prepare a choice data set via the `prepare_data()` function or simulate data via `simulate_choices()`. Both functions return an `RprobitB_data` object that can be fed into the estimation routine. See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html) for details.
 
@@ -36,5 +38,4 @@ The functions of {RprobitB} can be grouped into ones for data management, model 
    
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-![The flowchart of {RprobitB}.](flowchart.png){width=80%}
-
+![The flowchart of {RprobitB}. The functions `check_form()` and `overview_effects()` help the user to verify the correctness of the data and model specification. `train_test()` allows to split the data into an estimation and a validation part. `transform_fit()` allows to change normalization of the model after a model has been fitted. ](flowchart.png){width=80%}

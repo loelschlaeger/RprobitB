@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-This vignette^[This vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `mcmc()` in {RprobitB}.
+This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `mcmc()` in {RprobitB}.
 
 ## Bayes estimation of the probit model
 
@@ -110,9 +110,9 @@ Samples obtained from the updating scheme described above lack identification (e
 
 where either $\omega^{(i)} = \sqrt{\text{const} / (\Sigma^{(i)})_{jj}}$ with $(\Sigma^{(i)})_{jj}$ the $j$th diagonal element of $\Sigma^{(i)}$, $1\leq j \leq J-1$, or alternatively $\omega^{(i)} = \text{const} / \alpha^{(i)}_p$ for some coordinate $1\leq p \leq P_f$ of the $i$th draw for the coefficient vector $\alpha$. Here, $\text{const}$ is any positive constant (typically 1). The preferences will be flipped if $\omega^{(i)} < 0$, which only is the case if $\alpha^{(i)}_p < 0$.
 
-### Burning and thinning
+### Burn-in and thinning
 
-The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme can be considered as a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first $B$ out of $R$ samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every $Q$th sample when computing Gibbs sample statistics like expectation and standard deviation. The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots, see below.
+The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first $B$ out of $R$ samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every $Q$th sample when computing Gibbs sample statistics like expectation and standard deviation. The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots, see below.
 
 ## The `mcmc()` function
 
@@ -234,11 +234,13 @@ Calling the `plot` method with the additional argument `type = "trace"` plots th
 plot(train_model, type = "trace")
 ```
 
-Additionally, we can visualize the serial correlation of the Gibbs samples via the argument `type = "acf"`. The boxes in the top-right corner state the total sample size SS (here `R` - `B` = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which SS is larger than ESS.
+Additionally, we can visualize the serial correlation of the Gibbs samples via the argument `type = "acf"`. The boxes in the top-right corner state the total sample size TSS (here `R` - `B` = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.
 
 ```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
 plot(train_model, type = "acf")
 ```
+
+Here, the effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)$, where $\rho_k$ is the auto correlation between the chain offset by $k$ positions. The auto correlations are estimated via the `acf()` function.
 
 ## Model transformation after estimation
 

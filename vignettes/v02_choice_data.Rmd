@@ -17,25 +17,34 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-No choice model without choice data, so this vignette^[This vignette was build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the mlogit package [@mlogit] for illustration. 
+No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the {mlogit} package [@mlogit] for illustration. 
 
 
 ## Requirements to choice data
 
-Choice data basically consists of
+{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:09, p. 16]: Choices need to be
+
+1. mutually exclusive (one can choose one and only one alternative that are all different),
+
+2. exhaustive (the alternatives do not leave other options open),
+
+3. and finitely many.
+
+In {RprobitB} only unordered alternatives (that is, alternatives cannot be ranked) are modeled. Every decider may take one or repeated choices (called choice occasions).
+
+The data set thus contains information on
 
 1. an identifier for each decider (and optionally for each choice situation),
 
 2. the choices,
 
-3. alternative and decider specific covariates.
-
+3. alternative and decider specific covariates. 
 
 Additionally, {RprobitB} asks the following formal requirements:
   
-1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) to transform any data set to this format.]
+1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform data frames into this format.]
 
-2. It **must** contain a column with unique identifier for each decision maker. Additionally, it **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
+2. It **must** contain a column with unique identifiers for each decision maker. Additionally, it **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
 
 3. It **can** contain a column with the observed choices. Such a column is required for model fitting but not for prediction.
 
@@ -44,7 +53,7 @@ Additionally, {RprobitB} asks the following formal requirements:
 
 ### Example
 
-The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative.
+The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative.^[For alternative specific variables, the alternative names must be added to the covariates via the `_` separator.]
 
 ```{r overview Train data}
 data("Train", package = "mlogit")
@@ -54,7 +63,12 @@ str(Train)
 
 ## The model formula
 
-We have to inform {RprobitB} about the covariates we want to include in our model via specifying a `formula` object. The structure of such a `formula` object is `choice ~ A | B | C`, where
+We have to inform {RprobitB} about the covariates we want to include in our model via specifying a `formula` object. Say we want to model the utility $U_{n,t,j}$ of decider $n$ at choice occasion $t$ for alternative $j$ via the linear equation
+
+$$U_{n,t,j} = A_{n,t,j} \beta_1 + B_{n,t} \beta_{2,j} + C_{n,t,j} \beta_{3,j} + \epsilon_{n,tj}.$$
+Here, $A$ and $C$ are alternative and choice situation specific covariates, whereas $B$ is choice situation specific. The coefficient $\beta_1$ is generic (i.e. the same for each alternative), whereas $\beta_{2,j}$ and $\beta_{3,j}$ are alternative specific. 
+
+To represent this structure, the `formula` object is of the form (analogously to {mlogit}) `choice ~ A | B | C`, where
 
 - `choice` is the dependent variable (the discrete choice we aim to explain),
 
@@ -67,7 +81,7 @@ alternative specific coefficients (we call them covariates of type 3).
 
 Specifying a `formula` object for {RprobitB} must be consistent with the following rules:
 
-- By default, alternative specific constants (ASCs)^[ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative.] are added to the model. They can be removed by adding `+ 0` in the second spot, e.g. `choice ~ A | B + 0`.
+- By default, alternative specific constants (ASCs)^[ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative.] are added to the model. They can be removed by adding `+ 0` in the second spot, e.g. `choice ~ A | B + 0 | C`.
 
 - To exclude covariates of the backmost categories, use either `0`, e.g. `choice ~ A | B | 0` or just leave this part out and write `choice ~ A | B `. However, to exclude covariates of front categories, we have to use `0`, e.g. `choice ~ 0 | B`. 
 
@@ -80,7 +94,7 @@ To impose random effects for specific variables, we need to define a character v
 
 ### Example
 
-We specify a model formula for the Train data set. Say we want to include all the covariates `price`, `time`, `comfort`, and `change`, which are all alternative specific, so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs: 
+We specify a model formula for the Train data set. Say we want to include all the covariates `price`, `time`, `comfort`, and `change`, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs: 
 
 ```{r train formula}
 form <- choice ~ price + time + comfort + change | 0
@@ -109,15 +123,15 @@ data <- prepare_data(form = form, choice_data = choice_data)
 
 The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `mcmc`. The following arguments are optional:
 
-- `re`: The character vector of variable names of `form` with random effects.
+- `re`: The character vector of variable names of `form` with random effects. `re = NULL` per default, i.e. no random effects.
 
 - `alternatives`: We may not want to consider all alternatives in `choice_data`. In that case, we can specify a character vector `alternatives` with selected names of alternatives. If not specified, the choice set is defined by the observed choices.
 
-- `id`: A character, the name of the column in `choice_data` that contains a unique identifier for each decision maker. The default is `"id"`. 
+- `id`: A character (single string), the name of the column in `choice_data` that contains a unique identifier for each decision maker. The default is `"id"`. 
 
 - `idc`: A character, the name of the column in `choice_data` that contains a unique identifier for each choice situation given the decision maker. Per default, these identifier are generated by the appearance of the choices in the data set.  
 
-- `standardize`: A character vector of variable names of `form` that get standardized. Covariates of type 1 or 3 have to be addressed by `<covariate>_<alternative>`. If `standardize = "all"`, all covariates get standardized.
+- `standardize`: A character vector of variable names of `form` that get standardized. Covariates of type 1 or 3 have to be addressed by `<covariate>_<alternative>`. If `standardize = "all"`, all covariates get standardized. Per default, no covariate is standardized.
 
 - `missing_data`: Specifies how to handle missing entries (`NA, NaN, -Inf, Inf`) in `choice_data`. The following options are available:
 
@@ -156,7 +170,7 @@ The function `simulate_choices()` has the following optional arguments:
 
 - `alternatives`: A character vector of length `J` with the names of the choice alternatives. If not specified, the alternatives are labeled by the first `J` upper-case letters of the Roman alphabet.
 
-- `covariates`: A named list of covariate values. Each element must be a vector of length equal to the number of choice occasions and named according to a covariate. Covariates for which no values are specified are drawn from a standard normal distribution.
+- `covariates`: A named list of covariate values. Each element must be a vector of length equal to the number of choice occasions and named according to a covariate, or follow the naming convention for alternative specific covariates, i.e. `<covariate>_<alternative>`. Covariates for which no values are specified are drawn from a standard normal distribution.
 
 - `standardize`: A character vector of variable names of `form` that get standardized.
 

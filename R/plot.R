@@ -344,8 +344,14 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @description
 #' This function plots the autocorrelation of the Gibbs samples, including the
-#' total sample size \code{SS}, effective sample size \code{ESS} and the factor
-#' \code{SS/ESS}.
+#' total sample size \code{TSS}, effective sample size \code{ESS} and the factor
+#' \code{TSS/ESS}.
+#'
+#' @details
+#' The effective sample size is the value \deqn{\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)},
+#' where \eqn{\rho_k} is the auto correlation between the chain offset
+#' by \eqn{k} positions. The auto correlations are estimated via the
+#' `acf()` function.
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
@@ -371,13 +377,13 @@ plot_acf <- function(gibbs_samples, par_labels) {
     graphics::title(par_labels[c], line = -1)
 
     ### compute effective sample size
-    SS <- length(gibbs_samples[, c])
-    ESS <- min(SS / (1 + 2 * sum(rho$acf)), SS)
+    TSS <- length(gibbs_samples[, c])
+    ESS <- min(TSS / (1 + 2 * sum(rho$acf[-1])), TSS)
     graphics::legend("topright",
       x.intersp = -0.5, bg = "white",
       legend = sprintf(
-        "%s %.0f", paste0(c("SS", "ESS", "factor"), ":"),
-        c(SS, ESS, SS / ESS)
+        "%s %.0f", paste0(c("TSS", "ESS", "factor"), ":"),
+        c(TSS, ESS, TSS / ESS)
       )
     )
   }
