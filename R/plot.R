@@ -149,103 +149,31 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   oldpar <- graphics::par(no.readonly = TRUE)
   on.exit(suppressWarnings(graphics::par(oldpar)))
 
-  ### determine 'par_names' and 'linear_coefs'
-  par_names <- c(
-    if (x$data$P_f > 0) "alpha",
-    if (x$data$P_r > 0) c("s", "b", "Omega"), "Sigma"
-  )
-  par_names <- setdiff(par_names, ignore)
-  linear_coefs <- x$data$linear_coefs[!x$data$linear_coefs$name %in% ignore, ]
-  linear_coefs_fe <- linear_coefs[linear_coefs$re == FALSE, ]
-  linear_coefs_re <- linear_coefs[linear_coefs$re == TRUE, ]
-  linear_coefs_re_orig <- linear_coefs_re
-  if (x$latent_classes$C > 1) {
-    for (i in 1:x$data$P_r) {
-      for (c in 1:x$latent_classes$C) {
-        linear_coefs_re[nrow(linear_coefs_re) + 1, ] <-
-          c(paste0(linear_coefs_re[1, "name"], "_", c), linear_coefs_re[1, "re"])
-      }
-      linear_coefs_re <- linear_coefs_re[-1, ]
-    }
-  }
-  linear_coefs <- rbind(linear_coefs_fe, linear_coefs_re)
-
   ### make plot type 'mixture'
   if (type == "mixture") {
-    if (is.null(linear_coefs_re_orig$name) || !is.element("b", par_names)) {
-      warning("Type 'mixture' invalid because there are no random effects.")
-    } else {
-      est <- point_estimates(x, FUN = mean)
-      true <- x$data$true_parameter
-      comb <- expand.grid(
-        1:length(linear_coefs_re_orig$name),
-        1:length(linear_coefs_re_orig$name)
-      )
-      graphics::par(
-        mfrow = set_mfrow(nrow(comb)), oma = c(1, 1, 1, 1),
-        mar = c(3, 3, 0, 0), mgp = c(2, 1, 0), xpd = NA
-      )
-      for (i in 1:nrow(comb)) {
-        p1 <- comb[i, 1]
-        p2 <- comb[i, 2]
-
-        if (p1 == p2) {
-          ### marginal plots
-          mean_est <- list()
-          sd_est <- list()
-          weight_est <- est$s
-          for (c in 1:x$latent_classes$C) {
-            mean_est[[c]] <- est$b[paste0(c, ".", p1)]
-            sd_est[[c]] <- sqrt(est$Omega[paste0(c, ".", p1, ",", p1)])
-          }
-          if (is.null(true)) {
-            mean_true <- NULL
-            sd_true <- NULL
-            weight_true <- TRUE
-          } else {
-            mean_true <- list()
-            sd_true <- list()
-            weight_true <- true$s
-            for (c in 1:x$data$true_parameter$C) {
-              mean_true[[c]] <- est$b[paste0(c, ".", p1)]
-              sd_true[[c]] <- sqrt(true$Omega[paste0(c, ".", p1, ",", p1)])
-            }
-          }
-          plot_mixture_marginal(
-            mean_est = mean_est,
-            mean_true = mean_true,
-            weight_est = weight_est,
-            weight_true = weight_true,
-            sd_est = sd_est,
-            sd_true = sd_true,
-            cov_name = linear_coefs_re$name[p1]
-          )
-        } else {
-          ### contour plots
-          mean_est <- list()
-          cov_est <- list()
-          for (c in 1:x$latent_classes$C) {
-            mean_est[[c]] <- est$b[paste0(c, ".", c(p1, p2))]
-            cov_est[[c]] <- matrix(est$Omega[paste0(
-              c, ".",
-              as.vector(outer(c(p1, p2), c(p1, p2), paste, sep = ","))
-            )], 2, 2)
-          }
-          if (is.null(true)) {
-            beta_true <- NULL
-          } else {
-            beta_true <- x$data$true_parameter$beta[c(p1, p2), ]
-          }
-          plot_mixture_contour(
-            mean_est = mean_est,
-            weight_est = est$s,
-            cov_est = cov_est,
-            beta_true = beta_true,
-            cov_names = linear_coefs_re_orig$name[c(p1, p2)]
-          )
-        }
-      }
+    est <- point_estimates(x)
+    est_b <- apply(est$b, 2, as.numeric, simplify =  F)
+    est_Omega <- apply(est$Omega, 2, matrix, nrow = x$data$P_r, simplify = F)
+    est_s <- est$s
+    cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
+    plots <- list()
+    for(p1 in 1:x$data$P_r) for(p2 in 1:x$data$P_r) {
+      if(any(cov_names[c(p1,p2)] %in% ignore)) next
+      plots <- append(plots, list(if(p1 == p2){
+        plot_mixture_marginal(
+          mean = lapply(est_b, function(x) x[p1]),
+          cov = lapply(est_Omega, function(x) x[p1,p1]),
+          weights = est_s,
+          name = cov_names[p1])
+      } else {
+        plot_mixture_contour(
+          means = lapply(est_b, function(x) x[c(p1,p2)]),
+          covs = lapply(est_Omega, function(x) x[c(p1,p2),c(p1,p2)]),
+          weights = est_s,
+          names = cov_names[c(p1,p2)])
+      }))
     }
+    do.call(gridExtra::grid.arrange, c(plots, ncol = floor(sqrt(length(plots)))))
   }
 
   ### make plot type 'trace'
@@ -389,24 +317,18 @@ plot_acf <- function(gibbs_samples, par_labels) {
   }
 }
 
-#' Plotting mixing distribution contours.
+#' Plot marginal mixing distributions
 #'
 #' @description
-#' This function plots contours of the estimated mixing distributions and adds
-#' the true beta values for comparison if available.
+#' This function plots an estimated marginal mixing distributions.
 #'
-#' @param mean_est
-#' A list of length \code{C}, where each element is a vector of two
-#' estimated class means.
-#' @param weight_est
-#' A numeric vector of length \code{C} with estimated class weights.
-#' @param cov_est
-#' A list of length \code{C}, where each element is an estimated class
-#' covariance matrix.
-#' @param beta_true
-#' Either \code{NULL} or a matrix of \code{C} rows with true \code{beta} values.
-#' @param cov_names
-#' Either \code{NULL} or a vector of two covariate names.
+#' @param mean
+#'
+#' @param cov
+#'
+#' @param weights
+#'
+#' @param name
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -414,110 +336,37 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' @keywords
 #' internal
 #'
-#' @noRd
-#'
-#' @importFrom graphics points contour
+#' @example
+#' mean <- list(1,2)
+#' cov <- list(0.1,1)
+#' weights <- c(0.3,0.7)
+#' name <- "test"
+#' plot_mixture_marginal(mean, cov, weights, name)
 
-plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL,
-                                 cov_names = NULL) {
-
-  ### check inputs
-  true_avail <- !is.null(beta_true)
-
-  ### extract number of classes
-  stopifnot(
-    length(mean_est) == length(weight_est),
-    length(weight_est) == length(cov_est)
-  )
-  C_est <- length(mean_est)
-
-  ### specify grid
-  xmin <- min(sapply(
-    1:C_est,
-    function(c) mean_est[[c]][1] - 3 * sqrt(cov_est[[c]][1, 1])
-  ))
-  xmax <- max(sapply(
-    1:C_est,
-    function(c) mean_est[[c]][1] + 3 * sqrt(cov_est[[c]][1, 1])
-  ))
-  ymin <- min(sapply(
-    1:C_est,
-    function(c) mean_est[[c]][2] - 3 * sqrt(cov_est[[c]][2, 2])
-  ))
-  ymax <- max(sapply(
-    1:C_est,
-    function(c) mean_est[[c]][2] + 3 * sqrt(cov_est[[c]][2, 2])
-  ))
-  grid_x <- seq(xmin, xmax, length.out = 200)
-  grid_y <- seq(ymin, ymax, length.out = 200)
-
-  ### compute density of estimated mixture distribution
-  prob <- matrix(0, nrow = length(grid_x), ncol = length(grid_y))
-  for (i in seq_len(length(grid_x))) {
-    for (j in seq_len(length(grid_x))) {
-      for (c in 1:C_est) {
-        prob[i, j] <- prob[i, j] + weight_est[c] *
-          mvtnorm::dmvnorm(
-            x = t(matrix(c(grid_x[i], grid_y[j]))),
-            mean = mean_est[[c]],
-            sigma = cov_est[[c]]
-          )
-      }
-    }
-  }
-
-  ### specify limits
-  xlim <- c(
-    min(grid_x[which(rowSums(prob) > 1e-2)]),
-    max(grid_x[which(rowSums(prob) > 1e-2)])
-  )
-  ylim <- c(
-    min(grid_y[which(colSums(prob) > 1e-2)]),
-    max(grid_y[which(colSums(prob) > 1e-2)])
-  )
-
-  ### initialize plot
-  plot(0,
-    type = "n", xlim = xlim, ylim = ylim,
-    xlab = bquote(paste(beta[.(cov_names[1])])),
-    ylab = bquote(paste(beta[.(cov_names[2])])),
-    main = ""
-  )
-
-  ### add true beta values
-  if (true_avail) {
-    graphics::points(x = beta_true[1, ], y = beta_true[2, ], pch = 16, col = "black")
-  }
-
-  ### add contour
-  graphics::contour(add = TRUE, grid_x, grid_y, prob, labcex = 0.75)
+plot_mixture_marginal <- function(mean, cov, weights, name) {
+  C <- length(weights)
+  x_min <- min(mapply(function(x,y) x-3*y, mean, cov))
+  x_max <- max(mapply(function(x,y) x+3*y, mean, cov))
+  x <- seq(x_min, x_max, length.out = 200)
+  y <- Reduce("+", sapply(1:C, function(c) weights[c] * dnorm(x, mean[[c]], sd = cov[[c]]),
+                          simplify = F))
+  ggplot(data = data.frame(x = x, y = y), aes(x, y)) +
+    geom_line() +
+    labs(x = bquote(beta[.(name)]), y = "")
 }
 
-#' Plotting marginal mixing distributions.
+#' Plot bivariate contour of mixing distributions
 #'
 #' @description
-#' This function plots the estimated mixing distributions with respect to one
-#' covariate and adds the true marginal mixing distribution for comparison if
-#' available.
+#' This function plots an estimated ivariate contour mixing distributions.
 #'
-#' @param mean_est
-#' A list of length \code{C}, where each element is an estimated class mean.
-#' @param mean_true
-#' Either \code{NULL} or a list of length \code{C}, where each element is a true
-#' class mean.
-#' @param weight_est
-#' A numeric vector of length \code{C} with estimated class weights.
-#' @param weight_true
-#' Either \code{NULL} or a numeric vector of length \code{C} with true class
-#' weights.
-#' @param sd_est
-#' A list of length \code{C}, where each element is an estimated class standard
-#' deviation.
-#' @param sd_true
-#' Either \code{NULL} or a list of length \code{C}, where each element is a true
-#' class standard deviation.
-#' @param cov_name
-#' Either \code{NULL} or the name of the corresponding covariate.
+#' @param means
+#'
+#' @param covs
+#'
+#' @param weights
+#'
+#' @param names
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -525,97 +374,26 @@ plot_mixture_contour <- function(mean_est, weight_est, cov_est, beta_true = NULL
 #' @keywords
 #' internal
 #'
-#' @noRd
-#'
-#' @importFrom stats dnorm
-#' @importFrom graphics title lines
+#' @example
+#' means <- list(c(0,0),c(1,1))
+#' covs <- list(diag(2),0.5*diag(2))
+#' weights <- c(0.3,0.7)
+#' names <- c("A","B")
+#' plot_mixture_contour(means, covs, weights, names)
 
-plot_mixture_marginal <- function(mean_est, mean_true = NULL, weight_est,
-                                  weight_true = NULL, sd_est, sd_true = NULL,
-                                  cov_name = NULL) {
-
-  ### check if true parameters are available
-  true_avail <- !(is.null(mean_true) || is.null(weight_true) || is.null(sd_true))
-
-  ### extract number of classes
-  stopifnot(
-    length(mean_est) == length(weight_est),
-    length(weight_est) == length(sd_est)
-  )
-  C_est <- length(mean_est)
-  if (true_avail) {
-    stopifnot(
-      length(mean_true) == length(weight_true),
-      length(weight_true) == length(sd_true)
-    )
-    C_true <- length(mean_true)
-  } else {
-    C_true <- 1
-  }
-
-  ### specify x-range
-  xlim <- c(
-    min(
-      unlist(mean_est) - 3 * unlist(sd_est),
-      unlist(mean_true) - 3 * unlist(sd_true)
-    ),
-    max(
-      unlist(mean_est) + 3 * unlist(sd_est),
-      unlist(mean_true) + 3 * unlist(sd_true)
-    )
-  )
-  x <- seq(xlim[1], xlim[2], 0.01)
-
-  ### compute mixture components
-  mixture_est <- matrix(NA, nrow = length(x), ncol = C_est)
-  for (c in 1:C_est) {
-    mixture_est[, c] <- weight_est[c] * stats::dnorm(x,
-      mean = mean_est[[c]],
-      sd = sd_est[[c]]
-    )
-  }
-  if (true_avail) {
-    mixture_true <- matrix(NA, nrow = length(x), ncol = C_true)
-    for (c in 1:C_true) {
-      mixture_true[, c] <- weight_true[c] * stats::dnorm(x,
-        mean = mean_true[[c]],
-        sd = sd_true[[c]]
-      )
-    }
-  }
-
-  ### specify y-range
-  ylim <- c(0, max(rowSums(mixture_est), if (true_avail) rowSums(mixture_true)))
-
-  ### initialize plot
-  plot(0, xlim = xlim, ylim = ylim, type = "n", main = "", xlab = "", ylab = "")
-  graphics::title(
-    main = "",
-    xlab = bquote(paste(beta[.(cov_name)])),
-    ylab = ""
-  )
-
-  ### add full mixture
-  graphics::lines(x, rowSums(mixture_est), col = "black", lty = 1, lwd = 2)
-  if (true_avail) {
-    graphics::lines(x, rowSums(mixture_true), col = "black", lty = 2, lwd = 2)
-  }
-
-  ### add mixture components
-  col <- viridis::magma(
-    n = max(C_est, C_true), begin = 0.1, end = 0.9,
-    alpha = 0.6
-  )
-  if (C_est > 1) {
-    for (c in 1:C_est) {
-      lines(x, mixture_est[, c], col = col[c], lty = 1, lwd = 2)
-    }
-  }
-  if (true_avail && C_true > 1) {
-    for (c in 1:C_true) {
-      lines(x, mixture_true[, c], col = col[c], lty = 2, lwd = 2)
-    }
-  }
+plot_mixture_contour <- function(means, covs, weights, names) {
+  C <- length(weights)
+  x_min <- min(mapply(function(x,y) x[1] - 3 * y[1,1], means, covs))
+  x_max <- max(mapply(function(x,y) x[1] + 3 * y[1,1], means, covs))
+  y_min <- min(mapply(function(x,y) x[2] - 3 * y[2,2], means, covs))
+  y_max <- max(mapply(function(x,y) x[2] + 3 * y[2,2], means, covs))
+  data.grid <- expand.grid(x = seq(x_min, x_max, length.out = 200),
+                           y = seq(y_min, y_max, length.out = 200))
+  z <- Reduce("+", sapply(1:C, function(c) mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]),
+                          simplify = F))
+  ggplot(data = cbind(data.grid, z), aes(x = x, y = y, z = z)) +
+    geom_contour() +
+    labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
 }
 
 #' Visualizing the trace of Gibbs samples.

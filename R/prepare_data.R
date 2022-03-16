@@ -352,3 +352,47 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   ### return 'RprobitB_data' object
   return(out)
 }
+
+#' Relabel the alternative specific covariates
+#'
+#' @description
+#' In {RprobitB}, alternative specific covariates must be named in the format
+#' `"<covariate>_<alternative>"`. This is a convenience function to generate
+#' this format for a given `choice_data` set.
+#'
+#' @param choice_data
+#' A data frame.
+#' @param cov
+#' A character vector of the names of alternative specific covariates in
+#' `choice_data`.
+#' @param alternative
+#' A (character or numeric) vector of the alternative names.
+#'
+#' @return
+#' The `choice_data` input with updated column names.
+#'
+#' @examples
+#' data("Electricity", package = "mlogit")
+#' cov <- c("pf","cl","loc","wk","tod","seas")
+#' alternatives <- 1:4
+#' colnames(Electricity)
+#' Electricity <- cov_names(Electricity, cov, alternatives)
+#' colnames(Electricity)
+#'
+#' @export
+
+as_cov_names <- function(choice_data, cov, alternatives) {
+  x <- colnames(choice_data)
+  for(i in seq_len(length(x))){
+    lab <- x[i]
+    match_cov <- sapply(cov, function(x) grepl(x, lab))
+    match_alt <- sapply(alternatives, function(x) grepl(x, lab))
+    if(sum(match_cov) > 1 || sum(match_alt) > 1){
+      stop("Failed due to ambiguity.")
+    } else if(sum(match_cov) == 1 && sum(match_alt) == 1){
+      x[i] <- paste0(cov[which(match_cov)],"_",alternatives[which(match_alt)])
+    }
+  }
+  colnames(choice_data) <- x
+  return(choice_data)
+}
