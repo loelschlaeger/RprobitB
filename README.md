@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# RprobitB <img src="man/figures/logo.png" align="right" alt="" width="120" />
+# {RprobitB}: Bayesian Probit Choice Modeling <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 
@@ -14,13 +14,16 @@ downloads](https://cranlogs.r-pkg.org/badges/grand-total/RprobitB)](https://cran
 coverage](https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg)](https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main)
 <!-- badges: end -->
 
-The goal of RprobitB is to fit mixed probit models to choice data. The
-package differs from comparable packages in two ways: Bayesian
-estimation and a focus on taste heterogeneity.
+The goal of {RprobitB} is to explain choices made by deciders among a
+discrete set of alternatives. In a Bayesian way. For example, think of
+tourists that want to book a train trip to their holiday destination:
+The knowledge why they prefer a certain alternative over another is of
+great value for train companies, especially the customer’s willingness
+to pay for say a faster or more comfortable trip.
 
 ## Installation
 
-You can install the released version of RprobitB from
+You can install the released version of {RprobitB} from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
@@ -36,139 +39,96 @@ devtools::install_github("loelschlaeger/RprobitB")
 
 ## Documentation
 
-The package is documented in several vignettes:
-
-``` r
-browseVignettes("RprobitB")
-```
+The package is documented in several vignettes, see
+[here](https://loelschlaeger.de/RprobitB/articles/).
 
 ## Example
 
-This is a basic example to show how to fit a mixed probit model and make
-choice predictions:
-
-First, load the package.
-
-``` r
-library(RprobitB)
-#> Thanks for using RprobitB 1.0.0.9000, happy choice modeling!
-#> See https://loelschlaeger.de/RprobitB for help.
-#> Type 'citation("RprobitB")' for citing this R package.
-```
-
-Then, prepare choice data, for example the Train dataset from the mlogit
-package.
+We analyze a data set of 2929 stated choices by 235 Dutch individuals
+deciding between two virtual train trip options based on the price, the
+travel time, the level of comfort, and the number of changes. The data
+is saved in the {mlogit} package. We transform the travel time from
+minutes to hours and the travel price from guilders to euros:
 
 ``` r
 data("Train", package = "mlogit")
-data <- prepare_data(
-  form = choice ~ price | 0 | time + comfort + change,
-  choice_data = Train,
-  re = "price",
-  standardize = "all")
+Train$price_A <- Train$price_A / 100 * 2.20371
+Train$price_B <- Train$price_B / 100 * 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
+str(Train)
+#> 'data.frame':    2929 obs. of  11 variables:
+#>  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...
+#>  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...
+#>  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...
+#>  $ price_A  : num  52.9 52.9 52.9 88.1 52.9 ...
+#>  $ time_A   : num  2.5 2.5 1.92 2.17 2.5 ...
+#>  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...
+#>  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...
+#>  $ price_B  : num  88.1 70.5 88.1 70.5 70.5 ...
+#>  $ time_B   : num  2.5 2.17 1.92 2.5 2.5 ...
+#>  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...
+#>  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...
 ```
 
-We split the dataset into a train (70%) and test subset (30%).
+The following lines fit a probit model that explains the chosen trip
+alternatives (`choice`) by their `price`, `time`, number of `change`s,
+and level of `comfort` (the lower this value the higher the comfort).
+For normalization, the first linear coefficient, the `price`, is fixed
+to `-1`, which allows to interpret the other coefficients as monetary
+values:
 
 ``` r
-data <- train_test(data, test_proportion = 0.3)
+form <- choice ~ price + time + change + comfort | 0
+data <- prepare_data(form, Train)
+model <- mcmc(data, scale = list("parameter" = "a", index = 1, value = -1))
 ```
 
-Call the `mcmc` function to estimate the model.
+The estimated effects can be visualized via:
 
 ``` r
-model <- mcmc(data$train)
-#> Iteration Info                   ETA (min)
-#>         0 started Gibbs sampling          
-#>      1000                                2
-#>      2000                                2
-#>      3000                                2
-#>      4000                                2
-#>      5000                                1
-#>      6000                                1
-#>      7000                                1
-#>      8000                                1
-#>      9000                                1
-#>     10000 done, total time: 2 min
+plot(coef(model))
 ```
 
-The summary method gives an overview over the estimates.
+<img src="man/figures/README-coef-1.png" style="display: block; margin: auto;" />
+
+The results indicate that the deciders value one hour travel time by
+about 25€, an additional change by 5€, and a more comfortable class by
+15€.
+
+Now assume that a train company wants to anticipate the effect of a
+price increase on their market share. By our model, increasing the
+ticket price from 100€ to 110€ draws 15% of the customers to the
+competitor who does not increase their prices:
 
 ``` r
-summary(model)
-#> Probit model 'choice ~ price | 0 | time + comfort + change'.
-#> 
-#> MCMC settings:
-#> - R: 10000 
-#> - B: 5000 
-#> - Q: 1 
-#> 
-#> Normalization:
-#> - Level: Utility differences with respect to alternative 2.
-#> - Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-#> 
-#> Legend of alternatives:
-#>   name
-#> 1    A
-#> 2    B
-#> 
-#> Legend of linear coefficients:
-#>        name    re
-#> 1    time_A FALSE
-#> 2    time_B FALSE
-#> 3 comfort_A FALSE
-#> 4 comfort_B FALSE
-#> 5  change_A FALSE
-#> 6  change_B FALSE
-#> 7     price  TRUE
-#> 
-#> Latent classes: 1 
-#> - Update: FALSE 
-#> 
-#> Parameter statistics:
-#>           mean      sd      R^
-#>  alpha
-#>                               
-#>      1   -0.82    0.08    1.02
-#>      2   -0.85    0.08    1.01
-#>      3   -0.52    0.05    1.01
-#>      4   -0.50    0.05    1.00
-#>      5   -0.26    0.05    1.01
-#>      6   -0.21    0.05    1.00
-#> 
-#>  s
-#>                               
-#>      1    1.00    0.00     NaN
-#> 
-#>  b
-#>                               
-#>    1.1   -2.19    0.26    1.02
-#> 
-#>  Omega
-#>                               
-#>  1.1,1    3.10    0.87    1.01
-#> 
-#>  Sigma
-#>                               
-#>    1,1    1.00    0.00    1.00
+predict(
+  model, 
+  data = data.frame("price_A" = c(100,110), 
+                    "price_B" = c(100,100)),
+  overview = FALSE)
+#>   id choiceid         A         B prediction
+#> 1  1        1 0.5000000 0.5000000          A
+#> 2  2        1 0.3484483 0.6515517          B
 ```
 
-Let’s visualize the estimated mixture distribution for the price
-coefficient.
+However, offering a better comfort class (`0` here is better than `1`)
+compensates for the higher price and even results in a gain of 7% market
+share:
 
 ``` r
-plot(model, type = "mixture")
+predict(
+  model, 
+  data = data.frame("price_A"   = c(100,110), 
+                    "comfort_A" = c(1,0),
+                    "price_B"   = c(100,100),
+                    "comfort_B" = c(1,1)),
+  overview = FALSE)
+#>   id choiceid         A         B prediction
+#> 1  1        1 0.5000000 0.5000000          A
+#> 2  2        1 0.5680288 0.4319712          A
 ```
 
-![](man/figures/README-plot-1.png)<!-- -->
-
-The `predict` function makes choice predictions and compares the
-prediction to the actual choices.
-
-``` r
-predict(model, data$test)
-#>     predicted
-#> true   A   B
-#>    A 299 127
-#>    B 144 304
-```
+This is just the tip of the iceberg: {RprobitB} offers tools for
+modeling choice behavior heterogeneity, preference-based classification
+of deciders, model comparison and more.

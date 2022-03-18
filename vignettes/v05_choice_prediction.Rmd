@@ -80,21 +80,23 @@ The `predict()` method has an additional `data` argument. Per default, `data = N
 We demonstrate the second case in the following. Assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ draws 15\% of the customers to the competitor who does not increase their prices.
 
 ```{r}
-predict(model_train, 
-        data = data.frame("price_A" = c(100,110), 
-                          "price_B" = c(100,100)),
-        overview = FALSE)
+predict(
+  model_train, 
+  data = data.frame("price_A" = c(100,110), 
+                    "price_B" = c(100,100)),
+  overview = FALSE)
 ```
 
-However, offering a better comfort class compensates for the higher price and even results in a gain of 6\% market share:
+However, offering a better comfort class compensates for the higher price and even results in a gain of 7\% market share:
 
 ```{r}
-predict(model_train, 
-        data = data.frame("price_A"   = c(100,110), 
-                          "comfort_A" = c(1,0),
-                          "price_B"   = c(100,100),
-                          "comfort_B" = c(1,1)),
-        overview = FALSE)
+predict(
+  model_train, 
+  data = data.frame("price_A"   = c(100,110), 
+                    "comfort_A" = c(1,0),
+                    "price_B"   = c(100,100),
+                    "comfort_B" = c(1,1)),
+  overview = FALSE)
 ```
 
 ## References
