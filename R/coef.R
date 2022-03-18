@@ -72,7 +72,7 @@ print.RprobitB_coef <- function(x, ...) {
   classes <- sapply(
     attr(x, "coef_class"),
     function(cl) {
-      if(is.na(cl) || attr(x, "C") == 1) {
+      if (is.na(cl) || attr(x, "C") == 1) {
         ""
       } else {
         paste0("[", cl, "]")
@@ -173,21 +173,21 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
 #' @importFrom stats cov2cor
 
 cov_mix <- function(x, cor = FALSE) {
-  if(x$data$P_r == 0){
+  if (x$data$P_r == 0) {
     stop("No random effects.")
   }
   est_Omega <- point_estimates(x)$Omega
   re <- NULL
   cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
   out <- list()
-  for(c in 1:x$latent_classes$C){
-    out[[c]] <- matrix(est_Omega[,c], nrow = x$data$P_r)
+  for (c in 1:x$latent_classes$C) {
+    out[[c]] <- matrix(est_Omega[, c], nrow = x$data$P_r)
     colnames(out[[c]]) <- rownames(out[[c]]) <- cov_names
   }
-  if(cor){
+  if (cor) {
     out <- lapply(out, stats::cov2cor)
   }
-  if(x$latent_classes$C == 1){
+  if (x$latent_classes$C == 1) {
     return(out[[1]])
   } else {
     return(out)

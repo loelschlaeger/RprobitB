@@ -14,4 +14,3 @@ test_that("choice prediction works", {
   expect_snapshot(predict(model, overview = FALSE))
   expect_snapshot(predict(model, data = data$test, overview = TRUE))
 })
-
