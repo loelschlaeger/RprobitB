@@ -1,12 +1,8 @@
-test_that("P", {
+test_that("Gibbs sampling works", {
   data <- simulate_choices(
-    form = choice ~ cost | income | time,
-    N = 10,
-    T = 1:10,
-    J = 2,
-    alternatives = c("bus", "car"),
-    seed = 1,
-    alpha = 1:5, Sigma = 1
+    form = choice ~ a | b | c,
+    N = 10, T = 1:10, J = 2,
+    seed = 1
   )
   model <- mcmc(data, R = 2000, print_progress = FALSE, seed = 1)
   expect_snapshot(print(model))
@@ -14,41 +10,34 @@ test_that("P", {
   expect_snapshot(print(coef(model)))
 })
 
-test_that("MNP", {
+### The following are consistency tests and are only run on request.
+skip_consistency_test <- function() if(T) skip("Skip consistency test.")
+
+test_that("consistency of MNP", {
+  skip_consistency_test()
   data <- simulate_choices(
-    form = choice ~ cost | income | time,
-    N = 10,
-    T = 1:10,
-    J = 3,
-    alternatives = c("train", "bus", "car"),
+    form = choice ~ a | b | c,
+    N = 100, T = 50, J = 3,
     seed = 1,
-    alpha = 1:8
   )
-  model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(print(model))
+  model <- mcmc(data, R = 10000, print_progress = FALSE, seed = 1)
   expect_snapshot(summary(model))
-  expect_snapshot(print(coef(model)))
 })
 
-test_that("MMNP", {
+test_that("consistency of MMNP", {
+  skip_consistency_test()
   data <- simulate_choices(
-    form = choice ~ cost | income | time,
-    N = 10,
-    T = 1:10,
-    J = 3,
-    re = c("cost", "ASC"),
-    alternatives = c("train", "bus", "car"),
-    seed = 1,
-    alpha = 1:5, b = 1:3, Omega = as.numeric(diag(3)),
-    Sigma = diag(2)
+    form = choice ~ a | b | c,
+    N = 100, T = 50, J = 3,
+    re = c("a", "b", "c", "ASC"),
+    seed = 1
   )
-  model <- mcmc(data, R = 1000, print_progress = FALSE, seed = 1)
-  expect_snapshot(print(model))
+  model <- mcmc(data, R = 10000, print_progress = FALSE, seed = 1)
   expect_snapshot(summary(model))
-  expect_snapshot(print(coef(model)))
 })
 
-test_that("LCMMNP", {
+test_that("consistency of LCMMNP", {
+  skip("Not implemented.")
   data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 30,
@@ -68,7 +57,8 @@ test_that("LCMMNP", {
   expect_snapshot(print(coef(model)))
 })
 
-test_that("LCMMNP weight update", {
+test_that("consistency of LCMMNP weight update", {
+  skip("Not implemented.")
   data <- simulate_choices(
     form = choice ~ cost,
     N = 100,
@@ -90,7 +80,8 @@ test_that("LCMMNP weight update", {
   expect_snapshot(print(coef(model)))
 })
 
-test_that("LCMMNP DP update", {
+test_that("consistency of LCMMNP DP update", {
+  skip("Not implemented.")
   data <- simulate_choices(
     form = choice ~ cost,
     N = 100,
@@ -112,7 +103,8 @@ test_that("LCMMNP DP update", {
   expect_snapshot(print(coef(model)))
 })
 
-test_that("LCMMNP weight and DP update", {
+test_that("consistency of LCMMNP weight and DP update", {
+  skip("Not implemented.")
   data <- simulate_choices(
     form = choice ~ cost,
     N = 100,
