@@ -15,3 +15,7 @@
 * The function `simulate` is now called `simulate_choices()` to not mask `stats::simulate()`.
 
 * The README file is now in R Markdown format.
+
+# RprobitB 0.1.0
+
+Initial version.
