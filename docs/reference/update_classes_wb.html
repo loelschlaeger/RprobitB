@@ -30,12 +30,17 @@
     <a class="dropdown-item" href="../articles/v01_model_definition.html">Model definition</a>
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
-    <a class="dropdown-item" href="../articles/v04_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md">Plans</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -126,17 +131,62 @@ and only if <code>Cmax</code> is not exceeded.</p>
 <span class="r-in"><span class="co">### Remove class 2</span></span>
 <span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">update_classes_wb</span><span class="op">(</span>Cmax <span class="op">=</span> <span class="fl">10</span>, epsmin <span class="op">=</span> <span class="fl">0.3</span>, epsmax <span class="op">=</span> <span class="fl">0.9</span>, distmin <span class="op">=</span> <span class="fl">1</span>,</span>
 <span class="r-in">                             s <span class="op">=</span> <span class="va">s</span>, b <span class="op">=</span> <span class="va">b</span>, Omega <span class="op">=</span> <span class="va">Omega</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'update_classes_wb' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Omega</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### Split class 1</span></span>
 <span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">update_classes_wb</span><span class="op">(</span>Cmax <span class="op">=</span> <span class="fl">10</span>, epsmin <span class="op">=</span> <span class="fl">0.1</span>, epsmax <span class="op">=</span> <span class="fl">0.7</span>, distmin <span class="op">=</span> <span class="fl">1</span>,</span>
 <span class="r-in">                             s <span class="op">=</span> <span class="va">s</span>, b <span class="op">=</span> <span class="va">b</span>, Omega <span class="op">=</span> <span class="va">Omega</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'update_classes_wb' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.4  0.4  0.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.75 1.25    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.00 1.00   -1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Omega</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.25 0.25  1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.15 0.15 -0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.15 0.15 -0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.25 0.25  0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### Join classes</span></span>
 <span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">update_classes_wb</span><span class="op">(</span>Cmax <span class="op">=</span> <span class="fl">10</span>, epsmin <span class="op">=</span> <span class="fl">0.1</span>, epsmax <span class="op">=</span> <span class="fl">0.9</span>, distmin <span class="op">=</span> <span class="fl">3</span>,</span>
 <span class="r-in">                             s <span class="op">=</span> <span class="va">s</span>, b <span class="op">=</span> <span class="va">b</span>, Omega <span class="op">=</span> <span class="va">Omega</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'update_classes_wb' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Omega</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

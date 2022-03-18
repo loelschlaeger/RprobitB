@@ -35,6 +35,7 @@ reference:
   contents:
   - check_form
   - overview_effects
+  - as_cov_names
   - prepare_data
   - simulate_choices
   - train_test
@@ -44,6 +45,7 @@ reference:
   contents:
   - check_prior
   - mcmc
+  - nested_model
   - transform.RprobitB_fit
 - title: Fitted model
   desc: The package contains the following fitted models.
@@ -53,6 +55,8 @@ reference:
   desc: Use these functions for model evaluation.
   contents:
   - coef.RprobitB_fit
+  - cov_mix
+  - get_cov
   - point_estimates
   - choice_probabilities
   - log_likelihood

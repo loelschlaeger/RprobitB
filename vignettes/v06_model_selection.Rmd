@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(RprobitB)
+set.seed(1)
 ```
 
 The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
@@ -41,8 +42,9 @@ model_selection(model_train, model_train_sparse)
 # Bayes factor currently missing.
 ```
 
-```{r, eval = FALSE}
+```{r, echo = FALSE}
 data("mod_sel", package = "RprobitB")
+mod_sel
 ```
 
 The output contains the following model comparison criteria:
