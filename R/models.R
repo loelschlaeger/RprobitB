@@ -60,3 +60,10 @@
 #' @keywords
 #' model
 "model_elec"
+
+
+#' An example output of `model_selection()`.
+#'
+#' @keywords
+#' internal
+"mod_sel"
