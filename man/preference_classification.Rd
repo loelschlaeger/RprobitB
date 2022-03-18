@@ -4,10 +4,12 @@
 \alias{preference_classification}
 \title{Classify preferences of deciders.}
 \usage{
-preference_classification(x)
+preference_classification(x, true = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
+
+\item{true}{Set to \code{TRUE} to add true class memberships to output (if available).}
 }
 \value{
 A data frame with the deciders id and the latent class number.

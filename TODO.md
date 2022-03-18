@@ -9,6 +9,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [x] Implement `update_classes_dp()` in C++.
 - [x] Implement progress bar.
 - [ ] Check and document `R_hat()` implementation (How is chain splitted?).
+- [ ] After each update, set fixed parameters. 
 
 ### Model selection
 
@@ -33,8 +34,8 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Prediction
 
-- [ ] Implement prediction based on single predictor value.
-- [ ] ROC curve (in case of two alternatives).
+- [x] Implement prediction based on single predictor value.
+- [x] ROC curve (in case of two alternatives).
 
 ### Ordered Probit
 
@@ -72,6 +73,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
 - [x] Error in `mml()` for `method == "pame"`: Bad prior draws. Fixed: Prior draws had to depend on `C`.
 - [ ] Error in `mml()` for `method == "pame"` and `C > 1`: Bad `s` draws.
+- [ ] In `choice_probabilities()`: `"probabilities do not sum to 1."`
 
 ### Tests
 
@@ -88,10 +90,11 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [ ] Modeling heterogeneity
 - [ ] Choice prediction
 - [ ] Model selection
+- [ ] Applications
 
 ### Demos
 
-- [ ] Add pre-compiled models.
+- [x] Add pre-compiled models.
 - [ ] `rpb()` for demonstration with console feedback.
 
 ### Website

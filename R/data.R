@@ -14,7 +14,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(berserk_choice)
+#' @usage data(choice_berserk)
 #'
 #' @format
 #' A data frame containing berserking choices of the White and the Black player
@@ -35,7 +35,7 @@
 #' @keywords
 #' dataset
 #'
-"berserk_choice"
+"choice_berserk"
 
 #' Choice of a chess opening
 #'
@@ -44,7 +44,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(opening_choice)
+#' @usage data(choice_chess_opening)
 #'
 #' @format
 #' A data frame containing first move choices of the White player in 549 chess games.
@@ -73,4 +73,4 @@
 #' @keywords
 #' dataset
 #'
-"opening_choice"
+"choice_chess_opening"

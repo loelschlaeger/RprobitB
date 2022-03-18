@@ -45,6 +45,10 @@ reference:
   - check_prior
   - mcmc
   - transform.RprobitB_fit
+- title: Fitted model
+  desc: The package contains the following fitted models.
+  contents:
+  - has_keyword("model")
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:

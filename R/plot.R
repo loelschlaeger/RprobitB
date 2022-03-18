@@ -108,14 +108,14 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
-#'   \item \code{"mixture"} for visualizing the mixture distribution.
-#'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples.
-#'   \item \code{"trace"} for trace plots of the Gibbs samples.
-#'   \item \code{"class_seq"} for visualizing the sequence of class numbers.
-#'   \item \code{"class_allocation"} for visualizing the class allocation
-#'         (only if \code{P_r = 2}) at the final Gibbs sampler iteration.
-#'         See the details section for visualization options.
+#'   \item \code{"mixture"} to visualize the mixing distribution,
+#'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
+#'   \item \code{"trace"} for trace plots of the Gibbs samples,
+#'   \item \code{"class_seq"} to visualize the sequence of class numbers,
+#'   \item \code{"class_allocation"} to visualize the class allocation
+#'         (only if \code{P_r = 2}).
 #' }
+#' See the details section for visualization options.
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
 #' visualized.
@@ -135,8 +135,16 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   if (!inherits(x, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.")
   }
-  if (!(is.character(type) && length(type) == 1)) {
-    stop("'type' must be a (single) character.")
+  if (missing(type) ||
+      !(is.character(type) && length(type) == 1) ||
+      !type %in% c("mixture", "acf", "trace", "class_seq", "class_allocation")) {
+    stop("'type' must be one of\n",
+         "- mixture (to visualize the mixing distribution)\n",
+         "- acf (for autocorrelation plots of the Gibbs samples)\n",
+         "- trace (for trace plots of the Gibbs samples)\n",
+         "- class_seq (to visualize the sequence of class numbers)\n",
+         "- class_allocation (to visualize the class allocation)",
+         call. = FALSE)
   }
   if (!type %in% c("mixture", "acf", "trace", "class_seq", "class_allocation")) {
     stop("Unknown 'type'.")
@@ -145,16 +153,17 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### read ellipsis arguments
   add_par <- list(...)
 
-  ### reset of 'par' settings
-  oldpar <- graphics::par(no.readonly = TRUE)
-  on.exit(suppressWarnings(graphics::par(oldpar)))
-
   ### make plot type 'mixture'
   if (type == "mixture") {
+    if(x$data$P_r == 0){
+      stop("Cannot show any mixing distribution because the model has no random effect.",
+           call. = FALSE)
+    }
     est <- point_estimates(x)
     est_b <- apply(est$b, 2, as.numeric, simplify =  F)
     est_Omega <- apply(est$Omega, 2, matrix, nrow = x$data$P_r, simplify = F)
     est_s <- est$s
+    re <- NULL
     cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
     plots <- list()
     for(p1 in 1:x$data$P_r) for(p2 in 1:x$data$P_r) {
@@ -176,63 +185,29 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
     do.call(gridExtra::grid.arrange, c(plots, ncol = floor(sqrt(length(plots)))))
   }
 
-  ### make plot type 'trace'
-  if (type == "trace") {
-    if (is.null(par_names)) {
-      warning("Type 'trace' invalid because there are no parameters.")
-    } else {
-      gibbs_samples_nbt_filtered <- filter_gibbs_samples(
-        x = x$gibbs_samples, P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-        C = x$latent_classes$C, cov_sym = FALSE,
-        keep_par = par_names
-      )$gibbs_samples_nbt
-      graphics::par(
-        mfrow = set_mfrow(length(par_names)), oma = c(0, 0, 0, 0),
-        mar = c(3, 3, 1, 1), mgp = c(2, 1, 0), xpd = FALSE, las = 1
-      )
-      for (par_name in par_names) {
-        gibbs_samples <- gibbs_samples_nbt_filtered[[par_name, drop = FALSE]]
-        plot_trace(
-          gibbs_samples = gibbs_samples,
-          par_labels = paste(par_name, colnames(gibbs_samples), sep = "_")
-        )
-      }
-    }
-  }
-
-  ### make plot type 'acf'
-  if (type == "acf") {
-    if (is.null(par_names)) {
-      warning("Type 'trace' invalid because there are no parameters.")
-    } else {
-      ### remove parameters
-      if (x$latent_classes$C == 1) {
-        keep_par <- setdiff(par_names, "s")
-      } else {
-        keep_par <- par_names
-      }
-      gibbs_samples_nbt_filtered <- filter_gibbs_samples(
-        x = x$gibbs_samples, P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-        C = x$latent_classes$C, cov_sym = FALSE,
-        keep_par = keep_par
-      )$gibbs_samples_nbt
-      graphics::par(
-        mfrow = set_mfrow(sum(sapply(gibbs_samples_nbt_filtered, ncol))),
-        oma = c(0, 0, 0, 0), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0), xpd = FALSE,
-        las = 1
-      )
-      for (par_name in keep_par) {
-        gibbs_samples <- gibbs_samples_nbt_filtered[[par_name, drop = FALSE]]
-        plot_acf(
-          gibbs_samples = gibbs_samples,
-          par_labels = paste(par_name, colnames(gibbs_samples), sep = "_")
-        )
-      }
+  ### make plot type 'acf' and 'trace'
+  if (type == "acf" || type == "trace") {
+    if (x$latent_classes$C == 1) ignore <- c(ignore, "s")
+    gs <- filter_gibbs_samples(
+      x = x$gibbs_samples, P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
+      C = x$latent_classes$C, cov_sym = FALSE, drop_par = ignore)$gibbs_samples_nbt
+    pl <- parameter_labels(
+      P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J, C = x$latent_classes$C,
+      cov_sym = FALSE, drop_par = ignore)
+    for (par_name in names(gs)) {
+      gibbs_samples = gs[[par_name, drop = FALSE]]
+      par_labels = paste(par_name, colnames(gibbs_samples), sep = "_")
+      if(type == "acf") plot_acf(gibbs_samples, par_labels)
+      if(type == "trace") plot_trace(gibbs_samples, par_labels)
     }
   }
 
   ### make plot type 'class_seq'
   if (type == "class_seq") {
+    if(x$data$P_r == 0){
+      stop("Cannot show the class sequence because the model has no random effect.",
+           call. = FALSE)
+    }
     plot_class_seq(x[["class_sequence"]], B = x$B)
   }
 
@@ -336,23 +311,26 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' @keywords
 #' internal
 #'
-#' @example
+#' @examples
 #' mean <- list(1,2)
 #' cov <- list(0.1,1)
 #' weights <- c(0.3,0.7)
 #' name <- "test"
-#' plot_mixture_marginal(mean, cov, weights, name)
+#' RprobitB:::plot_mixture_marginal(mean, cov, weights, name)
+#'
+#' @importFrom ggplot2 ggplot aes geom_line labs
+#' @importFrom stats dnorm
 
 plot_mixture_marginal <- function(mean, cov, weights, name) {
   C <- length(weights)
   x_min <- min(mapply(function(x,y) x-3*y, mean, cov))
   x_max <- max(mapply(function(x,y) x+3*y, mean, cov))
   x <- seq(x_min, x_max, length.out = 200)
-  y <- Reduce("+", sapply(1:C, function(c) weights[c] * dnorm(x, mean[[c]], sd = cov[[c]]),
+  y <- Reduce("+", sapply(1:C, function(c) weights[c] * stats::dnorm(x, mean[[c]], sd = cov[[c]]),
                           simplify = F))
-  ggplot(data = data.frame(x = x, y = y), aes(x, y)) +
-    geom_line() +
-    labs(x = bquote(beta[.(name)]), y = "")
+  ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
+    ggplot2::geom_line() +
+    ggplot2::labs(x = bquote(beta[.(name)]), y = "")
 }
 
 #' Plot bivariate contour of mixing distributions
@@ -374,12 +352,15 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #' @keywords
 #' internal
 #'
-#' @example
+#' @examples
 #' means <- list(c(0,0),c(1,1))
 #' covs <- list(diag(2),0.5*diag(2))
 #' weights <- c(0.3,0.7)
 #' names <- c("A","B")
-#' plot_mixture_contour(means, covs, weights, names)
+#' RprobitB:::plot_mixture_contour(means, covs, weights, names)
+#'
+#' @importFrom ggplot2 ggplot aes geom_contour labs
+#' @importFrom rlang .data
 
 plot_mixture_contour <- function(means, covs, weights, names) {
   C <- length(weights)
@@ -391,9 +372,10 @@ plot_mixture_contour <- function(means, covs, weights, names) {
                            y = seq(y_min, y_max, length.out = 200))
   z <- Reduce("+", sapply(1:C, function(c) mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]),
                           simplify = F))
-  ggplot(data = cbind(data.grid, z), aes(x = x, y = y, z = z)) +
-    geom_contour() +
-    labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
+  ggplot2::ggplot(data = cbind(data.grid, z),
+                  ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)) +
+    ggplot2::geom_contour() +
+    ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
 }
 
 #' Visualizing the trace of Gibbs samples.
@@ -505,7 +487,7 @@ plot_class_seq <- function(class_sequence, B) {
 #' RprobitB:::plot_class_allocation(beta = beta, z = z, b = b, Omega = Omega,
 #'                                  colors = c("red","blue"), perc = 0.5, r = 1)
 #' @importFrom mixtools ellipse
-#' @importFrom graphics legend
+#' @importFrom graphics legend points
 
 plot_class_allocation <- function(beta, z, b, Omega, ...) {
   m <- as.vector(table(z))
@@ -521,7 +503,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
                 'darkolivegreen1' , 'tan2', 'tomato3', '#7CE3D8', 'gainsboro')
   }
   plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]))
-  points(t(beta), col = colors[z], pch = 19)
+  graphics::points(t(beta), col = colors[z], pch = 19)
   if(!is.null(graphic_pars[["perc"]])){
     perc <- graphic_pars[["perc"]]
   } else {

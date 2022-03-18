@@ -69,7 +69,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   ### check input
   if(!(is.character(missing_data) && length(missing_data) == 1 &&
        missing_data %in% c("complete_cases","zero_out","mean"))) {
-    stop("'missing_data' must be one of 'complete_cases', 'zero_out' and 'mean'.")
+    stop("'missing_data' must be one of 'complete_cases', 'zero_out' and 'mean'.", call. = FALSE)
   }
 
   ### check 'form'
@@ -82,20 +82,20 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 
   ### check 'choice_data'
   if (!is.data.frame(choice_data)) {
-    stop("'choice_data' must be a data frame.")
+    stop("'choice_data' must be a data frame.", call. = FALSE)
   }
   if (!(is.character(id) && length(id) == 1)) {
-    stop("'id' must be a character.")
+    stop("'id' must be a character.", call. = FALSE)
   }
   if (!id %in% colnames(choice_data)) {
-    stop(paste0("Decider identification column '", id, "' not found in 'choice_data'."))
+    stop(paste0("Decider identification column '", id, "' not found in 'choice_data'."), call. = FALSE)
   }
   if (!is.null(idc)) {
     if (!(is.character(idc) && length(idc) == 1)) {
-      stop("'idc' must be a character.")
+      stop("'idc' must be a character.", call. = FALSE)
     }
     if (!idc %in% colnames(choice_data)) {
-      stop(paste0("Choice occasion identification column '", idc, "' not found in 'choice_data'."))
+      stop(paste0("Choice occasion identification column '", idc, "' not found in 'choice_data'."), call. = FALSE)
     }
   }
 
@@ -103,7 +103,6 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   choice_available <- (choice %in% colnames(choice_data))
   if (!choice_available) {
     choice <- NA
-    warning("No choices found.")
   }
 
   ### handle missing data
@@ -126,7 +125,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
           if(is.numeric(choice_data[, col])){
             choice_data[row, col] <- 0
           } else {
-            stop("In 'choice_data', cannot apply 'zero_out' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.")
+            stop("In 'choice_data', cannot apply 'zero_out' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.", call. = FALSE)
           }
         }
       }
@@ -138,7 +137,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
           if(is.numeric(choice_data[, col])){
             choice_data[row, col] <- mean(choice_data[, col, na.rm = TRUE])
           } else {
-            stop("In 'choice_data', cannot apply 'mean' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.")
+            stop("In 'choice_data', cannot apply 'mean' to entry [",row,",",col,"] because column is not numeric. Use 'complete_cases' instead.", call. = FALSE)
           }
         }
       }
@@ -154,8 +153,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   ### create choice occasion ids
   if (is.null(idc)) {
     idc <- "idc"
-    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]),
-                                        seq_len, simplify = FALSE))
+    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len, simplify = FALSE))
   }
 
   ### transform 'idc' of 'choice_data' to factor
@@ -169,11 +167,11 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     if (choice_available) {
       alternatives <- as.character(unique(choice_data[[choice]]))
     } else {
-      stop("Please specify 'alternatives' if choices are not available.")
+      stop("Please specify 'alternatives' if choices are not available.", call. = FALSE)
     }
   } else {
     if (!is.character(alternatives)) {
-      stop("'alternatives' must be a character vector.")
+      stop("'alternatives' must be a character vector.", call. = FALSE)
     }
     if (choice_available) {
       choice_data <- choice_data[choice_data[[choice]] %in% alternatives, ]
@@ -183,32 +181,32 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       if (nrow(choice_data) == 0) {
         stop(paste(
           "No choices for", paste(alternatives, collapse = ", "), "found."
-        ))
+        ), call. = FALSE)
       }
     }
   }
   alternatives <- sort(alternatives)
   J <- length(alternatives)
   if (J <= 1) {
-    stop("At least two alternatives are required.")
+    stop("At least two alternatives are required.", call. = FALSE)
   }
 
   ### check if all required covariates are present in 'choice_data' and numerics
   for (var in vars[[2]]) {
     if (!var %in% names(choice_data)) {
-      stop(paste0("Column '", var, "' not found in 'choice_data'."))
+      stop(paste0("Column '", var, "' not found in 'choice_data'."), call. = FALSE)
     }
     if (!is.numeric(choice_data[,var])){
-      stop(paste0("Column '", var, "' in 'choice_data' is not numeric."))
+      stop(paste0("Column '", var, "' in 'choice_data' is not numeric."), call. = FALSE)
     }
   }
   for (var in c(vars[[1]], vars[[3]])) {
     for (j in alternatives) {
       if (!paste0(var, "_", j) %in% names(choice_data)) {
-        stop(paste0("Column '", paste0(var, "_", j), "' not found in 'choice_data'."))
+        stop(paste0("Column '", paste0(var, "_", j), "' not found in 'choice_data'."), call. = FALSE)
       }
       if (!is.numeric(choice_data[,paste0(var, "_", j)])){
-        stop(paste0("Column '", paste0(var, "_", j), "' in 'choice_data' is not numeric."))
+        stop(paste0("Column '", paste0(var, "_", j), "' in 'choice_data' is not numeric."), call. = FALSE)
       }
     }
   }
@@ -227,7 +225,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   ### standardize covariates
   if (!is.null(standardize)) {
     if (!is.character(standardize)) {
-      stop("'standardize' must be a character (vector).")
+      stop("'standardize' must be a character (vector).", call. = FALSE)
     }
     if (identical(standardize, "all")) {
       standardize <- c(
@@ -357,15 +355,15 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 #'
 #' @description
 #' In {RprobitB}, alternative specific covariates must be named in the format
-#' `"<covariate>_<alternative>"`. This is a convenience function to generate
-#' this format for a given `choice_data` set.
+#' `"<covariate>_<alternative>"`. This convenience function to generates
+#' the format for a given `choice_data` set.
 #'
 #' @param choice_data
 #' A data frame.
 #' @param cov
 #' A character vector of the names of alternative specific covariates in
 #' `choice_data`.
-#' @param alternative
+#' @param alternatives
 #' A (character or numeric) vector of the alternative names.
 #'
 #' @return
@@ -376,7 +374,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 #' cov <- c("pf","cl","loc","wk","tod","seas")
 #' alternatives <- 1:4
 #' colnames(Electricity)
-#' Electricity <- cov_names(Electricity, cov, alternatives)
+#' Electricity <- as_cov_names(Electricity, cov, alternatives)
 #' colnames(Electricity)
 #'
 #' @export
@@ -388,11 +386,55 @@ as_cov_names <- function(choice_data, cov, alternatives) {
     match_cov <- sapply(cov, function(x) grepl(x, lab))
     match_alt <- sapply(alternatives, function(x) grepl(x, lab))
     if(sum(match_cov) > 1 || sum(match_alt) > 1){
-      stop("Failed due to ambiguity.")
+      stop("Failed due to ambiguity.", call. = FALSE)
     } else if(sum(match_cov) == 1 && sum(match_alt) == 1){
       x[i] <- paste0(cov[which(match_cov)],"_",alternatives[which(match_alt)])
     }
   }
   colnames(choice_data) <- x
   return(choice_data)
+}
+
+#' Get covariates of choice situation
+#'
+#' @description
+#' This convenience function returns the covariates and the choices of specific
+#' choice occasions.
+#'
+#' @param x
+#' Either an object of class \code{RprobitB_data} or \code{RprobitB_fit}.
+#' @param id
+#' A numeric (vector), that specifies the decider(s).
+#' @param idc
+#' A numeric (vector), that specifies the choice occasion(s).
+#' @param idc_label
+#' The name of the column that contains the choice occasion identifier.
+#' @return
+#' A subset of the `choice_data` data frame specified in `prepare_data()`.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' get_cov(model_train, id = 1:2, idc = 1:2, idc_label = "choiceid")
+#'
+#' @export
+
+get_cov <- function(x, id, idc, idc_label){
+  if(inherits(x, "RprobitB_fit")){
+    x <- x$data
+  }
+  if(inherits(x, "RprobitB_data")){
+    id_label <- x$res_var_names$id
+    idc_label <- if(missing(idc_label)) x$res_var_names$idc else idc_label
+    if(missing(id)) id <- x$choice_data[[id_label]]
+    if(missing(idc)) idc <- x$choice_data[[idc_label]]
+    ind <- x$choice_data[[id_label]] %in% id & x$choice_data[[idc_label]] %in% idc
+    out <- x$choice_data[ind,]
+    if(nrow(out) == 0){
+      stop("Requested choice occasion not found.", call. = FALSE)
+    }
+    return(out)
+  } else {
+    stop("'x' must be either an 'RprobitB_fit' or 'RprobitB_data' object.",
+         call. = FALSE)
+  }
 }

@@ -11,14 +11,14 @@
 
 \item{type}{The type of plot, which can be one of:
 \itemize{
-\item \code{"mixture"} for visualizing the mixture distribution.
-\item \code{"acf"} for autocorrelation plots of the Gibbs samples.
-\item \code{"trace"} for trace plots of the Gibbs samples.
-\item \code{"class_seq"} for visualizing the sequence of class numbers.
-\item \code{"class_allocation"} for visualizing the class allocation
-(only if \code{P_r = 2}) at the final Gibbs sampler iteration.
-See the details section for visualization options.
-}}
+\item \code{"mixture"} to visualize the mixing distribution,
+\item \code{"acf"} for autocorrelation plots of the Gibbs samples,
+\item \code{"trace"} for trace plots of the Gibbs samples,
+\item \code{"class_seq"} to visualize the sequence of class numbers,
+\item \code{"class_allocation"} to visualize the class allocation
+(only if \code{P_r = 2}).
+}
+See the details section for visualization options.}
 
 \item{ignore}{A character (vector) of covariate or parameter names that do not get
 visualized.}

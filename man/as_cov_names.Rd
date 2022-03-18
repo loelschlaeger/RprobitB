@@ -12,22 +12,22 @@ as_cov_names(choice_data, cov, alternatives)
 \item{cov}{A character vector of the names of alternative specific covariates in
 \code{choice_data}.}
 
-\item{alternative}{A (character or numeric) vector of the alternative names.}
+\item{alternatives}{A (character or numeric) vector of the alternative names.}
 }
 \value{
 The \code{choice_data} input with updated column names.
 }
 \description{
 In {RprobitB}, alternative specific covariates must be named in the format
-\code{"<covariate>_<alternative>"}. This is a convenience function to generate
-this format for a given \code{choice_data} set.
+\code{"<covariate>_<alternative>"}. This convenience function to generates
+the format for a given \code{choice_data} set.
 }
 \examples{
 data("Electricity", package = "mlogit")
 cov <- c("pf","cl","loc","wk","tod","seas")
 alternatives <- 1:4
 colnames(Electricity)
-Electricity <- cov_names(Electricity, cov, alternatives)
+Electricity <- as_cov_names(Electricity, cov, alternatives)
 colnames(Electricity)
 
 }

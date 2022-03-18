@@ -479,3 +479,44 @@ sufficient_statistics <- function(data, normalization) {
   )
   return(suff_statistics)
 }
+
+#' Estimating a nested model
+#'
+#' @description
+#' This function is a wrapper for \code{\link{prepare_data}} and \code{\link{mcmc}}
+#' to estimate a nested based on a given probit model.
+#'
+#' @param x
+#' An object of class \code{RprobitB_fit}.
+#' @inheritParams prepare_data
+#' @inheritParams mcmc
+#'
+#' @return
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @export
+
+nested_model <- function(x, form, re, alternatives, standardize, missing_data,
+                         scale, R, B, Q, print_progress, prior, latent_classes,
+                         seed) {
+  data <- prepare_data(
+    form = if(missing(form)) x$data$form else form,
+    choice_data = x$data$choice_data,
+    re = if(missing(re)) x$data$re else re,
+    alternatives = if(missing(alternatives)) x$data$alternatives else alternatives,
+    standardize = if(missing(standardize)) x$data$standardize else standardize,
+    missing_data = if(missing(missing_data)) "complete_cases" else missing_data
+    )
+  model <- mcmc(
+    data = data,
+    scale = if(missing(scale)) x$normalization$scale else scale,
+    R = if(missing(R)) x$R else R,
+    B = if(missing(B)) x$B else B,
+    Q = if(missing(Q)) x$Q else Q,
+    print_progress = if(missing(print_progress)) TRUE else print_progress,
+    prior = if(missing(prior)) NULL else prior,
+    latent_classes = if(missing(latent_classes)) x$latent_classes else latent_classes,
+    seed = if(missing(seed)) NULL else seed
+    )
+  return(model)
+}

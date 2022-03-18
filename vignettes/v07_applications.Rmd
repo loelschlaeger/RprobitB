@@ -1,22 +1,18 @@
 ---
-title: "Choice prediction"
+title: "Applications"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Choice prediction}
+  %\VignetteIndexEntry{Applications}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+link-citations: yes
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
-```
-
-
-```{r setup}
 library(RprobitB)
 ```
-

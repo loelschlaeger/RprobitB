@@ -1,0 +1,96 @@
+---
+title: "Model selection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+link-citations: yes
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(RprobitB)
+```
+
+The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
+
+For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
+
+```{r}
+data("model_train", package = "RprobitB")
+```
+
+As an competing model, we consider explaining the choice only by the alternative's price, i.e. the model with the formula `choice ~ price | 0`:
+
+```{r}
+model_train_sparse <- nested_model(model_train, form = choice ~ price | 0, print_progress = FALSE)
+```
+
+
+## The `model_selection()` function
+
+{RprobitB} provides a function called `model_selection()`. As input, the function takes an arbitrary number of `RprobitB_model` objects. In our example:
+
+```{r, eval = FALSE}
+model_selection(model_train, model_train_sparse)
+# Bayes factor currently missing.
+```
+
+```{r, echo = FALSE}
+data("mod_sel", package = "RprobitB")
+```
+
+The output contains the following model comparison criteria:
+
+- `WAIC`, the Widely Applicable (or Watanabe-Akaike) Information Criterion, its standard deviation `se(WAIC)`, and the number `pWAIC` of effective model parameters, see [below](#the-waic-value),
+
+- `npar`, the number of estimated model parameters,
+
+- `LL`, the model's log-likelihood value at the estimated parameters,
+
+- `AIC`, the Akaike Information Criterion [@Akaike:1974],
+
+- `BIC`, the Bayesian Information Criterion [@Schwarz:1978],
+
+- `PA`, the prediction accuracy.
+
+In summary, all criteria are clearly in favor of the more complex model.
+
+## The WAIC value
+
+WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion. As for AIC and BIC, the smaller the WAIC value the better the model. Its definition is
+
+$$\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),$$
+where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:16 p. 220 for a reference.
+
+The $\text{lppd}$ is approximated as follows. Let $$p_{is} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
+
+$$\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.$$
+The penalty term is computed as the sum over the variances in log-probability for each observation:
+$$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right]. $$
+The $\text{WAIC}$ has a standard error $\text{SE}$ of
+$$\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]}.$$
+The `waic()` function visualizes the convergence based on the number `S` of Gibbs samples, for example for `model_train`:
+
+```{r, fig.align = "center", fig.width = "50%", fig.dim = c(6,6)}
+RprobitB:::waic(model_train, S = 100)
+```
+
+## Bayes factor
+
+The Bayes factor is an index of relative posterior model plausability of one model over another [@marin:2014]. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
+
+$$
+BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} ) \cdot \Pr(\texttt{mod1})}{\Pr(\texttt{y} \mid \texttt{mod1})\cdot \Pr(\texttt{mod0})}.
+$$
+The ratio $\Pr(\texttt{mod1}) / \Pr(\texttt{mod0})$ expresses the factor by which $\texttt{mod1}$ a prior is assumed to be the correct model. The front part $\frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})}$ is the ratio of marginal model likelihoods. 
+
+Add graphic of convergence of marginal model likelihood.
+
+## References
+

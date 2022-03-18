@@ -182,26 +182,31 @@ The following lines fit a probit model that explains the chosen trip alternative
 set.seed(1)
 ```
 
-```{r}
+```{r, eval = FALSE}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
-train_model <- mcmc(
+model_train <- mcmc(
   data = data,
-  scale = list("parameter" = "a", index = 1, value = -1),
-  print_progress = FALSE
-  )
+  scale = list("parameter" = "a", index = 1, value = -1)
+)
 ```
 
-The estimated linear coefficients (using the mean of the Gibbs samples as a point estimate) can be accessed via
+The estimated model is saved in {RprobitB} and can be accessed via
 
 ```{r}
-coef(train_model)
+data(model_train, package = "RprobitB")
+```
+
+The estimated coefficients (using the mean of the Gibbs samples as a point estimate) can be printed via
+
+```{r}
+coef(model_train)
 ```
 
 and visualized via
 
 ```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-plot(coef(train_model), sd = 3)
+plot(coef(model_train), sd = 3)
 ```
 
 The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.^[These results are consistent with the ones that are presented [in a vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train) on the same data set but using the logit model.]
@@ -219,7 +224,7 @@ Calling the summary function on the estimated `RprobitB_fit` object yields addit
 - or custom statistics like the absolute difference between the median and the mean.
 
 ```{r}
-summary(train_model, 
+summary(model_train, 
         FUN = c("mean"        = mean, 
                 "sd"          = stats::sd, 
                 "R^"          = R_hat,
@@ -231,16 +236,18 @@ summary(train_model,
 Calling the `plot` method with the additional argument `type = "trace"` plots the trace of the normalized, burned, and thinned Gibbs samples. 
 
 ```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-plot(train_model, type = "trace")
+par(mfrow = c(2,1))
+plot(model_train, type = "trace")
 ```
 
 Additionally, we can visualize the serial correlation of the Gibbs samples via the argument `type = "acf"`. The boxes in the top-right corner state the total sample size TSS (here `R` - `B` = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.
 
 ```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-plot(train_model, type = "acf")
+par(mfrow = c(2,3))
+plot(model_train, type = "acf")
 ```
 
-Here, the effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)$, where $\rho_k$ is the auto correlation between the chain offset by $k$ positions. The auto correlations are estimated via the `acf()` function.
+Here, the effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)$, where $\rho_k$ is the auto correlation between the chain offset by $k$ positions. The auto correlations are estimated via the `stats::acf()` function.
 
 ## Model transformation after estimation
 
@@ -255,8 +262,9 @@ The `transform` method can be used to transform an `RprobitB_fit` object in thre
 For example, we could thin the Gibbs samples of the above model to reduce correlation among the Gibbs samples:
 
 ```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-train_model <- transform(train_model, Q = 10)
-plot(train_model, type = "acf")
+model_train <- transform(model_train, Q = 10)
+par(mfrow = c(2,3))
+plot(model_train, type = "acf")
 ```
 
 ## References
