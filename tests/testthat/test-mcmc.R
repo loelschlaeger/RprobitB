@@ -11,7 +11,7 @@ test_that("Gibbs sampling works", {
 })
 
 ### The following are consistency tests and are only run on request.
-skip_consistency_test <- function() if(T) skip("Skip consistency test.")
+skip_consistency_test <- function() if (T) skip("Skip consistency test.")
 
 test_that("consistency of MNP", {
   skip_consistency_test()
