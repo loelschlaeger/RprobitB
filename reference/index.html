@@ -31,8 +31,9 @@
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
-    <a class="dropdown-item" href="../articles/v05_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -73,12 +74,12 @@
 
       <dl><dt>
           
-          <code><a href="berserk_choice.html">berserk_choice</a></code> 
+          <code><a href="choice_berserk.html">choice_berserk</a></code> 
         </dt>
         <dd>Choice of berserking</dd>
       </dl><dl><dt>
           
-          <code><a href="opening_choice.html">opening_choice</a></code> 
+          <code><a href="choice_chess_opening.html">choice_chess_opening</a></code> 
         </dt>
         <dd>Choice of a chess opening</dd>
       </dl></div><div class="section level2">
@@ -102,6 +103,11 @@
           <code><a href="overview_effects.html">overview_effects()</a></code> 
         </dt>
         <dd>Overview of effects.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="as_cov_names.html">as_cov_names()</a></code> 
+        </dt>
+        <dd>Relabel the alternative specific covariates</dd>
       </dl><dl><dt>
           
           <code><a href="prepare_data.html">prepare_data()</a></code> 
@@ -145,10 +151,36 @@
         <dd>Probit model fitting via Markov chain Monte Carlo simulation.</dd>
       </dl><dl><dt>
           
+          <code><a href="nested_model.html">nested_model()</a></code> 
+        </dt>
+        <dd>Estimating a nested model</dd>
+      </dl><dl><dt>
+          
           <code><a href="transform.RprobitB_fit.html">transform(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
         <dd>Change the length of the burn-in period, the thinning factor and the scale
 after Gibbs sampling.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="fitted-model">Fitted model<a class="anchor" aria-label="anchor" href="#fitted-model"></a></h2>
+      
+      <p class="section-desc"></p><p>The package contains the following fitted models.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="model_elec.html">model_elec</a></code> 
+        </dt>
+        <dd>Mixed probit model for multivariate choice between electricity suppliers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_train.html">model_train</a></code> 
+        </dt>
+        <dd>Probit model for binary choice between Train trip alternatives</dd>
       </dl></div><div class="section level2">
       <h2 id="model-evaluation">Model evaluation<a class="anchor" aria-label="anchor" href="#model-evaluation"></a></h2>
       
@@ -165,6 +197,16 @@ after Gibbs sampling.</dd>
           <code><a href="coef.RprobitB_fit.html">coef(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
         <dd>Linear coefficients</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cov_mix.html">cov_mix()</a></code> 
+        </dt>
+        <dd>Estimated covariance matrix of the mixing distribution</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_cov.html">get_cov()</a></code> 
+        </dt>
+        <dd>Get covariates of choice situation</dd>
       </dl><dl><dt>
           
           <code><a href="point_estimates.html">point_estimates()</a></code> 
@@ -364,11 +406,6 @@ after Gibbs sampling.</dd>
           <code><a href="pprint.html">pprint()</a></code> 
         </dt>
         <dd>Print abbreviated matrices and vectors</dd>
-      </dl><dl><dt>
-          
-          <code><a href="set_mfrow.html">set_mfrow()</a></code> 
-        </dt>
-        <dd>Balancing visualization of multiple figures</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

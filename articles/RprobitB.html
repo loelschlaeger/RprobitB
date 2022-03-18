@@ -55,8 +55,9 @@
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
-    <a class="dropdown-item" href="../articles/v05_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -110,7 +111,8 @@
 <div class="section level2">
 <h2 id="the-workflow">The workflow<a class="anchor" aria-label="anchor" href="#the-workflow"></a>
 </h2>
-<p>The functions of {RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. A typical workflow is as follows:</p>
+<p>The functions of {RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion. {RprobitB} supports these functions.</p>
+<p>A typical workflow is as follows:</p>
 <ol style="list-style-type: decimal">
 <li><p>Prepare a choice data set via the <code><a href="../reference/prepare_data.html">prepare_data()</a></code> function or simulate data via <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code>. Both functions return an <code>RprobitB_data</code> object that can be fed into the estimation routine. See <a href="https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html">the vignette on choice data</a> for details.</p></li>
 <li><p>The estimation routine is called <code><a href="../reference/mcmc.html">mcmc()</a></code> and returns an <code>RprobitB_fit</code> object. See the vignettes <a href="https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html">on model fitting</a> and <a href="https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html">on modeling heterogeneity</a>.</p></li>
@@ -118,7 +120,7 @@
 <li><p>The function <code><a href="../reference/model_selection.html">model_selection()</a></code> compares arbitrary many competing <code>RprobitB_fit</code> objects by computing different model selection criteria, see <a href="https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html">the vignette on model selection</a>.</p></li>
 </ol>
 <div class="figure">
-<img src="flowchart.png" style="width:80.0%" alt=""><p class="caption">The flowchart of {RprobitB}.</p>
+<img src="flowchart.png" style="width:80.0%" alt=""><p class="caption">The flowchart of {RprobitB}. The functions <code><a href="../reference/check_form.html">check_form()</a></code> and <code><a href="../reference/overview_effects.html">overview_effects()</a></code> help the user to verify the correctness of the data and model specification. <code><a href="../reference/train_test.html">train_test()</a></code> allows to split the data into an estimation and a validation part. <code>transform_fit()</code> allows to change normalization of the model after a model has been fitted.</p>
 </div>
 </div>
 

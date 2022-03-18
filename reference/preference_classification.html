@@ -33,8 +33,9 @@ latent classes."><meta property="og:image" content="https://loelschlaeger.de/Rpr
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
-    <a class="dropdown-item" href="../articles/v05_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -71,13 +72,15 @@ latent classes.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">preference_classification</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">preference_classification</span><span class="op">(</span><span class="va">x</span>, true <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>An object of class <code>RprobitB_fit</code>.</p></dd>
+<dt>true</dt>
+<dd><p>Set to <code>TRUE</code> to add true class memberships to output (if available).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

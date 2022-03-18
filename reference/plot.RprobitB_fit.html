@@ -31,8 +31,9 @@
     <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
     <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
-    <a class="dropdown-item" href="../articles/v05_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v06_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
+    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
+    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -77,14 +78,13 @@
     <dl><dt>x</dt>
 <dd><p>An object of class <code><a href="RprobitB_fit.html">RprobitB_fit</a></code>.</p></dd>
 <dt>type</dt>
-<dd><p>The type of plot, which can be one of:</p><ul><li><p><code>"mixture"</code> for visualizing the mixture distribution.</p></li>
-<li><p><code>"acf"</code> for autocorrelation plots of the Gibbs samples.</p></li>
-<li><p><code>"trace"</code> for trace plots of the Gibbs samples.</p></li>
-<li><p><code>"class_seq"</code> for visualizing the sequence of class numbers.</p></li>
-<li><p><code>"class_allocation"</code> for visualizing the class allocation
-(only if <code>P_r = 2</code>) at the final Gibbs sampler iteration.
-See the details section for visualization options.</p></li>
-</ul></dd>
+<dd><p>The type of plot, which can be one of:</p><ul><li><p><code>"mixture"</code> to visualize the mixing distribution,</p></li>
+<li><p><code>"acf"</code> for autocorrelation plots of the Gibbs samples,</p></li>
+<li><p><code>"trace"</code> for trace plots of the Gibbs samples,</p></li>
+<li><p><code>"class_seq"</code> to visualize the sequence of class numbers,</p></li>
+<li><p><code>"class_allocation"</code> to visualize the class allocation
+(only if <code>P_r = 2</code>).</p></li>
+</ul><p>See the details section for visualization options.</p></dd>
 <dt>ignore</dt>
 <dd><p>A character (vector) of covariate or parameter names that do not get
 visualized.</p></dd>
