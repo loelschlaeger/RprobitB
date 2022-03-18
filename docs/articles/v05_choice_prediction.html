@@ -64,7 +64,7 @@
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
 <li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md">Plans</a>
+  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/blob/main/TODO.md">Plans</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -165,21 +165,23 @@
 </ul>
 <p>We demonstrate the second case in the following. Assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ draws 15% of the customers to the competitor who does not increase their prices.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, 
-        data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, 
-                          <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span>,
-        overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>
+  <span class="va">model_train</span>, 
+  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, 
+                    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span>,
+  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
 <span class="co">#&gt; 2  2        1 0.3484483 0.6515517          B</span></code></pre></div>
-<p>However, offering a better comfort class compensates for the higher price and even results in a gain of 6% market share:</p>
+<p>However, offering a better comfort class compensates for the higher price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, 
-        data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, 
-                          <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
-                          <span class="st">"price_B"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span>,
-                          <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
-        overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>
+  <span class="va">model_train</span>, 
+  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, 
+                    <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,
+                    <span class="st">"price_B"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span>,
+                    <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
+  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
 <span class="co">#&gt; 2  2        1 0.5680288 0.4319712          A</span></code></pre></div>
