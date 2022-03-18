@@ -23,7 +23,7 @@ navbar:
   components:
     plans:
       text: Plans
-      href: https://github.com/loelschlaeger/RprobitB/blob/main/build/TODO.md
+      href: https://github.com/loelschlaeger/RprobitB/blob/main/TODO.md
 
 reference:
 - title: Datasets
