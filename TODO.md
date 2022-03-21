@@ -105,3 +105,4 @@ The following tasks are on our agenda and will be tackled as time permits.
 ### Function documentation
 
 - [ ] Document Dirichlet Process in `update_classes_dp()`.
+- [ ] Document `RprobitB_latent_classes`.

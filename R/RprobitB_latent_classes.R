@@ -13,7 +13,7 @@
 #' ## What options to update latent classes exist?
 #' Currently two updating schemes are implemented, weight-based (see ...) and
 #' via a Dirichlet process (see ...).
-#' ## What is the default behaviour?
+#' ## What is the default behavior?
 #' One latent class without updates is specified per default. Print an
 #' \code{RprobitB_latent_classes}-object to see a summary of all relevant (default)
 #' parameter settings.

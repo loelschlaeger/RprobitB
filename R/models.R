@@ -1,7 +1,7 @@
 #' Probit model for binary choice between Train trip alternatives
 #'
 #' @description
-#' This object is a fitted probit model to the Train dataset of the {mlogit}
+#' This object is a fitted probit model to the Train data set of the {mlogit}
 #' package with the model formula `choice ~ price + time + change + comfort | 0`.
 #'
 #' @usage data(model_train)
@@ -60,10 +60,3 @@
 #' @keywords
 #' model
 "model_elec"
-
-
-#' An example output of `model_selection()`.
-#'
-#' @keywords
-#' internal
-"mod_sel"

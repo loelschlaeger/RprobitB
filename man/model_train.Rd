@@ -11,7 +11,7 @@ An object of class \code{RprobitB_fit}.
 data(model_train)
 }
 \description{
-This object is a fitted probit model to the Train dataset of the {mlogit}
+This object is a fitted probit model to the Train data set of the {mlogit}
 package with the model formula \code{choice ~ price + time + change + comfort | 0}.
 }
 \details{

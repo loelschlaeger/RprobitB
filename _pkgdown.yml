@@ -59,11 +59,18 @@ reference:
   - get_cov
   - point_estimates
   - choice_probabilities
-  - log_likelihood
-  - model_selection
   - preference_classification
   - predict.RprobitB_fit
   - plot.RprobitB_fit
+- title: Model selection
+  desc: Use these functions for model selection.
+  contents:
+  - model_selection
+  - AIC
+  - BIC
+  - logLik
+  - nobs
+  - npar
 - title: Constructor functions
   desc: These functions construct the S3 classes of RprobitB.
   contents:

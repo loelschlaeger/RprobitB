@@ -42,11 +42,6 @@ model_selection(model_train, model_train_sparse)
 # Bayes factor currently missing.
 ```
 
-```{r, echo = FALSE}
-data("mod_sel", package = "RprobitB")
-mod_sel
-```
-
 The output contains the following model comparison criteria:
 
 - `WAIC`, the Widely Applicable (or Watanabe-Akaike) Information Criterion, its standard deviation `se(WAIC)`, and the number `pWAIC` of effective model parameters, see [below](#the-waic-value),

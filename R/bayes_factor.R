@@ -107,7 +107,7 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
       if(print_progress) pb$tick()
       prior_sample <- draw_from_prior(x$prior, C  = x$latent_classes$C)
       par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
-      cont[s] <- exp(log_likelihood(x, par_set = par))
+      cont[s] <- exp(logLik(x, par_set = par))
     }
     mml_value <- sum(cont)/S
     approx_seq <- cumsum(cont)/seq_along(cont)
@@ -118,7 +118,7 @@ mml <- function(x, S = 100, method = "pame", print_progress = TRUE,
     cont <- numeric(S)
     for(s in 1:S) {
       if(print_progress) pb$tick()
-      cont[s] <- 1/exp(log_likelihood(x, par_set = posterior_samples[[s]]))
+      cont[s] <- 1/exp(logLik(x, par_set = posterior_samples[[s]]))
     }
     mml_value <- 1/(sum(cont)/S)
     approx_seq <- 1/(cumsum(cont)/seq_along(cont))

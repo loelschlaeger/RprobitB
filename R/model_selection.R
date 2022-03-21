@@ -64,7 +64,7 @@ model_selection <- function(..., criteria = c("WAIC", "npar", "LL", "AIC", "BIC"
       mod$data$J * (mod$data$J - 1) / 2 - 1
   })
   nobs <- sapply(models, function(mod) sum(mod$data$T))
-  ll <- sapply(models, function(mod) log_likelihood(mod))
+  ll <- sapply(models, function(mod) logLik(mod))
 
   ### fill output
   for (crit in unique(criteria)) {
@@ -157,4 +157,216 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
   colnames(x)[which(colnames(x) == "form")] <- ""
   class(x) <- "data.frame"
   print(x)
+}
+
+#' Akaike's Information Criterion
+#'
+#' @description
+#' This function calculates Akaike's Information Criterion (AIC) for an
+#' \code{RprobitB_fit} object.
+#'
+#' @details
+#' The AIC is computed as
+#' \deqn{-2 \cdot \text{LL} + k \cdot \text{npar},}
+#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
+#' parameters, \eqn{k} is the penalty per parameter (\eqn{k = 2} for the
+#' classical AIC), and \eqn{npar} is the number of parameters in the fitted model.
+#'
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @param ...
+#' Optionally more objects of class \code{RprobitB_fit}.
+#'
+#' @param k
+#' A numeric, the penalty per parameter. The default is \code{k = 2} for the
+#' classical AIC.
+#'
+#' @return
+#' Either a numeric value (if just one object is provided) or a numeric vector.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' AIC(model_train)
+#'
+#' @export
+
+AIC <- function(object, ..., k) {
+  UseMethod("AIC")
+}
+
+#' @export
+
+AIC.RprobitB_fit <- function(object, ..., k = 2) {
+  models <- list(...)
+  if(length(models) == 0){
+    models <- list(object)
+  } else {
+    models <- c(list(object), models)
+  }
+  ll <- sapply(models, logLik)
+  npar <- sapply(models, npar)
+  aic <- mapply(function(ll, npar) -2 * ll + 2 * npar, ll, npar)
+  return(aic)
+}
+
+#' Bayesian Information Criterion
+#'
+#' @description
+#' This function calculates the Bayesian Information Criterion (BIC) or
+#' Schwarz Information Criterion for an \code{RprobitB_fit} object.
+#'
+#' @details
+#' The BIC is computed as
+#' \deqn{-2 \cdot \text{LL} + \text{npar} \cdot \ln{\text{nobs}},}
+#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
+#' parameters, \eqn{npar} is the number of parameters in the fitted model,
+#' and \eqn{\text{nobs}} is the number of data points.
+#'
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @param ...
+#' Optionally more objects of class \code{RprobitB_fit}.
+#'
+#' @return
+#' Either a numeric value (if just one object is provided) or a numeric vector.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' BIC(model_train)
+#'
+#' @export
+
+BIC <- function(object, ...) {
+  UseMethod("BIC")
+}
+
+#' @export
+
+BIC.RprobitB_fit <- function(object, ...) {
+  models <- list(...)
+  if(length(models) == 0){
+    models <- list(object)
+  } else {
+    models <- c(list(object), models)
+  }
+  ll <- sapply(models, logLik)
+  npar <- sapply(models, npar)
+  nobs <- sapply(models, nobs)
+  bic <- mapply(function(ll, npar, nobs) -2 * ll + npar * log(nobs), ll, npar, nobs)
+  return(bic)
+}
+
+#' Number of observations
+#'
+#' @description
+#' This function extracts the number of observations from an \code{RprobitB_fit}
+#' object.
+#'
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @param ...
+#' Ignored.
+#'
+#' @return
+#' An integer.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' nobs(model_train)
+#'
+#' @export
+
+nobs <- function(object, ...) {
+  UseMethod("nobs")
+}
+
+#' @export
+
+nobs.RprobitB_fit <- function(object, ...) {
+  return(sum(object$data$T))
+}
+
+#' Log-likelihood value
+#'
+#' @description
+#' This function computes the log-likelihood value of an \code{RprobitB_fit}
+#' object.
+#'
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @param ...
+#' Ignored.
+#'
+#' @return
+#' A numeric.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' logLik(model_train)
+#'
+#' @export
+
+logLik <- function(object, ...) {
+  UseMethod("logLik")
+}
+
+#' @export
+
+logLik.RprobitB_fit <- function(object, ...) {
+  if(!is.null(object[["ll"]])){
+    ll <- object[["ll"]]
+  } else {
+    probs <- choice_probabilities(x = object, par_set = mean)
+    choices <- as.character(unlist(sapply(object$data$data, `[[`, "y")))
+    ll <- 0
+    for (row in 1:nrow(probs)){
+      ll <- ll + log(probs[row, choices[row]])
+    }
+  }
+  return(as.numeric(ll))
+}
+
+#' Number of model parameters
+#'
+#' @description
+#' This function extracts the number of model parameters of an \code{RprobitB_fit}
+#' object.
+#'
+#' @param object
+#' An object of class \code{RprobitB_fit}.
+#'
+#' @param ...
+#' Optionally more objects of class \code{RprobitB_fit}.
+#'
+#' @return
+#' Either a numeric value (if just one object is provided) or a numeric vector.
+#'
+#' @examples
+#' data("model_train", package = "RprobitB")
+#' npar(model_train)
+#'
+#' @export
+
+npar <- function(object, ...) {
+  UseMethod("npar")
+}
+
+#' @export
+
+npar.RprobitB_fit <- function(object, ...) {
+  models <- list(...)
+  if(length(models) == 0){
+    models <- list(object)
+  } else {
+    models <- c(list(object), models)
+  }
+  npar <- sapply(models, function(mod) {
+    mod$data$P_f + (mod$data$P_r + mod$data$P_r^2) * mod$latent_classes$C +
+      mod$data$J * (mod$data$J - 1) / 2 - 1
+  })
+  return(npar)
 }
