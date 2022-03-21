@@ -22,7 +22,8 @@ RprobitB_progress <- function(title, total) {
   progress::progress_bar$new(
     format = title,
     total = total,
-    clear = FALSE)
+    clear = FALSE
+  )
 }
 
 #' @noRd
