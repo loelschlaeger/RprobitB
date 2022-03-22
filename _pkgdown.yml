@@ -71,6 +71,9 @@ reference:
   - logLik
   - nobs
   - npar
+  - mml
+  - compute_p_si
+  - pred_acc
 - title: Constructor functions
   desc: These functions construct the S3 classes of RprobitB.
   contents:

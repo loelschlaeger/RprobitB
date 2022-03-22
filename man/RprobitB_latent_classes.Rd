@@ -51,7 +51,7 @@ Currently two updating schemes are implemented, weight-based (see ...) and
 via a Dirichlet process (see ...).
 }
 
-\subsection{What is the default behaviour?}{
+\subsection{What is the default behavior?}{
 
 One latent class without updates is specified per default. Print an
 \code{RprobitB_latent_classes}-object to see a summary of all relevant (default)

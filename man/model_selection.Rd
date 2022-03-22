@@ -2,14 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{model_selection}
 \alias{model_selection}
-\title{Compare fitted models.}
+\title{Compare fitted models}
 \usage{
 model_selection(
   ...,
-  criteria = c("WAIC", "npar", "LL", "AIC", "BIC", "BF", "PA"),
-  S = 100,
-  print_progress = TRUE,
-  ncores = 1
+  criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "BF", "pred_acc"),
+  add_form = FALSE
 )
 }
 \arguments{
@@ -17,24 +15,29 @@ model_selection(
 
 \item{criteria}{A vector of one or more of the following characters:
 \itemize{
-\item \code{"WAIC"} for the WAIC value,
-\item \code{"npar"} for the number of model parameters.
-\item \code{"LL"} for the log-likelihood value,
-\item \code{"AIC"} for the AIC value,
-\item \code{"BIC"} for the BIC value,
+\item \code{"npar"} for the number of model parameters (see \code{\link{npar}}),
+\item \code{"LL"} for the log-likelihood value (see \code{\link{logLik}}),
+\item \code{"AIC"} for the AIC value (see \code{\link{AIC}}),
+\item \code{"BIC"} for the BIC value (see \code{\link{BIC}}),
+\item \code{"WAIC"} for the WAIC value (also shows its standard error
+\code{sd(WAIC)} and the number \code{pWAIC} of effective model parameters,
+see \code{\link{WAIC}}),
 \item \code{"BF"} for the Bayes factor,
-\item \code{"PA"} for the prediction accuracy (explaining the observed choices),
+\item \code{"pred_acc"} for the prediction accuracy (see \code{\link{pred_acc}}).
 }}
 
-\item{S, print_progress, ncores}{Passed on to \code{\link{waic}} and \code{\link{mml}}.}
+\item{add_form}{Set to \code{TRUE} to add the model formulas.}
 }
 \value{
 A data frame, models in rows, criteria in columns.
 }
 \description{
-This function guides through the process of model selection by providing
-criteria for model comparison.
+This function returns a table with several criteria for model comparison.
 }
 \details{
-See the vignette on model selection for more details about the criteria.
+See the vignette on model selection for more details.
+}
+\examples{
+data("model_train", package = "RprobitB")
+model_selection(model_train)
 }

@@ -13,14 +13,15 @@ NULL
 #' @noRd
 
 rpb <- function() {
-  .Deprecated()
+  .Defunct(msg = "This function was removed from {RprobitB}.")
 }
 
 #' @noRd
+#' @importFrom progress progress_bar
 
 RprobitB_progress <- function(title, total) {
   progress::progress_bar$new(
-    format = title,
+    format = paste(":spin", title, ":percent [ETA: :eta]"),
     total = total,
     clear = FALSE
   )
