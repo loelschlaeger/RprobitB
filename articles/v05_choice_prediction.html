@@ -117,16 +117,16 @@
 <code class="sourceCode R"><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pred</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt;    id choiceid         A          B true predicted correct</span>
-<span class="co">#&gt; 1   1        1 0.9151858 0.08481421    A         A    TRUE</span>
-<span class="co">#&gt; 2   1        2 0.6398467 0.36015331    A         A    TRUE</span>
-<span class="co">#&gt; 3   1        3 0.7917556 0.20824445    A         A    TRUE</span>
-<span class="co">#&gt; 4   1        4 0.1790687 0.82093131    B         B    TRUE</span>
-<span class="co">#&gt; 5   1        5 0.5500661 0.44993391    B         A   FALSE</span>
-<span class="co">#&gt; 6   1        6 0.1298901 0.87010994    B         B    TRUE</span>
-<span class="co">#&gt; 7   1        7 0.5444144 0.45558564    B         A   FALSE</span>
-<span class="co">#&gt; 8   1        8 0.7583380 0.24166198    B         A   FALSE</span>
-<span class="co">#&gt; 9   1        9 0.5480196 0.45198040    A         A    TRUE</span>
-<span class="co">#&gt; 10  1       10 0.5938227 0.40617728    A         A    TRUE</span></code></pre></div>
+<span class="co">#&gt; 1   1        1 0.9152710 0.08472896    A         A    TRUE</span>
+<span class="co">#&gt; 2   1        2 0.6395050 0.36049499    A         A    TRUE</span>
+<span class="co">#&gt; 3   1        3 0.7918220 0.20817801    A         A    TRUE</span>
+<span class="co">#&gt; 4   1        4 0.1792245 0.82077546    B         B    TRUE</span>
+<span class="co">#&gt; 5   1        5 0.5500492 0.44995085    B         A   FALSE</span>
+<span class="co">#&gt; 6   1        6 0.1299623 0.87003770    B         B    TRUE</span>
+<span class="co">#&gt; 7   1        7 0.5436992 0.45630079    B         A   FALSE</span>
+<span class="co">#&gt; 8   1        8 0.7589727 0.24102733    B         A   FALSE</span>
+<span class="co">#&gt; 9   1        9 0.5483893 0.45161074    A         A    TRUE</span>
+<span class="co">#&gt; 10  1       10 0.5931064 0.40689358    A         A    TRUE</span></code></pre></div>
 <p>Among the three incorrect predictions shown here, the one for decider <code>id = 1</code> in choice occasion <code>idc = 8</code> is the most outstanding. Alternative <code>B</code> was chosen although the model predicts a probability of 75% for alternative <code>A</code>. We can use the convenience function <code><a href="../reference/get_cov.html">get_cov()</a></code> to extract the characteristics of this particular choice situation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_cov.html">get_cov</a></span><span class="op">(</span><span class="va">model_train</span>, id <span class="op">=</span> <span class="fl">1</span>, idc <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>
@@ -139,14 +139,14 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
 <span class="co">#&gt;            Estimate   (sd)</span>
 <span class="co">#&gt; 1   price     -1.00 (0.00)</span>
-<span class="co">#&gt; 2    time    -25.31 (2.15)</span>
-<span class="co">#&gt; 3  change     -4.81 (0.87)</span>
-<span class="co">#&gt; 4 comfort    -14.40 (0.91)</span></code></pre></div>
+<span class="co">#&gt; 2    time    -25.39 (2.23)</span>
+<span class="co">#&gt; 3  change     -4.79 (0.86)</span>
+<span class="co">#&gt; 4 comfort    -14.40 (0.90)</span></code></pre></div>
 <p>The misclassification can be explained by preferences that differ from the average decider (choice behavior heterogeneity), or by unobserved factors that influenced the choice. Indeed, the variance of the error term was estimated high:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/point_estimates.html">point_estimates</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">$</span><span class="va">Sigma</span>
 <span class="co">#&gt;          [,1]</span>
-<span class="co">#&gt; [1,] 659.1064</span>
+<span class="co">#&gt; [1,] 658.5798</span>
 <span class="co">#&gt; attr(,"names")</span>
 <span class="co">#&gt; [1] "1,1"</span></code></pre></div>
 <p>Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve <span class="citation">(Fawcett <a href="#ref-Fawcett:2006" role="doc-biblioref">2006</a>)</span>, using the {plotROC} package <span class="citation">(Sachs <a href="#ref-Sachs:2017" role="doc-biblioref">2017</a>)</span>. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here <code>n.cuts = 20</code>). The closer the curve is to the top-left corner, the better the binary classification.</p>
@@ -174,7 +174,7 @@
   overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
-<span class="co">#&gt; 2  2        1 0.3484483 0.6515517          B</span></code></pre></div>
+<span class="co">#&gt; 2  2        1 0.3483907 0.6516093          B</span></code></pre></div>
 <p>However, offering a better comfort class compensates for the higher price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>
@@ -186,7 +186,7 @@
   overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
-<span class="co">#&gt; 2  2        1 0.5680288 0.4319712          A</span></code></pre></div>
+<span class="co">#&gt; 2  2        1 0.5680923 0.4319077          A</span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
