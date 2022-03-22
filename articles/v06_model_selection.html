@@ -112,12 +112,6 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span>
 <span class="co"># Bayes factor currently missing.</span></code></pre></div>
-<pre><code><span class="co">#&gt;                                                                    WAIC</span>
-<span class="co">#&gt; model_train        choice ~ price + time + change + comfort | 0 3463.81</span>
-<span class="co">#&gt; model_train_sparse choice ~ price | 0                           3733.79</span>
-<span class="co">#&gt;                    se(WAIC) pWAIC npar       LL     AIC     BIC     PA</span>
-<span class="co">#&gt; model_train            0.19  4.33    4 -1727.75 3463.50 3487.43 69.55%</span>
-<span class="co">#&gt; model_train_sparse     0.07  1.09    1 -1865.86 3733.72 3739.70 63.37%</span></code></pre>
 <p>The output contains the following model comparison criteria:</p>
 <ul>
 <li><p><code>WAIC</code>, the Widely Applicable (or Watanabe-Akaike) Information Criterion, its standard deviation <code>se(WAIC)</code>, and the number <code>pWAIC</code> of effective model parameters, see <a href="#the-waic-value">below</a>,</p></li>
@@ -136,7 +130,7 @@
 <p><span class="math display">\[\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),\]</span> where <span class="math inline">\(\text{lppd}\)</span> stands for log pointwise predictive density and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see <span class="citation">McElreath (<a href="#ref-McElreath:16" role="doc-biblioref">2020</a>)</span> p. 220 for a reference.</p>
 <p>The <span class="math inline">\(\text{lppd}\)</span> is approximated as follows. Let <span class="math display">\[p_{is} = \Pr(y_i\mid \theta_s)\]</span> be the probability of observation <span class="math inline">\(y_i\)</span> given the <span class="math inline">\(s\)</span>-th set <span class="math inline">\(\theta_s\)</span> of parameter samples from the posterior. Then</p>
 <p><span class="math display">\[\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.\]</span> The penalty term is computed as the sum over the variances in log-probability for each observation: <span class="math display">\[p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right]. \]</span> The <span class="math inline">\(\text{WAIC}\)</span> has a standard error <span class="math inline">\(\text{SE}\)</span> of <span class="math display">\[\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]}.\]</span> The <code><a href="../reference/waic.html">waic()</a></code> function visualizes the convergence based on the number <code>S</code> of Gibbs samples, for example for <code>model_train</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/waic.html">waic</a></span><span class="op">(</span><span class="va">model_train</span>, S <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 <p><img src="v06_model_selection_files/figure-html/waictrace-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
