@@ -228,9 +228,9 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
 <span class="co">#&gt;            Estimate   (sd)</span>
 <span class="co">#&gt; 1   price     -1.00 (0.00)</span>
-<span class="co">#&gt; 2    time    -25.31 (2.15)</span>
-<span class="co">#&gt; 3  change     -4.81 (0.87)</span>
-<span class="co">#&gt; 4 comfort    -14.40 (0.91)</span></code></pre></div>
+<span class="co">#&gt; 2    time    -25.39 (2.23)</span>
+<span class="co">#&gt; 3  change     -4.79 (0.86)</span>
+<span class="co">#&gt; 4 comfort    -14.40 (0.90)</span></code></pre></div>
 <p>and visualized via</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
@@ -259,7 +259,7 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <span class="co"><span style="text-decoration: underline;">#&gt; </span>choice ~ price + time + change + comfort | 0 </span>
 <span class="co">#&gt; R: 10000 </span>
 <span class="co">#&gt; B: 5000 </span>
-<span class="co">#&gt; Q: 1 </span>
+<span class="co">#&gt; Q: 10 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="text-decoration: underline;">Normalization</span></span>
 <span class="co"><span style="text-decoration: underline;">#&gt; </span>Level: Utility differences with respect to alternative 2.</span>
@@ -270,13 +270,13 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <span class="co">#&gt;  alpha</span>
 <span class="co">#&gt;                                                           </span>
 <span class="co">#&gt;      1        -1.00         0.00         1.00         0.00</span>
-<span class="co">#&gt;      2       -25.31         2.15         1.01         0.03</span>
-<span class="co">#&gt;      3        -4.81         0.87         1.00         0.01</span>
-<span class="co">#&gt;      4       -14.40         0.91         1.00         0.02</span>
+<span class="co">#&gt;      2       -25.39         2.23         1.01         0.00</span>
+<span class="co">#&gt;      3        -4.79         0.86         1.00         0.02</span>
+<span class="co">#&gt;      4       -14.40         0.90         1.00         0.01</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Sigma</span>
 <span class="co">#&gt;                                                           </span>
-<span class="co">#&gt;    1,1       659.11        63.88         1.00         4.26</span></code></pre></div>
+<span class="co">#&gt;    1,1       658.58        62.47         1.00         6.38</span></code></pre></div>
 <p>Calling the <code>plot</code> method with the additional argument <code>type = "trace"</code> plots the trace of the normalized, burned, and thinned Gibbs samples.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
