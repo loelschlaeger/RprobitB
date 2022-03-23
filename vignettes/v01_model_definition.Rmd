@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is dedicated to introduce the probit model that is implemented in {RprobitB}.
+This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is dedicated to introduce the probit model that is implemented in {RprobitB}.
 
 ## The probit model
 

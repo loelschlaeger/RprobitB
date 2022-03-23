@@ -77,7 +77,7 @@ plot(coef(model))
 
 The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 15€.
 
-Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ draws 15\% of the customers to the competitor who does not increase their prices:
+Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices:
 
 ```{r predict1}
 predict(

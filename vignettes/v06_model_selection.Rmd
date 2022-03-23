@@ -18,7 +18,7 @@ library(RprobitB)
 set.seed(1)
 ```
 
-The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
+The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
@@ -26,20 +26,24 @@ For illustration, we revisit the probit model of travelers deciding between two 
 data("model_train", package = "RprobitB")
 ```
 
-As an competing model, we consider explaining the choice only by the alternative's price, i.e. the model with the formula `choice ~ price | 0`:
+As a competing model, we consider explaining the choices only by the alternative's price, i.e. the model with the formula `choice ~ price | 0`:^[This model is also saved in {RprobitB} and can be accessed via `data("model_train_sparse", package = "RprobitB")`.]
 
-```{r}
-model_train_sparse <- nested_model(model_train, form = choice ~ price | 0, print_progress = FALSE)
+```{r, eval = FALSE}
+model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
 ```
 
+```{r, echo = FALSE}
+data("model_train_sparse", package = "RprobitB")
+```
+
+The `nested_model` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.
 
 ## The `model_selection()` function
 
 {RprobitB} provides a function called `model_selection()`. As input, the function takes an arbitrary number of `RprobitB_model` objects. In our example:
 
-```{r, eval = FALSE}
+```{r}
 model_selection(model_train, model_train_sparse)
-# Bayes factor currently missing.
 ```
 
 The output contains the following model comparison criteria:
@@ -65,7 +69,7 @@ WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion. 
 $$\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),$$
 where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:16 p. 220 for a reference.
 
-The $\text{lppd}$ is approximated as follows. Let $$p_{is} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
+The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
 
 $$\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.$$
 The penalty term is computed as the sum over the variances in log-probability for each observation:

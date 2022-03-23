@@ -98,8 +98,8 @@ about 25€, an additional change by 5€, and a more comfortable class by
 
 Now assume that a train company wants to anticipate the effect of a
 price increase on their market share. By our model, increasing the
-ticket price from 100€ to 110€ draws 15% of the customers to the
-competitor who does not increase their prices:
+ticket price from 100€ to 110€ (ceteris paribus) draws 15% of the
+customers to the competitor who does not increase their prices:
 
 ``` r
 predict(
@@ -109,7 +109,7 @@ predict(
   overview = FALSE)
 #>   id choiceid         A         B prediction
 #> 1  1        1 0.5000000 0.5000000          A
-#> 2  2        1 0.3484483 0.6515517          B
+#> 2  2        1 0.3483907 0.6516093          B
 ```
 
 However, offering a better comfort class (`0` here is better than `1`)
@@ -126,7 +126,7 @@ predict(
   overview = FALSE)
 #>   id choiceid         A         B prediction
 #> 1  1        1 0.5000000 0.5000000          A
-#> 2  2        1 0.5680288 0.4319712          A
+#> 2  2        1 0.5680923 0.4319077          A
 ```
 
 This is just the tip of the iceberg: {RprobitB} offers tools for

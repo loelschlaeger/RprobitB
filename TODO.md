@@ -6,10 +6,11 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Gibbs sampler
 
+- [ ] Make setting of `scale` in `mcmc` more intuitive.
 - [x] Implement `update_classes_dp()` in C++.
 - [x] Implement progress bar.
 - [ ] Check and document `R_hat()` implementation (How is chain splitted?).
-- [ ] After each update, set fixed parameters. 
+- [ ] Fixed parameters: After each update, set fixed parameters. 
 
 ### Model selection
 
@@ -17,10 +18,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [x] Prediction accuracy in `model_selection()` output.
 - [x] Marginal model likelihood approximation for Bayes factor
   - [x] Prior arithmetic mean estimator
-  - [ ] Importance Sampling
   - [x] Posterior harmonic mean estimator
-  - [ ] Bridge Sampling
-  - [ ] Thermodynamic integration
   - [x] Pairwise Bayes factor in `model_selection()` output.
   
 ### Missingness
@@ -29,7 +27,6 @@ The following tasks are on our agenda and will be tackled as time permits.
   - [x] complete-case analysis
   - [x] zero-out
   - [x] mean
-  - [ ] Bayesian imputation
 - [ ] Variable choice set
 
 ### Prediction
@@ -47,7 +44,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 - [x] Make summary output of `RprobitB_fit` more compact. Provide option to show different model aspects.
 - [ ] Print model formula with `check_form()`.
-- [ ] (Standardized) Progress bar for all computations that potentially last longer.
+- [x] (Standardized) Progress bar for all computations that potentially last longer.
 
 ### Visualization
 
@@ -64,8 +61,6 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Bottlenecks
 
-- [ ] It seems that speed of `mml()` and `waic()` could be improved.
-
 ### Bugs
 
 - [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
@@ -73,7 +68,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
 - [x] Error in `mml()` for `method == "pame"`: Bad prior draws. Fixed: Prior draws had to depend on `C`.
 - [ ] Error in `mml()` for `method == "pame"` and `C > 1`: Bad `s` draws.
-- [ ] In `choice_probabilities()`: `"probabilities do not sum to 1."`
+- [x] In `choice_probabilities()`: `"probabilities do not sum to 1."`
 
 ### Tests
 
@@ -87,10 +82,10 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [x] Model definition
 - [x] Choice data
 - [x] Model fitting
-- [ ] Modeling heterogeneity
-- [ ] Choice prediction
-- [ ] Model selection
-- [ ] Applications
+- [x] Modeling heterogeneity
+- [x] Choice prediction
+- [x] Model selection
+- [x] Applications
 
 ### Demos
 

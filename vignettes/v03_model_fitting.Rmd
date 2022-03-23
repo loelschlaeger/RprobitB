@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-This vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `mcmc()` in {RprobitB}.
+This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `mcmc()` in {RprobitB}.
 
 ## Bayes estimation of the probit model
 
@@ -259,12 +259,6 @@ The `transform` method can be used to transform an `RprobitB_fit` object in thre
 
 3. Change the model normalization `scale`.
 
-For example, we could thin the Gibbs samples of the above model to reduce correlation among the Gibbs samples:
-
-```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
-model_train <- transform(model_train, Q = 10)
-par(mfrow = c(2,3))
-plot(model_train, type = "acf")
-```
+Add example.
 
 ## References
