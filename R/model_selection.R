@@ -166,6 +166,8 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
 #' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
 #' parameters, \eqn{k} is the penalty per parameter (\eqn{k = 2} for the
 #' classical AIC), and \eqn{npar} is the number of parameters in the fitted model.
+#' The AIC quantifies the trade-off between over- and under-fitting, where
+#' smaller values are preferred.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
@@ -216,7 +218,8 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
 #' \deqn{-2 \cdot \text{LL} + \text{npar} \cdot \ln{\text{nobs}},}
 #' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
 #' parameters, \eqn{npar} is the number of parameters in the fitted model,
-#' and \eqn{\text{nobs}} is the number of data points.
+#' and \eqn{\text{nobs}} is the number of data points. The BIC quantifies the
+#' trade-off between over- and under-fitting, where smaller values are preferred.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.

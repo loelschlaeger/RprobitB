@@ -23,7 +23,8 @@ The BIC is computed as
 \deqn{-2 \cdot \text{LL} + \text{npar} \cdot \ln{\text{nobs}},}
 where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
 parameters, \eqn{npar} is the number of parameters in the fitted model,
-and \eqn{\text{nobs}} is the number of data points.
+and \eqn{\text{nobs}} is the number of data points. The BIC quantifies the
+trade-off between over- and under-fitting, where smaller values are preferred.
 }
 \examples{
 data("model_train", package = "RprobitB")

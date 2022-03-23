@@ -27,6 +27,8 @@ The AIC is computed as
 where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
 parameters, \eqn{k} is the penalty per parameter (\eqn{k = 2} for the
 classical AIC), and \eqn{npar} is the number of parameters in the fitted model.
+The AIC quantifies the trade-off between over- and under-fitting, where
+smaller values are preferred.
 }
 \examples{
 data("model_train", package = "RprobitB")
