@@ -123,6 +123,11 @@
 <img src="flowchart.png" style="width:80.0%" alt=""><p class="caption">The flowchart of {RprobitB}. The functions <code><a href="../reference/check_form.html">check_form()</a></code> and <code><a href="../reference/overview_effects.html">overview_effects()</a></code> help the user to verify the correctness of the data and model specification. <code><a href="../reference/train_test.html">train_test()</a></code> allows to split the data into an estimation and a validation part. <code>transform_fit()</code> allows to change normalization of the model after a model has been fitted.</p>
 </div>
 </div>
+<div class="section level2">
+<h2 id="printing-the-progress-of-computations">Printing the progress of computations<a class="anchor" aria-label="anchor" href="#printing-the-progress-of-computations"></a>
+</h2>
+<p>Per default, any function in {RprobitB} that takes more than a few seconds evaluation time prints the progress of the computations to the console. To hide these progress messages, set <code>options("RprobitB_progress" = FALSE)</code>. To show them again, set <code>options("RprobitB_progress" = TRUE)</code>.</p>
+</div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -78,20 +78,13 @@ marginal model likelihood <code><a href="mml.html">mml</a></code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_p_si</span><span class="op">(</span>
-  <span class="va">x</span>,
-  print_progress <span class="op">=</span> <span class="cn">TRUE</span>,
-  ncores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,
-  recompute <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_p_si</span><span class="op">(</span><span class="va">x</span>, ncores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, recompute <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>An object of class <code>RprobitB_fit</code>.</p></dd>
-<dt>print_progress</dt>
-<dd><p>Set to <code>TRUE</code> to print the computation progress.</p></dd>
 <dt>ncores</dt>
 <dd><p>This function is parallelized, set the number of cores here.</p></dd>
 <dt>recompute</dt>
@@ -105,10 +98,11 @@ probabilities, observations in rows and posterior samples in columns.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co">### takes ~5 min computation time</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu">compute_p_si</span><span class="op">(</span><span class="va">model_train</span>, ncores <span class="op">=</span> <span class="fl">1</span>, recompute <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

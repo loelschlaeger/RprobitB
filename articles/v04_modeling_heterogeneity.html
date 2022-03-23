@@ -98,7 +98,7 @@
 
     
     
-<p>In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is build using R 4.1.3 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
+<p>In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.1.3 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
 </h2>
@@ -111,9 +111,9 @@
 <li>a boolean <code>tod</code>, indicating whether the supplier offers a time-of-day electricity price (which is higher during the day and lower during the night), and</li>
 <li>a boolean <code>seas</code>, indicating whether the supplier’s price is seasonal dependent.</li>
 </ol>
-<p>This constitutes a choice situation where choice behavior heterogeneity is expected: some customers might prefer a time-of-day electricity price (because they may be not at home during the day), while others can have the opposite preference. These differences in taste can be captured by means of a mixing distribution for the <code>tod</code> coefficient. We can use the estimated mixing distribution to determine for example the share of deciders that have a positive versus negative preference towards time-of-day electricity prices.</p>
-<p>Additionally, we a priori expect correlations between certain covariates, for example a positive correlation between the influence of <code>loc</code> and <code>wk</code>: deciders that prefer local suppliers might also prefer well known companies due to recommendations and past experiences, although they might be more expensive than unknown suppliers. The fitted multivariate normal distribution will reveal these correlations.</p>
-<p>The following lines prepare the <code>Electricity</code> data set for estimation. We use the convenience function <code><a href="../reference/as_cov_names.html">as_cov_names()</a></code> that relabels the data columns for alternative specific covariates into the required format “<code>&lt;covariate&gt;_&lt;alternative&gt;</code>”, compare to the vignette on choice data. Via the <code>re = c("cl","loc","wk","tod","seas")</code> argument, we specify that we want to model random effects for all but the price price coefficient, which we will fix to <code>-1</code> to interpret the other estimates as monetary values.</p>
+<p>This constitutes a choice situation where choice behavior heterogeneity is expected: some customers might prefer a time-of-day electricity price (because they may be not at home during the day), while others can have the opposite preference. Ideally these differences in preferences should be modeled using characteristics of the deciders. In many cases (as in this data set) we do not have adequate information. Instead these differences in taste can be captured by means of a mixing distribution for the <code>tod</code> coefficient. This corresponds to the assumption of a random coefficient from the underlying mixing distribution to be drawn for each decider. We can use the estimated mixing distribution to determine for example the share of deciders that have a positive versus negative preference towards time-of-day electricity prices.</p>
+<p>Additionally, we expect correlations between the random coefficients to certain covariates, for example a positive correlation between the influence of <code>loc</code> and <code>wk</code>: deciders that prefer local suppliers might also prefer well known companies due to recommendations and past experiences, although they might be more expensive than unknown suppliers. The fitted multivariate normal distribution will reveal these correlations.</p>
+<p>The following lines prepare the <code>Electricity</code> data set for estimation. We use the convenience function <code><a href="../reference/as_cov_names.html">as_cov_names()</a></code> that relabels the data columns for alternative specific covariates into the required format “<code>&lt;covariate&gt;_&lt;alternative&gt;</code>”, compare to the vignette on choice data. Via the <code>re = c("cl","loc","wk","tod","seas")</code> argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to <code>-1</code> to interpret the other estimates as monetary values.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Electricity"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
 <span class="va">Electricity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_cov_names.html">as_cov_names</a></span><span class="op">(</span><span class="va">Electricity</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pf"</span>,<span class="st">"cl"</span>,<span class="st">"loc"</span>,<span class="st">"wk"</span>,<span class="st">"tod"</span>,<span class="st">"seas"</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>
@@ -126,31 +126,31 @@
 <p>The estimated model is saved in {RprobitB} and can be accessed via:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">model_elec</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
-<p>Calling the <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> method on the estimated model now also returns the estimated (marginal) variances of the mixing distribution besides the average mean effects:</p>
+<p>Calling the <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> method on the estimated model also returns the estimated (marginal) variances of the mixing distribution besides the average mean effects:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span>
 <span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span>
 <span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span>
-<span class="co">#&gt; 2   cl     -0.27 (0.04)     0.32 (0.05)</span>
-<span class="co">#&gt; 3  loc      2.86 (0.29)     7.26 (1.36)</span>
-<span class="co">#&gt; 4   wk      2.09 (0.20)     3.69 (0.72)</span>
-<span class="co">#&gt; 5  tod     -9.84 (0.25)    12.37 (2.35)</span>
-<span class="co">#&gt; 6 seas     -9.93 (0.19)     6.12 (0.87)</span></code></pre></div>
+<span class="co">#&gt; 2   cl     -0.25 (0.03)     0.23 (0.04)</span>
+<span class="co">#&gt; 3  loc      2.75 (0.26)     6.79 (1.25)</span>
+<span class="co">#&gt; 4   wk      2.00 (0.19)     3.39 (0.67)</span>
+<span class="co">#&gt; 5  tod     -9.71 (0.25)    10.53 (2.18)</span>
+<span class="co">#&gt; 6 seas     -9.83 (0.22)     5.74 (1.14)</span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price <code>tod</code> in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large (<code>12.37</code>). The same holds for the contract length <code>cl</code>. In particular, the estimated share of the population that prefers to have a longer contract length equals:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"mean"</span><span class="op">]</span>
 <span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"var"</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.3178508</span></code></pre></div>
+<span class="co">#&gt; [1] 0.3026362</span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt;               cl        loc          wk         tod        seas</span>
-<span class="co">#&gt; cl    1.00000000 0.11342898  0.09694869 -0.06663434 -0.14423373</span>
-<span class="co">#&gt; loc   0.11342898 1.00000000  0.77386571  0.13911604  0.02067338</span>
-<span class="co">#&gt; wk    0.09694869 0.77386571  1.00000000  0.13822760 -0.01439843</span>
-<span class="co">#&gt; tod  -0.06663434 0.13911604  0.13822760  1.00000000  0.53848152</span>
-<span class="co">#&gt; seas -0.14423373 0.02067338 -0.01439843  0.53848152  1.00000000</span></code></pre></div>
+<span class="co">#&gt;               cl         loc          wk         tod        seas</span>
+<span class="co">#&gt; cl    1.00000000  0.11510129  0.06972935 -0.06581389 -0.13741649</span>
+<span class="co">#&gt; loc   0.11510129  1.00000000  0.81363601  0.09436351 -0.02207951</span>
+<span class="co">#&gt; wk    0.06972935  0.81363601  1.00000000  0.09713654 -0.05208165</span>
+<span class="co">#&gt; tod  -0.06581389  0.09436351  0.09713654  1.00000000  0.53757657</span>
+<span class="co">#&gt; seas -0.13741649 -0.02207951 -0.05208165  0.53757657  1.00000000</span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
@@ -183,7 +183,7 @@
 <li><p><code>epsmax = 0.99</code>, and</p></li>
 <li><p><code>distmin = 0.1</code>.</p></li>
 </ul>
-<p>There values can be adapted through the <code>latent_class</code> list.</p>
+<p>These values can be adapted through the <code>latent_class</code> list.</p>
 </div>
 <div class="section level3">
 <h3 id="dirichlet-process-based-update-of-the-latent-classes">Dirichlet process-based update of the latent classes<a class="anchor" aria-label="anchor" href="#dirichlet-process-based-update-of-the-latent-classes"></a>
@@ -234,7 +234,7 @@
 <span class="va">C</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow <span class="op">=</span> <span class="va">P_r</span>, ncol <span class="op">=</span> <span class="va">C</span><span class="op">)</span>
 <span class="va">Omega</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">P_r</span><span class="op">)</span>, <span class="va">C</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">P_r</span><span class="op">*</span><span class="va">P_r</span>, ncol <span class="op">=</span> <span class="va">C</span><span class="op">)</span></code></pre></div>
-<p>The following call to <code><a href="../reference/update_classes_dp.html">update_classes_dp()</a></code> updates the latent classes in <code>100</code> iterations. Note that we specify the arguments <code>Cmax</code> and <code>s_desc</code>. The former denotes the maximum number of latent classes. This specification is not a requirement for the Dirichlet process per se, but rather for its implementation. Knowing the maximum possible class number, we can allocate the required memory space, which leads to a speed improvement. We later can verify that we won’t exceed the number of <code>Cmax = 10</code> latent classes at any point of the Dirichlet process. Setting <code>s_desc = TRUE</code> ensures that the classes are ordered by their sizes in a descending order to ensure identifiability.</p>
+<p>The following call to <code><a href="../reference/update_classes_dp.html">update_classes_dp()</a></code> updates the latent classes in <code>100</code> iterations. Note that we specify the arguments <code>Cmax</code> and <code>s_desc</code>. The former denotes the maximum number of latent classes. This specification is not a requirement for the Dirichlet process per se, but rather for its implementation. Knowing the maximum possible class number, we can allocate the required memory space, which leads to a speed improvement. We later can verify that we won’t exceed the number of <code>Cmax = 10</code> latent classes at any point of the Dirichlet process. Setting <code>s_desc = TRUE</code> ensures that the classes are ordered by their weights in a descending order to ensure identifiability.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">for</span><span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">{</span>
   <span class="va">dp</span> <span class="op">&lt;-</span> <span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/update_classes_dp.html">update_classes_dp</a></span><span class="op">(</span>
