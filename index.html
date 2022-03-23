@@ -152,7 +152,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-coef-1.png" style="display: block; margin: auto;"></p>
 <p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 15€.</p>
-<p>Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ draws 15% of the customers to the competitor who does not increase their prices:</p>
+<p>Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15% of the customers to the competitor who does not increase their prices:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>
   <span class="va">model</span>, 
@@ -161,7 +161,7 @@
   overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
-<span class="co">#&gt; 2  2        1 0.3484483 0.6515517          B</span></code></pre></div>
+<span class="co">#&gt; 2  2        1 0.3483907 0.6516093          B</span></code></pre></div>
 <p>However, offering a better comfort class (<code>0</code> here is better than <code>1</code>) compensates for the higher price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>
@@ -173,7 +173,7 @@
   overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt;   id choiceid         A         B prediction</span>
 <span class="co">#&gt; 1  1        1 0.5000000 0.5000000          A</span>
-<span class="co">#&gt; 2  2        1 0.5680288 0.4319712          A</span></code></pre></div>
+<span class="co">#&gt; 2  2        1 0.5680923 0.4319077          A</span></code></pre></div>
 <p>This is just the tip of the iceberg: {RprobitB} offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more.</p>
 </div>
 </div>

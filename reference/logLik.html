@@ -72,7 +72,7 @@ object.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">logLik</span><span class="op">(</span><span class="va">object</span>, <span class="va">par_set</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">logLik</span><span class="op">(</span><span class="va">object</span>, <span class="va">par_set</span>, <span class="va">recompute</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,6 +85,9 @@ object.</p>
 <li><p><code>"true"</code> to select the true parameter set,</p></li>
 <li><p>an object of class <code>RprobitB_parameter</code>.</p></li>
 </ul></dd>
+<dt>recompute</dt>
+<dd><p>Set to <code>TRUE</code> to recompute the log-likelihood value if it is already
+saved in <code>object</code>.</p></dd>
 <dt>...</dt>
 <dd><p>Ignored.</p></dd>
 </dl></div>

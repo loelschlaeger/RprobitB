@@ -70,6 +70,9 @@
 <div class="section level3">
 <h3 id="gibbs-sampler">Gibbs sampler<a class="anchor" aria-label="anchor" href="#gibbs-sampler"></a></h3>
 <ul><li>
+<input type="checkbox" disabled>
+Make setting of <code>scale</code> in <code>mcmc</code> more intuitive.</li>
+<li>
 <input type="checkbox" disabled checked>
 Implement <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code> in C++.</li>
 <li>
@@ -80,7 +83,7 @@ Implement progress bar.</li>
 Check and document <code><a href="reference/R_hat.html">R_hat()</a></code> implementation (How is chain splitted?).</li>
 <li>
 <input type="checkbox" disabled>
-After each update, set fixed parameters.</li>
+Fixed parameters: After each update, set fixed parameters.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="model-selection">Model selection<a class="anchor" aria-label="anchor" href="#model-selection"></a></h3>
@@ -96,17 +99,8 @@ Marginal model likelihood approximation for Bayes factor<ul><li>
 <input type="checkbox" disabled checked>
 Prior arithmetic mean estimator</li>
 <li>
-<input type="checkbox" disabled>
-Importance Sampling</li>
-<li>
 <input type="checkbox" disabled checked>
 Posterior harmonic mean estimator</li>
-<li>
-<input type="checkbox" disabled>
-Bridge Sampling</li>
-<li>
-<input type="checkbox" disabled>
-Thermodynamic integration</li>
 <li>
 <input type="checkbox" disabled checked>
 Pairwise Bayes factor in <code><a href="reference/model_selection.html">model_selection()</a></code> output.</li>
@@ -125,9 +119,6 @@ zero-out</li>
 <li>
 <input type="checkbox" disabled checked>
 mean</li>
-<li>
-<input type="checkbox" disabled>
-Bayesian imputation</li>
 </ul></li>
 <li>
 <input type="checkbox" disabled>
@@ -160,7 +151,7 @@ Make summary output of <code>RprobitB_fit</code> more compact. Provide option to
 <input type="checkbox" disabled>
 Print model formula with <code><a href="reference/check_form.html">check_form()</a></code>.</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 (Standardized) Progress bar for all computations that potentially last longer.</li>
 </ul></div>
 <div class="section level3">
@@ -195,10 +186,7 @@ Exclude parameter wrt which the model is normalized.</li>
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a></h2>
 <div class="section level3">
 <h3 id="bottlenecks">Bottlenecks<a class="anchor" aria-label="anchor" href="#bottlenecks"></a></h3>
-<ul><li>
-<input type="checkbox" disabled>
-It seems that speed of <code><a href="reference/mml.html">mml()</a></code> and <code>waic()</code> could be improved.</li>
-</ul></div>
+</div>
 <div class="section level3">
 <h3 id="bugs">Bugs<a class="anchor" aria-label="anchor" href="#bugs"></a></h3>
 <ul><li>
@@ -216,7 +204,7 @@ Error in <code><a href="reference/mml.html">mml()</a></code> for <code>method ==
 <input type="checkbox" disabled>
 Error in <code><a href="reference/mml.html">mml()</a></code> for <code>method == "pame"</code> and <code>C &gt; 1</code>: Bad <code>s</code> draws.</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 In <code><a href="reference/choice_probabilities.html">choice_probabilities()</a></code>: <code>"probabilities do not sum to 1."</code>
 </li>
 </ul></div>
@@ -244,16 +232,16 @@ Choice data</li>
 <input type="checkbox" disabled checked>
 Model fitting</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Modeling heterogeneity</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Choice prediction</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Model selection</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Applications</li>
 </ul></div>
 <div class="section level3">
