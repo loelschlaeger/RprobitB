@@ -30,7 +30,7 @@ RprobitB_progress <- function(title, total) {
 #' @noRd
 
 RprobitB_pp <- function(pb) {
-  if(identical(getOption("RprobitB_progress"), TRUE)){
+  if (identical(getOption("RprobitB_progress"), TRUE)) {
     pb$tick()
   }
 }
