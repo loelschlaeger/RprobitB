@@ -96,7 +96,7 @@ See the vignette "Choice data" for more details:
 \examples{
 data("Train", package = "mlogit")
 data <- prepare_data(
-  form = choice ~ price + time + comfort + change | 1,
+  form = choice ~ price + time + comfort + change | 0,
   choice_data = Train,
   re = c("price", "time"),
   id = "id",

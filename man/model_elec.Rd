@@ -24,7 +24,11 @@ data <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+model <- mcmc(
+  data = data,
+  R = 5000,
+  Q = 10,
+  scale = list(parameter = "a", index = 1, value = -1))
 }
 
 The Gibbs samples for \code{beta} were removed to reduce the required memory space.

@@ -6,7 +6,7 @@
 \usage{
 model_selection(
   ...,
-  criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "BF", "pred_acc"),
+  criteria = c("npar", "LL", "AIC", "BIC"),
   add_form = FALSE
 )
 }
@@ -22,6 +22,7 @@ model_selection(
 \item \code{"WAIC"} for the WAIC value (also shows its standard error
 \code{sd(WAIC)} and the number \code{pWAIC} of effective model parameters,
 see \code{\link{WAIC}}),
+\item \code{"MMLL"} for the marginal model log-likelihood,
 \item \code{"BF"} for the Bayes factor,
 \item \code{"pred_acc"} for the prediction accuracy (see \code{\link{pred_acc}}).
 }}
@@ -39,5 +40,7 @@ See the vignette on model selection for more details.
 }
 \examples{
 data("model_train", package = "RprobitB")
-model_selection(model_train)
+data("model_train_sparse", package = "RprobitB")
+criteria <- c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc")
+model_selection(model_train, model_train_sparse, criteria = criteria)
 }

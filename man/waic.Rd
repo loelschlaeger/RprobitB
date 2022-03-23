@@ -8,8 +8,6 @@ WAIC(x)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
-
-\item{print_progress}{Set to \code{TRUE} to print computation progress.}
 }
 \value{
 A numeric, the WAIC value, with the following attributes:

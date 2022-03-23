@@ -22,6 +22,8 @@
 #'   )
 #' model_train <- mcmc(
 #'   data = data,
+#'   R = 10000,
+#'   Q = 10,
 #'   scale = list("parameter" = "a", index = 1, value = -1)
 #'   )
 #' }
@@ -31,6 +33,28 @@
 #' @keywords
 #' model
 "model_train"
+
+#' Probit model for binary choice between Train trip alternatives with the price
+#' as the only explanatory variable
+#'
+#' @description
+#' This object is a fitted probit model to the Train data set of the {mlogit}
+#' package with the model formula `choice ~ price | 0`.
+#'
+#' @usage data(model_train_sparse)
+#'
+#' @details
+#' The model was derived from the \code{\link{model_train}} object via
+#' \preformatted{
+#' data("model_train", package = "RprobitB")
+#' nested_model(model_train, form = choice ~ price | 0)
+#' }
+#'
+#' @format An object of class \code{RprobitB_fit}.
+#'
+#' @keywords
+#' model
+"model_train_sparse"
 
 #' Mixed probit model for multivariate choice between electricity suppliers
 #'
@@ -50,7 +74,11 @@
 #'   choice_data = Electricity,
 #'   re = c("cl","loc","wk","tod","seas")
 #' )
-#' model <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+#' model <- mcmc(
+#'   data = data,
+#'   R = 5000,
+#'   Q = 10,
+#'   scale = list(parameter = "a", index = 1, value = -1))
 #' }
 #'
 #' The Gibbs samples for `beta` were removed to reduce the required memory space.

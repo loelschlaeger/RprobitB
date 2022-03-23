@@ -134,7 +134,8 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### report unsed elements in 'covariates'
   if (length(names(covariates)) > 0) {
-    warning(paste("The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")), "in 'covariates' are ignored."))
+    warning(paste("The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
+                  "in 'covariates' are ignored."))
   }
 
   ### add ASCs (for all but the last alternative)

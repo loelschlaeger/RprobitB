@@ -156,13 +156,6 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
     }
   }
 
-  ### check if probabilities sum to 1
-  if (identical(alternatives, 1:J)) {
-    if (abs(sum(probabilities) - 1) > sqrt(.Machine$double.eps)) {
-      warning("probabilities do not sum to 1.")
-    }
-  }
-
   ### return probabilities
   return(probabilities)
 }

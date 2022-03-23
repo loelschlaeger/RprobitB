@@ -30,6 +30,8 @@ data <- prepare_data(
   )
 model_train <- mcmc(
   data = data,
+  R = 10000,
+  Q = 10,
   scale = list("parameter" = "a", index = 1, value = -1)
   )
 }

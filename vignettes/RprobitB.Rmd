@@ -39,3 +39,7 @@ A typical workflow is as follows:
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
 ![The flowchart of {RprobitB}. The functions `check_form()` and `overview_effects()` help the user to verify the correctness of the data and model specification. `train_test()` allows to split the data into an estimation and a validation part. `transform_fit()` allows to change normalization of the model after a model has been fitted. ](flowchart.png){width=80%}
+
+## Printing the progress of computations
+
+Per default, any function in {RprobitB} that takes more than a few seconds evaluation time prints the progress of the computations to the console. To hide these progress messages, set `options("RprobitB_progress" = FALSE)`. To show them again, set `options("RprobitB_progress" = TRUE)`.

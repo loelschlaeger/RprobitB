@@ -4,18 +4,10 @@
 \alias{mml}
 \title{Marginal model likelihood}
 \usage{
-mml(
-  x,
-  print_progress = TRUE,
-  S = 0,
-  ncores = parallel::detectCores() - 1,
-  recompute = FALSE
-)
+mml(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
-
-\item{print_progress}{Set to \code{TRUE} to print computation progress.}
 
 \item{S}{The number of prior samples for the prior arithmetic mean estimate. Per
 default, \code{S = 0}. In this case, only the posterior samples are used
@@ -63,9 +55,9 @@ sum of the posterior harmonic mean estimate and the prior arithmetic mean estima
 where the weights are determined by the sample sizes.
 }
 \examples{
-\donttest{
 data("model_train", package = "RprobitB")
-model_train <- mml(model_train, S = 100, recompute = TRUE)
-}
+model_train <- mml(model_train, recompute = TRUE)
+model_train$mml
+print(model_train$mml, log = TRUE)
 
 }

@@ -4,7 +4,7 @@
 \alias{logLik}
 \title{Log-likelihood value}
 \usage{
-logLik(object, par_set, ...)
+logLik(object, par_set, recompute, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
@@ -16,6 +16,9 @@ logLik(object, par_set, ...)
 \item \code{"true"} to select the true parameter set,
 \item an object of class \code{RprobitB_parameter}.
 }}
+
+\item{recompute}{Set to \code{TRUE} to recompute the log-likelihood value if it is already
+saved in \code{object}.}
 
 \item{...}{Ignored.}
 }

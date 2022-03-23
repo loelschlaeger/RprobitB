@@ -18,6 +18,7 @@
 #'   \item \code{"WAIC"} for the WAIC value (also shows its standard error
 #'         `sd(WAIC)` and the number `pWAIC` of effective model parameters,
 #'         see \code{\link{WAIC}}),
+#'   \item \code{"MMLL"} for the marginal model log-likelihood,
 #'   \item \code{"BF"} for the Bayes factor,
 #'   \item \code{"pred_acc"} for the prediction accuracy (see \code{\link{pred_acc}}).
 #' }
@@ -31,9 +32,11 @@
 #'
 #' @examples
 #' data("model_train", package = "RprobitB")
-#' model_selection(model_train)
+#' data("model_train_sparse", package = "RprobitB")
+#' criteria <- c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc")
+#' model_selection(model_train, model_train_sparse, criteria = criteria)
 
-model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "BF", "pred_acc"),
+model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
                             add_form = FALSE) {
 
   ### check inputs
@@ -78,14 +81,17 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC", "WAIC"
       output <- cbind(output, "se(WAIC)" = sapply(waic_out, function(x) attr(x, "se_waic")))
       output <- cbind(output, "pWAIC" = sapply(waic_out, function(x) attr(x, "p_waic")))
     }
-    if (crit == "BF" && length(models) > 2) {
-      # models <- lapply(models, mml)
-      # mml_out <- sapply(models, function(x) x[["mml"]])
-      # for (nmod in seq_len(length(models))) {
-      #   colnames_old <- colnames(output)
-      #   output <- cbind(output, exp(log(mml_out) - log(mml_out[nmod])))
-      #   colnames(output) <- c(colnames_old, paste0("BF:", model_names[nmod]))
-      # }
+    if (crit == "MMLL"){
+      models <- lapply(models, mml)
+      output <- cbind(output, "MMLL" = sapply(models, function(x) attr(x[["mml"]], "mmll")))
+    }
+    if (crit == "BF" && length(models) >= 2) {
+      mmll_out <- sapply(models, function(x) attr(x[["mml"]], "mmll"))
+      for (nmod in seq_len(length(models))) {
+        colnames_old <- colnames(output)
+        output <- cbind(output, exp(mmll_out - mmll_out[nmod]))
+        colnames(output) <- c(colnames_old, paste0("BF:", model_names[nmod]))
+      }
     }
     if (crit == "pred_acc") {
       pa <- function(x) sum(diag(x)) / sum(x)
@@ -126,10 +132,15 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
     if (col == "pWAIC") {
       x[, "pWAIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "pWAIC"]))
     }
+    if (col == "MMLL") {
+      x[, "MMLL"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "MMLL"]))
+    }
     if (startsWith(col, "BF:")) {
       x[, col] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[, col])))
       for (row in 1:nrow(x)) {
-        if (as.numeric(x[row, col]) < 1 / 100) {
+        if (is.na(x[row, col])) {
+          x[row, col] <- "NA"
+        } else if (as.numeric(x[row, col]) < 1 / 100) {
           x[row, col] <- "< 0.01"
         } else if (as.numeric(x[row, col]) > 100) {
           x[row, col] <- "> 100"
@@ -271,8 +282,6 @@ BIC.RprobitB_fit <- function(object, ...) {
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
-#' @param print_progress
-#' Set to \code{TRUE} to print computation progress.
 #'
 #' @return
 #' A numeric, the WAIC value, with the following attributes:
@@ -345,23 +354,19 @@ print.RprobitB_waic <- function(x, digits = 2, ...) {
 #' @export
 #' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs theme_minimal
 
-plot.RprobitB_waic <- function(x, print_progress = TRUE, ...) {
+plot.RprobitB_waic <- function(x, ...) {
 
   ### extract 'p_si' from 'x'
   p_si <- attr(x, "p_si")
   S <- ncol(p_si)
   log_p_si <- log(p_si)
 
-  ### prepare progress output
-  if(print_progress){
-    pb <- RprobitB_progress(title = "Preparing WAIC convergence plot", total = S)
-  }
-
   ### compute sequence of waic value for progressive sets of posterior samples
+  pb <- RprobitB_progress(title = "Preparing WAIC convergence plot", total = S)
   waic_seq <- numeric(S)
   se_waic_seq <- numeric(S)
   for(s in 2:S){
-    if(print_progress) pb$tick()
+    RprobitB_pp(pb)
     lppd_temp <- sum(log(rowSums(p_si[,1:s,drop=FALSE])) - log(s))
     p_waic_i_temp <- apply(log_p_si[,1:s,drop=FALSE], 1, var)
     p_waic_temp <- sum(p_waic_i_temp)
@@ -424,6 +429,9 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @param object
 #' An object of class \code{RprobitB_fit}.
 #' @inheritParams choice_probabilities
+#' @param recompute
+#' Set to \code{TRUE} to recompute the log-likelihood value if it is already
+#' saved in \code{object}.
 #' @param ...
 #' Ignored.
 #'
@@ -436,14 +444,14 @@ nobs.RprobitB_fit <- function(object, ...) {
 #'
 #' @export
 
-logLik <- function(object, par_set, ...) {
+logLik <- function(object, par_set, recompute, ...) {
   UseMethod("logLik")
 }
 
 #' @export
 
-logLik.RprobitB_fit <- function(object, par_set = mean, ...) {
-  if(!is.null(object[["ll"]])){
+logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
+  if(!is.null(object[["ll"]]) && !recompute){
     ll <- object[["ll"]]
   } else {
     probs <- choice_probabilities(x = object, par_set = par_set)
@@ -507,13 +515,8 @@ npar.RprobitB_fit <- function(object, ...) {
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
-#'
-#' @param print_progress
-#' Set to \code{TRUE} to print the computation progress.
-#'
 #' @param ncores
 #' This function is parallelized, set the number of cores here.
-#'
 #' @param recompute
 #' Set to \code{TRUE} to recompute the probabilities.
 #'
@@ -524,7 +527,8 @@ npar.RprobitB_fit <- function(object, ...) {
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' ### takes ~5 min computation time
 #' data("model_train", package = "RprobitB")
 #' model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)
 #' }
@@ -533,21 +537,17 @@ npar.RprobitB_fit <- function(object, ...) {
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doSNOW registerDoSNOW
 
-compute_p_si <- function(x, print_progress = TRUE,
-                         ncores = parallel::detectCores() - 1, recompute = FALSE) {
+compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FALSE) {
 
   ### check input
   if(class(x) != "RprobitB_fit"){
     stop("'x' must be an object of class 'RprobitB_fit'.")
   }
-  if(!(length(print_progress) == 1 && class(print_progress) == "logical")){
-    stop("'print_progress' must be a boolean.")
-  }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
     stop("'ncores' must be a positive integer.")
   }
   if(!(length(recompute) == 1 && class(recompute) == "logical")){
-    stop("'print_progress' must be a boolean.")
+    stop("'recompute' must be a boolean.")
   }
 
   ### check if 'p_si' in 'x' already exists if 'recompute = FALSE'
@@ -563,7 +563,7 @@ compute_p_si <- function(x, print_progress = TRUE,
   doSNOW::registerDoSNOW(cluster)
 
   ### register progress bar
-  if(print_progress){
+  if(getOption("RprobitB_progress")){
     pb <- RprobitB_progress(title = "Computing p_si", total = length(pars))
     opts <- list(progress = function(n) pb$tick())
   } else {
@@ -634,8 +634,6 @@ compute_p_si <- function(x, print_progress = TRUE,
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
-#' @param print_progress
-#' Set to \code{TRUE} to print computation progress.
 #' @param S
 #' The number of prior samples for the prior arithmetic mean estimate. Per
 #' default, \code{S = 0}. In this case, only the posterior samples are used
@@ -652,10 +650,10 @@ compute_p_si <- function(x, print_progress = TRUE,
 #' approximated marginal likelihood value.
 #'
 #' @examples
-#' \donttest{
 #' data("model_train", package = "RprobitB")
-#' model_train <- mml(model_train, S = 100, recompute = TRUE)
-#' }
+#' model_train <- mml(model_train, recompute = TRUE)
+#' model_train$mml
+#' print(model_train$mml, log = TRUE)
 #'
 #' @export
 #'
@@ -664,8 +662,7 @@ compute_p_si <- function(x, print_progress = TRUE,
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom doSNOW registerDoSNOW
 
-mml <- function(x, print_progress = TRUE, S = 0, ncores = parallel::detectCores() - 1,
-                recompute = FALSE) {
+mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
 
   ### input checks
   if(class(x) != "RprobitB_fit"){
@@ -675,9 +672,6 @@ mml <- function(x, print_progress = TRUE, S = 0, ncores = parallel::detectCores(
     stop("Cannot compute the marginal model likelihood.\n",
          "Please compute the probability for each observed choice at posterior samples first.\n",
          "For that, use the function 'compute_p_si'.", call. = FALSE)
-  }
-  if(!(length(print_progress) == 1 && class(print_progress) == "logical")){
-    stop("'print_progress' must be a boolean.")
   }
   if(!(is.numeric(S) && length(S)==1 && S>=0 && S%%1==0)){
     stop("'S' must be an integer.")
@@ -716,7 +710,7 @@ mml <- function(x, print_progress = TRUE, S = 0, ncores = parallel::detectCores(
     doSNOW::registerDoSNOW(cluster)
 
     ### register progress bar
-    if(print_progress){
+    if(getOption("RprobitB_progress")){
       pb <- RprobitB_progress(title = "Computing prior arithmetic mean estimate", total = S)
       opts <- list(progress = function(n) pb$tick())
     } else {
@@ -760,6 +754,7 @@ mml <- function(x, print_progress = TRUE, S = 0, ncores = parallel::detectCores(
 
   ### save 'mml_value' in 'x'
   out <- mml_value
+  attr(out, "mmll") <- log(mml_value) - const
   attr(out, "mml_vec") <- approx_seq
   attr(out, "factor") <- const
   class(out) <- c("RprobitB_mml", "numeric")
@@ -778,7 +773,7 @@ print.RprobitB_mml <- function(x, log = FALSE, ...) {
   if(!log){
     cat(sprintf(paste0("%.2e * exp(-%.f)"), x, attr(x, "factor")))
   } else {
-    cat(log(as.numeric(x)) - attr(x, "factor"))
+    cat(attr(x, "mmll"))
   }
 }
 

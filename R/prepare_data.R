@@ -54,7 +54,7 @@
 #' @examples
 #' data("Train", package = "mlogit")
 #' data <- prepare_data(
-#'   form = choice ~ price + time + comfort + change | 1,
+#'   form = choice ~ price + time + comfort + change | 0,
 #'   choice_data = Train,
 #'   re = c("price", "time"),
 #'   id = "id",
@@ -106,9 +106,11 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### handle missing data
+  pb <- RprobitB_progress(title = "Checking missing data", total = ncol(choice_data))
   if(missing_data == "complete_cases"){
     bad_rows <- c()
     for (col in 1:ncol(choice_data)) {
+      RprobitB_pp(pb)
       for (row in 1:nrow(choice_data)) {
         if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
           bad_rows <- c(bad_rows, row)
@@ -120,6 +122,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     }
   } else if(missing_data == "zero_out"){
     for (col in 1:ncol(choice_data)) {
+      RprobitB_pp(pb)
       for (row in 1:nrow(choice_data)) {
         if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
           if(is.numeric(choice_data[, col])){
@@ -132,6 +135,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     }
   } else if(missing_data == "mean"){
     for (col in 1:ncol(choice_data)) {
+      RprobitB_pp(pb)
       for (row in 1:nrow(choice_data)) {
         if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) || is.nan(choice_data[row, col])) {
           if(is.numeric(choice_data[, col])){
@@ -257,7 +261,9 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   N <- length(ids)
   T <- as.numeric(table(choice_data[, id]))
   data <- list()
+  pb <- RprobitB_progress(title = "Preparing data", total = N)
   for (n in seq_len(N)) {
+    RprobitB_pp(pb)
     data[[n]] <- list()
     data_n <- choice_data[choice_data[, id] == ids[n], ]
     X_n <- list()

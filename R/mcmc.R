@@ -43,8 +43,8 @@
 #' @import Rcpp
 
 mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1),
-                 R = 1e4, B = R / 2, Q = 1, print_progress = TRUE, prior = NULL,
-                 latent_classes = NULL, seed = NULL) {
+                 R = 1e4, B = R / 2, Q = 1, print_progress = getOption("RprobitB_progress"),
+                 prior = NULL, latent_classes = NULL, seed = NULL) {
 
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
@@ -69,7 +69,7 @@ mcmc <- function(data, scale = list("parameter" = "s", "index" = 1, "value" = 1)
     stop("'Q' must be a positive integer smaller than 'R'.")
   }
   if (!is.logical(print_progress)) {
-    stop("'progress' must be a boolean.")
+    stop("'print_progress' must be a boolean.")
   }
   normalization <- RprobitB_normalization(J = data$J, P_f = data$P_f, scale = scale)
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
@@ -513,7 +513,7 @@ nested_model <- function(x, form, re, alternatives, standardize, missing_data,
     R = if(missing(R)) x$R else R,
     B = if(missing(B)) x$B else B,
     Q = if(missing(Q)) x$Q else Q,
-    print_progress = if(missing(print_progress)) TRUE else print_progress,
+    print_progress = if(missing(print_progress)) getOption("RprobitB_progress") else print_progress,
     prior = if(missing(prior)) NULL else prior,
     latent_classes = if(missing(latent_classes)) x$latent_classes else latent_classes,
     seed = if(missing(seed)) NULL else seed

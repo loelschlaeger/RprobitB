@@ -4,17 +4,10 @@
 \alias{compute_p_si}
 \title{Compute probability for each observed choice at posterior samples}
 \usage{
-compute_p_si(
-  x,
-  print_progress = TRUE,
-  ncores = parallel::detectCores() - 1,
-  recompute = FALSE
-)
+compute_p_si(x, ncores = parallel::detectCores() - 1, recompute = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
-
-\item{print_progress}{Set to \code{TRUE} to print the computation progress.}
 
 \item{ncores}{This function is parallelized, set the number of cores here.}
 
@@ -31,7 +24,8 @@ probabilities are required to compute the \code{\link{WAIC}} and the
 marginal model likelihood \code{\link{mml}}.
 }
 \examples{
-\donttest{
+\dontrun{
+### takes ~5 min computation time
 data("model_train", package = "RprobitB")
 model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)
 }

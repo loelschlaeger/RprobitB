@@ -1,4 +1,4 @@
-#' fHMM: A package for Bayes estimation of multinomial Probit models
+#' RprobitB: A package for Bayes estimation of multinomial Probit models
 #'
 #' This package provides tools for Bayes estimation of multinomial Probit models.
 #'
@@ -23,8 +23,22 @@ RprobitB_progress <- function(title, total) {
   progress::progress_bar$new(
     format = paste(":spin", title, ":percent [ETA: :eta]"),
     total = total,
-    clear = FALSE
+    clear = TRUE
   )
+}
+
+#' @noRd
+
+RprobitB_pp <- function(pb) {
+  if(identical(getOption("RprobitB_progress"), TRUE)){
+    pb$tick()
+  }
+}
+
+#' @noRd
+
+.onLoad <- function(lib, pkg) {
+  options("RprobitB_progress" = TRUE)
 }
 
 #' @noRd
