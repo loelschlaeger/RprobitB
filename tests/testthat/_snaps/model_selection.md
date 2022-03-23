@@ -3,12 +3,18 @@
     Code
       model_selection(model_train, model_train_sparse, criteria = criteria)
     Output
-                         npar       LL     AIC     BIC    WAIC se(WAIC) pWAIC
-      model_train           4 -1727.74 3463.48 3487.41 3463.76     0.18  4.32
-      model_train_sparse    1 -1865.86 3733.72 3739.70 3733.91     0.07  1.15
-                             MMLL BF:model_train BF:model_train_sparse pred_acc
-      model_train        -1732.14              1                 > 100   69.55%
-      model_train_sparse -1867.48         < 0.01                     1   63.37%
+                            model_train model_train_sparse
+      npar                            4                  1
+      LL                       -1727.74           -1865.86
+      AIC                       3463.48            3733.72
+      BIC                       3487.41            3739.70
+      WAIC                      3463.76            3733.91
+      se(WAIC)                     0.18               0.07
+      pWAIC                        4.32               1.15
+      MMLL                     -1732.14           -1867.48
+      BF:model_train                  1             < 0.01
+      BF:model_train_sparse       > 100                  1
+      pred_acc                   69.55%             63.37%
 
 # AIC computation works
 

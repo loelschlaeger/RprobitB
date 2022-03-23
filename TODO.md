@@ -7,10 +7,12 @@ The following tasks are on our agenda and will be tackled as time permits.
 ### Gibbs sampler
 
 - [ ] Make setting of `scale` in `mcmc` more intuitive.
+- [ ] Use default progress bar for Gibbs sampling or show at least ETA.
 - [x] Implement `update_classes_dp()` in C++.
 - [x] Implement progress bar.
 - [ ] Check and document `R_hat()` implementation (How is chain splitted?).
 - [ ] Fixed parameters: After each update, set fixed parameters. 
+- [ ] Use `transform()` to keep on Gibbs sampling, i.e. change `R`.
 
 ### Model selection
 

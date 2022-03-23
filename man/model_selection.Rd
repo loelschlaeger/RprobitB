@@ -30,7 +30,7 @@ see \code{\link{WAIC}}),
 \item{add_form}{Set to \code{TRUE} to add the model formulas.}
 }
 \value{
-A data frame, models in rows, criteria in columns.
+A data frame, criteria in columns, models in rows.
 }
 \description{
 This function returns a table with several criteria for model comparison.

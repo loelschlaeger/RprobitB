@@ -118,5 +118,9 @@ An object of class \code{RprobitB_fit}.
 }
 \description{
 This function is a wrapper for \code{\link{prepare_data}} and \code{\link{mcmc}}
-to estimate a nested based on a given probit model.
+to estimate a nested probit model based on a given \code{RprobitB_fit} object.
+}
+\details{
+All parameters (except for \code{x})  are optional and if not specified
+retrieved from the specification for \code{x}.
 }

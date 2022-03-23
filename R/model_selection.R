@@ -26,7 +26,7 @@
 #' Set to \code{TRUE} to add the model formulas.
 #'
 #' @return
-#' A data frame, models in rows, criteria in columns.
+#' A data frame, criteria in columns, models in rows.
 #'
 #' @export
 #'
@@ -55,47 +55,46 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
   }
 
   ### create output matrix
-  output <- matrix(NA, nrow = length(models), ncol = 0)
-  rownames(output) <- model_names
+  output <- matrix(NA, nrow = 0, ncol = length(models))
+  colnames(output) <- model_names
   if(add_form){
-    output <- cbind(output, "form" = sapply(models, function(x) deparse1(x$data$form)))
+    output <- rbind(output, "form" = sapply(models, function(x) deparse1(x$data$form)))
   }
 
   ### fill output
   for (crit in unique(criteria)) {
     if (crit == "npar") {
-      output <- cbind(output, "npar" = sapply(models, npar))
+      output <- rbind(output, "npar" = sapply(models, npar))
     }
     if (crit == "LL") {
-      output <- cbind(output, "LL" = sapply(models, logLik))
+      output <- rbind(output, "LL" = sapply(models, logLik))
     }
     if (crit == "AIC") {
-      output <- cbind(output, "AIC" = sapply(models, AIC))
+      output <- rbind(output, "AIC" = sapply(models, AIC))
     }
     if (crit == "BIC") {
-      output <- cbind(output, "BIC" = sapply(models, BIC))
+      output <- rbind(output, "BIC" = sapply(models, BIC))
     }
     if (crit == "WAIC") {
       waic_out <- lapply(models, WAIC)
-      output <- cbind(output, "WAIC" = sapply(waic_out, function(x) x))
-      output <- cbind(output, "se(WAIC)" = sapply(waic_out, function(x) attr(x, "se_waic")))
-      output <- cbind(output, "pWAIC" = sapply(waic_out, function(x) attr(x, "p_waic")))
+      output <- rbind(output, "WAIC" = sapply(waic_out, function(x) x))
+      output <- rbind(output, "se(WAIC)" = sapply(waic_out, function(x) attr(x, "se_waic")))
+      output <- rbind(output, "pWAIC" = sapply(waic_out, function(x) attr(x, "p_waic")))
     }
     if (crit == "MMLL"){
       models <- lapply(models, mml)
-      output <- cbind(output, "MMLL" = sapply(models, function(x) attr(x[["mml"]], "mmll")))
+      output <- rbind(output, "MMLL" = sapply(models, function(x) attr(x[["mml"]], "mmll")))
     }
     if (crit == "BF" && length(models) >= 2) {
       mmll_out <- sapply(models, function(x) attr(x[["mml"]], "mmll"))
       for (nmod in seq_len(length(models))) {
-        colnames_old <- colnames(output)
-        output <- cbind(output, exp(mmll_out - mmll_out[nmod]))
-        colnames(output) <- c(colnames_old, paste0("BF:", model_names[nmod]))
+        rownames_old <- rownames(output)
+        output <- rbind(output, exp(mmll_out - mmll_out[nmod]))
+        rownames(output) <- c(rownames_old, paste0("BF:", model_names[nmod]))
       }
     }
     if (crit == "pred_acc") {
-      pa <- function(x) sum(diag(x)) / sum(x)
-      output <- cbind(output, "pred_acc" = sapply(models, pred_acc))
+      output <- rbind(output, "pred_acc" = sapply(models, pred_acc))
     }
   }
 
@@ -110,34 +109,34 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
 #' @export
 
 print.RprobitB_model_selection <- function(x, digits = 2, ...) {
-  for (col in colnames(x)) {
-    if (col == "form") {
-      x[, "form"] <- sprintf(paste0("%-", max(nchar(x[, "form"])), "s"), x[, "form"])
+  for (row in rownames(x)) {
+    if (row == "form") {
+      x["form",] <- sprintf("%s", x["form",])
     }
-    if (col == "LL") {
-      x[, "LL"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "LL"]))
+    if (row == "LL") {
+      x["LL",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["LL",]))
     }
-    if (col == "AIC") {
-      x[, "AIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "AIC"]))
+    if (row == "AIC") {
+      x["AIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["AIC",]))
     }
-    if (col == "BIC") {
-      x[, "BIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "BIC"]))
+    if (row == "BIC") {
+      x["BIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["BIC",]))
     }
-    if (col == "WAIC") {
-      x[, "WAIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "WAIC"]))
+    if (row == "WAIC") {
+      x["WAIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["WAIC",]))
     }
-    if (col == "se(WAIC)") {
-      x[, "se(WAIC)"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "se(WAIC)"]))
+    if (row == "se(WAIC)") {
+      x["se(WAIC)",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["se(WAIC)",]))
     }
-    if (col == "pWAIC") {
-      x[, "pWAIC"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "pWAIC"]))
+    if (row == "pWAIC") {
+      x["pWAIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["pWAIC",]))
     }
-    if (col == "MMLL") {
-      x[, "MMLL"] <- sprintf(paste0("%.", digits, "f"), as.numeric(x[, "MMLL"]))
+    if (row == "MMLL") {
+      x["MMLL",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["MMLL",]))
     }
-    if (startsWith(col, "BF:")) {
-      x[, col] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[, col])))
-      for (row in 1:nrow(x)) {
+    if (startsWith(row, "BF:")) {
+      x[row,] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[row,])))
+      for (col in 1:ncol(x)) {
         if (is.na(x[row, col])) {
           x[row, col] <- "NA"
         } else if (as.numeric(x[row, col]) < 1 / 100) {
@@ -147,11 +146,10 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
         }
       }
     }
-    if (col == "pred_acc") {
-      x[, "pred_acc"] <- sprintf(paste0("%.", digits, "f%%"), as.numeric(x[, "pred_acc"]) * 100)
+    if (row == "pred_acc") {
+      x["pred_acc",] <- sprintf(paste0("%.", digits, "f%%"), as.numeric(x["pred_acc",]) * 100)
     }
   }
-  colnames(x)[which(colnames(x) == "form")] <- ""
   class(x) <- "data.frame"
   print(x)
 }
@@ -581,7 +579,7 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
         X_nt = X_n[[t]]
         y_nt = y_n[t]
         alt_index <- which(x$data$alternatives == y_nt)
-        out <- c(out, RprobitB:::compute_choice_probabilities(
+        out <- c(out, compute_choice_probabilities(
           X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index]
         )
       }
@@ -720,8 +718,8 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
     ### compute prior arithmetic mean estimate
     s <- NULL
     cont_prior <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
-      prior_sample <- RprobitB:::draw_from_prior(x$prior, C = x$latent_classes$C)
-      par <- do.call(what =  RprobitB:::RprobitB_parameter, args = c(prior_sample, add_args))
+      prior_sample <- draw_from_prior(x$prior, C = x$latent_classes$C)
+      par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
       probs <- choice_probabilities(x = x, par_set = par)
       choices <- as.character(unlist(sapply(x$data$data, `[[`, "y")))
       ll <- 0

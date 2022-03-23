@@ -36,7 +36,7 @@ model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
 data("model_train_sparse", package = "RprobitB")
 ```
 
-The `nested_model` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.
+The `nested_model()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.
 
 ## The `model_selection()` function
 
