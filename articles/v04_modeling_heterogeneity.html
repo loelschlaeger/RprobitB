@@ -154,7 +154,7 @@
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
-<p><img src="v04_modeling_heterogeneity_files/figure-html/unnamed-chunk-7-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="unnamed-chunk-7-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="estimating-latent-classes">Estimating latent classes<a class="anchor" aria-label="anchor" href="#estimating-latent-classes"></a>
@@ -171,7 +171,7 @@
 <div class="section level3">
 <h3 id="weight-based-update-of-the-latent-classes">Weight-based update of the latent classes<a class="anchor" aria-label="anchor" href="#weight-based-update-of-the-latent-classes"></a>
 </h3>
-<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer, Büscher, and Batram (<a href="#ref-Bauer:19" role="doc-biblioref">2019</a>)</span> and executed within the burn-in period:</p>
+<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer, Büscher, and Batram (<a href="#ref-Bauer:2019" role="doc-biblioref">2019</a>)</span> and executed within the burn-in period:</p>
 <ul>
 <li><p>We remove class <span class="math inline">\(c\)</span>, if <span class="math inline">\(s_c&lt;\varepsilon_{\text{min}}\)</span>, i.e. if the class weight <span class="math inline">\(s_c\)</span> drops below some threshold <span class="math inline">\(\varepsilon_{\text{min}}\)</span>. This case indicates that class <span class="math inline">\(c\)</span> has a negligible impact on the mixing distribution.</p></li>
 <li><p>We split class <span class="math inline">\(c\)</span> into two classes <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span>, if <span class="math inline">\(s_c&gt;\varepsilon_\text{max}\)</span>. This case indicates that class <span class="math inline">\(c\)</span> has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means <span class="math inline">\(b_{c_1}\)</span> and <span class="math inline">\(b_{c_2}\)</span> of the new classes <span class="math inline">\(c_1\)</span> and <span class="math inline">\(c_2\)</span> are shifted in opposite directions from the class mean <span class="math inline">\(b_c\)</span> of the old class <span class="math inline">\(c\)</span> in the direction of the highest variance.</p></li>
@@ -249,13 +249,8 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
 <span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/plot_class_allocation.html">plot_class_allocation</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">z</span>, <span class="va">b</span>, <span class="va">Omega</span>, r <span class="op">=</span> <span class="fl">100</span>, perc <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></code></pre></div>
-<p><img src="v04_modeling_heterogeneity_files/figure-html/unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="application">Application<a class="anchor" aria-label="anchor" href="#application"></a>
-</h2>
-<p>Missing.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -264,23 +259,23 @@
 <div id="ref-Aldous:1985">
 <p>Aldous, D. J. 1985. “Exchangeability and Related Topics,” Lecture notes in math., 1117: 1–198.</p>
 </div>
-<div id="ref-Bauer:19">
+<div id="ref-Bauer:2019">
 <p>Bauer, D., S. Büscher, and M. Batram. 2019. “Non-Parameteric Estiation of Mixed Discrete Choice Models.” <em>Second International Choice Modelling Conference in Kobe</em>.</p>
 </div>
 <div id="ref-Blackwell:1973">
 <p>Blackwell, D., and J. MacQueen. 1973. “Ferguson Distributions via Polya Urn Schemes.” <em>The Annals of Statistics</em> 1: 353–55.</p>
 </div>
 <div id="ref-Burda:2008">
-<p>Burda, Martin, Matthew Harding, and Jerry Hausman. 2008. “A Bayesian Mixed Logit–Probit Model for Multinomial Choice.” <em>Journal of Econometrics</em> 147 (2): 232–46. <a href="https://doi.org/10.1016/j.jeconom.2008.09.029" class="external-link">https://doi.org/10.1016/j.jeconom.2008.09.029</a>.</p>
+<p>Burda, M., M. Harding, and J. Hausman. 2008. “A Bayesian Mixed Logit–Probit Model for Multinomial Choice.” <em>Journal of Econometrics</em> 147 (2): 232–46. <a href="https://doi.org/10.1016/j.jeconom.2008.09.029" class="external-link">https://doi.org/10.1016/j.jeconom.2008.09.029</a>.</p>
 </div>
 <div id="ref-mlogit">
-<p>Croissant, Yves. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
+<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
 </div>
 <div id="ref-Li:2019">
-<p>Li, Yuelin, Elizabeth Schofield, and Mithat Gönen. 2019. “A Tutorial on Dirichlet Process Mixture Modeling.” <em>Journal of Mathematical Psychology</em> 91: 128–44. <a href="https://doi.org/10.1016/j.jmp.2019.04.004" class="external-link">https://doi.org/10.1016/j.jmp.2019.04.004</a>.</p>
+<p>Li, Y., E. Schofield, and M. Gönen. 2019. “A Tutorial on Dirichlet Process Mixture Modeling.” <em>Journal of Mathematical Psychology</em> 91: 128–44. <a href="https://doi.org/10.1016/j.jmp.2019.04.004" class="external-link">https://doi.org/10.1016/j.jmp.2019.04.004</a>.</p>
 </div>
 <div id="ref-Neal:2000">
-<p>Neal, Radford M. 2000. “Markov Chain Sampling Methods for Dirichlet Process Mixture Models.” <em>Journal of Computational and Graphical Statistics</em> 9 (2): 249–65. <a href="http://www.jstor.org/stable/1390653" class="external-link">http://www.jstor.org/stable/1390653</a>.</p>
+<p>Neal, R. M. 2000. “Markov Chain Sampling Methods for Dirichlet Process Mixture Models.” <em>Journal of Computational and Graphical Statistics</em> 9 (2): 249–65. <a href="http://www.jstor.org/stable/1390653" class="external-link">http://www.jstor.org/stable/1390653</a>.</p>
 </div>
 <div id="ref-Rasmussen:2000">
 <p>Rasmussen, C. E. 2000. <em>The Infinite Gaussian Mixture Model</em>. Edited by S. Solla, T. Leen, and K. Müller. Vol. 12. MIT Press.</p>
