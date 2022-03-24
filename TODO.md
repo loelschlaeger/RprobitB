@@ -69,8 +69,6 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
 - [x] Error in printing `RprobitB_parameter` objects when they have matrices with one row because `ramify::pprint` cannot handle this case. Idea: Implement function that abbreviates matrix and vector printing myself.
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
-- [x] Error in `mml()` for `method == "pame"`: Bad prior draws. Fixed: Prior draws had to depend on `C`.
-- [ ] Error in `mml()` for `method == "pame"` and `C > 1`: Bad `s` draws.
 - [x] In `choice_probabilities()`: `"probabilities do not sum to 1."`
 
 ### Tests
@@ -104,3 +102,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 - [ ] Document Dirichlet Process in `update_classes_dp()`.
 - [ ] Document `RprobitB_latent_classes`.
+
+## Dataset
+
+- [ ] Remove nationality in `opening_choice` dataset.
