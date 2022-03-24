@@ -102,7 +102,7 @@
 <div class="section level2">
 <h2 id="bayes-estimation-of-the-probit-model">Bayes estimation of the probit model<a class="anchor" aria-label="anchor" href="#bayes-estimation-of-the-probit-model"></a>
 </h2>
-<p>Bayes estimation of the probit model builds upon the work of <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch:94" role="doc-biblioref">1994</a>)</span>, <span class="citation">Nobile (<a href="#ref-Nobile:98" role="doc-biblioref">1998</a>)</span>, <span class="citation">Allenby and Rossi (<a href="#ref-Allenby:98" role="doc-biblioref">1998</a>)</span>, and <span class="citation">Imai and Dyk (<a href="#ref-Imai:05" role="doc-biblioref">2005</a>)</span>. A key ingredient is the concept of data augmentation, see <span class="citation">Albert and Chib (<a href="#ref-Albert:93" role="doc-biblioref">1993</a>)</span>: The idea is to treat the latent utilities <span class="math inline">\(U\)</span> in the model equation <span class="math inline">\(U = X\beta + \epsilon\)</span> as additional parameters. Then, conditional on <span class="math inline">\(U\)</span>, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).</p>
+<p>Bayes estimation of the probit model builds upon the work of <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch:94" role="doc-biblioref">1994</a>)</span>, <span class="citation">Nobile (<a href="#ref-Nobile:1998" role="doc-biblioref">1998</a>)</span>, <span class="citation">Allenby and Rossi (<a href="#ref-Allenby:1998" role="doc-biblioref">1998</a>)</span>, and <span class="citation">Imai and Dyk (<a href="#ref-Imai:2005" role="doc-biblioref">2005</a>)</span>. A key ingredient is the concept of data augmentation, see <span class="citation">Albert and Chib (<a href="#ref-Albert:1993" role="doc-biblioref">1993</a>)</span>: The idea is to treat the latent utilities <span class="math inline">\(U\)</span> in the model equation <span class="math inline">\(U = X\beta + \epsilon\)</span> as additional parameters. Then, conditional on <span class="math inline">\(U\)</span>, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).</p>
 <p>A priori, we assume the following (conjugate) parameter distributions:</p>
 <ul>
 <li><p><span class="math inline">\((s_1,\dots,s_C)\sim D_C(\delta)\)</span>, where <span class="math inline">\(D_C(\delta)\)</span> denotes the <span class="math inline">\(C\)</span>-dimensional Dirichlet distribution with concentration parameter vector <span class="math inline">\(\delta = (\delta_1,\dots,\delta_C)\)</span>,</p></li>
@@ -125,7 +125,7 @@ b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c
 <li><p>The class covariance matrices <span class="math inline">\((\Omega_c)_c\)</span> are updated independently for all <span class="math inline">\(c\)</span> via <span class="math display">\[\begin{equation}
 \Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
 \end{equation}\]</span> where <span class="math inline">\(\mu_{\Omega_c}=\nu+m_c\)</span> and <span class="math inline">\(\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'\)</span>.</p></li>
-<li><p>Independently for all <span class="math inline">\(n\)</span> and <span class="math inline">\(t\)</span> and conditionally on the other components, the utility vectors <span class="math inline">\((U_{nt:})\)</span> follow a <span class="math inline">\(J-1\)</span>-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices <span class="math inline">\(y_{nt}\)</span>. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of <span class="citation">Geweke (<a href="#ref-Geweke:98" role="doc-biblioref">1998</a>)</span>: <span class="math display">\[\begin{equation}
+<li><p>Independently for all <span class="math inline">\(n\)</span> and <span class="math inline">\(t\)</span> and conditionally on the other components, the utility vectors <span class="math inline">\((U_{nt:})\)</span> follow a <span class="math inline">\(J-1\)</span>-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices <span class="math inline">\(y_{nt}\)</span>. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of <span class="citation">Geweke (<a href="#ref-Geweke:1998" role="doc-biblioref">1998</a>)</span>: <span class="math display">\[\begin{equation}
 U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta 
 \sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
 1(U_{ntj}&gt;\max(U_{nt(-j)},0) ) &amp; \text{if}~ y_{nt}=j\\
@@ -175,7 +175,7 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <li>
 <p><code>scale</code>: A named list of three elements, determining the <a href="#parameter-normalization">parameter normalization</a>:</p>
 <ul>
-<li><p><code>parameter</code>: Either <code>"a"</code> (for an element of <code>alpha</code>) or <code>"s"</code> (for a diagonal element of <code>Sigma</code>).<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Note that you can set &lt;code&gt;"parameter" = "a"&lt;/code&gt; only if the model has parameters with a fixed coefficient, i.e. only if &lt;code&gt;P_f&amp;gt;0&lt;/code&gt;.&lt;/p&gt;'><sup>3</sup></a></p></li>
+<li><p><code>parameter</code>: Either <code>"a"</code> (for an element of <code>alpha</code>) or <code>"s"</code> (for a diagonal element of <code>Sigma</code>).<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the &lt;code&gt;&lt;a href="../reference/overview_effects.html"&gt;overview_effects()&lt;/a&gt;&lt;/code&gt; function to determine the parameter index. Note that you can set &lt;code&gt;"parameter" = "a"&lt;/code&gt; only if the model has parameters with a fixed coefficient, i.e. only if &lt;code&gt;P_f&amp;gt;0&lt;/code&gt;.&lt;/p&gt;'><sup>3</sup></a></p></li>
 <li><p><code>index</code>: The index of the parameter that gets fixed.</p></li>
 <li><p><code>value</code>: The value for the fixed parameter (i.e. the value <span class="math inline">\(\text{const}\)</span> introduced <a href="#parameter-normalization">above</a>).</p></li>
 </ul>
@@ -234,20 +234,47 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <p>and visualized via</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<p><img src="v03_model_fitting_files/figure-html/unnamed-chunk-8-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="unnamed-chunk-8-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;These results are consistent with the ones that are presented &lt;a href="https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train" class="external-link"&gt;in a vignette of the mlogit package&lt;/a&gt; on the same data set but using the logit model.&lt;/p&gt;'><sup>4</sup></a></p>
 </div>
 <div class="section level2">
 <h2 id="checking-the-gibbs-samples">Checking the Gibbs samples<a class="anchor" aria-label="anchor" href="#checking-the-gibbs-samples"></a>
 </h2>
-<p>Calling the summary function on the estimated <code>RprobitB_fit</code> object yields additional information about the Gibbs samples. You can specify a list <code>FUN</code> of functions that compute any point estimate of the Gibbs samples<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the function &lt;code&gt;&lt;a href="../reference/point_estimates.html"&gt;point_estimates()&lt;/a&gt;&lt;/code&gt; to access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code&gt; object.&lt;/p&gt;'><sup>5</sup></a>, for example</p>
+<p>The Gibbs samples are saved in list form in the <code>RprobitB_fit</code> object at the entry <code>"gibbs_samples"</code>, i.e.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">gibbs_samples</span>, max.level <span class="op">=</span> <span class="fl">2</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; List of 5</span>
+<span class="co">#&gt;  $ gibbs_samples    :List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...</span>
+<span class="co">#&gt;  $ gibbs_samples_n  :List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1872949 3357 1215 793 698 ...</span>
+<span class="co">#&gt;  $ gibbs_samples_nb :List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:5000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:5000, 1] 607 559 605 577 692 ...</span>
+<span class="co">#&gt;  $ gibbs_samples_nt :List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:1000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:1000, 1] 1872949 610 613 728 766 ...</span>
+<span class="co">#&gt;  $ gibbs_samples_nbt:List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 607 581 627 615 850 ...</span></code></pre></div>
+<p>This object contains 5 elements:</p>
+<ul>
+<li><p><code>gibbs_samples</code> is a list of the raw samples from the Gibbs sampler,</p></li>
+<li><p><code>gibbs_samples_n</code> is the normalized version of <code>gibbs_samples</code>,</p></li>
+<li><p><code>gibbs_samples_nb</code> are the elements of <code>gibbs_sample_n</code> after the burn-in period,</p></li>
+<li><p><code>gibbs_samples_nt</code> are the thinned elements of <code>gibbs_sample_n</code>,</p></li>
+<li><p>and <code>gibbs_samples_nbt</code> are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after burn-in.</p></li>
+</ul>
+<p>Calling the summary function on the estimated <code>RprobitB_fit</code> object yields additional information about the Gibbs samples <code>gibbs_samples_nbt</code>. You can specify a list <code>FUN</code> of functions that compute any point estimate of the Gibbs samples<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the function &lt;code&gt;&lt;a href="../reference/point_estimates.html"&gt;point_estimates()&lt;/a&gt;&lt;/code&gt; to access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code&gt; object.&lt;/p&gt;'><sup>5</sup></a>, for example</p>
 <ul>
 <li><p><code>mean</code> for the arithmetic mean,</p></li>
 <li><p><code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd</a></code> for the standard deviation,</p></li>
 <li><p><code>R_hat</code> for the Gelman-Rubin statistic <span class="citation">(Gelman and Rubin <a href="#ref-Gelman:1992" role="doc-biblioref">1992</a>)</span>,<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution.&lt;/p&gt;"><sup>6</sup></a></p></li>
 <li><p>or custom statistics like the absolute difference between the median and the mean.</p></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>, 
         FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>        <span class="op">=</span> <span class="va">mean</span>, 
                 <span class="st">"sd"</span>          <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>, 
@@ -277,16 +304,16 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <span class="co">#&gt;  Sigma</span>
 <span class="co">#&gt;                                                           </span>
 <span class="co">#&gt;    1,1       658.58        62.47         1.00         6.38</span></code></pre></div>
-<p>Calling the <code>plot</code> method with the additional argument <code>type = "trace"</code> plots the trace of the normalized, burned, and thinned Gibbs samples.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Calling the <code>plot</code> method with the additional argument <code>type = "trace"</code> plots the trace of the Gibbs samples <code>gibbs_samples_nbt</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></code></pre></div>
-<p><img src="v03_model_fitting_files/figure-html/unnamed-chunk-10-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="unnamed-chunk-11-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Additionally, we can visualize the serial correlation of the Gibbs samples via the argument <code>type = "acf"</code>. The boxes in the top-right corner state the total sample size TSS (here <code>R</code> - <code>B</code> = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></code></pre></div>
-<p><img src="v03_model_fitting_files/figure-html/unnamed-chunk-11-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, the effective sample size is the value <span class="math inline">\(\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)\)</span>, where <span class="math inline">\(\rho_k\)</span> is the auto correlation between the chain offset by <span class="math inline">\(k\)</span> positions. The auto correlations are estimated via the <code><a href="https://rdrr.io/r/stats/acf.html" class="external-link">stats::acf()</a></code> function.</p>
 </div>
 <div class="section level2">
@@ -294,39 +321,48 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 </h2>
 <p>The <code>transform</code> method can be used to transform an <code>RprobitB_fit</code> object in three ways:</p>
 <ol style="list-style-type: decimal">
-<li><p>Change the length <code>B</code> of the burn-in period.</p></li>
-<li><p>Change the thinning factor <code>Q</code> of the Gibbs samples.</p></li>
-<li><p>Change the model normalization <code>scale</code>.</p></li>
+<li>change the length <code>B</code> of the burn-in period, for example</li>
 </ol>
-<p>Add example.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>change the thinning factor <code>Q</code> of the Gibbs samples, for example</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, Q <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>or change the model normalization <code>scale</code>, for example</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameter <span class="op">=</span> <span class="st">"s"</span>, index <span class="op">=</span> <span class="fl">1</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references">
-<div id="ref-Albert:93">
-<p>Albert, James H., and Siddhartha Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88.</p>
+<div id="ref-Albert:1993">
+<p>Albert, J. H., and S. Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88.</p>
 </div>
-<div id="ref-Allenby:98">
-<p>Allenby, Greg M., and Peter Rossi. 1998. “Marketing Models of Consumer Heterogeneity.” <em>Journal of Econometrics</em> 89.</p>
+<div id="ref-Allenby:1998">
+<p>Allenby, G. M., and P. Rossi. 1998. “Marketing Models of Consumer Heterogeneity.” <em>Journal of Econometrics</em> 89.</p>
 </div>
 <div id="ref-mlogit">
-<p>Croissant, Yves. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
+<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
 </div>
 <div id="ref-Gelman:1992">
 <p>Gelman, A., and D. B. Rubin. 1992. “Inference from Iterative Simulation Using Multiple Sequences.” <em>Statistical Science</em> 7 (4): 457–72. <a href="https://doi.org/10.1214/ss/1177011136" class="external-link">https://doi.org/10.1214/ss/1177011136</a>.</p>
 </div>
-<div id="ref-Geweke:98">
-<p>Geweke, John. 1998. “Efficient Simulation from the Multivariate Normal and Student-T Distributions Subject to Linear Constraints and the Evaluation of Constraint Probabilities.” <em>Comput. Sci. Statist.</em> 23.</p>
+<div id="ref-Geweke:1998">
+<p>Geweke, J. 1998. “Efficient Simulation from the Multivariate Normal and Student-T Distributions Subject to Linear Constraints and the Evaluation of Constraint Probabilities.” <em>Comput. Sci. Statist.</em></p>
 </div>
-<div id="ref-Imai:05">
-<p>Imai, Kosuke, and David A. van Dyk. 2005. “A Bayesian Analysis of the Multinomial Probit Model Using Marginal Data Augmentation.” <em>Journal of Econometrics</em> 124.</p>
+<div id="ref-Imai:2005">
+<p>Imai, K., and D. A. van Dyk. 2005. “A Bayesian Analysis of the Multinomial Probit Model Using Marginal Data Augmentation.” <em>Journal of Econometrics</em> 124.</p>
 </div>
 <div id="ref-McCulloch:94">
-<p>McCulloch, Robert, and Peter Rossi. 1994. “An Exact Likelihood Analysis of the Multinomial Probit Model.” <em>Journal of Econometrics</em> 64.</p>
+<p>McCulloch, R., and P. Rossi. 1994. “An Exact Likelihood Analysis of the Multinomial Probit Model.” <em>Journal of Econometrics</em> 64.</p>
 </div>
-<div id="ref-Nobile:98">
-<p>Nobile, Agostino. 1998. “A Hybrid Markov Chain for the Bayesian Analysis of the Multinomial Probit Model.” <em>Statistics and Computing</em> 8.</p>
+<div id="ref-Nobile:1998">
+<p>Nobile, A. 1998. “A Hybrid Markov Chain for the Bayesian Analysis of the Multinomial Probit Model.” <em>Statistics and Computing</em> 8.</p>
 </div>
 </div>
 </div>
