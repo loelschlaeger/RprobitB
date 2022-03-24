@@ -196,7 +196,7 @@ model_selection(model_train, model_train_sparse, criteria = c("BF"))
 
 Finally, adding `"pred_acc"` to the `criteria` argument for the `model_selection()` function returns the share of correctly predicted choices. From the output of `model_selection()` above (or alternatively the one in the following) we deduce that `model_train` correctly predicts about 6% of the choices more than `model_train_sparse`:^[See the vignette on choice prediction for more nuanced performance comparison in terms of sensitivity and specificity.]
 
-```{r, cache = TRUE}
+```{r}
 pred_acc(model_train, model_train_sparse)
 ```
 
