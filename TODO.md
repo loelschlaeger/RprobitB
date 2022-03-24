@@ -13,6 +13,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 - [ ] Check and document `R_hat()` implementation (How is chain splitted?).
 - [ ] Fixed parameters: After each update, set fixed parameters. 
 - [ ] Use `transform()` to keep on Gibbs sampling, i.e. change `R`.
+- [ ] Don't save all Gibbs samples in `RprobitB_fit` but only the raw ones. 
 
 ### Model selection
 

@@ -12,7 +12,11 @@ link-citations: yes
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "",
+  fig.align = "center",
+  fig.dim = c(8, 6), 
+  out.width = "75%"
 )
 library(RprobitB)
 ```
@@ -21,7 +25,7 @@ This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collaps
 
 ## Bayes estimation of the probit model
 
-Bayes estimation of the probit model builds upon the work of @McCulloch:94, @Nobile:98, @Allenby:98, and @Imai:05. A key ingredient is the concept of data augmentation, see @Albert:93: The idea is to treat the latent utilities $U$ in the model equation $U = X\beta + \epsilon$ as additional parameters. Then, conditional on $U$, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
+Bayes estimation of the probit model builds upon the work of @McCulloch:94, @Nobile:1998, @Allenby:1998, and @Imai:2005. A key ingredient is the concept of data augmentation, see @Albert:1993: The idea is to treat the latent utilities $U$ in the model equation $U = X\beta + \epsilon$ as additional parameters. Then, conditional on $U$, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
 
 A priori, we assume the following (conjugate) parameter distributions:
 
@@ -60,7 +64,7 @@ where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\
 \end{equation}
 where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
 
-- Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of @Geweke:98:
+- Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of @Geweke:1998:
 \begin{equation}
 U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta 
 \sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
@@ -126,13 +130,13 @@ where `data` must be an `RprobitB_data` object (see the vignette about choice da
 
 - `scale`: A named list of three elements, determining the [parameter normalization](#parameter-normalization): 
 
-  - `parameter`: Either `"a"` (for an element of `alpha`) or `"s"` (for a diagonal element of `Sigma`).^[Note that you can set `"parameter" = "a"` only if the model has parameters with a fixed coefficient, i.e. only if `P_f>0`.]
+  - `parameter`: Either `"a"` (for an element of `alpha`) or `"s"` (for a diagonal element of `Sigma`).^[Use the `overview_effects()` function to determine the parameter index. Note that you can set `"parameter" = "a"` only if the model has parameters with a fixed coefficient, i.e. only if `P_f>0`.]
   
   - `index`: The index of the parameter that gets fixed.
   
   - `value`: The value for the fixed parameter (i.e. the value $\text{const}$ introduced [above](#parameter-normalization)).
   
-  Per default, the first error-term variance is fixed to 1, i.e. `scale = list("parameter" = "s", "index" = 1, "value" = 1)`.
+  Per default, the first error-term variance is fixed to 1, i.e. `scale = list("parameter" = "s", "index" = 1, "value" = 1)`. 
 
 - `R`: The number of iterations of the Gibbs sampler. The default is `R = 10000`.
 
@@ -205,7 +209,7 @@ coef(model_train)
 
 and visualized via
 
-```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+```{r}
 plot(coef(model_train), sd = 3)
 ```
 
@@ -213,7 +217,25 @@ The results indicate that the deciders value one hour travel time by about 25€
 
 ## Checking the Gibbs samples
 
-Calling the summary function on the estimated `RprobitB_fit` object yields additional information about the Gibbs samples. You can specify a list `FUN` of functions that compute any point estimate of the Gibbs samples^[Use the function `point_estimates()` to access the Gibbs sample statistics as an `RprobitB_parameter` object.], for example
+The Gibbs samples are saved in list form in the `RprobitB_fit` object at the entry `"gibbs_samples"`, i.e.
+
+```{r}
+str(model_train$gibbs_samples, max.level = 2, give.attr = FALSE)
+```
+
+This object contains 5 elements:
+
+- `gibbs_samples` is a list of the raw samples from the Gibbs sampler,
+
+- `gibbs_samples_n` is the normalized version of `gibbs_samples`,
+
+- `gibbs_samples_nb` are the elements of `gibbs_sample_n` after the burn-in period,
+
+- `gibbs_samples_nt` are the thinned elements of `gibbs_sample_n`,
+
+- and `gibbs_samples_nbt` are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after burn-in.
+
+Calling the summary function on the estimated `RprobitB_fit` object yields additional information about the Gibbs samples `gibbs_samples_nbt`. You can specify a list `FUN` of functions that compute any point estimate of the Gibbs samples^[Use the function `point_estimates()` to access the Gibbs sample statistics as an `RprobitB_parameter` object.], for example
 
 - `mean` for the arithmetic mean,
 
@@ -233,16 +255,16 @@ summary(model_train,
        )
 ```
 
-Calling the `plot` method with the additional argument `type = "trace"` plots the trace of the normalized, burned, and thinned Gibbs samples. 
+Calling the `plot` method with the additional argument `type = "trace"` plots the trace of the Gibbs samples `gibbs_samples_nbt`: 
 
-```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+```{r}
 par(mfrow = c(2,1))
 plot(model_train, type = "trace")
 ```
 
 Additionally, we can visualize the serial correlation of the Gibbs samples via the argument `type = "acf"`. The boxes in the top-right corner state the total sample size TSS (here `R` - `B` = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.
 
-```{r, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+```{r}
 par(mfrow = c(2,3))
 plot(model_train, type = "acf")
 ```
@@ -253,12 +275,19 @@ Here, the effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \
 
 The `transform` method can be used to transform an `RprobitB_fit` object in three ways:
 
-1. Change the length `B` of the burn-in period.
+1. change the length `B` of the burn-in period, for example 
+```{r}
+model_train <- transform(model_train, B = 1)
+```
 
-2. Change the thinning factor `Q` of the Gibbs samples.
+2. change the thinning factor `Q` of the Gibbs samples, for example 
+```{r, eval = FALSE} 
+model_train <- transform(model_train, Q = 100)
+```
 
-3. Change the model normalization `scale`.
-
-Add example.
+3. or change the model normalization `scale`, for example
+```{r, eval = FALSE} 
+model_train <- transform(model_train, scale = list(parameter = "s", index = 1, value = 1))
+```
 
 ## References

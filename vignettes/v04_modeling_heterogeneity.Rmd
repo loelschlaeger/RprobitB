@@ -12,7 +12,11 @@ link-citations: yes
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "",
+  fig.align = "center",
+  fig.dim = c(8, 6), 
+  out.width = "75%"
 )
 library(RprobitB)
 ```
@@ -75,7 +79,7 @@ cov_mix(model_elec, cor = TRUE)
 
 Here, we see the confirmation of our initial assumption about a high correlation between `loc` and `wk`. The pairwise mixing distributions can be visualized via calling the `plot()` method with the additional argument `type = mixture`:
 
-```{r, fig.dim = c(8,8), fig.align = 'center', out.width = "75%"}
+```{r, fig.dim = c(8,8)}
 plot(model_elec, type = "mixture")
 ```
 
@@ -98,7 +102,7 @@ To estimate a latent mixture, specify a named list `latent_classes` with the fol
 
 ### Weight-based update of the latent classes
 
-The following weight-based updating scheme is analogue to @Bauer:19 and executed within the burn-in period: 
+The following weight-based updating scheme is analogue to @Bauer:2019 and executed within the burn-in period: 
 
 - We remove class $c$, if $s_c<\varepsilon_{\text{min}}$, i.e. if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
 
@@ -194,14 +198,10 @@ for(r in 1:100){
 
 The Dirichlet process was able to infer the true number `C_true = 3` of latent classes:
 
-```{r, fig.dim = c(16,8), fig.align = 'center', out.width = "75%"}
+```{r, fig.dim = c(16,8)}
 par(mfrow = c(1,2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
 RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
 ```
-
-## Application
-
-Missing.
 
 ## References

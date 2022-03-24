@@ -12,7 +12,11 @@ link-citations: yes
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "",
+  fig.align = "center",
+  fig.dim = c(8, 6), 
+  out.width = "75%"
 )
 library(RprobitB)
 ```
@@ -151,7 +155,7 @@ data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc =
 
 The `summary` and `plot` methods provide a quick data overview:
 
-```{r summary Train, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+```{r summary Train}
 summary(data)
 plot(data)
 ```
@@ -233,7 +237,7 @@ summary(data)
 
 We can visualize the covariates grouped by the chosen alternatives:
 
-```{r data plot by choice, fig.dim = c(8, 6), out.width = "75%", fig.align = "center"}
+```{r data plot by choice}
 plot(data, by_choice = TRUE)
 ``` 
 

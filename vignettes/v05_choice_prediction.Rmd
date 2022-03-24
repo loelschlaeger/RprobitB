@@ -12,7 +12,11 @@ link-citations: yes
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "",
+  fig.align = "center",
+  fig.dim = c(8, 6), 
+  out.width = "75%"
 )
 library(RprobitB)
 ```
@@ -61,7 +65,7 @@ point_estimates(model_train)$Sigma
 
 Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve [@Fawcett:2006], using the {plotROC} package [@Sachs:2017]. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here `n.cuts = 20`). The closer the curve is to the top-left corner, the better the binary classification.
 
-```{r, warning = FALSE, message = FALSE, fig.align = 'center', out.width = "50%", fig.dim = c(6,6)}
+```{r, warning = FALSE, message = FALSE, out.width = "50%", fig.dim = c(6,6)}
 library(plotROC)
 ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) + 
   geom_roc(n.cuts = 20, labels = FALSE) + 

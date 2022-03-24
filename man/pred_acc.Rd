@@ -4,10 +4,12 @@
 \alias{pred_acc}
 \title{Prediction accuracy}
 \usage{
-pred_acc(x)
+pred_acc(x, ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
+
+\item{...}{Optionally specify more \code{RprobitB_fit} objects.}
 }
 \value{
 A numeric.

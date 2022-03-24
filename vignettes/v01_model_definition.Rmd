@@ -12,7 +12,9 @@ link-citations: yes
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "",
+  fig.align = "center"
 )
 library(RprobitB)
 ```
@@ -21,7 +23,7 @@ This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collaps
 
 ## The probit model
 
-The probit model^[The name *probit* is a portmanteau of *prob*ability and un*it*. [@Bliss:34]] is a regression-type model where the dependent variable only takes a finite number of values and the error term is normally distributed [@Agresti:15]. Its purpose is to estimate the probability that the dependent variable takes a certain, discrete value. The most common application are discrete choice scenarios. The dependent variable here is one of finitely many and mutually exclusive alternatives (that are not ordered), and explanatory variables typically are characteristics of the deciders or the alternatives.
+The probit model^[The name *probit* is a portmanteau of *prob*ability and un*it*. [@Bliss:1934]] is a regression-type model where the dependent variable only takes a finite number of values and the error term is normally distributed [@Agresti:2015]. Its purpose is to estimate the probability that the dependent variable takes a certain, discrete value. The most common application are discrete choice scenarios. The dependent variable here is one of finitely many and mutually exclusive alternatives (that are not ordered), and explanatory variables typically are characteristics of the deciders or the alternatives.
 
 To be concrete, assume that we possess data of $N$ decision makers which choose between $J \geq 2$ alternatives^[To be precise, the model name gets the prefix *multinomial* in the case $J > 2$.] at each of $T$ choice occasions^[For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, we are not restricted to this case: {RprobitB} allows for unbalanced panels, i.e. varying $T$. Of course, the cross-sectional case $T = 1$ is possible.]. Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ choice attributes that we use to explain the choices. The continuous choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility of a certain alternative. Decider $n$'s utility $U_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
 
@@ -49,7 +51,7 @@ Note that the coefficient vector $\beta$ in the above definition is constant acr
 
 Formally, we define $\beta = (\alpha, \beta_n)$, where $\alpha$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients. Consequently, $P = P_f + P_r$. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, the so-called mixing distribution.
 
-Choosing an appropriate mixing distribution is a notoriously difficult task of the model specification. In many applications, different types of standard parametric distributions (including the normal, log-normal, uniform and tent distribution) are tried in conjunction with a likelihood value-based model selection, cf. @Train:09, Chapter 6. Instead, {RprobitB} implements the approach of [@Oel:20] to approximate any underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution $g_{P_r}$ for the random coefficients $(\beta_n)_{n}$ is approximated by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components, i.e.
+Choosing an appropriate mixing distribution is a notoriously difficult task of the model specification. In many applications, different types of standard parametric distributions (including the normal, log-normal, uniform and tent distribution) are tried in conjunction with a likelihood value-based model selection, cf. @Train:09, Chapter 6. Instead, {RprobitB} implements the approach of [@Oelschlaeger:2020] to approximate any underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution $g_{P_r}$ for the random coefficients $(\beta_n)_{n}$ is approximated by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components, i.e.
 
 \begin{equation}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c).

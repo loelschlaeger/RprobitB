@@ -90,7 +90,7 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
       for (nmod in seq_len(length(models))) {
         rownames_old <- rownames(output)
         output <- rbind(output, exp(mmll_out - mmll_out[nmod]))
-        rownames(output) <- c(rownames_old, paste0("BF:", model_names[nmod]))
+        rownames(output) <- c(rownames_old, paste0("BF(*,", model_names[nmod],")"))
       }
     }
     if (crit == "pred_acc") {
@@ -134,7 +134,7 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
     if (row == "MMLL") {
       x["MMLL",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["MMLL",]))
     }
-    if (startsWith(row, "BF:")) {
+    if (startsWith(row, "BF(")) {
       x[row,] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[row,])))
       for (col in 1:ncol(x)) {
         if (is.na(x[row, col])) {
@@ -957,6 +957,8 @@ draw_from_prior <- function(prior, C = 1) {
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
+#' @param ...
+#' Optionally specify more \code{RprobitB_fit} objects.
 #'
 #' @return
 #' A numeric.
@@ -967,8 +969,17 @@ draw_from_prior <- function(prior, C = 1) {
 #' data("model_train", package = "RprobitB")
 #' pred_acc(model_train)
 
-pred_acc <- function(x) {
-  conf <- predict.RprobitB_fit(x, data = NULL, overview = TRUE)
-  return(sum(diag(conf)) / sum(conf))
+pred_acc <- function(x, ...) {
+  models <- list(...)
+  if(length(models) == 0){
+    models <- list(x)
+  } else {
+    models <- c(list(x), models)
+  }
+  pa <- sapply(models, function(x){
+    conf <- predict.RprobitB_fit(x, data = NULL, overview = TRUE)
+    sum(diag(conf)) / sum(conf)
+  })
+  return(pa)
 }
 
