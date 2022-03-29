@@ -57,4 +57,4 @@
 #' @keywords
 #' dataset
 #'
-'choice_berserk'
+"choice_berserk"
