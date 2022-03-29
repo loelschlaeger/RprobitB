@@ -29,5 +29,4 @@ trade-off between over- and under-fitting, where smaller values are preferred.
 \examples{
 data("model_train", package = "RprobitB")
 BIC(model_train)
-
 }

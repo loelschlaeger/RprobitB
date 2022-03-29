@@ -21,5 +21,4 @@ object.
 \examples{
 data("model_train", package = "RprobitB")
 nobs(model_train)
-
 }

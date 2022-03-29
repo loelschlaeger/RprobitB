@@ -32,5 +32,4 @@ object.
 \examples{
 data("model_train", package = "RprobitB")
 logLik(model_train)
-
 }

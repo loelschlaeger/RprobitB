@@ -33,5 +33,4 @@ smaller values are preferred.
 \examples{
 data("model_train", package = "RprobitB")
 AIC(model_train)
-
 }
