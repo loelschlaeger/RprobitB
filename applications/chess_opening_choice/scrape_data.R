@@ -134,6 +134,6 @@ doc <- paste0("#' Choice of a chess opening
 #' dataset
 #'
 'choice_chess_opening'")
-fileConn <- file("R/choice_chess_opening-data.R")
+fileConn <- file("R/data_choice_chess_opening.R")
 writeLines(doc, fileConn)
 close(fileConn)

@@ -1,0 +1,60 @@
+#' Choice of berserking
+#'
+#' @description
+#' This dataset includes the binary 'berserking' choice of participants in the
+#' yearly bullet arena 2022 on the online chess platform \url{https://lichess.org}.
+#' Berserking is a choice each player has at the beginning of each game:
+#' When a player clicks the 'Berserk button', they lose half of their clock time,
+#' but the win is worth one extra tournament point.
+#'
+#' @details
+#' To 'berserk' is a feature on the online chess platform \url{https://lichess.org}.
+#' Before the game starts, each player can click a button, after which
+#' they lose half of their clock time, but the win is worth one extra tournament
+#' point.
+#'
+#' The considered tournament had the following characteristics:
+#' \itemize{
+#'   \item The tournament startet at 2022-01-10 17:00:25 and lasted 240 minutes.
+#'   \item The time control was 1 minute per player per game (bullet format).
+#'   \item The players are automatically and immediately paired again after a game has finished,
+#'         which is the so-called 'arena tournament' modus.
+#'   \item The players can pause their participation at any time.
+#'   \item A win has a base score of 2 points, a draw 1 point, and a loss is worth no points.
+#'   \item If a player wins two games consecutively, they will start a double point streak,
+#'         which means the following games will continue to be worth double points
+#'         until they fail to win a game.
+#' }
+#'
+#' @references
+#' See \url{https://lichess.org/tournament/help?system=arena}
+#' for more information on the tournament format.
+#'
+#' @docType data
+#'
+#' @usage data(choice_berserk)
+#'
+#' @format
+#' A data frame containing berserking choices of 6174 chess players
+#' in 126902 online bullet (1+0) games.
+#' It consists of the following columns:
+#' \itemize{
+#'   \item \code{player_id}, unique lichess username of the chess player
+#'   \item \code{game_id}, unique lichess identification of the game
+#'   \item \code{berserk}, a boolean whether the player berserked
+#'   \item \code{color}, the color of the player (either 'white' or 'black')
+#'   \item \code{rating}, the player's lichess bullet rating at the start of the game
+#'   \item \code{rating_diff}, the rating difference to the opponent,
+#'   \item \code{lost}, a boolean whether the player lost their game (and hence lost his streak)
+#'   \item \code{min_rem}, the number of minutes left in the tournament
+#'   \item \code{streak}, a boolean whether the player is on a streak (see the details)
+#' }
+#'
+#' @source
+#' The data was obtained via the lichess API \url{https://lichess.org/api}
+#' with the tournament id 'RibHfoX6' on 2022-03-29.
+#'
+#' @keywords
+#' dataset
+#'
+'choice_berserk'
