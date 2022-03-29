@@ -12,7 +12,7 @@ editor_options:
 ```{r data}
 data("choice_berserk")
 choice_berserk$color <- ifelse(choice_berserk$color == "white", 1, 0)
-choice_berserk$lost <- ifelse(choice_berserk$streak, 1, 0)
+choice_berserk$streak <- ifelse(choice_berserk$streak, 1, 0)
 data <- prepare_data(
   form = berserk ~ 0 | color + rating + rating_diff + min_rem + streak,
   choice_data = choice_berserk,
@@ -27,7 +27,7 @@ plot(data, by_choice = TRUE)
 ```
 
 ```{r fit}
-model <- mcmc(data)
+model <- mcmc(data, R = 100)
 ```
 
 ```{r plot-fit}
