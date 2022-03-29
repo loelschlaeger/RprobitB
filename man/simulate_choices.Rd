@@ -29,10 +29,9 @@ covariates with alternative specific coefficients.
 }
 Separate multiple covariates of one type by a \code{+} sign.
 By default, alternative specific constants (ASCs) are added to the model
-(for all except for the last alternative).
+(for all except for the last alternative due to identifiability).
 They can be removed by adding \code{+0} in the second spot.
-See the vignette \code{vignette("data_management", package = "RprobitB")}
-for more details.}
+See the vignette on choice data for more details.}
 
 \item{N}{The number (greater or equal 1) of decision makers.}
 
