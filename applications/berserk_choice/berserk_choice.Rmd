@@ -6,17 +6,30 @@ editor_options:
 ---
 
 ```{r}
-library("RprobitB")
+#library("RprobitB")
 ```
 
-```{r}
+```{r data}
 data("choice_berserk")
-choice_berserk$rating_diff <- choice_berserk$rating_white - choice_berserk$rating_black
-form <- berserk_white ~ 0 | rating_diff + minutes_remaining
-data <- prepare_data(form = form,
-                     choice_data = choice_berserk,
-                     id = "id_white",
-                     standardize = c("rating_diff","minutes_remaining"))
-model <- mcmc(data, R = 200)
+choice_berserk$color <- ifelse(choice_berserk$color == "white", 1, 0)
+choice_berserk$lost <- ifelse(choice_berserk$streak, 1, 0)
+data <- prepare_data(
+  form = berserk ~ 0 | color + rating + rating_diff + min_rem + streak,
+  choice_data = choice_berserk,
+  id = "player_id",
+  idc = "game_id",
+  standardize = c("rating","rating_diff","min_rem")
+)
+```
+
+```{r plot-data}
+plot(data, by_choice = TRUE)
+```
+
+```{r fit}
+model <- mcmc(data)
+```
+
+```{r plot-fit}
 plot(coef(model))
 ```
