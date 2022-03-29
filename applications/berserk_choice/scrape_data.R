@@ -17,9 +17,13 @@ names(h) <- "Accept"
 res <- httr::GET(url, httr::add_headers(h))
 write(rawToChar(res$content), paste0(exdir,"/data.json"))
 data_all <- jsonlite::flatten(jsonlite::stream_in(file(paste0(exdir,"/data.json"))))
+saveRDS(data_all, file = paste0(exdir, "/data_all.rds"))
+
+### remove games that failed to start
+data_all <- data_all[!data_all$status %in% c("noStart","timeout"), ]
 
 ### build dataset
-berserk_choice <- data.frame(
+data_full <- data.frame(
   "id_white" = data_all$players.white.user.id,
   "id_black" = data_all$players.black.user.id,
   "rating_white" = data_all$players.white.rating,
@@ -30,11 +34,23 @@ berserk_choice <- data.frame(
   "minutes_remaining" = as.numeric(difftime(t_end, as.POSIXct(data_all$createdAt/1000, origin="1970-01-01", tz = "GMT"), units = "min")),
   "game_id" = data_all$id)
 
-### remove games that failed to start
-berserk_choice <- berserk_choice[!data_all$status %in% c("noStart","timeout"), ]
+### bring 'data_full' to long format
+choice_berserk <- data.frame()
+for(i in 1:nrow(data_full)) {
+  cat(sprintf(".f %% \r", i/nrow(data_full)*100))
+  N <- nrow(choice_berserk)
+  ### white data
+  choice_berserk[N+1, "id"] <- NULL
+  ### black data
+  choice_berserk[N+1, "id"] <- NULL
+}
+
+### add info if on streak
+
+### add number of tournament points at stake
 
 ### save R dataset
-save(berserk_choice, file="data/berserk_choice.RData", compress='xz')
+use_data(choice_berserk, overwrite = TRUE, compress = 'xz')
 
 ### create documentation
 doc <- paste0("#' Choice of berserking
@@ -53,11 +69,11 @@ doc <- paste0("#' Choice of berserking
 #'
 #' @docType data
 #'
-#' @usage data(berserk_choice)
+#' @usage data(choice_berserk)
 #'
 #' @format
 #' A data frame containing berserking choices of the White and the Black player
-#' in ", nrow(berserk_choice), " bullet (1+0) games. It consists of the following columns:
+#' in ", nrow(choice_berserk), " bullet (1+0) games. It consists of the following columns:
 #' \\itemize{
 #'   \\item \\code{id_white} and \\code{id_black}, unique lichess usernames of the White and the Black players for each game,
 #'   \\item \\code{rating_white} and \\code{rating_black}, both player's lichess bullet rating at the start of each game,
@@ -74,7 +90,7 @@ doc <- paste0("#' Choice of berserking
 #' @keywords
 #' dataset
 #'
-'berserk_choice'")
-fileConn <- file("R/berserk_choice-data.R")
+'choice_berserk'")
+fileConn <- file("R/data_choice_berserk.R")
 writeLines(doc, fileConn)
 close(fileConn)

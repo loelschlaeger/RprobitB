@@ -185,8 +185,6 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' AIC(model_train)
-#'
-#' @export
 
 AIC <- function(object, ..., k) {
   UseMethod("AIC")
@@ -233,8 +231,6 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' BIC(model_train)
-#'
-#' @export
 
 BIC <- function(object, ...) {
   UseMethod("BIC")
@@ -408,8 +404,6 @@ plot.RprobitB_waic <- function(x, ...) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' nobs(model_train)
-#'
-#' @export
 
 nobs <- function(object, ...) {
   UseMethod("nobs")
@@ -442,8 +436,6 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' logLik(model_train)
-#'
-#' @export
 
 logLik <- function(object, par_set, recompute, ...) {
   UseMethod("logLik")
