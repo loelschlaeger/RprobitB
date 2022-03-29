@@ -35,4 +35,4 @@
 #' @keywords
 #' dataset
 #'
-'choice_chess_opening'
+"choice_chess_opening"
