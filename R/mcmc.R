@@ -508,8 +508,8 @@ nested_model <- function(x, form, re, alternatives, id, idc, standardize,
     choice_data = x$data$choice_data,
     re = if(missing(re)) x$data$re else re,
     alternatives = if(missing(alternatives)) x$data$alternatives else alternatives,
-    id = if(missing(re)) data$res_var_names$id else id,
-    idc = if(missing(re)) data$res_var_names$idc else idc,
+    id = if(missing(id)) data$res_var_names$id else id,
+    idc = if(missing(idc)) data$res_var_names$idc else idc,
     standardize = if(missing(standardize)) x$data$standardize else standardize,
     missing_data = if(missing(missing_data)) "complete_cases" else missing_data
     )
