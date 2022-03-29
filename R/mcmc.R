@@ -500,14 +500,16 @@ sufficient_statistics <- function(data, normalization) {
 #'
 #' @export
 
-nested_model <- function(x, form, re, alternatives, standardize, missing_data,
-                         scale, R, B, Q, print_progress, prior, latent_classes,
-                         seed) {
+nested_model <- function(x, form, re, alternatives, id, idc, standardize,
+                         missing_data, scale, R, B, Q, print_progress, prior,
+                         latent_classes, seed) {
   data <- prepare_data(
     form = if(missing(form)) x$data$form else form,
     choice_data = x$data$choice_data,
     re = if(missing(re)) x$data$re else re,
     alternatives = if(missing(alternatives)) x$data$alternatives else alternatives,
+    id = if(missing(re)) data$res_var_names$id else id,
+    idc = if(missing(re)) data$res_var_names$idc else idc,
     standardize = if(missing(standardize)) x$data$standardize else standardize,
     missing_data = if(missing(missing_data)) "complete_cases" else missing_data
     )

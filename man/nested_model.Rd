@@ -9,6 +9,8 @@ nested_model(
   form,
   re,
   alternatives,
+  id,
+  idc,
   standardize,
   missing_data,
   scale,
@@ -47,6 +49,14 @@ To have random effects for the alternative specific constants, include
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
+
+\item{id}{A character, the name of the column in \code{choice_data} that contains
+unique identifier for each decision maker. The default is \code{"id"}.}
+
+\item{idc}{A character, the name of the column in \code{choice_data} that contains
+unique identifier for each choice situation of each decision maker.
+The default is \code{NULL}, in which case these identifier are generated
+automatically.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
