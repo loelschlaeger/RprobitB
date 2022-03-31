@@ -40,7 +40,8 @@ coef(mod_fix)
 ```{r mod_re}
 mod_re <- nested_model(mod_fix, 
                        re = c("color","rating","rating_diff","min_rem","streak"))
-coef(mod_fix)
+coef(mod_re)
+round(cov_mix(mod_re, cor = TRUE),2)
 ```
 
 ## Cluster model
@@ -49,4 +50,5 @@ coef(mod_fix)
 mod_cl <- nested_model(mod_re, 
                        latent_classes = list("C" = 2))
 coef(mod_cl)
+cov_mix(mod_cl, cor = TRUE)
 ```
