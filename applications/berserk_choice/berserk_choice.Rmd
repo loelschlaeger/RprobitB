@@ -52,3 +52,9 @@ mod_cl <- nested_model(mod_re,
 coef(mod_cl)
 cov_mix(mod_cl, cor = TRUE)
 ```
+
+## Model selection
+
+```{r mod_selection}
+#x <- model_selection(mod_fix, mod_re, mod_cl)
+```
