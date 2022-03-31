@@ -6,53 +6,56 @@ editor_options:
 ---
 
 ```{r}
-library("RprobitB")
+#library("RprobitB")
 ```
 
-```{r}
-data(opening_choice)
-opening_choice$sex <- ifelse(opening_choice$sex == "M", 0, 1)
+## Data preparation
+
+```{r data}
+data("choice_chess_opening")
+choice_chess_opening$rating_diff <- choice_chess_opening$rating_w - choice_chess_opening$rating_b
+choice_chess_opening$sex_w <- as.numeric(choice_chess_opening$sex_w)
+data <- prepare_data(
+  form = w1 ~ 0 | sex_w + byear_w + rating_w + rating_diff, 
+  choice_data = choice_chess_opening, 
+  id = "fideid_w",
+  idc = "fideid_b",
+  alternatives = c("e4","d4","Nf3","c4"),
+  standardize = c("byear_w","rating_w","rating_diff")
+)
 ```
 
-```{r, mod0}
-form <- move ~ 0 | 1
-data <- prepare_data(form = form, 
-                     choice_data = opening_choice, 
-                     id = "fideid", 
-                     alternatives = c("d4","e4"))
-mod0 <- mcmc(data)
+```{r plot-data}
+plot(data, by_choice = TRUE)
 ```
 
-```{r, mod1}
-form <- move ~ 0 | rating
-data <- prepare_data(form = form, 
-                     choice_data = opening_choice, 
-                     id = "fideid", 
-                     alternatives = c("d4","e4"),
-                     standardize = c("rating"))
-mod1 <- mcmc(data)
+## Fixed effect model
+
+```{r mod_fix}
+mod_fix <- mcmc(data)
+coef(mod_fix)
 ```
 
-```{r, mod2}
-form <- move ~ 0 | rating + age
-data <- prepare_data(form = form, 
-                     choice_data = opening_choice, 
-                     id = "fideid", 
-                     alternatives = c("d4","e4"),
-                     standardize = c("rating", "age"))
-mod2 <- mcmc(data)
+## Random effect model
+
+```{r mod_re}
+mod_re <- nested_model(mod_fix, 
+                       re = c("sex_w","byear_w","rating_w","rating_diff"))
+coef(mod_re)
+round(cov_mix(mod_re, cor = TRUE),2)
 ```
 
-```{r, mod3}
-form <- move ~ 0 | rating + age + sex
-data <- prepare_data(form = form, 
-                     choice_data = opening_choice, 
-                     id = "fideid", 
-                     alternatives = c("d4","e4"),
-                     standardize = c("rating", "age"))
-mod3 <- mcmc(data)
+## Cluster model
+
+```{r mod_cl}
+mod_cl <- nested_model(mod_re, 
+                       latent_classes = list("C" = 2))
+coef(mod_cl)
+cov_mix(mod_cl, cor = TRUE)
 ```
 
-```{r, model selection}
-x <- model_selection(mod0, mod1, mod2, mod3, S = 2000)
+## Model selection
+
+```{r mod_selection}
+x <- model_selection(mod_fix, mod_re, mod_cl)
 ```
