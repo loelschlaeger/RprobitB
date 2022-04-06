@@ -154,7 +154,7 @@
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></code></pre></div>
-<p><img src="unnamed-chunk-7-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="plot-mixture-model-elec-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="estimating-latent-classes">Estimating latent classes<a class="anchor" aria-label="anchor" href="#estimating-latent-classes"></a>
@@ -249,7 +249,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
 <span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/plot_class_allocation.html">plot_class_allocation</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">z</span>, <span class="va">b</span>, <span class="va">Omega</span>, r <span class="op">=</span> <span class="fl">100</span>, perc <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></code></pre></div>
-<p><img src="unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="dirichlet-example-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2 unnumbered">

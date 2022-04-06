@@ -185,16 +185,16 @@
 <code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_p_si.html">compute_p_si</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></code></pre></div>
 <p>Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/waic.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
 <span class="co">#&gt; 3463.76 (0.18)</span>
-<span class="fu"><a href="../reference/waic.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span>
+<span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span>
 <span class="co">#&gt; 3733.91 (0.07)</span></code></pre></div>
 <p>You can visualize the convergence of the WAIC as follows:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/waic.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="waictrace-1.png" width="75%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/waic.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="waictrace-2.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing <code>R</code> in <code><a href="../reference/mcmc.html">mcmc()</a></code> or decreasing <code>B</code> or <code>Q</code> via <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code>, see the vignette on model fitting.</p>
 </div>

@@ -76,12 +76,6 @@ Make setting of <code>scale</code> in <code>mcmc</code> more intuitive.</li>
 <input type="checkbox" disabled>
 Use default progress bar for Gibbs sampling or show at least ETA.</li>
 <li>
-<input type="checkbox" disabled checked>
-Implement <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code> in C++.</li>
-<li>
-<input type="checkbox" disabled checked>
-Implement progress bar.</li>
-<li>
 <input type="checkbox" disabled>
 Check and document <code><a href="reference/R_hat.html">R_hat()</a></code> implementation (How is chain splitted?).</li>
 <li>
@@ -93,54 +87,18 @@ Use <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">
 <li>
 <input type="checkbox" disabled>
 Don’t save all Gibbs samples in <code>RprobitB_fit</code> but only the raw ones.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="model-selection">Model selection<a class="anchor" aria-label="anchor" href="#model-selection"></a></h3>
-<ul><li>
-<input type="checkbox" disabled checked>
-WAIC</li>
-<li>
-<input type="checkbox" disabled checked>
-Prediction accuracy in <code><a href="reference/model_selection.html">model_selection()</a></code> output.</li>
-<li>
-<input type="checkbox" disabled checked>
-Marginal model likelihood approximation for Bayes factor<ul><li>
-<input type="checkbox" disabled checked>
-Prior arithmetic mean estimator</li>
-<li>
-<input type="checkbox" disabled checked>
-Posterior harmonic mean estimator</li>
-<li>
-<input type="checkbox" disabled checked>
-Pairwise Bayes factor in <code><a href="reference/model_selection.html">model_selection()</a></code> output.</li>
-</ul></li>
-</ul></div>
-<div class="section level3">
-<h3 id="missingness">Missingness<a class="anchor" aria-label="anchor" href="#missingness"></a></h3>
-<ul><li>
-<input type="checkbox" disabled checked>
-Missing data<ul><li>
-<input type="checkbox" disabled checked>
-complete-case analysis</li>
-<li>
-<input type="checkbox" disabled checked>
-zero-out</li>
-<li>
-<input type="checkbox" disabled checked>
-mean</li>
-</ul></li>
 <li>
 <input type="checkbox" disabled>
-Variable choice set</li>
+Show average covariates of classes after classification via <code><a href="reference/preference_classification.html">preference_classification()</a></code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="prediction">Prediction<a class="anchor" aria-label="anchor" href="#prediction"></a></h3>
+<h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h3>
 <ul><li>
-<input type="checkbox" disabled checked>
-Implement prediction based on single predictor value.</li>
+<input type="checkbox" disabled>
+Variable choice set</li>
 <li>
-<input type="checkbox" disabled checked>
-ROC curve (in case of two alternatives).</li>
+<input type="checkbox" disabled>
+Function that generates covariates. For example lagged terms or transformations.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="ordered-probit">Ordered Probit<a class="anchor" aria-label="anchor" href="#ordered-probit"></a></h3>
@@ -154,36 +112,12 @@ Implement ordered probit model.</li>
 <div class="section level3">
 <h3 id="console-outputs">Console outputs<a class="anchor" aria-label="anchor" href="#console-outputs"></a></h3>
 <ul><li>
-<input type="checkbox" disabled checked>
-Make summary output of <code>RprobitB_fit</code> more compact. Provide option to show different model aspects.</li>
-<li>
 <input type="checkbox" disabled>
 Print model formula with <code><a href="reference/check_form.html">check_form()</a></code>.</li>
-<li>
-<input type="checkbox" disabled checked>
-(Standardized) Progress bar for all computations that potentially last longer.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h3>
 <ul><li>
-<input type="checkbox" disabled checked>
-Visualize beta sampling and clustering.<ul><li>
-<input type="checkbox" disabled checked>
-Export beta and z draws from Gibbs sampler.</li>
-<li>
-<input type="checkbox" disabled checked>
-Revise Gibbs sampling transformations for beta and z.</li>
-<li>
-<input type="checkbox" disabled checked>
-Revise true parameter transformations for beta and z.</li>
-<li>
-<input type="checkbox" disabled checked>
-Implement plot function for beta visualization (with sleep?).</li>
-<li>
-<input type="checkbox" disabled checked>
-Revise class allocation: based on last assignment or argmax of z? Update in <code><a href="reference/preference_classification.html">preference_classification()</a></code>.</li>
-</ul></li>
-<li>
 <input type="checkbox" disabled>
 ACF of Gibbs samples<ul><li>
 <input type="checkbox" disabled>
@@ -201,15 +135,8 @@ Exclude parameter wrt which the model is normalized.</li>
 <ul><li>
 <input type="checkbox" disabled><code><a href="reference/gibbs_sampling.html">gibbs_sampling()</a></code> with low data fails with “Evaluation error: too few positive probabilities”.</li>
 <li>
-<input type="checkbox" disabled checked>
-Error in printing <code>RprobitB_parameter</code> objects when they have matrices with one row because <code>ramify::pprint</code> cannot handle this case. Idea: Implement function that abbreviates matrix and vector printing myself.</li>
-<li>
 <input type="checkbox" disabled>
 In <code><a href="reference/simulate_choices.html">simulate_choices()</a></code>, specifying <code>s</code> without <code>seed</code> fails (due to partial match of ellipsis argument?).</li>
-<li>
-<input type="checkbox" disabled checked>
-In <code><a href="reference/choice_probabilities.html">choice_probabilities()</a></code>: <code>"probabilities do not sum to 1."</code>
-</li>
 </ul></div>
 <div class="section level3">
 <h3 id="tests">Tests<a class="anchor" aria-label="anchor" href="#tests"></a></h3>
@@ -221,48 +148,9 @@ Add tests for <code><a href="reference/update_classes_dp.html">update_classes_dp
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
 <div class="section level3">
-<h3 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a></h3>
-<ul><li>
-<input type="checkbox" disabled checked>
-Introductory vignette</li>
-<li>
-<input type="checkbox" disabled checked>
-Model definition</li>
-<li>
-<input type="checkbox" disabled checked>
-Choice data</li>
-<li>
-<input type="checkbox" disabled checked>
-Model fitting</li>
-<li>
-<input type="checkbox" disabled checked>
-Modeling heterogeneity</li>
-<li>
-<input type="checkbox" disabled checked>
-Choice prediction</li>
-<li>
-<input type="checkbox" disabled checked>
-Model selection</li>
-<li>
-<input type="checkbox" disabled checked>
-Applications</li>
-</ul></div>
-<div class="section level3">
 <h3 id="demos">Demos<a class="anchor" aria-label="anchor" href="#demos"></a></h3>
 <ul><li>
-<input type="checkbox" disabled checked>
-Add pre-compiled models.</li>
-<li>
 <input type="checkbox" disabled><code>rpb()</code> for demonstration with console feedback.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="website">Website<a class="anchor" aria-label="anchor" href="#website"></a></h3>
-<ul><li>
-<input type="checkbox" disabled checked>
-Does not find NEWS.</li>
-<li>
-<input type="checkbox" disabled checked>
-Does not find TODOs.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="function-documentation">Function documentation<a class="anchor" aria-label="anchor" href="#function-documentation"></a></h3>
@@ -274,12 +162,6 @@ Document Dirichlet Process in <code><a href="reference/update_classes_dp.html">u
 Document <code>RprobitB_latent_classes</code>.</li>
 </ul></div>
 </div>
-<div class="section level2">
-<h2 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a></h2>
-<ul><li>
-<input type="checkbox" disabled>
-Remove nationality in <code>opening_choice</code> dataset.</li>
-</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

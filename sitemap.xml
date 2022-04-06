@@ -76,6 +76,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/RprobitB_parameter.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/WAIC.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/as_cov_names.html</loc>
   </url>
   <url>
@@ -284,8 +287,5 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_z.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/waic.html</loc>
   </url>
 </urlset>
