@@ -76,7 +76,8 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       }
       if (length(alpha) != P_f || !is.numeric(alpha)) {
         stop("'alpha' must be a numeric vector of length ", P_f, ".",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       names(alpha) <- create_labels_alpha(P_f)
     }
@@ -96,7 +97,8 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
     if (!is.null(C)) {
       if (!is.numeric(C) || !C %% 1 == 0 || !C > 0) {
         stop("'C' must be a number greater or equal 1.",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
     } else {
       C <- 1
@@ -111,9 +113,11 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
         s[C] <- 1 - sum(s[-C])
       }
       if (length(s) != C || !is.numeric(s) ||
-          abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
+        abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
         stop("'s' must be a non-ascending numeric vector of length ", C,
-             " which sums up to 1.", call. = FALSE)
+          " which sums up to 1.",
+          call. = FALSE
+        )
       }
       names(s) <- create_labels_s(P_r, C)
     }
@@ -129,7 +133,8 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       b <- as.matrix(b)
       if (!is.numeric(b) || nrow(b) != P_r || ncol(b) != C) {
         stop("'b' must be a numeric matrix of dimension ", P_r, " x ", C, ".",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       names(b) <- create_labels_b(P_r, C)
     }
@@ -149,13 +154,15 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
         ncol(Omega) != C) {
         stop(
           "'Omega' must be a numeric matrix of dimension ", P_r * P_r, " x ",
-          C, ".", call. = FALSE
+          C, ".",
+          call. = FALSE
         )
       }
       for (c in 1:C) {
         if (!is_covariance_matrix(matrix(Omega[, c], nrow = P_r, ncol = P_r))) {
           stop(paste("Column", c, "in 'Omega' builds no covariance matrix."),
-               call. = FALSE)
+            call. = FALSE
+          )
         }
       }
       names(Omega) <- create_labels_Omega(P_r, C, cov_sym = TRUE)
@@ -191,7 +198,8 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       if (!is.numeric(beta) || nrow(beta) != P_r ||
         ncol(beta) != N) {
         stop("'beta' must be a numeric matrix of dimension ", P_r, " x ", N, ".",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
     }
   }
@@ -214,11 +222,15 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
     }
     if (!(is_covariance_matrix(Sigma) && nrow(Sigma) == J - 1)) {
       stop("'Sigma' is not a proper (differenced) covariance matrix of dimension ",
-           J - 1, " x ", J - 1, ".", call. = FALSE)
+        J - 1, " x ", J - 1, ".",
+        call. = FALSE
+      )
     }
     if (!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full) == J)) {
       stop("'Sigma_diff' is not a proper covariance matrix of dimension ", J, " x ",
-           J, ".", call. = FALSE)
+        J, ".",
+        call. = FALSE
+      )
     }
     names(Sigma) <- create_labels_Sigma(J, cov_sym = TRUE)
     names(Sigma_full) <- create_labels_Sigma(J + 1, cov_sym = TRUE)

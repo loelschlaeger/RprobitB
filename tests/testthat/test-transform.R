@@ -18,8 +18,9 @@ test_that("transforming scale in RprobitB_fit works", {
   model <- RprobitB::model_train
   scale_new <- list("parameter" = "s", "index" = 1, "value" = 1)
   model_new_scale <- transform(
-    model, scale = scale_new, check_preference_flip = FALSE
-    )
+    model,
+    scale = scale_new, check_preference_flip = FALSE
+  )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
 })
@@ -34,7 +35,7 @@ test_that("transforming parameter to new scale works", {
   par_old <- RprobitB_parameter(P_f = 1, P_r = 1, J = 3, N = 10)
   normalization <- RprobitB_normalization(
     J = 3, P_f = 1, scale = list("parameter" = "s", "index" = 1, "value" = 1)
-    )
+  )
   par_transf <- transform_parameter(par_old, normalization)
   expect_s3_class(par_transf, "RprobitB_parameter")
 })

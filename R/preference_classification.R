@@ -46,7 +46,7 @@ preference_classification <- function(x, add_true = FALSE) {
   if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit'.", call. = FALSE)
   }
-  if(!is.logical(add_true) || length(add_true) != 1) {
+  if (!is.logical(add_true) || length(add_true) != 1) {
     stop("'add_true' must be either TRUE or FALSE.")
   }
   if (x$data$P_r == 0) {
@@ -61,14 +61,16 @@ preference_classification <- function(x, add_true = FALSE) {
     simplify = TRUE
   )
   allo_matrix <- matrix(0, nrow = x$data$N, ncol = x$latent_classes$C)
-  for(n in 1:x$data$N) for(c in 1:x$latent_classes$C) {
-    freq <- allo_tables[[n]][c]
-    if(!is.na(freq)) allo_matrix[n,c] <- freq
+  for (n in 1:x$data$N) {
+    for (c in 1:x$latent_classes$C) {
+      freq <- allo_tables[[n]][c]
+      if (!is.na(freq)) allo_matrix[n, c] <- freq
+    }
   }
   allo_matrix <- allo_matrix / rowSums(allo_matrix)
   allo_matrix <- cbind(allo_matrix, apply(allo_matrix, 1, which.max))
   colnames(allo_matrix) <- c(1:x$latent_classes$C, "est")
-  if(add_true) {
+  if (add_true) {
     allo_matrix <- cbind(allo_matrix, "true" = x$data$true_parameter$z)
   }
   allo_matrix <- as.data.frame(allo_matrix)
