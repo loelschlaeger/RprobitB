@@ -234,7 +234,7 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <p>and visualized via</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<p><img src="unnamed-chunk-8-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="plot-coef-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;These results are consistent with the ones that are presented &lt;a href="https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train" class="external-link"&gt;in a vignette of the mlogit package&lt;/a&gt; on the same data set but using the logit model.&lt;/p&gt;'><sup>4</sup></a></p>
 </div>
 <div class="section level2">
@@ -308,12 +308,12 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></code></pre></div>
-<p><img src="unnamed-chunk-11-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="plot-trace-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Additionally, we can visualize the serial correlation of the Gibbs samples via the argument <code>type = "acf"</code>. The boxes in the top-right corner state the total sample size TSS (here <code>R</code> - <code>B</code> = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></code></pre></div>
-<p><img src="unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="plot-acf-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, the effective sample size is the value <span class="math inline">\(\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)\)</span>, where <span class="math inline">\(\rho_k\)</span> is the auto correlation between the chain offset by <span class="math inline">\(k\)</span> positions. The auto correlations are estimated via the <code><a href="https://rdrr.io/r/stats/acf.html" class="external-link">stats::acf()</a></code> function.</p>
 </div>
 <div class="section level2">

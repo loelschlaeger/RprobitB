@@ -77,6 +77,8 @@ to estimate a nested probit model based on a given <code>RprobitB_fit</code> obj
   <span class="va">form</span>,
   <span class="va">re</span>,
   <span class="va">alternatives</span>,
+  <span class="va">id</span>,
+  <span class="va">idc</span>,
   <span class="va">standardize</span>,
   <span class="va">missing_data</span>,
   <span class="va">scale</span>,
@@ -104,10 +106,9 @@ alternative specific coefficients,</p></li>
 covariates with alternative specific coefficients.</p></li>
 </ul><p>Separate multiple covariates of one type by a <code>+</code> sign.
 By default, alternative specific constants (ASCs) are added to the model
-(for all except for the last alternative).
+(for all except for the last alternative due to identifiability).
 They can be removed by adding <code>+0</code> in the second spot.
-See the vignette <code>vignette("data_management", package = "RprobitB")</code>
-for more details.</p></dd>
+See the vignette on choice data for more details.</p></dd>
 <dt>re</dt>
 <dd><p>A character (vector) of covariates of <code>form</code> with random effects.
 If <code>re = NULL</code> (the default), there are no random effects.
@@ -116,6 +117,14 @@ To have random effects for the alternative specific constants, include
 <dt>alternatives</dt>
 <dd><p>A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.</p></dd>
+<dt>id</dt>
+<dd><p>A character, the name of the column in <code>choice_data</code> that contains
+unique identifier for each decision maker. The default is <code>"id"</code>.</p></dd>
+<dt>idc</dt>
+<dd><p>A character, the name of the column in <code>choice_data</code> that contains
+unique identifier for each choice situation of each decision maker.
+The default is <code>NULL</code>, in which case these identifier are generated
+automatically.</p></dd>
 <dt>standardize</dt>
 <dd><p>A character vector of names of covariates that get standardized.
 Covariates of type 1 or 3 have to be addressed by
