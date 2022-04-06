@@ -46,20 +46,19 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 
   ### build 'RprobitB_gibbs_sample_statistics'
   statistics <- list()
-  for (par in names(gibbs_samples$gibbs_samples)) {
-    if ("list" %in% class(gibbs_samples$gibbs_samples[[par]])) next
+  for (par in names(gibbs_samples[["gibbs_samples_nbt"]])) {
     statistics[[par]] <- matrix(
       NA,
-      nrow = ncol(gibbs_samples$gibbs_samples_nbt[[par]]), ncol = 0,
-      dimnames = list(colnames(gibbs_samples$gibbs_samples_nbt[[par]]))
+      nrow = ncol(gibbs_samples[["gibbs_samples_nbt"]][[par]]), ncol = 0,
+      dimnames = list(colnames(gibbs_samples[["gibbs_samples_nbt"]][[par]]))
     )
     for (i in seq_len(length(FUN))) {
       fun <- FUN[[i]]
-      values <- apply(gibbs_samples$gibbs_samples_nbt[[par]], 2, fun,
+      values <- apply(gibbs_samples[["gibbs_samples_nbt"]][[par]], 2, fun,
         simplify = FALSE
       )
       nvalue <- length(values[[1]])
-      labels <- colnames(gibbs_samples$gibbs_samples_nbt[[par]])
+      labels <- colnames(gibbs_samples[["gibbs_samples_nbt"]][[par]])
       fun_name <- if (nvalue == 1) {
         names(FUN[i])
       } else {

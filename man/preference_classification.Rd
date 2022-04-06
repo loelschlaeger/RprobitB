@@ -2,19 +2,45 @@
 % Please edit documentation in R/preference_classification.R
 \name{preference_classification}
 \alias{preference_classification}
-\title{Classify preferences of deciders.}
+\title{Classify deciders based on their preferences}
 \usage{
-preference_classification(x, true = FALSE)
+preference_classification(x, add_true = FALSE)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{true}{Set to \code{TRUE} to add true class memberships to output (if available).}
+\item{add_true}{Set to \code{TRUE} to add true class memberships to output (if available).}
 }
 \value{
-A data frame with the deciders id and the latent class number.
+A data frame. The row names are the decider ids. The first \code{C} columns
+contain the relative frequencies with which the deciders are allocated to
+the \code{C} classes. Next, the column \code{est} contains the estimated
+class of the decider based on the highest allocation frequency. If
+\code{add_true}, the next column \code{true} contains the true class
+memberships.
 }
 \description{
-This function classifies the preferences of deciders based on the estimated
-latent classes.
+This function classifies the deciders based on their allocation to the
+components of the mixing distribution.
+}
+\details{
+The function can only be used if the model has at least one random effect
+(i.e. \code{P_r >= 1}) and at least two latent classes (i.e. \code{C >= 2}).
+
+In that case, let \eqn{z_1,\dots,z_N} denote the class allocations
+of the \eqn{N} deciders based on their estimated mixed coefficients
+\eqn{\beta = (\beta_1,\dots,\beta_N)}.
+Independently for each decider \eqn{n}, the conditional probability
+\eqn{\Pr(z_n = c \mid s,\beta_n,b,\Omega)} of having \eqn{\beta_n}
+allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class
+allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class
+covariance matrices \eqn{Omega=(Omega_c)_c} and is proportional to
+\deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
+
+This function displays the relative frequencies of which each decider
+was allocated to the classes during the Gibbs sampling. Only the
+thinned samples after the burn-in period are considered.
+}
+\seealso{
+\code{\link[=update_z]{update_z()}} for the updating function of the class allocation vector.
 }

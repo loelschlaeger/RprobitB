@@ -1,30 +1,44 @@
-#' Change the length of the burn-in period, the thinning factor and the scale
-#' after Gibbs sampling.
+#' Transform an \code{RprobitB_fit} object
 #'
 #' @description
 #' Given an object of class \code{RprobitB_fit}, this function can:
 #' \itemize{
 #'   \item change the length \code{B} of the burn-in period,
 #'   \item change the the thinning factor \code{Q} of the Gibbs samples,
-#'   \item change the model \code{scale}.
+#'   \item change the model normalization \code{scale}.
 #' }
 #'
 #' @details
 #' See the vignette "Model fitting" for more details:
-#' \code{vignette("model_fitting", package = "RprobitB")}.
+#' \code{vignette("v03_model_fitting", package = "RprobitB")}.
 #'
-#' @inheritParams mcmc
 #' @param _data
 #' An object of class \code{\link{RprobitB_fit}}.
+#' @inheritParams mcmc
 #' @param check_preference_flip
-#' If \code{TRUE} check for flip in preferences with new scale.
+#' Set to \code{TRUE} to check for flip in preferences after new \code{scale}.
 #' @param ...
 #' Ignored.
 #'
 #' @return
-#' An object of class \code{RprobitB_fit}.
+#' The transformed \code{RprobitB_fit} object.
+#'
+#' @examples
+#' data(model_train)
+#'
+#' ### change the length B of the burn-in period
+#' transform(model_train, B = 1)
+#'
+#' ### change the thinning factor Q
+#' transform(model_train, Q = 1)
+#'
+#' ### change the scale
+#' new_scale <- list(parameter = "s", index = 1, value = 1)
+#' transform(model_train, scale = new_scale)
 #'
 #' @export
+#'
+#' @rdname transform
 
 transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
                                    check_preference_flip = TRUE, ...) {
@@ -66,16 +80,19 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
   }
 
   ### scale, burn and thin Gibbs samples
-  gibbs_samples <- transform_gibbs_samples(
-    gibbs_samples = x[["gibbs_samples"]][["gibbs_samples"]], R = R, B = B, Q = Q,
+  x[["gibbs_samples"]] <- transform_gibbs_samples(
+    x[["gibbs_samples"]][["gibbs_samples_raw"]],
+    R = R,
+    B = B,
+    Q = Q,
     normalization = normalization
   )
-  x[["gibbs_samples"]] <- gibbs_samples
 
-  ### scale true parameters
+  ### scale true model parameters
   if (x[["data"]][["simulated"]]) {
-    x[["data"]][["true_parameter"]] <- transform_parameter(
-      parameter = x[["data"]][["true_parameter"]], normalization = normalization
+    x[["data"]][["true_parameter"]] <- transform(
+      parameter = x[["data"]][["true_parameter"]],
+      normalization = normalization
     )
   }
 
@@ -83,34 +100,27 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
   return(x)
 }
 
-#' Transformation of Gibbs samples.
+#' Transformation of Gibbs samples
 #'
 #' @description
 #' This function normalizes, burns and thins the Gibbs samples.
 #'
 #' @param gibbs_samples
-#' The output of \code{\link{gibbs_sampling}}.
+#' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples for
+#' \itemize{
+#'   \item \code{Sigma},
+#'   \item \code{alpha} (if \code{P_f>0}),
+#'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}).
+#' }
 #' @inheritParams RprobitB_data
 #' @inheritParams mcmc
 #' @inheritParams sufficient_statistics
+#'
 #' @return
-#' An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed
-#' Gibbs samples. Each element is a list, containing (if available) the
-#' Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and
-#' \code{Sigma}:
-#' \itemize{
-#'   \item \code{gibbs_samples}:
-#'   The function input \code{gibbs_samples}.
-#'   \item \code{gibbs_samples_n}:
-#'   A list of normalized samples based on \code{normalization}.
-#'   \item \code{gibbs_samples_nb}:
-#'   A list of normalized and burned samples based on \code{normalization} and \code{B}.
-#'   \item \code{gibbs_samples_nt}:
-#'   A list of normalized and thinned samples based on \code{normalization} and \code{Q}
-#'   \item \code{gibbs_samples_nbt}:
-#'   A list of normalized, burned and thinned samples based on \code{normalization},
-#'   \code{B} and \code{Q}
-#' }
+#' A list, the first element \code{gibbs_sampes_raw} is the input
+#' \code{gibbs_samples}, the second element is the normalized, burned, and
+#' thinned version of \code{gibbs_samples} called \code{gibbs_samples_nbt}.
+#' The list gets the class \code{RprobitB_gibbs_samples}.
 #'
 #' @keywords
 #' internal
@@ -118,6 +128,18 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### check inputs
+  if (!is.list(gibbs_samples)){
+    stop("'gibbs_samples' must be a list of Gibbs samples.")
+  }
+  if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
+    stop("'R' must be a positive integer.")
+  }
+  if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
+    stop("'B' must be a positive integer smaller than 'R'.")
+  }
+  if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
+    stop("'Q' must be a positive integer smaller than 'R'.")
+  }
   if (class(normalization) != "RprobitB_normalization") {
     stop("'normalization' must be of class 'RprobitB_normalization'.")
   }
@@ -245,21 +267,16 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   )
   gibbs_samples_nbt <- gibbs_samples_nbt[lengths(gibbs_samples_nbt) != 0]
 
-  ### build and add class to 'gibbs_samples'
+  ### return list of transformed Gibbs samples
   gibbs_samples <- list(
-    "gibbs_samples" = gibbs_samples,
-    "gibbs_samples_n" = gibbs_samples_n,
-    "gibbs_samples_nb" = gibbs_samples_nb,
-    "gibbs_samples_nt" = gibbs_samples_nt,
+    "gibbs_samples_raw" = gibbs_samples,
     "gibbs_samples_nbt" = gibbs_samples_nbt
   )
   class(gibbs_samples) <- "RprobitB_gibbs_samples"
-
-  ### return list of transformed Gibbs samples
   return(gibbs_samples)
 }
 
-#' Transformation of parameter values.
+#' Transformation of parameter values
 #'
 #' @description
 #' This function transforms parameter values based on \code{normalization}.
@@ -362,8 +379,7 @@ preference_flip <- function(model_old, model_new) {
     }
   }
   if (flag) {
-    stop(
-      "Caution, this transformation may flip preferences. Set 'check_preference_flip = FALSE' to transform anyway."
-    )
+    stop("This transformation seems to flip the preferences. ",
+         "Set 'check_preference_flip = FALSE' to transform anyway.", call. = FALSE)
   }
 }

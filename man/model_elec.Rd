@@ -30,7 +30,5 @@ model <- mcmc(
   Q = 10,
   scale = list(parameter = "a", index = 1, value = -1))
 }
-
-The Gibbs samples for \code{beta} were removed to reduce the required memory space.
 }
 \keyword{model}

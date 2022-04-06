@@ -438,11 +438,10 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' \itemize{
 //'   \item \code{Sigma},
 //'   \item \code{alpha} (if \code{P_f>0}),
-//'   \item \code{s}, \code{b}, \code{Omega} (if \code{P_r>0}),
+//'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
 //' }
-//' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
-//' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
-//' latent classes after iteration \code{r}.
+//' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
+//' entry is the number of latent classes after iteration \code{r}.
 //'
 //' @keywords
 //' internal
@@ -556,7 +555,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   arma::mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
   arma::mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
   arma::mat alpha_draws = zeros<mat>(R,P_f);
-  Rcpp::List beta_draws(R);
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
   arma::vec class_sequence(R);
 
@@ -722,7 +720,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       vec vectorise_Omega = vectorise(Omega);
       Omega_draws(r,span(0,vectorise_Omega.size()-1)) =
         trans(vectorise_Omega);
-      beta_draws[r] = beta;
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
   }
@@ -736,7 +733,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     out = List::create(Named("s") = s_draws,
                        Named("z") = z_draws,
                        Named("alpha") = alpha_draws,
-                       Named("beta") = beta_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,
@@ -747,7 +743,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   if(P_f==0 && P_r>0)
     out = List::create(Named("s") = s_draws,
                        Named("z") = z_draws,
-                       Named("beta") = beta_draws,
                        Named("b") = b_draws,
                        Named("Omega") = Omega_draws,
                        Named("Sigma") = Sigma_draws,

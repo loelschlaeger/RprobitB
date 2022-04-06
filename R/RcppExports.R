@@ -553,11 +553,10 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' \itemize{
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),
-#'   \item \code{s}, \code{b}, \code{Omega} (if \code{P_r>0}),
+#'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
 #' }
-#' and (if \code{P_r>0}) a vector \code{classification} of class memberships for each decider and
-#' a vector \code{class_sequence} of length \code{R}, where the \code{r}th entry is the number of
-#' latent classes after iteration \code{r}.
+#' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
+#' entry is the number of latent classes after iteration \code{r}.
 #'
 #' @keywords
 #' internal

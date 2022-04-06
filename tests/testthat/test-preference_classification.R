@@ -10,8 +10,10 @@ test_that("preference classification works", {
     C = 2
   )
   model <- mcmc(data,
-    R = 1000, print_progress = FALSE, seed = 1,
+    R = 1000,
+    print_progress = FALSE,
+    seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(preference_classification(model, true = TRUE))
+  expect_snapshot(preference_classification(model, add_true = TRUE))
 })

@@ -2,7 +2,7 @@
 % Please edit documentation in R/transform.RprobitB_fit.R
 \name{transform_parameter}
 \alias{transform_parameter}
-\title{Transformation of parameter values.}
+\title{Transformation of parameter values}
 \usage{
 transform_parameter(parameter, normalization)
 }

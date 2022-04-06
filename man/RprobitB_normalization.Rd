@@ -54,7 +54,8 @@ be fixed.
 }
 \examples{
 RprobitB:::RprobitB_normalization(
-  J = 2, P_f = 1, level = 2, scale = list("parameter" = "s", "index" = 1, "value" = 1)
+  J = 2, P_f = 1, level = 2,
+  scale = list("parameter" = "s", "index" = 1, "value" = 1)
 )
 
 }

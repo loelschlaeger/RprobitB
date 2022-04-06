@@ -2,12 +2,17 @@
 % Please edit documentation in R/transform.RprobitB_fit.R
 \name{transform_gibbs_samples}
 \alias{transform_gibbs_samples}
-\title{Transformation of Gibbs samples.}
+\title{Transformation of Gibbs samples}
 \usage{
 transform_gibbs_samples(gibbs_samples, R, B, Q, normalization)
 }
 \arguments{
-\item{gibbs_samples}{The output of \code{\link{gibbs_sampling}}.}
+\item{gibbs_samples}{The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples for
+\itemize{
+\item \code{Sigma},
+\item \code{alpha} (if \code{P_f>0}),
+\item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}).
+}}
 
 \item{R}{The number of iterations of the Gibbs sampler.}
 
@@ -21,23 +26,10 @@ sample is kept.}
 via \code{\link{RprobitB_normalization}}.}
 }
 \value{
-An object of class \code{RprobitB_gibbs_samples}, i.e. a list of transformed
-Gibbs samples. Each element is a list, containing (if available) the
-Gibbs samples for \code{s}, \code{alpha}, \code{b}, \code{Omega}, and
-\code{Sigma}:
-\itemize{
-\item \code{gibbs_samples}:
-The function input \code{gibbs_samples}.
-\item \code{gibbs_samples_n}:
-A list of normalized samples based on \code{normalization}.
-\item \code{gibbs_samples_nb}:
-A list of normalized and burned samples based on \code{normalization} and \code{B}.
-\item \code{gibbs_samples_nt}:
-A list of normalized and thinned samples based on \code{normalization} and \code{Q}
-\item \code{gibbs_samples_nbt}:
-A list of normalized, burned and thinned samples based on \code{normalization},
-\code{B} and \code{Q}
-}
+A list, the first element \code{gibbs_sampes_raw} is the input
+\code{gibbs_samples}, the second element is the normalized, burned, and
+thinned version of \code{gibbs_samples} called \code{gibbs_samples_nbt}.
+The list gets the class \code{RprobitB_gibbs_samples}.
 }
 \description{
 This function normalizes, burns and thins the Gibbs samples.

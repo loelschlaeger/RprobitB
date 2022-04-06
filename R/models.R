@@ -81,8 +81,6 @@
 #'   scale = list(parameter = "a", index = 1, value = -1))
 #' }
 #'
-#' The Gibbs samples for `beta` were removed to reduce the required memory space.
-#'
 #' @format An object of class \code{RprobitB_fit}.
 #'
 #' @keywords

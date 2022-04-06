@@ -2,8 +2,7 @@
 % Please edit documentation in R/transform.RprobitB_fit.R
 \name{transform.RprobitB_fit}
 \alias{transform.RprobitB_fit}
-\title{Change the length of the burn-in period, the thinning factor and the scale
-after Gibbs sampling.}
+\title{Transform an \code{RprobitB_fit} object}
 \usage{
 \method{transform}{RprobitB_fit}(
   `_data`,
@@ -36,22 +35,36 @@ The index of the parameter that gets fixed.
 The value for the fixed parameter.
 }}
 
-\item{check_preference_flip}{If \code{TRUE} check for flip in preferences with new scale.}
+\item{check_preference_flip}{Set to \code{TRUE} to check for flip in preferences after new \code{scale}.}
 
 \item{...}{Ignored.}
 }
 \value{
-An object of class \code{RprobitB_fit}.
+The transformed \code{RprobitB_fit} object.
 }
 \description{
 Given an object of class \code{RprobitB_fit}, this function can:
 \itemize{
 \item change the length \code{B} of the burn-in period,
 \item change the the thinning factor \code{Q} of the Gibbs samples,
-\item change the model \code{scale}.
+\item change the model normalization \code{scale}.
 }
 }
 \details{
 See the vignette "Model fitting" for more details:
-\code{vignette("model_fitting", package = "RprobitB")}.
+\code{vignette("v03_model_fitting", package = "RprobitB")}.
+}
+\examples{
+data(model_train)
+
+### change the length B of the burn-in period
+transform(model_train, B = 1)
+
+### change the thinning factor Q
+transform(model_train, Q = 1)
+
+### change the scale
+new_scale <- list(parameter = "s", index = 1, value = 1)
+transform(model_train, scale = new_scale)
+
 }

@@ -55,31 +55,37 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### check other inputs
   if (!is.numeric(N) || N %% 1 != 0) {
-    stop("'N' must be a non-negative number.")
+    stop("'N' must be a non-negative number.",
+         call. = FALSE)
   }
   if (length(T) == 1) {
     T <- rep(T, N)
   }
   if (any(!is.numeric(T)) || any(T %% 1 != 0)) {
-    stop("'T' must be non-negative or a vector of non-negative numbers.")
+    stop("'T' must be non-negative or a vector of non-negative numbers.",
+         call. = FALSE)
   }
   if (!is.numeric(J) || J %% 1 != 0 || !J >= 2) {
-    stop("'J' must be a number greater or equal 2.")
+    stop("'J' must be a number greater or equal 2.",
+         call. = FALSE)
   }
   if (is.null(alternatives)) {
     if (J > 26) {
-      stop("Please specify 'alternatives'.")
+      stop("Please specify 'alternatives'.",
+           call. = FALSE)
     } else {
       alternatives <- LETTERS[1:J]
     }
   }
   if (length(alternatives) != J || !is.character(alternatives)) {
-    stop("'alternatives' must be a character (vector) of length 'J'.")
+    stop("'alternatives' must be a character (vector) of length 'J'.",
+         call. = FALSE)
   }
   if (!is.null(covariates)) {
     for (i in 1:length(covariates)) {
       if (length(covariates[[i]]) != sum(T)) {
-        stop(paste0("In 'covariates', there must be ", sum(T), " values for '", names(covariates)[i], "'."))
+        stop(paste0("In 'covariates', there must be ", sum(T), " values for '",
+                    names(covariates)[i], "'."), call. = FALSE)
       }
     }
   }
@@ -135,7 +141,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   ### report unsed elements in 'covariates'
   if (length(names(covariates)) > 0) {
     warning(paste("The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
-                  "in 'covariates' are ignored."))
+                  "in 'covariates' are ignored."), call. = FALSE)
   }
 
   ### add ASCs (for all but the last alternative)
