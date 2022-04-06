@@ -243,22 +243,13 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <p>The Gibbs samples are saved in list form in the <code>RprobitB_fit</code> object at the entry <code>"gibbs_samples"</code>, i.e.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">gibbs_samples</span>, max.level <span class="op">=</span> <span class="fl">2</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; List of 5</span>
-<span class="co">#&gt;  $ gibbs_samples    :List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...</span>
-<span class="co">#&gt;  $ gibbs_samples_n  :List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1872949 3357 1215 793 698 ...</span>
-<span class="co">#&gt;  $ gibbs_samples_nb :List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:5000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:5000, 1] 607 559 605 577 692 ...</span>
-<span class="co">#&gt;  $ gibbs_samples_nt :List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:1000, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:1000, 1] 1872949 610 613 728 766 ...</span>
+<span class="co">#&gt; List of 2</span>
 <span class="co">#&gt;  $ gibbs_samples_nbt:List of 2</span>
 <span class="co">#&gt;   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 607 581 627 615 850 ...</span></code></pre></div>
+<span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 607 581 627 615 850 ...</span>
+<span class="co">#&gt;  $ gibbs_samples_raw:List of 2</span>
+<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...</span>
+<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...</span></code></pre></div>
 <p>This object contains 5 elements:</p>
 <ul>
 <li><p><code>gibbs_samples</code> is a list of the raw samples from the Gibbs sampler,</p></li>
