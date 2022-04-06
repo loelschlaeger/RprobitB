@@ -53,19 +53,19 @@ model_elec <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, valu
 
 The estimated model is saved in {RprobitB} and can be accessed via:
 
-```{r}
+```{r, load-model-elec}
 data(model_elec, package = "RprobitB")
 ```
 
 Calling the `coef()` method on the estimated model also returns the estimated (marginal) variances of the mixing distribution besides the average mean effects:
 
-```{r}
+```{r, coef-model-elec}
 coef(model_elec)
 ```
 
 By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price `tod` in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large (`12.37`). The same holds for the contract length `cl`. In particular, the estimated share of the population that prefers to have a longer contract length equals:
 
-```{r}
+```{r, compute-mixdistr-share}
 cl_mu <- coef(model_elec)["cl","mean"]
 cl_sd <- sqrt(coef(model_elec)["cl","var"])
 pnorm(cl_mu / cl_sd)
@@ -73,13 +73,13 @@ pnorm(cl_mu / cl_sd)
 
 The correlation between the covariates can be accessed as follows:^[Setting `cor = FALSE` instead returns the estimated covariance matrix.]
 
-```{r}
+```{r, cov-mixdistr}
 cov_mix(model_elec, cor = TRUE)
 ```
 
 Here, we see the confirmation of our initial assumption about a high correlation between `loc` and `wk`. The pairwise mixing distributions can be visualized via calling the `plot()` method with the additional argument `type = mixture`:
 
-```{r, fig.dim = c(8,8)}
+```{r, plot-mixture-model-elec, fig.dim = c(8,8)}
 plot(model_elec, type = "mixture")
 ```
 
@@ -150,7 +150,7 @@ In summary, the Dirichlet process updates the allocation of each $\beta$ coeffic
 
 The Dirichlet process directly integrates into our existing Gibbs sampler. Given $\beta$ values, it updated the class means $b_c$ and class covariance matrices $\Omega_c$. The Dirichlet process updating scheme is implemented in the function `update_classes_dp()`. In the following, we give a small example in the bivariate case `P_r = 2`. We sample true class means `b_true` and class covariance matrices `Omega_true` for `C_true = 3` true latent classes. The true (unbalanced) class sizes are given by the vector `N`, and `z_true` denotes the true allocations.
 
-```{r}
+```{r, sim-dirichlet}
 set.seed(1)
 P_r <- 2
 C_true <- 3
@@ -166,7 +166,7 @@ z_true <- rep(1:3, times = N)
 
 We specify the following prior parameters (for their definition see the vignette on model fitting):
 
-```{r}
+```{r, dirichlet-prior}
 delta <- 0.1
 xi <- numeric(P_r)
 D <- diag(P_r)
@@ -176,7 +176,7 @@ Theta <- diag(P_r)
 
 Initially, we start with `C = 1` latent classes. The class mean `b` is set to zero, the covariance matrix `Omega` to the identity matrix:
 
-```{r}
+```{r, dirichlet-inits}
 z <- rep(1, ncol(beta))
 C <- 1
 b <- matrix(0, nrow = P_r, ncol = C)
@@ -185,7 +185,7 @@ Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
 The following call to `update_classes_dp()` updates the latent classes in `100` iterations. Note that we specify the arguments `Cmax` and `s_desc`. The former denotes the maximum number of latent classes. This specification is not a requirement for the Dirichlet process per se, but rather for its implementation. Knowing the maximum possible class number, we can allocate the required memory space, which leads to a speed improvement. We later can verify that we won't exceed the number of `Cmax = 10` latent classes at any point of the Dirichlet process. Setting `s_desc = TRUE` ensures that the classes are ordered by their weights in a descending order to ensure identifiability.
 
-```{r}
+```{r, dirichlet-process-app}
 for(r in 1:100){
   dp <- RprobitB:::update_classes_dp(
     Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE
@@ -198,7 +198,7 @@ for(r in 1:100){
 
 The Dirichlet process was able to infer the true number `C_true = 3` of latent classes:
 
-```{r, fig.dim = c(16,8)}
+```{r, dirichlet-example-plot, fig.dim = c(16,8)}
 par(mfrow = c(1,2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
 RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)

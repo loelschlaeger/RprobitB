@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{logLik}
 \alias{logLik}
+\alias{logLik.RprobitB_fit}
 \title{Log-likelihood value}
 \usage{
 logLik(object, par_set, recompute, ...)
+
+\method{logLik}{RprobitB_fit}(object, par_set = mean, recompute = FALSE, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}

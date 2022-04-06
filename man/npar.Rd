@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{npar}
 \alias{npar}
+\alias{npar.RprobitB_fit}
 \title{Number of model parameters}
 \usage{
 npar(object, ...)
+
+\method{npar}{RprobitB_fit}(object, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}

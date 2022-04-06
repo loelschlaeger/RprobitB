@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{nobs}
 \alias{nobs}
+\alias{nobs.RprobitB_fit}
 \title{Number of observations}
 \usage{
 nobs(object, ...)
+
+\method{nobs}{RprobitB_fit}(object, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
@@ -21,4 +24,5 @@ object.
 \examples{
 data("model_train", package = "RprobitB")
 nobs(model_train)
+
 }

@@ -79,7 +79,7 @@ $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the ref
 
 In {RprobitB}, the probit model parameters are saved as an `RprobitB_parameter` object. Their labels are consistent with their definition in this vignette. For example:
 
-```{r}
+```{r, RprobitB-parameter-example}
 RprobitB:::RprobitB_parameter(
   P_f   = 1,           
   P_r   = 2,

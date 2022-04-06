@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{BIC}
 \alias{BIC}
+\alias{BIC.RprobitB_fit}
 \title{Bayesian Information Criterion}
 \usage{
 BIC(object, ...)
+
+\method{BIC}{RprobitB_fit}(object, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
@@ -29,4 +32,5 @@ trade-off between over- and under-fitting, where smaller values are preferred.
 \examples{
 data("model_train", package = "RprobitB")
 BIC(model_train)
+
 }

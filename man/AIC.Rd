@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_selection.R
 \name{AIC}
 \alias{AIC}
+\alias{AIC.RprobitB_fit}
 \title{Akaike's Information Criterion}
 \usage{
 AIC(object, ..., k)
+
+\method{AIC}{RprobitB_fit}(object, ..., k = 2)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
@@ -33,4 +36,5 @@ smaller values are preferred.
 \examples{
 data("model_train", package = "RprobitB")
 AIC(model_train)
+
 }

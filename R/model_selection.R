@@ -185,12 +185,15 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' AIC(model_train)
+#'
+#' @export
 
 AIC <- function(object, ..., k) {
   UseMethod("AIC")
 }
 
 #' @export
+#' @rdname AIC
 
 AIC.RprobitB_fit <- function(object, ..., k = 2) {
   models <- list(...)
@@ -199,7 +202,7 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
   } else {
     models <- c(list(object), models)
   }
-  ll <- sapply(models, logLik)
+  ll <- sapply(models, logLik.RprobitB_fit)
   npar <- sapply(models, npar)
   aic <- mapply(function(ll, npar) -2 * ll + 2 * npar, ll, npar)
   return(aic)
@@ -231,12 +234,15 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' BIC(model_train)
+#'
+#' @export
 
 BIC <- function(object, ...) {
   UseMethod("BIC")
 }
 
 #' @export
+#' @rdname BIC
 
 BIC.RprobitB_fit <- function(object, ...) {
   models <- list(...)
@@ -404,12 +410,15 @@ plot.RprobitB_waic <- function(x, ...) {
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' nobs(model_train)
+#'
+#' @export
 
 nobs <- function(object, ...) {
   UseMethod("nobs")
 }
 
 #' @export
+#' @rdname nobs
 
 nobs.RprobitB_fit <- function(object, ...) {
   return(sum(object$data$T))
@@ -433,6 +442,8 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @return
 #' A numeric.
 #'
+#' @export
+#'
 #' @examples
 #' data("model_train", package = "RprobitB")
 #' logLik(model_train)
@@ -442,6 +453,7 @@ logLik <- function(object, par_set, recompute, ...) {
 }
 
 #' @export
+#' @rdname logLik
 
 logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
   if(!is.null(object[["ll"]]) && !recompute){
@@ -483,6 +495,7 @@ npar <- function(object, ...) {
 }
 
 #' @export
+#' @rdname npar
 
 npar.RprobitB_fit <- function(object, ...) {
   models <- list(...)

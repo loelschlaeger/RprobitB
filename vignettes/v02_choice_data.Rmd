@@ -59,7 +59,7 @@ Additionally, {RprobitB} asks the following formal requirements:
 
 The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative.^[For alternative specific variables, the alternative names must be added to the covariates via the `_` separator.]
 
-```{r overview Train data}
+```{r, overview-Train-data}
 data("Train", package = "mlogit")
 str(Train)
 ```
@@ -100,19 +100,19 @@ To impose random effects for specific variables, we need to define a character v
 
 We specify a model formula for the Train data set. Say we want to include all the covariates `price`, `time`, `comfort`, and `change`, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs: 
 
-```{r train formula}
+```{r, train-formula}
 form <- choice ~ price + time + comfort + change | 0
 ```
 
 Additionally, we specify random effects for `price` and `time` (because we would typically expect heterogeneity here):
 
-```{r train re}
+```{r, train-re}
 re <- c("price","time")
 ```
 
 {RprobitB} provides the function `check_form()` which can be used to check if `form` and `re` are correctly interpreted:
 
-```{r check form}
+```{r, check-form}
 check_form(form = form, re = re)
 ```
 
@@ -149,13 +149,13 @@ The function performs compatibility checks and data transformations and returns 
 
 Let's prepare the Train data set for estimation with our previous specification of `form` and `re`:
 
-```{r prepare Train}
+```{r, prepare-Train}
 data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc = "choiceid")
 ```
 
 The `summary` and `plot` methods provide a quick data overview:
 
-```{r summary Train}
+```{r, summary-Train}
 summary(data)
 plot(data)
 ```
@@ -204,7 +204,7 @@ True parameters that are not specified will be set at random.
 
 For illustration, we simulate the choices of `N = 100` deciders at `T = 10` choice occasions between the alternatives `A` and `B`:
 
-```{r data sim meta}
+```{r, data-sim-meta}
 N <- 100
 T <- 10
 alternatives <- c("A", "B")
@@ -214,13 +214,13 @@ re <- c("ASC", "var2")
 
 {RprobitB} provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified:
 
-```{r data sim overview}
+```{r, data-sim-overview}
 overview_effects(form = form, re = re, alternatives = alternatives)
 ```
 
 Hence, the coefficient vector `alpha` must be of length 3, where the elements 1 to 3 correspond to `var1`, `var3_A`, and `var3_B`, respectively. The matrix `b` must be of dimension 2 x `C`, where (by default) `C = 1` and row 1 and 2 correspond to `var2_A` and `ASC_A`, respectively.
 
-```{r data sim}
+```{r, data-sim}
 data <- simulate_choices(
   form = form, 
   N = N, 
@@ -237,7 +237,7 @@ summary(data)
 
 We can visualize the covariates grouped by the chosen alternatives:
 
-```{r data plot by choice}
+```{r, data-plot-by-choice}
 plot(data, by_choice = TRUE)
 ``` 
 
@@ -247,13 +247,13 @@ What we see is consistent with our specification: Higher values of `var1_A` for 
 
 The function `train_test()` can be used to split the output of `prepare_data()` or `simulate_choices()` into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model. For example, the following code puts 70% of deciders from our simulated `data` into the train subsample and 30% of deciders in the test subsample:
 
-```{r data split deciders}
+```{r, data-split-deciders}
 train_test(data, test_proportion = 0.3, by = "N")
 ```
 
 Alternatively, the following code puts 2 randomly chosen choice occasions per decider from `data` into the test subsample, the rest goes into the train subsample:
 
-```{r data split occasions}
+```{r, data-split-occasions}
 train_test(data, test_number = 2, by = "T", random = TRUE, seed = 1)
 ```
 
