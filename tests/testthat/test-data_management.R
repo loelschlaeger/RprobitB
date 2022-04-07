@@ -66,18 +66,18 @@ test_that("data preparation works", {
 })
 
 test_that("missing data replacement works", {
-  choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
+  choice_data <- data.frame("A" = c(1, NA, 3), "B" = c(1, 2, Inf))
   expect_equal(
     missing_data(choice_data, "complete_cases"),
     data.frame("A" = c(1), "B" = c(1))
   )
   expect_equal(
     missing_data(choice_data, "zero_out"),
-    data.frame("A" = c(1,0,3), "B" = c(1,2,0))
+    data.frame("A" = c(1, 0, 3), "B" = c(1, 2, 0))
   )
   expect_equal(
     missing_data(choice_data, "mean"),
-    data.frame("A" = c(1,2,3), "B" = c(1,2,1.5))
+    data.frame("A" = c(1, 2, 3), "B" = c(1, 2, 1.5))
   )
 })
 
