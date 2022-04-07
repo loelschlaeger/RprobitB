@@ -63,14 +63,6 @@ Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 
-\item{missing_data}{Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in
-\code{choice_data}. The following options are available:
-\itemize{
-\item \code{"complete_cases"}, removes rows containing missing entries,
-\item \code{"zero_out"}, replaces missing entries by zero,
-\item \code{"mean"}, imputes missing entries by the covariate mean.
-}}
-
 \item{scale}{A named list of three elements, determining the parameter normalization with
 respect to the utility scale:
 \itemize{

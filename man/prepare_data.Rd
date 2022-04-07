@@ -12,7 +12,7 @@ prepare_data(
   id = "id",
   idc = NULL,
   standardize = NULL,
-  missing_data = "complete_cases"
+  impute = "complete_cases"
 )
 }
 \arguments{
@@ -32,26 +32,8 @@ By default, alternative specific constants (ASCs) are added to the model
 They can be removed by adding \code{+0} in the second spot.
 See the vignette on choice data for more details.}
 
-\item{choice_data}{A data frame of choice data with the following requirements:
-\itemize{
-\item It \strong{must} be in "wide" format, i.e. each row represents one choice
-occasion.
-\item It \strong{must} contain a column named \code{id} which contains unique
-identifier for each decision maker.
-\item It \strong{can} contain a column named \code{idc} which contains unique
-identifier for each choice situation of each decision maker.
-If this information is missing, these identifier are generated
-automatically by the appearance of the choices in the data set.
-\item It \strong{can} contain a column named \code{choice} with the observed
-choices, where \code{choice} must match the name of the dependent
-variable in \code{form}.
-Such a column is required for model fitting but not for prediction.
-\item It \strong{must} contain a numeric column named \emph{p_j} for each alternative
-specific covariate \emph{p} in \code{form} and each choice alternative \emph{j}
-in \code{alternatives}.
-\item It \strong{must} contain a numeric column named \emph{q} for each covariate \emph{q}
-in \code{form} that is constant across alternatives.
-}}
+\item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
+choice occasion.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
@@ -74,12 +56,15 @@ Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 
-\item{missing_data}{Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in
-\code{choice_data}. The following options are available:
+\item{impute}{A character that specifies how to handle missing entries (the elements of)
+\code{as_missing}) in \code{choice_data}, one of:
 \itemize{
-\item \code{"complete_cases"}, removes rows containing missing entries,
-\item \code{"zero_out"}, replaces missing entries by zero,
-\item \code{"mean"}, imputes missing entries by the covariate mean.
+\item \code{"complete_cases"}, removes all rows containing missing entries
+(the default),
+\item \code{"zero_out"}, replaces missing entries by zero
+(only for numeric columns),
+\item \code{"mean"}, imputes missing entries by the covariate mean
+(only for numeric columns).
 }}
 }
 \value{
@@ -89,6 +74,25 @@ An object of class \code{RprobitB_data}.
 This function prepares empirical choice data.
 }
 \details{
+Requirements for \code{choice_data}:
+\itemize{
+\item It \strong{must} contain a column named \code{id} which contains unique
+identifier for each decision maker.
+\item It \strong{can} contain a column named \code{idc} which contains unique
+identifier for each choice situation of each decision maker.
+If this information is missing, these identifier are generated
+automatically by the appearance of the choices in the data set.
+\item It \strong{can} contain a column named \code{choice} with the observed
+choices, where \code{choice} must match the name of the dependent
+variable in \code{form}.
+Such a column is required for model fitting but not for prediction.
+\item It \strong{must} contain a numeric column named \emph{p_j} for each alternative
+specific covariate \emph{p} in \code{form} and each choice alternative \emph{j}
+in \code{alternatives}.
+\item It \strong{must} contain a numeric column named \emph{q} for each covariate \emph{q}
+in \code{form} that is constant across alternatives.
+}
+
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
 for more details.
 }

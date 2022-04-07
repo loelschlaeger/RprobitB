@@ -7,7 +7,8 @@
 as_cov_names(choice_data, cov, alternatives)
 }
 \arguments{
-\item{choice_data}{A data frame.}
+\item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
+choice occasion.}
 
 \item{cov}{A character vector of the names of alternative specific covariates in
 \code{choice_data}.}

@@ -7,8 +7,8 @@
 create_lagged_cov(choice_data, column, k = 1, id = "id")
 }
 \arguments{
-\item{choice_data}{A data frame of choice data, which is assumed to be sorted by choice
-occasions: First choice occasions on top.}
+\item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
+choice occasion.}
 
 \item{column}{A character, the column name in \code{choice_data}, i.e. the covariate name.
 Can be a vector.}
@@ -17,7 +17,7 @@ Can be a vector.}
 details. Can be a vector. The default is \code{k = 1}.}
 
 \item{id}{A character, the name of the column in \code{choice_data} that contains
-unique identifier for each decision maker. The default is \code{id = "id"}.}
+unique identifier for each decision maker. The default is \code{"id"}.}
 }
 \value{
 The input data frame \code{choice_data} with the additional columns
@@ -26,8 +26,8 @@ containing the lagged covariates.
 }
 \description{
 This convenience function creates lagged choice covariates from a data frame
-\code{choice_data}. This is useful if a choice should be explained by a
-covariate from a previous choice occasion. The function is vectorized over
+\code{choice_data}, which is assumed to be sorted by choice
+occasions: First choice occasions on top. The function is vectorized over
 \code{column} and \code{k}.
 }
 \details{

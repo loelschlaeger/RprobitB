@@ -188,8 +188,8 @@ overview_effects <- function(form, re = NULL, alternatives) {
 #'
 #' @description
 #' This convenience function creates lagged choice covariates from a data frame
-#' \code{choice_data}. This is useful if a choice should be explained by a
-#' covariate from a previous choice occasion. The function is vectorized over
+#' \code{choice_data}, which is assumed to be sorted by choice
+#' occasions: First choice occasions on top. The function is vectorized over
 #' \code{column} and \code{k}.
 #'
 #' @details
@@ -205,18 +205,13 @@ overview_effects <- function(form, re = NULL, alternatives) {
 #' \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 #' be \code{NA} (initial condition problem).
 #'
-#' @param choice_data
-#' A data frame of choice data, which is assumed to be sorted by choice
-#' occasions: First choice occasions on top.
+#' @inheritParams prepare_data
 #' @param column
 #' A character, the column name in \code{choice_data}, i.e. the covariate name.
 #' Can be a vector.
 #' @param k
 #' A positive number, the number of lags (in units of observations), see the
 #' details. Can be a vector. The default is \code{k = 1}.
-#' @param id
-#' A character, the name of the column in \code{choice_data} that contains
-#' unique identifier for each decision maker. The default is \code{id = "id"}.
 #'
 #' @return
 #' The input data frame \code{choice_data} with the additional columns
@@ -299,19 +294,18 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 #'
 #' @description
 #' In {RprobitB}, alternative specific covariates must be named in the format
-#' `"<covariate>_<alternative>"`. This convenience function generates
-#' the format for a given `choice_data` set.
+#' \code{"<covariate>_<alternative>"}. This convenience function generates
+#' the format for a given \code{choice_data} set.
 #'
-#' @param choice_data
-#' A data frame.
+#' @inheritParams prepare_data
 #' @param cov
 #' A character vector of the names of alternative specific covariates in
-#' `choice_data`.
+#' \code{choice_data}.
 #' @param alternatives
 #' A (character or numeric) vector of the alternative names.
 #'
 #' @return
-#' The `choice_data` input with updated column names.
+#' The \code{choice_data} input with updated column names.
 #'
 #' @examples
 #' data("Electricity", package = "mlogit")
@@ -345,15 +339,8 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #' This function prepares empirical choice data.
 #'
 #' @details
-#' See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html)
-#' for more details.
-#'
-#' @inheritParams check_form
-#' @param choice_data
-#' A data frame of choice data with the following requirements:
+#' Requirements for \code{choice_data}:
 #' \itemize{
-#'   \item It **must** be in "wide" format, i.e. each row represents one choice
-#'         occasion.
 #'   \item It **must** contain a column named \code{id} which contains unique
 #'         identifier for each decision maker.
 #'   \item It **can** contain a column named \code{idc} which contains unique
@@ -370,6 +357,14 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #'   \item It **must** contain a numeric column named *q* for each covariate *q*
 #'         in \code{form} that is constant across alternatives.
 #' }
+#'
+#' See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html)
+#' for more details.
+#'
+#' @inheritParams check_form
+#' @param choice_data
+#' A data frame of choice data in wide format, i.e. each row represents one
+#' choice occasion.
 #' @param id
 #' A character, the name of the column in \code{choice_data} that contains
 #' unique identifier for each decision maker. The default is \code{"id"}.
@@ -379,14 +374,7 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #' The default is \code{NULL}, in which case these identifier are generated
 #' automatically.
 #' @inheritParams RprobitB_data
-#' @param missing_data
-#' Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in
-#' \code{choice_data}. The following options are available:
-#' \itemize{
-#'   \item \code{"complete_cases"}, removes rows containing missing entries,
-#'   \item \code{"zero_out"}, replaces missing entries by zero,
-#'   \item \code{"mean"}, imputes missing entries by the covariate mean.
-#' }
+#' @inheritParams missing_data
 #'
 #' @return
 #' An object of class \code{RprobitB_data}.
@@ -416,16 +404,7 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 
 prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
                          id = "id", idc = NULL, standardize = NULL,
-                         missing_data = "complete_cases") {
-
-  ### check input
-  if(!(is.character(missing_data) && length(missing_data) == 1 &&
-       missing_data %in% c("complete_cases","zero_out","mean"))) {
-    stop(
-      "'missing_data' must be either 'complete_cases', 'zero_out' or 'mean'.",
-      call. = FALSE
-      )
-  }
+                         impute = "complete_cases") {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)
@@ -463,58 +442,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### handle missing data
-  pb <- RprobitB_progress(title = "Checking missing data",
-                          total = ncol(choice_data))
-  if(missing_data == "complete_cases"){
-    bad_rows <- c()
-    for (col in 1:ncol(choice_data)) {
-      RprobitB_pp(pb)
-      for (row in 1:nrow(choice_data)) {
-        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) ||
-            is.nan(choice_data[row, col])) {
-          bad_rows <- c(bad_rows, row)
-        }
-      }
-    }
-    if(length(bad_rows) > 0){
-      choice_data <- choice_data[-unique(bad_rows),,drop=FALSE]
-    }
-  } else if(missing_data == "zero_out"){
-    for (col in 1:ncol(choice_data)) {
-      RprobitB_pp(pb)
-      for (row in 1:nrow(choice_data)) {
-        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) ||
-            is.nan(choice_data[row, col])) {
-          if(is.numeric(choice_data[, col])){
-            choice_data[row, col] <- 0
-          } else {
-            stop(
-              "In 'choice_data', cannot apply 'zero_out' to entry [",row,
-              ",",col,"] because column is not numeric. Use 'complete_cases' instead.",
-              call. = FALSE
-            )
-          }
-        }
-      }
-    }
-  } else if(missing_data == "mean"){
-    for (col in 1:ncol(choice_data)) {
-      RprobitB_pp(pb)
-      for (row in 1:nrow(choice_data)) {
-        if (is.na(choice_data[row, col]) || is.infinite(choice_data[row, col]) ||
-            is.nan(choice_data[row, col])) {
-          if(is.numeric(choice_data[, col])){
-            choice_data[row, col] <- mean(choice_data[, col, na.rm = TRUE])
-          } else {
-            stop(
-              "In 'choice_data', cannot apply 'mean' to entry [",row,",",
-              col,"] because column is not numeric. Use 'complete_cases' instead.",
-              call. = FALSE)
-          }
-        }
-      }
-    }
-  }
+  choice_data <- missing_data(choice_data = choice_data, impute = impute)
 
   ### transform 'id' of 'choice_data' to factor
   choice_data[, id] <- as.factor(choice_data[, id])
@@ -733,6 +661,93 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 
   ### return 'RprobitB_data' object
   return(out)
+}
+
+#' Handle missing choice data
+#'
+#' @description
+#' This function checks for and replaces missing entries in \code{choice_data}.
+#'
+#' @inheritParams prepare_data
+#' @param impute
+#' A character that specifies how to handle missing entries (the elements of)
+#' \code{as_missing}) in \code{choice_data}, one of:
+#' \itemize{
+#'   \item \code{"complete_cases"}, removes all rows containing missing entries
+#'   (the default),
+#'   \item \code{"zero_out"}, replaces missing entries by zero
+#'   (only for numeric columns),
+#'   \item \code{"mean"}, imputes missing entries by the covariate mean
+#'   (only for numeric columns).
+#' }
+#' @param as_missing
+#' A vector of elements that are interpreted as missing data entries,
+#' the default is \code{as_missing = c(NA, NaN, -Inf, Inf)}.
+#'
+#' @return
+#' The input \code{choice_data}, in which missing entries were addressed.
+#'
+#' @examples
+#' choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
+#' missing_data(choice_data, "complete_cases")
+#' missing_data(choice_data, "zero_out")
+#' missing_data(choice_data, "mean")
+#'
+#' @export
+
+missing_data <- function(choice_data, impute = "complete_cases",
+                         as_missing = c(NA, NaN, -Inf, Inf)) {
+
+  ### check input
+  if (!is.data.frame(choice_data)) {
+    stop("'choice_data' must be a data frame.", call. = FALSE)
+  }
+  if(!(is.character(impute) && length(impute) == 1 &&
+       impute %in% c("complete_cases","zero_out","mean"))) {
+    stop(
+      "'impute' must be either 'complete_cases', 'zero_out' or 'mean'.",
+      call. = FALSE
+    )
+  }
+
+  ### find NA values
+  na_pos <- which(sapply(choice_data, `%in%`, as_missing), arr.ind = TRUE)
+
+  if(nrow(na_pos) > 0){
+
+    ### imputation
+    if(impute == "complete_cases"){
+      choice_data <- choice_data[-na_pos[,"row"], , drop = FALSE]
+    } else {
+      if(any(sapply(unique(na_pos[,"col"]),
+                    function(x) !is.numeric(choice_data[, x])))) {
+        stop(paste0("Cannot apply 'impute = ", impute,
+                    "' to columns that are not numeric."), call. = FALSE)
+      }
+      if(impute == "zero_out") {
+        for(i in 1:nrow(na_pos)){
+          choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- 0
+        }
+      }
+      if(impute == "mean") {
+        for(i in 1:nrow(na_pos)){
+          com_ind <- na_pos[which(na_pos[,"col"] == na_pos[i,"col"]), "row"]
+          mean_data <- choice_data[, na_pos[i,"col"]][-com_ind]
+          if(length(mean_data) == 0){
+            stop(paste0("Cannot apply 'impute = mean' to column '",
+                        colnames(choice_data)[na_pos[i,"col"]]), "'.",
+                 call. = FALSE)
+          }
+
+          choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- mean(mean_data,
+                                                               na.rm = TRUE)
+        }
+      }
+    }
+  }
+
+  ### return updated 'choice_data' object
+  return(choice_data)
 }
 
 #' Simulate choice data
