@@ -11,13 +11,13 @@ It consists of the following columns:
 \itemize{
 \item \code{player_id}, unique lichess username of the chess player
 \item \code{game_id}, unique lichess identification of the game
-\item \code{berserk}, a boolean whether the player berserked
-\item \code{color}, the color of the player (either 'white' or 'black')
+\item \code{berserk}, \code{1} if the player berserked and \code{0} if not,
+\item \code{white}, \code{1} if the player had the white pieces and \code{0} if not
 \item \code{rating}, the player's lichess bullet rating at the start of the game
-\item \code{rating_diff}, the rating difference to the opponent,
-\item \code{lost}, a boolean whether the player lost their game (and hence lost his streak)
+\item \code{rating_diff}, the rating difference to the opponent
+\item \code{lost}, \code{1} if the player lost the game (and hence lost the streak) and \code{0} if not
 \item \code{min_rem}, the number of minutes left in the tournament
-\item \code{streak}, a boolean whether the player is on a streak (see the details)
+\item \code{streak}, \code{1} if the player is on a streak (see the details) and \code{0} if not
 }
 }
 \source{
