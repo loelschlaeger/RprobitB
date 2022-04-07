@@ -32,15 +32,15 @@ The functions of {RprobitB} can be grouped into ones for data management, model 
 
 A typical workflow is as follows:
 
-1. Prepare a choice data set via the `prepare_data()` function or simulate data via `simulate_choices()`. Both functions return an `RprobitB_data` object that can be fed into the estimation routine. See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html) for details.
+1. Prepare a choice data set via the `prepare_data()` function or simulate data via `simulate_choices()` (true model parameters can be set as an `RprobitB_parameter` object). Both functions return an `RprobitB_data` object that can be fed into the estimation routine. The `train_test()` allows to optionally split the data into an estimation and a validation part. See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html) for details.
 
-2. The estimation routine is called `mcmc()` (for Markov chain Monte Carlo) and returns an `RprobitB_fit` object. See the vignettes [on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html) and [on modeling heterogeneity](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html). 
+2. The estimation routine is called `mcmc()` (for Markov chain Monte Carlo) and returns an `RprobitB_fit` object. The `transform_fit()` function allows to change normalization of the model after a model has been fitted. See the vignettes [on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html) and [on modeling heterogeneity](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html). 
 
 3. The `RprobitB_fit` object can be fed into `coef()` to show the covariate effects on the choices and into `predict()` to compute choice probabilities and forecast choice behavior if choice characteristics would change, see [the vignette on choice prediction](https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html).
    
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-![The flowchart of {RprobitB}. The functions `check_form()` and `overview_effects()` help the user to verify the correctness of the data and model specification. `train_test()` allows to split the data into an estimation and a validation part. `transform_fit()` allows to change normalization of the model after a model has been fitted. ](flowchart.png){width=80%}
+![The flowchart of {RprobitB}.](flowchart.png){width=80%}
 
 ## Printing the progress of computations
 
