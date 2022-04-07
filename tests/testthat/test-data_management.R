@@ -33,16 +33,19 @@ test_that("lagged choice covariates can be created", {
   choice_data <- data.frame("A" = rep(1:3, each = 3), "B" = rep(1:3, times = 3))
   expect_equal(
     create_lagged_cov(choice_data = choice_data, column = "B", k = 1, id = "A"),
-    cbind(choice_data, "B.1" = rep(c(NA,1,2), 3))
+    cbind(choice_data, "B.1" = rep(c(NA, 1, 2), 3))
   )
 })
 
 test_that("alternative-specific covariates can be renamed", {
   choice_data <- as_cov_names(
-    choice_data = data.frame("A1" = NA, "A2" = NA, "B1" = NA, "B2" = NA,
-                             "C" = NA),
+    choice_data = data.frame(
+      "A1" = NA, "A2" = NA, "B1" = NA, "B2" = NA,
+      "C" = NA
+    ),
     cov = c("A", "B"),
-    alternatives = c("1", "2"))
+    alternatives = c("1", "2")
+  )
   expect_equal(colnames(choice_data), c("A_1", "A_2", "B_1", "B_2", "C"))
 })
 
@@ -86,12 +89,16 @@ test_that("splitting data set by N works", {
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "N"))
   expect_snapshot(train_test(x, test_proportion = 0, by = "N"))
   expect_snapshot(train_test(x, test_proportion = 1, by = "N"))
-  expect_snapshot(train_test(x, test_proportion = 0.5, by = "N",
-                             random = TRUE, seed = 1))
+  expect_snapshot(train_test(x,
+    test_proportion = 0.5, by = "N",
+    random = TRUE, seed = 1
+  ))
   expect_snapshot(train_test(x, test_number = 1, by = "N"))
   expect_snapshot(train_test(x, test_number = 2, by = "N"))
-  expect_snapshot(train_test(x, test_number = 1, by = "N",
-                             random = TRUE, seed = 1))
+  expect_snapshot(train_test(x,
+    test_number = 1, by = "N",
+    random = TRUE, seed = 1
+  ))
 })
 
 test_that("splitting data set by T works", {
@@ -100,11 +107,14 @@ test_that("splitting data set by T works", {
     re = "covariate", C = 2, seed = 1
   )
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "T"))
-  expect_snapshot(train_test(x, test_proportion = 0.5, by = "T",
-                             random = TRUE, seed = 1))
+  expect_snapshot(train_test(x,
+    test_proportion = 0.5, by = "T",
+    random = TRUE, seed = 1
+  ))
   expect_snapshot(train_test(x, test_number = 1, by = "T"))
   expect_snapshot(train_test(x, test_number = 2, by = "T"))
-  expect_snapshot(train_test(x, test_number = 1, by = "T",
-                             random = TRUE, seed = 1))
+  expect_snapshot(train_test(x,
+    test_number = 1, by = "T",
+    random = TRUE, seed = 1
+  ))
 })
-
