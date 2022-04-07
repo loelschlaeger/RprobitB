@@ -250,13 +250,10 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <span class="co">#&gt;  $ gibbs_samples_raw:List of 2</span>
 <span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...</span>
 <span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...</span></code></pre></div>
-<p>This object contains 5 elements:</p>
+<p>This object contains 2 elements:</p>
 <ul>
-<li><p><code>gibbs_samples</code> is a list of the raw samples from the Gibbs sampler,</p></li>
-<li><p><code>gibbs_samples_n</code> is the normalized version of <code>gibbs_samples</code>,</p></li>
-<li><p><code>gibbs_samples_nb</code> are the elements of <code>gibbs_sample_n</code> after the burn-in period,</p></li>
-<li><p><code>gibbs_samples_nt</code> are the thinned elements of <code>gibbs_sample_n</code>,</p></li>
-<li><p>and <code>gibbs_samples_nbt</code> are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after burn-in.</p></li>
+<li><p><code>gibbs_samples_raw</code> is a list of the raw samples from the Gibbs sampler,</p></li>
+<li><p>and <code>gibbs_samples_nbt</code> are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after the burn-in.</p></li>
 </ul>
 <p>Calling the summary function on the estimated <code>RprobitB_fit</code> object yields additional information about the Gibbs samples <code>gibbs_samples_nbt</code>. You can specify a list <code>FUN</code> of functions that compute any point estimate of the Gibbs samples<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the function &lt;code&gt;&lt;a href="../reference/point_estimates.html"&gt;point_estimates()&lt;/a&gt;&lt;/code&gt; to access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code&gt; object.&lt;/p&gt;'><sup>5</sup></a>, for example</p>
 <ul>
