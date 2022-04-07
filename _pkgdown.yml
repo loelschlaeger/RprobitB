@@ -1,7 +1,7 @@
 url: https://loelschlaeger.de/RprobitB/
 
 home:
-  title: Probit models for choice data
+  title: Probit models for discrete choice data
 
 authors:
   Lennart Oelschläger:
@@ -26,15 +26,12 @@ navbar:
       href: https://github.com/loelschlaeger/RprobitB/blob/main/TODO.md
 
 reference:
-- title: Datasets
-  desc: The following datasets are included in the package.
-  contents:
-  - has_keyword("dataset")
 - title: Data management
-  desc: Use these functions for data preparation.
+  desc: Use these functions for the choice data preparation or simulation.
   contents:
   - check_form
   - overview_effects
+  - create_lagged_cov
   - as_cov_names
   - prepare_data
   - simulate_choices
@@ -47,10 +44,6 @@ reference:
   - mcmc
   - nested_model
   - transform.RprobitB_fit
-- title: Fitted model
-  desc: The package contains the following fitted models.
-  contents:
-  - has_keyword("model")
 - title: Model evaluation
   desc: Use these functions for model evaluation.
   contents:
@@ -74,6 +67,14 @@ reference:
   - mml
   - compute_p_si
   - pred_acc
+- title: Datasets
+  desc: The following datasets are included in the package.
+  contents:
+  - has_keyword("dataset")
+- title: Fitted model
+  desc: The package contains the following fitted models.
+  contents:
+  - has_keyword("model")
 - title: Constructor functions
   desc: These functions construct the S3 classes of RprobitB.
   contents:

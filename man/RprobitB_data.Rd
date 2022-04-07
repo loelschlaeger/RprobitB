@@ -49,11 +49,11 @@ automatically by the appearance of the choices in the data set.
 choices, where \code{choice} must match the name of the dependent
 variable in \code{form}.
 Such a column is required for model fitting but not for prediction.
-\item It \strong{must} contain a column named \emph{p_j} for each alternative
+\item It \strong{must} contain a numeric column named \emph{p_j} for each alternative
 specific covariate \emph{p} in \code{form} and each choice alternative \emph{j}
 in \code{alternatives}.
-\item It \strong{must} contain a column named \emph{q} for each covariate \emph{q} in
-\code{form} that is constant across alternatives.
+\item It \strong{must} contain a numeric column named \emph{q} for each covariate \emph{q}
+in \code{form} that is constant across alternatives.
 }}
 
 \item{N}{The number (greater or equal 1) of decision makers.}

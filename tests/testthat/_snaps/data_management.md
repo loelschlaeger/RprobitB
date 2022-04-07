@@ -1,3 +1,85 @@
+# overview effects can be generated
+
+    Code
+      out
+    Output
+              name    re
+      1 income_bus FALSE
+      2 income_car FALSE
+      3   time_bus FALSE
+      4   time_car FALSE
+      5 time_train FALSE
+      6       cost  TRUE
+      7    ASC_bus  TRUE
+      8    ASC_car  TRUE
+
+# data preparation works
+
+    Code
+      print(data)
+    Output
+      Empirical data of 2929 choices.
+
+---
+
+    Code
+      summary(data)
+    Output
+      Summary of empirical choice data
+      235 decision makers 
+      5 to 19 choice occasions each 
+      2929 choices in total
+      
+      Alternatives
+        frequency
+      A      1474
+      B      1455
+      
+      Linear coefficients
+             name    re
+      1     ASC_A FALSE
+      2 comfort_A FALSE
+      3 comfort_B FALSE
+      4  change_A FALSE
+      5  change_B FALSE
+      6     price  TRUE
+      7    time_A  TRUE
+      8    time_B  TRUE
+
+# simulating choice data works
+
+    Code
+      print(data)
+    Output
+      Simulated data of 55 choices.
+
+---
+
+    Code
+      summary(data)
+    Output
+      Summary of simulated choice data
+      10 decision makers 
+      1 to 10 choice occasions each 
+      55 choices in total
+      
+      Alternatives
+            frequency
+      bus           7
+      car          22
+      train        26
+      
+      Linear coefficients
+              name    re
+      1 income_bus FALSE
+      2 income_car FALSE
+      3   time_bus FALSE
+      4   time_car FALSE
+      5 time_train FALSE
+      6       cost  TRUE
+      7    ASC_bus  TRUE
+      8    ASC_car  TRUE
+
 # splitting data set by N works
 
     Code
