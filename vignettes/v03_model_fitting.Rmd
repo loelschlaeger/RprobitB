@@ -223,17 +223,11 @@ The Gibbs samples are saved in list form in the `RprobitB_fit` object at the ent
 str(model_train$gibbs_samples, max.level = 2, give.attr = FALSE)
 ```
 
-This object contains 5 elements:
+This object contains 2 elements:
 
-- `gibbs_samples` is a list of the raw samples from the Gibbs sampler,
+- `gibbs_samples_raw` is a list of the raw samples from the Gibbs sampler,
 
-- `gibbs_samples_n` is the normalized version of `gibbs_samples`,
-
-- `gibbs_samples_nb` are the elements of `gibbs_sample_n` after the burn-in period,
-
-- `gibbs_samples_nt` are the thinned elements of `gibbs_sample_n`,
-
-- and `gibbs_samples_nbt` are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after burn-in.
+- and `gibbs_samples_nbt` are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after the burn-in.
 
 Calling the summary function on the estimated `RprobitB_fit` object yields additional information about the Gibbs samples `gibbs_samples_nbt`. You can specify a list `FUN` of functions that compute any point estimate of the Gibbs samples^[Use the function `point_estimates()` to access the Gibbs sample statistics as an `RprobitB_parameter` object.], for example
 
