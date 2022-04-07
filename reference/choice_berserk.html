@@ -90,13 +90,13 @@ but the win is worth one extra tournament point.</p>
 in 126902 online bullet (1+0) games.
 It consists of the following columns:</p><ul><li><p><code>player_id</code>, unique lichess username of the chess player</p></li>
 <li><p><code>game_id</code>, unique lichess identification of the game</p></li>
-<li><p><code>berserk</code>, a boolean whether the player berserked</p></li>
-<li><p><code>color</code>, the color of the player (either 'white' or 'black')</p></li>
+<li><p><code>berserk</code>, <code>1</code> if the player berserked and <code>0</code> if not,</p></li>
+<li><p><code>white</code>, <code>1</code> if the player had the white pieces and <code>0</code> if not</p></li>
 <li><p><code>rating</code>, the player's lichess bullet rating at the start of the game</p></li>
-<li><p><code>rating_diff</code>, the rating difference to the opponent,</p></li>
-<li><p><code>lost</code>, a boolean whether the player lost their game (and hence lost his streak)</p></li>
+<li><p><code>rating_diff</code>, the rating difference to the opponent</p></li>
+<li><p><code>lost</code>, <code>1</code> if the player lost the game (and hence lost the streak) and <code>0</code> if not</p></li>
 <li><p><code>min_rem</code>, the number of minutes left in the tournament</p></li>
-<li><p><code>streak</code>, a boolean whether the player is on a streak (see the details)</p></li>
+<li><p><code>streak</code>, <code>1</code> if the player is on a streak (see the details) and <code>0</code> if not</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>

@@ -62,30 +62,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
-      
-      <p class="section-desc"></p><p>The following datasets are included in the package.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="choice_berserk.html">choice_berserk</a></code> 
-        </dt>
-        <dd>Choice of berserking</dd>
-      </dl><dl><dt>
-          
-          <code><a href="choice_chess_opening.html">choice_chess_opening</a></code> 
-        </dt>
-        <dd>Choice of a chess opening</dd>
-      </dl></div><div class="section level2">
       <h2 id="data-management">Data management<a class="anchor" aria-label="anchor" href="#data-management"></a></h2>
       
-      <p class="section-desc"></p><p>Use these functions for data preparation.</p>
+      <p class="section-desc"></p><p>Use these functions for the choice data preparation or simulation.</p>
 
       
     </div><div id="" class="section level2">
@@ -97,32 +76,37 @@
           
           <code><a href="check_form.html">check_form()</a></code> 
         </dt>
-        <dd>Check <code>form</code></dd>
+        <dd>Check the model formula</dd>
       </dl><dl><dt>
           
-          <code><a href="overview_effects.html">overview_effects()</a></code> 
+          <code><a href="overview_effects.html">overview_effects()</a></code> <code><a href="overview_effects.html">overview_effects()</a></code> 
         </dt>
-        <dd>Overview of effects.</dd>
+        <dd>Effect overview</dd>
+      </dl><dl><dt>
+          
+          <code><a href="create_lagged_cov.html">create_lagged_cov()</a></code> 
+        </dt>
+        <dd>Create lagged choice covariates</dd>
       </dl><dl><dt>
           
           <code><a href="as_cov_names.html">as_cov_names()</a></code> 
         </dt>
-        <dd>Relabel the alternative specific covariates</dd>
+        <dd>Relabel the alternative specific covariates to the required format</dd>
       </dl><dl><dt>
           
           <code><a href="prepare_data.html">prepare_data()</a></code> 
         </dt>
-        <dd>Prepare empirical choice data</dd>
+        <dd>Prepare empirical choice data for estimation</dd>
       </dl><dl><dt>
           
           <code><a href="simulate_choices.html">simulate_choices()</a></code> 
         </dt>
-        <dd>Simulate choice data.</dd>
+        <dd>Simulate choice data</dd>
       </dl><dl><dt>
           
           <code><a href="train_test.html">train_test()</a></code> 
         </dt>
-        <dd>Split choice data.</dd>
+        <dd>Split choice data set in two parts</dd>
       </dl><dl><dt>
           
           <code><a href="plot.RprobitB_data.html">plot(<i>&lt;RprobitB_data&gt;</i>)</a></code> 
@@ -159,33 +143,6 @@
           <code><a href="transform.html">transform(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
         <dd>Transform an <code>RprobitB_fit</code> object</dd>
-      </dl></div><div class="section level2">
-      <h2 id="fitted-model">Fitted model<a class="anchor" aria-label="anchor" href="#fitted-model"></a></h2>
-      
-      <p class="section-desc"></p><p>The package contains the following fitted models.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="model_elec.html">model_elec</a></code> 
-        </dt>
-        <dd>Mixed probit model for multivariate choice between electricity suppliers</dd>
-      </dl><dl><dt>
-          
-          <code><a href="model_train.html">model_train</a></code> 
-        </dt>
-        <dd>Probit model for binary choice between Train trip alternatives</dd>
-      </dl><dl><dt>
-          
-          <code><a href="model_train_sparse.html">model_train_sparse</a></code> 
-        </dt>
-        <dd>Probit model for binary choice between Train trip alternatives with the price
-as the only explanatory variable</dd>
       </dl></div><div class="section level2">
       <h2 id="model-evaluation">Model evaluation<a class="anchor" aria-label="anchor" href="#model-evaluation"></a></h2>
       
@@ -293,6 +250,54 @@ as the only explanatory variable</dd>
           <code><a href="pred_acc.html">pred_acc()</a></code> 
         </dt>
         <dd>Prediction accuracy</dd>
+      </dl></div><div class="section level2">
+      <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
+      
+      <p class="section-desc"></p><p>The following datasets are included in the package.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="choice_berserk.html">choice_berserk</a></code> 
+        </dt>
+        <dd>Choice of berserking</dd>
+      </dl><dl><dt>
+          
+          <code><a href="choice_chess_opening.html">choice_chess_opening</a></code> 
+        </dt>
+        <dd>Choice of a chess opening</dd>
+      </dl></div><div class="section level2">
+      <h2 id="fitted-model">Fitted model<a class="anchor" aria-label="anchor" href="#fitted-model"></a></h2>
+      
+      <p class="section-desc"></p><p>The package contains the following fitted models.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="model_elec.html">model_elec</a></code> 
+        </dt>
+        <dd>Mixed probit model for multivariate choice between electricity suppliers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_train.html">model_train</a></code> 
+        </dt>
+        <dd>Probit model for binary choice between Train trip alternatives</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_train_sparse.html">model_train_sparse</a></code> 
+        </dt>
+        <dd>Probit model for binary choice between Train trip alternatives with the price
+as the only explanatory variable</dd>
       </dl></div><div class="section level2">
       <h2 id="constructor-functions">Constructor functions<a class="anchor" aria-label="anchor" href="#constructor-functions"></a></h2>
       
