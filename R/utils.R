@@ -57,7 +57,7 @@ delta <- function(J, i) {
 #' The number of parts to divide each chain into sub-chains.
 #'
 #' @return
-#' The Gelman-Rubin statistic.
+#' A numeric value, the Gelman-Rubin statistic.
 #'
 #' @examples
 #' no_chains <- 2
@@ -147,23 +147,27 @@ is_covariance_matrix <- function(x) {
 #' @param digits
 #' If \code{x} is numeric, sets the number of decimal places.
 #' @param name
-#' Either \code{NULL} or a label for \code{x}. Only printed of \code{desc = TRUE}.
+#' Either \code{NULL} or a label for \code{x}. Only printed if
+#' \code{desc = TRUE}.
 #' @param desc
 #' Set to \code{TRUE} to print the name and the dimension of \code{x}.
+#'
 #' @return
 #' Invisibly returns \code{x}.
 #'
 #' @examples
 #' RprobitB:::pprint(x = 1, name = "single integer")
 #' RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
-#' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1), name = "single column matrix")
+#' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1),
+#'                   name = "single column matrix")
 #' RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
 #' RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 #'
 #' @keywords
 #' utils
 
-pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL, desc = TRUE) {
+pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
+                   desc = TRUE) {
 
   ### Add dots
   add_dots <- function(x, pos = 3) {
@@ -179,7 +183,8 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL, desc = 
     if(desc) if(!is.null(name)) cat(name, ": ")
     cat(x)
   } else if(!is.matrix(x)) {
-    if(desc) if(!is.null(name)) cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
+    if(desc) if(!is.null(name)) cat(name, ":", typeof(x), "vector of length",
+                                    length(x), "\n\n")
     res <- if(is.numeric(x)) round(x,digits) else x
     cat(noquote(add_dots(res, coldots)))
   } else {
@@ -260,7 +265,8 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL, desc = 
       if(!is.null(name)){
         cat(name,": ")
       }
-      cat(paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"), "\n\n")
+      cat(paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"),
+          "\n\n")
     }
     prmatrix(res, rowlab = row_labels, collab = col_labels, quote = FALSE,
              right = TRUE)

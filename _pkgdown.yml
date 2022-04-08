@@ -33,6 +33,7 @@ reference:
   - overview_effects
   - create_lagged_cov
   - as_cov_names
+  - missing_data
   - prepare_data
   - RprobitB_parameter
   - simulate_choices

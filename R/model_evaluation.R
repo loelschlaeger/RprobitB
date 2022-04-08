@@ -1,7 +1,8 @@
 #' Create object of class \code{RprobitB_gibbs_samples_statistics}
 #'
 #' @description
-#' This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
+#' This function creates an object of class
+#' \code{RprobitB_gibbs_samples_statistics}.
 #'
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}.
@@ -24,7 +25,7 @@
 #' \code{FUN}.
 #'
 #' @keywords
-#' constructor
+#' internal
 
 RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 

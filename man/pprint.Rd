@@ -15,7 +15,8 @@ pprint(x, rowdots = 4, coldots = 4, digits = 4, name = NULL, desc = TRUE)
 
 \item{digits}{If \code{x} is numeric, sets the number of decimal places.}
 
-\item{name}{Either \code{NULL} or a label for \code{x}. Only printed of \code{desc = TRUE}.}
+\item{name}{Either \code{NULL} or a label for \code{x}. Only printed if
+\code{desc = TRUE}.}
 
 \item{desc}{Set to \code{TRUE} to print the name and the dimension of \code{x}.}
 }
@@ -28,7 +29,8 @@ This function prints abbreviated matrices and vectors.
 \examples{
 RprobitB:::pprint(x = 1, name = "single integer")
 RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
-RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1), name = "single column matrix")
+RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1),
+                  name = "single column matrix")
 RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
 RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 

@@ -14,7 +14,7 @@ run.}
 \item{parts}{The number of parts to divide each chain into sub-chains.}
 }
 \value{
-The Gelman-Rubin statistic.
+A numeric value, the Gelman-Rubin statistic.
 }
 \description{
 This function computes the Gelman-Rubin statistic \code{R_hat}.
