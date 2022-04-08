@@ -25,10 +25,16 @@ test_that("check for covariance matrix works", {
 test_that("printing abbreviated matrices and vectors works", {
   expect_snapshot(RprobitB:::pprint(x = 1, name = "single integer"))
   expect_snapshot(RprobitB:::pprint(x = LETTERS[1:26], name = "letters"))
-  expect_snapshot(RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1),
-                                    name = "single column matrix"))
-  expect_snapshot(RprobitB:::pprint(x = matrix(1:100, nrow = 1),
-                                    name = "single row matrix"))
-  expect_snapshot(RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6),
-                                    name = "big matrix"))
+  expect_snapshot(RprobitB:::pprint(
+    x = matrix(rnorm(100), ncol = 1),
+    name = "single column matrix"
+  ))
+  expect_snapshot(RprobitB:::pprint(
+    x = matrix(1:100, nrow = 1),
+    name = "single row matrix"
+  ))
+  expect_snapshot(RprobitB:::pprint(
+    x = matrix(LETTERS[1:24], ncol = 6),
+    name = "big matrix"
+  ))
 })
