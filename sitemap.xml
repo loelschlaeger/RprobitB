@@ -160,6 +160,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/mcmc.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/missing_data.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/mml.html</loc>
   </url>
   <url>
@@ -221,6 +224,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/preference_classification.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/preference_flip.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/prepare_data.html</loc>
