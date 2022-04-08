@@ -261,19 +261,20 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' Compute WAIC value
 #'
 #' @description
-#' This function computes the WAIC value of an \code{RprobitB_fit}-object.
+#' This function computes the WAIC value of an \code{RprobitB_fit} object.
 #'
 #' @details
-#' WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion.
-#' As for AIC and BIC, the smaller the WAIC value the better the model.
-#' Its definition is
-#' \deqn{\text{WAIC} = -2 ( \text{lppd} - p_\text{WAIC} ),}
+#' WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
+#' Criterion. As for AIC and BIC, the smaller the WAIC value the better the
+#' model. Its definition is
+#' \deqn{\text{WAIC} = -2 \cdot \text{lppd} + 2 \cdot  p_\text{WAIC},}
 #' where \eqn{\text{lppd}} stands for log pointwise predictive density and
 #' \eqn{p_\text{WAIC}} is a penalty term proportional to the variance in the
-#' posterior distribution that is sometimes called effective number of parameters.
+#' posterior distribution that is sometimes called effective number of
+#' parameters.
 #' The \eqn{\text{lppd}} is approximated as follows. Let
 #' \deqn{p_{is} = \Pr(y_i\mid \theta_s)} be the probability of observation
-#' \eqn{y_i} given the \eqn{s}-th set \eqn{\theta_s} of parameter samples from
+#' \eqn{y_i} given the \eqn{s}th set \eqn{\theta_s} of parameter samples from
 #' the posterior. Then
 #' \deqn{\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.}
 #' The penalty term is computed as the sum over the variances in log-probability
@@ -281,7 +282,8 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' \deqn{p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right].}
 #' The \eqn{\text{WAIC}} has a standard error \eqn{\text{SE}} of
 #' \deqn{\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} -
-#' \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]}.}
+#' \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]},}
+#' where \eqn{n} is the number of choices.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
@@ -300,7 +302,8 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' data("model_train", package = "RprobitB")
 #' x <- WAIC(model_train)
 #' print(x)
-#' \donttest{
+#'
+#' \dontrun{
 #' ### plot convergence
 #' plot(x)
 #' }
@@ -672,7 +675,7 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
 
   ### input checks
   if(class(x) != "RprobitB_fit"){
-    stop("'x' must be of class 'RprobitB_fit.")
+    stop("'x' must be of class 'RprobitB_fit.", call. = FALSE)
   }
   if(is.null(x[["p_si"]])){
     stop("Cannot compute the marginal model likelihood.\n",
@@ -683,10 +686,10 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
     stop("'S' must be an integer.")
   }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
-    stop("'ncores' must be a positive integer.")
+    stop("'ncores' must be a positive integer.", call. = FALSE)
   }
   if(!(length(recompute) == 1 && class(recompute) == "logical")){
-    stop("'recompute' must be a boolean.")
+    stop("'recompute' must be a boolean.", call. = FALSE)
   }
 
   ### check if 'mml' in 'x' already exists if 'recompute = FALSE'

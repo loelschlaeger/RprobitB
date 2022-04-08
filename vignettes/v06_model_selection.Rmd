@@ -103,7 +103,7 @@ WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion [
 
 The WAIC is defined as 
 
-$$-2 \text{lppd} + 2\cdot p_\text{WAIC},$$
+$$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
 
 where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:16 p. 220 for a reference.
 
@@ -113,7 +113,8 @@ $$\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).$$
 The penalty term is computed as the sum over the variances in log-probability for each observation:
 $$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . $$
 The $\text{WAIC}$ has a standard error of
-$$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]}.$$
+$$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
+where $n$ is the number of choices.
 
 Before computing the WAIC of an \code{RprobitB_fit} object, the probabilities $p_{si}$ must be computed via the `compute_p_si()` function: ^[This computation has been outsourced because it is very time consuming. For example, the computation for `model_train` took about 5 minutes. To decrease the computation time, the function offers parallelization via specifying the number `ncores` of parallel CPU cores.]
 
@@ -139,21 +140,19 @@ Here, both approximations look satisfactory. If the WAIC value does not seem to 
 
 ### `MMLL` 
 
-`"MMLL"` in `criteria` stands for marginal model log-likelihood. The model's marginal likelihood $p(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
+`"MMLL"` in `criteria` stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
 
 {RprobitB} uses the posterior Gibbs samples derived from the `mcmc()` function to approximate the model's marginal likelihood via the posterior harmonic mean estimator [@Newton:1994]: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then, 
-$$p(y\mid M) = \left(\mathbb{E}_\text{posterior} p(y\mid \theta,M)^{-1} \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/p(y\mid \theta_s,M) \right) ^{-1} = \tilde{p}(y\mid M).$$ By the law of large numbers, $\tilde{p}(y\mid M) \to p(y\mid M)$ almost surely as $S \to \infty$.
+$$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$ 
 
-As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"`:^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
+By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
+
+As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`::^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
 
 ```{r}
 model_train <- mml(model_train)
-### the marginal likelihood value
 model_train$mml
-### the marginal log likelihood value
 attr(model_train$mml, "mmll")
-### alternative to print the marginal log likelihood value
-print(model_train$mml, log = TRUE)
 ```
 
 Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the `plot()` method:^[Set `log = FALSE` to plot the non-log-transformed likelihood instead.]
@@ -164,9 +163,9 @@ plot(model_train$mml, log = TRUE)
 
 There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator [@Hammersley:1964]: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then, 
 
-$$p(y\mid M) = \mathbb{E}_\text{prior} p(y\mid \theta,M) \approx \frac{1}{S} \sum_s p(y\mid \theta_s,M) = \tilde{p}(y\mid M).$$ 
+$$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$ 
 
-Again, it hols by the law of large numbers, that $\tilde{p}(y\mid M) \to p(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
+Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
 
 To use the prior arithmetic mean estimator, call the `mml()` function with a specification of the number of prior draws `S` and set `recompute = TRUE`:^[The `mml()` function offers parallelization via specifying the number `ncores` of parallel CPU cores.]
 
@@ -184,7 +183,7 @@ $$
 BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
 $$
 
-The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, {RprobitB} sets $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1}) = 1$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
+The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, {RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
 
 Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We see a decisive evidence [@Jeffreys:1998] in favor of `model_train`.
 
