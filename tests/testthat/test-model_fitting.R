@@ -57,17 +57,20 @@ test_that("Gibbs sampling works", {
 
 test_that("computation of sufficient statistics works", {
   ss <- RprobitB:::sufficient_statistics(
-      data = simulate_choices(
-        choice ~ v1 | v2, N = 2, T = 1:2, J = 3, re = "v2", seed = 1
-        ),
-      normalization = RprobitB:::RprobitB_normalization(J = 3, P_f = 3)
+    data = simulate_choices(
+      choice ~ v1 | v2,
+      N = 2, T = 1:2, J = 3, re = "v2", seed = 1
+    ),
+    normalization = RprobitB:::RprobitB_normalization(J = 3, P_f = 3)
   )
   expect_snapshot(ss)
 })
 
 test_that("estimating a nested model works", {
-  mod <- nested_model(model_train, form = choice ~ time, R = 100, B = 50,
-                      print_progress = FALSE)
+  mod <- nested_model(model_train,
+    form = choice ~ time, R = 100, B = 50,
+    print_progress = FALSE
+  )
   expect_s3_class(mod, "RprobitB_fit")
 })
 
