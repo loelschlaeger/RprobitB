@@ -18,7 +18,8 @@ gibbs_sampling(
 \item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
 
 \item{prior}{A named list of parameters for the prior distributions. See the documentation
-of \code{\link{check_prior}} for details about which parameters can be specified.}
+of \code{\link{check_prior}} for details about which parameters can be
+specified.}
 
 \item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying
 the number of latent classes and their updating scheme:

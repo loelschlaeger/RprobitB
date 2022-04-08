@@ -137,7 +137,7 @@ The function performs compatibility checks and data transformations and returns 
 
 - `standardize`: A character vector of variable names of `form` that get standardized. Covariates of type 1 or 3 have to be addressed by `<covariate>_<alternative>`. If `standardize = "all"`, all covariates get standardized. Per default, no covariate is standardized.
 
-- `missing_data`: Specifies how to handle missing entries (`NA, NaN, -Inf, Inf`) in `choice_data`. The following options are available:
+- `impute`: Specifies how to handle missing entries (`NA, NaN, -Inf, Inf`) in `choice_data`. The following options are available:
 
   - `"complete_cases"`, which removes rows containing missing entries (the default),
   

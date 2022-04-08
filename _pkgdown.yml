@@ -34,11 +34,12 @@ reference:
   - create_lagged_cov
   - as_cov_names
   - prepare_data
+  - RprobitB_parameter
   - simulate_choices
   - train_test
   - plot.RprobitB_data
 - title: Model fitting
-  desc: Use these function for model estimation.
+  desc: Use these function for fitting a probit model to choice data.
   contents:
   - check_prior
   - mcmc
@@ -75,10 +76,6 @@ reference:
   desc: The package contains the following fitted models.
   contents:
   - has_keyword("model")
-- title: Constructor functions
-  desc: These functions construct the S3 classes of RprobitB.
-  contents:
-  - has_keyword("constructor")
 - title: Distributions
   desc: Implementation of distributions and number generating functions.
   contents:
