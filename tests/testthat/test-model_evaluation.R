@@ -9,16 +9,24 @@ test_that("creation of labels works", {
   J <- sample(2:10, 1)
   C <- sample(1:5, 1)
   cov_sym <- sample(c(TRUE, FALSE), 1)
-  drop_par <- if (runif(1) < 0.5) NULL else
+  drop_par <- if (runif(1) < 0.5) {
+    NULL
+  } else {
     sample(c("alpha", "s", "b", "Omega", "Sigma"), sample(1:5, 1))
+  }
   out <- parameter_labels(
     P_f = P_f, P_r = P_r, J = J, C = C, cov_sym = cov_sym,
     drop_par = drop_par
   )
   expect_setequal(
-    names(out), setdiff(c(if (P_f > 0) "alpha",
-                          if (P_r > 0) c("s", "b", "Omega"), "Sigma"),
-                        drop_par))
+    names(out), setdiff(
+      c(
+        if (P_f > 0) "alpha",
+        if (P_r > 0) c("s", "b", "Omega"), "Sigma"
+      ),
+      drop_par
+    )
+  )
 })
 
 test_that("choice prediction works", {
@@ -50,10 +58,10 @@ test_that("preference classification works", {
     C = 2
   )
   model <- mcmc(data,
-                R = 1000,
-                print_progress = FALSE,
-                seed = 1,
-                latent_classes = list("C" = 2)
+    R = 1000,
+    print_progress = FALSE,
+    seed = 1,
+    latent_classes = list("C" = 2)
   )
   expect_snapshot(preference_classification(model, add_true = TRUE))
 })
