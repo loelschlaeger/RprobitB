@@ -94,7 +94,8 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 #' @export
 #' @importFrom crayon underline
 
-print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, ...) {
+print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
+                                                    digits = 2, ...) {
 
   ### check inputs
   if (class(x) != "RprobitB_gibbs_samples_statistics") {
@@ -170,9 +171,10 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL, digits = 2, 
 #' @keywords
 #' internal
 
-filter_gibbs_samples <- function(x, P_f, P_r, J, C, cov_sym,
-                                 keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
-                                 drop_par = NULL) {
+filter_gibbs_samples <- function(
+  x, P_f, P_r, J, C, cov_sym, keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+  drop_par = NULL
+  ) {
   labels <- parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)
   for (gs in names(x)) {
     for (par in names(x[[gs]])) {
@@ -370,7 +372,8 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 }
 
 
-#' Compute point estimates of an \code{RprobitB_fit}
+#' Compute point estimates based on Gibbs samples of an \code{RprobitB_fit}
+#' object
 #'
 #' @description
 #' This function computes the point estimates of an \code{\link{RprobitB_fit}}.
@@ -392,6 +395,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 #' model <- mcmc(data)
 #' point_estimates(model)
 #' point_estimates(model, FUN = median)
+#'
 #' @export
 
 point_estimates <- function(x, FUN = mean) {
@@ -844,6 +848,7 @@ cov_mix <- function(x, cor = FALSE) {
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 #' x <- mcmc(data)
 #' choice_probabilities(x)
+#'
 #' @export
 
 choice_probabilities <- function(x, data = NULL, par_set = mean) {

@@ -2,7 +2,8 @@
 % Please edit documentation in R/model_evaluation.R
 \name{point_estimates}
 \alias{point_estimates}
-\title{Compute point estimates of an \code{RprobitB_fit}}
+\title{Compute point estimates based on Gibbs samples of an \code{RprobitB_fit}
+object}
 \usage{
 point_estimates(x, FUN = mean)
 }
@@ -26,4 +27,5 @@ data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
 model <- mcmc(data)
 point_estimates(model)
 point_estimates(model, FUN = median)
+
 }

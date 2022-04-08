@@ -51,10 +51,10 @@ reference:
   contents:
   - coef.RprobitB_fit
   - cov_mix
-  - get_cov
   - point_estimates
   - choice_probabilities
   - preference_classification
+  - get_cov
   - predict.RprobitB_fit
   - plot.RprobitB_fit
 - title: Model selection
@@ -86,7 +86,7 @@ reference:
   contents:
   - has_keyword("posterior")
 - title: Utilities
-  desc: These functions may be useful beyond RprobitB.
+  desc: These functions may be useful beyond {RprobitB}.
   contents:
   - has_keyword("utils")
 - title: internal

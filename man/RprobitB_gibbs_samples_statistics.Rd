@@ -27,6 +27,7 @@ of statistics from \code{gibbs_samples} obtained by applying the elements of
 \code{FUN}.
 }
 \description{
-This function creates an object of class \code{RprobitB_gibbs_samples_statistics}.
+This function creates an object of class
+\code{RprobitB_gibbs_samples_statistics}.
 }
-\keyword{constructor}
+\keyword{internal}
