@@ -79,7 +79,7 @@
         <dd>Check the model formula</dd>
       </dl><dl><dt>
           
-          <code><a href="overview_effects.html">overview_effects()</a></code> <code><a href="overview_effects.html">overview_effects()</a></code> 
+          <code><a href="overview_effects.html">overview_effects()</a></code> 
         </dt>
         <dd>Effect overview</dd>
       </dl><dl><dt>
@@ -94,9 +94,19 @@
         <dd>Relabel the alternative specific covariates to the required format</dd>
       </dl><dl><dt>
           
+          <code><a href="missing_data.html">missing_data()</a></code> 
+        </dt>
+        <dd>Handle missing choice data</dd>
+      </dl><dl><dt>
+          
           <code><a href="prepare_data.html">prepare_data()</a></code> 
         </dt>
         <dd>Prepare empirical choice data for estimation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="RprobitB_parameter.html">RprobitB_parameter()</a></code> 
+        </dt>
+        <dd>Create object of class <code>RprobitB_parameter</code></dd>
       </dl><dl><dt>
           
           <code><a href="simulate_choices.html">simulate_choices()</a></code> 
@@ -115,7 +125,7 @@
       </dl></div><div class="section level2">
       <h2 id="model-fitting">Model fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a></h2>
       
-      <p class="section-desc"></p><p>Use these function for model estimation.</p>
+      <p class="section-desc"></p><p>Use these function for fitting a probit model to choice data.</p>
 
       
     </div><div id="" class="section level2">
@@ -132,7 +142,7 @@
           
           <code><a href="mcmc.html">mcmc()</a></code> 
         </dt>
-        <dd>Probit model fitting via Markov chain Monte Carlo simulation.</dd>
+        <dd>Probit model fitting via Markov chain Monte Carlo simulation</dd>
       </dl><dl><dt>
           
           <code><a href="nested_model.html">nested_model()</a></code> 
@@ -166,14 +176,10 @@
         <dd>Estimated covariance matrix of the mixing distribution</dd>
       </dl><dl><dt>
           
-          <code><a href="get_cov.html">get_cov()</a></code> 
-        </dt>
-        <dd>Get covariates of choice situation</dd>
-      </dl><dl><dt>
-          
           <code><a href="point_estimates.html">point_estimates()</a></code> 
         </dt>
-        <dd>Compute point estimates of an <code>RprobitB_fit</code></dd>
+        <dd>Compute point estimates based on Gibbs samples of an <code>RprobitB_fit</code>
+object</dd>
       </dl><dl><dt>
           
           <code><a href="choice_probabilities.html">choice_probabilities()</a></code> 
@@ -184,6 +190,11 @@
           <code><a href="preference_classification.html">preference_classification()</a></code> 
         </dt>
         <dd>Classify deciders based on their preferences</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_cov.html">get_cov()</a></code> 
+        </dt>
+        <dd>Get covariates of choice situation</dd>
       </dl><dl><dt>
           
           <code><a href="predict.RprobitB_fit.html">predict(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
@@ -299,47 +310,6 @@
         <dd>Probit model for binary choice between Train trip alternatives with the price
 as the only explanatory variable</dd>
       </dl></div><div class="section level2">
-      <h2 id="constructor-functions">Constructor functions<a class="anchor" aria-label="anchor" href="#constructor-functions"></a></h2>
-      
-      <p class="section-desc"></p><p>These functions construct the S3 classes of RprobitB.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="RprobitB_data.html">RprobitB_data()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_data</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="RprobitB_fit.html">RprobitB_fit()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_fit</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="RprobitB_gibbs_samples_statistics.html">RprobitB_gibbs_samples_statistics()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_gibbs_samples_statistics</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="RprobitB_latent_classes.html">RprobitB_latent_classes()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_latent_classes</code>.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="RprobitB_normalization.html">RprobitB_normalization()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_normalization</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="RprobitB_parameter.html">RprobitB_parameter()</a></code> 
-        </dt>
-        <dd>Create object of class <code>RprobitB_parameter</code></dd>
-      </dl></div><div class="section level2">
       <h2 id="distributions">Distributions<a class="anchor" aria-label="anchor" href="#distributions"></a></h2>
       
       <p class="section-desc"></p><p>Implementation of distributions and number generating functions.</p>
@@ -429,7 +399,7 @@ as the only explanatory variable</dd>
       </dl></div><div class="section level2">
       <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
       
-      <p class="section-desc"></p><p>These functions may be useful beyond RprobitB.</p>
+      <p class="section-desc"></p><p>These functions may be useful beyond {RprobitB}.</p>
 
       
     </div><div id="" class="section level2">

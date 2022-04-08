@@ -59,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Create object of class <code>RprobitB_normalization</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/loelschlaeger/RprobitB/blob/HEAD/R/RprobitB_normalization.R" class="external-link"><code>R/RprobitB_normalization.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/loelschlaeger/RprobitB/blob/HEAD/R/model_fitting.R" class="external-link"><code>R/model_fitting.R</code></a></small>
       <div class="d-none name"><code>RprobitB_normalization.Rd</code></div>
     </div>
 
@@ -106,13 +106,13 @@ elements <code>level</code> and <code>scale</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Any choice model has to be normalized with respect to level and scale.</p><ul><li><p>For level normalization, RprobitB takes utility differences with respect to
-one alternative.</p></li>
-<li><p>For scale normalization, RprobitB fixes a model parameter. Per default, the
-first error-term variance is fixed to <code>1</code>, i.e.
+    <p>Any choice model has to be normalized with respect to level and scale.</p><ul><li><p>For level normalization, RprobitB takes utility differences with
+respect to one alternative.</p></li>
+<li><p>For scale normalization, RprobitB fixes a model parameter. Per
+default, the first error-term variance is fixed to <code>1</code>, i.e.
 <code>scale = list("parameter" = "s", "index" = 1, "value" = 1)</code>.
-Alternatively, any error-term variance or any non-random linear coefficient can
-be fixed.</p></li>
+Alternatively, any error-term variance or any non-random
+coefficient can be fixed.</p></li>
 </ul></div>
 
     <div class="section level2">
