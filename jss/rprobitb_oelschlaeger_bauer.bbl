@@ -1,4 +1,4 @@
-\begin{thebibliography}{17}
+\begin{thebibliography}{10}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,17 +8,6 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
-
-\bibitem[{Albert and Chib(1993)}]{Albert:93}
-Albert JH, Chib S (1993).
-\newblock \enquote{Bayesian Analysis of Binary and Polychotomous Response
-  Data.}
-\newblock \emph{Journal of the American Statistical Association}, \textbf{88}.
-
-\bibitem[{Allenby and Rossi(1998)}]{Allenby:98}
-Allenby GM, Rossi P (1998).
-\newblock \enquote{Marketing models of consumer heterogeneity.}
-\newblock \emph{Journal of Econometrics}, \textbf{89}.
 
 \bibitem[{Bauer \emph{et~al.}(2019)Bauer, B\"{u}scher, and Batram}]{Bauer:19}
 Bauer D, B\"{u}scher S, Batram M (2019).
@@ -59,37 +48,6 @@ Fountas G, Pantangi SS, Hulme KF, Anastasopoulos PC (2019).
   driving on perceived and observed aggressive driving behavior: A correlated
   grouped random parameters bivariate probit approach.}
 \newblock \emph{Analytic Methods in Accident Research}, \textbf{22}.
-
-\bibitem[{Geweke(1998)}]{Geweke:98}
-Geweke J (1998).
-\newblock \enquote{Efficient Simulation from the Multivariate Normal and
-  Student-t Distributions Subject to Linear Constraints and the Evaluation of
-  Constraint Probabilities.}
-\newblock \emph{Comput. Sci. Statist.}, \textbf{23}.
-
-\bibitem[{Imai and van Dyk(2005)}]{Imai:05}
-Imai K, van Dyk DA (2005).
-\newblock \enquote{A Bayesian analysis of the multinomial probit model using
-  marginal data augmentation.}
-\newblock \emph{Journal of Econometrics}, \textbf{124}.
-
-\bibitem[{McCulloch and Rossi(1994)}]{McCulloch:94}
-McCulloch R, Rossi P (1994).
-\newblock \enquote{An exact likelihood analysis of the multinomial probit
-  model.}
-\newblock \emph{Journal of Econometrics}, \textbf{64}.
-
-\bibitem[{Mori(2014)}]{Mori:14}
-Mori H (2014).
-\newblock \enquote{Bayes Estimation in the Hierarchical Multinomial Probit
-  Model.}
-\newblock \emph{Journal of the Japan Statistical Society}, \textbf{44}.
-
-\bibitem[{Nobile(1998)}]{Nobile:98}
-Nobile A (1998).
-\newblock \enquote{A hybrid Markov chain for the Bayesian analysis of the
-  multinomial probit model.}
-\newblock \emph{Statistics and Computing}, \textbf{8}.
 
 \bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:10}
 Scaccia L, Marcucci E (2010).

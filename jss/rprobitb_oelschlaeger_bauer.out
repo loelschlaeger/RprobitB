@@ -1,15 +1,6 @@
 \BOOKMARK [1][-]{Section.0.Introduction.1}{\376\377\000I\000n\000t\000r\000o\000d\000u\000c\000t\000i\000o\000n}{}% 1
 \BOOKMARK [1][-]{Section.1.The method.1}{\376\377\000T\000h\000e\000\040\000m\000e\000t\000h\000o\000d}{}% 2
-\BOOKMARK [2][-]{Subsection.2.0.The mixed multinomial probit model.2}{\376\377\000T\000h\000e\000\040\000m\000i\000x\000e\000d\000\040\000m\000u\000l\000t\000i\000n\000o\000m\000i\000a\000l\000\040\000p\000r\000o\000b\000i\000t\000\040\000m\000o\000d\000e\000l}{Section.1.The method.1}% 3
-\BOOKMARK [2][-]{Subsection.2.1.Approximating the mixing distribution.2}{\376\377\000A\000p\000p\000r\000o\000x\000i\000m\000a\000t\000i\000n\000g\000\040\000t\000h\000e\000\040\000m\000i\000x\000i\000n\000g\000\040\000d\000i\000s\000t\000r\000i\000b\000u\000t\000i\000o\000n}{Section.1.The method.1}% 4
-\BOOKMARK [2][-]{Subsection.2.2.The Bayesian framework.2}{\376\377\000T\000h\000e\000\040\000B\000a\000y\000e\000s\000i\000a\000n\000\040\000f\000r\000a\000m\000e\000w\000o\000r\000k}{Section.1.The method.1}% 5
-\BOOKMARK [2][-]{Subsection.2.3.Predictions.2}{\376\377\000P\000r\000e\000d\000i\000c\000t\000i\000o\000n\000s}{Section.1.The method.1}% 6
-\BOOKMARK [1][-]{Section.2.Package overview.1}{\376\377\000P\000a\000c\000k\000a\000g\000e\000\040\000o\000v\000e\000r\000v\000i\000e\000w}{}% 7
-\BOOKMARK [2][-]{Subsection.3.0.Data mangement.2}{\376\377\000D\000a\000t\000a\000\040\000m\000a\000n\000g\000e\000m\000e\000n\000t}{Section.2.Package overview.1}% 8
-\BOOKMARK [2][-]{Subsection.3.1.Model fitting.2}{\376\377\000M\000o\000d\000e\000l\000\040\000f\000i\000t\000t\000i\000n\000g}{Section.2.Package overview.1}% 9
-\BOOKMARK [2][-]{Subsection.3.2.Model evaluation.2}{\376\377\000M\000o\000d\000e\000l\000\040\000e\000v\000a\000l\000u\000a\000t\000i\000o\000n}{Section.2.Package overview.1}% 10
-\BOOKMARK [1][-]{Section.3.Illustrations.1}{\376\377\000I\000l\000l\000u\000s\000t\000r\000a\000t\000i\000o\000n\000s}{}% 11
-\BOOKMARK [2][-]{Subsection.4.0.Train dataset.2}{\376\377\000T\000r\000a\000i\000n\000\040\000d\000a\000t\000a\000s\000e\000t}{Section.3.Illustrations.1}% 12
-\BOOKMARK [2][-]{Subsection.4.1.Choice of contraception.2}{\376\377\000C\000h\000o\000i\000c\000e\000\040\000o\000f\000\040\000c\000o\000n\000t\000r\000a\000c\000e\000p\000t\000i\000o\000n}{Section.3.Illustrations.1}% 13
-\BOOKMARK [2][-]{Subsection.4.2.Chess opening.2}{\376\377\000C\000h\000e\000s\000s\000\040\000o\000p\000e\000n\000i\000n\000g}{Section.3.Illustrations.1}% 14
-\BOOKMARK [1][-]{Section.4.Summary and discussion.1}{\376\377\000S\000u\000m\000m\000a\000r\000y\000\040\000a\000n\000d\000\040\000d\000i\000s\000c\000u\000s\000s\000i\000o\000n}{}% 15
+\BOOKMARK [1][-]{Section.2.Applications.1}{\376\377\000A\000p\000p\000l\000i\000c\000a\000t\000i\000o\000n\000s}{}% 3
+\BOOKMARK [2][-]{Subsection.3.0.Choice of contraception.2}{\376\377\000C\000h\000o\000i\000c\000e\000\040\000o\000f\000\040\000c\000o\000n\000t\000r\000a\000c\000e\000p\000t\000i\000o\000n}{Section.2.Applications.1}% 4
+\BOOKMARK [2][-]{Subsection.3.1.Chess opening.2}{\376\377\000C\000h\000e\000s\000s\000\040\000o\000p\000e\000n\000i\000n\000g}{Section.2.Applications.1}% 5
+\BOOKMARK [1][-]{Section.3.Conclusion.1}{\376\377\000C\000o\000n\000c\000l\000u\000s\000i\000o\000n}{}% 6
