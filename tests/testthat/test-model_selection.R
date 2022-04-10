@@ -1,3 +1,5 @@
+options("RprobitB_progress" = FALSE)
+
 test_that("model_selection works", {
   data("model_train", package = "RprobitB")
   data("model_train_sparse", package = "RprobitB")

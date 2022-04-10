@@ -568,6 +568,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   vec alpha = alpha0;
   mat beta = beta0;
   mat Sigmainv = arma::inv(Sigma0);
+  Rcpp::Function RprobitB_pp("RprobitB_pp");
 
   // start loop
   for(int r = 0; r<R; r++) {
@@ -575,11 +576,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     // print progress
     if(print_progress && ((r+1)%10 == 0 || r == 0)){
       if(weight_update==false && dp_update==false){
-        Rcpp::Rcout << "Iteration " << r+1 << " of " << R << "\r";
+        RprobitB_pp("mcmc iteration", r+1, R);
       } else {
-        Rcpp::Rcout << "Iteration " << r+1 << " of " << R << " (C = " << C <<")\r";
+        RprobitB_pp("mcmc iteration (C = " + std::to_string(C) + ")", r+1, R);
       }
-      Rcpp::Rcout.flush();
     }
 
     // check for code interruption by user
@@ -723,9 +723,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
   }
-
-  // close print line
-  if(print_progress) Rcpp::Rcout << std::endl;
 
   // build and return output list 'out'
   List out;

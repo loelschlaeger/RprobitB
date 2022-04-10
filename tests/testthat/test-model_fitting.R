@@ -1,3 +1,5 @@
+options("RprobitB_progress" = FALSE)
+
 test_that("setting prior parameter works", {
   prior <- check_prior(P_f = 1, P_r = 2, J = 3)
   expect_snapshot(prior)
@@ -49,7 +51,7 @@ test_that("Gibbs sampling works", {
     N = 10, T = 1:10, J = 2,
     seed = 1
   )
-  model <- mcmc(data, R = 2000, print_progress = FALSE, seed = 1)
+  model <- mcmc(data, R = 2000, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
@@ -68,8 +70,7 @@ test_that("computation of sufficient statistics works", {
 
 test_that("estimating a nested model works", {
   mod <- nested_model(model_train,
-    form = choice ~ time, R = 100, B = 50,
-    print_progress = FALSE
+    form = choice ~ time, R = 100, B = 50
   )
   expect_s3_class(mod, "RprobitB_fit")
 })
