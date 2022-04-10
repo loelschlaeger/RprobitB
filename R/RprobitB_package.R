@@ -20,7 +20,7 @@ rpb <- function() {
 
 RprobitB_pp <- function(title, i, total) {
   if (identical(getOption("RprobitB_progress"), TRUE)) {
-    message(paste(title, i, "of", total, "\r"), appendLF = (i==total))
+    message(paste(title, i, "of", total, "\r"), appendLF = (i == total))
   }
 }
 
