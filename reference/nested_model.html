@@ -204,12 +204,23 @@ retrieved from the specification for <code>x</code>.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">nested_model</span><span class="op">(</span><span class="va">model_train</span>, form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">time</span>, R <span class="op">=</span> <span class="fl">100</span>, B <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> compute sufficient statistics 0 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> compute sufficient statistics 1 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> compute sufficient statistics 2 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> compute sufficient statistics 3 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> compute sufficient statistics 4 of 4 </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gibbs_sampling(sufficient_statistics = ss, prior = prior, latent_classes = unclass(latent_classes),     init = init, R = R, B = B, print_progress = print_progress):</span> could not find function "RprobitB_pp"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 0 of 4 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 1 of 4 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 2 of 4 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 3 of 4 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 4 of 4 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 10 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 20 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 30 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 40 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 50 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 60 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 70 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 80 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 90 of 100 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 100 of 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Probit model 'choice ~ time'.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
