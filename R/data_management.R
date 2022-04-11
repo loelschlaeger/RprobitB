@@ -272,6 +272,12 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
     choice_data <- cbind(choice_data, NA)
     colnames(choice_data) <- c(cols_old, col_new)
 
+    ### preserve factors
+    if(class(choice_data[[col]]) == "factor") {
+      choice_data[[col_new]] <- factor(choice_data[[col_new]],
+                                       levels = levels(choice_data[[col]]))
+    }
+
     ### build progress bar
     pb <- RprobitB_pb(title = paste("create",col_new),
                       total = length(unique(choice_data[[id]])))
@@ -1147,6 +1153,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
   ### create train and test data set
   train <- x
   test <- x
+  id <- unique(x$choice_data[[x$res_var_names$id]])
 
   if (by == "N") {
     ### split by deciders
@@ -1164,7 +1171,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 
     ### remove elements from 'train'
     train$data <- train$data[ind_train]
-    train$choice_data <- train$choice_data[train$choice_data$id %in% ind_train, ]
+    train$choice_data <- x$choice_data[x$choice_data[[x$res_var_names$id]] %in% id[ind_train], ]
     train$N <- sum(ind_train != 0)
     train$T <- train$T[ind_train]
     if (!identical(train$true_parameter$beta, NA)) {
@@ -1177,7 +1184,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 
     ### remove elements from 'test'
     test$data <- test$data[ind_test]
-    test$choice_data <- test$choice_data[test$choice_data$id %in% ind_test, ]
+    test$choice_data <- x$choice_data[x$choice_data[[x$res_var_names$id]] %in% id[ind_test], ]
     test$N <- sum(ind_test != 0)
     test$T <- test$T[ind_test]
     if (!identical(test$true_parameter$beta, NA)) {
@@ -1225,16 +1232,18 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       ### remove elements from 'train'
       train$data[[n]] <- list("X" = train$data[[n]]$X[ind_train],
                               "y" = train$data[[n]]$y[ind_train])
-      train$choice_data[train$choice_data$id == n
-                        & !train$choice_data$idc %in% ind_train, ] <- NA
+      train$choice_data[train$choice_data[[train$res_var_names$id]] == n
+                        & !train$choice_data[[train$res_var_names$idc]] %in%
+                          ind_train, ] <- NA
       train$choice_data <- stats::na.omit(train$choice_data)
       train$T[n] <- sum(ind_train != 0)
 
       ### remove elements from 'test'
       test$data[[n]] <- list("X" = test$data[[n]]$X[ind_test],
                              "y" = test$data[[n]]$y[ind_test])
-      test$choice_data[test$choice_data$id == n &
-                         !test$choice_data$idc %in% ind_test, ] <- NA
+      test$choice_data[test$choice_data[[test$res_var_names$id]] == n &
+                         !test$choice_data[[test$res_var_names$idc]] %in%
+                         ind_test, ] <- NA
       test$choice_data <- stats::na.omit(test$choice_data)
       test$T[n] <- sum(ind_test != 0)
     }
@@ -1654,13 +1663,13 @@ RprobitB_parameter <- function(P_f, P_r, J, N, alpha = NULL, C = NULL, s = NULL,
       Sigma_full <- undiff_Sigma(Sigma, i = J)
     }
     if (!(is_covariance_matrix(Sigma) && nrow(Sigma) == J - 1)) {
-      stop("'Sigma' is not a proper differenced covariance matrix of dimension ",
+      stop("'Sigma' is not a differenced covariance matrix of dimension ",
            J - 1, " x ", J - 1, ".",
            call. = FALSE
       )
     }
     if (!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full) == J)) {
-      stop("'Sigma_full' is not a proper covariance matrix of dimension ", J,
+      stop("'Sigma_full' is not a covariance matrix of dimension ", J,
            " x ", J, ".",
            call. = FALSE
       )
