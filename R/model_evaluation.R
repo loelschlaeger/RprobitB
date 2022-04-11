@@ -875,9 +875,13 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
     stop("'data' is not of class 'RprobitB_data'.")
   }
 
+  ### define progress bar
+  pb <- RprobitB_pb(title = "Computing choice probabilities", total = data$N)
+
   ### compute probabilities
   probabilities <- matrix(NA, nrow = 0, ncol = data$J)
   for (n in 1:data$N) {
+    RprobitB_pb_tick(pb)
     for (t in 1:data$T[n]) {
       P_nt <- compute_choice_probabilities(
         X = data$data[[n]]$X[[t]],
