@@ -577,9 +577,9 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     // print progress
     if(print_progress && ((r+1)%10 == 0 || r == 0)){
       if(weight_update==false && dp_update==false){
-        RprobitB_pp("mcmc iteration", r+1, R);
+        RprobitB_pp("Gibbs sampler iteration", r+1, R);
       } else {
-        RprobitB_pp("mcmc iteration (C = " + std::to_string(C) + ")", r+1, R);
+        RprobitB_pp("Gibbs sampler iteration (C = " + std::to_string(C) + ")", r+1, R);
       }
     }
 
