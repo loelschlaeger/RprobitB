@@ -748,7 +748,7 @@ sufficient_statistics <- function(data, normalization) {
   P_r <- data_copy$P_r
 
   ### compute utility differences with respect to 'normalization$level'
-  RprobitB_pp("compute sufficient statistics", 0, 4)
+  RprobitB_pp("Computing sufficient statistics", 0, 4)
   for (n in seq_len(N)) {
     for (t in seq_len(Tvec[n])) {
       data_copy$data[[n]]$X[[t]] <- delta(J, normalization$level) %*% data_copy$data[[n]]$X[[t]]
@@ -756,7 +756,7 @@ sufficient_statistics <- function(data, normalization) {
   }
 
   ### decode choice to numeric with respect to appearance in 'data_copy$alternatives'
-  RprobitB_pp("compute sufficient statistics", 1, 4)
+  RprobitB_pp("Computing sufficient statistics", 1, 4)
   y <- matrix(0, nrow = N, ncol = max(Tvec))
   for (n in 1:N) {
     y_n <- match(data_copy$data[[n]][[2]], data_copy$alternatives)
@@ -764,7 +764,7 @@ sufficient_statistics <- function(data, normalization) {
   }
 
   ### extract covariates linked to fixed ('W') and to random coefficients ('X')
-  RprobitB_pp("compute sufficient statistics", 2, 4)
+  RprobitB_pp("Computing sufficient statistics", 2, 4)
   W <- list()
   X <- list()
   if (P_f > 0 & P_r > 0) {
@@ -793,7 +793,7 @@ sufficient_statistics <- function(data, normalization) {
   }
 
   ### compute \sum kronecker(t(W_nt),t(W_nt)) for each W_nt in W
-  RprobitB_pp("compute sufficient statistics", 3, 4)
+  RprobitB_pp("Computing sufficient statistics", 3, 4)
   WkW <- NA
   if (P_f > 0) {
     WkW <- matrix(0, nrow = P_f^2, ncol = (J - 1)^2)
@@ -805,7 +805,7 @@ sufficient_statistics <- function(data, normalization) {
   }
 
   ### for each fixed n, compute \sum kronecker(t(X_nt),t(X_nt))
-  RprobitB_pp("compute sufficient statistics", 4, 4)
+  RprobitB_pp("Computing sufficient statistics", 4, 4)
   XkX <- NA
   if (P_r > 0) {
     XkX <- list()
