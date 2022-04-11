@@ -20,7 +20,7 @@ data <- prepare_data(
 mod_fix <- mcmc(data)
 saveRDS(mod_fix, "applications/berserk_choice/mod_fix.rds", compress = "xz")
 mod_re <- nested_model(mod_fix,
-                       re = c("color","rating","rating_diff","min_rem","streak"))
+                       re = c("white","rating","rating_diff","lost","min_rem","streak","berserk.1","lost.1"))
 saveRDS(mod_re, "applications/berserk_choice/mod_re.rds", compress = "xz")
 mod_cl <- nested_model(mod_re,
                        latent_classes = list("dp_update" = TRUE))
