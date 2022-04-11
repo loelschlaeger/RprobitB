@@ -3,8 +3,8 @@
 \docType{package}
 \name{RprobitB}
 \alias{RprobitB}
-\title{RprobitB: A package for Bayes estimation of multinomial Probit models}
+\title{RprobitB: A package for Bayes estimation of probit models}
 \description{
-This package provides tools for Bayes estimation of multinomial Probit models.
+This package provides tools for Bayes estimation of probit models.
 }
 \keyword{internal}

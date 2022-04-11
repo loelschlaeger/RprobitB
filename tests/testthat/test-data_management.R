@@ -1,3 +1,5 @@
+options("RprobitB_progress" = FALSE)
+
 test_that("model formula is correctly interpreted", {
   form <- choice ~ price | 0 | time + comfort + change
   re <- c("price", "time")

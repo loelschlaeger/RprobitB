@@ -1,3 +1,5 @@
+options("RprobitB_progress" = FALSE)
+
 test_that("choice probabilities can be computed", {
   data("model_train", package = "RprobitB")
   expect_snapshot(choice_probabilities(model_train))
@@ -40,7 +42,7 @@ test_that("choice prediction works", {
     alpha = 1:5, Sigma = 1
   )
   data <- train_test(data, test_proportion = 0.3)
-  model <- mcmc(data$train, R = 1000, print_progress = FALSE, seed = 1)
+  model <- mcmc(data$train, R = 1000, seed = 1)
   expect_snapshot(predict(model, overview = TRUE))
   expect_snapshot(predict(model, overview = FALSE))
   expect_snapshot(predict(model, data = data$test, overview = TRUE))
@@ -59,7 +61,6 @@ test_that("preference classification works", {
   )
   model <- mcmc(data,
     R = 1000,
-    print_progress = FALSE,
     seed = 1,
     latent_classes = list("C" = 2)
   )

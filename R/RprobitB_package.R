@@ -1,6 +1,6 @@
-#' RprobitB: A package for Bayes estimation of multinomial Probit models
+#' RprobitB: A package for Bayes estimation of probit models
 #'
-#' This package provides tools for Bayes estimation of multinomial Probit models.
+#' This package provides tools for Bayes estimation of probit models.
 #'
 #' @docType package
 #' @name RprobitB
@@ -17,19 +17,27 @@ rpb <- function() {
 }
 
 #' @noRd
+
+RprobitB_pp <- function(title, i, total) {
+  if (identical(getOption("RprobitB_progress"), TRUE)) {
+    message(paste(title, i, "of", total, "\r"), appendLF = (i == total))
+  }
+}
+
+#' @noRd
 #' @importFrom progress progress_bar
 
-RprobitB_progress <- function(title, total) {
+RprobitB_pb <- function(title, total) {
   progress::progress_bar$new(
-    format = paste(":spin", title, ":percent [ETA: :eta]"),
+    format = paste(title, ":percent [ETA: :eta]"),
     total = total,
-    clear = TRUE
+    clear = FALSE
   )
 }
 
 #' @noRd
 
-RprobitB_pp <- function(pb) {
+RprobitB_pb_tick <- function(pb) {
   if (identical(getOption("RprobitB_progress"), TRUE)) {
     pb$tick()
   }
