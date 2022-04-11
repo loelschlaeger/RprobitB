@@ -568,7 +568,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   vec alpha = alpha0;
   mat beta = beta0;
   mat Sigmainv = arma::inv(Sigma0);
-  Rcpp::Function RprobitB_pp("RprobitB_pp");
+  Environment pkg = Environment::namespace_env("RprobitB");
+  Rcpp::Function RprobitB_pp = pkg["RprobitB_pp"];
 
   // start loop
   for(int r = 0; r<R; r++) {
