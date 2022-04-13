@@ -89,7 +89,8 @@ check_form <- function(form, re = NULL) {
         re <- setdiff(re, re_element)
         warning(
           "The covariate '", re_element,
-          "' in 're' is not part of 'form' and hence ignored.", call. = FALSE
+          "' in 're' is not part of 'form' and hence ignored.", call. = FALSE,
+          immediate. = TRUE
         )
       }
     }
@@ -262,7 +263,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
       warning(
         paste0("Column '", col_new, "' already exists in 'choice_data'. ",
                "It would be overwritten, hence it is skipped."),
-        call. = FALSE
+        call. = FALSE, immediate. = TRUE
       )
       next()
     }
@@ -908,9 +909,10 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### report unsed elements in 'covariates'
   if (length(names(covariates)) > 0) {
-    warning(paste("The column(s)", paste(paste0("'", names(covariates), "'",
-                                                collapse = ", ")),
-                  "in 'covariates' are ignored."), call. = FALSE)
+    warning(paste("The column(s)",
+                  paste(paste0("'", names(covariates), "'", collapse = ", ")),
+                  "in 'covariates' are ignored."),
+            call. = FALSE, immediate. = TRUE)
   }
 
   ### add ASCs (for all but the last alternative)
@@ -1207,7 +1209,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       if (size_test > x$T[n]) {
         warning(
           "Only ", x$T[n], " observation(s) available for decider ", n, ".",
-          call. = FALSE
+          call. = FALSE, immediate. = TRUE
           )
         size_test <- x$T[n]
       }
@@ -1222,11 +1224,11 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       ### check 'ind_test' and 'ind_train'
       if (sum(ind_test != 0) == 0) {
         warning("No observation(s) for decider ", n, " in test subsample.",
-                call. = FALSE)
+                call. = FALSE, immediate. = TRUE)
       }
       if (sum(ind_train != 0) == 0) {
         warning("No observation(s) for decider ", n, " in train subsample.",
-                call. = FALSE)
+                call. = FALSE, immediate. = TRUE)
       }
 
       ### remove elements from 'train'
