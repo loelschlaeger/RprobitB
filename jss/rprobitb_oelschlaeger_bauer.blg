@@ -2,46 +2,51 @@ This is BibTeX, Version 0.99d (TeX Live 2022)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: rprobitb_oelschlaeger_bauer.aux
 The style file: jss.bst
-Database file #1: refs.bib
+Database file #1: ref.bib
+Warning--entry type for "Geweke:1998" isn't style-file defined
+--line 157 of file ref.bib
+Warning--entry type for "Scaccia:2010" isn't style-file defined
+--line 324 of file ref.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 10 entries,
+You've used 20 entries,
             3215 wiz_defined-function locations,
-            698 strings with 7047 characters,
-and the built_in function-call counts, 8284 in all, are:
-= -- 788
-> -- 195
-< -- 7
-+ -- 81
-- -- 64
-* -- 567
-:= -- 1031
-add.period$ -- 40
-call.type$ -- 10
-change.case$ -- 62
-chr.to.int$ -- 11
-cite$ -- 10
-duplicate$ -- 895
-empty$ -- 670
-format.name$ -- 95
-if$ -- 1666
+            768 strings with 8502 characters,
+and the built_in function-call counts, 15452 in all, are:
+= -- 1465
+> -- 349
+< -- 17
++ -- 145
+- -- 112
+* -- 1048
+:= -- 1955
+add.period$ -- 80
+call.type$ -- 20
+change.case$ -- 118
+chr.to.int$ -- 21
+cite$ -- 20
+duplicate$ -- 1640
+empty$ -- 1267
+format.name$ -- 177
+if$ -- 3111
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 99
-newline$ -- 61
-num.names$ -- 40
-pop$ -- 453
+missing$ -- 188
+newline$ -- 112
+num.names$ -- 80
+pop$ -- 814
 preamble$ -- 1
-purify$ -- 61
+purify$ -- 117
 quote$ -- 0
-skip$ -- 178
+skip$ -- 348
 stack$ -- 0
-substring$ -- 724
-swap$ -- 197
+substring$ -- 1313
+swap$ -- 390
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 87
+type$ -- 174
 warning$ -- 0
-while$ -- 51
+while$ -- 101
 width$ -- 0
-write$ -- 138
+write$ -- 267
+(There were 2 warnings)

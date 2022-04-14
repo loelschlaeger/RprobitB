@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{20}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -9,63 +9,122 @@
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
 
-\bibitem[{Bauer \emph{et~al.}(2019)Bauer, B\"{u}scher, and Batram}]{Bauer:19}
+\bibitem[{Agresti(2015)}]{Agresti:2015}
+Agresti A (2015).
+\newblock \emph{Foundations of Linear and Generalized Linear Models.}
+\newblock Wiley.
+\newblock ISBN 978-1-118-73003-4.
+
+\bibitem[{Albert and Chib(1993)}]{Albert:1993}
+Albert JH, Chib S (1993).
+\newblock \enquote{Bayesian Analysis of Binary and Polychotomous Response
+  Data.}
+\newblock \emph{Journal of the American Statistical Association}, \textbf{88}.
+
+\bibitem[{Allenby and Rossi(1998)}]{Allenby:1998}
+Allenby GM, Rossi P (1998).
+\newblock \enquote{Marketing models of consumer heterogeneity.}
+\newblock \emph{Journal of Econometrics}, \textbf{89}.
+
+\bibitem[{Bauer \emph{et~al.}(2019)Bauer, B\"{u}scher, and Batram}]{Bauer:2019}
 Bauer D, B\"{u}scher S, Batram M (2019).
 \newblock \enquote{Non-parameteric estiation of mixed discrete choice models.}
 \newblock \emph{Second International Choice Modelling Conference in Kobe}.
 
-\bibitem[{Bhat(2011)}]{Bhat:11}
+\bibitem[{Bhat(2011)}]{Bhat:2011}
 Bhat C (2011).
 \newblock \enquote{The Maximum Approximate Composite Marginal Likelihood
   (MACML) Estimation of Multinomial Probit-Based Unordered Response Choice
   Models.}
 \newblock \emph{Transportation Research Part B: Methodological}, \textbf{45}.
 
-\bibitem[{Bhat and Lavieri(2018)}]{Bhat:18}
+\bibitem[{Bhat and Lavieri(2018)}]{Bhat:2018}
 Bhat C, Lavieri P (2018).
 \newblock \enquote{A new mixed MNP model accommodating a variety of dependent
   non-normal coefficient distributions.}
 \newblock \emph{Theory and Decision}, \textbf{84}.
 
-\bibitem[{Cirillo and Axhausen(2006)}]{Cirillo:06}
+\bibitem[{Cirillo and Axhausen(2006)}]{Cirillo:2006}
 Cirillo C, Axhausen K (2006).
 \newblock \enquote{Evidence on the distribution of values of travel time
   savings from a six-week diary.}
 \newblock \emph{Transportation Research Part A: Policy and Practice},
   \textbf{40}.
 
+\bibitem[{Croissant(2020)}]{Croissant:2020}
+Croissant Y (2020).
+\newblock \enquote{Estimation of Random Utility Models in {R}: The {mlogit}
+  Package.}
+\newblock \emph{Journal of Statistical Software}, \textbf{95}(11), 1--41.
+\newblock \doi{10.18637/jss.v095.i11}.
+
 \bibitem[{Fountas \emph{et~al.}(2018)Fountas, Anastasopoulos, and
-  Abdel-Aty}]{Fountas:18}
-Fountas G, Anastasopoulos PC, Abdel-Aty M (2018).
+  Abdel-Aty}]{Fountas:2018}
+Fountas G, Anastasopoulos Ph, Abdel-Aty M (2018).
 \newblock \enquote{Analysis of accident injury-severities using a correlated
   random parameters ordered probit approach with time variant covariates.}
 \newblock \emph{Analytic Methods in Accident Research}, \textbf{18}.
 
 \bibitem[{Fountas \emph{et~al.}(2019)Fountas, Pantangi, Hulme, and
-  Anastasopoulos}]{Fountas:19}
+  Anastasopoulos}]{Fountas:2019}
 Fountas G, Pantangi SS, Hulme KF, Anastasopoulos PC (2019).
 \newblock \enquote{The effects of driver fatigue, gender, and distracted
   driving on perceived and observed aggressive driving behavior: A correlated
   grouped random parameters bivariate probit approach.}
 \newblock \emph{Analytic Methods in Accident Research}, \textbf{22}.
 
-\bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:10}
+\bibitem[{Gelman and Rubin(1992)}]{Gelman:1992}
+Gelman A, Rubin DB (1992).
+\newblock \enquote{Inference from Iterative Simulation Using Multiple
+  Sequences.}
+\newblock \emph{Statistical Science}, \textbf{7}(4), 457 -- 472.
+\newblock \doi{10.1214/ss/1177011136}.
+
+\bibitem[{Geweke(1998)}]{Geweke:1998}
+Geweke J (1998).
+\newblock \enquote{Efficient Simulation from the Multivariate Normal and
+  Student-t Distributions Subject to Linear Constraints and the Evaluation of
+  Constraint Probabilities.}
+
+\bibitem[{Imai and van Dyk(2005)}]{Imai:2005}
+Imai K, van Dyk DA (2005).
+\newblock \enquote{A Bayesian analysis of the multinomial probit model using
+  marginal data augmentation.}
+\newblock \emph{Journal of Econometrics}, \textbf{124}.
+
+\bibitem[{McCulloch and Rossi(1994)}]{McCulloch:1994}
+McCulloch R, Rossi P (1994).
+\newblock \enquote{An exact likelihood analysis of the multinomial probit
+  model.}
+\newblock \emph{Journal of Econometrics}, \textbf{64}.
+
+\bibitem[{Nobile(1998)}]{Nobile:1998}
+Nobile A (1998).
+\newblock \enquote{A hybrid Markov chain for the Bayesian analysis of the
+  multinomial probit model.}
+\newblock \emph{Statistics and Computing}, \textbf{8}.
+
+\bibitem[{Oelschl\"{a}ger and Bauer(2020)}]{Oelschlaeger:2020}
+Oelschl\"{a}ger L, Bauer D (2020).
+\newblock \enquote{Bayes Estimation of Latent Class Mixed Multinomial Probit
+  Models.}
+\newblock \emph{TRB Annual Meeting 2021}.
+
+\bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:2010}
 Scaccia L, Marcucci E (2010).
 \newblock \enquote{Bayesian Flexible Modelling of Mixed Logit Models.}
-\newblock \emph{Proceedings from the 19th International Conference on
-  Computational Statistics}.
 
-\bibitem[{Train(2009)}]{Train:09}
+\bibitem[{Train(2009)}]{Train:2009}
 Train K (2009).
 \newblock \emph{Discrete choice methods with simulation}.
 \newblock 2. ed. edition. Cambridge Univ. Press.
 
-\bibitem[{Train(2016)}]{Train:16}
+\bibitem[{Train(2016)}]{Train:2016}
 Train K (2016).
 \newblock \enquote{Mixed logit with a flexible mixing distribution.}
 \newblock \emph{Journal of choice modelling}, \textbf{19}.
 
-\bibitem[{Xiong and Mannering(2013)}]{Xiong:13}
+\bibitem[{Xiong and Mannering(2013)}]{Xiong:2013}
 Xiong Y, Mannering FL (2013).
 \newblock \enquote{The heterogeneous effects of guardian supervision on
   adolescent driver-injury severities: A finite-mixture random-parameters
