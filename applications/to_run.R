@@ -23,6 +23,7 @@ mod_re <- nested_model(mod_fix,
                        re = c("white","rating","rating_diff","lost","min_rem","streak","berserk.1","lost.1"))
 saveRDS(mod_re, "applications/berserk_choice/mod_re.rds", compress = "xz")
 mod_cl <- nested_model(mod_re,
+                       prior = list("delta" = 0.1),
                        latent_classes = list("dp_update" = TRUE))
 saveRDS(mod_cl, "applications/berserk_choice/mod_cl.rds", compress = "xz")
 
@@ -30,29 +31,35 @@ saveRDS(mod_cl, "applications/berserk_choice/mod_cl.rds", compress = "xz")
 ### chess opening choice
 
 data("choice_chess_opening")
-choice_chess_opening <- subset(choice_chess_opening, startsWith(game, "1. e4"))
-choice_chess_opening <- create_lagged_cov(choice_chess_opening, "b1", id = "fideid_b")
-choice_chess_opening <- fastDummies::dummy_cols(choice_chess_opening, "b1.1")
-choice_chess_opening$rating_diff <- choice_chess_opening$rating_b - choice_chess_opening$rating_w
+choice_chess_opening <- create_lagged_cov(choice_chess_opening, "w1", id = "fideid_w")
+choice_chess_opening <- fastDummies::dummy_cols(choice_chess_opening, "w1.1")
+choice_chess_opening$rating_diff <- choice_chess_opening$rating_w - choice_chess_opening$rating_b
 data <- prepare_data(
-  form = b1 ~ b1.1 | sex_b + byear_b + rating_b + rating_diff,
+  form = w1 ~ w1.1 | sex_w + byear_w + rating_w + rating_diff,
   choice_data = choice_chess_opening,
-  id = "fideid_b",
-  idc = "fideid_w",
-  alternatives = c("c5","e5","c6","e6"),
-  standardize = c("byear_b","rating_b","rating_diff"),
+  id = "fideid_w",
+  idc = "fideid_b",
+  alternatives = c("e4","d4","b3"),
+  standardize = c("byear_w","rating_w","rating_diff"),
   impute = "complete_cases"
 )
 # plot(data, by_choice = TRUE)
 # saveRDS(data, "applications/chess_opening_choice/data.rds", compress = "xz")
-data_split <- train_test(data, test_proportion = 0.5, random = TRUE, seed = 1)
-mod_fix <- mcmc(data_split$train)
+
+mod_fix <- mcmc(data)
+mod_fix <- compute_p_si(mod_fix)
 saveRDS(mod_fix, "applications/chess_opening_choice/mod_fix.rds", compress = "xz")
-mod_base <- nested_model(mod_fix, form = b1 ~ b1.1)
+
+mod_base <- nested_model(mod_fix, form = w1 ~ w1.1)
+mod_base <- compute_p_si(mod_base)
 saveRDS(mod_base, "applications/chess_opening_choice/mod_base.rds", compress = "xz")
-mod_re <- nested_model(mod_fix,
-                       re = c("color","rating","rating_diff","min_rem","streak"))
-saveRDS(mod_re, "applications/chess_opening_choice/mod_re.rds", compress = "xz")
-mod_cl <- nested_model(mod_re,
-                       latent_classes = list("dp_update" = TRUE))
-saveRDS(mod_cl, "applications/chess_opening_choice/mod_cl.rds", compress = "xz")
+
+mod_re1 <- nested_model(mod_fix, re = c("w1.1"))
+mod_re1 <- compute_p_si(mod_re1)
+saveRDS(mod_re1, "applications/chess_opening_choice/mod_re1.rds", compress = "xz")
+
+mod_re2 <- nested_model(mod_fix, re = c("w1.1","rating_w"))
+mod_re2 <- compute_p_si(mod_re2)
+saveRDS(mod_re2, "applications/chess_opening_choice/mod_re2.rds", compress = "xz")
+
+model_selection(mod_base, mod_fix, mod_re1, mod_re2)
