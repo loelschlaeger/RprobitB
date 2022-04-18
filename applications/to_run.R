@@ -90,19 +90,18 @@ mod_re <- nested_model(mod_fix,
                        re = paste0("child_cond", 1:8))
 saveRDS(mod_re, "applications/contraception_choice/mod_re.rds", compress = "xz")
 
+# DOES C = 10 work?
 mod_cl1 <- nested_model(mod_re,
                         prior = list("delta" = 0.1),
-                        latent_classes = list("dp_update" = TRUE))
+                        latent_classes = list("C = 10", "dp_update" = TRUE))
 saveRDS(mod_cl1, "applications/contraception_choice/mod_cl1.rds", compress = "xz")
 
-mod_cl2 <- nested_model(mod_re,
-                        prior = list("delta" = 0.2),
-                        latent_classes = list("dp_update" = TRUE))
+mod_cl2 <- nested_model(mod_cl1,
+                        prior = list("delta" = 0.2)
 saveRDS(mod_cl2, "applications/contraception_choice/mod_cl2.rds", compress = "xz")
 
-mod_cl3 <- nested_model(mod_re,
-                        prior = list("delta" = 0.3),
-                        latent_classes = list("dp_update" = TRUE))
+mod_cl3 <- nested_model(cl1,
+                        prior = list("delta" = 0.3))
 saveRDS(mod_cl3, "applications/contraception_choice/mod_cl3.rds", compress = "xz")
 
 
