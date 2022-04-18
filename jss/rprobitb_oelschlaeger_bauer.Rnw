@@ -211,28 +211,28 @@ $$U_{n,t,j} = A_{n,t,j} \beta_1 + B_{n,t} \beta_{2,j} + C_{n,t,j} \beta_{3,j} + 
 
 Here, $A$ and $C$ are alternative and choice situation specific covariates, whereas $B$ is choice situation specific. The coefficient $\beta_1$ is generic (i.e. the same for each alternative), whereas $\beta_{2,j}$ and $\beta_{3,j}$ are alternative specific.
 
-To represent this structure, the `formula` object is of the form (analogously to {mlogit}) `choice ~ A | B | C`, where
+To represent this structure, the \code{formula} object is of the form (analogously to {mlogit}) \code{choice ~ A | B | C}, where
 
-- `choice` is the dependent variable (the discrete choice we aim to explain),
+- \code{choice} is the dependent variable (the discrete choice we aim to explain),
 
-- `A` are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),
+- \code{A} are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),
 
-- `B` are choice situation specific covariates with alternative specific coefficients. Mind that not all alternative specific coefficients of type 2-covariates are identified. This is because the probit model is estimated on utility differences since the level of the utility is irrelevant, see the vignette on the model definition. Therefore, the coefficient of the last alternative of each type 2-covariate is set to 0. (we call them covariates of type 2),
+- \code{B} are choice situation specific covariates with alternative specific coefficients. Mind that not all alternative specific coefficients of type 2-covariates are identified. This is because the probit model is estimated on utility differences since the level of the utility is irrelevant, see the vignette on the model definition. Therefore, the coefficient of the last alternative of each type 2-covariate is set to 0. (we call them covariates of type 2),
 
-- and `C` are alternative and choice situation specific covariates with
+- and \code{C} are alternative and choice situation specific covariates with
 alternative specific coefficients (we call them covariates of type 3).
 
-Specifying a `formula` object for {RprobitB} must be consistent with the following rules:
+Specifying a \code{formula} object for \pkg{RprobitB} must be consistent with the following rules:
 
-- By default, alternative specific constants (ASCs) ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative. are added to the model. They can be removed by adding `+ 0` in the second spot, e.g. `choice ~ A | B + 0 | C`.
+- By default, alternative specific constants (ASCs) ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative. are added to the model. They can be removed by adding \code{+ 0} in the second spot, e.g. \code{choice ~ A | B + 0 | C}.
 
-- To exclude covariates of the backmost categories, use either `0`, e.g. `choice ~ A | B | 0` or just leave this part out and write `choice ~ A | B `. However, to exclude covariates of front categories, we have to use `0`, e.g. `choice ~ 0 | B`.
+- To exclude covariates of the backmost categories, use either \code{0}, e.g. \code{choice ~ A | B | 0} or just leave this part out and write \code{choice ~ A | B}. However, to exclude covariates of front categories, we have to use \code{0}, e.g. \code{choice ~ 0 | B}.
 
-- To include more than one covariate of the same category, use `+`, e.g. `choice ~ A1 + A2 | B`.
+- To include more than one covariate of the same category, use \code{+}, e.g. \code{choice ~ A1 + A2 | B}.
 
-- If we don't want to include any covariates of the second category but we want to estimate alternative specific constants, add `1` in the second spot, e.g. `choice ~ A | 1`. The expression `choice ~ A | 0` is interpreted as no covariates of the second category and no alternative specific constants.
+- If we don't want to include any covariates of the second category but we want to estimate alternative specific constants, add \code{1} in the second spot, e.g. \code{choice ~ A | 1}. The expression \code{choice ~ A | 0} is interpreted as no covariates of the second category and no alternative specific constants.
 
-To impose random effects for specific variables, we need to define a character vector `re` with the corresponding variable names. To have random effects for the alternative specific constants, include `"ASC"` in `re`.
+To impose random effects for specific variables, we need to define a character vector \code{re} with the corresponding variable names. To have random effects for the alternative specific constants, include \code{"ASC"} in \code{re}.
 
 \subsection{The prepare data function} \label{subsec:prepare_data}
 
@@ -252,7 +252,7 @@ The function performs compatibility checks and data transformations and returns 
 
 - \code{idc}: A character, the name of the column in \code{choice_data} that contains a unique identifier for each choice situation given the decision maker. Per default, these identifier are generated by the appearance of the choices in the data set.
 
-- \code{standardize}: A character vector of variable names of `form` that get standardized. Covariates of type 1 or 3 have to be addressed by \code{<covariate>_<alternative>}. If \code{standardize = "all"}, all covariates get standardized. Per default, no covariate is standardized.
+- \code{standardize}: A character vector of variable names of \code{form} that get standardized. Covariates of type 1 or 3 have to be addressed by \code{<covariate>_<alternative>}. If \code{standardize = "all"}, all covariates get standardized. Per default, no covariate is standardized.
 
 - \code{impute}: Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in \code{choice_data}. The following options are available:
 
@@ -264,7 +264,7 @@ The function performs compatibility checks and data transformations and returns 
 
 \subsection{Example 1: Train data} \label{subsec:train_data_prep}
 
-The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative. For alternative specific variables, the alternative names must be added to the covariates via the \code{\_} separator.
+The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns \code{id} and \code{choiceid} identify the deciders and the choice occasions, respectively. The column \code{choice} gives the observed choices. Four alternative-specific covariates are available, namely \code{price}, \code{time}, \code{change}, and \code{comfort}. There values are given for each alternative. For alternative specific variables, the alternative names must be added to the covariates via the \code{\_} separator.
 
 <<overview-Train-data>>=
 data("Train", package = "mlogit")
@@ -538,7 +538,7 @@ where \code{data} must be an \class{RprobitB\_data} object (see the vignette abo
 
   - \code{Theta}: The scale matrix of dimension \code{P\_r} x \code{P\_r} of the Inverse Wishart prior for each \code{Omega\_c}.
 
-  - \code{kappa}: The degrees of freedom (a natural number greater than `J-1`) of the Inverse Wishart prior for \code{Sigma}.
+  - \code{kappa}: The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse Wishart prior for \code{Sigma}.
 
   - \code{E}: The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart prior for \code{Sigma}.
 
@@ -657,6 +657,180 @@ model_train <- transform(model_train, scale = list(parameter = "s", index = 1, v
 @
 
 \section{Modeling heterogeneity} \label{sec:modeling_heterogeneity}
+
+\subsection{Estimating a joint normal mixing distribution} \label{subsec:normal_mix}
+
+The \pkg{mlogit} package \citep{Croissant:2020} contains the data set \code{Electricity}, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
+
+1. their fixed price \code{pf} per kWh,
+2. their contract length \code{cf},
+3. a boolean \code{loc}, indicating whether the supplier is a local company,
+4. a boolean \code{wk}, indicating whether the supplier is a well known company,
+5. a boolean \code{tod}, indicating whether the supplier offers a time-of-day electricity price (which is higher during the day and lower during the night), and
+6. a boolean \code{seas}, indicating whether the supplier's price is seasonal dependent.
+
+This constitutes a choice situation where choice behavior heterogeneity is expected: some customers might prefer a time-of-day electricity price (because they may be not at home during the day), while others can have the opposite preference. Ideally these differences in preferences should be modeled using characteristics of the deciders. In many cases (as in this data set) we do not have adequate information. Instead these differences in taste can be captured by means of a mixing distribution for the \code{tod} coefficient. This corresponds to the assumption of a random coefficient from the underlying mixing distribution to be drawn for each decider. We can use the estimated mixing distribution to determine for example the share of deciders that have a positive versus negative preference towards time-of-day electricity prices.
+
+Additionally, we expect correlations between the random coefficients to certain covariates, for example a positive correlation between the influence of \code{loc} and \code{wk}: deciders that prefer local suppliers might also prefer well known companies due to recommendations and past experiences, although they might be more expensive than unknown suppliers. The fitted multivariate normal distribution will reveal these correlations.
+
+The following lines prepare the \code{Electricity} data set for estimation. We use the convenience function \fct{as\_cov\_names} that relabels the data columns for alternative specific covariates into the required format \code{"<covariate>\_<alternative>"}, compare to the vignette on choice data. Via the \code{re = c("cl","loc","wk","tod","seas")} argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to \code{-1} to interpret the other estimates as monetary values.
+
+<<estimate-elec-model, eval = FALSE>>=
+data("Electricity", package = "mlogit")
+Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
+data <- prepare_data(
+  form = choice ~ pf + cl + loc + wk + tod + seas | 0,
+  choice_data = Electricity,
+  re = c("cl","loc","wk","tod","seas")
+  )
+model_elec <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+@
+
+The estimated model is saved in \pkg{RprobitB} and can be accessed via:
+
+<<load-model-ele>>=
+data(model_elec, package = "RprobitB")
+@
+
+Calling the \fct{coef} method on the estimated model also returns the estimated (marginal) variances of the mixing distribution besides the average mean effects:
+
+<<coef-model-elec>>=
+coef(model_elec)
+@
+
+By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price \code{tod} in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large (\code{12.37}). The same holds for the contract length \code{cl}. In particular, the estimated share of the population that prefers to have a longer contract length equals:
+
+<<compute-mixdistr-share>>=
+cl_mu <- coef(model_elec)["cl","mean"]
+cl_sd <- sqrt(coef(model_elec)["cl","var"])
+pnorm(cl_mu / cl_sd)
+@
+
+The correlation between the covariates can be accessed as follows (setting \code{cor = FALSE} instead returns the estimated covariance matrix):
+
+<<cov-mixdistr>>=
+cov_mix(model_elec, cor = TRUE)
+@
+
+Here, we see the confirmation of our initial assumption about a high correlation between \code{loc} and \code{wk}. The pairwise mixing distributions can be visualized via calling the \fct{plot} method with the additional argument \code{type = mixture}:
+
+<<plot-mixture-model-elec, fig=TRUE>>=
+plot(model_elec, type = "mixture")
+@
+
+\subsection{Estimating latent classes} \label{subsec:latent_classes}
+
+More generally, \pkg{RprobitB} allows to specify a Gaussian mixture as the mixing distribution. In particular,
+
+$$ \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).$$
+
+This specification allows for a) a better approximation of the true underlying mixing distribution and b) a preference based classification of the deciders.
+
+To estimate a latent mixture, specify a named list \code{latent\_classes} with the following arguments and submit it to the estimation routine \fct{mcmc}:
+
+- \code{C}, the fixed number (greater or equal 1) of latent classes, which is set to 1 per default,
+
+- \code{weight\_update}, a boolean, set to \code{TRUE} for a weight-based update of the latent classes, see below,
+
+- \code{dp\_update}, a boolean, set to \code{TRUE} for a Dirichlet process-based update of the latent classes, see below,
+
+- \code{Cmax}, the maximum number of latent classes, set to \code{10} per default.
+
+\paragraph{Weight-based update of the latent classes:}
+
+The following weight-based updating scheme is analogue to \cite{Bauer:2019} and executed within the burn-in period:
+
+- We remove class $c$, if $s_c<\varepsilon_{\text{min}}$, i.e. if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
+
+- We split class $c$ into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the highest variance.
+
+- We join two classes $c_1$ and $c_2$ to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
+
+These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, \pkg{RprobitB} sets  \code{epsmin = 0.01}, \code{epsmax = 0.99}, and \code{distmin = 0.1}. These values can be adapted through the \code{latent\_class} list.
+
+\paragraph{Dirichlet process-based update of the latent classes:}
+
+As an alternative to the weight-based updating scheme to determine the correct number $C$ of latent classes, \pkg{RprobitB} implemented the Dirichlet process. A similar approach in the context of discrete choice can be found in \cite{Burda:2008}, where the Dirichlet process is applied to estimate a mixed logit-probit model. The Dirichlet Process is a Bayesian nonparametric method, where nonparametric means that the number of model parameters can theoretically grow to infinity. The method allows to add more mixture components to the mixing distribution if needed for a better approximation, see \cite{Neal:2000} for a documentation of the general case. The literature offers many representations of the method, including the Chinese Restaurant Process \citep{Aldous:1985}, the stick-braking metaphor \citep{Sethuraman:1994}, and the Polya Urn model \citep{Blackwell:1973}.
+
+In our case, we face the situation to find a distribution $g$ that explains the decider-specific coefficients $(\beta_n)_{n = 1,\dots,N}$, where $g$ is supposed to be a mixture of an unknown number $C$ of Gaussian densities, i.e. $g = \sum_{c = 1,\dots,C} s_c \text{MVN}(b_c, \Omega_c)$.
+
+Let $z_n \in \{1,\dots,C\}$ denote the class membership of $\beta_n$. A priori, the mixture weights $(s_c)_c$ are given a Dirichlet prior with concentration parameter $\delta/C$, i.e. $(s_c)_c \mid \delta \sim \text{D}_C(\delta/C,\dots,\delta/C)$. \cite{Rasmussen:2000} shows that
+
+$$ \Pr((z_n)_n\mid \delta) = \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c + \delta/C)}{\Gamma(\delta/C)}, $$
+where $\Gamma(\cdot)$ denotes the gamma function and $m_c = \#\{n:z_n = c\}$ the number of elements that are currently allocated to class $c$. Crucially, the last equation is independent of the class weights $(s_c)_c$, yet it still depends on the finite number $C$ of latent classes. However, \cite{Li:2019} shows that
+
+$$ \Pr(z_n = c \mid z_{-n}, \delta) = \frac{m_{c,-n} + \delta/C}{N-1+\delta},$$
+where the notation $-n$ means excluding the $n$th element. We can let $C$ approach infinity to derive:
+
+$$ \Pr(z_n = c \mid z_{-n}, \delta) \to \frac{m_{c,-n}}{N-1+\delta}. $$
+
+Note that the allocation probabilities do not sum to 1, instead
+
+$$ \sum_{c = 1}^C \frac{m_{c,-n}}{N-1+\delta} = \frac{N-1}{N-1+\delta}. $$
+
+The difference to 1 equals
+
+$$ \Pr(z_n \neq z_m ~ \forall ~ m \neq n \mid z_{-n}, \delta) = \frac{\delta}{N-1+\delta} $$
+
+and constitutes the probability that a new cluster for observation $n$ is created. \cite{Neal:2000} points out that this probability is proportional to the prior parameter $\delta$: A greater value for $\delta$ encourages the creation of new clusters, a smaller value for $\delta$ increases the probability of an allocation to an already existing class.
+
+In summary, the Dirichlet process updates the allocation of each $\beta$ coefficient vector one at a time, dependent on the other allocations. The number of clusters can theoretically rise to infinity, however, as we delete unoccupied clusters, $C$ is bounded by $N$. As a final step after the allocation update, we update the class means $b_c$ and covariance matrices $\Omega_c$ by means of their posterior predictive distribution. The mean and covariance matrix for a new generated cluster is drawn from the prior predictive distribution. The corresponding formulas are given in \cite{Li:2019}.
+
+The Dirichlet process directly integrates into our existing Gibbs sampler. Given $\beta$ values, it updated the class means $b_c$ and class covariance matrices $\Omega_c$. The Dirichlet process updating scheme is implemented in the function \fct{update\_classes\_dp}. In the following, we give a small example in the bivariate case \code{P\_r = 2}. We sample true class means \code{b\_true} and class covariance matrices \code{Omega\_true} for \code{C\_true = 3} true latent classes. The true (unbalanced) class sizes are given by the vector \code{N}, and \code{z_true} denotes the true allocations.
+
+<<sim-dirichlet>>=
+set.seed(1)
+P_r <- 2
+C_true <- 3
+N <- c(100,70,30)
+(b_true <- matrix(replicate(C_true, rnorm(P_r)), nrow = P_r, ncol = C_true))
+(Omega_true <- matrix(replicate(C_true, rwishart(P_r + 1, 0.1*diag(P_r))$W, simplify = TRUE),
+                      nrow = P_r*P_r, ncol = C_true))
+beta <- c()
+for(c in 1:C_true) for(n in 1:N[c])
+  beta <- cbind(beta, rmvnorm(mu = b_true[,c,drop=F], Sigma = matrix(Omega_true[,c,drop=F], ncol = P_r)))
+z_true <- rep(1:3, times = N)
+@
+
+We specify the following prior parameters (for their definition see the vignette on model fitting):
+
+<<dirichlet-prior>>=
+delta <- 0.1
+xi <- numeric(P_r)
+D <- diag(P_r)
+nu <- P_r + 2
+Theta <- diag(P_r)
+@
+
+Initially, we start with \code{C = 1} latent classes. The class mean \code{b} is set to zero, the covariance matrix \code{Omega} to the identity matrix:
+
+<<dirichlet-inits>>=
+z <- rep(1, ncol(beta))
+C <- 1
+b <- matrix(0, nrow = P_r, ncol = C)
+Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
+@
+
+The following call to \fct{update\_classes\_dp} updates the latent classes in \code{100} iterations. Note that we specify the arguments \code{Cmax} and \code{s\_desc}. The former denotes the maximum number of latent classes. This specification is not a requirement for the Dirichlet process per se, but rather for its implementation. Knowing the maximum possible class number, we can allocate the required memory space, which leads to a speed improvement. We later can verify that we won't exceed the number of \code{Cmax = 10} latent classes at any point of the Dirichlet process. Setting \code{s\_desc = TRUE} ensures that the classes are ordered by their weights in a descending order to ensure identifiability.
+
+<<dirichlet-process-app>>=
+for(r in 1:100){
+  dp <- RprobitB:::update_classes_dp(
+    Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE
+    )
+  z <- dp$z
+  b <- dp$b
+  Omega <- dp$Omega
+}
+@
+
+The Dirichlet process was able to infer the true number \code{C\_true = 3} of latent classes:
+
+<<dirichlet-example-plot, fig=TRUE>>=
+par(mfrow = c(1,2))
+plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
+RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
+@
 
 \section{Choice prediction} \label{sec:choice_prediction}
 

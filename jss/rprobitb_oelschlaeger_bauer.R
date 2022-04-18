@@ -108,3 +108,199 @@ train_test(data, test_proportion = 0.3, by = "N")
 train_test(data, test_number = 2, by = "T", random = TRUE, seed = 1)
 
 
+###################################################
+### code chunk number 16: mcmc-call (eval = FALSE)
+###################################################
+## mcmc(data = data)
+
+
+###################################################
+### code chunk number 17: transform-Train
+###################################################
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 * 2.20371
+Train$price_B <- Train$price_B / 100 * 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
+
+
+###################################################
+### code chunk number 18: Train-fit (eval = FALSE)
+###################################################
+## form <- choice ~ price + time + change + comfort | 0
+## data <- prepare_data(form = form, choice_data = Train)
+## model_train <- mcmc(
+##   data = data,
+##   scale = list("parameter" = "a", index = 1, value = -1)
+## )
+
+
+###################################################
+### code chunk number 19: load-model-Train
+###################################################
+data(model_train, package = "RprobitB")
+
+
+###################################################
+### code chunk number 20: coef-model-Train
+###################################################
+coef(model_train)
+
+
+###################################################
+### code chunk number 21: plot-coef-model-train
+###################################################
+plot(coef(model_train), sd = 3)
+
+
+###################################################
+### code chunk number 22: str-gibbs-samples
+###################################################
+str(model_train$gibbs_samples, max.level = 2, give.attr = FALSE)
+
+
+###################################################
+### code chunk number 23: summary-model-train
+###################################################
+summary(model_train,
+        FUN = c("mean"        = mean,
+                "sd"          = stats::sd,
+                "R^"          = R_hat,
+                "custom_stat" = function(x) abs(mean(x) - median(x))
+                )
+       )
+
+
+###################################################
+### code chunk number 24: plot-trace-model-train
+###################################################
+par(mfrow = c(2,1))
+plot(model_train, type = "trace")
+
+
+###################################################
+### code chunk number 25: plot-acf-model-train
+###################################################
+par(mfrow = c(2,3))
+plot(model_train, type = "acf")
+
+
+###################################################
+### code chunk number 26: transform-model-train-B
+###################################################
+model_train <- transform(model_train, B = 1)
+
+
+###################################################
+### code chunk number 27: transform-model-train-Q
+###################################################
+model_train <- transform(model_train, Q = 100)
+
+
+###################################################
+### code chunk number 28: transform-model-train-scale
+###################################################
+model_train <- transform(model_train, scale = list(parameter = "s", index = 1, value = 1))
+
+
+###################################################
+### code chunk number 29: estimate-elec-model (eval = FALSE)
+###################################################
+## data("Electricity", package = "mlogit")
+## Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
+## data <- prepare_data(
+##   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
+##   choice_data = Electricity,
+##   re = c("cl","loc","wk","tod","seas")
+##   )
+## model_elec <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+
+
+###################################################
+### code chunk number 30: load-model-ele
+###################################################
+data(model_elec, package = "RprobitB")
+
+
+###################################################
+### code chunk number 31: coef-model-elec
+###################################################
+coef(model_elec)
+
+
+###################################################
+### code chunk number 32: compute-mixdistr-share
+###################################################
+cl_mu <- coef(model_elec)["cl","mean"]
+cl_sd <- sqrt(coef(model_elec)["cl","var"])
+pnorm(cl_mu / cl_sd)
+
+
+###################################################
+### code chunk number 33: cov-mixdistr
+###################################################
+cov_mix(model_elec, cor = TRUE)
+
+
+###################################################
+### code chunk number 34: plot-mixture-model-elec
+###################################################
+plot(model_elec, type = "mixture")
+
+
+###################################################
+### code chunk number 35: sim-dirichlet
+###################################################
+set.seed(1)
+P_r <- 2
+C_true <- 3
+N <- c(100,70,30)
+(b_true <- matrix(replicate(C_true, rnorm(P_r)), nrow = P_r, ncol = C_true))
+(Omega_true <- matrix(replicate(C_true, rwishart(P_r + 1, 0.1*diag(P_r))$W, simplify = TRUE),
+                      nrow = P_r*P_r, ncol = C_true))
+beta <- c()
+for(c in 1:C_true) for(n in 1:N[c])
+  beta <- cbind(beta, rmvnorm(mu = b_true[,c,drop=F], Sigma = matrix(Omega_true[,c,drop=F], ncol = P_r)))
+z_true <- rep(1:3, times = N)
+
+
+###################################################
+### code chunk number 36: dirichlet-prior
+###################################################
+delta <- 0.1
+xi <- numeric(P_r)
+D <- diag(P_r)
+nu <- P_r + 2
+Theta <- diag(P_r)
+
+
+###################################################
+### code chunk number 37: dirichlet-inits
+###################################################
+z <- rep(1, ncol(beta))
+C <- 1
+b <- matrix(0, nrow = P_r, ncol = C)
+Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
+
+
+###################################################
+### code chunk number 38: dirichlet-process-app
+###################################################
+for(r in 1:100){
+  dp <- RprobitB:::update_classes_dp(
+    Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE
+    )
+  z <- dp$z
+  b <- dp$b
+  Omega <- dp$Omega
+}
+
+
+###################################################
+### code chunk number 39: dirichlet-example-plot
+###################################################
+par(mfrow = c(1,2))
+plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
+RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
+
+
