@@ -253,21 +253,3 @@ data <- dplyr::select(data, !all_of(vars))
 
 saveRDS(data,"data/data_encoded.rds")
 ```
-
-## Overview
-
-```{r}
-str(data)
-```
-
-## Checks
-
-```{r}
-wave <- 1
-id <- 1000
-path <- paste0("data/SPSS/English/anchor",wave,".sav")
-data_base <- foreign::read.spss(file = path, to.data.frame = TRUE)[, id]
-data_base_sel <- data_base[, data_base$id == id]
-data_transf <- readRDS("data/data_filtered.rds")
-data_transf_sel <- data_transf[, data_transf$id == id]
-```

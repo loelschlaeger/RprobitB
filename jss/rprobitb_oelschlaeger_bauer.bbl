@@ -1,4 +1,4 @@
-\begin{thebibliography}{20}
+\begin{thebibliography}{27}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -20,6 +20,11 @@ Albert JH, Chib S (1993).
 \newblock \enquote{Bayesian Analysis of Binary and Polychotomous Response
   Data.}
 \newblock \emph{Journal of the American Statistical Association}, \textbf{88}.
+
+\bibitem[{Aldous(1985)}]{Aldous:1985}
+Aldous DJ (1985).
+\newblock \enquote{Exchangeability and related topics.}
+\newblock \textbf{1117}, 1--198.
 
 \bibitem[{Allenby and Rossi(1998)}]{Allenby:1998}
 Allenby GM, Rossi P (1998).
@@ -43,6 +48,20 @@ Bhat C, Lavieri P (2018).
 \newblock \enquote{A new mixed MNP model accommodating a variety of dependent
   non-normal coefficient distributions.}
 \newblock \emph{Theory and Decision}, \textbf{84}.
+
+\bibitem[{Blackwell and MacQueen(1973)}]{Blackwell:1973}
+Blackwell D, MacQueen J (1973).
+\newblock \enquote{Ferguson distributions via Polya urn schemes.}
+\newblock \emph{The Annals of Statistics}, \textbf{1}, 353--355.
+
+\bibitem[{Burda \emph{et~al.}(2008)Burda, Harding, and Hausman}]{Burda:2008}
+Burda M, Harding M, Hausman J (2008).
+\newblock \enquote{A Bayesian mixed logit–probit model for multinomial
+  choice.}
+\newblock \emph{Journal of Econometrics}, \textbf{147}(2), 232--246.
+\newblock \doi{10.1016/j.jeconom.2008.09.029}.
+\newblock
+  \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0304407608001395}.
 
 \bibitem[{Cirillo and Axhausen(2006)}]{Cirillo:2006}
 Cirillo C, Axhausen K (2006).
@@ -92,11 +111,29 @@ Imai K, van Dyk DA (2005).
   marginal data augmentation.}
 \newblock \emph{Journal of Econometrics}, \textbf{124}.
 
+\bibitem[{Li \emph{et~al.}(2019)Li, Schofield, and Gönen}]{Li:2019}
+Li Y, Schofield E, Gönen M (2019).
+\newblock \enquote{A tutorial on Dirichlet process mixture modeling.}
+\newblock \emph{Journal of Mathematical Psychology}, \textbf{91}, 128--144.
+\newblock ISSN 0022-2496.
+\newblock \doi{10.1016/j.jmp.2019.04.004}.
+\newblock
+  \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0022249618301068}.
+
 \bibitem[{McCulloch and Rossi(1994)}]{McCulloch:1994}
 McCulloch R, Rossi P (1994).
 \newblock \enquote{An exact likelihood analysis of the multinomial probit
   model.}
 \newblock \emph{Journal of Econometrics}, \textbf{64}.
+
+\bibitem[{Neal(2000)}]{Neal:2000}
+Neal RM (2000).
+\newblock \enquote{Markov Chain Sampling Methods for Dirichlet Process Mixture
+  Models.}
+\newblock \emph{Journal of Computational and Graphical Statistics},
+  \textbf{9}(2), 249--265.
+\newblock ISSN 10618600.
+\newblock \urlprefix\url{http://www.jstor.org/stable/1390653}.
 
 \bibitem[{Nobile(1998)}]{Nobile:1998}
 Nobile A (1998).
@@ -110,9 +147,20 @@ Oelschl\"{a}ger L, Bauer D (2020).
   Models.}
 \newblock \emph{TRB Annual Meeting 2021}.
 
+\bibitem[{Rasmussen(2000)}]{Rasmussen:2000}
+Rasmussen CE (2000).
+\newblock \emph{The Infinite Gaussian Mixture Model}, volume~12.
+\newblock MIT Press.
+
 \bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:2010}
 Scaccia L, Marcucci E (2010).
 \newblock \enquote{Bayesian Flexible Modelling of Mixed Logit Models.}
+
+\bibitem[{Sethuraman(1994)}]{Sethuraman:1994}
+Sethuraman J (1994).
+\newblock \enquote{A constructive definition of dirichlet priors.}
+\newblock \emph{Statistica Sinica}, \textbf{4}(2), 639--650.
+\newblock \urlprefix\url{http://www.jstor.org/stable/24305538}.
 
 \bibitem[{Train(2009)}]{Train:2009}
 Train K (2009).
