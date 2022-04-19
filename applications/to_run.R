@@ -115,10 +115,10 @@ mod_cl1 <- nested_model(mod_re,
 saveRDS(mod_cl1, "applications/contraception_choice/mod_cl1.rds", compress = "xz")
 
 mod_cl2 <- nested_model(mod_cl1,
-                        prior = list("delta" = 0.2)
+                        prior = list("delta" = 0.2))
 saveRDS(mod_cl2, "applications/contraception_choice/mod_cl2.rds", compress = "xz")
 
-mod_cl3 <- nested_model(cl1,
+mod_cl3 <- nested_model(mod_cl1,
                         prior = list("delta" = 0.3))
 saveRDS(mod_cl3, "applications/contraception_choice/mod_cl3.rds", compress = "xz")
 
