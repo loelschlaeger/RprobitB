@@ -8,47 +8,49 @@ Warning--entry type for "Geweke:1998" isn't style-file defined
 Warning--entry type for "Scaccia:2010" isn't style-file defined
 --line 324 of file ref.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty journal in Akaike:1974
 Warning--empty journal in Aldous:1985
+Warning--empty journal in Hammersley:1964
 Warning--can't use both author and editor fields in Rasmussen:2000
-You've used 27 entries,
+You've used 38 entries,
             3215 wiz_defined-function locations,
-            831 strings with 9945 characters,
-and the built_in function-call counts, 21254 in all, are:
-= -- 2012
-> -- 462
-< -- 23
-+ -- 196
-- -- 148
-* -- 1464
-:= -- 2679
-add.period$ -- 115
-call.type$ -- 27
-change.case$ -- 158
-chr.to.int$ -- 28
-cite$ -- 29
-duplicate$ -- 2221
-empty$ -- 1765
-format.name$ -- 228
-if$ -- 4287
+            906 strings with 11668 characters,
+and the built_in function-call counts, 30867 in all, are:
+= -- 2934
+> -- 681
+< -- 34
++ -- 287
+- -- 220
+* -- 2120
+:= -- 3861
+add.period$ -- 161
+call.type$ -- 38
+change.case$ -- 227
+chr.to.int$ -- 39
+cite$ -- 42
+duplicate$ -- 3228
+empty$ -- 2562
+format.name$ -- 329
+if$ -- 6247
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 263
-newline$ -- 155
-num.names$ -- 108
-pop$ -- 1075
+missing$ -- 377
+newline$ -- 213
+num.names$ -- 152
+pop$ -- 1570
 preamble$ -- 1
-purify$ -- 157
+purify$ -- 225
 quote$ -- 0
-skip$ -- 469
+skip$ -- 679
 stack$ -- 0
-substring$ -- 1861
-swap$ -- 567
-text.length$ -- 1
+substring$ -- 2764
+swap$ -- 814
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 234
-warning$ -- 2
-while$ -- 144
+type$ -- 324
+warning$ -- 4
+while$ -- 211
 width$ -- 0
-write$ -- 373
-(There were 4 warnings)
+write$ -- 519
+(There were 6 warnings)

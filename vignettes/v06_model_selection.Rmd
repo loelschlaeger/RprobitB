@@ -44,7 +44,7 @@ The `nested_model()` function helps to estimate a new version of `model_train` w
 
 ## The `model_selection()` function
 
-{RprobitB} provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_model` objects and returns a matrix of model selection criteria:
+{RprobitB} provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
 
 ```{r, model-selection-example}
 model_selection(model_train, model_train_sparse, 
@@ -147,7 +147,7 @@ $$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)
 
 By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
 
-As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`::^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
+As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`:^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
 
 ```{r}
 model_train <- mml(model_train)
