@@ -20,10 +20,12 @@
 \BOOKMARK [2][-]{Subsection.5.0.Estimating a joint normal mixing distribution.2}{\376\377\000E\000s\000t\000i\000m\000a\000t\000i\000n\000g\000\040\000a\000\040\000j\000o\000i\000n\000t\000\040\000n\000o\000r\000m\000a\000l\000\040\000m\000i\000x\000i\000n\000g\000\040\000d\000i\000s\000t\000r\000i\000b\000u\000t\000i\000o\000n}{Section.4.Modeling heterogeneity.1}% 20
 \BOOKMARK [2][-]{Subsection.5.1.Estimating latent classes.2}{\376\377\000E\000s\000t\000i\000m\000a\000t\000i\000n\000g\000\040\000l\000a\000t\000e\000n\000t\000\040\000c\000l\000a\000s\000s\000e\000s}{Section.4.Modeling heterogeneity.1}% 21
 \BOOKMARK [1][-]{Section.5.Choice prediction.1}{\376\377\000C\000h\000o\000i\000c\000e\000\040\000p\000r\000e\000d\000i\000c\000t\000i\000o\000n}{}% 22
-\BOOKMARK [1][-]{Section.6.Model selection.1}{\376\377\000M\000o\000d\000e\000l\000\040\000s\000e\000l\000e\000c\000t\000i\000o\000n}{}% 23
-\BOOKMARK [1][-]{Section.7.Applications.1}{\376\377\000A\000p\000p\000l\000i\000c\000a\000t\000i\000o\000n\000s}{}% 24
-\BOOKMARK [2][-]{Subsection.8.0.Chess opening choice.2}{\376\377\000C\000h\000e\000s\000s\000\040\000o\000p\000e\000n\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e}{Section.7.Applications.1}% 25
-\BOOKMARK [2][-]{Subsection.8.1.Berserking choice in online chess.2}{\376\377\000B\000e\000r\000s\000e\000r\000k\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e\000\040\000i\000n\000\040\000o\000n\000l\000i\000n\000e\000\040\000c\000h\000e\000s\000s}{Section.7.Applications.1}% 26
-\BOOKMARK [2][-]{Subsection.8.2.Child wish.2}{\376\377\000C\000h\000i\000l\000d\000\040\000w\000i\000s\000h}{Section.7.Applications.1}% 27
-\BOOKMARK [2][-]{Subsection.8.3.Contraception choice.2}{\376\377\000C\000o\000n\000t\000r\000a\000c\000e\000p\000t\000i\000o\000n\000\040\000c\000h\000o\000i\000c\000e}{Section.7.Applications.1}% 28
-\BOOKMARK [1][-]{Section.8.Conclusion.1}{\376\377\000C\000o\000n\000c\000l\000u\000s\000i\000o\000n}{}% 29
+\BOOKMARK [2][-]{Subsection.6.0.Reproducing the observed choices.2}{\376\377\000R\000e\000p\000r\000o\000d\000u\000c\000i\000n\000g\000\040\000t\000h\000e\000\040\000o\000b\000s\000e\000r\000v\000e\000d\000\040\000c\000h\000o\000i\000c\000e\000s}{Section.5.Choice prediction.1}% 23
+\BOOKMARK [2][-]{Subsection.6.1.Forecasting choice behavior.2}{\376\377\000F\000o\000r\000e\000c\000a\000s\000t\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e\000\040\000b\000e\000h\000a\000v\000i\000o\000r}{Section.5.Choice prediction.1}% 24
+\BOOKMARK [1][-]{Section.6.Model selection.1}{\376\377\000M\000o\000d\000e\000l\000\040\000s\000e\000l\000e\000c\000t\000i\000o\000n}{}% 25
+\BOOKMARK [1][-]{Section.7.Applications.1}{\376\377\000A\000p\000p\000l\000i\000c\000a\000t\000i\000o\000n\000s}{}% 26
+\BOOKMARK [2][-]{Subsection.8.0.Chess opening choice.2}{\376\377\000C\000h\000e\000s\000s\000\040\000o\000p\000e\000n\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e}{Section.7.Applications.1}% 27
+\BOOKMARK [2][-]{Subsection.8.1.Berserking choice in online chess.2}{\376\377\000B\000e\000r\000s\000e\000r\000k\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e\000\040\000i\000n\000\040\000o\000n\000l\000i\000n\000e\000\040\000c\000h\000e\000s\000s}{Section.7.Applications.1}% 28
+\BOOKMARK [2][-]{Subsection.8.2.Child wish.2}{\376\377\000C\000h\000i\000l\000d\000\040\000w\000i\000s\000h}{Section.7.Applications.1}% 29
+\BOOKMARK [2][-]{Subsection.8.3.Contraception choice.2}{\376\377\000C\000o\000n\000t\000r\000a\000c\000e\000p\000t\000i\000o\000n\000\040\000c\000h\000o\000i\000c\000e}{Section.7.Applications.1}% 30
+\BOOKMARK [1][-]{Section.8.Conclusion.1}{\376\377\000C\000o\000n\000c\000l\000u\000s\000i\000o\000n}{}% 31
