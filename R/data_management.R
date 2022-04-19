@@ -178,7 +178,7 @@ overview_effects <- function(form, re = NULL, alternatives) {
   overview$re <- as.logical(overview$re)
 
   ### sort 'overview', first by 'random' and second by appearance in formula
-  overview <- overview[order(overview$re, rownames(overview)), ]
+  overview <- overview[order(overview$re, as.numeric(rownames(overview))), ]
   rownames(overview) <- NULL
 
   ### return 'overview'
@@ -552,6 +552,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       )
     }
     if ("ASC" %in% standardize) {
+      warning("Removed 'ASC' from 'standardize'.", call. = FALSE, immediate = TRUE)
       standardize <- standardize[-which(standardize == "ASC")]
     }
     for (var in vars[[2]]) {
