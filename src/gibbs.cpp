@@ -558,8 +558,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
   arma::vec class_sequence(R);
 
-  // define updating variables and set initial values
-  vec s(C);
+  // set initial values
+  vec s = ones(C)/C;
   vec z = z0;
   vec m = m0;
   mat b = b0;
@@ -568,6 +568,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   vec alpha = alpha0;
   mat beta = beta0;
   mat Sigmainv = arma::inv(Sigma0);
+
+  // set progress output
   Environment pkg = Environment::namespace_env("RprobitB");
   Rcpp::Function RprobitB_pp = pkg["RprobitB_pp"];
 
@@ -597,7 +599,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       if(dp_update == false || r+1 > B || r == 0){
         // update s (but only if draw is descending)
         arma::vec s_cand = update_s(delta,m);
-        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater<double>())){
+        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater_equal<double>())){
           s = s_cand;
         }
 
@@ -655,7 +657,6 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         C = as<int>(class_update["C"]);
         m = update_m(C, z, true);
       }
-
     }
 
     if(P_f>0){

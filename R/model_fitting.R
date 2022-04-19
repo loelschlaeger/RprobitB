@@ -298,7 +298,9 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
                            "dp_update" = FALSE)
   } else {
     ### specify updating parameters
-    if (is.null(latent_classes[["Cmax"]])) latent_classes[["Cmax"]] <- 10
+    if (is.null(latent_classes[["Cmax"]])){
+      latent_classes[["Cmax"]] <- max(10, latent_classes[["C"]])
+    }
 
     ### set missing parameters to default values
     if (is.null(latent_classes[["buffer"]])) latent_classes[["buffer"]] <- 100

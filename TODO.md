@@ -40,7 +40,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Bugs
 
-- [ ] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
+- [x] `gibbs_sampling()` with low data fails with "Evaluation error: too few positive probabilities".
 - [ ] In `simulate_choices()`, specifying `s` without `seed` fails (due to partial match of ellipsis argument?).
 
 ### Tests
