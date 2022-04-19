@@ -246,8 +246,9 @@ for(row in 1:nrow(data)){
     }
   }
 }
+vars_names <- c("finance", "plans", "care", "empl", "leisure", "empl_partner", "household", "ready")
 for(i in 1:length(vars)){
-  data[,paste0("child_cond",i)] <- as.numeric(data[,vars[i]])
+  data[,vars_names[i]] <- as.numeric(data[,vars[i]])
 }
 data <- dplyr::select(data, !all_of(vars))
 
