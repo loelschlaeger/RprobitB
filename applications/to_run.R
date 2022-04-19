@@ -1,47 +1,4 @@
 
-# Berserk choice ----------------------------------------------------------
-
-
-
-# Chess opening choice ----------------------------------------------------
-
-
-data("choice_chess_opening")
-choice_chess_opening <- create_lagged_cov(choice_chess_opening, "w1", id = "fideid_w")
-choice_chess_opening <- fastDummies::dummy_cols(choice_chess_opening, "w1.1")
-choice_chess_opening$rating_diff <- choice_chess_opening$rating_w - choice_chess_opening$rating_b
-data <- prepare_data(
-  form = w1 ~ w1.1 | sex_w + byear_w + rating_w + rating_diff,
-  choice_data = choice_chess_opening,
-  id = "fideid_w",
-  idc = "fideid_b",
-  alternatives = c("e4","d4","b3"),
-  standardize = c("byear_w","rating_w","rating_diff"),
-  impute = "complete_cases"
-)
-# plot(data, by_choice = TRUE)
-# saveRDS(data, "applications/chess_opening_choice/data.rds", compress = "xz")
-
-mod_fix <- mcmc(data)
-mod_fix <- compute_p_si(mod_fix)
-saveRDS(mod_fix, "applications/chess_opening_choice/mod_fix.rds", compress = "xz")
-
-mod_base <- nested_model(mod_fix, form = w1 ~ w1.1)
-mod_base <- compute_p_si(mod_base)
-saveRDS(mod_base, "applications/chess_opening_choice/mod_base.rds", compress = "xz")
-
-mod_re1 <- nested_model(mod_fix, re = c("w1.1"))
-mod_re1 <- compute_p_si(mod_re1)
-saveRDS(mod_re1, "applications/chess_opening_choice/mod_re1.rds", compress = "xz")
-
-mod_re2 <- nested_model(mod_fix, re = c("w1.1","rating_w"))
-mod_re2 <- compute_p_si(mod_re2)
-saveRDS(mod_re2, "applications/chess_opening_choice/mod_re2.rds", compress = "xz")
-
-model_selection(mod_base, mod_fix, mod_re1, mod_re2)
-
-
-
 # Child wish --------------------------------------------------------------
 
 contraception_data <- readRDS("applications/contraception_choice/data/data_encoded.rds")
