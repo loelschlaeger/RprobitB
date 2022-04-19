@@ -1,51 +1,6 @@
 
 # Berserk choice ----------------------------------------------------------
 
-data("choice_berserk")
-choice_berserk <- create_lagged_cov(
-  choice_data = choice_berserk,
-  column = c("berserk","lost"),
-  k = 1,
-  id = "player_id"
-)
-data <- prepare_data(
-  form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak + berserk.1 + lost.1,
-  choice_data = choice_berserk,
-  id = "player_id",
-  idc = "game_id",
-  standardize = c("rating","rating_diff","min_rem"),
-  impute = "zero_out"
-)
-# plot(data, by_choice = TRUE)
-# saveRDS(data, "applications/berserk_choice/data.rds", compress = "xz")
-
-mod_fix <- mcmc(data)
-saveRDS(mod_fix, "applications/berserk_choice/mod_fix.rds", compress = "xz")
-
-mod_base <- nested_model(mod_fix,
-                         form = berserk ~ 0 | berserk.1,
-                         standardize = NULL)
-saveRDS(mod_base, "applications/berserk_choice/mod_base.rds", compress = "xz")
-
-mod_re <- nested_model(mod_fix,
-                       re = c("rating","min_rem","lost.1"))
-saveRDS(mod_re, "applications/berserk_choice/mod_re.rds", compress = "xz")
-
-mod_cl1 <- nested_model(mod_re,
-                        prior = list("delta" = 0.5),
-                        latent_classes = list("dp_update" = TRUE))
-saveRDS(mod_cl1, "applications/berserk_choice/mod_cl1.rds", compress = "xz")
-
-mod_cl2 <- nested_model(mod_re,
-                        prior = list("delta" = 0.7),
-                        latent_classes = list("dp_update" = TRUE))
-saveRDS(mod_cl2, "applications/berserk_choice/mod_cl2.rds", compress = "xz")
-
-mod_cl3 <- nested_model(mod_re,
-                        prior = list("delta" = 1),
-                        latent_classes = list("dp_update" = TRUE))
-saveRDS(mod_cl3, "applications/berserk_choice/mod_cl3.rds", compress = "xz")
-
 
 
 # Chess opening choice ----------------------------------------------------
