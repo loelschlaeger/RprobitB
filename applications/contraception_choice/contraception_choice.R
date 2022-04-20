@@ -16,7 +16,7 @@ data_cc <- prepare_data(
 )
 
 plot(data_cc, by_choice = TRUE)
-saveRDS(data_cc, "applications/contraception_choice/data_cw.rds", compress = "xz")
+saveRDS(data_cc, "applications/contraception_choice/data_cc.rds", compress = "xz")
 
 model_contr_method <- mcmc(data = data_cc,
                            prior = list("delta" = 0.1),

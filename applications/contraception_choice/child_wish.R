@@ -15,5 +15,5 @@ saveRDS(data_cw, "applications/contraception_choice/data_cw.rds", compress = "xz
 
 model_child_wish <- mcmc(data = data_cw,
                          prior = list("delta" = 0.1),
-                         latent_classes = list("C" = 10, "dp_update" = TRUE))
+                         latent_classes = list("C" = 5, "dp_update" = TRUE))
 saveRDS(model_child_wish, "applications/contraception_choice/model_child_wish.rds", compress = "xz")
