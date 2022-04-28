@@ -63,103 +63,77 @@
     </div>
 
 <div id="rprobitb-todos" class="section level1">
-
 <p>The following tasks are on our agenda and will be tackled as time permits.</p>
 <div class="section level2">
 <h2 id="functionality">Functionality<a class="anchor" aria-label="anchor" href="#functionality"></a></h2>
 <div class="section level3">
 <h3 id="gibbs-sampler">Gibbs sampler<a class="anchor" aria-label="anchor" href="#gibbs-sampler"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Make setting of <code>scale</code> in <code>mcmc</code> more intuitive.</li>
+<input type="checkbox" disabled>Make setting of <code>scale</code> in <code>mcmc</code> more intuitive.</li>
 <li>
-<input type="checkbox" disabled>
-Use default progress bar for Gibbs sampling or show at least ETA.</li>
+<input type="checkbox" disabled>Use default progress bar for Gibbs sampling or show at least ETA.</li>
 <li>
-<input type="checkbox" disabled>
-Check and document <code><a href="reference/R_hat.html">R_hat()</a></code> implementation (How is chain splitted?).</li>
+<input type="checkbox" disabled>Check and document <code><a href="reference/R_hat.html">R_hat()</a></code> implementation (How is chain splitted?).</li>
 <li>
-<input type="checkbox" disabled>
-Fixed parameters: After each update, set fixed parameters.</li>
+<input type="checkbox" disabled>Fixed parameters: After each update, set fixed parameters.</li>
 <li>
-<input type="checkbox" disabled>
-Use <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code> to keep on Gibbs sampling, i.e. change <code>R</code>.</li>
+<input type="checkbox" disabled>Use <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code> to keep on Gibbs sampling, i.e. change <code>R</code>.</li>
 <li>
-<input type="checkbox" disabled>
-Don’t save all Gibbs samples in <code>RprobitB_fit</code> but only the raw ones.</li>
+<input type="checkbox" disabled>Don’t save all Gibbs samples in <code>RprobitB_fit</code> but only the raw ones.</li>
 <li>
-<input type="checkbox" disabled>
-Show average covariates of classes after classification via <code><a href="reference/preference_classification.html">preference_classification()</a></code>.</li>
+<input type="checkbox" disabled>Show average covariates of classes after classification via <code><a href="reference/preference_classification.html">preference_classification()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Variable choice set</li>
+<input type="checkbox" disabled>Variable choice set</li>
 <li>
-<input type="checkbox" disabled>
-Function that generates covariates. For example lagged terms or transformations.</li>
+<input type="checkbox" disabled>Function that generates covariates. For example lagged terms or transformations.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="ordered-probit">Ordered Probit<a class="anchor" aria-label="anchor" href="#ordered-probit"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Implement ordered probit model.</li>
-</ul></div>
+<input type="checkbox" disabled>Implement ordered probit model.</li></ul></div>
 </div>
 <div class="section level2">
 <h2 id="outputs">Outputs<a class="anchor" aria-label="anchor" href="#outputs"></a></h2>
 <div class="section level3">
 <h3 id="console-outputs">Console outputs<a class="anchor" aria-label="anchor" href="#console-outputs"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Print model formula with <code><a href="reference/check_form.html">check_form()</a></code>.</li>
-</ul></div>
+<input type="checkbox" disabled>Print model formula with <code><a href="reference/check_form.html">check_form()</a></code>.</li></ul></div>
 <div class="section level3">
 <h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-ACF of Gibbs samples<ul><li>
-<input type="checkbox" disabled>
-Exclude parameter wrt which the model is normalized.</li>
-</ul></li>
-</ul></div>
+<input type="checkbox" disabled>ACF of Gibbs samples<ul><li>
+<input type="checkbox" disabled>Exclude parameter wrt which the model is normalized.</li></ul></li></ul></div>
 </div>
 <div class="section level2">
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a></h2>
-<div class="section level3">
-<h3 id="bottlenecks">Bottlenecks<a class="anchor" aria-label="anchor" href="#bottlenecks"></a></h3>
-</div>
+<div class="section level3"><h3 id="bottlenecks">Bottlenecks<a class="anchor" aria-label="anchor" href="#bottlenecks"></a></h3></div>
 <div class="section level3">
 <h3 id="bugs">Bugs<a class="anchor" aria-label="anchor" href="#bugs"></a></h3>
 <ul><li>
 <input type="checkbox" disabled checked><code><a href="reference/gibbs_sampling.html">gibbs_sampling()</a></code> with low data fails with “Evaluation error: too few positive probabilities”.</li>
 <li>
-<input type="checkbox" disabled>
-In <code><a href="reference/simulate_choices.html">simulate_choices()</a></code>, specifying <code>s</code> without <code>seed</code> fails (due to partial match of ellipsis argument?).</li>
+<input type="checkbox" disabled>In <code><a href="reference/simulate_choices.html">simulate_choices()</a></code>, specifying <code>s</code> without <code>seed</code> fails (due to partial match of ellipsis argument?).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="tests">Tests<a class="anchor" aria-label="anchor" href="#tests"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Add tests for <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code>.</li>
-</ul></div>
+<input type="checkbox" disabled>Add tests for <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code>.</li></ul></div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
 <div class="section level3">
 <h3 id="demos">Demos<a class="anchor" aria-label="anchor" href="#demos"></a></h3>
 <ul><li>
-<input type="checkbox" disabled><code>rpb()</code> for demonstration with console feedback.</li>
-</ul></div>
+<input type="checkbox" disabled><code>rpb()</code> for demonstration with console feedback.</li></ul></div>
 <div class="section level3">
 <h3 id="function-documentation">Function documentation<a class="anchor" aria-label="anchor" href="#function-documentation"></a></h3>
 <ul><li>
-<input type="checkbox" disabled>
-Document Dirichlet Process in <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code>.</li>
+<input type="checkbox" disabled>Document Dirichlet Process in <code><a href="reference/update_classes_dp.html">update_classes_dp()</a></code>.</li>
 <li>
-<input type="checkbox" disabled>
-Document <code>RprobitB_latent_classes</code>.</li>
+<input type="checkbox" disabled>Document <code>RprobitB_latent_classes</code>.</li>
 </ul></div>
 </div>
 </div>
@@ -173,7 +147,7 @@ Document <code>RprobitB_latent_classes</code>.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer></div>
