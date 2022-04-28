@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 2.0.2
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   RprobitB: RprobitB.html
@@ -10,7 +10,7 @@ articles:
   v05_choice_prediction: v05_choice_prediction.html
   v06_model_selection: v06_model_selection.html
   v07_applications: v07_applications.html
-last_built: 2022-04-21T08:22Z
+last_built: 2022-04-28T16:04Z
 urls:
   reference: https://loelschlaeger.de/RprobitB/reference
   article: https://loelschlaeger.de/RprobitB/articles
