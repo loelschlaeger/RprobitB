@@ -27,13 +27,13 @@ data <- prepare_data(
   form = form,
   choice_data = Train,
   idc = "choiceid"
-  )
+)
 model_train <- fit_model(
   data = data,
   R = 10000,
   Q = 10,
-  scale = list("parameter" = "a", index = 1, value = -1)
-  )
+  scale = price ~ -1)
+)
 }
 }
 \keyword{model}
