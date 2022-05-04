@@ -1,32 +1,13 @@
-\BOOKMARK [1][-]{Section.0.Introduction.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{Section.1.The probit model.1}{The probit model}{}% 2
-\BOOKMARK [2][-]{Subsection.2.0.Latent utilities.2}{Latent utilities}{Section.1.The probit model.1}% 3
-\BOOKMARK [2][-]{Subsection.2.1.Choice behavior heterogeneity.2}{Choice behavior heterogeneity}{Section.1.The probit model.1}% 4
-\BOOKMARK [2][-]{Subsection.2.2.Model normalization.2}{Model normalization}{Section.1.The probit model.1}% 5
-\BOOKMARK [1][-]{Section.2.Choice data.1}{Choice data}{}% 6
-\BOOKMARK [2][-]{Subsection.3.0.Data requirements.2}{Data requirements}{Section.2.Choice data.1}% 7
-\BOOKMARK [2][-]{Subsection.3.1.Model formula.2}{Model formula}{Section.2.Choice data.1}% 8
-\BOOKMARK [2][-]{Subsection.3.2.The prepare data function.2}{The prepare data function}{Section.2.Choice data.1}% 9
-\BOOKMARK [2][-]{Subsection.3.3.Example 1: Train data.2}{Example 1: Train data}{Section.2.Choice data.1}% 10
-\BOOKMARK [2][-]{Subsection.3.4.Simulate choices.2}{Simulate choices}{Section.2.Choice data.1}% 11
-\BOOKMARK [2][-]{Subsection.3.5.Example 2: Simulated choices.2}{Example 2: Simulated choices}{Section.2.Choice data.1}% 12
-\BOOKMARK [2][-]{Subsection.3.6.Train and test data set.2}{Train and test data set}{Section.2.Choice data.1}% 13
-\BOOKMARK [1][-]{Section.3.Model fitting.1}{Model fitting}{}% 14
-\BOOKMARK [2][-]{Subsection.4.0.Parameter normalization.2}{Parameter normalization}{Section.3.Model fitting.1}% 15
-\BOOKMARK [2][-]{Subsection.4.1.Burn-in and thinning.2}{Burn-in and thinning}{Section.3.Model fitting.1}% 16
-\BOOKMARK [2][-]{Subsection.4.2.The mcmc function.2}{The mcmc function}{Section.3.Model fitting.1}% 17
-\BOOKMARK [2][-]{Subsection.4.3.Example 1: Train (cont.).2}{Example 1: Train \(cont.\)}{Section.3.Model fitting.1}% 18
-\BOOKMARK [2][-]{Subsection.4.4.Checking the Gibbs samples.2}{Checking the Gibbs samples}{Section.3.Model fitting.1}% 19
-\BOOKMARK [2][-]{Subsection.4.5.Model transformation after estimation.2}{Model transformation after estimation}{Section.3.Model fitting.1}% 20
-\BOOKMARK [2][-]{Subsection.4.6.Estimating a joint normal mixing distribution.2}{Estimating a joint normal mixing distribution}{Section.3.Model fitting.1}% 21
-\BOOKMARK [2][-]{Subsection.4.7.Estimating latent classes.2}{Estimating latent classes}{Section.3.Model fitting.1}% 22
-\BOOKMARK [1][-]{Section.4.Choice prediction.1}{Choice prediction}{}% 23
-\BOOKMARK [2][-]{Subsection.5.0.Reproducing the observed choices.2}{Reproducing the observed choices}{Section.4.Choice prediction.1}% 24
-\BOOKMARK [2][-]{Subsection.5.1.Forecasting choice behavior.2}{Forecasting choice behavior}{Section.4.Choice prediction.1}% 25
-\BOOKMARK [1][-]{Section.5.Model selection.1}{Model selection}{}% 26
-\BOOKMARK [1][-]{Section.6.Applications.1}{Applications}{}% 27
-\BOOKMARK [2][-]{Subsection.7.0.Chess opening choice.2}{Chess opening choice}{Section.6.Applications.1}% 28
-\BOOKMARK [2][-]{Subsection.7.1.Berserking choice in online chess.2}{Berserking choice in online chess}{Section.6.Applications.1}% 29
-\BOOKMARK [2][-]{Subsection.7.2.Child wish.2}{Child wish}{Section.6.Applications.1}% 30
-\BOOKMARK [2][-]{Subsection.7.3.Contraception choice.2}{Contraception choice}{Section.6.Applications.1}% 31
-\BOOKMARK [1][-]{Section.7.Conclusion.1}{Conclusion}{}% 32
+\BOOKMARK [1][-]{Section.0.Introduction.1}{\376\377\000I\000n\000t\000r\000o\000d\000u\000c\000t\000i\000o\000n}{}% 1
+\BOOKMARK [1][-]{Section.1.The probit model.1}{\376\377\000T\000h\000e\000\040\000p\000r\000o\000b\000i\000t\000\040\000m\000o\000d\000e\000l}{}% 2
+\BOOKMARK [2][-]{Subsection.2.0.Latent utilities.2}{\376\377\000L\000a\000t\000e\000n\000t\000\040\000u\000t\000i\000l\000i\000t\000i\000e\000s}{Section.1.The probit model.1}% 3
+\BOOKMARK [2][-]{Subsection.2.1.Choice behavior heterogeneity.2}{\376\377\000C\000h\000o\000i\000c\000e\000\040\000b\000e\000h\000a\000v\000i\000o\000r\000\040\000h\000e\000t\000e\000r\000o\000g\000e\000n\000e\000i\000t\000y}{Section.1.The probit model.1}% 4
+\BOOKMARK [2][-]{Subsection.2.2.Model normalization.2}{\376\377\000M\000o\000d\000e\000l\000\040\000n\000o\000r\000m\000a\000l\000i\000z\000a\000t\000i\000o\000n}{Section.1.The probit model.1}% 5
+\BOOKMARK [1][-]{Section.2.Choice data.1}{\376\377\000C\000h\000o\000i\000c\000e\000\040\000d\000a\000t\000a}{}% 6
+\BOOKMARK [2][-]{Subsection.3.0.Formula framework.2}{\376\377\000F\000o\000r\000m\000u\000l\000a\000\040\000f\000r\000a\000m\000e\000w\000o\000r\000k}{Section.2.Choice data.1}% 7
+\BOOKMARK [2][-]{Subsection.3.1.Preparing data for estimation.2}{\376\377\000P\000r\000e\000p\000a\000r\000i\000n\000g\000\040\000d\000a\000t\000a\000\040\000f\000o\000r\000\040\000e\000s\000t\000i\000m\000a\000t\000i\000o\000n}{Section.2.Choice data.1}% 8
+\BOOKMARK [2][-]{Subsection.3.2.Simulating choice data.2}{\376\377\000S\000i\000m\000u\000l\000a\000t\000i\000n\000g\000\040\000c\000h\000o\000i\000c\000e\000\040\000d\000a\000t\000a}{Section.2.Choice data.1}% 9
+\BOOKMARK [2][-]{Subsection.3.3.Train and test data set.2}{\376\377\000T\000r\000a\000i\000n\000\040\000a\000n\000d\000\040\000t\000e\000s\000t\000\040\000d\000a\000t\000a\000\040\000s\000e\000t}{Section.2.Choice data.1}% 10
+\BOOKMARK [1][-]{Section.3.Model fitting.1}{\376\377\000M\000o\000d\000e\000l\000\040\000f\000i\000t\000t\000i\000n\000g}{}% 11
+\BOOKMARK [2][-]{Subsection.4.0.Prior and posterior distributions.2}{\376\377\000P\000r\000i\000o\000r\000\040\000a\000n\000d\000\040\000p\000o\000s\000t\000e\000r\000i\000o\000r\000\040\000d\000i\000s\000t\000r\000i\000b\000u\000t\000i\000o\000n\000s}{Section.3.Model fitting.1}% 12
+\BOOKMARK [2][-]{Subsection.4.1.The estimation routine.2}{\376\377\000T\000h\000e\000\040\000e\000s\000t\000i\000m\000a\000t\000i\000o\000n\000\040\000r\000o\000u\000t\000i\000n\000e}{Section.3.Model fitting.1}% 13

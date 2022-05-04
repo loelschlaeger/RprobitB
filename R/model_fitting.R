@@ -420,11 +420,12 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #'
 #' @examples
 #' RprobitB:::RprobitB_normalization(
-#'   level = "A",
+#'   level = "B",
 #'   scale = price ~ -1,
-#'   form <- choice ~ price + time + comfort + change | 1,
-#'   re <- "time",
-#'   alternatives <- c("A", "B")
+#'   form = choice ~ price + time + comfort + change | 1,
+#'   re = "time",
+#'   alternatives = c("A", "B"),
+#'   base_alternative = "A"
 #' )
 #'
 #' @keywords
