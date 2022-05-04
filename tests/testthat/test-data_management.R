@@ -28,8 +28,10 @@ test_that("overview effects can be generated", {
   re <- c("cost", "ASC")
   alternatives <- c("train", "bus", "car")
   base_alternative <- "train"
-  out <- overview_effects(form = form, re = re, alternatives = alternatives,
-                          base_alternative = base_alternative)
+  out <- overview_effects(
+    form = form, re = re, alternatives = alternatives,
+    base_alternative = base_alternative
+  )
   expect_snapshot(out)
 })
 

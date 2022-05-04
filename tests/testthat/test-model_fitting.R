@@ -83,7 +83,7 @@ test_that("Gibbs sampling works", {
 test_that("computation of sufficient statistics works", {
   form <- choice ~ v1 | v2
   re <- "v2"
-  alternatives <- c("A","B","C")
+  alternatives <- c("A", "B", "C")
   data <- simulate_choices(
     form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives,
     seed = 1
@@ -122,7 +122,8 @@ test_that("transforming Q in RprobitB_fit works", {
 test_that("transforming scale in RprobitB_fit works", {
   model <- RprobitB::model_train
   model_new_scale <- transform(
-    model, scale = Sigma_1 ~ 1, check_preference_flip = FALSE
+    model,
+    scale = Sigma_1 ~ 1, check_preference_flip = FALSE
   )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
