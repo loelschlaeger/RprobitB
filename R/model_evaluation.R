@@ -339,7 +339,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
     stop("'data' is not of class 'RprobitB_data'.")
   }
 
-  ### compute choice probabilites
+  ### compute choice probabilities
   choice_probs <- as.data.frame(choice_probabilities(object, data = data))
 
   ### check if true choices are available

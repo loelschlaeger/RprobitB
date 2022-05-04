@@ -446,7 +446,7 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
   if(level != tail(alternatives, n = 1)){
     level <- tail(alternatives, n = 1)
     warning(paste0("Currently, only alternatives with respect to the last ",
-                   "alternative can be computed.\n Therefore, 'level' = ",
+                   "alternative can be computed.\nTherefore, 'level' = ",
                    tail(alternatives, n = 1), "' is set."),
             immediate. = TRUE, call. = FALSE)
   }
@@ -507,9 +507,9 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
          call. = FALSE)
   }
   if(value < 0 && parameter == "s"){
-    message(paste0("Caution: you fixed '", par_name, "' to a negative value (",
-                   value, ").\nPlease make sure that this does not flip the ",
-                   "preferences."))
+    stop("'<value>' in 'scale = <parameter> ~ <value>' must be non-zero ",
+         "when fixing an error term variance.",
+         call. = FALSE)
   }
 
   ### create and return object of class 'RprobitB_normalization'
@@ -720,7 +720,8 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
   )
 
   ### calculate log-likelihood
-  out[["ll"]] <- logLik(out)
+  RprobitB_pp("Computing log-likelihood")
+  out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
 
   ### return 'RprobitB_fit' object
   return(out)

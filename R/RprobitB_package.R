@@ -18,9 +18,13 @@ rpb <- function() {
 
 #' @noRd
 
-RprobitB_pp <- function(title, i, total) {
+RprobitB_pp <- function(title, i = NULL, total = NULL) {
   if (identical(getOption("RprobitB_progress"), TRUE)) {
-    message(paste(title, i, "of", total, "\r"), appendLF = (i == total))
+    if(is.null(i) || is.null(total)) {
+      message(title)
+    } else {
+      message(paste(title, i, "of", total, "\r"), appendLF = (i == total))
+    }
   }
 }
 

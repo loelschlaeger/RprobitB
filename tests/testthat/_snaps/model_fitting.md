@@ -126,9 +126,6 @@
     Code
       RprobitB_normalization(level = "B", scale = price ~ -1, form = form, re = re,
       alternatives = alternatives)
-    Message <simpleMessage>
-      Caution: you fixed 'price' to a negative value (-1).
-      Please make sure that this does not flip the preferences.
     Output
       Utility normalization
       Level: Utility differences with respect to alternative 'B'.

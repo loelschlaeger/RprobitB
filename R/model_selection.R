@@ -581,7 +581,8 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 
   ### compute probability for each observation i (rows) for each sample s (columns)
   s <- NULL
-  p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
+  p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB",
+                           .combine = "cbind", .options.snow = opts) %dopar% {
     out <- c()
     for(n in 1:x$data$N){
       X_n = x$data$data[[n]]$X
@@ -678,9 +679,8 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
     stop("'x' must be of class 'RprobitB_fit.", call. = FALSE)
   }
   if(is.null(x[["p_si"]])){
-    stop("Cannot compute the marginal model likelihood.\n",
-         "Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si'.", call. = FALSE)
+    stop("Please compute the probability for each observed choice at posterior samples first.\n",
+         "For that, use the function 'compute_p_si()'.", call. = FALSE)
   }
   if(!(is.numeric(S) && length(S)==1 && S>=0 && S%%1==0)){
     stop("'S' must be an integer.")
