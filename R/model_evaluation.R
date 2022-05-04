@@ -306,7 +306,7 @@ preference_classification <- function(x, add_true = FALSE) {
 #' @examples
 #' data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1)
 #' data <- train_test(data, test_proportion = 0.5)
-#' model <- mcmc(data$train)
+#' model <- fit_model(data$train)
 #' coef(model)
 #' predict(model)
 #' predict(model, overview = FALSE)
@@ -392,7 +392,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 #'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-#' model <- mcmc(data)
+#' model <- fit_model(data)
 #' point_estimates(model)
 #' point_estimates(model, FUN = median)
 #'
@@ -846,7 +846,7 @@ cov_mix <- function(x, cor = FALSE) {
 #'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-#' x <- mcmc(data)
+#' x <- fit_model(data)
 #' choice_probabilities(x)
 #'
 #' @export

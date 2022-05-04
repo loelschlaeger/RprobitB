@@ -20,7 +20,7 @@
 #'   choice_data = Train,
 #'   idc = "choiceid"
 #'   )
-#' model_train <- mcmc(
+#' model_train <- fit_model(
 #'   data = data,
 #'   R = 10000,
 #'   Q = 10,
@@ -74,7 +74,7 @@
 #'   choice_data = Electricity,
 #'   re = c("cl","loc","wk","tod","seas")
 #' )
-#' model_elec <- mcmc(
+#' model_elec <- fit_model(
 #'   data = data,
 #'   R = 5000,
 #'   Q = 10,

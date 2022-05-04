@@ -69,7 +69,7 @@ test_that("Gibbs sampling works", {
     N = 10, T = 1:10, J = 2,
     seed = 1
   )
-  model <- mcmc(data, R = 2000, seed = 1)
+  model <- fit_model(data, R = 2000, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))

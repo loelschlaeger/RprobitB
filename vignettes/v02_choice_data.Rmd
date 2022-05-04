@@ -125,7 +125,7 @@ Before model estimation with {RprobitB}, any empirical choice data set `choice_d
 data <- prepare_data(form = form, choice_data = choice_data)
 ```
 
-The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `mcmc`. The following arguments are optional:
+The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `fit_model`. The following arguments are optional:
 
 - `re`: The character vector of variable names of `form` with random effects. `re = NULL` per default, i.e. no random effects.
 

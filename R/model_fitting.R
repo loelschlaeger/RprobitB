@@ -596,7 +596,7 @@ print.RprobitB_normalization <- function(x, ...) {
 #' data <- simulate_choices(
 #'   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1
 #' )
-#' mod <- mcmc(data = data, R = 1000, seed = 1)
+#' mod <- fit_model(data = data, R = 1000, seed = 1)
 #' summary(mod)
 #'
 #' @export
@@ -612,9 +612,9 @@ print.RprobitB_normalization <- function(x, ...) {
 #'   \item [transform()] for transforming a fitted model
 #' }
 
-mcmc <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
-                 print_progress = getOption("RprobitB_progress"),
-                 prior = NULL, latent_classes = NULL, seed = NULL) {
+fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
+                      print_progress = getOption("RprobitB_progress"),
+                      prior = NULL, latent_classes = NULL, seed = NULL) {
 
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
@@ -904,7 +904,7 @@ sufficient_statistics <- function(data, normalization) {
 #'
 #' @description
 #' This function is a wrapper for \code{\link{prepare_data}} and
-#' \code{\link{mcmc}} to estimate a nested probit model based on a given
+#' \code{\link{fit_model}} to estimate a nested probit model based on a given
 #' \code{RprobitB_fit} object.
 #'
 #' @details
@@ -914,7 +914,7 @@ sufficient_statistics <- function(data, normalization) {
 #' @param x
 #' An object of class \code{RprobitB_fit}.
 #' @inheritParams prepare_data
-#' @inheritParams mcmc
+#' @inheritParams fit_model
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}.
@@ -937,7 +937,7 @@ nested_model <- function(x, form, re, alternatives, id, idc, standardize,
     standardize = if(missing(standardize)) x$data$standardize else standardize,
     impute = if(missing(impute)) "complete_cases" else impute
     )
-  model <- mcmc(
+  model <- fit_model(
     data = data,
     scale = if(missing(scale)) x$scale else scale,
     R = if(missing(R)) x$R else R,
@@ -956,7 +956,7 @@ nested_model <- function(x, form, re, alternatives, id, idc, standardize,
 #' @description
 #' This function creates an object of class \code{RprobitB_fit}.
 #'
-#' @inheritParams mcmc
+#' @inheritParams fit_model
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
 #' @param gibbs_samples
@@ -1113,7 +1113,7 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 #'
 #' @param _data
 #' An object of class \code{\link{RprobitB_fit}}.
-#' @inheritParams mcmc
+#' @inheritParams fit_model
 #' @param check_preference_flip
 #' Set to \code{TRUE} to check for flip in preferences after new \code{scale}.
 #' @param ...
@@ -1221,7 +1221,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 #'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}).
 #' }
 #' @inheritParams RprobitB_data
-#' @inheritParams mcmc
+#' @inheritParams fit_model
 #' @inheritParams sufficient_statistics
 #'
 #' @return

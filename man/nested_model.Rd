@@ -123,7 +123,7 @@ An object of class \code{RprobitB_fit}.
 }
 \description{
 This function is a wrapper for \code{\link{prepare_data}} and
-\code{\link{mcmc}} to estimate a nested probit model based on a given
+\code{\link{fit_model}} to estimate a nested probit model based on a given
 \code{RprobitB_fit} object.
 }
 \details{

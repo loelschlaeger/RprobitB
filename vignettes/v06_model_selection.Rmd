@@ -136,7 +136,7 @@ plot(WAIC(model_train))
 plot(WAIC(model_train_sparse))
 ```
 
-Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing `R` in `mcmc()` or decreasing `B` or `Q` via `transform()`, see the vignette on model fitting. 
+Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing `R` in `fit_model()` or decreasing `B` or `Q` via `transform()`, see the vignette on model fitting. 
 
 ### `MMLL` 
 

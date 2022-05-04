@@ -13,7 +13,7 @@ data_cw <- prepare_data(
 plot(data_cw, by_choice = TRUE)
 saveRDS(data_cw, "applications/contraception_choice/data_cw.rds", compress = "xz")
 
-model_child_wish <- mcmc(data = data_cw,
+model_child_wish <- fit_model(data = data_cw,
                          prior = list("delta" = 0.1),
                          latent_classes = list("C" = 5, "dp_update" = TRUE))
 saveRDS(model_child_wish, "applications/contraception_choice/model_child_wish.rds", compress = "xz")

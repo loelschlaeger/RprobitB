@@ -28,7 +28,7 @@ data <- prepare_data(
   choice_data = Train,
   idc = "choiceid"
   )
-model_train <- mcmc(
+model_train <- fit_model(
   data = data,
   R = 10000,
   Q = 10,

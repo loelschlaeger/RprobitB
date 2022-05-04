@@ -14,6 +14,8 @@
 
 * The function `simulate` is now called `simulate_choices()` to not mask `stats::simulate()`.
 
+* The function `mcmc` is now called `fit_model()` to make its functionality clearer.
+
 * The README file is now in R Markdown format.
 
 * Simplified specifying the utility `scale`, see the help page of `RprobitB_normalization()`.

@@ -48,7 +48,7 @@ data <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
   )
-model_elec <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+model_elec <- fit_model(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
 ```
 
 The estimated model is saved in {RprobitB} and can be accessed via:
@@ -90,7 +90,7 @@ More generally, {RprobitB} allows to specify a Gaussian mixture as the mixing di
 $$ \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).$$
 This specification allows for a) a better approximation of the true underlying mixing distribution and b) a preference based classification of the deciders.
 
-To estimate a latent mixture, specify a named list `latent_classes` with the following arguments and submit it to the estimation routine `mcmc`:
+To estimate a latent mixture, specify a named list `latent_classes` with the following arguments and submit it to the estimation routine `fit_model`:
 
 - `C`, the fixed number (greater or equal 1) of latent classes, which is set to 1 per default, ^[If either `weight_update = TRUE` or `dp_update = TRUE` (i.e. if classes are updated), `C` equals the initial number of latent classes.]
 
