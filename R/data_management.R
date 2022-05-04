@@ -125,14 +125,17 @@ print.RprobitB_formula <- function(x, ...) {
 #' Effect overview
 #'
 #' @description
-#' This function gives an overview of the model coefficients and whether they
-#' are connected to random effects.
+#' This function gives an overview of the effect names, whether the covariate
+#' is alternative-specific, whether the coefficient is alternative-specific,
+#' and whether it is a random effect.
 #'
 #' @inheritParams RprobitB_data
 #'
 #' @return
-#' A data frame with the coefficient names and booleans indicating whether
-#' they are connected to random effects.
+#' A data frame, each row is a effect, columns are the effect name
+#' \code{"effect"}, and booleans whether the covariate is alternative-specific
+#' \code{"as_value"}, whether the coefficient is alternative-specific
+#' \code{"as_coef"}, and whether it is a random effect \code{"random"}.
 #'
 #' @examples
 #' form <- choice ~ price + time + comfort + change | 1
@@ -143,7 +146,7 @@ print.RprobitB_formula <- function(x, ...) {
 #' @export
 #'
 #' @seealso
-#' [check_form()] for checking the model formula
+#' [check_form()] for checking the model formula specification.
 
 overview_effects <- function(form, re = NULL, alternatives) {
 
@@ -160,25 +163,25 @@ overview_effects <- function(form, re = NULL, alternatives) {
   ### determine names of linear coefficients
   overview <- data.frame()
   for (var in vars[[1]]) {
-    overview <- rbind(overview, c(var, var %in% re))
+    overview <- rbind(overview, c(var, TRUE, FALSE, var %in% re))
   }
   for (var in c(vars[[2]], if (ASC) "ASC")) {
     for (j in 1:(J - 1)) {
       overview <- rbind(overview,
-                        c(paste0(var, "_", alternatives[j]), var %in% re))
+                        c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re))
     }
   }
   for (var in vars[[3]]) {
     for (j in 1:J) {
       overview <- rbind(overview,
-                        c(paste0(var, "_", alternatives[j]), var %in% re))
+                        c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re))
     }
   }
-  colnames(overview) <- c("name", "re")
-  overview$re <- as.logical(overview$re)
+  colnames(overview) <- c("effect", "as_value", "as_coef", "random")
+  overview$random <- as.logical(overview$random)
 
-  ### sort 'overview', first by 'random' and second by appearance in formula
-  overview <- overview[order(overview$re, as.numeric(rownames(overview))), ]
+  ### sort 'overview', first by 'random' and second by appearance in the formula
+  overview <- overview[order(overview$random, as.numeric(rownames(overview))), ]
   rownames(overview) <- NULL
 
   ### return 'overview'
@@ -529,10 +532,9 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### determine number and names of linear coefficients
-  linear_coefs <- overview_effects(form, re, alternatives)
-  P_f <- sum(linear_coefs$re == FALSE)
-  P_r <- sum(linear_coefs$re == TRUE)
-  linear_coefs_names <- linear_coefs$name
+  effects <- overview_effects(form, re, alternatives)
+  P_f <- sum(effects$random == FALSE)
+  P_r <- sum(effects$random == TRUE)
 
   ### add ASCs
   if (ASC) {
@@ -620,7 +622,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       }
 
       ### sort covariates
-      X_nt <- X_nt[, linear_coefs_names, drop = FALSE]
+      X_nt <- X_nt[, effects$effect, drop = FALSE]
 
       ### save in list
       X_n[[t]] <- X_nt
@@ -656,7 +658,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     form = form,
     re = re,
     ASC = ASC,
-    linear_coefs = linear_coefs,
+    effects = effects,
     standardize = standardize,
     simulated = FALSE,
     choice_available = choice_available,
@@ -922,10 +924,9 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### determine number and names of linear coefficients
-  linear_coefs <- overview_effects(form, re, alternatives)
-  P_f <- sum(linear_coefs$re == FALSE)
-  P_r <- sum(linear_coefs$re == TRUE)
-  linear_coefs_names <- linear_coefs$name
+  effects <- overview_effects(form, re, alternatives)
+  P_f <- sum(effects$random == FALSE)
+  P_r <- sum(effects$random == TRUE)
 
   ### check supplied and draw missing model parameters
   true_parameter <- do.call(
@@ -994,7 +995,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       }
 
       ### sort covariates
-      X_nt <- X_nt[, linear_coefs_names, drop = FALSE]
+      X_nt <- X_nt[, effects$effect, drop = FALSE]
 
       ### save in list
       data[[n]][["X"]][[t]] <- X_nt
@@ -1056,7 +1057,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     form = form,
     re = re,
     ASC = ASC,
-    linear_coefs = linear_coefs,
+    effects = effects,
     standardize = NULL,
     simulated = TRUE,
     choice_available = TRUE,
@@ -1287,8 +1288,8 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' If not specified, the choice set is defined by the observed choices.
 #' @param ASC
 #' A boolean, determining whether the model has ASCs.
-#' @param linear_coefs
-#' A data frame with the coefficient names and booleans indicating whether
+#' @param effects
+#' A data frame with the effect names and booleans indicating whether
 #' they are connected to random effects.
 #' @param standardize
 #' A character vector of names of covariates that get standardized.
@@ -1315,7 +1316,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' internal
 
 RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                          form, re, ASC, linear_coefs, standardize, simulated,
+                          form, re, ASC, effects, standardize, simulated,
                           choice_available, true_parameter, res_var_names) {
 
   ### check inputs
@@ -1346,7 +1347,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
     "form" = form,
     "re" = re,
     "ASC" = ASC,
-    "linear_coefs" = linear_coefs,
+    "effects" = effects,
     "standardize" = standardize,
     "choice_available" = choice_available,
     "simulated" = simulated,
@@ -1378,13 +1379,13 @@ summary.RprobitB_data <- function(object, ...) {
     stop("Not of class 'RprobitB_data'.")
   }
 
-  ### summary of alternatives
-  alt <- data.frame(matrix(NA, nrow = 0, ncol = 1))
-  colnames(alt) <- "frequency"
+  ### alternative frequency
+  alt_freq <- data.frame(matrix(NA, nrow = 0, ncol = 1))
+  colnames(alt_freq) <- "frequency"
   for (i in object$alternatives) {
-    alt[nrow(alt) + 1, ] <-
+    alt_freq[nrow(alt_freq) + 1, ] <-
       sum(unlist(lapply(object$data, function(x) x[["y"]])) == i)
-    rownames(alt)[nrow(alt)] <- i
+    rownames(alt_freq)[nrow(alt_freq)] <- i
   }
 
   ### build 'summary.RprobitB_data' object
@@ -1392,8 +1393,10 @@ summary.RprobitB_data <- function(object, ...) {
     "simulated" = object$simulated,
     "N" = object$N,
     "T" = object$T,
-    "linear_coefs" = object$linear_coefs,
-    "alternatives" = alt
+    "form" = object$form,
+    "re" = object$re,
+    "effects" = object$effects,
+    "alt_freq" = alt_freq
   )
   class(out) <- "summary.RprobitB_data"
 
@@ -1407,36 +1410,37 @@ summary.RprobitB_data <- function(object, ...) {
 #' @noRd
 
 print.summary.RprobitB_data <- function(x, ...) {
-  cat(crayon::underline(
-    "Summary of", ifelse(x$simulated, "simulated", "empirical"),
-    "choice data\n"
-  ))
 
-  ### summary of decision makers
-  cat(x$N, paste0("decision maker", ifelse(x$N == 1, "", "s")), "\n")
-  if (length(unique(x$T)) == 1) {
-    cat(
-      x$T[1], paste0("choice occasion", ifelse(unique(x$T) == 1, "", "s")),
-      ifelse(x$N == 1, "", "each"), "\n"
-    )
+  ### summary of choices
+  overview <- data.frame()
+  overview[1,1] <- x$N
+  overview[1,2] <- if (length(unique(x$T)) == 1) {
+    paste(x$T[1], ifelse(x$N == 1, "", "each"))
+  } else {
+    paste(min(x$T), "to", max(x$T), ifelse(x$N == 1, "", "each"))
   }
-  if (length(unique(x$T)) > 1) {
-    cat(
-      min(x$T), "to", max(x$T), "choice occasions",
-      ifelse(x$N == 1, "", "each"), "\n"
-    )
-  }
-  cat(sum(x$T), "choices in total\n")
+  overview[1,3] <- sum(x$T)
+  colnames(overview) <- c("number deciders", "choice occasions", "choices total")
+  print(overview)
   cat("\n")
 
   ### summary of alternatives
-  cat(crayon::underline("Alternatives\n"))
-  print(x$alternatives)
-  cat("\n")
+  print(data.frame(
+    "alternative" = rownames(x$alt_freq),
+    "frequency" = x$alt_freq$frequency,
+    row.names = NULL)
+  )
 
   ### summary of covariates
-  cat(crayon::underline("Linear coefficients\n"))
-  print(x$linear_coefs)
+  cat("\n")
+  print(
+    overview_effects(
+      form = x$form, re = x$re, alternatives = rownames(x$alt_freq)
+    )
+  )
+  # coefs <- x$linear_coefs
+  # colnames(coefs) <- c("effect", "alternative specific", "random")
+  # print(coefs)
   return(invisible(x))
 }
 

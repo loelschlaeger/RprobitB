@@ -32,12 +32,15 @@ To have random effects for the alternative specific constants, include
 If not specified, the choice set is defined by the observed choices.}
 }
 \value{
-A data frame with the coefficient names and booleans indicating whether
-they are connected to random effects.
+A data frame, each row is a effect, columns are the effect name
+\code{"effect"}, and booleans whether the covariate is alternative-specific
+\code{"as_value"}, whether the coefficient is alternative-specific
+\code{"as_coef"}, and whether it is a random effect \code{"random"}.
 }
 \description{
-This function gives an overview of the model coefficients and whether they
-are connected to random effects.
+This function gives an overview of the effect names, whether the covariate
+is alternative-specific, whether the coefficient is alternative-specific,
+and whether it is a random effect.
 }
 \examples{
 form <- choice ~ price + time + comfort + change | 1
@@ -47,5 +50,5 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 
 }
 \seealso{
-\code{\link[=check_form]{check_form()}} for checking the model formula
+\code{\link[=check_form]{check_form()}} for checking the model formula specification.
 }

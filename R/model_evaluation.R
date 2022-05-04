@@ -660,22 +660,22 @@ coef.RprobitB_fit <- function(object, ...) {
   coef_class <- c()
 
   ### create entries for fixed-effect coefficients
-  fixed_coefs <- object$data$linear_coefs[object$data$linear_coefs$re == FALSE, ]
+  fixed_coefs <- object$data$effects[object$data$effects$random == FALSE, ]
   for (row in seq_len(nrow(fixed_coefs))) {
     coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA, NA))
-    coef_name <- c(coef_name, fixed_coefs[row, "name"])
+    coef_name <- c(coef_name, fixed_coefs[row, "effect"])
     coef_class <- c(coef_class, NA)
   }
 
   ### create entries for random-effect coefficients
-  random_coefs <- object$data$linear_coefs[object$data$linear_coefs$re == TRUE, ]
+  random_coefs <- object$data$effects[object$data$effects$random == TRUE, ]
   for (row in seq_len(nrow(random_coefs))) {
     mean <- statistics$b[paste0(1:C, ".", row), 1]
     mean_sd <- statistics$b[paste0(1:C, ".", row), 2]
     var <- statistics$Omega[paste0(1:C, ".", row, ",", row), 1]
     var_sd <- statistics$Omega[paste0(1:C, ".", row, ",", row), 2]
     coef <- rbind(coef, cbind(mean, mean_sd, var, var_sd))
-    coef_name <- c(coef_name, rep(random_coefs[row, "name"], C))
+    coef_name <- c(coef_name, rep(random_coefs[row, "effect"], C))
     coef_class <- c(coef_class, 1:C)
   }
 
@@ -802,7 +802,7 @@ cov_mix <- function(x, cor = FALSE) {
   }
   est_Omega <- point_estimates(x)$Omega
   re <- NULL
-  cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
+  cov_names <- subset(x$data$effects, random == TRUE)$name
   out <- list()
   for (c in 1:x$latent_classes$C) {
     out[[c]] <- matrix(est_Omega[, c], nrow = x$data$P_r)

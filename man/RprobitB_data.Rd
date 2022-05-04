@@ -16,7 +16,7 @@ RprobitB_data(
   form,
   re,
   ASC,
-  linear_coefs,
+  effects,
   standardize,
   simulated,
   choice_available,
@@ -75,7 +75,7 @@ To have random effects for the alternative specific constants, include
 
 \item{ASC}{A boolean, determining whether the model has ASCs.}
 
-\item{linear_coefs}{A data frame with the coefficient names and booleans indicating whether
+\item{effects}{A data frame with the effect names and booleans indicating whether
 they are connected to random effects.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.

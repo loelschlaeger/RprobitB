@@ -3,15 +3,15 @@
     Code
       out
     Output
-              name    re
-      1 income_bus FALSE
-      2 income_car FALSE
-      3   time_bus FALSE
-      4   time_car FALSE
-      5 time_train FALSE
-      6       cost  TRUE
-      7    ASC_bus  TRUE
-      8    ASC_car  TRUE
+            effect as_value as_coef random
+      1 income_bus    FALSE    TRUE  FALSE
+      2 income_car    FALSE    TRUE  FALSE
+      3   time_bus     TRUE    TRUE  FALSE
+      4   time_car     TRUE    TRUE  FALSE
+      5 time_train     TRUE    TRUE  FALSE
+      6       cost     TRUE   FALSE   TRUE
+      7    ASC_bus    FALSE    TRUE   TRUE
+      8    ASC_car    FALSE    TRUE   TRUE
 
 # data preparation works
 
@@ -25,26 +25,22 @@
     Code
       summary(data)
     Output
-      Summary of empirical choice data
-      235 decision makers 
-      5 to 19 choice occasions each 
-      2929 choices in total
+        number deciders choice occasions choices total
+      1             235     5 to 19 each          2929
       
-      Alternatives
-        frequency
-      A      1474
-      B      1455
+        alternative frequency
+      1           A      1474
+      2           B      1455
       
-      Linear coefficients
-             name    re
-      1     ASC_A FALSE
-      2 comfort_A FALSE
-      3 comfort_B FALSE
-      4  change_A FALSE
-      5  change_B FALSE
-      6     price  TRUE
-      7    time_A  TRUE
-      8    time_B  TRUE
+           effect as_value as_coef random
+      1     ASC_A    FALSE    TRUE  FALSE
+      2 comfort_A     TRUE    TRUE  FALSE
+      3 comfort_B     TRUE    TRUE  FALSE
+      4  change_A     TRUE    TRUE  FALSE
+      5  change_B     TRUE    TRUE  FALSE
+      6     price     TRUE   FALSE   TRUE
+      7    time_A     TRUE    TRUE   TRUE
+      8    time_B     TRUE    TRUE   TRUE
 
 # simulating choice data works
 
@@ -58,27 +54,23 @@
     Code
       summary(data)
     Output
-      Summary of simulated choice data
-      10 decision makers 
-      1 to 10 choice occasions each 
-      55 choices in total
+        number deciders choice occasions choices total
+      1              10     1 to 10 each            55
       
-      Alternatives
-            frequency
-      bus           7
-      car          22
-      train        26
+        alternative frequency
+      1         bus         7
+      2         car        22
+      3       train        26
       
-      Linear coefficients
-              name    re
-      1 income_bus FALSE
-      2 income_car FALSE
-      3   time_bus FALSE
-      4   time_car FALSE
-      5 time_train FALSE
-      6       cost  TRUE
-      7    ASC_bus  TRUE
-      8    ASC_car  TRUE
+            effect as_value as_coef random
+      1 income_bus    FALSE    TRUE  FALSE
+      2 income_car    FALSE    TRUE  FALSE
+      3   time_bus     TRUE    TRUE  FALSE
+      4   time_car     TRUE    TRUE  FALSE
+      5 time_train     TRUE    TRUE  FALSE
+      6       cost     TRUE   FALSE   TRUE
+      7    ASC_bus    FALSE    TRUE   TRUE
+      8    ASC_car    FALSE    TRUE   TRUE
 
 # splitting data set by N works
 

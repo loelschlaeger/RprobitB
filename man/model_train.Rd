@@ -15,7 +15,7 @@ This object is a fitted probit model to the Train data set of the {mlogit}
 package with the model formula \code{choice ~ price + time + change + comfort | 0}.
 }
 \details{
-The model was derived via
+The model was estimated via
 \preformatted{
 data("Train", package = "mlogit")
 Train$price_A <- Train$price_A / 100 * 2.20371
