@@ -74,18 +74,10 @@ If \code{standardize = "all"}, all covariates get standardized.}
 (only for numeric columns).
 }}
 
-\item{scale}{A named list of three elements, determining the parameter normalization with
-respect to the utility scale:
-\itemize{
-\item \code{parameter}:
-Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
-\code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"}).
-\item \code{index}:
-The index of the parameter that gets fixed.
-\item \code{value}:
-The value for the fixed parameter.
-}}
+\item{scale}{A formula object which determines the utility scale. It is of the form
+\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
+\verb{<value>} is the value of the fixed parameter.}
 
 \item{R}{The number of iterations of the Gibbs sampler.}
 

@@ -65,7 +65,7 @@ check_form <- function(form, re = NULL) {
     }
   }
 
-  ### extract name of depentend variable
+  ### extract name of dependent variable
   choice <- all.vars(form)[1]
 
   ### build 'vars'

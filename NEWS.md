@@ -16,6 +16,8 @@
 
 * The README file is now in R Markdown format.
 
+* Simplified specifying the utility `scale`, see the help page of `RprobitB_normalization()`.
+
 # RprobitB 0.1.0
 
 Initial version.
