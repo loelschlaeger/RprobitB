@@ -20,6 +20,12 @@
 
 * Simplified specifying the utility `scale`, see the help page of `RprobitB_normalization()`.
 
+# RprobitB 1.0.0
+
+* Integrated S3 classes and methods.
+
+* Several new functionalities.
+
 # RprobitB 0.1.0
 
-Initial version.
+* Initial version.
