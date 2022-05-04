@@ -27,7 +27,9 @@ test_that("overview effects can be generated", {
   form <- choice ~ cost | income | time
   re <- c("cost", "ASC")
   alternatives <- c("train", "bus", "car")
-  out <- overview_effects(form = form, re = re, alternatives = alternatives)
+  base_alternative <- "train"
+  out <- overview_effects(form = form, re = re, alternatives = alternatives,
+                          base_alternative = base_alternative)
   expect_snapshot(out)
 })
 
@@ -60,7 +62,24 @@ test_that("data preparation works", {
     alternatives = c("A", "B"),
     id = "id",
     idc = "choiceid",
-    standardize = c("price", "time")
+    standardize = c("price", "time"),
+  )
+  expect_s3_class(data, "RprobitB_data")
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})
+
+test_that("data preparation with non-standard base alternative works", {
+  data("Train", package = "mlogit")
+  data <- prepare_data(
+    form = choice ~ price | 1 | time + comfort + change,
+    choice_data = Train,
+    re = c("price", "time"),
+    alternatives = c("A", "B"),
+    id = "id",
+    idc = "choiceid",
+    standardize = c("price", "time"),
+    base_alternative = "A"
   )
   expect_s3_class(data, "RprobitB_data")
   expect_snapshot(print(data))

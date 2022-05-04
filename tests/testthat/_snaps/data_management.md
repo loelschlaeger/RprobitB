@@ -42,6 +42,35 @@
       7    time_A     TRUE    TRUE   TRUE
       8    time_B     TRUE    TRUE   TRUE
 
+# data preparation with non-standard base alternative works
+
+    Code
+      print(data)
+    Output
+      Empirical data of 2929 choices.
+
+---
+
+    Code
+      summary(data)
+    Output
+        number deciders choice occasions choices total
+      1             235     5 to 19 each          2929
+      
+        alternative frequency
+      1           A      1474
+      2           B      1455
+      
+           effect as_value as_coef random
+      1     ASC_A    FALSE    TRUE  FALSE
+      2 comfort_A     TRUE    TRUE  FALSE
+      3 comfort_B     TRUE    TRUE  FALSE
+      4  change_A     TRUE    TRUE  FALSE
+      5  change_B     TRUE    TRUE  FALSE
+      6     price     TRUE   FALSE   TRUE
+      7    time_A     TRUE    TRUE   TRUE
+      8    time_B     TRUE    TRUE   TRUE
+
 # simulating choice data works
 
     Code

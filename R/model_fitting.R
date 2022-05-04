@@ -431,7 +431,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' internal
 
 RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
-                                   alternatives) {
+                                   alternatives, base_alternative) {
 
   ### check inputs
   if(missing(alternatives)){
@@ -462,13 +462,19 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
   if(length(as.character(scale)) != 3){
     stop("'scale' is not in the right format '<parameter> ~ <value>'.", call. = FALSE)
   }
+  if(missing(base_alternative)){
+    stop("Please specify 'base_alternative'.", call. = FALSE)
+  }
 
   ### set 'level'
   alt_name <- level
   level <- which(alternatives == level)
 
   ### set 'scale'
-  effects <- overview_effects(form = form, re = re, alternatives = alternatives)
+  effects <- overview_effects(
+    form = form, re = re, alternatives = alternatives,
+    base_alternative = base_alternative
+  )
   parameter <- as.character(scale)[2]
   par_name <- NA
   if(parameter %in% effects[["effect"]]){
@@ -639,7 +645,7 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
   ### set normalization, latent classes, and prior parameters
   normalization <- RprobitB_normalization(
     level = NULL, scale = scale, form = data$form, re = data$re,
-    alternatives = data$alternatives
+    alternatives = data$alternatives, base_alternative = data$base_alternative
   )
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
   prior <- do.call(
@@ -1175,7 +1181,8 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
       scale = scale,
       form = x$data$form,
       re = x$data$re,
-      alternatives = x$data$alternatives)
+      alternatives = x$data$alternatives,
+      base_alternative = x$data$base_alternative)
     x[["normalization"]] <- normalization
   }
 

@@ -86,6 +86,7 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
       output <- rbind(output, "MMLL" = sapply(models, function(x) attr(x[["mml"]], "mmll")))
     }
     if (crit == "BF" && length(models) >= 2) {
+      models <- lapply(models, mml)
       mmll_out <- sapply(models, function(x) attr(x[["mml"]], "mmll"))
       for (nmod in seq_len(length(models))) {
         rownames_old <- rownames(output)
@@ -371,6 +372,7 @@ plot.RprobitB_waic <- function(x, ...) {
   pb <- RprobitB_pb(title = "Preparing WAIC convergence plot", total = S)
   waic_seq <- numeric(S)
   se_waic_seq <- numeric(S)
+  RprobitB_pb_tick(pb)
   for(s in 2:S){
     RprobitB_pb_tick(pb)
     lppd_temp <- sum(log(rowSums(p_si[,1:s,drop=FALSE])) - log(s))

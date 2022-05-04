@@ -9,7 +9,8 @@ RprobitB_normalization(
   scale = Sigma_1 ~ 1,
   form,
   re = NULL,
-  alternatives
+  alternatives,
+  base_alternative
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ To have random effects for the alternative specific constants, include
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
+
+\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+alternative specific (type 2 covariates).}
 }
 \value{
 An object of class \code{RprobitB_normalization}, which is a list of

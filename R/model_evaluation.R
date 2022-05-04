@@ -801,7 +801,7 @@ cov_mix <- function(x, cor = FALSE) {
     stop("No random effects.")
   }
   est_Omega <- point_estimates(x)$Omega
-  re <- NULL
+  random <- NULL
   cov_names <- subset(x$data$effects, random == TRUE)$name
   out <- list()
   for (c in 1:x$latent_classes$C) {

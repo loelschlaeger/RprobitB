@@ -47,8 +47,8 @@ data <- prepare_data(
   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
-  )
-model_elec <- fit_model(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+)
+model_elec <- fit_model(data, R = 5000, scale = price ~ -1)
 ```
 
 The estimated model is saved in {RprobitB} and can be accessed via:
