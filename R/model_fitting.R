@@ -506,16 +506,10 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
     stop("'<value>' in 'scale = <parameter> ~ <value>' must be non-zero.",
          call. = FALSE)
   }
-  if(value < 0){
-    if(parameter == "s") {
-      stop(paste("'<value>' in 'scale = <parameter> ~ <value>' must be positive",
-                 "when fixing an error-term variance."), call. = FALSE)
-    }
-    if(parameter == "a") {
-      message(paste0("Caution: you fixed '", par_name, "' to a negative value (",
-                     value, ").\nPlease make sure that this does not flip the ",
-                     "preferences."))
-    }
+  if(value < 0 && parameter == "s"){
+    message(paste0("Caution: you fixed '", par_name, "' to a negative value (",
+                   value, ").\nPlease make sure that this does not flip the ",
+                   "preferences."))
   }
 
   ### create and return object of class 'RprobitB_normalization'
