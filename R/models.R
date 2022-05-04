@@ -19,13 +19,13 @@
 #'   form = form,
 #'   choice_data = Train,
 #'   idc = "choiceid"
-#'   )
+#' )
 #' model_train <- fit_model(
 #'   data = data,
 #'   R = 10000,
 #'   Q = 10,
-#'   scale = list("parameter" = "a", index = 1, value = -1)
-#'   )
+#'   scale = price ~ -1)
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.
@@ -47,7 +47,10 @@
 #' The model was derived from the \code{\link{model_train}} object via
 #' \preformatted{
 #' data("model_train", package = "RprobitB")
-#' model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+#' model_train_sparse <- nested_model(
+#'   model_train,
+#'   form = choice ~ price | 0
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.
@@ -78,7 +81,8 @@
 #'   data = data,
 #'   R = 5000,
 #'   Q = 10,
-#'   scale = list(parameter = "a", index = 1, value = -1))
+#'   scale = pf ~ -1
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.
