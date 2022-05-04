@@ -29,7 +29,7 @@ RprobitB_pp <- function(title, i, total) {
 
 RprobitB_pb <- function(title, total) {
   progress::progress_bar$new(
-    format = paste(title, ":percent [ETA: :eta]"),
+    format = paste(title, ":current of :total"),
     total = total,
     clear = FALSE
   )
