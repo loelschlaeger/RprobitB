@@ -1,4 +1,4 @@
-\begin{thebibliography}{19}
+\begin{thebibliography}{28}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -20,6 +20,11 @@ Albert JH, Chib S (1993).
 \newblock \enquote{Bayesian Analysis of Binary and Polychotomous Response
   Data.}
 \newblock \emph{Journal of the American Statistical Association}, \textbf{88}.
+
+\bibitem[{Aldous(1985)}]{Aldous:1985}
+Aldous DJ (1985).
+\newblock \enquote{Exchangeability and related topics.}
+\newblock \textbf{1117}, 1--198.
 
 \bibitem[{Allenby and Rossi(1998)}]{Allenby:1998}
 Allenby GM, Rossi P (1998).
@@ -44,12 +49,33 @@ Bhat C, Lavieri P (2018).
   non-normal coefficient distributions.}
 \newblock \emph{Theory and Decision}, \textbf{84}.
 
+\bibitem[{Blackwell and MacQueen(1973)}]{Blackwell:1973}
+Blackwell D, MacQueen J (1973).
+\newblock \enquote{Ferguson distributions via Polya urn schemes.}
+\newblock \emph{The Annals of Statistics}, \textbf{1}, 353--355.
+
+\bibitem[{Burda \emph{et~al.}(2008)Burda, Harding, and Hausman}]{Burda:2008}
+Burda M, Harding M, Hausman J (2008).
+\newblock \enquote{A Bayesian mixed logit–probit model for multinomial
+  choice.}
+\newblock \emph{Journal of Econometrics}, \textbf{147}(2), 232--246.
+\newblock \doi{10.1016/j.jeconom.2008.09.029}.
+\newblock
+  \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0304407608001395}.
+
 \bibitem[{Cirillo and Axhausen(2006)}]{Cirillo:2006}
 Cirillo C, Axhausen K (2006).
 \newblock \enquote{Evidence on the distribution of values of travel time
   savings from a six-week diary.}
 \newblock \emph{Transportation Research Part A: Policy and Practice},
   \textbf{40}.
+
+\bibitem[{Croissant(2020)}]{Croissant:2020}
+Croissant Y (2020).
+\newblock \enquote{Estimation of Random Utility Models in {R}: The {mlogit}
+  Package.}
+\newblock \emph{Journal of Statistical Software}, \textbf{95}(11), 1--41.
+\newblock \doi{10.18637/jss.v095.i11}.
 
 \bibitem[{Fountas \emph{et~al.}(2018)Fountas, Anastasopoulos, and
   Abdel-Aty}]{Fountas:2018}
@@ -65,6 +91,13 @@ Fountas G, Pantangi SS, Hulme KF, Anastasopoulos PC (2019).
   driving on perceived and observed aggressive driving behavior: A correlated
   grouped random parameters bivariate probit approach.}
 \newblock \emph{Analytic Methods in Accident Research}, \textbf{22}.
+
+\bibitem[{Gelman and Rubin(1992)}]{Gelman:1992}
+Gelman A, Rubin DB (1992).
+\newblock \enquote{Inference from Iterative Simulation Using Multiple
+  Sequences.}
+\newblock \emph{Statistical Science}, \textbf{7}(4), 457 -- 472.
+\newblock \doi{10.1214/ss/1177011136}.
 
 \bibitem[{Geweke(1998)}]{Geweke:1998}
 Geweke J (1998).
@@ -86,11 +119,29 @@ Imai K, van Dyk DA (2005).
   marginal data augmentation.}
 \newblock \emph{Journal of Econometrics}, \textbf{124}.
 
+\bibitem[{Li \emph{et~al.}(2019)Li, Schofield, and Gönen}]{Li:2019}
+Li Y, Schofield E, Gönen M (2019).
+\newblock \enquote{A tutorial on Dirichlet process mixture modeling.}
+\newblock \emph{Journal of Mathematical Psychology}, \textbf{91}, 128--144.
+\newblock ISSN 0022-2496.
+\newblock \doi{10.1016/j.jmp.2019.04.004}.
+\newblock
+  \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0022249618301068}.
+
 \bibitem[{McCulloch and Rossi(1994)}]{McCulloch:1994}
 McCulloch R, Rossi P (1994).
 \newblock \enquote{An exact likelihood analysis of the multinomial probit
   model.}
 \newblock \emph{Journal of Econometrics}, \textbf{64}.
+
+\bibitem[{Neal(2000)}]{Neal:2000}
+Neal RM (2000).
+\newblock \enquote{Markov Chain Sampling Methods for Dirichlet Process Mixture
+  Models.}
+\newblock \emph{Journal of Computational and Graphical Statistics},
+  \textbf{9}(2), 249--265.
+\newblock ISSN 10618600.
+\newblock \urlprefix\url{http://www.jstor.org/stable/1390653}.
 
 \bibitem[{Nobile(1998)}]{Nobile:1998}
 Nobile A (1998).
@@ -104,9 +155,20 @@ Oelschl\"{a}ger L, Bauer D (2020).
   Models.}
 \newblock \emph{TRB Annual Meeting 2021}.
 
+\bibitem[{Rasmussen(2000)}]{Rasmussen:2000}
+Rasmussen CE (2000).
+\newblock \emph{The Infinite Gaussian Mixture Model}, volume~12.
+\newblock MIT Press.
+
 \bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:2010}
 Scaccia L, Marcucci E (2010).
 \newblock \enquote{Bayesian Flexible Modelling of Mixed Logit Models.}
+
+\bibitem[{Sethuraman(1994)}]{Sethuraman:1994}
+Sethuraman J (1994).
+\newblock \enquote{A constructive definition of dirichlet priors.}
+\newblock \emph{Statistica Sinica}, \textbf{4}(2), 639--650.
+\newblock \urlprefix\url{http://www.jstor.org/stable/24305538}.
 
 \bibitem[{Train(2009)}]{Train:2009}
 Train K (2009).
