@@ -31,18 +31,21 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 
   ### check inputs
   if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
-    stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.")
+    stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",
+         call. = FALSE)
   }
   for (i in seq_len(length(FUN))) {
     if (class(FUN[[i]]) != "function") {
-      stop("Element ", i, " in 'FUN' is not of class 'function'.")
+      stop("Element ", i, " in 'FUN' is not of class 'function'.",
+           call. = FALSE)
     }
     if (is.null(names(FUN)[i]) || names(FUN)[i] == "") {
       names(FUN)[i] <- paste0("FUN", i)
     }
   }
   if (any(sapply(FUN, class) != "function")) {
-    stop("Not all elements of 'FUN' are functions.")
+    stop("Not all elements of 'FUN' are functions.",
+         call. = FALSE)
   }
 
   ### build 'RprobitB_gibbs_sample_statistics'
@@ -98,16 +101,19 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
                                                     digits = 2, ...) {
 
   ### check inputs
-  if (class(x) != "RprobitB_gibbs_samples_statistics") {
-    stop("'x' must be of class 'RprobitB_gibbs_samples_statistics'.")
+  if (!inherits(x,"RprobitB_gibbs_samples_statistics")) {
+    stop("'x' must be of class 'RprobitB_gibbs_samples_statistics'.",
+         call. = FALSE)
   }
   if (!is.null(true)) {
-    if (class(true) != "RprobitB_parameter") {
-      stop("'true' must be of class 'RprobitB_parameter'.")
+    if (!inherits(true,"RprobitB_parameter")) {
+      stop("'true' must be of class 'RprobitB_parameter'.",
+           call. = FALSE)
     }
   }
   if (!(is.numeric(digits) && digits >= 0)) {
-    stop("'digits' must a non-negative number.")
+    stop("'digits' must a non-negative number.",
+         call. = FALSE)
   }
 
   ### print statistics
@@ -237,13 +243,16 @@ preference_classification <- function(x, add_true = FALSE) {
 
   ### check input
   if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be of class 'RprobitB_fit'.", call. = FALSE)
+    stop("'x' must be of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
   if (!is.logical(add_true) || length(add_true) != 1) {
-    stop("'add_true' must be either TRUE or FALSE.")
+    stop("'add_true' must be either TRUE or FALSE.",
+         call. = FALSE)
   }
   if (x$data$P_r == 0) {
-    stop("No classification available, because the model has no random coefficients.", call. = FALSE)
+    stop("No classification available, because the model has no random coefficients.",
+         call. = FALSE)
   }
 
   ### create allocation matrix
@@ -335,8 +344,9 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
       re = object$data$re, alternatives = object$data$alternatives, id = "id",
       idc = NULL, standardize = NULL, impute = "zero_out")
   }
-  if (class(data) != "RprobitB_data") {
-    stop("'data' is not of class 'RprobitB_data'.")
+  if (!inherits(data,"RprobitB_data")) {
+    stop("'data' is not of class 'RprobitB_data'.",
+         call. = FALSE)
   }
 
   ### compute choice probabilities
