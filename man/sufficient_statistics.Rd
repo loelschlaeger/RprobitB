@@ -10,7 +10,7 @@ sufficient_statistics(data, normalization)
 \item{data}{An object of class \code{RprobitB_data}.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
-via \code{\link{RprobitB_normalization}}.}
+via \verb{\link{RprobitB_normalization}}.}
 }
 \value{
 A list of sufficient statistics on the data for Gibbs sampling, containing
@@ -22,11 +22,11 @@ length \code{N},
 \item \code{csTvec}, a vector of length \code{N} with the cumulated sums of
 \code{Tvec} starting from \code{0},
 \item \code{W}, a list of design matrices differenced with respect to
-alternative number \code{normalization$level}
+alternative number \code{normalization$level$level}
 for each decider in each choice occasion with covariates that
 are linked to a fixed coefficient (or \code{NA} if \code{P_f = 0}),
 \item \code{X}, a list of design matrices differenced with respect to
-alternative number \code{normalization$level}
+alternative number \code{normalization$level$level}
 for each decider in each choice occasion with covariates that
 are linked to a random coefficient (or \code{NA} if \code{P_r = 0}),
 \item \code{y}, a matrix of dimension \code{N} x \code{max(Tvec)} with the
@@ -47,10 +47,16 @@ This function computes sufficient statistics from an \code{RprobitB_data}
 object for the Gibbs sampler to save computation time.
 }
 \examples{
-RprobitB:::sufficient_statistics(
-  data = simulate_choices(choice ~ v1 | v2, N = 2, T = 1:2, J = 3, re = "v2"),
-  normalization = RprobitB:::RprobitB_normalization(J = 3, P_f = 3)
+form <- choice ~ v1 | v2
+re <- "v2"
+alternatives <- c("A","B","C")
+data <- simulate_choices(
+  form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives
 )
+normalization <- RprobitB:::RprobitB_normalization(
+  form = form, re = re, alternatives = alternatives
+)
+RprobitB:::sufficient_statistics(data = data, normalization = normalization)
 
 }
 \keyword{internal}

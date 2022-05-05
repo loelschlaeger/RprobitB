@@ -81,7 +81,7 @@ values:
 ``` r
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form, Train)
-model <- mcmc(data, scale = list("parameter" = "a", index = 1, value = -1))
+model <- fit_model(data, scale = list("parameter" = "a", index = 1, value = -1))
 ```
 
 The estimated effects can be visualized via:

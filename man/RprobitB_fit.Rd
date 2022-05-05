@@ -6,6 +6,8 @@
 \usage{
 RprobitB_fit(
   data,
+  scale,
+  level,
   normalization,
   R,
   B,
@@ -18,6 +20,11 @@ RprobitB_fit(
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
+
+\item{scale}{A formula object which determines the utility scale. It is of the form
+\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
+\verb{<value>} is the value of the fixed parameter.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}.}
 
@@ -60,8 +67,7 @@ specified.}
 \item{class_sequence}{The sequence of class numbers during Gibbs sampling of length \code{R}.}
 }
 \value{
-An object of class \code{RprobitB_fit}, i.e. a list with the arguments of
-this function as elements.
+An object of class \code{RprobitB_fit}.
 }
 \description{
 This function creates an object of class \code{RprobitB_fit}.

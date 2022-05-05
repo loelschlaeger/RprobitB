@@ -7,7 +7,7 @@
 #' @usage data(model_train)
 #'
 #' @details
-#' The model was derived via
+#' The model was estimated via
 #' \preformatted{
 #' data("Train", package = "mlogit")
 #' Train$price_A <- Train$price_A / 100 * 2.20371
@@ -19,13 +19,13 @@
 #'   form = form,
 #'   choice_data = Train,
 #'   idc = "choiceid"
-#'   )
-#' model_train <- mcmc(
+#' )
+#' model_train <- fit_model(
 #'   data = data,
 #'   R = 10000,
 #'   Q = 10,
-#'   scale = list("parameter" = "a", index = 1, value = -1)
-#'   )
+#'   scale = price ~ -1)
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.
@@ -47,7 +47,10 @@
 #' The model was derived from the \code{\link{model_train}} object via
 #' \preformatted{
 #' data("model_train", package = "RprobitB")
-#' nested_model(model_train, form = choice ~ price | 0)
+#' model_train_sparse <- nested_model(
+#'   model_train,
+#'   form = choice ~ price | 0
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.
@@ -65,7 +68,7 @@
 #' @usage data(model_elec)
 #'
 #' @details
-#' The model was derived via
+#' The model was estimated via
 #' \preformatted{
 #' data("Electricity", package = "mlogit")
 #' Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
@@ -74,11 +77,12 @@
 #'   choice_data = Electricity,
 #'   re = c("cl","loc","wk","tod","seas")
 #' )
-#' model <- mcmc(
+#' model_elec <- fit_model(
 #'   data = data,
 #'   R = 5000,
 #'   Q = 10,
-#'   scale = list(parameter = "a", index = 1, value = -1))
+#'   scale = pf ~ -1
+#' )
 #' }
 #'
 #' @format An object of class \code{RprobitB_fit}.

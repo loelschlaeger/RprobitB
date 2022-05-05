@@ -124,20 +124,12 @@
 # building of RprobitB_normalization works
 
     Code
-      RprobitB_normalization(J = J, P_f = P_f)
+      RprobitB_normalization(level = "B", scale = price ~ -1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B")
     Output
-      Normalization
-      Level: Utility differences with respect to alternative 5.
-      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
-
----
-
-    Code
-      RprobitB_normalization(J = J, P_f = P_f, scale = scale)
-    Output
-      Normalization
-      Level: Utility differences with respect to alternative 5.
-      Scale: Coefficient of alpha_1 fixed to 1.
+      Utility normalization
+      Level: Utility differences with respect to alternative 'B'.
+      Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 
 # Gibbs sampling works
 
@@ -157,9 +149,9 @@
       B: 1000 
       Q: 1 
       
-      Normalization
-      Level: Utility differences with respect to alternative 2.
-      Scale: Coefficient of the 1. error term variance in Sigma fixed to 1.
+      Utility normalization
+      Level: Utility differences with respect to alternative 'B'.
+      Scale: Coefficient of the 1. error term variance fixed to 1.
       
       Gibbs sample statistics
                 true    mean      sd      R^

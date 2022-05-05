@@ -24,7 +24,7 @@ Gibbs samples can be specified for \code{FUN}.
 }
 \examples{
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-model <- mcmc(data)
+model <- fit_model(data)
 point_estimates(model)
 point_estimates(model, FUN = median)
 

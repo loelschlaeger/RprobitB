@@ -15,7 +15,7 @@ This object is a fitted probit model to the Train data set of the {mlogit}
 package with the model formula \code{choice ~ price + time + change + comfort | 0}.
 }
 \details{
-The model was derived via
+The model was estimated via
 \preformatted{
 data("Train", package = "mlogit")
 Train$price_A <- Train$price_A / 100 * 2.20371
@@ -27,13 +27,13 @@ data <- prepare_data(
   form = form,
   choice_data = Train,
   idc = "choiceid"
-  )
-model_train <- mcmc(
+)
+model_train <- fit_model(
   data = data,
   R = 10000,
   Q = 10,
-  scale = list("parameter" = "a", index = 1, value = -1)
-  )
+  scale = price ~ -1)
+)
 }
 }
 \keyword{model}

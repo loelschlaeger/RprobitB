@@ -22,7 +22,7 @@ data <- prepare_data(
 plot(data, by_choice = TRUE)
 saveRDS(data, "applications/chess_opening_choice/data.rds", compress = "xz")
 
-model_chess_opening <- mcmc(data)
+model_chess_opening <- fit_model(data)
 saveRDS(model_chess_opening, "applications/chess_opening_choice/model_chess_opening.rds", compress = "xz")
 
 model_chess_opening_sparse <- nested_model(model_chess_opening,

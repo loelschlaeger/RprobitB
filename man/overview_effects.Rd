@@ -4,7 +4,7 @@
 \alias{overview_effects}
 \title{Effect overview}
 \usage{
-overview_effects(form, re = NULL, alternatives)
+overview_effects(form, re = NULL, alternatives, base_alternative = NULL)
 }
 \arguments{
 \item{form}{A formula object that is used to specify the probit model.
@@ -30,22 +30,30 @@ To have random effects for the alternative specific constants, include
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
+
+\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+alternative specific (type 2 covariates).}
 }
 \value{
-A data frame with the coefficient names and booleans indicating whether
-they are connected to random effects.
+A data frame, each row is a effect, columns are the effect name
+\code{"effect"}, and booleans whether the covariate is alternative-specific
+\code{"as_value"}, whether the coefficient is alternative-specific
+\code{"as_coef"}, and whether it is a random effect \code{"random"}.
 }
 \description{
-This function gives an overview of the model coefficients and whether they
-are connected to random effects.
+This function gives an overview of the effect names, whether the covariate
+is alternative-specific, whether the coefficient is alternative-specific,
+and whether it is a random effect.
 }
 \examples{
-form <- choice ~ price + time + comfort + change | 1
-re <- c("price", "time")
-alternatives <- c("A", "B")
-overview_effects(form = form, re = re, alternatives = alternatives)
+overview_effects(
+  form = choice ~ price + time + comfort + change | 1,
+  re = c("price", "time"),
+  alternatives = c("A", "B"),
+  base_alternative = "A"
+)
 
 }
 \seealso{
-\code{\link[=check_form]{check_form()}} for checking the model formula
+\code{\link[=check_form]{check_form()}} for checking the model formula specification.
 }
