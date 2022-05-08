@@ -68,6 +68,6 @@ This function draws Gibbs samples from the posterior distribution of the
 (mixed) multinomial probit model parameters.
 }
 \details{
-This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
+This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
 }
 \keyword{internal}

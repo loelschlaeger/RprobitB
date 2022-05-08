@@ -23,7 +23,7 @@ be discarded.}
 sample is kept.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
-via \code{\link{RprobitB_normalization}}.}
+via \verb{\link{RprobitB_normalization}}.}
 }
 \value{
 A list, the first element \code{gibbs_sampes_raw} is the input

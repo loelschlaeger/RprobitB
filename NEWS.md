@@ -14,8 +14,18 @@
 
 * The function `simulate` is now called `simulate_choices()` to not mask `stats::simulate()`.
 
+* The function `mcmc` is now called `fit_model()` to make its functionality clearer.
+
 * The README file is now in R Markdown format.
+
+* Simplified specifying the utility `scale`, see the help page of `RprobitB_normalization()`.
+
+# RprobitB 1.0.0
+
+* Integrated S3 classes and methods.
+
+* Several new functionalities.
 
 # RprobitB 0.1.0
 
-Initial version.
+* Initial version.

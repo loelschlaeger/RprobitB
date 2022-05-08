@@ -33,44 +33,72 @@ test_that("RprobitB_latent_class setting works", {
 })
 
 test_that("building of RprobitB_normalization works", {
-  J <- 5
-  P_f <- 5
-  expect_snapshot(RprobitB_normalization(J = J, P_f = P_f))
-  expect_error(
-    RprobitB_normalization(J = J, P_f = P_f, level = J + 1),
-    "'level' must be equal to 'J'."
+  form <- choice ~ price + time + comfort + change | 1
+  re <- "time"
+  alternatives <- c("A", "B")
+  expect_warning(
+    RprobitB_normalization(
+      level = "A", scale = Sigma_1 ~ 1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B"
+    )
   )
-  scale <- list("parameter" = "a", "index" = 1, "value" = 1)
-  expect_snapshot(RprobitB_normalization(J = J, P_f = P_f, scale = scale))
-  expect_error(RprobitB_normalization(J = J, P_f = 0, scale = scale))
+  expect_snapshot(
+    RprobitB_normalization(
+      level = "B", scale = price ~ -1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B"
+    )
+  )
+  expect_error(
+    RprobitB_normalization(
+      level = "B", scale = time ~ 1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B"
+    )
+  )
+  expect_error(
+    RprobitB_normalization(
+      level = "B", scale = Sigma_3 ~ 1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B"
+    )
+  )
+  expect_error(
+    RprobitB_normalization(
+      level = "B", scale = Sigma_1 ~ -1, form = form, re = re,
+      alternatives = alternatives, base_alternative = "B"
+    )
+  )
 })
 
 test_that("Gibbs sampling works", {
   data <- simulate_choices(
     form = choice ~ a | b | c,
     N = 10, T = 1:10, J = 2,
-    seed = 1
+    seed = 1, base_alternative = "B"
   )
-  model <- mcmc(data, R = 2000, seed = 1)
+  model <- fit_model(data, R = 2000, seed = 1)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
 })
 
 test_that("computation of sufficient statistics works", {
-  ss <- RprobitB:::sufficient_statistics(
-    data = simulate_choices(
-      choice ~ v1 | v2,
-      N = 2, T = 1:2, J = 3, re = "v2", seed = 1
-    ),
-    normalization = RprobitB:::RprobitB_normalization(J = 3, P_f = 3)
+  form <- choice ~ v1 | v2
+  re <- "v2"
+  alternatives <- c("A", "B", "C")
+  data <- simulate_choices(
+    form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives,
+    seed = 1
   )
+  normalization <- RprobitB:::RprobitB_normalization(
+    form = form, re = re, alternatives = alternatives, base_alternative = "C"
+  )
+  ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
   expect_snapshot(ss)
 })
 
 test_that("estimating a nested model works", {
-  mod <- nested_model(model_train,
-    form = choice ~ time, R = 100, B = 50
+  model <- RprobitB::model_train
+  mod <- nested_model(model,
+    form = choice ~ price + time, R = 100, B = 50
   )
   expect_s3_class(mod, "RprobitB_fit")
 })
@@ -93,10 +121,9 @@ test_that("transforming Q in RprobitB_fit works", {
 
 test_that("transforming scale in RprobitB_fit works", {
   model <- RprobitB::model_train
-  scale_new <- list("parameter" = "s", "index" = 1, "value" = 1)
   model_new_scale <- transform(
     model,
-    scale = scale_new, check_preference_flip = FALSE
+    scale = Sigma_1 ~ 1, check_preference_flip = FALSE
   )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
@@ -106,15 +133,6 @@ test_that("check for preference flip in RprobitB_fit works", {
   model <- RprobitB::model_train
   scale_bad <- list("parameter" = "a", "index" = 1, "value" = 1)
   expect_error(transform(model, scale = scale_bad))
-})
-
-test_that("transforming parameter to new scale works", {
-  par_old <- RprobitB_parameter(P_f = 1, P_r = 1, J = 3, N = 10)
-  normalization <- RprobitB_normalization(
-    J = 3, P_f = 1, scale = list("parameter" = "s", "index" = 1, "value" = 1)
-  )
-  par_transf <- transform_parameter(par_old, normalization)
-  expect_s3_class(par_transf, "RprobitB_parameter")
 })
 
 test_that("Sigma backtransformation after differencing works", {

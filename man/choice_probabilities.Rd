@@ -31,7 +31,7 @@ This function returns the choice probabilities of an \code{RprobitB_fit}.
 }
 \examples{
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-x <- mcmc(data)
+x <- fit_model(data)
 choice_probabilities(x)
 
 }

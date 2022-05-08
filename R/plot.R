@@ -163,7 +163,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'mixture'
   if (type == "mixture") {
     if(x$data$P_r == 0){
-      stop("Cannot show any mixing distribution because the model has no random effect.",
+      stop("Cannot plot a mixing distribution because the model has no random effects.",
            call. = FALSE)
     }
     est <- point_estimates(x)
@@ -171,7 +171,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
     est_Omega <- apply(est$Omega, 2, matrix, nrow = x$data$P_r, simplify = F)
     est_s <- est$s
     re <- NULL
-    cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
+    cov_names <- subset(x$data$effects, random == TRUE)$effect
     plots <- list()
     for(p1 in 1:x$data$P_r) for(p2 in 1:x$data$P_r) {
       if(any(cov_names[c(p1,p2)] %in% ignore)) next
@@ -371,10 +371,10 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 
 plot_mixture_contour <- function(means, covs, weights, names) {
   C <- length(weights)
-  x_min <- min(mapply(function(x,y) x[1] - 3 * y[1,1], means, covs))
-  x_max <- max(mapply(function(x,y) x[1] + 3 * y[1,1], means, covs))
-  y_min <- min(mapply(function(x,y) x[2] - 3 * y[2,2], means, covs))
-  y_max <- max(mapply(function(x,y) x[2] + 3 * y[2,2], means, covs))
+  x_min <- min(mapply(function(x,y) x[1] - 5 * y[1,1], means, covs))
+  x_max <- max(mapply(function(x,y) x[1] + 5 * y[1,1], means, covs))
+  y_min <- min(mapply(function(x,y) x[2] - 5 * y[2,2], means, covs))
+  y_max <- max(mapply(function(x,y) x[2] + 5 * y[2,2], means, covs))
   data.grid <- expand.grid(x = seq(x_min, x_max, length.out = 200),
                            y = seq(y_min, y_max, length.out = 200))
   z <- Reduce("+", sapply(1:C, function(c) mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]),

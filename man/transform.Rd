@@ -22,18 +22,10 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{scale}{A named list of three elements, determining the parameter normalization with
-respect to the utility scale:
-\itemize{
-\item \code{parameter}:
-Either \code{"a"} (for a linear coefficient of \code{"alpha"}) or
-\code{"s"} (for a variance of the error-term covariance matrix
-\code{"Sigma"}).
-\item \code{index}:
-The index of the parameter that gets fixed.
-\item \code{value}:
-The value for the fixed parameter.
-}}
+\item{scale}{A formula object which determines the utility scale. It is of the form
+\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
+\verb{<value>} is the value of the fixed parameter.}
 
 \item{check_preference_flip}{Set to \code{TRUE} to check for flip in preferences after new \code{scale}.}
 
@@ -47,7 +39,7 @@ Given an object of class \code{RprobitB_fit}, this function can:
 \itemize{
 \item change the length \code{B} of the burn-in period,
 \item change the the thinning factor \code{Q} of the Gibbs samples,
-\item change the model normalization \code{scale}.
+\item change the utility \code{scale}.
 }
 }
 \details{
@@ -64,7 +56,6 @@ transform(model_train, B = 1)
 transform(model_train, Q = 1)
 
 ### change the scale
-new_scale <- list(parameter = "s", index = 1, value = 1)
-transform(model_train, scale = new_scale)
+transform(model_train, scale = Sigma_1 ~ 1)
 
 }

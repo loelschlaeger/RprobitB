@@ -38,7 +38,7 @@ receiver operating characteristic (ROC) curve.
 \examples{
 data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1)
 data <- train_test(data, test_proportion = 0.5)
-model <- mcmc(data$train)
+model <- fit_model(data$train)
 coef(model)
 predict(model)
 predict(model, overview = FALSE)

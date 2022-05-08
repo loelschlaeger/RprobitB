@@ -52,7 +52,7 @@ This function checks the input \code{form}.
 \examples{
 form <- choice ~ price + time + comfort + change
 re <- c("price", "time")
-check_form(form = form, re = re)
+RprobitB:::check_form(form = form, re = re)
 
 }
 \seealso{

@@ -31,18 +31,21 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 
   ### check inputs
   if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
-    stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.")
+    stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",
+         call. = FALSE)
   }
   for (i in seq_len(length(FUN))) {
     if (class(FUN[[i]]) != "function") {
-      stop("Element ", i, " in 'FUN' is not of class 'function'.")
+      stop("Element ", i, " in 'FUN' is not of class 'function'.",
+           call. = FALSE)
     }
     if (is.null(names(FUN)[i]) || names(FUN)[i] == "") {
       names(FUN)[i] <- paste0("FUN", i)
     }
   }
   if (any(sapply(FUN, class) != "function")) {
-    stop("Not all elements of 'FUN' are functions.")
+    stop("Not all elements of 'FUN' are functions.",
+         call. = FALSE)
   }
 
   ### build 'RprobitB_gibbs_sample_statistics'
@@ -98,16 +101,19 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
                                                     digits = 2, ...) {
 
   ### check inputs
-  if (class(x) != "RprobitB_gibbs_samples_statistics") {
-    stop("'x' must be of class 'RprobitB_gibbs_samples_statistics'.")
+  if (!inherits(x,"RprobitB_gibbs_samples_statistics")) {
+    stop("'x' must be of class 'RprobitB_gibbs_samples_statistics'.",
+         call. = FALSE)
   }
   if (!is.null(true)) {
-    if (class(true) != "RprobitB_parameter") {
-      stop("'true' must be of class 'RprobitB_parameter'.")
+    if (!inherits(true,"RprobitB_parameter")) {
+      stop("'true' must be of class 'RprobitB_parameter'.",
+           call. = FALSE)
     }
   }
   if (!(is.numeric(digits) && digits >= 0)) {
-    stop("'digits' must a non-negative number.")
+    stop("'digits' must a non-negative number.",
+         call. = FALSE)
   }
 
   ### print statistics
@@ -237,13 +243,16 @@ preference_classification <- function(x, add_true = FALSE) {
 
   ### check input
   if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be of class 'RprobitB_fit'.", call. = FALSE)
+    stop("'x' must be of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
   if (!is.logical(add_true) || length(add_true) != 1) {
-    stop("'add_true' must be either TRUE or FALSE.")
+    stop("'add_true' must be either TRUE or FALSE.",
+         call. = FALSE)
   }
   if (x$data$P_r == 0) {
-    stop("No classification available, because the model has no random coefficients.", call. = FALSE)
+    stop("No classification available, because the model has no random coefficients.",
+         call. = FALSE)
   }
 
   ### create allocation matrix
@@ -306,7 +315,7 @@ preference_classification <- function(x, add_true = FALSE) {
 #' @examples
 #' data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1)
 #' data <- train_test(data, test_proportion = 0.5)
-#' model <- mcmc(data$train)
+#' model <- fit_model(data$train)
 #' coef(model)
 #' predict(model)
 #' predict(model, overview = FALSE)
@@ -335,11 +344,12 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
       re = object$data$re, alternatives = object$data$alternatives, id = "id",
       idc = NULL, standardize = NULL, impute = "zero_out")
   }
-  if (class(data) != "RprobitB_data") {
-    stop("'data' is not of class 'RprobitB_data'.")
+  if (!inherits(data,"RprobitB_data")) {
+    stop("'data' is not of class 'RprobitB_data'.",
+         call. = FALSE)
   }
 
-  ### compute choice probabilites
+  ### compute choice probabilities
   choice_probs <- as.data.frame(choice_probabilities(object, data = data))
 
   ### check if true choices are available
@@ -392,7 +402,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 #'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-#' model <- mcmc(data)
+#' model <- fit_model(data)
 #' point_estimates(model)
 #' point_estimates(model, FUN = median)
 #'
@@ -660,22 +670,22 @@ coef.RprobitB_fit <- function(object, ...) {
   coef_class <- c()
 
   ### create entries for fixed-effect coefficients
-  fixed_coefs <- object$data$linear_coefs[object$data$linear_coefs$re == FALSE, ]
+  fixed_coefs <- object$data$effects[object$data$effects$random == FALSE, ]
   for (row in seq_len(nrow(fixed_coefs))) {
     coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA, NA))
-    coef_name <- c(coef_name, fixed_coefs[row, "name"])
+    coef_name <- c(coef_name, fixed_coefs[row, "effect"])
     coef_class <- c(coef_class, NA)
   }
 
   ### create entries for random-effect coefficients
-  random_coefs <- object$data$linear_coefs[object$data$linear_coefs$re == TRUE, ]
+  random_coefs <- object$data$effects[object$data$effects$random == TRUE, ]
   for (row in seq_len(nrow(random_coefs))) {
     mean <- statistics$b[paste0(1:C, ".", row), 1]
     mean_sd <- statistics$b[paste0(1:C, ".", row), 2]
     var <- statistics$Omega[paste0(1:C, ".", row, ",", row), 1]
     var_sd <- statistics$Omega[paste0(1:C, ".", row, ",", row), 2]
     coef <- rbind(coef, cbind(mean, mean_sd, var, var_sd))
-    coef_name <- c(coef_name, rep(random_coefs[row, "name"], C))
+    coef_name <- c(coef_name, rep(random_coefs[row, "effect"], C))
     coef_class <- c(coef_class, 1:C)
   }
 
@@ -801,8 +811,8 @@ cov_mix <- function(x, cor = FALSE) {
     stop("No random effects.")
   }
   est_Omega <- point_estimates(x)$Omega
-  re <- NULL
-  cov_names <- subset(x$data$linear_coefs, re == TRUE)$name
+  random <- NULL
+  cov_names <- subset(x$data$effects, random == TRUE)$name
   out <- list()
   for (c in 1:x$latent_classes$C) {
     out[[c]] <- matrix(est_Omega[, c], nrow = x$data$P_r)
@@ -846,7 +856,7 @@ cov_mix <- function(x, cor = FALSE) {
 #'
 #' @examples
 #' data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)
-#' x <- mcmc(data)
+#' x <- fit_model(data)
 #' choice_probabilities(x)
 #'
 #' @export

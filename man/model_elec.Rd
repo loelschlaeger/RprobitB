@@ -15,7 +15,7 @@ This object is a fitted mixed probit model to the Electricity dataset of the
 {mlogit} package with the model formula \code{choice ~ pf + cl + loc + wk + tod + seas | 0}.
 }
 \details{
-The model was derived via
+The model was estimated via
 \preformatted{
 data("Electricity", package = "mlogit")
 Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
@@ -24,11 +24,12 @@ data <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model <- mcmc(
+model_elec <- fit_model(
   data = data,
   R = 5000,
   Q = 10,
-  scale = list(parameter = "a", index = 1, value = -1))
+  scale = pf ~ -1
+)
 }
 }
 \keyword{model}

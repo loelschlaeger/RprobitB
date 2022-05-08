@@ -541,11 +541,11 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' (mixed) multinomial probit model parameters.
 #'
 #' @details
-#' This function is not supposed to be called directly, but rather via \code{\link{mcmc}}.
+#' This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
 #'
 #' @param sufficient_statistics
 #' The output of \code{\link{sufficient_statistics}}.
-#' @inheritParams mcmc
+#' @inheritParams fit_model
 #' @param init
 #' The output of \code{\link{set_initial_gibbs_values}}.
 #' @return

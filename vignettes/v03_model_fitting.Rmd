@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library(RprobitB)
 ```
 
-This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `mcmc()` in {RprobitB}.
+This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.
 
 ## Bayes estimation of the probit model
 
@@ -118,25 +118,17 @@ where either $\omega^{(i)} = \sqrt{\text{const} / (\Sigma^{(i)})_{jj}}$ with $(\
 
 The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first $B$ out of $R$ samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every $Q$th sample when computing Gibbs sample statistics like expectation and standard deviation. The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots, see below.
 
-## The `mcmc()` function
+## The `fit_model()` function
 
 The Gibbs sampling scheme described above can be executed by applying the function
 
 ```{r, eval = FALSE}
-mcmc(data = data)
+fit_model(data = data)
 ```
 
 where `data` must be an `RprobitB_data` object (see the vignette about choice data). The function has the following optional arguments:
 
-- `scale`: A named list of three elements, determining the [parameter normalization](#parameter-normalization): 
-
-  - `parameter`: Either `"a"` (for an element of `alpha`) or `"s"` (for a diagonal element of `Sigma`).^[Use the `overview_effects()` function to determine the parameter index. Note that you can set `"parameter" = "a"` only if the model has parameters with a fixed coefficient, i.e. only if `P_f>0`.]
-  
-  - `index`: The index of the parameter that gets fixed.
-  
-  - `value`: The value for the fixed parameter (i.e. the value $\text{const}$ introduced [above](#parameter-normalization)).
-  
-  Per default, the first error-term variance is fixed to 1, i.e. `scale = list("parameter" = "s", "index" = 1, "value" = 1)`. 
+- `scale`: A formula object which determines the [utility scale](#parameter-normalization). It is of the form `<parameter> ~ <value>`, where `<parameter>` is either the name of a fixed effect or `Sigma_<j>` for the `<j>`th diagonal element of `Sigma`, and `<value>` is the value of the fixed parameter (i.e. $\text{const}$ introduced [above](#parameter-normalization)). Per default `scale = Sigma\_1 ~ 1`, i.e. the first error-term variance is fixed to 1.
 
 - `R`: The number of iterations of the Gibbs sampler. The default is `R = 10000`.
 
@@ -189,9 +181,9 @@ set.seed(1)
 ```{r, eval = FALSE}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
-model_train <- mcmc(
+model_train <- fit_model(
   data = data,
-  scale = list("parameter" = "a", index = 1, value = -1)
+  scale = price ~ -1)
 )
 ```
 
@@ -281,7 +273,7 @@ model_train <- transform(model_train, Q = 100)
 
 3. or change the model normalization `scale`, for example
 ```{r, eval = FALSE} 
-model_train <- transform(model_train, scale = list(parameter = "s", index = 1, value = 1))
+model_train <- transform(model_train, scale = Sigma_1 ~ 1)
 ```
 
 ## References

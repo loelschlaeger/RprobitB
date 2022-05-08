@@ -13,10 +13,11 @@ RprobitB_data(
   P_f,
   P_r,
   alternatives,
+  base_alternative,
   form,
   re,
   ASC,
-  linear_coefs,
+  effects,
   standardize,
   simulated,
   choice_available,
@@ -52,6 +53,9 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
+\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+alternative specific (type 2 covariates).}
+
 \item{form}{A formula object that is used to specify the probit model.
 The structure is \code{choice ~ A | B | C}, where
 \itemize{
@@ -75,7 +79,7 @@ To have random effects for the alternative specific constants, include
 
 \item{ASC}{A boolean, determining whether the model has ASCs.}
 
-\item{linear_coefs}{A data frame with the coefficient names and booleans indicating whether
+\item{effects}{A data frame with the effect names and booleans indicating whether
 they are connected to random effects.}
 
 \item{standardize}{A character vector of names of covariates that get standardized.

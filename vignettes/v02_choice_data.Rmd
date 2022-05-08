@@ -110,13 +110,6 @@ Additionally, we specify random effects for `price` and `time` (because we would
 re <- c("price","time")
 ```
 
-{RprobitB} provides the function `check_form()` which can be used to check if `form` and `re` are correctly interpreted:
-
-```{r, check-form}
-check_form(form = form, re = re)
-```
-
-
 ## The `prepare_data()` function
 
 Before model estimation with {RprobitB}, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
@@ -125,7 +118,7 @@ Before model estimation with {RprobitB}, any empirical choice data set `choice_d
 data <- prepare_data(form = form, choice_data = choice_data)
 ```
 
-The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `mcmc`. The following arguments are optional:
+The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `fit_model`. The following arguments are optional:
 
 - `re`: The character vector of variable names of `form` with random effects. `re = NULL` per default, i.e. no random effects.
 
@@ -208,6 +201,7 @@ For illustration, we simulate the choices of `N = 100` deciders at `T = 10` choi
 N <- 100
 T <- 10
 alternatives <- c("A", "B")
+base_alternative <- "B"
 form <- choice ~ var1 | var2 | var3
 re <- c("ASC", "var2")
 ```
@@ -215,7 +209,7 @@ re <- c("ASC", "var2")
 {RprobitB} provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified:
 
 ```{r, data-sim-overview}
-overview_effects(form = form, re = re, alternatives = alternatives)
+overview_effects(form = form, re = re, alternatives = alternatives, base_alternative = base_alternative)
 ```
 
 Hence, the coefficient vector `alpha` must be of length 3, where the elements 1 to 3 correspond to `var1`, `var3_A`, and `var3_B`, respectively. The matrix `b` must be of dimension 2 x `C`, where (by default) `C = 1` and row 1 and 2 correspond to `var2_A` and `ASC_A`, respectively.

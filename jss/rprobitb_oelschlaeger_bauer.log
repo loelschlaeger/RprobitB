@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2021.8.9)  28 APR 2022 11:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2021.8.9)  5 MAY 2022 16:30
 entering extended mode
 **./rprobitb_oelschlaeger_bauer.tex
 (rprobitb_oelschlaeger_bauer.tex
@@ -551,7 +551,7 @@ LaTeX Info: Redefining \nameref on input line 60.
 \@outlinefile=\write4
 \openout4 = `rprobitb_oelschlaeger_bauer.out'.
 
-<jsslogo.jpg, id=131, 540.0175pt x 393.47pt>
+<jsslogo.jpg, id=71, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
 <use jsslogo.jpg>
 Package pdftex.def Info: jsslogo.jpg  used on input line 60.
@@ -609,11 +609,11 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [2]
-<flowchart.png, id=194, 1768.6075pt x 1714.405pt>
+<flowchart.png, id=134, 1768.6075pt x 1714.405pt>
 File: flowchart.png Graphic file (type png)
 <use flowchart.png>
 Package pdftex.def Info: flowchart.png  used on input line 112.
-(pdftex.def)             Requested size: 707.43048pt x 685.74986pt.
+(pdftex.def)             Requested size: 354.12434pt x 343.26732pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 124.
 LaTeX Font Info:    External font `lmex10' loaded for size
@@ -634,7 +634,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [5]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 171.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 169.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -644,12 +644,17 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [6]
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 198.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ts1lmr.fd"
+File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 7
  []
 
 [7]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 248
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 220
 .
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -659,75 +664,47 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [8]
-<rprobitb_oelschlaeger_bauer-summary-plot-Train-data.pdf, id=279, 650.43pt x 43
-3.62pt>
-File: rprobitb_oelschlaeger_bauer-summary-plot-Train-data.pdf Graphic file (typ
-e pdf)
-<use rprobitb_oelschlaeger_bauer-summary-plot-Train-data.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-summary-plot-Train-data.pd
-f  used on input line 332.
+<rprobitb_oelschlaeger_bauer-train-data.pdf, id=232, 650.43pt x 433.62pt>
+File: rprobitb_oelschlaeger_bauer-train-data.pdf Graphic file (type pdf)
+<use rprobitb_oelschlaeger_bauer-train-data.pdf>
+Package pdftex.def Info: rprobitb_oelschlaeger_bauer-train-data.pdf  used on in
+put line 276.
 (pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 9
  []
 
-[9]
+[9 <./rprobitb_oelschlaeger_bauer-train-data.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 10 []
  []
 
-[10 <./rprobitb_oelschlaeger_bauer-summary-plot-Train-data.pdf>]
+[10]
+<rprobitb_oelschlaeger_bauer-sim-data.pdf, id=251, 650.43pt x 433.62pt>
+File: rprobitb_oelschlaeger_bauer-sim-data.pdf Graphic file (type pdf)
+<use rprobitb_oelschlaeger_bauer-sim-data.pdf>
+Package pdftex.def Info: rprobitb_oelschlaeger_bauer-sim-data.pdf  used on inpu
+t line 374.
+(pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 11
  []
 
 [11]
-<rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice.pdf, id=299, 650.43pt x 43
-3.62pt>
-File: rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice.pdf Graphic file (typ
-e pdf)
-<use rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice.pd
-f  used on input line 451.
-(pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
-
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 12 []
  []
 
-[12 <./rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice.pdf>]
-Overfull \hbox (45.56306pt too wide) in paragraph at lines 457--458
-[]\T1/lmr/m/n/10.95 The func-tion \T1/lmtt/m/n/10.95 train_test() \T1/lmr/m/n/1
-0.95 can be used to split the out-put of \T1/lmtt/m/n/10.95 prepare_data() \T1/
-lmr/m/n/10.95 or \T1/lmtt/m/n/10.95 simulate_choices()
- []
-
-
+[12 <./rprobitb_oelschlaeger_bauer-sim-data.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 13
  []
 
 [13]
-Overfull \hbox (3.03464pt too wide) in paragraph at lines 519--521
-\T1/lmr/m/n/10.95 where $\OML/lmm/m/it/10.95 [] \OT1/lmr/m/n/10.95 = ([] + \O
-ML/lmm/m/it/10.95 m[]\OT1/lmr/m/n/10.95 
-[])[]([]\OML/lmm/m/it/10.95  \OT1/lmr/m/n/10.95 + \OML/lmm/m/it/10.95 m[]\OT1
-/lmr/m/n/10.95 
-[][])$\T1/lmr/m/n/10.95 , $\OT1/lmr/m/n/10.95 [] = ([] + \OML/lmm/m/it/10.95 
-m[]\OT1/lmr/m/n/10.95 
-[])[]$\T1/lmr/m/n/10.95 , $[] \OT1/lmr/m/n/10.95 = \OML/lmm/m/it/10.95 m[] [][]
- []$\T1/lmr/m/n/10.95 . 
- []
-
-
-Overfull \hbox (35.43645pt too wide) in paragraph at lines 545--547
-\T1/lmr/m/n/10.95 where $\OML/lmm/m/it/10.95 [] \OT1/lmr/m/n/10.95 = [](	[]\O
-ML/lmm/m/it/10.95   \OT1/lmr/m/n/10.95 + [][] \OML/lmm/m/it/10.95 W[]\OT1/lmr/m
-/n/10.95 []((\OML/lmm/m/it/10.95 U[]\OT1/lmr/m/n/10.95 ) \OMS/lmsy/m/n/10.95  
- \OML/lmm/m/it/10.95 X[][]\OT1/lmr/m/n/10.95 ))$ \T1/lmr/m/n/10.95 and $\OT1/l
-mr/m/n/10.95 [] = (	[] + [][] \OML/lmm/m/it/10.95 W[]\OT1/lmr/m/n/10.95 []\OM
-L/lmm/m/it/10.95 W[]\OT1/lmr/m/n/10.95 )[]$\T1/lmr/m/n/10.95 . 
+Overfull \hbox (18.3151pt too wide) detected at line 457
+[]
  []
 
 
@@ -746,24 +723,16 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
  []
 
 [16]
-<rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf, id=363, 433.62pt x 433.
+<rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf, id=317, 433.62pt x 433.
 62pt>
 File: rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf Graphic file (type 
 pdf)
 <use rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf>
 Package pdftex.def Info: rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf 
- used on input line 691.
+ used on input line 567.
 (pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
 
-Underfull \vbox (badness 6461) has occurred while \output is active []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 17
- []
-
-[17]
-Overfull \hbox (32.40787pt too wide) in paragraph at lines 697--698
+Overfull \hbox (32.40787pt too wide) in paragraph at lines 571--572
 []\T1/lmr/m/n/10.95 The Gibbs sam-ples are saved in list form in the `\T1/lmtt/
 m/n/10.95 RprobitB_fit\T1/lmr/m/n/10.95 ' ob-ject at the en-try \T1/lmtt/m/n/10
 .95 "gibbs_samples"\T1/lmr/m/n/10.95 ,
@@ -771,83 +740,90 @@ m/n/10.95 RprobitB_fit\T1/lmr/m/n/10.95 ' ob-ject at the en-try \T1/lmtt/m/n/10
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 17
+ []
+
+[17 <./rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf>]
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 18 []
  []
 
-[18 <./rprobitb_oelschlaeger_bauer-plot-coef-model-train.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 19
- []
+[18]
+<rprobitb_oelschlaeger_bauer-model-train-trace.pdf, id=338, 867.24pt x 433.62pt
+>
+File: rprobitb_oelschlaeger_bauer-model-train-trace.pdf Graphic file (type pdf)
 
-[19]
-<rprobitb_oelschlaeger_bauer-plot-trace-model-train.pdf, id=386, 433.62pt x 433
-.62pt>
-File: rprobitb_oelschlaeger_bauer-plot-trace-model-train.pdf Graphic file (type
- pdf)
-<use rprobitb_oelschlaeger_bauer-plot-trace-model-train.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-plot-trace-model-train.pdf
-  used on input line 774.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
-<rprobitb_oelschlaeger_bauer-plot-acf-model-train.pdf, id=387, 433.62pt x 433.6
-2pt>
-File: rprobitb_oelschlaeger_bauer-plot-acf-model-train.pdf Graphic file (type p
-df)
-<use rprobitb_oelschlaeger_bauer-plot-acf-model-train.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-plot-acf-model-train.pdf  
-used on input line 784.
+<use rprobitb_oelschlaeger_bauer-model-train-trace.pdf>
+Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-train-trace.pdf  use
+d on input line 642.
+(pdftex.def)             Requested size: 354.12434pt x 177.06415pt.
+<rprobitb_oelschlaeger_bauer-model-train-acf.pdf, id=339, 433.62pt x 433.62pt>
+File: rprobitb_oelschlaeger_bauer-model-train-acf.pdf Graphic file (type pdf)
+<use rprobitb_oelschlaeger_bauer-model-train-acf.pdf>
+Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-train-acf.pdf  used 
+on input line 652.
 (pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 19
+ []
+
+[19 <./rprobitb_oelschlaeger_bauer-model-train-trace.pdf>]
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 20 []
  []
 
-[20 <./rprobitb_oelschlaeger_bauer-plot-trace-model-train.pdf>]
+[20 <./rprobitb_oelschlaeger_bauer-model-train-acf.pdf>]
+Overfull \hbox (57.59793pt too wide) in paragraph at lines 697--698
+\T1/lmr/m/n/10.95 the re-quired for-mat \T1/lmtt/m/n/10.95 "<covariate>_<altern
+ative>"\T1/lmr/m/n/10.95 . Via the \T1/lmtt/m/n/10.95 re = c("cl","loc","wk","t
+od","seas")
+ []
+
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 21
  []
 
-[21 <./rprobitb_oelschlaeger_bauer-plot-acf-model-train.pdf>]
+[21]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 22 []
  []
 
 [22]
-<rprobitb_oelschlaeger_bauer-plot-mixture-model-elec.pdf, id=418, 433.62pt x 43
-3.62pt>
-File: rprobitb_oelschlaeger_bauer-plot-mixture-model-elec.pdf Graphic file (typ
-e pdf)
-<use rprobitb_oelschlaeger_bauer-plot-mixture-model-elec.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-plot-mixture-model-elec.pd
-f  used on input line 904.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
-
-Underfull \vbox (badness 1253) has occurred while \output is active []
-
-
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 23
  []
 
 [23]
-Overfull \hbox (2.95418pt too wide) in paragraph at lines 926--927
- []\T1/lmr/bx/n/10.95 Weight-based up-date of the la-tent classes:[] \T1/lmr/m/
-n/10.95 The fol-low-ing weight-based up-dat-ing scheme
- []
+<rprobitb_oelschlaeger_bauer-model-sim-mixture.pdf, id=392, 433.62pt x 433.62pt
+>
+File: rprobitb_oelschlaeger_bauer-model-sim-mixture.pdf Graphic file (type pdf)
+
+<use rprobitb_oelschlaeger_bauer-model-sim-mixture.pdf>
+Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-sim-mixture.pdf  use
+d on input line 853.
+(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 24 []
  []
 
-[24 <./rprobitb_oelschlaeger_bauer-plot-mixture-model-elec.pdf>]
+[24]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 25
  []
 
-[25]
+[25 <./rprobitb_oelschlaeger_bauer-model-sim-mixture.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 26 []
  []
@@ -858,192 +834,62 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
  []
 
 [27]
-<rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf, id=478, 433.62pt x 433
+<rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf, id=443, 433.62pt x 433
 .62pt>
 File: rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf Graphic file (type
  pdf)
 <use rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf>
 Package pdftex.def Info: rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf
-  used on input line 1045.
+  used on input line 964.
 (pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 28 []
  []
 
-[28 <./rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf>]
+[28 <./rprobitb_oelschlaeger_bauer-dirichlet-example-plot.pdf>] (rprobitb_oelsc
+hlaeger_bauer.bbl
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 29
  []
 
-[29]
-<rprobitb_oelschlaeger_bauer-roc-example.pdf, id=499, 433.62pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-roc-example.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-roc-example.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-roc-example.pdf  used on i
-nput line 1149.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
+[29])
+LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 1251.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1251.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 30 []
  []
 
 [30]
-Overfull \hbox (26.02675pt too wide) in paragraph at lines 1153--1154
-\T1/lmr/m/n/10.95 re-sults into the in-sample case out-lined above. Al-ter-na-t
-ively, \T1/lmtt/m/n/10.95 data \T1/lmr/m/n/10.95 can be ei-ther an `\T1/lmtt/m/
-n/10.95 RprobitB_data\T1/lmr/m/n/10.95 '
- []
-
-
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 31
  []
 
-[31 <./rprobitb_oelschlaeger_bauer-roc-example.pdf>]
-Overfull \hbox (36.56883pt too wide) in paragraph at lines 1218--1219
- []\T1/lmr/bx/n/10.95 The model se-lec-tion func-tion:[] \T1/lmr/b/n/10.95 Rpro
--bitB \T1/lmr/m/n/10.95 pro-vides the con-ve-nience func-tion \T1/lmtt/m/n/10.9
-5 model_selection()\T1/lmr/m/n/10.95 ,
- []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 32 []
- []
-
-[32]
-Overfull \hbox (4.00377pt too wide) in paragraph at lines 1241--1242
-[]\T1/lmr/m/n/10.95 Specifying \T1/lmtt/m/n/10.95 criteria \T1/lmr/m/n/10.95 is
- op-tional. Per de-fault, \T1/lmtt/m/n/10.95 criteria = c("npar", "LL", "AIC", 
-"BIC")\T1/lmr/m/n/10.95 .
- []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 33
- []
-
-[33]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 34 []
- []
-
-[34]
-<rprobitb_oelschlaeger_bauer-waictrace.pdf, id=548, 433.62pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-waictrace.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-waictrace.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-waictrace.pdf  used on inp
-ut line 1363.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 35
- []
-
-[35]
-Overfull \hbox (5.95038pt too wide) in paragraph at lines 1369--1370
- []\T1/lmr/bx/n/10.95 MMLL:[] \T1/lmtt/m/n/10.95 "MMLL" \T1/lmr/m/n/10.95 in \T
-1/lmtt/m/n/10.95 criteria \T1/lmr/m/n/10.95 stands for marginal model log-likel
-ihood. The model's marginal
- []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 36 []
- []
-
-[36 <./rprobitb_oelschlaeger_bauer-waictrace.pdf>]
-<rprobitb_oelschlaeger_bauer-mmltrace.pdf, id=570, 650.43pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-mmltrace.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-mmltrace.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-mmltrace.pdf  used on inpu
-t line 1401.
-(pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 37
- []
-
-[37 <./rprobitb_oelschlaeger_bauer-mmltrace.pdf>]
-Overfull \hbox (6.7971pt too wide) in paragraph at lines 1444--1445
- []\T1/lmr/bx/n/10.95 pred acc:[] \T1/lmr/m/n/10.95 Fi-nally, adding \T1/lmtt/m
-/n/10.95 "pred_acc" \T1/lmr/m/n/10.95 to the \T1/lmtt/m/n/10.95 criteria \T1/lm
-r/m/n/10.95 ar-gu-ment for the \T1/lmtt/m/n/10.95 model_selection()
- []
-
-
-Overfull \hbox (12.61287pt too wide) in paragraph at lines 1444--1445
-\T1/lmr/m/n/10.95 func-tion re-turns the share of cor-rectly pre-dicted choices
-. From the out-put of \T1/lmtt/m/n/10.95 model_selection()
- []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 38 []
- []
-
-[38]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 39
- []
-
-[39] (rprobitb_oelschlaeger_bauer.bbl
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 40 []
- []
-
-[40]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 41
- []
-
-[41])
-LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 1496.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1496.
-
-Underfull \vbox (badness 3977) has occurred while \output is active []
-
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 42 []
- []
-
-[42]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 43
- []
-
-[43]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1496.
+[31]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1251.
 (rprobitb_oelschlaeger_bauer.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1496.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1496.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1251.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1251.
 
 Package rerunfilecheck Info: File `rprobitb_oelschlaeger_bauer.out' has not cha
 nged.
-(rerunfilecheck)             Checksum: E2E52B6A01C311358D4E59C7C3086B57;3336.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1496.
+(rerunfilecheck)             Checksum: 9CC7F0D4301D02D465369C8BCFED436D;1912.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1251.
  ) 
 Here is how much of TeX's memory you used:
- 8328 strings out of 492973
- 125635 string characters out of 3135909
- 203248 words of memory out of 3000000
- 11793 multiletter control sequences out of 15000+200000
- 99325 words of font info for 73 fonts, out of 3000000 for 9000
+ 8218 strings out of 492973
+ 122763 string characters out of 3135909
+ 204479 words of memory out of 3000000
+ 11738 multiletter control sequences out of 15000+200000
+ 99367 words of font info for 73 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 48i,9n,34p,1927b,474s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 48i,16n,34p,1912b,474s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/M
 iKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files/MiKTeX 2.9/fonts/e
-nc/dvips/lm/lm-ts1.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.en
+nc/dvips/lm/lm-ec.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.en
 c}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Program Fil
 es/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files/MiKTeX 2.9/fon
 ts/enc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmb
@@ -1062,12 +908,13 @@ Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmssbx10.pfb><C:/Program Files/M
 iKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
 ype1/public/lm/lmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lms
 y8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/lm/lmtto10.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Program Files/MiKTeX 2.9/
-fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on rprobitb_oelschlaeger_bauer.pdf (43 pages, 1054710 bytes).
+m Files/MiKTeX 2.9/fonts/type1/public/lm/lmtt9.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/lm/lmtto10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/symbols/msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/za
+pfchan/uzcmi8a.pfb>
+Output written on rprobitb_oelschlaeger_bauer.pdf (31 pages, 827372 bytes).
 PDF statistics:
- 775 PDF objects out of 1000 (max. 8388607)
- 178 named destinations out of 1000 (max. 500000)
- 317 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 602 PDF objects out of 1000 (max. 8388607)
+ 122 named destinations out of 1000 (max. 500000)
+ 182 words of extra memory for PDF output out of 10000 (max. 10000000)
 

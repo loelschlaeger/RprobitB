@@ -4,29 +4,14 @@
 \BOOKMARK [2][-]{Subsection.2.1.Choice behavior heterogeneity.2}{Choice behavior heterogeneity}{Section.1.The probit model.1}% 4
 \BOOKMARK [2][-]{Subsection.2.2.Model normalization.2}{Model normalization}{Section.1.The probit model.1}% 5
 \BOOKMARK [1][-]{Section.2.Choice data.1}{Choice data}{}% 6
-\BOOKMARK [2][-]{Subsection.3.0.Data requirements.2}{Data requirements}{Section.2.Choice data.1}% 7
-\BOOKMARK [2][-]{Subsection.3.1.Model formula.2}{Model formula}{Section.2.Choice data.1}% 8
-\BOOKMARK [2][-]{Subsection.3.2.The prepare data function.2}{The prepare data function}{Section.2.Choice data.1}% 9
-\BOOKMARK [2][-]{Subsection.3.3.Example 1: Train data.2}{Example 1: Train data}{Section.2.Choice data.1}% 10
-\BOOKMARK [2][-]{Subsection.3.4.Simulate choices.2}{Simulate choices}{Section.2.Choice data.1}% 11
-\BOOKMARK [2][-]{Subsection.3.5.Example 2: Simulated choices.2}{Example 2: Simulated choices}{Section.2.Choice data.1}% 12
-\BOOKMARK [2][-]{Subsection.3.6.Train and test data set.2}{Train and test data set}{Section.2.Choice data.1}% 13
-\BOOKMARK [1][-]{Section.3.Model fitting.1}{Model fitting}{}% 14
-\BOOKMARK [2][-]{Subsection.4.0.Parameter normalization.2}{Parameter normalization}{Section.3.Model fitting.1}% 15
-\BOOKMARK [2][-]{Subsection.4.1.Burn-in and thinning.2}{Burn-in and thinning}{Section.3.Model fitting.1}% 16
-\BOOKMARK [2][-]{Subsection.4.2.The mcmc function.2}{The mcmc function}{Section.3.Model fitting.1}% 17
-\BOOKMARK [2][-]{Subsection.4.3.Example 1: Train (cont.).2}{Example 1: Train \(cont.\)}{Section.3.Model fitting.1}% 18
-\BOOKMARK [2][-]{Subsection.4.4.Checking the Gibbs samples.2}{Checking the Gibbs samples}{Section.3.Model fitting.1}% 19
-\BOOKMARK [2][-]{Subsection.4.5.Model transformation after estimation.2}{Model transformation after estimation}{Section.3.Model fitting.1}% 20
-\BOOKMARK [2][-]{Subsection.4.6.Estimating a joint normal mixing distribution.2}{Estimating a joint normal mixing distribution}{Section.3.Model fitting.1}% 21
-\BOOKMARK [2][-]{Subsection.4.7.Estimating latent classes.2}{Estimating latent classes}{Section.3.Model fitting.1}% 22
-\BOOKMARK [1][-]{Section.4.Choice prediction.1}{Choice prediction}{}% 23
-\BOOKMARK [2][-]{Subsection.5.0.Reproducing the observed choices.2}{Reproducing the observed choices}{Section.4.Choice prediction.1}% 24
-\BOOKMARK [2][-]{Subsection.5.1.Forecasting choice behavior.2}{Forecasting choice behavior}{Section.4.Choice prediction.1}% 25
-\BOOKMARK [1][-]{Section.5.Model selection.1}{Model selection}{}% 26
-\BOOKMARK [1][-]{Section.6.Applications.1}{Applications}{}% 27
-\BOOKMARK [2][-]{Subsection.7.0.Chess opening choice.2}{Chess opening choice}{Section.6.Applications.1}% 28
-\BOOKMARK [2][-]{Subsection.7.1.Berserking choice in online chess.2}{Berserking choice in online chess}{Section.6.Applications.1}% 29
-\BOOKMARK [2][-]{Subsection.7.2.Child wish.2}{Child wish}{Section.6.Applications.1}% 30
-\BOOKMARK [2][-]{Subsection.7.3.Contraception choice.2}{Contraception choice}{Section.6.Applications.1}% 31
-\BOOKMARK [1][-]{Section.7.Conclusion.1}{Conclusion}{}% 32
+\BOOKMARK [2][-]{Subsection.3.0.Formula framework.2}{Formula framework}{Section.2.Choice data.1}% 7
+\BOOKMARK [2][-]{Subsection.3.1.Preparing data for estimation.2}{Preparing data for estimation}{Section.2.Choice data.1}% 8
+\BOOKMARK [2][-]{Subsection.3.2.Simulating choice data.2}{Simulating choice data}{Section.2.Choice data.1}% 9
+\BOOKMARK [2][-]{Subsection.3.3.Train and test data set.2}{Train and test data set}{Section.2.Choice data.1}% 10
+\BOOKMARK [1][-]{Section.3.Model fitting.1}{Model fitting}{}% 11
+\BOOKMARK [2][-]{Subsection.4.0.Prior and posterior distributions.2}{Prior and posterior distributions}{Section.3.Model fitting.1}% 12
+\BOOKMARK [2][-]{Subsection.4.1.The estimation routine.2}{The estimation routine}{Section.3.Model fitting.1}% 13
+\BOOKMARK [2][-]{Subsection.4.2.Estimating a joint normal mixing distribution.2}{Estimating a joint normal mixing distribution}{Section.3.Model fitting.1}% 14
+\BOOKMARK [2][-]{Subsection.4.3.Estimating latent classes.2}{Estimating latent classes}{Section.3.Model fitting.1}% 15
+\BOOKMARK [2][-]{Subsection.4.4.Weight-based update of the latent classes.2}{Weight-based update of the latent classes}{Section.3.Model fitting.1}% 16
+\BOOKMARK [2][-]{Subsection.4.5.Dirichlet process-based update of the latent classes.2}{Dirichlet process-based update of the latent classes}{Section.3.Model fitting.1}% 17

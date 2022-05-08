@@ -58,10 +58,10 @@ plot(data$train)
 # Estimate model
 
 ```{r, estimate models, cache = TRUE}
-mod0 <- mcmc(data$train, R = 1000, print_progress = FALSE)
-mod1 <- mcmc(data$train, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
-mod2 <- mcmc(data$train, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
-mod3 <- mcmc(data$train, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
+mod0 <- fit_model(data$train, R = 1000, print_progress = FALSE)
+mod1 <- fit_model(data$train, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
+mod2 <- fit_model(data$train, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
+mod3 <- fit_model(data$train, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
 ```
 
 # Summarize models

@@ -19,7 +19,7 @@ data <- prepare_data(
 plot(data, by_choice = TRUE)
 saveRDS(data, "applications/berserk_choice/data.rds", compress = "xz")
 
-model_berserk <- mcmc(data)
+model_berserk <- fit_model(data)
 saveRDS(model_berserk, "applications/berserk_choice/model_berserk.rds", compress = "xz")
 
 coef(model_berserk)

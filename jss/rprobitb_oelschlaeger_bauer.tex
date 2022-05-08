@@ -109,105 +109,83 @@ In this article we present the methodology, give an overview over the functional
 The functions of \pkg{RprobitB} can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion. \pkg{RprobitB} supports these functions.
 
 \begin{figure}[t!]
-  \includegraphics[scale = 0.4]{flowchart.png}
-  \caption{Flowchart of the package functionality.}
+  \includegraphics{flowchart.png}
+  \caption{Package flowchart with main functions as rectangles and objects as ovals.}
   \label{fig:flowchart}
 \end{figure}
 
 
 \section{The probit model} \label{sec:probit_model}
 
-The probit model is a regression-type model where the dependent variable only takes a finite number of values and the error term is normally distributed \citep{Agresti:2015}. Its purpose is to estimate the probability that the dependent variable takes a certain, discrete value. The model's most popular application are discrete choice scenarios, in which the dependent variable is one of finitely many and mutually exclusive alternatives (that are not ordered), and explanatory variables typically are characteristics of the deciders or the alternatives. This section defines the model via latent utilities, outlines an extension for modeling heterogeneity, and discusses necessary normalization for parameter identification.
+The probit model is a regression-type model where the dependent variable takes a finite number of values and the error term is normally distributed \citep{Agresti:2015}. Its most popular application are discrete choice scenarios, in which the dependent variable is one of finitely many and mutually exclusive alternatives  and explanatory variables typically are characteristics of the deciders or the alternatives. This section defines the model via latent utilities, outlines an extension for modeling heterogeneity, and discusses necessary normalization for parameter identification.
 
 \subsection{Latent utilities} \label{subsec:latent_utilities}
 
-Assume that we possess data of $N$ decision makers which choose between $J \geq 2$ alternatives at each of $T$ choice occasions.\footnote{For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, we are not restricted to this case: \pkg{RprobitB} allows for unbalanced panels, i.e. varying $T$. Of course, the cross-sectional case $T = 1$ is possible.} Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ choice attributes that we use to explain the choices. The choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility of a certain alternative. Decider $n$'s utility $U_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
+Assume that we know the choices of $N$ deciders choosing between $J \geq 2$ alternatives at each of $T$ choice occasions.\footnote{For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, \pkg{RprobitB} allows for unbalanced panels, i.e. varying $T$. Of course, the cross-sectional case $T = 1$ is possible.} Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ covariates. The choices are explained by a linear combination of those. The linear combination is continuous and cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility of a certain alternative. Formally, decider $n$'s utility $U_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
 
 \begin{equation}
-  \label{eqn:utility}
+  \label{eq:utility}
   U_{ntj} = X_{ntj}'\beta + \epsilon_{ntj}
 \end{equation}
 
-for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$. Here, $X_{ntj}$ is a (column) vector of $P$ characteristics of $j$ as faced by $n$ at $t$, $\beta \in {\mathbb R}^{P}$ is a vector of coefficients, and $(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})' \sim \text{MVN}_{J} (0,\Sigma)$ is the model's error term vector for $n$ at $t$, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix $\Sigma$.\footnote{The assumption about the error-term distribution distinguishes the probit from the logit model. In the latter, each $\epsilon_{nti}$ is assumed to be independently extreme value distributed.}
+for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$. Here, $X_{ntj}$ is a (column) vector of $P$ characteristics of $j$ as faced by $n$ at $t$, $\beta \in {\mathbb R}^{P}$ is a vector of coefficients, and $(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})' \sim \text{MVN}_{J} (0,\Sigma)$ is the model's error term vector for $n$ at $t$, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix $\Sigma$.\footnote{The assumption about the error term distribution distinguishes the probit from the logit model. In the latter, each $\epsilon_{ntj}$ is assumed to be independently extreme value distributed.}
 
-Now let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers, the decisions are linked to the utilities via
-
-\begin{equation}
-y_{nt} = {\arg \max}_{j = 1,\dots,J} U_{ntj}.
-\end{equation}
+Assuming utility maximizing behavior of the decision makers\footnote{We note that utility maximizing behavior is a common assumption in econometric models. However, many studies have shown that humans do not decide in this rational sense in general, see for example \cite{Hewig:2011}.}, we link the utilities to the choices via
+\begin{align*}
+   y_{nt} = \operatorname*{argmax}_{j = 1,\dots,J} U_{ntj}.
+\end{align*}
+Here, $y_{nt}=j$ denotes the event that decider $n$ chooses $j$ at occasion $t$.
 
 \subsection{Choice behavior heterogeneity} \label{subsec:heterogeneity}
 
-Note that the coefficient vector $\beta$ in equation \ref{eqn:utility} is constant across decision makers. This assumption is too restrictive for many applications.\footnote{For example, consider the case of modeling the choice of a means of transportation to work: It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.} Relaxing this assumption, heterogeneity in choice behavior can be modeled by imposing a distribution on $\beta$ such that each decider can have their own preferences.
+Note that the coefficient vector $\beta$ in equation \eqref{eq:utility} is constant across decision makers. This assumption is too restrictive for many applications\footnote{As an example, consider the case of modeling the choice of a means of transportation to work: It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.} and can be relaxed by imposing a distribution on $\beta$. In this case, the model allows for choice behavior heterogeneity among deciders. Instead of estimating $\beta$ directly, the modeler in this case aims to characterize its distribution. We formally define $\beta = (\alpha, \beta_n)$, where $\alpha$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, the so-called mixing distribution.
 
-Formally, we define $\beta = (\alpha, \beta_n)$, where $\alpha$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients. Consequently, $P = P_f + P_r$. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, the so-called mixing distribution.
+Choosing an appropriate mixing distribution is a notoriously difficult task of the model specification. In many applications, different types of standard parametric distributions (including the normal, log-normal, uniform and tent distribution) are tried in conjunction with a likelihood value-based model selection \citep{Train:2009}. Instead, \pkg{RprobitB} implements the approach of \cite{Oelschlaeger:2020} to approximate any underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution for the random coefficients $(\beta_n)_{n}$ is approximated by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components:
 
-Choosing an appropriate mixing distribution is a notoriously difficult task of the model specification. In many applications, different types of standard parametric distributions (including the normal, log-normal, uniform and tent distribution) are tried in conjunction with a likelihood value-based model selection, cf. \cite{Train:2009}, Chapter 6. Instead, \pkg{RprobitB} implements the approach of \cite{Oelschlaeger:2020} to approximate any underlying mixing distribution by a mixture of (multivariate) Gaussian densities. More precisely, the underlying mixing distribution for the random coefficients $(\beta_n)_{n}$ is approximated by a mixture of $P_r$-variate normal densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components:
-
-\begin{equation}
+\begin{align*}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c).
-\end{equation}
+\end{align*}
 
 Here, $(s_c)_{c}$ are weights satisfying $0 < s_c\leq 1$ for $c=1,\dots,C$ and $\sum_c s_c=1$. One interpretation of the latent class model is obtained by introducing variables $z=(z_n)_n$, allocating each decision maker $n$ to class $c$ with probability $s_c$, i.e.
 
-\begin{equation}
+\begin{align*}
 \text{Prob}(z_n=c)=s_c \land \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
-\end{equation}
+\end{align*}
 
 This interpretation enables a classification of the deciders in terms of their preferences, see Section ... for an example.
 
 \subsection{Model normalization} \label{subsec:normalization}
 
-Any utility model is invariant towards the level and the scale of utility, as \cite{Train:2009} points out. Therefore, we consider the normalized model
+Any utility model is invariant towards the level and the scale of utility, as \cite{Train:2009} points out. For identification of the model parameters, we therefore normalize the model by considering only utility differences and fixing one error term variance. Formally, equation \eqref{eq:utility} is transformed to
 
-\begin{equation}
+\begin{align*}
 \tilde{U}_{ntj} = \tilde{X}_{ntj}' \beta + \tilde{\epsilon}_{ntj},
-\end{equation}
+\end{align*}
 
-$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the reference alternative) $\tilde{U}_{ntj} = U_{ntj} - U_{ntJ}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntJ}$, and $\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntJ}$, where $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})' \sim \text{MVN}_{J-1} (0,\tilde{\Sigma})$ and $\tilde{\Sigma}$ denotes a covariance matrix with the top-left element restricted to one.\footnote{\pkg{RprobitB} provides an alternative to fixing an error term variance in order to normalize with respect to scale by fixing an element of $\alpha$, see Section ...}
+$n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$. Here and choosing $J$ as the reference alternative, $\tilde{U}_{ntj} = U_{ntj} - U_{ntJ}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntJ}$, and $\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntJ}$, where $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})' \sim \text{MVN}_{J-1} (0,\tilde{\Sigma})$ and $\tilde{\Sigma}$ denotes a covariance matrix with one diagonal element fixed to a positive number.\footnote{Restricting an element of $\tilde{\Sigma}$ determines the utility scale. \pkg{RprobitB} provides the alternative to fix an element of $\alpha$ which serves the same purpose, see see Section ...}
 
 \section{Choice data} \label{sec:choice_data}
 
-This section formulates data requirements and introduces the formula framework of \pkg{RprobitB} for specifying a model equation. Subsequently, we demonstrate how to pass a formula to either \fct{prepare\_data} (for preparing an empirical data set) or \fct{simulate\_choices} (for simulating choices) with the help of examples.
+Choice data typically consist of the observed choices in conjunction with choice characteristics.\footnote{We only consider unordered alternatives (that is, alternatives cannot be ranked). Every decider may take one or repeated choices (called choice occasions).} \pkg{RprobitB} requests that data sets are (a) of class \class{data.frame} and (b) in wide format (that means each row provides the full information for one choice occasion), (c) contain a column with unique identifiers for each decision maker\footnote{Additionally, it can contain a column with identifier for each choice occasion of each decider.}, (d) contain a column with the observed choices (required for model fitting but not for prediction), and (e) contain columns for the values of alternative and/or decider specific covariates. The underlying set of choice alternatives is assumed to be mutually exclusive (one can choose one and only one alternative that are all different), exhaustive (the alternatives do not leave other options open), and finite \citep{Train:2009}.
 
-\subsection{Data requirements} \label{subsec:data_requirements}
+This section introduces the formula framework of \pkg{RprobitB} for specifying the set of covariates entering a model. The framework is adapted from \pkg{mlogit}, which is flexible enough to allow for different types of covariates: covariates that are constant across alternatives (e.g. the deciders age), covariates that are alternative specific (e.g. the alternative's price), covariates with a generic coefficient (e.g. paying the same amount of money for train company A versus B should make no difference), and covariates that have alternative specific coefficients (e.g. spending time in a crowded train versus a private jet certainly makes a difference). Subsequently, we demonstrate how to pass such a formula to either \fct{prepare\_data} for preparing empirical data for estimation or to \fct{simulate\_choices} for simulating choice data.
 
-Choice data sets typically consist of the observed choices in conjunction with choice characteristics.\footnote{In \pkg{RprobitB} only unordered alternatives (that is, alternatives cannot be ranked) are modeled. Every decider may take one or repeated choices (called choice occasions).} The following formal requirements are requested by \pkg{RprobitB}: Data sets must be (a) of class \class{data.frame}, (b) in wide format (that means each row provides the full information for one choice occasion), (c) contain a column with unique identifiers for each decision maker\footnote{Additionally, it can contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.}, (d) contain a column with the observed choices (required for model fitting but not for prediction), and (e) contain columns for the values of each alternative specific covariate for each alternative and for each decider specific covariate. The underlying set of choice alternatives is assumed to be mutually exclusive (one can choose one and only one alternative that are all different), exhaustive (the alternatives do not leave other options open), and finite \citep{Train:2009}.
+\subsection{Formula framework} \label{subsec:formula}
 
-\subsection{Model formula} \label{subsec:model_formula}
+We generalize equation \eqref{eq:utility} to allow for different types of covariates: Say we want to model the utility $U_{ntj}$ of decider $n$ at occasion $t$ for alternative $j$ via
 
-We have to inform \pkg{RprobitB} about the covariates we want to include in our model via specifying a \code{formula} object. Say we want to model the utility $U_{n,t,j}$ of decider $n$ at choice occasion $t$ for alternative $j$ via the linear equation
+\begin{align}
+  \label{eq:utility_gen}
+  U_{ntj} = A_{ntj} \beta_1 + B_{nt} \beta_{2j} + C_{ntj} \beta_{3j} + \epsilon_{ntj}.
+\end{align}
 
-$$U_{n,t,j} = A_{n,t,j} \beta_1 + B_{n,t} \beta_{2,j} + C_{n,t,j} \beta_{3,j} + \epsilon_{n,tj}.$$
+Here, the covariates $A$ and $C$ depend on the alternative, whereas $B$ is only choice occasion specific. The coefficient $\beta_1$ is generic (i.e. the same for each alternative), whereas $\beta_{2j}$ and $\beta_{3j}$ are alternative specific. Mind that not all $(\beta_{2j})_{j=1,\dots,J}$ are identified. This is because we took utility differences for model normalization, see Section \ref{subsec:normalization}. We therefore fix $\beta_{2k}$ to 0, where $k$ is the base alternative that can be specified. The coefficients $(\beta_{2j})_{j\neq k}$ have to be interpreted with respect to alternative $k$.
 
-Here, $A$ and $C$ are alternative and choice situation specific covariates, whereas $B$ is choice situation specific. The coefficient $\beta_1$ is generic (i.e. the same for each alternative), whereas $\beta_{2,j}$ and $\beta_{3,j}$ are alternative specific.
+Equation \eqref{eq:utility_gen} can be entered into \proglang{R} via specifying the \class{formula} object \code{choice ~ A | B | C}, where \code{choice} is the dependent variable (the discrete choice we aim to explain). By default, alternative specific constants (ASCs)\footnote{ASCs capture the average effect on utility of all factors that are not included in the model. Again, we cannot estimate ASCs for all the alternatives due to identifiability. Therefore, they are added for all except for the base alternative.} are added to the model. They can be removed by adding \code{+ 0} in the second spot, e.g. \code{choice ~ A | B + 0 | C}. To exclude covariates of the backmost categories, use either \code{0}, e.g. \code{choice ~ A | B | 0} or just leave this part out and write \code{choice ~ A | B}. However, to exclude covariates of front categories, we have to use \code{0}, e.g. \code{choice ~ 0 | B}. To include more than one covariate of the same category, use \code{+}, e.g. \code{choice ~ A1 + A2 | B}. If we don't want to include any covariates of the second category but want to estimate ASCs, add \code{1} in the second spot, e.g. \code{choice ~ A | 1 | C}. The expression \code{choice ~ A | 0 | C} is interpreted as no covariates of the second category and no alternative specific constants.
 
-To represent this structure, the \code{formula} object is of the form (analogously to {mlogit}) \code{choice ~ A | B | C}, where
+\subsection{Preparing data for estimation} \label{subsec:prepare_data}
 
-- \code{choice} is the dependent variable (the discrete choice we aim to explain),
-
-- \code{A} are alternative and choice situation specific covariates with a generic coefficient (we call them covariates of type 1),
-
-- \code{B} are choice situation specific covariates with alternative specific coefficients. Mind that not all alternative specific coefficients of type 2-covariates are identified. This is because the probit model is estimated on utility differences since the level of the utility is irrelevant, see the vignette on the model definition. Therefore, the coefficient of the last alternative of each type 2-covariate is set to 0. (we call them covariates of type 2),
-
-- and \code{C} are alternative and choice situation specific covariates with
-alternative specific coefficients (we call them covariates of type 3).
-
-Specifying a \code{formula} object for \pkg{RprobitB} must be consistent with the following rules:
-
-- By default, alternative specific constants (ASCs) ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative. are added to the model. They can be removed by adding \code{+ 0} in the second spot, e.g. \code{choice ~ A | B + 0 | C}.
-
-- To exclude covariates of the backmost categories, use either \code{0}, e.g. \code{choice ~ A | B | 0} or just leave this part out and write \code{choice ~ A | B}. However, to exclude covariates of front categories, we have to use \code{0}, e.g. \code{choice ~ 0 | B}.
-
-- To include more than one covariate of the same category, use \code{+}, e.g. \code{choice ~ A1 + A2 | B}.
-
-- If we don't want to include any covariates of the second category but we want to estimate alternative specific constants, add \code{1} in the second spot, e.g. \code{choice ~ A | 1}. The expression \code{choice ~ A | 0} is interpreted as no covariates of the second category and no alternative specific constants.
-
-To impose random effects for specific variables, we need to define a character vector \code{re} with the corresponding variable names. To have random effects for the alternative specific constants, include \code{"ASC"} in \code{re}.
-
-\subsection{The prepare data function} \label{subsec:prepare_data}
-
-Before model estimation with \pkg{RprobitB}, any empirical choice data set \code{choice_data} must pass the \fct{prepare\_data} function:
+Before model estimation, a choice data set \code{choice\_data} must pass the \fct{prepare\_data} function (cf. Figure \ref{fig:flowchart}) together with a formula object \code{form} introduced above:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -215,33 +193,27 @@ Before model estimation with \pkg{RprobitB}, any empirical choice data set \code
 \end{Sinput}
 \end{Schunk}
 
-The function performs compatibility checks and data transformations and returns an object of class \class{RprobitB\_data} that can be fed into the estimation routine \fct{mcmc}. The following arguments are optional:
+The function performs compatibility checks and data transformations and returns an object of class \class{RprobitB\_data} that can be fed into the estimation routine \fct{fit\_model}, see Section \ref{sec:model_fitting}. The following arguments of \fct{prepare\_data} are optional:
+\begin{itemize}
+  \item \code{re}: A character vector of covariate names in \code{form}, whose coefficients we want to model using a mixing distribution, see Section \ref{subsec:heterogeneity}. Per default \code{re = NULL}, i.e. no random effects. To have random effects for the ASCs, include \code{"ASC"} in \code{re}.
+  \item \code{alternatives}: A character vector of alternative names, defining the choice set. If not specified, all alternatives chosen in the data set are considered.
+  \item \code{base\_alternative}: One element of \code{alternatives} specifying the base alternative for covariates that are not alternative specific. Per default, \code{base\_alternative} is the last element of \code{alternatives}.
+  \item \code{id} and \code{idc}: The names of the columns in \code{choice_data} that contain unique identifier for each decision maker and for each choice occasion, respectively. Per default, \code{id = "id"} and \code{idc = NULL}, in which case the choice occasion identifier are generated by the appearance of the choices in the data set.
+  \item \code{standardize}: A character vector of variable names of \code{form} that get standardized. Per default, no covariate is standardized.
+  \item \code{impute}: A character, specifying how to handle missing data entries. Options are \code{"complete\_cases"} (removing rows that contain missing entries, which is the default behavior), \code{"zero\_out"} (replacing missing entries by 0), and \code{"mean"} (imputing missing entries by the covariate mean).
+\end{itemize}
 
-- \code{re}: The character vector of variable names of \code{form} with random effects. \code{re = NULL} per default, i.e. no random effects.
+\paragraph{Example 1: Train}
 
-- \code{alternatives}: We may not want to consider all alternatives in \code{choice_data}. In that case, we can specify a character vector \code{alternatives} with selected names of alternatives. If not specified, the choice set is defined by the observed choices.
-
-- \code{id}: A character (single string), the name of the column in \code{choice_data} that contains a unique identifier for each decision maker. The default is \code{"id"}.
-
-- \code{idc}: A character, the name of the column in \code{choice_data} that contains a unique identifier for each choice situation given the decision maker. Per default, these identifier are generated by the appearance of the choices in the data set.
-
-- \code{standardize}: A character vector of variable names of \code{form} that get standardized. Covariates of type 1 or 3 have to be addressed by \code{<covariate>_<alternative>}. If \code{standardize = "all"}, all covariates get standardized. Per default, no covariate is standardized.
-
-- \code{impute}: Specifies how to handle missing entries (\code{NA, NaN, -Inf, Inf}) in \code{choice_data}. The following options are available:
-
-  - \code{"complete_cases"}, which removes rows containing missing entries (the default),
-
-  - \code{"zero_out"}, which replaces missing entries by zero,
-
-  - \code{"mean"}, which imputes missing entries by the covariate mean.
-
-\subsection{Example 1: Train data} \label{subsec:train_data_prep}
-
-The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns \code{id} and \code{choiceid} identify the deciders and the choice occasions, respectively. The column \code{choice} gives the observed choices. Four alternative-specific covariates are available, namely \code{price}, \code{time}, \code{change}, and \code{comfort}. There values are given for each alternative. For alternative specific variables, the alternative names must be added to the covariates via the \code{\_} separator.
+We demonstrate the \fct{prepare\_data} function using the choice data set \code{Train} from the \pkg{mlogit} package. The data set contains 2929 stated choices of 235 deciders between two fictional train trip alternatives \code{A} and \code{B}. The trip alternatives are characterized by their \code{price}, the travel \code{time}, the level of \code{comfort} (the lower the value the higher the comfort), and the number of \code{change}s. The data is in wide format, the columns \code{id} and \code{choiceid} identify the deciders and the choice occasions, respectively. The column \code{choice} provides the choices. For convenience, we transform \code{time} from minutes to hours and \code{price} from guilders to euros:
 
 \begin{Schunk}
 \begin{Sinput}
 > data("Train", package = "mlogit")
+> Train$price_A <- Train$price_A / 100 * 2.20371
+> Train$price_B <- Train$price_B / 100 * 2.20371
+> Train$time_A <- Train$time_A / 60
+> Train$time_B <- Train$time_B / 60
 > str(Train)
 \end{Sinput}
 \begin{Soutput}
@@ -249,18 +221,18 @@ The Train data set contains 2929 stated choices by 235 Dutch individuals decidin
  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...
  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...
  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...
- $ price_A  : num  2400 2400 2400 4000 2400 4000 2400 2400 4000 2400 ...
- $ time_A   : num  150 150 115 130 150 115 150 115 115 150 ...
+ $ price_A  : num  52.9 52.9 52.9 88.1 52.9 ...
+ $ time_A   : num  2.5 2.5 1.92 2.17 2.5 ...
  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...
  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...
- $ price_B  : num  4000 3200 4000 3200 3200 2400 3200 3200 3200 4000 ...
- $ time_B   : num  150 130 115 150 150 130 115 150 130 115 ...
+ $ price_B  : num  88.1 70.5 88.1 70.5 70.5 ...
+ $ time_B   : num  2.5 2.17 1.92 2.5 2.5 ...
  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...
  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...
 \end{Soutput}
 \end{Schunk}
 
-We specify a model formula for the Train data set. Say we want to include all the covariates \code{price}, \code{time}, \code{comfort}, and \code{change}, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs:
+The naming convention \code{<covariate>\_<alternative>} in the \code{Train} data set for alternative specific covariates is the required format for \pkg{RprobitB}. Say we want to include all of them in our probit model, connect them to generic coefficients, and exclude ASCs. Then we would specify the formula
 
 \begin{Schunk}
 \begin{Sinput}
@@ -268,72 +240,46 @@ We specify a model formula for the Train data set. Say we want to include all th
 \end{Sinput}
 \end{Schunk}
 
-Additionally, we specify random effects for \code{price} and \code{time} (because we would typically expect heterogeneity here):
+Passing \code{form} to \fct{prepare\_data} returns an \class{RprobitB\_data} object. The object can be inspected via its \fct{plot} and \fct{summary} method:
 
 \begin{Schunk}
 \begin{Sinput}
-> re <- c("price","time")
-\end{Sinput}
-\end{Schunk}
-
-\pkg{RprobitB} provides the function \fct{check\_form} which can be used to check if \code{form} and \code{re} are correctly interpreted:
-
-\begin{Schunk}
-\begin{Sinput}
-> check_form(form = form, re = re)
+> data_train <- prepare_data(
++    form = form,
++    choice_data = Train,
++    id = "id",
++    idc = "choiceid"
++    )
+> summary(data_train)
 \end{Sinput}
 \begin{Soutput}
-choice ~ price + time + comfort + change | 0
-- dependent variable: choice 
-- type 1 covariate(s): price, time, comfort, change 
-- type 2 covariate(s):  
-- type 3 covariate(s):  
-- random effects: price, time 
-- ASC: FALSE 
+  number deciders choice occasions choices total
+1             235     5 to 19 each          2929
+
+  alternative frequency
+1           A      1474
+2           B      1455
+
+   effect as_value as_coef random
+1   price     TRUE   FALSE  FALSE
+2    time     TRUE   FALSE  FALSE
+3 comfort     TRUE   FALSE  FALSE
+4  change     TRUE   FALSE  FALSE
 \end{Soutput}
 \end{Schunk}
 
-Let's prepare the Train data set for estimation with our previous specification of \code{form} and \code{re}:
-
 \begin{Schunk}
 \begin{Sinput}
-> data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc = "choiceid")
+> plot(data_train)
 \end{Sinput}
 \end{Schunk}
+\includegraphics{rprobitb_oelschlaeger_bauer-train-data}
 
-The \fct{summary} and \fct{plot} methods provide a quick data overview:
+This example will serve as an illustration of the estimation routine later.
 
-\begin{Schunk}
-\begin{Sinput}
-> summary(data)
-\end{Sinput}
-\begin{Soutput}
-Summary of empirical choice data
-235 decision makers 
-5 to 19 choice occasions each 
-2929 choices in total
+\subsection{Simulating choice data} \label{subsec:simulate_choice_data}
 
-Alternatives
-  frequency
-A      1474
-B      1455
-
-Linear coefficients
-     name    re
-1 comfort FALSE
-2  change FALSE
-3   price  TRUE
-4    time  TRUE
-\end{Soutput}
-\begin{Sinput}
-> plot(data)
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-summary-plot-Train-data}
-
-\subsection{Simulate choices} \label{subsec:simulate_choices}
-
-The \fct{simulate\_choices} function simulates discrete choice data from a prespecified probit model. Say we want to simulate the choices of \code{N} deciders in \code{T} choice occasions (\code{T} can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length \code{N} with decision maker specific numbers of choice occasions) among \code{J} alternatives from a model formulation \code{form}, we have to call
+The \fct{simulate\_choices} function simulates discrete choice data from a probit model. Say we want to simulate the choices of \code{N} deciders in \code{T} choice occasions\footnote{\code{T} can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length \code{N} with decision maker specific numbers of choice occasions} among \code{J} alternatives. Together with a model formula \code{form}, we have to call
 
 \begin{Schunk}
 \begin{Sinput}
@@ -342,48 +288,37 @@ The \fct{simulate\_choices} function simulates discrete choice data from a presp
 \end{Schunk}
 
 The function \fct{simulate\_choices} has the following optional arguments:
+\begin{itemize}
+  \item \code{re}: Analogue to \fct{prepare\_data}.
+  \item \code{alternatives}: A character vector of length \code{J} with the names of the choice alternatives. If not specified, the alternatives are labeled by the first \code{J} upper-case letters of the Roman alphabet.
+  \item \code{base\_alternative}: Analogue to \fct{prepare\_data}.
+  \item \code{covariates}: A named list of covariate values. Each element must be a vector of length equal to the number of choice occasions and named according to a covariate, or follow the naming convention for alternative specific covariates, i.e. \code{<covariate>\_<alternative>}. Covariates for which no values are specified are drawn from a standard normal distribution.
+  \item \code{standardize}: Analogue to \fct{prepare\_data}.
+  \item \code{seed}: Optionally set a seed for the simulation.
+\end{itemize}
 
-- \code{re}: The character vector of variable names of \code{form} with random effects.
+True model parameters are set at random per default or can be specified via the function's ellipsis argument:
+\begin{itemize}
+  \item a numeric vector \code{alpha} with the fixed effects,
+  \item an integer \code{C}, the number (greater or equal 1) of latent classes of decision makers (\code{C = 1} per default),
+  \item a numeric vector \code{s} of length \code{C} with the class weights,
+  \item a matrix \code{b} with the class means as columns,
+  \item a matrix \code{Omega} with the class covariance matrices as columns,
+  \item a matrix \code{Sigma}, the differenced error term covariance matrix, or \code{Sigma\_full}, the full error term covariance matrix,
+  \item a matrix \code{beta} with the decision-maker specific coefficient vectors as columns,
+  \item a numeric vector of length \code{N}, the class allocation vector.
+\end{itemize}
 
-- \code{alternatives}: A character vector of length \code{J} with the names of the choice alternatives. If not specified, the alternatives are labeled by the first \code{J} upper-case letters of the Roman alphabet.
-
-- \code{covariates}: A named list of covariate values. Each element must be a vector of length equal to the number of choice occasions and named according to a covariate, or follow the naming convention for alternative specific covariates, i.e. \code{<covariate>\_<alternative>}. Covariates for which no values are specified are drawn from a standard normal distribution.
-
-- \code{standardize}: A character vector of variable names of \code{form} that get standardized.
-
-- \code{seed}: Set a seed for the simulation.
-
-We can specify the true parameters by adding values for
-
-- \code{alpha}, the fixed coefficient vector,
-
-- \code{C}, the number (greater or equal 1) of latent classes of decision makers,
-
-- \code{s}, the vector of class weights,
-
-- \code{b}, the matrix of class means as columns,
-
-- \code{Omega}, the matrix of class covariance matrices as columns,
-
-- \code{Sigma}, the differenced error term covariance matrix, or \code{Sigma\_full}, the full error term covariance matrix,
-
-- \code{beta}, the matrix of the decision-maker specific coefficient vectors,
-
-- \code{z}, the class allocation vector.
-
-True parameters that are not specified will be set at random.
-
-\subsection{Example 2: Simulated choices} \label{subsec:example_simulated_choices}
-
-For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 10} choice occasions between the alternatives \code{A} and \code{B}:
+\paragraph{Example 2: Simulated choices} For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 10} choice occasions between the fictitious alternatives \code{alt1} and \code{alt2}. The choices are explained by the alternative specific covariates \code{var1} and \code{var3} and the covariate \code{var2} which is only choice occasion specific (base alternative is \code{var2}) but connected to a random effect:
 
 \begin{Schunk}
 \begin{Sinput}
 > N <- 100
 > T <- 10
-> alternatives <- c("A", "B")
+> alternatives <- c("alt1", "alt2")
+> base_alternative <- "alt2"
 > form <- choice ~ var1 | var2 | var3
-> re <- c("ASC", "var2")
+> re <- c("ASC","var2")
 \end{Sinput}
 \end{Schunk}
 
@@ -391,74 +326,64 @@ For illustration, we simulate the choices of \code{N = 100} deciders at \code{T 
 
 \begin{Schunk}
 \begin{Sinput}
-> overview_effects(form = form, re = re, alternatives = alternatives)
+> overview_effects(
++    form = form,
++    re = re,
++    alternatives = alternatives,
++    base_alternative = base_alternative
++  )
 \end{Sinput}
 \begin{Soutput}
-    name    re
-1   var1 FALSE
-2 var3_A FALSE
-3 var3_B FALSE
-4 var2_A  TRUE
-5  ASC_A  TRUE
+     effect as_value as_coef random
+1      var1     TRUE   FALSE  FALSE
+2 var3_alt1     TRUE    TRUE  FALSE
+3 var3_alt2     TRUE    TRUE  FALSE
+4 var2_alt1    FALSE    TRUE   TRUE
+5  ASC_alt1    FALSE    TRUE   TRUE
 \end{Soutput}
 \end{Schunk}
 
-Hence, the coefficient vector \code{alpha} must be of length 3, where the elements 1 to 3 correspond to \code{var1}, \code{var3\_A}, and \code{var3\_B}, respectively. The matrix \code{b} must be of dimension \code{2 x C}, where (by default) \code{C = 1} and row 1 and 2 correspond to \code{var2\_A} and \code{ASC\_A}, respectively.
+Two effects are fixed (\code{random = FALSE}), hence the vector \code{alpha} must be of length 3, where the elements 1 to 3 correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. The matrix \code{b} must be of dimension \code{2 x C}, where row 1 and 2 correspond to \code{var2\_alt1} and \code{ASC\_alt1}, respectively.
 
 \begin{Schunk}
 \begin{Sinput}
-> data <- simulate_choices(
+> data_sim <- simulate_choices(
 +    form = form,
 +    N = N,
 +    T = T,
 +    J = 2,
 +    re = re,
 +    alternatives = alternatives,
++    base_alternative = base_alternative,
 +    seed = 1,
 +    alpha = c(-1,0,1),
-+    b = matrix(c(2,-0.5), ncol = 1)
++    C = 2,
++    s = c(0.7,0.3),
++    b = matrix(c(2,-0.5,1,1), ncol = 2)
 +  )
-> summary(data)
 \end{Sinput}
-\begin{Soutput}
-Summary of simulated choice data
-100 decision makers 
-10 choice occasions each 
-1000 choices in total
-
-Alternatives
-  frequency
-A       489
-B       511
-
-Linear coefficients
-    name    re
-1   var1 FALSE
-2 var3_A FALSE
-3 var3_B FALSE
-4 var2_A  TRUE
-5  ASC_A  TRUE
-\end{Soutput}
 \end{Schunk}
 
-We can visualize the covariates grouped by the chosen alternatives:
+The \fct{plot} method of \class{RprobitB\_data} object has the argument \code{by\_choice}, which allows for the visualization of covariates grouped by the chosen alternatives:
 
 \begin{Schunk}
 \begin{Sinput}
-> plot(data, by_choice = TRUE)
+> plot(data_sim, by_choice = TRUE)
 \end{Sinput}
 \end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-data-sim-plot-by-choice}
+\includegraphics{rprobitb_oelschlaeger_bauer-sim-data}
 
-What we see is consistent with our specification: Higher values of \code{var1\_A} for example correspond more frequently to choice \code{B} (upper-right panel), because the coefficient of \code{var1} (the first value of \code{alpha}) is negative.
+The graphic is consistent with our specification: for example, covariate \code{var1} has a negative effect on \code{alt1}, because the coefficient of \code{var1} (the first value of \code{alpha}) is negative $(-1)$. Hence higher values of \code{var1\_alt1} correspond more frequently to choice \code{alt2} (upper-right panel).
+
+This example will serve as an illustration of the weight-based updating scheme later.
 
 \subsection{Train and test data set} \label{subsec:train_test}
 
-The function \fct{train\_test} can be used to split the output of \fct{prepare\_data} or \fct{simulate\_choices} into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model. For example, the following code puts 70\% of deciders from our simulated \code{data} into the train subsample and 30\% of deciders in the test subsample:
+\pkg{RprobitB} provides the function \fct{train\_test} that can split an \class{RprobitB\_data} object (i.e. the output of \fct{prepare\_data} or \fct{simulate\_choices}) in two parts: a train subset and a test subset. The model then is typically estimated on the train subset and applied to explain the test subset. This procedure can be useful to evaluate how the model generalizes to unseen data. For example, the following call puts 70\% of deciders from \code{data_sim} into the train subsample and 30\% of deciders in the test subsample:
 
 \begin{Schunk}
 \begin{Sinput}
-> train_test(data, test_proportion = 0.3, by = "N")
+> train_test(data_sim, test_proportion = 0.3, by = "N")
 \end{Sinput}
 \begin{Soutput}
 $train
@@ -469,11 +394,11 @@ Simulated data of 300 choices.
 \end{Soutput}
 \end{Schunk}
 
-Alternatively, the following code puts 2 randomly chosen choice occasions per decider from \code{data} into the test subsample, the rest goes into the train subsample:
+Alternatively, the following line puts 2 randomly chosen choice occasions per decider from \code{data} into the test subsample, the rest goes into the train subsample:
 
 \begin{Schunk}
 \begin{Sinput}
-> train_test(data, test_number = 2, by = "T", random = TRUE, seed = 1)
+> train_test(data_sim, test_number = 2, by = "T", random = TRUE, seed = 1)
 \end{Sinput}
 \begin{Soutput}
 $train
@@ -486,179 +411,130 @@ Simulated data of 200 choices.
 
 \section{Model fitting} \label{sec:model_fitting}
 
-Bayes estimation of the probit model builds upon the work of \cite{McCulloch:1994}, \cite{Nobile:1998}, \cite{Allenby:1998}, and \cite{Imai:2005}. A key ingredient is the concept of data augmentation, see \cite{Albert:1993}: The idea is to treat the latent utilities $U$ in the model equation $U = X\beta + \epsilon$ as additional parameters. Then, conditional on $U$, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
+\pkg{RprobitB} estimates the probit model in a Bayesian framework. The framework builds upon the work of \cite{McCulloch:1994}, \cite{Nobile:1998}, \cite{Allenby:1998}, and \cite{Imai:2005}. A key ingredient is the concept of data augmentation, see \cite{Albert:1993}: The idea is to treat the latent utilities in the model equation \eqref{eq:utility} as additional parameters. Then, conditional on the utilities, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
 
-A priori, we assume the following (conjugate) parameter distributions:
+This section lists the prior distributions for the model parameters and formulates the conditional posterior distributions. We subsequently introduce our estimation routine \fct{fit\_model} and apply it to the two examples from the previous section. The remainder of the section presents how \pkg{RprobitB} estimates latent classes and updates the number of those either weight-based or using a Dirichlet process.
 
-- $(s_1,\dots,s_C)\sim D_C(\delta)$, where $D_C(\delta)$ denotes the $C$-dimensional Dirichlet distribution with concentration parameter vector $\delta = (\delta_1,\dots,\delta_C)$,
+\subsection{Prior and posterior distributions} \label{subsec:prior_and_posterior}
 
-- $\alpha\sim \text{MVN}_{P_f}(\psi,\Psi)$, where $\text{MVN}_{P_f}$ denotes the $P_f$-dimensional normal distribution with mean $\psi$ and covariance $\Psi$,
+This section follows closely \cite{Oelschlaeger:2020}. We a priori assume the following (conjugate) parameter distributions:
+\begin{itemize}
+  \item $(s_1,\dots,s_C)\sim D_C(\delta)$, where $D_C(\delta)$ denotes the $C$-dimensional Dirichlet distribution with concentration parameter vector $\delta = (\delta_1,\dots,\delta_C)$,
+  \item $\alpha\sim \text{MVN}_{P_f}(\psi,\Psi)$, where $\text{MVN}_{P_f}$ denotes the $P_f$-dimensional normal distribution with mean $\psi$ and covariance $\Psi$,
+  \item $b_c \sim \text{MVN}_{P_r}(\xi,\Xi)$, independent for all $c$,
+  \item $\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)$, independent for all $c$, where $W^{-1}_{P_r}(\nu,\Theta)$ denotes the $P_r$-dimensional inverse Wishart distribution with $\nu$ degrees of freedom and scale matrix $\Theta$,
+  \item and $\Sigma \sim W^{-1}_{J-1}(\kappa,\Lambda)$.
+\end{itemize}
 
-- $b_c \sim \text{MVN}_{P_r}(\xi,\Xi)$, independent for all $c$,
+These priors imply the following conditional posterior distributions:
+\begin{itemize}
+  \item The class weights are drawn from the Dirichlet distribution
+  \begin{align*}
+  (s_1,\dots,s_C)\mid \delta,z \sim D_C(\delta_1+m_1,\dots,\delta_C+m_C),
+  \end{align*}
+  where for $c=1,\dots,C$, $m_c=\#\{n:z_n=c\}$ denotes the current absolute class size. Mind that the model is invariant to permutations of the class labels $1,\dots,C$. For that reason, we accept an update only if the ordering $s_1>\dots>s_C$ holds, thereby ensuring a unique labeling of the classes.
+  \item Independently for all $n$, we update the allocation variables $(z_n)_n$ from their conditional distribution
+  \begin{align*}
+  \text{Prob}(z_n=c\mid s,\beta,b,\Omega )=\frac{s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}{\sum_c s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}.
+  \end{align*}
+  \item The class means $(b_c)_c$ are updated independently for all $c$ via
+  \begin{align*}
+  b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
+  \end{align*}
+  where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)$, $\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}$, and $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
+    \item The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
+  \begin{align*}
+  \Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
+  \end{align*}
+  where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
+  \item Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of \cite{Geweke:1998}:
+  \begin{align*}
+  U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
+  \sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
+  1(U_{ntj}>\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}=j\\
+  1(U_{ntj}<\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}\neq j
+  \end{cases},
+  \end{align*}
+  where $U_{nt(-j)}$ denotes the vector $(U_{nt:})$ without the element $U_{ntj}$, $\mathcal{N}$ denotes the univariate normal distribution, $\Sigma_{U_{ntj}} = 1/(\Sigma^{-1})_{jj}$ and
+  \begin{align*}
+  \mu_{U_{ntj}} = W_{ntj}'\alpha + X_{ntj}'\beta_n - \Sigma_{U_{ntj}} (\Sigma^{-1})_{j(-j)}   (U_{nt(-j)} - W_{nt(-j)}'\alpha - X_{nt(-j)}' \beta_n ),
+  \end{align*}
+  where $(\Sigma^{-1})_{jj}$ denotes the $(j,j)$th element of $\Sigma^{-1}$, $(\Sigma^{-1})_{j(-j)}$ the $j$th row without the $j$th entry, $W_{nt(-j)}$ and $X_{nt(-j)}$ the coefficient matrices $W_{nt}$ and $X_{nt}$, respectively, without the $j$th column.
+  \item Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
+  \begin{align*}
+  \alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
+  \end{align*}
+  with the definitions $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ and $\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
+  \item Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via
+  \begin{align*}
+  \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
+  \end{align*}
+  $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$.
+    \item The error term covariance matrix $\Sigma$ is updated by means of
+  \begin{align*}
+  \Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S),
+  \end{align*}
+  where $S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'$ and $\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n$.
+\end{itemize}
 
-- $\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)$, independent for all $c$, where $W^{-1}_{P_r}(\nu,\Theta)$ denotes the $P_r$-dimensional inverse Wishart distribution with $\nu$ degrees of freedom and scale matrix $\Theta$,
-
-- and $\Sigma \sim W^{-1}_{J-1}(\kappa,\Lambda)$.
-
-These prior distributions imply the following conditional posterior distributions:
-
-- The class weights are drawn from the Dirichlet distribution
-\begin{equation}
-(s_1,\dots,s_C)\mid \delta,z \sim D_C(\delta_1+m_1,\dots,\delta_C+m_C),
-\end{equation}
-where for $c=1,\dots,C$, $m_c=\#\{n:z_n=c\}$ denotes the current absolute class size. Mind that the model is invariant to permutations of the class labels $1,\dots,C$. For that reason, we accept an update only if the ordering $s_1>\dots>s_C$ holds, thereby ensuring a unique labeling of the classes.
-
-- Independently for all $n$, we update the allocation variables $(z_n)_n$ from their conditional distribution
-\begin{equation}
-\text{Prob}(z_n=c\mid s,\beta,b,\Omega )=\frac{s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}{\sum_c s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}.
-\end{equation}
-
-- The class means $(b_c)_c$ are updated independently for all $c$ via
-\begin{equation}
-b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
-\end{equation}
-where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)$, $\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}$, $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
-
-- The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
-\begin{equation}
-\Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
-\end{equation}
-where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
-
-- Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of \cite{Geweke:1998}:
-\begin{equation}
-U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
-\sim \mathcal{N}(\mu_{U_{ntj}},\Sigma_{U_{ntj}}) \cdot \begin{cases}
-1(U_{ntj}>\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}=j\\
-1(U_{ntj}<\max(U_{nt(-j)},0) ) & \text{if}~ y_{nt}\neq j
-\end{cases},
-\end{equation}
-where $U_{nt(-j)}$ denotes the vector $(U_{nt:})$ without the element $U_{ntj}$, $\mathcal{N}$ denotes the univariate normal distribution, $\Sigma_{U_{ntj}} = 1/(\Sigma^{-1})_{jj}$ and
-\begin{equation}
-\mu_{U_{ntj}} = W_{ntj}'\alpha + X_{ntj}'\beta_n - \Sigma_{U_{ntj}} (\Sigma^{-1})_{j(-j)}   (U_{nt(-j)} - W_{nt(-j)}'\alpha - X_{nt(-j)}' \beta_n ),
-\end{equation}
-where $(\Sigma^{-1})_{jj}$ denotes the $(j,j)$th element of $\Sigma^{-1}$, $(\Sigma^{-1})_{j(-j)}$ the $j$th row without the $j$th entry, $W_{nt(-j)}$ and $X_{nt(-j)}$ the coefficient matrices $W_{nt}$ and $X_{nt}$, respectively, without the $j$th column.
-
-- Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
-\begin{equation}
-\alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
-\end{equation}
-where $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ and $\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
-
-- Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via
-\begin{equation}
-\beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
-\end{equation}
-where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
-
-- The error term covariance matrix $\Sigma$ is updated by means of
-\begin{equation}
-\Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
-\end{equation}
-where $S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'$ and $\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n$.
-
-\subsection{Parameter normalization} \label{subsec:parameter_normalization}
-
-Samples obtained from the updating scheme described above lack identification (except for $s$ and $z$ draws), compare to the vignette on the model definition. Therefore, subsequent to the sampling, the following normalization is required for the $i$th update in each iteration $i$:
-
-- $\alpha^{(i)} \cdot \omega^{(i)}$,
-
-- $b_c^{(i)} \cdot \omega^{(i)}$, $c=1,\dots,C$,
-
-- $U_{nt}^{(i)} \cdot \omega^{(i)}$, $n = 1,\dots,N$, $t = 1,\dots,T$,
-
-- $\beta_n^{(i)} \cdot \omega^{(i)}$, $n = 1,\dots,N$,
-
-- $\Omega_c^{(i)} \cdot (\omega^{(i)})^2$, $c=1,\dots,C$, and
-
-- $\Sigma^{(i)} \cdot (\omega^{(i)})^2$,
-
+Samples obtained from the updating scheme described above lack identification (except for $s$ and $z$ draws), compare Section \ref{subsec:normalization}. Therefore, subsequent to the sampling, we apply the following normalization for the $i$th update in each iteration $i$:
+\begin{itemize}
+  \item $\alpha^{(i)} \cdot \omega^{(i)}$,
+  \item $b_c^{(i)} \cdot \omega^{(i)}$, $c=1,\dots,C$,
+  \item $U_{nt}^{(i)} \cdot \omega^{(i)}$, $n = 1,\dots,N$, $t = 1,\dots,T$,
+  \item $\beta_n^{(i)} \cdot \omega^{(i)}$, $n = 1,\dots,N$,
+  \item $\Omega_c^{(i)} \cdot (\omega^{(i)})^2$, $c=1,\dots,C$, and
+  \item $\Sigma^{(i)} \cdot (\omega^{(i)})^2$,
+\end{itemize}
 where either $\omega^{(i)} = \sqrt{\text{const} / (\Sigma^{(i)})_{jj}}$ with $(\Sigma^{(i)})_{jj}$ the $j$th diagonal element of $\Sigma^{(i)}$, $1\leq j \leq J-1$, or alternatively $\omega^{(i)} = \text{const} / \alpha^{(i)}_p$ for some coordinate $1\leq p \leq P_f$ of the $i$th draw for the coefficient vector $\alpha$. Here, $\text{const}$ is any positive constant (typically 1). The preferences will be flipped if $\omega^{(i)} < 0$, which only is the case if $\alpha^{(i)}_p < 0$.
 
-\subsection{Burn-in and thinning} \label{subsec:burn_thin}
-
-The theory behind Gibbs sampling constitutes that the sequence of samples produced by the updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first $B$ out of $R$ samples (the so-called burn-in period). Furthermore, correlation between nearby samples should be expected. In order to obtain independent samples, we consider only every $Q$th sample when computing Gibbs sample statistics like expectation and standard deviation. The independence of the samples can be verified by computing the serial correlation and the convergence of the Gibbs sampler can be checked by considering trace plots, see below.
-
-\subsection{The mcmc function} \label{subsec:mcmc_function}
+\subsection{The estimation routine} \label{subsec:estimation_routine}
 
 The Gibbs sampling scheme described above can be executed by applying the function
 
 \begin{Schunk}
 \begin{Sinput}
-> mcmc(data = data)
+> fit_model(data = data)
 \end{Sinput}
 \end{Schunk}
 
-where \code{data} must be an \class{RprobitB\_data} object (see the vignette about choice data). The function has the following optional arguments:
+where \code{data} is an \class{RprobitB\_data} object, see Section \ref{sec:choice_data}. The function has the following optional arguments:
 
-- \code{scale}: A named list of three elements, determining the parameter normalization:
+\begin{itemize}
+  \item \code{scale}: A formula object which determines the utility scale (cf. Section \ref{subsec:normalization}). It is of the form \code{<parameter> ~ <value>}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>} for the \code{<j>}th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e. $\text{const}$ introduced above). Per default \code{scale = Sigma\_1 ~ 1}, i.e. the first error-term variance is fixed to 1.
+  \item \code{R}: The number of iterations of the Gibbs sampler. The default is \code{R = 10000}.
+  \item \code{B}: The length of the burn-in period\footnote{The theory behind Gibbs sampling constitutes that the sequence of samples produced by the
+updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first \code{B} out of \code{R} samples (the so-called burn-in period).}, i.e. a non-negative number of samples to be discarded. The default is \code{B = R/2}.
+  \item \code{Q}: The thinning factor for the Gibbs samples\footnote{In order to obtain independent Gibbs samples, we consider only every \code{Q}th sample when computing parameter statistics.}, i.e. only every \code{Q}th sample is kept. The default is \code{Q = 1}.
+  \item \code{print\_progress}: A boolean, determining whether to print the Gibbs sampler progress.
+  \item \code{prior}: A named list of parameters for the prior distributions (their default values are documented in the \fct{check\_prior} function, see \code{help(check\_prior, package = "RprobitB")}):
+  \begin{itemize}
+    \item \code{eta}: The mean vector of length \code{P\_f} of the normal prior for \code{alpha}.
+    \item \code{Psi}: The covariance matrix of dimension \code{P\_f x P\_f} of the normal prior for \code{alpha}.
+    \item \code{delta}: The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
+    \item \code{xi}: The mean vector of length \code{P\_r} of the normal prior for each \code{b\_c}.
+    \item \code{D}: The covariance matrix of dimension \code{P\_r} x \code{P\_r} of the normal prior for each \code{b\_c}.
+    \item \code{nu}: The degrees of freedom (a natural number greater than \code{P\_r}) of the Inverse Wishart prior for each \code{Omega\_c}.
+    \item \code{Theta}: The scale matrix of dimension \code{P\_r} x \code{P\_r} of the Inverse Wishart prior for each \code{Omega\_c}.
+    \item \code{kappa}: The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse Wishart prior for \code{Sigma}.
+    \item \code{E}: The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart prior for \code{Sigma}.
+  \end{itemize}
+  \item \code{latent\_classes}: A list of parameters specifying the number and the updating scheme of latent classes, see Section ...
+\end{itemize}
 
-  - \code{parameter}: Either \code{"a"} (for an element of \code{alpha}) or \code{"s"} (for a diagonal element of \code{Sigma}). Use the \fct{overview\_effects} function to determine the parameter index. Note that you can set \code{"parameter" = "a"} only if the model has parameters with a fixed coefficient, i.e. only if \code{P\_f>0}.
+\paragraph{Example 1: Train (cont.)}
 
-  - \code{index}: The index of the parameter that gets fixed.
+Recall the \code{Train} data set of stated train trip alternatives, characterized by their \code{price}, \code{time}, number of \code{change}s, and level of \code{comfort}. From this data, we previously build the \class{RprobitB\_data} object \code{data\_train}, which we now pass to the estimation routine \fct{fit\_model}.
 
-  - \code{value}: The value for the fixed parameter (i.e. the value $\text{const}$ introduced above.
-
-  Per default, the first error-term variance is fixed to 1, i.e. \code{scale = list("parameter" = "s", "index" = 1, "value" = 1)}.
-
-- \code{R}: The number of iterations of the Gibbs sampler. The default is \code{R = 10000}.
-
-- \code{B}: The length of the burn-in period, i.e. a non-negative number of samples to be discarded. The default is \code{B = R/2}.
-
-- \code{Q}: The thinning factor for the Gibbs samples, i.e. only every \code{Q}th sample is kept. The default is \code{Q = 1}.
-
-- \code{print\_progress}: A boolean, determining whether to print the Gibbs sampler progress.
-
-- \code{prior}: A named list of parameters for the prior distributions (their default values are documented in the \fct{check\_prior} function):
-
-  - \code{eta}: The mean vector of length \code{P\_f} of the normal prior for \code{alpha}.
-
-  - \code{Psi}: The covariance matrix of dimension \code{P\_f x P\_f} of the normal prior for \code{alpha}.
-
-  - \code{delta}: The concentration parameter of length 1 of the Dirichlet prior for \code{s}.
-
-  - \code{xi}: The mean vector of length \code{P\_r} of the normal prior for each \code{b\_c}.
-
-  - \code{D}: The covariance matrix of dimension \code{P\_r} x \code{P\_r} of the normal prior for each \code{b\_c}.
-
-  - \code{nu}: The degrees of freedom (a natural number greater than \code{P\_r}) of the Inverse Wishart prior for each \code{Omega\_c}.
-
-  - \code{Theta}: The scale matrix of dimension \code{P\_r} x \code{P\_r} of the Inverse Wishart prior for each \code{Omega\_c}.
-
-  - \code{kappa}: The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse Wishart prior for \code{Sigma}.
-
-  - \code{E}: The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart prior for \code{Sigma}.
-
-- \code{latent\_classes}: A list of parameters specifying the number and the updating scheme of latent classes, see the vignette on modeling heterogeneity fitting.
-
-\subsection{Example 1: Train (cont.)} \label{subsec:train_cont}
-
-In the previous vignette on choice data we introduced the Train data set from the mlogit package \citep{Croissant:2020} that contains 2922 choices between two fictional train route alternatives. First, we transform the travel \code{time} from minutes to hours and the travel \code{price} from guilders to euros:
+For normalization, the first linear coefficient, the \code{price}, was fixed to \code{-1}, which allows to interpret the other coefficients as monetary values:
 
 \begin{Schunk}
 \begin{Sinput}
-> data("Train", package = "mlogit")
-> Train$price_A <- Train$price_A / 100 * 2.20371
-> Train$price_B <- Train$price_B / 100 * 2.20371
-> Train$time_A <- Train$time_A / 60
-> Train$time_B <- Train$time_B / 60
+> model_train <- fit_model(data = data_train, scale = price ~ -1)
 \end{Sinput}
 \end{Schunk}
 
-The following lines fit a probit model that explains the chosen trip alternatives (\code{choice}) by their \code{price}, \code{time}, number of \code{change} s, and level of \code{comfort} (the lower this value the higher the comfort). For normalization, the first linear coefficient, the \code{price}, was fixed to \code{-1}, which allows to interpret the other coefficients as monetary values:
-
-\begin{Schunk}
-\begin{Sinput}
-> form <- choice ~ price + time + change + comfort | 0
-> data <- prepare_data(form = form, choice_data = Train)
-> model_train <- mcmc(
-+    data = data,
-+    scale = list("parameter" = "a", index = 1, value = -1)
-+  )
-\end{Sinput}
-\end{Schunk}
-
-The estimated model is saved in \pkg{RprobitB} and can be accessed via
+The model is saved in \pkg{RprobitB} and can be accessed via
 
 \begin{Schunk}
 \begin{Sinput}
@@ -675,9 +551,9 @@ The estimated coefficients (using the mean of the Gibbs samples as a point estim
 \begin{Soutput}
            Estimate   (sd)
 1   price     -1.00 (0.00)
-2    time    -25.39 (2.23)
-3  change     -4.79 (0.86)
-4 comfort    -14.40 (0.90)
+2    time    -25.89 (2.21)
+3  change     -4.94 (0.88)
+4 comfort    -14.45 (0.86)
 \end{Soutput}
 \end{Schunk}
 
@@ -690,9 +566,7 @@ and visualized via
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-plot-coef-model-train}
 
-The results indicate that the deciders value one hour travel time by about 25 euros, an additional change by 5 euros, and a more comfortable class by 14 euros. These results are consistent with the ones that are presented in a vignette of the mlogit package on the same data set but using the logit model.
-
-\subsection{Checking the Gibbs samples} \label{subsec:checking-gibbs-samples}
+The results indicate that the deciders value one hour travel time by about 25 euros, an additional change by 5 euros, and a more comfortable class by 14 euros.\footnote{We note that our results are consistent with the ones that are presented in a vignette of the \pkg{mlogit} package on the same data set but using the logit model.}
 
 The Gibbs samples are saved in list form in the \class{RprobitB\_fit} object at the entry \code{"gibbs\_samples"}, i.e.
 
@@ -702,30 +576,24 @@ The Gibbs samples are saved in list form in the \class{RprobitB\_fit} object at 
 \end{Sinput}
 \begin{Soutput}
 List of 2
+ $ gibbs_samples_raw:List of 2
+  ..$ alpha: num [1:10000, 1:4] -0.00239 -0.02179 -0.02986 -0.03343 -0.03584 ...
+  ..$ Sigma: num [1:10000, 1] 0.978 0.949 0.862 0.864 0.911 ...
  $ gibbs_samples_nbt:List of 2
   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...
-  ..$ Sigma: num [1:500, 1] 607 581 627 615 850 ...
- $ gibbs_samples_raw:List of 2
-  ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...
-  ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...
+  ..$ Sigma: num [1:500, 1] 649 541 662 691 623 ...
 \end{Soutput}
 \end{Schunk}
 
-This object contains 2 elements:
+This object contains 2 elements: \code{gibbs\_samples\_raw} is a list of the raw samples from the Gibbs sampler and \code{gibbs\_samples\_nbt} are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after the burn-in.
 
-- \code{gibbs\_samples\_raw} is a list of the raw samples from the Gibbs sampler,
-
-- and \code{gibbs\_samples\_nbt} are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after the burn-in.
-
-Calling the summary function on the estimated \class{RprobitB\_fit} object yields additional information about the Gibbs samples \code{gibbs\_samples\_nbt}. You can specify a list \code{FUN} of functions that compute any point estimate of the Gibbs samples (Use the function \fct{point\_estimates} to access the Gibbs sample statistics as an \class{RprobitB\_parameter} object), for example
-
-- \fct{mean} for the arithmetic mean,
-
-- \fct{stats::sd} for the standard deviation,
-
-- \fct{R\_hat} for the Gelman-Rubin statistic \citep{Gelman:1992} (A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution),
-
-- or custom statistics like the absolute difference between the median and the mean.
+Calling the summary function on the estimated \class{RprobitB\_fit} object yields additional information about the Gibbs samples \code{gibbs\_samples\_nbt}. You can specify a list \code{FUN} of functions that compute any point estimate of the Gibbs samples, for example
+\begin{itemize}
+  \item \fct{mean} for the arithmetic mean,
+  \item \fct{stats::sd} for the standard deviation,
+  \item \fct{R\_hat} for the Gelman-Rubin statistic \citep{Gelman:1992}\footnote{A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution.},
+  \item or custom statistics like the absolute difference between the median and the mean as an indicator for the symmetrie of the posterior distribution.
+\end{itemize}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -744,22 +612,22 @@ R: 10000
 B: 5000 
 Q: 10 
 
-Normalization
-Level: Utility differences with respect to alternative 2.
-Scale: Coefficient of alpha_1 fixed to -1.
+Utility normalization
+Level: Utility differences with respect to alternative 'B'.
+Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 
 Gibbs sample statistics
                mean           sd           R^  custom_stat
  alpha
                                                           
      1        -1.00         0.00         1.00         0.00
-     2       -25.39         2.23         1.01         0.00
-     3        -4.79         0.86         1.00         0.02
-     4       -14.40         0.90         1.00         0.01
+     2       -25.89         2.21         1.00         0.02
+     3        -4.94         0.88         1.01         0.01
+     4       -14.45         0.86         1.00         0.02
 
  Sigma
                                                           
-   1,1       658.58        62.47         1.00         6.38
+   1,1       655.56        65.79         1.00         7.28
 \end{Soutput}
 \end{Schunk}
 
@@ -767,13 +635,13 @@ Calling the \fct{plot} method with the additional argument \code{type = "trace"}
 
 \begin{Schunk}
 \begin{Sinput}
-> par(mfrow = c(2,1))
+> par(mfrow = c(1,2))
 > plot(model_train, type = "trace")
 \end{Sinput}
 \end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-plot-trace-model-train}
+\includegraphics{rprobitb_oelschlaeger_bauer-model-train-trace}
 
-Additionally, we can visualize the serial correlation of the Gibbs samples via the argument \code{type = "acf"}. The boxes in the top-right corner state the total sample size TSS (here \code{R} - \code{B} = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.
+Additionally, we can visualize the serial correlation of the Gibbs samples via the argument \code{type = "acf"}. The boxes in the top-right corner state the total sample size TSS (here \code{R} - \code{B} = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS. The effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)$, where $\rho_k$ is the auto correlation between the chain offset by $k$ positions. The auto correlations are estimated via the \fct{stats::acf} function.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -781,11 +649,7 @@ Additionally, we can visualize the serial correlation of the Gibbs samples via t
 > plot(model_train, type = "acf")
 \end{Sinput}
 \end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-plot-acf-model-train}
-
-Here, the effective sample size is the value $\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)$, where $\rho_k$ is the auto correlation between the chain offset by $k$ positions. The auto correlations are estimated via the \fct{stats::acf} function.
-
-\subsection{Model transformation after estimation} \label{subsec:model_transformation}
+\includegraphics{rprobitb_oelschlaeger_bauer-model-train-acf}
 
 The \fct{transform} method can be used to transform an \class{RprobitB\_fit} object in three ways:
 
@@ -806,37 +670,42 @@ The \fct{transform} method can be used to transform an \class{RprobitB\_fit} obj
 3. or change the model normalization \code{scale}, for example
 \begin{Schunk}
 \begin{Sinput}
-> model_train <- transform(model_train, scale = list(parameter = "s", index = 1, value = 1))
+> model_train <- transform(model_train, scale = Sigma_1 ~ 1)
 \end{Sinput}
 \end{Schunk}
 
 \subsection{Estimating a joint normal mixing distribution} \label{subsec:normal_mix}
 
-The \pkg{mlogit} package \citep{Croissant:2020} contains the data set \code{Electricity}, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
+We demonstrate how to estimate a joint normal mixing distribution in \pkg{RprobitB} using another real-data example.
 
-1. their fixed price \code{pf} per kWh,
-2. their contract length \code{cf},
-3. a boolean \code{loc}, indicating whether the supplier is a local company,
-4. a boolean \code{wk}, indicating whether the supplier is a well known company,
-5. a boolean \code{tod}, indicating whether the supplier offers a time-of-day electricity price (which is higher during the day and lower during the night), and
-6. a boolean \code{seas}, indicating whether the supplier's price is seasonal dependent.
+\paragraph{Example 3: Electricity.}
+
+The \pkg{mlogit} package \citep{Croissant:2020} contains the data set \code{Electricity}, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
+\begin{enumerate}
+  \item their fixed price \code{pf} per kWh,
+  \item their contract length \code{cf},
+  \item a boolean \code{loc}, indicating whether the supplier is a local company,
+  \item a boolean \code{wk}, indicating whether the supplier is a well known company,
+  \item a boolean \code{tod}, indicating whether the supplier offers a time-of-day electricity price (which is higher during the day and lower during the night), and
+  \item a boolean \code{seas}, indicating whether the supplier's price is seasonal dependent.
+\end{enumerate}
 
 This constitutes a choice situation where choice behavior heterogeneity is expected: some customers might prefer a time-of-day electricity price (because they may be not at home during the day), while others can have the opposite preference. Ideally these differences in preferences should be modeled using characteristics of the deciders. In many cases (as in this data set) we do not have adequate information. Instead these differences in taste can be captured by means of a mixing distribution for the \code{tod} coefficient. This corresponds to the assumption of a random coefficient from the underlying mixing distribution to be drawn for each decider. We can use the estimated mixing distribution to determine for example the share of deciders that have a positive versus negative preference towards time-of-day electricity prices.
 
 Additionally, we expect correlations between the random coefficients to certain covariates, for example a positive correlation between the influence of \code{loc} and \code{wk}: deciders that prefer local suppliers might also prefer well known companies due to recommendations and past experiences, although they might be more expensive than unknown suppliers. The fitted multivariate normal distribution will reveal these correlations.
 
-The following lines prepare the \code{Electricity} data set for estimation. We use the convenience function \fct{as\_cov\_names} that relabels the data columns for alternative specific covariates into the required format \code{"<covariate>\_<alternative>"}, compare to the vignette on choice data. Via the \code{re = c("cl","loc","wk","tod","seas")} argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to \code{-1} to interpret the other estimates as monetary values.
+The following lines prepare the \code{Electricity} data set for estimation. We use the convenience function \fct{as\_cov\_names} that relabels the data columns for alternative specific covariates into the required format \code{"<covariate>\_<alternative>"}. Via the \code{re = c("cl","loc","wk","tod","seas")} argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to \code{-1} to interpret the other estimates as monetary values.
 
 \begin{Schunk}
 \begin{Sinput}
 > data("Electricity", package = "mlogit")
 > Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
-> data <- prepare_data(
+> data_elec <- prepare_data(
 +    form = choice ~ pf + cl + loc + wk + tod + seas | 0,
 +    choice_data = Electricity,
 +    re = c("cl","loc","wk","tod","seas")
 +    )
-> model_elec <- mcmc(data, R = 1000, scale = list(parameter = "a", index = 1, value = -1))
+> model_elec <- fit_model(data_elec, R = 5000, scale = pf ~ -1)
 \end{Sinput}
 \end{Schunk}
 
@@ -858,10 +727,10 @@ Calling the \fct{coef} method on the estimated model also returns the estimated 
         Estimate   (sd) Variance   (sd)
 1   pf     -1.00 (0.00)       NA   (NA)
 2   cl     -0.25 (0.03)     0.23 (0.04)
-3  loc      2.75 (0.26)     6.79 (1.25)
-4   wk      2.00 (0.19)     3.39 (0.67)
-5  tod     -9.71 (0.25)    10.53 (2.18)
-6 seas     -9.83 (0.22)     5.74 (1.14)
+3  loc      2.77 (0.24)     6.74 (1.19)
+4   wk      2.02 (0.19)     3.48 (0.69)
+5  tod     -9.70 (0.23)    10.88 (1.80)
+6 seas     -9.87 (0.19)     5.90 (1.06)
 \end{Soutput}
 \end{Schunk}
 
@@ -874,7 +743,7 @@ By the sign of the estimates we can for example deduce, that the existence of th
 > pnorm(cl_mu / cl_sd)
 \end{Sinput}
 \begin{Soutput}
-[1] 0.3026362
+[1] 0.2996708
 \end{Soutput}
 \end{Schunk}
 
@@ -885,43 +754,28 @@ The correlation between the covariates can be accessed as follows (setting \code
 > cov_mix(model_elec, cor = TRUE)
 \end{Sinput}
 \begin{Soutput}
-              cl         loc          wk         tod        seas
-cl    1.00000000  0.11510129  0.06972935 -0.06581389 -0.13741649
-loc   0.11510129  1.00000000  0.81363601  0.09436351 -0.02207951
-wk    0.06972935  0.81363601  1.00000000  0.09713654 -0.05208165
-tod  -0.06581389  0.09436351  0.09713654  1.00000000  0.53757657
-seas -0.13741649 -0.02207951 -0.05208165  0.53757657  1.00000000
+            [,1]       [,2]        [,3]        [,4]        [,5]
+[1,]  1.00000000 0.11846819  0.08690204 -0.05969293 -0.14077058
+[2,]  0.11846819 1.00000000  0.80958767  0.12020817  0.01724159
+[3,]  0.08690204 0.80958767  1.00000000  0.10642575 -0.02153803
+[4,] -0.05969293 0.12020817  0.10642575  1.00000000  0.53831733
+[5,] -0.14077058 0.01724159 -0.02153803  0.53831733  1.00000000
 \end{Soutput}
 \end{Schunk}
 
-Here, we see the confirmation of our initial assumption about a high correlation between \code{loc} and \code{wk}. The pairwise mixing distributions can be visualized via calling the \fct{plot} method with the additional argument \code{type = mixture}:
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(model_elec, type = "mixture")
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-plot-mixture-model-elec}
+Here, we see the confirmation of our initial hypothesis about a high correlation between \code{loc} and \code{wk}.
 
 \subsection{Estimating latent classes} \label{subsec:latent_classes}
 
-More generally, \pkg{RprobitB} allows to specify a Gaussian mixture as the mixing distribution. In particular,
+More generally, \pkg{RprobitB} allows to specify a Gaussian mixture $\sum_{c=1}^C \text{MVN} (b_c,\Omega_c)$ as the mixing distribution, see Section ... This specification allows for a) a better approximation of the true underlying mixing distribution and b) a preference based classification of the deciders. To estimate a latent mixture, specify a named list \code{latent\_classes} with the following arguments and submit it to the estimation routine \fct{fit\_model}:
+\begin{itemize}
+  \item \code{C}, the fixed number (greater or equal 1) of latent classes, which is set to 1 per default,
+  \item \code{weight\_update}, a boolean, set to \code{TRUE} for a weight-based update of the latent classes, see below,
+  \item \code{dp\_update}, a boolean, set to \code{TRUE} for a Dirichlet process-based update of the latent classes, see below,
+  \item \code{Cmax}, the maximum number of latent classes, set to \code{10} per default.
+\end{itemize}
 
-$$ \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).$$
-
-This specification allows for a) a better approximation of the true underlying mixing distribution and b) a preference based classification of the deciders.
-
-To estimate a latent mixture, specify a named list \code{latent\_classes} with the following arguments and submit it to the estimation routine \fct{mcmc}:
-
-- \code{C}, the fixed number (greater or equal 1) of latent classes, which is set to 1 per default,
-
-- \code{weight\_update}, a boolean, set to \code{TRUE} for a weight-based update of the latent classes, see below,
-
-- \code{dp\_update}, a boolean, set to \code{TRUE} for a Dirichlet process-based update of the latent classes, see below,
-
-- \code{Cmax}, the maximum number of latent classes, set to \code{10} per default.
-
-\paragraph{Weight-based update of the latent classes:}
+\subsection{Weight-based update of the latent classes} \label{subsec:weight_update}
 
 The following weight-based updating scheme is analogue to \cite{Bauer:2019} and executed within the burn-in period:
 
@@ -933,7 +787,72 @@ The following weight-based updating scheme is analogue to \cite{Bauer:2019} and 
 
 These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, \pkg{RprobitB} sets  \code{epsmin = 0.01}, \code{epsmax = 0.99}, and \code{distmin = 0.1}. These values can be adapted through the \code{latent\_class} list.
 
-\paragraph{Dirichlet process-based update of the latent classes:}
+\paragraph{Example 2: Simulation (cont.).}
+
+The pairwise mixing distributions can be visualized via calling the \fct{plot} method with the additional argument \code{type = mixture}:
+
+\begin{Schunk}
+\begin{Sinput}
+> model_sim <- fit_model(data_sim, R = 1000, latent_classes = list("C" = 2))
+> summary(model_sim)
+\end{Sinput}
+\begin{Soutput}
+Probit model
+choice ~ var1 | var2 | var3 
+R: 1000 
+B: 500 
+Q: 1 
+
+Utility normalization
+Level: Utility differences with respect to alternative 'alt2'.
+Scale: Coefficient of the 1. error term variance fixed to 1.
+
+Latent classes
+C = 2 
+
+Gibbs sample statistics
+          true    mean      sd      R^
+ alpha
+                                      
+     1   -0.74   -0.79    0.10    1.08
+     2    0.00    0.03    0.08    1.05
+     3    0.74    0.83    0.12    1.00
+
+ s
+                                      
+     1    0.70    0.70    0.10    1.22
+     2    0.30    0.30    0.10    1.22
+
+ b
+                                      
+   1.1    1.47    1.21    0.20    1.02
+   1.2   -0.37    0.74    0.24    1.15
+   2.1    0.74    2.01    0.53    1.50
+   2.2    0.74   -2.10    0.69    1.20
+
+ Omega
+                                      
+ 1.1,1    0.17    0.87    0.38    1.16
+ 1.1,2    0.38   -0.48    0.20    1.05
+ 1.2,2    2.53    0.75    0.27    1.00
+ 2.1,1    0.90    0.57    0.38    1.03
+ 2.1,2   -0.65    0.05    0.58    3.44
+ 2.2,2    0.47    1.60    1.04    1.15
+
+ Sigma
+                                      
+   1,1    1.00    1.00    0.00    1.00
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> plot(model_sim, type = "mixture")
+\end{Sinput}
+\end{Schunk}
+\includegraphics{rprobitb_oelschlaeger_bauer-model-sim-mixture}
+
+\subsection{Dirichlet process-based update of the latent classes} \label{subsec:dp_update}
 
 As an alternative to the weight-based updating scheme to determine the correct number $C$ of latent classes, \pkg{RprobitB} implemented the Dirichlet process. A similar approach in the context of discrete choice can be found in \cite{Burda:2008}, where the Dirichlet process is applied to estimate a mixed logit-probit model. The Dirichlet Process is a Bayesian nonparametric method, where nonparametric means that the number of model parameters can theoretically grow to infinity. The method allows to add more mixture components to the mixing distribution if needed for a better approximation, see \cite{Neal:2000} for a documentation of the general case. The literature offers many representations of the method, including the Chinese Restaurant Process \citep{Aldous:1985}, the stick-braking metaphor \citep{Sethuraman:1994}, and the Polya Urn model \citep{Blackwell:1973}.
 
@@ -1044,438 +963,274 @@ The Dirichlet process was able to infer the true number \code{C\_true = 3} of la
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-dirichlet-example-plot}
 
-\section{Choice prediction} \label{sec:choice_prediction}
-
-This section discusses in-sample and out-of-sample prediction within \pkg{RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
-
-\begin{Schunk}
-\begin{Sinput}
-> data("model_train", package = "RprobitB")
-\end{Sinput}
-\end{Schunk}
-
-
-\subsection{Reproducing the observed choices} \label{subsec:reproducing_observed_choices}
-
-\pkg{RprobitB} provides a \fct{predict} method for \class{RprobitB\_fit} objects. Per default, the method returns a confusion matrix, which gives an overview of the in-sample prediction performance:
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(model_train)
-\end{Sinput}
-\begin{Soutput}
-    predicted
-true    A    B
-   A 1022  452
-   B  440 1015
-\end{Soutput}
-\end{Schunk}
-
-By setting the argument \code{overview = FALSE}, the method instead returns predictions on the level of individual choice occasions:
-
-\begin{Schunk}
-\begin{Sinput}
-> pred <- predict(model_train, overview = FALSE)
-> head(pred, n = 10)
-\end{Sinput}
-\begin{Soutput}
-   id choiceid         A          B true predicted correct
-1   1        1 0.9152710 0.08472896    A         A    TRUE
-2   1        2 0.6395050 0.36049499    A         A    TRUE
-3   1        3 0.7918220 0.20817801    A         A    TRUE
-4   1        4 0.1792245 0.82077546    B         B    TRUE
-5   1        5 0.5500492 0.44995085    B         A   FALSE
-6   1        6 0.1299623 0.87003770    B         B    TRUE
-7   1        7 0.5436992 0.45630079    B         A   FALSE
-8   1        8 0.7589727 0.24102733    B         A   FALSE
-9   1        9 0.5483893 0.45161074    A         A    TRUE
-10  1       10 0.5931064 0.40689358    A         A    TRUE
-\end{Soutput}
-\end{Schunk}
-
-Among the three incorrect predictions shown here, the one for decider \code{id = 1} in choice occasion \code{idc = 8} is the most outstanding. Alternative \code{B} was chosen although the model predicts a probability of 75\% for alternative \code{A}. We can use the convenience function \fct{get\_cov} to extract the characteristics of this particular choice situation:
-
-\begin{Schunk}
-\begin{Sinput}
-> get_cov(model_train, id = 1, idc = 8)
-\end{Sinput}
-\begin{Soutput}
-  id choiceid choice  price_A   time_A change_A comfort_A  price_B
-8  1        8      B 52.88904 1.916667        0         1 70.51872
-  time_B change_B comfort_B
-8    2.5        0         0
-\end{Soutput}
-\end{Schunk}
-
-The trip option \code{A} was 20 euros cheaper and 30 minutes faster, which by our model outweighs the better comfort class for alternative \code{B}, recall the estimated effects:
-
-\begin{Schunk}
-\begin{Sinput}
-> coef(model_train)
-\end{Sinput}
-\begin{Soutput}
-           Estimate   (sd)
-1   price     -1.00 (0.00)
-2    time    -25.39 (2.23)
-3  change     -4.79 (0.86)
-4 comfort    -14.40 (0.90)
-\end{Soutput}
-\end{Schunk}
-
-The misclassification can be explained by preferences that differ from the average decider (choice behavior heterogeneity), or by unobserved factors that influenced the choice. Indeed, the variance of the error term was estimated high:
-
-\begin{Schunk}
-\begin{Sinput}
-> point_estimates(model_train)$Sigma
-\end{Sinput}
-\begin{Soutput}
-         [,1]
-[1,] 658.5798
-attr(,"names")
-[1] "1,1"
-\end{Soutput}
-\end{Schunk}
-
-Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve \citep{Fawcett:2006}, using the \pkg{plotROC} package \citep{Sachs:2017}. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here \code{n.cuts = 20}). The closer the curve is to the top-left corner, the better the binary classification.
-
-\begin{Schunk}
-\begin{Sinput}
-> library(plotROC)
-> ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
-+    geom_roc(n.cuts = 20, labels = FALSE) +
-+    style_roc(theme = theme_grey)
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-roc-example}
-
-\subsection{Forecasting choice behavior} \label{subsec:forcasting_choice_behavior}
-
-The \fct{predict} method has an additional \code{data} argument. Per default, \code{data = NULL}, which results into the in-sample case outlined above. Alternatively, \code{data} can be either an \class{RprobitB\_data} object (for example the test subsample derived from the \fct{train\_test} function, or a data frame of custom choice characteristics.
-
-We demonstrate the second case in the following. Assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100 euros to 110 euros (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices.
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(
-+    model_train,
-+    data = data.frame("price_A" = c(100,110),
-+                      "price_B" = c(100,100)),
-+    overview = FALSE)
-\end{Sinput}
-\begin{Soutput}
-  id choiceid         A         B prediction
-1  1        1 0.5000000 0.5000000          A
-2  2        1 0.3483907 0.6516093          B
-\end{Soutput}
-\end{Schunk}
-
-However, offering a better comfort class compensates for the higher price and even results in a gain of 7\% market share:
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(
-+    model_train,
-+    data = data.frame("price_A"   = c(100,110),
-+                      "comfort_A" = c(1,0),
-+                      "price_B"   = c(100,100),
-+                      "comfort_B" = c(1,1)),
-+    overview = FALSE)
-\end{Sinput}
-\begin{Soutput}
-  id choiceid         A         B prediction
-1  1        1 0.5000000 0.5000000          A
-2  2        1 0.5680923 0.4319077          A
-\end{Soutput}
-\end{Schunk}
-
-\section{Model selection} \label{sec:model_selection}
-
-The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This section outlines the model selection tools implemented in \pkg{RprobitB}. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
-
-\begin{Schunk}
-\begin{Sinput}
-> data("model_train", package = "RprobitB")
-> model_train
-\end{Sinput}
-\begin{Soutput}
-Probit model 'choice ~ price + time + change + comfort | 0'.
-\end{Soutput}
-\end{Schunk}
-
-As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula \code{choice ~ price | 0`}. (This model is also saved in \pkg{RprobitB} and can be accessed via \code{data("model\_train\_sparse", package = "RprobitB")}.)
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
-\end{Sinput}
-\end{Schunk}
-
-
-The \fct{nested\_model} function helps to estimate a new version of \code{model\_train} with new specifications. Here, only \code{form} has been changed.
-
-\paragraph{The model selection function:}
-
-\pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_selection(model_train, model_train_sparse,
-+                  criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
-\end{Sinput}
-\begin{Soutput}
-                         model_train model_train_sparse
-npar                               4                  1
-LL                          -1727.74           -1865.86
-AIC                          3463.48            3733.72
-BIC                          3487.41            3739.70
-WAIC                         3463.76            3733.91
-se(WAIC)                        0.18               0.07
-pWAIC                           4.32               1.15
-MMLL                        -1732.14           -1867.48
-BF(*,model_train)                  1             < 0.01
-BF(*,model_train_sparse)       > 100                  1
-pred_acc                      69.55%             63.37%
-\end{Soutput}
-\end{Schunk}
-
-Specifying \code{criteria} is optional. Per default, \code{criteria = c("npar", "LL", "AIC", "BIC")}. The available model selection criteria are explained in the following.
-
-\paragraph{npar:}
-
-\code{"npar"} yields the number of model parameters, which is computed by the \fct{npar} method:
-
-\begin{Schunk}
-\begin{Sinput}
-> npar(model_train, model_train_sparse)
-\end{Sinput}
-\begin{Soutput}
-[1] 4 1
-\end{Soutput}
-\end{Schunk}
-
-Here, \code{model\_train} has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while \code{model\_train\_sparse} has only a single price coefficient.
-
-\paragraph{LL:}
-
-If \code{"LL"} is included in \code{criteria}, \fct{model\_selection} returns the model's log-likelihood values. They can also be directly accessed via the \fct{logLik} method. The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. \fct{logLik} has the argument \code{par\_set}, where alternative statistics for the point estimate can be specified.
-
-\begin{Schunk}
-\begin{Sinput}
-> logLik(model_train)
-\end{Sinput}
-\begin{Soutput}
-[1] -1727.742
-\end{Soutput}
-\begin{Sinput}
-> logLik(model_train_sparse)
-\end{Sinput}
-\begin{Soutput}
-[1] -1865.861
-\end{Soutput}
-\end{Schunk}
-
-\paragraph{AIC:}
-
-Including \code{"AIC"} yields the Akaike's Information Criterion \citep{Akaike:1974}, which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
-where $\text{LL}$ is the model's log-likelihood value, $k$ is the penalty per parameter with $k = 2$ per default for the classical AIC, and $\text{npar}$ is the number of parameters in the fitted model.
-
-Alternatively, the \fct{AIC} method also returns the AIC values:
-
-\begin{Schunk}
-\begin{Sinput}
-> AIC(model_train, model_train_sparse, k = 2)
-\end{Sinput}
-\begin{Soutput}
-[1] 3463.485 3733.723
-\end{Soutput}
-\end{Schunk}
-
-The AIC quantifies the trade-off between over- and under-fitting, where smaller values are preferred. Here, the increase in goodness of fit justifies the additional 3 parameters of \code{model\_train}.
-
-\paragraph{BIC:}
-
-Similar to the AIC, \code{"BIC"} yields the Bayesian Information Criterion \citep{Schwarz:1978}, which is defined as $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
-where $\text{LL}$ is the model's log-likelihood value, $\text{nobs}$ is the number of data points (which can be accessed via the \fct{nobs} method), and $\text{npar}$ is the number of parameters in the fitted model. The interpretation is analogue to AIC.
-
-\pkg{RprobitB} also provided a method for the BIC value:
-
-\begin{Schunk}
-\begin{Sinput}
-> BIC(model_train, model_train_sparse)
-\end{Sinput}
-\begin{Soutput}
-[1] 3487.414 3739.705
-\end{Soutput}
-\end{Schunk}
-
-\paragraph{WAIC:}
-
-WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion \citep{Watanabe:2010}. As for AIC and BIC, the smaller the WAIC value the better the model. Including \code{"WAIC"} in \code{criteria} yields the WAIC value, its standard error \code{se(WAIC)}, and the effective number of parameters \code{pWAIC}, see below.
-
-The WAIC is defined as
-
-$$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
-
-where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see \cite{McElreath:2016} p. 220 for a reference.
-
-The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
-
-$$\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).$$
-The penalty term is computed as the sum over the variances in log-probability for each observation:
-$$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . $$
-The $\text{WAIC}$ has a standard error of
-$$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
-where $n$ is the number of choices.
-
-Before computing the WAIC of an \code{RprobitB\_fit} object, the probabilities $p_{si}$ must be computed via the \fct{compute\_p\_si} function:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train <- compute_p_si(model_train)
-\end{Sinput}
-\end{Schunk}
-
-Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:
-
-\begin{Schunk}
-\begin{Sinput}
-> WAIC(model_train)
-\end{Sinput}
-\begin{Soutput}
-3463.76 (0.18)
-\end{Soutput}
-\begin{Sinput}
-> WAIC(model_train_sparse)
-\end{Sinput}
-\begin{Soutput}
-3733.91 (0.07)
-\end{Soutput}
-\end{Schunk}
-
-You can visualize the convergence of the WAIC as follows:
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(WAIC(model_train))
-> plot(WAIC(model_train_sparse))
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-waictrace}
-
-Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing \code{R} in \fct{mcmc} or decreasing \code{B} or \code{Q} via \fct{transform}, see the vignette on model fitting.
-
-\paragraph{MMLL:}
-
-\code{"MMLL"} in \code{criteria} stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
-
-\pkg{RprobitB} uses the posterior Gibbs samples derived from the \fct{mcmc} function to approximate the model's marginal likelihood via the posterior harmonic mean estimator \citep{Newton:1994}: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then,
-$$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$
-
-By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
-
-As for the WAIC, computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the \fct{compute\_p\_si} function. Afterwards, the \fct{mml} function can be called with an \class{RprobitB\_fit} object as input. The function returns the \class{RprobitB\_fit} object, where the marginal likelihood value is saved as the entry \code{"mml"} and the marginal log-likelihood value as the attribute \code{"mmll"}. Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train <- mml(model_train)
-> model_train$mml
-\end{Sinput}
-\begin{Soutput}
-3.54e-117 * exp(-1464)
-\end{Soutput}
-\begin{Sinput}
-> attr(model_train$mml, "mmll")
-\end{Sinput}
-\begin{Soutput}
-[1] -1732.138
-\end{Soutput}
-\end{Schunk}
-
-Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the \fct{plot} method:
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(model_train$mml, log = TRUE)
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-mmltrace}
-
-There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator \citep{Hammersley:1964}: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then,
-
-$$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$
-
-Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
-
-To use the prior arithmetic mean estimator, call the \fct{mml} function with a specification of the number of prior draws \code{S} and set \code{recompute = TRUE}:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train <- mml(model_train, S = 1000, recompute = TRUE)
-\end{Sinput}
-\end{Schunk}
-
-Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as \cite{Gronau:2017} points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number \code{S} of prior samples is required.
-
-\paragraph{Bayes factor:}
-
-The Bayes factor is an index of relative posterior model plausibility of one model over another \citep{Marin:2014}. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
-
-$$
-BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
-$$
-
-The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, \pkg{RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the marginal model likelihoods. A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
-
-Adding \code{"BF"} to the \code{criteria} argument of \fct{model\_selection} yields the Bayes factors. We see a decisive evidence \citep{Jeffreys:1998} in favor of \class{model\_train}.
-
-\begin{Schunk}
-\begin{Sinput}
-> model_selection(model_train, model_train_sparse, criteria = c("BF"))
-\end{Sinput}
-\begin{Soutput}
-                         model_train model_train_sparse
-BF(*,model_train)                  1             < 0.01
-BF(*,model_train_sparse)       > 100                  1
-\end{Soutput}
-\end{Schunk}
-
-\paragraph{pred acc:}
-
-Finally, adding \code{"pred_acc"} to the \code{criteria} argument for the \fct{model\_selection} function returns the share of correctly predicted choices. From the output of \fct{model\_selection} above (or alternatively the one in the following) we deduce that \class{model\_train} correctly predicts about 6\% of the choices more than \class{model\_train\_sparse}:
-
-\begin{Schunk}
-\begin{Sinput}
-> pred_acc(model_train, model_train_sparse)
-\end{Sinput}
-\begin{Soutput}
-[1] 0.6954592 0.6336634
-\end{Soutput}
-\end{Schunk}
-
-\section{Applications} \label{sec:applications}
-
-
-\subsection{Chess opening choice} \label{subsec:chess_opening_choice}
-
-\subsection{Berserking choice in online chess} \label{subsec:berserk}
-
-\subsection{Child wish} \label{subsec:child_wish}
-
-\subsection{Contraception choice} \label{subsec:contraception_choice}
-
-
-\section{Conclusion} \label{sec:conclusion}
-
-%% The problem
-This paper addressed the problem of specifying mixing distributions in the multinomial probit model with a panel data setting, constituting an important part of the model selection for which the literature does not provide much guidance so far. In the absence of alternatives, many applications of the mixed multinomial probit model rely on different types of standard parametric distributions for modelling heterogeneity in preferences in combination with a likelihood-value based model selection. This course of action is very restrictive and imposes strong assumptions on the distribution of the model parameters that could potentially lead to misspecification and biased estimates.
-
-%% Our solution
-We proposed a new approach that improves the current specification strategies in several ways: First, our approach does not require any distributional assumption, since the latent class setting is flexible enough to approximate practically any distribution shape and allowing for any correlation pattern. Second, the weight-based updating scheme ensures that the number of latent classes does not need to be prespecified. Third, the imposed Bayesian estimation framework avoids many numerical problems that occur in the frequentist approach. Most notably, no likelihood function has to be evaluated nor approximated. Comparing the numerical estimation speed to the non-parametric frequentist approach of \cite{Bauer:2019}, we found that our implementation of the Bayesian approach is at least 10 times faster. The improvement becomes more distinct for panel data settings with a high number of choice occasions. This is due to the fact that for given total sample size $NT$ a large $T$ is beneficial for the Bayesian approach as then the number of vectors $\beta_n,~ n = 1,...,N$ is comparatively small, while in the frequentist approach calculating the likelihood becomes more challenging for increasing the number $T$ of choice situations faced by each of the $N$ individuals. On the other hand, the grid based frequentist approach of \cite{Bauer:2019} can potentially achieve a better approximation (especially of point masses) due to the relatively high number of latent classes. However, this approach requires that a suitable grid is set prior to the estimation with a specification of upper bounds for the coefficients. Additionally, the curse of dimensionality plays a crucial role, which is less of a burden in the Bayesian approach. Note that for a fully specified parametric structure these concerns do not play such a big role also for the frequentist approach.
-
-%% Planned extensions
-Our simulation results verified that the proposed approach achieves good approximations of the mixing distribution in common choice modelling situations, where the underlying heterogeneity cannot be captured by standard parametric distributions. It would be interesting to apply the approach also to empirical data in the future. Additionally,
-further research on how to properly address sign-restricted coefficients is required.
-
+\paragraph{Example 4: Chess.}
+
+% \section{Choice prediction} \label{sec:choice_prediction}
+%
+% This section discusses in-sample and out-of-sample prediction within \pkg{RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
+%
+% <<load-model-train>>=
+% data("model_train", package = "RprobitB")
+% @
+%
+%
+% \subsection{Reproducing the observed choices} \label{subsec:reproducing_observed_choices}
+%
+% \pkg{RprobitB} provides a \fct{predict} method for \class{RprobitB\_fit} objects. Per default, the method returns a confusion matrix, which gives an overview of the in-sample prediction performance:
+%
+% <<predict-model-train>>=
+% predict(model_train)
+% @
+%
+% By setting the argument \code{overview = FALSE}, the method instead returns predictions on the level of individual choice occasions:
+%
+% <<predict-model-train-indlevel>>=
+% pred <- predict(model_train, overview = FALSE)
+% head(pred, n = 10)
+% @
+%
+% Among the three incorrect predictions shown here, the one for decider \code{id = 1} in choice occasion \code{idc = 8} is the most outstanding. Alternative \code{B} was chosen although the model predicts a probability of 75\% for alternative \code{A}. We can use the convenience function \fct{get\_cov} to extract the characteristics of this particular choice situation:
+%
+% <<model-train-covs>>=
+% get_cov(model_train, id = 1, idc = 8)
+% @
+%
+% The trip option \code{A} was 20 euros cheaper and 30 minutes faster, which by our model outweighs the better comfort class for alternative \code{B}, recall the estimated effects:
+%
+% <<model-train-coeffs>>=
+% coef(model_train)
+% @
+%
+% The misclassification can be explained by preferences that differ from the average decider (choice behavior heterogeneity), or by unobserved factors that influenced the choice. Indeed, the variance of the error term was estimated high:
+%
+% <<model-train-Sigma>>=
+% point_estimates(model_train)$Sigma
+% @
+%
+% Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve \citep{Fawcett:2006}, using the \pkg{plotROC} package \citep{Sachs:2017}. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here \code{n.cuts = 20}). The closer the curve is to the top-left corner, the better the binary classification.
+%
+% <<roc-example, fig=TRUE>>=
+% library(plotROC)
+% ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
+%   geom_roc(n.cuts = 20, labels = FALSE) +
+%   style_roc(theme = theme_grey)
+% @
+%
+% \subsection{Forecasting choice behavior} \label{subsec:forcasting_choice_behavior}
+%
+% The \fct{predict} method has an additional \code{data} argument. Per default, \code{data = NULL}, which results into the in-sample case outlined above. Alternatively, \code{data} can be either an \class{RprobitB\_data} object (for example the test subsample derived from the \fct{train\_test} function, or a data frame of custom choice characteristics.
+%
+% We demonstrate the second case in the following. Assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100 euros to 110 euros (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices.
+%
+% <<predict-model-train-given-covs-1>>=
+% predict(
+%   model_train,
+%   data = data.frame("price_A" = c(100,110),
+%                     "price_B" = c(100,100)),
+%   overview = FALSE)
+% @
+%
+% However, offering a better comfort class compensates for the higher price and even results in a gain of 7\% market share:
+%
+% <<predict-model-train-given-covs-2>>=
+% predict(
+%   model_train,
+%   data = data.frame("price_A"   = c(100,110),
+%                     "comfort_A" = c(1,0),
+%                     "price_B"   = c(100,100),
+%                     "comfort_B" = c(1,1)),
+%   overview = FALSE)
+% @
+%
+% \section{Model selection} \label{sec:model_selection}
+%
+% The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This section outlines the model selection tools implemented in \pkg{RprobitB}. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
+%
+% <<load-model-train>>=
+% data("model_train", package = "RprobitB")
+% model_train
+% @
+%
+% As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula \code{choice ~ price | 0`}. (This model is also saved in \pkg{RprobitB} and can be accessed via \code{data("model\_train\_sparse", package = "RprobitB")}.)
+%
+% <<nested-model-train, eval = FALSE>>=
+% model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+% @
+%
+% <<load-train-sparse-model, echo = FALSE>>=
+% data("model_train_sparse", package = "RprobitB")
+% @
+%
+% The \fct{nested\_model} function helps to estimate a new version of \code{model\_train} with new specifications. Here, only \code{form} has been changed.
+%
+% \paragraph{The model selection function:}
+%
+% \pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria:
+%
+% <<model-selection-example>>=
+% model_selection(model_train, model_train_sparse,
+%                 criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
+% @
+%
+% Specifying \code{criteria} is optional. Per default, \code{criteria = c("npar", "LL", "AIC", "BIC")}. The available model selection criteria are explained in the following.
+%
+% \paragraph{npar:}
+%
+% \code{"npar"} yields the number of model parameters, which is computed by the \fct{npar} method:
+%
+% <<npar-example>>=
+% npar(model_train, model_train_sparse)
+% @
+%
+% Here, \code{model\_train} has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while \code{model\_train\_sparse} has only a single price coefficient.
+%
+% \paragraph{LL:}
+%
+% If \code{"LL"} is included in \code{criteria}, \fct{model\_selection} returns the model's log-likelihood values. They can also be directly accessed via the \fct{logLik} method. The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. \fct{logLik} has the argument \code{par\_set}, where alternative statistics for the point estimate can be specified.
+%
+% <<oglik-example>>=
+% logLik(model_train)
+% logLik(model_train_sparse)
+% @
+%
+% \paragraph{AIC:}
+%
+% Including \code{"AIC"} yields the Akaike's Information Criterion \citep{Akaike:1974}, which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
+% where $\text{LL}$ is the model's log-likelihood value, $k$ is the penalty per parameter with $k = 2$ per default for the classical AIC, and $\text{npar}$ is the number of parameters in the fitted model.
+%
+% Alternatively, the \fct{AIC} method also returns the AIC values:
+%
+% <<aic-example>>=
+% AIC(model_train, model_train_sparse, k = 2)
+% @
+%
+% The AIC quantifies the trade-off between over- and under-fitting, where smaller values are preferred. Here, the increase in goodness of fit justifies the additional 3 parameters of \code{model\_train}.
+%
+% \paragraph{BIC:}
+%
+% Similar to the AIC, \code{"BIC"} yields the Bayesian Information Criterion \citep{Schwarz:1978}, which is defined as $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
+% where $\text{LL}$ is the model's log-likelihood value, $\text{nobs}$ is the number of data points (which can be accessed via the \fct{nobs} method), and $\text{npar}$ is the number of parameters in the fitted model. The interpretation is analogue to AIC.
+%
+% \pkg{RprobitB} also provided a method for the BIC value:
+%
+% <<bic-example>>=
+% BIC(model_train, model_train_sparse)
+% @
+%
+% \paragraph{WAIC:}
+%
+% WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion \citep{Watanabe:2010}. As for AIC and BIC, the smaller the WAIC value the better the model. Including \code{"WAIC"} in \code{criteria} yields the WAIC value, its standard error \code{se(WAIC)}, and the effective number of parameters \code{pWAIC}, see below.
+%
+% The WAIC is defined as
+%
+% $$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
+%
+% where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see \cite{McElreath:2016} p. 220 for a reference.
+%
+% The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
+%
+% $$\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).$$
+% The penalty term is computed as the sum over the variances in log-probability for each observation:
+% $$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . $$
+% The $\text{WAIC}$ has a standard error of
+% $$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
+% where $n$ is the number of choices.
+%
+% Before computing the WAIC of an \code{RprobitB\_fit} object, the probabilities $p_{si}$ must be computed via the \fct{compute\_p\_si} function:
+%
+% <<compute-psi-train, eval = FALSE>>=
+% model_train <- compute_p_si(model_train)
+% @
+%
+% Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:
+%
+% <<waic-example, eval=FALSE>>=
+% WAIC(model_train)
+% WAIC(model_train_sparse)
+% @
+%
+% You can visualize the convergence of the WAIC as follows:
+%
+% <<waictrace, fig=TRUE, eval=FALSE>>=
+% plot(WAIC(model_train))
+% plot(WAIC(model_train_sparse))
+% @
+%
+% Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing \code{R} in \fct{fit\_model} or decreasing \code{B} or \code{Q} via \fct{transform}, see the vignette on model fitting.
+%
+% \paragraph{MMLL:}
+%
+% \code{"MMLL"} in \code{criteria} stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
+%
+% \pkg{RprobitB} uses the posterior Gibbs samples derived from the \fct{fit\_model} function to approximate the model's marginal likelihood via the posterior harmonic mean estimator \citep{Newton:1994}: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then,
+% $$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$
+%
+% By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
+%
+% As for the WAIC, computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the \fct{compute\_p\_si} function. Afterwards, the \fct{mml} function can be called with an \class{RprobitB\_fit} object as input. The function returns the \class{RprobitB\_fit} object, where the marginal likelihood value is saved as the entry \code{"mml"} and the marginal log-likelihood value as the attribute \code{"mmll"}. Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.
+%
+% <<mml_train>>=
+% model_train <- mml(model_train)
+% model_train$mml
+% attr(model_train$mml, "mmll")
+% @
+%
+% Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the \fct{plot} method:
+%
+% <<mmltrace, fig=TRUE, width = 9>>=
+% plot(model_train$mml, log = TRUE)
+% @
+%
+% There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator \citep{Hammersley:1964}: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then,
+%
+% $$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$
+%
+% Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
+%
+% To use the prior arithmetic mean estimator, call the \fct{mml} function with a specification of the number of prior draws \code{S} and set \code{recompute = TRUE}:
+%
+% <<arithmetic_mean_estimator, eval = FALSE>>=
+% model_train <- mml(model_train, S = 1000, recompute = TRUE)
+% @
+%
+% Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as \cite{Gronau:2017} points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number \code{S} of prior samples is required.
+%
+% \paragraph{Bayes factor:}
+%
+% The Bayes factor is an index of relative posterior model plausibility of one model over another \citep{Marin:2014}. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
+%
+% $$
+% BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
+% $$
+%
+% The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, \pkg{RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the marginal model likelihoods. A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
+%
+% Adding \code{"BF"} to the \code{criteria} argument of \fct{model\_selection} yields the Bayes factors. We see a decisive evidence \citep{Jeffreys:1998} in favor of \class{model\_train}.
+%
+% <<bayes-factor-example, eval = FALSE>>=
+% model_selection(model_train, model_train_sparse, criteria = c("BF"))
+% @
+%
+% \paragraph{pred acc:}
+%
+% Finally, adding \code{"pred_acc"} to the \code{criteria} argument for the \fct{model\_selection} function returns the share of correctly predicted choices. From the output of \fct{model\_selection} above (or alternatively the one in the following) we deduce that \class{model\_train} correctly predicts about 6\% of the choices more than \class{model\_train\_sparse}:
+%
+% <<pred-acc-example>>=
+% pred_acc(model_train, model_train_sparse)
+% @
+%
+% \section{Conclusion} \label{sec:conclusion}
+%
+% %% The problem
+% This paper addressed the problem of specifying mixing distributions in the multinomial probit model with a panel data setting, constituting an important part of the model selection for which the literature does not provide much guidance so far. In the absence of alternatives, many applications of the mixed multinomial probit model rely on different types of standard parametric distributions for modelling heterogeneity in preferences in combination with a likelihood-value based model selection. This course of action is very restrictive and imposes strong assumptions on the distribution of the model parameters that could potentially lead to misspecification and biased estimates.
+%
+% %% Our solution
+% We proposed a new approach that improves the current specification strategies in several ways: First, our approach does not require any distributional assumption, since the latent class setting is flexible enough to approximate practically any distribution shape and allowing for any correlation pattern. Second, the weight-based updating scheme ensures that the number of latent classes does not need to be prespecified. Third, the imposed Bayesian estimation framework avoids many numerical problems that occur in the frequentist approach. Most notably, no likelihood function has to be evaluated nor approximated. Comparing the numerical estimation speed to the non-parametric frequentist approach of \cite{Bauer:2019}, we found that our implementation of the Bayesian approach is at least 10 times faster. The improvement becomes more distinct for panel data settings with a high number of choice occasions. This is due to the fact that for given total sample size $NT$ a large $T$ is beneficial for the Bayesian approach as then the number of vectors $\beta_n,~ n = 1,...,N$ is comparatively small, while in the frequentist approach calculating the likelihood becomes more challenging for increasing the number $T$ of choice situations faced by each of the $N$ individuals. On the other hand, the grid based frequentist approach of \cite{Bauer:2019} can potentially achieve a better approximation (especially of point masses) due to the relatively high number of latent classes. However, this approach requires that a suitable grid is set prior to the estimation with a specification of upper bounds for the coefficients. Additionally, the curse of dimensionality plays a crucial role, which is less of a burden in the Bayesian approach. Note that for a fully specified parametric structure these concerns do not play such a big role also for the frequentist approach.
+%
+% %% Planned extensions
+% Our simulation results verified that the proposed approach achieves good approximations of the mixing distribution in common choice modelling situations, where the underlying heterogeneity cannot be captured by standard parametric distributions. It would be interesting to apply the approach also to empirical data in the future. Additionally,
+% further research on how to properly address sign-restricted coefficients is required.
+%
 
 \section*{Computational details}
 
