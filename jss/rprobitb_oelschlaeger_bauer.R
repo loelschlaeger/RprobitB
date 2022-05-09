@@ -58,7 +58,7 @@ plot(data_train)
 ### code chunk number 8: example 2 sim meta
 ###################################################
 N <- 100
-T <- 10
+T <- 30
 alternatives <- c("alt1", "alt2")
 base_alternative <- "alt2"
 form <- choice ~ var1 | var2 | var3
@@ -91,7 +91,8 @@ data_sim <- simulate_choices(
   alpha = c(-1,0,1),
   C = 2,
   s = c(0.7,0.3),
-  b = matrix(c(2,-0.5,1,1), ncol = 2)
+  b = matrix(c(2,-0.5,1,1), ncol = 2),
+  Sigma = 1
 )
 
 
@@ -132,13 +133,13 @@ data(model_train, package = "RprobitB")
 
 
 ###################################################
-### code chunk number 17: coef-model-Train
+### code chunk number 17: example 1 train coef
 ###################################################
 coef(model_train)
 
 
 ###################################################
-### code chunk number 18: plot-coef-model-train
+### code chunk number 18: coef-model-train
 ###################################################
 plot(coef(model_train), sd = 3)
 
@@ -153,12 +154,8 @@ str(model_train$gibbs_samples, max.level = 2, give.attr = FALSE)
 ### code chunk number 20: example 1 train summary
 ###################################################
 summary(model_train,
-        FUN = c("mean"        = mean,
-                "sd"          = stats::sd,
-                "R^"          = R_hat,
-                "custom_stat" = function(x) abs(mean(x) - median(x))
-                )
-       )
+        FUN = c("mean" = mean, "sd" = stats::sd, "R^" = RprobitB::R_hat,
+                "custom_stat" = function(x) abs(mean(x) - median(x))))
 
 
 ###################################################
@@ -171,55 +168,46 @@ plot(model_train, type = "trace")
 ###################################################
 ### code chunk number 22: model-train-acf
 ###################################################
-par(mfrow = c(2,3))
-plot(model_train, type = "acf")
+par(mfrow = c(1,2))
+plot(model_train, type = "acf", ignore = c("alpha_1", "alpha_2", "alpha_3"))
 
 
 ###################################################
-### code chunk number 23: example 1 train transform B
+### code chunk number 23: example 3 elec relabel covariates
 ###################################################
-model_train <- transform(model_train, B = 1)
+data("Electricity", package = "mlogit")
+Electricity <- as_cov_names(
+  choice_data = Electricity,
+  cov = c("pf","cl","loc","wk","tod","seas"),
+  alternatives = 1:4
+)
 
 
 ###################################################
-### code chunk number 24: example 1 train transform Q
+### code chunk number 24: example 3 elec estimation (eval = FALSE)
 ###################################################
-model_train <- transform(model_train, Q = 100)
-
-
-###################################################
-### code chunk number 25: example 1 train transform scale
-###################################################
-model_train <- transform(model_train, scale = Sigma_1 ~ 1)
-
-
-###################################################
-### code chunk number 26: example 3 elec estimation (eval = FALSE)
-###################################################
-## data("Electricity", package = "mlogit")
-## Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
 ## data_elec <- prepare_data(
 ##   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
 ##   choice_data = Electricity,
 ##   re = c("cl","loc","wk","tod","seas")
-##   )
+## )
 ## model_elec <- fit_model(data_elec, R = 5000, scale = pf ~ -1)
 
 
 ###################################################
-### code chunk number 27: example 3 elec load model
+### code chunk number 25: example 3 elec load model
 ###################################################
 data(model_elec, package = "RprobitB")
 
 
 ###################################################
-### code chunk number 28: coef-model-elec
+### code chunk number 26: example 3 elec coef
 ###################################################
 coef(model_elec)
 
 
 ###################################################
-### code chunk number 29: example 3 elec share mixing distribution
+### code chunk number 27: example 3 elec share mixing distribution
 ###################################################
 cl_mu <- coef(model_elec)["cl","mean"]
 cl_sd <- sqrt(coef(model_elec)["cl","var"])
@@ -227,26 +215,52 @@ pnorm(cl_mu / cl_sd)
 
 
 ###################################################
-### code chunk number 30: example 3 elec correlation mixing distribution
+### code chunk number 28: example 3 elec correlation
 ###################################################
-cov_mix(model_elec, cor = TRUE)
+round(cov_mix(model_elec, cor = TRUE), 2)
 
 
 ###################################################
-### code chunk number 31: example 2 sim model fit
+### code chunk number 29: example 2 sim model fit C fixed
 ###################################################
-model_sim <- fit_model(data_sim, R = 1000, latent_classes = list("C" = 2))
+model_sim <- fit_model(
+  data = data_sim,
+  R = 1000,
+  latent_classes = list("C" = 2),
+  seed = 1
+)
 summary(model_sim)
 
 
 ###################################################
-### code chunk number 32: model-sim-mixture
+### code chunk number 30: model-sim-mixture
 ###################################################
 plot(model_sim, type = "mixture")
 
 
 ###################################################
-### code chunk number 33: sim-dirichlet
+### code chunk number 31: example 2 sim model fit wb update
+###################################################
+model_sim <- fit_model(
+  data = data_sim,
+  R = 1000,
+  latent_classes = list(
+    "C" = 10,
+    "weight_update" = TRUE,
+    "buffer" = 5
+    ),
+  seed = 1
+)
+
+
+###################################################
+### code chunk number 32: model-sim-class-seq
+###################################################
+plot(model_sim, type = "class_seq")
+
+
+###################################################
+### code chunk number 33: simulation dirichlet process
 ###################################################
 set.seed(1)
 P_r <- 2
@@ -262,7 +276,7 @@ z_true <- rep(1:3, times = N)
 
 
 ###################################################
-### code chunk number 34: dirichlet-prior
+### code chunk number 34: dirichlet process prior parameters
 ###################################################
 delta <- 0.1
 xi <- numeric(P_r)
@@ -272,7 +286,7 @@ Theta <- diag(P_r)
 
 
 ###################################################
-### code chunk number 35: dirichlet-inits
+### code chunk number 35: dirichlet process initial values
 ###################################################
 z <- rep(1, ncol(beta))
 C <- 1
@@ -281,7 +295,7 @@ Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
 
 ###################################################
-### code chunk number 36: dirichlet-process-app
+### code chunk number 36: dirichlet process application
 ###################################################
 for(r in 1:100){
   dp <- RprobitB:::update_classes_dp(
@@ -294,10 +308,78 @@ for(r in 1:100){
 
 
 ###################################################
-### code chunk number 37: dirichlet-example-plot
+### code chunk number 37: dp-example
 ###################################################
 par(mfrow = c(1,2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
 RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
+
+
+###################################################
+### code chunk number 38: load-model-train
+###################################################
+data("model_train", package = "RprobitB")
+
+
+###################################################
+### code chunk number 39: predict-model-train
+###################################################
+predict(model_train)
+
+
+###################################################
+### code chunk number 40: predict-model-train-indlevel
+###################################################
+pred <- predict(model_train, overview = FALSE)
+head(pred, n = 10)
+
+
+###################################################
+### code chunk number 41: model-train-covs
+###################################################
+get_cov(model_train, id = 1, idc = 8)
+
+
+###################################################
+### code chunk number 42: model-train-coeffs
+###################################################
+coef(model_train)
+
+
+###################################################
+### code chunk number 43: model-train-Sigma
+###################################################
+point_estimates(model_train)$Sigma
+
+
+###################################################
+### code chunk number 44: roc-example
+###################################################
+library(plotROC)
+ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
+  geom_roc(n.cuts = 20, labels = FALSE) +
+  style_roc(theme = theme_grey)
+
+
+###################################################
+### code chunk number 45: predict-model-train-given-covs-1
+###################################################
+predict(
+  model_train,
+  data = data.frame("price_A" = c(100,110),
+                    "price_B" = c(100,100)),
+  overview = FALSE)
+
+
+###################################################
+### code chunk number 46: predict-model-train-given-covs-2
+###################################################
+predict(
+  model_train,
+  data = data.frame("price_A"   = c(100,110),
+                    "comfort_A" = c(1,0),
+                    "price_B"   = c(100,100),
+                    "comfort_B" = c(1,1)),
+  overview = FALSE)
 
 
