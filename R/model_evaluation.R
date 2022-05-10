@@ -808,11 +808,11 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
 
 cov_mix <- function(x, cor = FALSE) {
   if (x$data$P_r == 0) {
-    stop("No random effects.")
+    stop("No random effects.", call. = FALSE)
   }
   est_Omega <- point_estimates(x)$Omega
   random <- NULL
-  cov_names <- subset(x$data$effects, random == TRUE)$name
+  cov_names <- subset(x$data$effects, random == TRUE)$effect
   out <- list()
   for (c in 1:x$latent_classes$C) {
     out[[c]] <- matrix(est_Omega[, c], nrow = x$data$P_r)

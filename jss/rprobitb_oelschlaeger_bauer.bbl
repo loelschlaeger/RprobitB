@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{32}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -77,6 +77,14 @@ Croissant Y (2020).
 \newblock \emph{Journal of Statistical Software}, \textbf{95}(11), 1--41.
 \newblock \doi{10.18637/jss.v095.i11}.
 
+\bibitem[{Fawcett(2006)}]{Fawcett:2006}
+Fawcett T (2006).
+\newblock \enquote{An introduction to ROC analysis.}
+\newblock \emph{Pattern Recognition Letters}, \textbf{27}(8), 861--874.
+\newblock \doi{10.1016/j.patrec.2005.10.010}.
+\newblock
+  \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S016786550500303X}.
+
 \bibitem[{Fountas \emph{et~al.}(2018)Fountas, Anastasopoulos, and
   Abdel-Aty}]{Fountas:2018}
 Fountas G, Anastasopoulos Ph, Abdel-Aty M (2018).
@@ -128,6 +136,11 @@ Li Y, Schofield E, Gönen M (2019).
 \newblock
   \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0022249618301068}.
 
+\bibitem[{Marin and Robert(2014)}]{Marin:2014}
+Marin J, Robert C (2014).
+\newblock \emph{{Bayesian essentials with R}}.
+\newblock Springer Textbooks in Statistics. {Springer Verlag, New York}.
+
 \bibitem[{McCulloch and Rossi(1994)}]{McCulloch:1994}
 McCulloch R, Rossi P (1994).
 \newblock \enquote{An exact likelihood analysis of the multinomial probit
@@ -155,10 +168,23 @@ Oelschl\"{a}ger L, Bauer D (2020).
   Models.}
 \newblock \emph{TRB Annual Meeting 2021}.
 
+\bibitem[{Oelschläger and Bauer(2021)}]{Oelschlaeger:2021}
+Oelschläger L, Bauer D (2021).
+\newblock \emph{RprobitB: Bayes Estimation of Mixed Multinomial Probit Models}.
+\newblock R package version 1.1.0,
+  \urlprefix\url{https://CRAN.R-project.org/package=RprobitB}.
+
 \bibitem[{Rasmussen(2000)}]{Rasmussen:2000}
 Rasmussen CE (2000).
 \newblock \emph{The Infinite Gaussian Mixture Model}, volume~12.
 \newblock MIT Press.
+
+\bibitem[{Sachs(2017)}]{Sachs:2017}
+Sachs MC (2017).
+\newblock \enquote{{plotROC}: A Tool for Plotting ROC Curves.}
+\newblock \emph{Journal of Statistical Software, Code Snippets},
+  \textbf{79}(2), 1--19.
+\newblock \doi{10.18637/jss.v079.c02}.
 
 \bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:2010}
 Scaccia L, Marcucci E (2010).

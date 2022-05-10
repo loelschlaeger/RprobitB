@@ -95,21 +95,6 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #' @description
 #' This function is the plot method for an object of class \code{RprobitB_fit}.
 #'
-#' @details
-#' Some plot types have additional options that can be specified via
-#' submitting the following parameters as ellipsis arguments.
-#'
-#' ## \code{"type = class_allocation"}
-#' \itemize{
-#'   \item A numeric vector \code{iterations} for plotting the class allocation
-#'         at different iterations of the Gibbs sampler.
-#'   \item A numeric \code{perc} between 0 and 1 to draw the \code{perc} percentile
-#'         ellipsoids for the underlying Gaussian distributions
-#'         (\code{perc = 0.95} per default).
-#'   \item A numeric \code{sleep}, the number of seconds to pause after plotting.
-#'         The default is 1.
-#' }
-#'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
 #' @param type
@@ -118,16 +103,14 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #'   \item \code{"mixture"} to visualize the mixing distribution,
 #'   \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples,
-#'   \item \code{"class_seq"} to visualize the sequence of class numbers,
-#'   \item \code{"class_allocation"} to visualize the class allocation
-#'         (only if \code{P_r = 2}).
+#'   \item \code{"class_seq"} to visualize the sequence of class numbers.
 #' }
 #' See the details section for visualization options.
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
 #' visualized.
 #' @param ...
-#' Additional parameters, see the details section.
+#' Ignored.
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -144,17 +127,16 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   }
   if (missing(type) ||
       !(is.character(type) && length(type) == 1) ||
-      !type %in% c("mixture", "acf", "trace", "class_seq", "class_allocation")) {
+      !type %in% c("mixture", "acf", "trace", "class_seq")) {
     stop("'type' must be one of\n",
-         "- mixture (to visualize the mixing distribution)\n",
-         "- acf (for autocorrelation plots of the Gibbs samples)\n",
-         "- trace (for trace plots of the Gibbs samples)\n",
-         "- class_seq (to visualize the sequence of class numbers)\n",
-         "- class_allocation (to visualize the class allocation)",
+         "- 'mixture' (to visualize the mixing distribution)\n",
+         "- 'acf' (for autocorrelation plots of the Gibbs samples)\n",
+         "- 'trace' (for trace plots of the Gibbs samples)\n",
+         "- 'class_seq' (to visualize the sequence of class numbers)",
          call. = FALSE)
   }
-  if (!type %in% c("mixture", "acf", "trace", "class_seq", "class_allocation")) {
-    stop("Unknown 'type'.")
+  if (!type %in% c("mixture", "acf", "trace", "class_seq")) {
+    stop("Unknown 'type'.", call. = FALSE)
   }
 
   ### read ellipsis arguments
@@ -202,10 +184,17 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
       P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J, C = x$latent_classes$C,
       cov_sym = FALSE, drop_par = ignore)
     for (par_name in names(gs)) {
-      gibbs_samples = gs[[par_name, drop = FALSE]]
-      par_labels = paste(par_name, colnames(gibbs_samples), sep = "_")
-      if(type == "acf") plot_acf(gibbs_samples, par_labels)
-      if(type == "trace") plot_trace(gibbs_samples, par_labels)
+      gibbs_samples <- gs[[par_name, drop = FALSE]]
+      par_labels <- paste(par_name, colnames(gibbs_samples), sep = "_")
+      ignore_tmp <- par_labels %in% ignore
+      gibbs_samples <- gibbs_samples[,!ignore_tmp,drop=FALSE]
+      par_labels <- par_labels[!ignore_tmp]
+      if(type == "acf") {
+        plot_acf(gibbs_samples, par_labels)
+      }
+      if(type == "trace") {
+        plot_trace(gibbs_samples, par_labels)
+      }
     }
   }
 
@@ -217,37 +206,6 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
     }
     plot_class_seq(x[["class_sequence"]], B = x$B)
   }
-
-  ### make plot type 'class_allocation'
-  if (type == "class_allocation") {
-    if (x[["data"]][["P_r"]] != 2) {
-      stop("Plot type 'class_allocation' only available  if P_r = 2.")
-    }
-    gibbs_samples <- x[["gibbs_samples"]][["gibbs_samples_n"]]
-    if(is.null(add_par[["iterations"]])){
-      iterations <- x$R
-    } else {
-      iterations <- unique(add_par[["iterations"]])
-      iterations <- iterations[iterations <= x$R]
-    }
-    if(is.null(add_par[["perc"]])){
-      perc <- 0.95
-    } else {
-      perc <- add_par[["perc"]]
-    }
-    if(is.null(add_par[["sleep"]])){
-      sleep <- 1
-    } else {
-      sleep <- add_par[["sleep"]]
-    }
-    for (r in iterations) {
-      beta <- gibbs_samples[["beta"]][[r]]
-      z <- gibbs_samples[["z"]][r,]
-      b <- matrix(gibbs_samples[["b"]][r,], nrow = 2)
-      Omega <- matrix(gibbs_samples[["Omega"]][r,], nrow = 4)
-      plot_class_allocation(beta, z, b, Omega, r = r, perc = perc, sleep = sleep)
-    }
-  }
 }
 
 #' Autocorrelation plot of Gibbs samples.
@@ -258,10 +216,11 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #' \code{TSS/ESS}.
 #'
 #' @details
-#' The effective sample size is the value \deqn{\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)},
+#' The effective sample size is the value
+#' \deqn{\text{TSS} / (1 + 2\sum_{k\geq 1} \rho_k)},
 #' where \eqn{\rho_k} is the auto correlation between the chain offset
 #' by \eqn{k} positions. The auto correlations are estimated via the
-#' `acf()` function.
+#' `stats::acf()` function.
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
@@ -283,12 +242,12 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 plot_acf <- function(gibbs_samples, par_labels) {
   for (c in 1:ncol(gibbs_samples)) {
     ### compute autocorrelation and produce plot
-    rho <- stats::acf(gibbs_samples[, c], las = 1, main = "")
-    graphics::title(par_labels[c], line = -1)
+    rho <- stats::acf(gibbs_samples[, c], las = 1, main = "")$acf[,,1][-1]
+    graphics::title(par_labels[c], line = 1)
 
     ### compute effective sample size
     TSS <- length(gibbs_samples[, c])
-    ESS <- min(TSS / (1 + 2 * sum(rho$acf[-1])), TSS)
+    ESS <- min(TSS / (1 + 2 * sum(rho)), TSS)
     graphics::legend("topright",
       x.intersp = -0.5, bg = "white",
       legend = sprintf(
@@ -417,12 +376,14 @@ plot_trace <- function(gibbs_samples, par_labels) {
   stats::plot.ts(gibbs_samples,
     plot.type = "single",
     ylim = c(min(gibbs_samples), max(gibbs_samples)),
-    col = col, xlab = "", ylab = "", xaxt = "n", main = ""
+    col = col, xlab = "Iteration", ylab = "", xaxt = "n", main = "", las = 1
   )
 
   ### add info
-  graphics::axis(side = 1, at = c(1, nrow(gibbs_samples)), labels = c("B+1", "R"))
-  graphics::legend("topright", legend = par_labels, lty = 1, col = col, cex = 0.75)
+  graphics::axis(side = 1, at = c(1, nrow(gibbs_samples)),
+                 labels = c("B+1", "R"))
+  graphics::legend("topright", legend = par_labels, lty = 1, col = col,
+                   cex = 0.75, bg = "white")
 }
 
 #' Visualizing the number of classes during Gibbs sampling
