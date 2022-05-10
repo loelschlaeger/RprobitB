@@ -1,4 +1,4 @@
-\begin{thebibliography}{32}
+\begin{thebibliography}{40}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -14,6 +14,11 @@ Agresti A (2015).
 \newblock \emph{Foundations of Linear and Generalized Linear Models.}
 \newblock Wiley.
 \newblock ISBN 978-1-118-73003-4.
+
+\bibitem[{Akaike(1974)}]{Akaike:1974}
+Akaike H (1974).
+\newblock \enquote{A New Look at the Statistical Model Identification.}
+\newblock \textbf{19}.
 
 \bibitem[{Albert and Chib(1993)}]{Albert:1993}
 Albert JH, Chib S (1993).
@@ -113,6 +118,18 @@ Geweke J (1998).
   Student-t Distributions Subject to Linear Constraints and the Evaluation of
   Constraint Probabilities.}
 
+\bibitem[{Gronau \emph{et~al.}(2017)Gronau, Sarafoglou, Matzke, Ly, Boehm,
+  Marsman, Leslie, Forster, Wagenmakers, and Steingroever}]{Gronau:2017}
+Gronau QF, Sarafoglou A, Matzke D, Ly A, Boehm U, Marsman M, Leslie DS, Forster
+  JJ, Wagenmakers E, Steingroever H (2017).
+\newblock \enquote{A tutorial on bridge sampling.}
+\newblock \emph{Journal of mathematical psychology}, \textbf{81}, 80--97.
+
+\bibitem[{Hammersley and Handscomb(1964)}]{Hammersley:1964}
+Hammersley JM, Handscomb DC (1964).
+\newblock \enquote{General principles of the monte carlo method.}
+\newblock pp. 50--75.
+
 \bibitem[{Hewig \emph{et~al.}(2011)Hewig, Kretschmer, Trippe, Hecht, Coles,
   Holroyd, and Miltner}]{Hewig:2011}
 Hewig J, Kretschmer N, Trippe RH, Hecht H, Coles MGH, Holroyd CB, Miltner WHR
@@ -126,6 +143,11 @@ Imai K, van Dyk DA (2005).
 \newblock \enquote{A Bayesian analysis of the multinomial probit model using
   marginal data augmentation.}
 \newblock \emph{Journal of Econometrics}, \textbf{124}.
+
+\bibitem[{Jeffreys(1998)}]{Jeffreys:1998}
+Jeffreys H (1998).
+\newblock \emph{The theory of probability}.
+\newblock OUP Oxford.
 
 \bibitem[{Li \emph{et~al.}(2019)Li, Schofield, and Gönen}]{Li:2019}
 Li Y, Schofield E, Gönen M (2019).
@@ -147,6 +169,12 @@ McCulloch R, Rossi P (1994).
   model.}
 \newblock \emph{Journal of Econometrics}, \textbf{64}.
 
+\bibitem[{McElreath(2020)}]{McElreath:2016}
+McElreath R (2020).
+\newblock \emph{Statistical Rethinking: A Bayesian Course with Examples in R
+  and Stan}.
+\newblock 2. ed. edition. Chapman and Hall/CRC.
+
 \bibitem[{Neal(2000)}]{Neal:2000}
 Neal RM (2000).
 \newblock \enquote{Markov Chain Sampling Methods for Dirichlet Process Mixture
@@ -155,6 +183,13 @@ Neal RM (2000).
   \textbf{9}(2), 249--265.
 \newblock ISSN 10618600.
 \newblock \urlprefix\url{http://www.jstor.org/stable/1390653}.
+
+\bibitem[{Newton and Raftery(1994)}]{Newton:1994}
+Newton MA, Raftery AE (1994).
+\newblock \enquote{Approximate Bayesian inference with the weighted likelihood
+  bootstrap.}
+\newblock \emph{Journal of the Royal Statistical Society: Series B
+  (Methodological)}, \textbf{56}(1), 3--26.
 
 \bibitem[{Nobile(1998)}]{Nobile:1998}
 Nobile A (1998).
@@ -190,6 +225,11 @@ Sachs MC (2017).
 Scaccia L, Marcucci E (2010).
 \newblock \enquote{Bayesian Flexible Modelling of Mixed Logit Models.}
 
+\bibitem[{Schwarz(1978)}]{Schwarz:1978}
+Schwarz G (1978).
+\newblock \enquote{Estimating the Dimension of a Model.}
+\newblock \emph{The Annals of Statistics}, \textbf{6}.
+
 \bibitem[{Sethuraman(1994)}]{Sethuraman:1994}
 Sethuraman J (1994).
 \newblock \enquote{A constructive definition of dirichlet priors.}
@@ -205,6 +245,12 @@ Train K (2009).
 Train K (2016).
 \newblock \enquote{Mixed logit with a flexible mixing distribution.}
 \newblock \emph{Journal of choice modelling}, \textbf{19}.
+
+\bibitem[{Watanabe and Opper(2010)}]{Watanabe:2010}
+Watanabe S, Opper M (2010).
+\newblock \enquote{Asymptotic equivalence of Bayes cross validation and widely
+  applicable information criterion in singular learning theory.}
+\newblock \emph{Journal of machine learning research}, \textbf{11}(12).
 
 \bibitem[{Xiong and Mannering(2013)}]{Xiong:2013}
 Xiong Y, Mannering FL (2013).

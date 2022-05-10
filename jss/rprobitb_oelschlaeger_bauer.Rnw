@@ -101,8 +101,38 @@ In the Bayesian framework \cite{Scaccia:2010} presents the idea to estimate late
 %What approach do we suggest to specify the mixing distributions?
 Oelschlaeger and Bauer presents a more flexible approach that combines the ideas of a Bayesian framework, approximating the mixing distribution through a mixture of normal distributions and updates on the number of latent classes within the algorithm analogously to \cite{Bauer:2019}. As a consequence, the procedure unites the benefits of a reduced numerical complexity for the estimation compared to the non-parametric likelihood maximization approach and the ability to approximate any mixing distribution. Presenting simulation results on artificial test cases, it is shown that the approach is capable of approximating the underlying mixing distributions and thereby guiding the specification of mixing distributions for real-world applications.
 
-%% Comparison to other packages
+% Comparison to other packages
 This packages adds to the line of discrete choice software packages in R in the following way: Its focus is entirely on Bayesian estimation, thereby it differs from the packages Rchoice. Furthermore, it places a focus on modeling choice behaviour heterogeneity by approximating the underlying mixing distribution through a latent mixture of normal distributions. The method is explained in detail in Oelschlaeger and Bauer.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{l|cccccccc}
+               & Probit      & Logit      & Bayes      & ML         & Ord.       & Mix.       & LC           & upd. LC    \\ \hline
+\pkg{Rchoice}  & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark &              &            \\
+\pkg{mlogit}   & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark &              &            \\
+\pkg{Biogeme}  & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{apollo}   & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{bayesm}   & \checkmark  & \checkmark & \checkmark &            & \checkmark & \checkmark &              &            \\
+\pkg{MNP}      & \checkmark  &            & \checkmark &            & \checkmark &            &              &            \\
+\pkg{RprobitB} & \checkmark  &            & \checkmark &            &            & \checkmark & \checkmark   & \checkmark \\
+\end{tabular}
+\label{tab:pkg_overview}
+\caption{Overview of packages for discrete choice modeling.}
+\end{table}
+
+% Examples
+\begin{table}[!h]
+\centering
+\begin{tabular}{l|p{10cm}}
+Example                     & Illustrated package functionalities \\ \hline
+1: Train                    & \fct{prepare\_data}, \fct{fit\_model}, \fct{predict}, \fct{model\_selection} \\
+2: Simulated choices        & \fct{simulate\_choices}, estimation and weight-based update of latent classes \\
+3: Electricity              & estimation and interpretation of random effects \\
+4: Online chess strategy    & Dirichlet process-based update of latent classes, preference classification \\
+\end{tabular}
+\label{tab:example_overview}
+\caption{Overview of examples.}
+\end{table}
 
 %% Article overview
 In this article we present the methodology, give an overview over the functionality of the package and apply the package to data sets. Some of them were already analysed and we aim to reconstruct their findings. In addition, we added two datasets that are especially appropriate for \pkg{RprobitB} in modeling choice behaviour heterogeneits. The first one is a dataset of contraception choice from the German family panel pairfam. It contains repeated observations of males and femals over several years having different social demographics and relationship status choosing different means of contraception. This choice a priori can be considered to be very hetereogenous and dependent on factors not directly observable by the researcher. The second application deals with the opening choice of chess players depending on their and their openents playing strenght measured in the popular measure system Elo, their gender and nationality. Like the contraception example, this choice a priori can be considers to depend on psychological factors that are not directly observable by the researcher. By applying the functionality of this package we demonstrate how we are able to classify the players into different categories of playing style.
@@ -599,13 +629,6 @@ model_sim <- fit_model(
 summary(model_sim)
 @
 
-The estimated pairwise mixing distributions can be visualized via calling the \fct{plot} method with the additional argument \code{type = mixture}:
-
-<<model-sim-mixture, fig=TRUE, height = 6, width = 6>>=
-plot(model_sim, type = "mixture")
-@
-
-
 \subsection{Weight-based update of the latent classes} \label{subsec:weight_update}
 
 Adding \code{"wp_update" = TRUE} to the list \code{latent\_classes} above executes the following weight-based updating scheme (analogue to \cite{Bauer:2019}):
@@ -719,53 +742,38 @@ plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
 RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
 @
 
-\paragraph{Example 4: Berserk choice.}
+\paragraph{Example 4: Online chess strategy.}
 
-TBA
+<<example 4 berserk load model>>=
+data(model_berserk, package = "RprobitB")
+@
+
+The estimated pairwise mixing distributions can be visualized via calling the \fct{plot} method with the additional argument \code{type = mixture}:
+
+<<model-berserk-mixture, fig=TRUE, height = 6, width = 6>>=
+plot(model_berserk, type = "mixture")
+@
 
 \section{Choice prediction} \label{sec:choice_prediction}
 
-This section discusses in-sample and out-of-sample prediction within \pkg{RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
+\pkg{RprobitB} provides a \fct{predict} method for in-sample and out-of-sample prediction. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit our probit model of travelers deciding between two fictional train route alternatives.
 
-<<load-model-train>>=
-data("model_train", package = "RprobitB")
-@
+\paragraph{Example 1: Train (cont.).}
 
+Per default, the \fct{predict} method returns a confusion matrix, which gives an overview of the in-sample prediction performance:
 
-\subsection{Reproducing the observed choices} \label{subsec:reproducing_observed_choices}
-
-\pkg{RprobitB} provides a \fct{predict} method for \class{RprobitB\_fit} objects. Per default, the method returns a confusion matrix, which gives an overview of the in-sample prediction performance:
-
-<<predict-model-train>>=
+<<example 1 train predict confusion matrix>>=
 predict(model_train)
 @
 
-By setting the argument \code{overview = FALSE}, the method instead returns predictions on the level of individual choice occasions:
+By setting the argument \code{overview = FALSE}, the method instead returns predictions on the level of individual choice occasions:\footnote{Incorrect predictions can be analyzed via the convenience function \fct{get\_cov}, which extracts the characteristics of a particular choice situation.}
 
-<<predict-model-train-indlevel>>=
+<<example 1 train predict individual level>>=
 pred <- predict(model_train, overview = FALSE)
-head(pred, n = 10)
+head(pred, n = 5)
 @
 
-Among the three incorrect predictions shown here, the one for decider \code{id = 1} in choice occasion \code{idc = 8} is the most outstanding. Alternative \code{B} was chosen although the model predicts a probability of 75\% for alternative \code{A}. We can use the convenience function \fct{get\_cov} to extract the characteristics of this particular choice situation:
-
-<<model-train-covs>>=
-get_cov(model_train, id = 1, idc = 8)
-@
-
-The trip option \code{A} was 20 euros cheaper and 30 minutes faster, which by our model outweighs the better comfort class for alternative \code{B}, recall the estimated effects:
-
-<<model-train-coeffs>>=
-coef(model_train)
-@
-
-The misclassification can be explained by preferences that differ from the average decider (choice behavior heterogeneity), or by unobserved factors that influenced the choice. Indeed, the variance of the error term was estimated high:
-
-<<model-train-Sigma>>=
-point_estimates(model_train)$Sigma
-@
-
-Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve \citep{Fawcett:2006}, using the \pkg{plotROC} package \citep{Sachs:2017}. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here \code{n.cuts = 20}). The closer the curve is to the top-left corner, the better the binary classification.
+Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity, for example via a receiver operating characteristic (ROC) curve \citep{Fawcett:2006}, using the \pkg{plotROC} package \citep{Sachs:2017}:
 
 <<roc-example, fig=TRUE, height = 4, width = 4>>=
 library(plotROC)
@@ -773,8 +781,6 @@ ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
   geom_roc(n.cuts = 20, labels = FALSE) +
   style_roc(theme = theme_grey)
 @
-
-\subsection{Forecasting choice behavior} \label{subsec:forcasting_choice_behavior}
 
 The \fct{predict} method has an additional \code{data} argument. Per default, \code{data = NULL}, which results into the in-sample case outlined above. Alternatively, \code{data} can be either an \class{RprobitB\_data} object (for example the test subsample derived from the \fct{train\_test} function, or a data frame of custom choice characteristics.
 
@@ -800,195 +806,195 @@ predict(
   overview = FALSE)
 @
 
-% \section{Model selection} \label{sec:model_selection}
-%
-% The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This section outlines the model selection tools implemented in \pkg{RprobitB}. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
-%
-% <<load-model-train>>=
-% data("model_train", package = "RprobitB")
-% model_train
-% @
-%
-% As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula \code{choice ~ price | 0`}. (This model is also saved in \pkg{RprobitB} and can be accessed via \code{data("model\_train\_sparse", package = "RprobitB")}.)
-%
-% <<nested-model-train, eval = FALSE>>=
-% model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
-% @
-%
-% <<load-train-sparse-model, echo = FALSE>>=
-% data("model_train_sparse", package = "RprobitB")
-% @
-%
-% The \fct{nested\_model} function helps to estimate a new version of \code{model\_train} with new specifications. Here, only \code{form} has been changed.
-%
-% \paragraph{The model selection function:}
-%
-% \pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria:
-%
-% <<model-selection-example>>=
-% model_selection(model_train, model_train_sparse,
-%                 criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
-% @
-%
-% Specifying \code{criteria} is optional. Per default, \code{criteria = c("npar", "LL", "AIC", "BIC")}. The available model selection criteria are explained in the following.
-%
-% \paragraph{npar:}
-%
-% \code{"npar"} yields the number of model parameters, which is computed by the \fct{npar} method:
-%
-% <<npar-example>>=
-% npar(model_train, model_train_sparse)
-% @
-%
-% Here, \code{model\_train} has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while \code{model\_train\_sparse} has only a single price coefficient.
-%
-% \paragraph{LL:}
-%
-% If \code{"LL"} is included in \code{criteria}, \fct{model\_selection} returns the model's log-likelihood values. They can also be directly accessed via the \fct{logLik} method. The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. \fct{logLik} has the argument \code{par\_set}, where alternative statistics for the point estimate can be specified.
-%
-% <<oglik-example>>=
-% logLik(model_train)
-% logLik(model_train_sparse)
-% @
-%
-% \paragraph{AIC:}
-%
-% Including \code{"AIC"} yields the Akaike's Information Criterion \citep{Akaike:1974}, which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
-% where $\text{LL}$ is the model's log-likelihood value, $k$ is the penalty per parameter with $k = 2$ per default for the classical AIC, and $\text{npar}$ is the number of parameters in the fitted model.
-%
-% Alternatively, the \fct{AIC} method also returns the AIC values:
-%
-% <<aic-example>>=
-% AIC(model_train, model_train_sparse, k = 2)
-% @
-%
-% The AIC quantifies the trade-off between over- and under-fitting, where smaller values are preferred. Here, the increase in goodness of fit justifies the additional 3 parameters of \code{model\_train}.
-%
-% \paragraph{BIC:}
-%
-% Similar to the AIC, \code{"BIC"} yields the Bayesian Information Criterion \citep{Schwarz:1978}, which is defined as $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
-% where $\text{LL}$ is the model's log-likelihood value, $\text{nobs}$ is the number of data points (which can be accessed via the \fct{nobs} method), and $\text{npar}$ is the number of parameters in the fitted model. The interpretation is analogue to AIC.
-%
-% \pkg{RprobitB} also provided a method for the BIC value:
-%
-% <<bic-example>>=
-% BIC(model_train, model_train_sparse)
-% @
-%
-% \paragraph{WAIC:}
-%
-% WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion \citep{Watanabe:2010}. As for AIC and BIC, the smaller the WAIC value the better the model. Including \code{"WAIC"} in \code{criteria} yields the WAIC value, its standard error \code{se(WAIC)}, and the effective number of parameters \code{pWAIC}, see below.
-%
-% The WAIC is defined as
-%
-% $$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
-%
-% where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see \cite{McElreath:2016} p. 220 for a reference.
-%
-% The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
-%
-% $$\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).$$
-% The penalty term is computed as the sum over the variances in log-probability for each observation:
-% $$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . $$
-% The $\text{WAIC}$ has a standard error of
-% $$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
-% where $n$ is the number of choices.
-%
-% Before computing the WAIC of an \code{RprobitB\_fit} object, the probabilities $p_{si}$ must be computed via the \fct{compute\_p\_si} function:
-%
-% <<compute-psi-train, eval = FALSE>>=
-% model_train <- compute_p_si(model_train)
-% @
-%
-% Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:
-%
-% <<waic-example, eval=FALSE>>=
-% WAIC(model_train)
-% WAIC(model_train_sparse)
-% @
-%
-% You can visualize the convergence of the WAIC as follows:
-%
-% <<waictrace, fig=TRUE, eval=FALSE>>=
-% plot(WAIC(model_train))
-% plot(WAIC(model_train_sparse))
-% @
-%
-% Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing \code{R} in \fct{fit\_model} or decreasing \code{B} or \code{Q} via \fct{transform}, see the vignette on model fitting.
-%
-% \paragraph{MMLL:}
-%
-% \code{"MMLL"} in \code{criteria} stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
-%
-% \pkg{RprobitB} uses the posterior Gibbs samples derived from the \fct{fit\_model} function to approximate the model's marginal likelihood via the posterior harmonic mean estimator \citep{Newton:1994}: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then,
-% $$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$
-%
-% By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
-%
-% As for the WAIC, computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the \fct{compute\_p\_si} function. Afterwards, the \fct{mml} function can be called with an \class{RprobitB\_fit} object as input. The function returns the \class{RprobitB\_fit} object, where the marginal likelihood value is saved as the entry \code{"mml"} and the marginal log-likelihood value as the attribute \code{"mmll"}. Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.
-%
-% <<mml_train>>=
-% model_train <- mml(model_train)
-% model_train$mml
-% attr(model_train$mml, "mmll")
-% @
-%
-% Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the \fct{plot} method:
-%
-% <<mmltrace, fig=TRUE, width = 9>>=
-% plot(model_train$mml, log = TRUE)
-% @
-%
-% There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator \citep{Hammersley:1964}: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then,
-%
-% $$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$
-%
-% Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
-%
-% To use the prior arithmetic mean estimator, call the \fct{mml} function with a specification of the number of prior draws \code{S} and set \code{recompute = TRUE}:
-%
-% <<arithmetic_mean_estimator, eval = FALSE>>=
-% model_train <- mml(model_train, S = 1000, recompute = TRUE)
-% @
-%
-% Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as \cite{Gronau:2017} points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number \code{S} of prior samples is required.
-%
-% \paragraph{Bayes factor:}
-%
-% The Bayes factor is an index of relative posterior model plausibility of one model over another \citep{Marin:2014}. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
-%
-% $$
-% BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
-% $$
-%
-% The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, \pkg{RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the marginal model likelihoods. A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
-%
-% Adding \code{"BF"} to the \code{criteria} argument of \fct{model\_selection} yields the Bayes factors. We see a decisive evidence \citep{Jeffreys:1998} in favor of \class{model\_train}.
-%
-% <<bayes-factor-example, eval = FALSE>>=
-% model_selection(model_train, model_train_sparse, criteria = c("BF"))
-% @
-%
-% \paragraph{pred acc:}
-%
-% Finally, adding \code{"pred_acc"} to the \code{criteria} argument for the \fct{model\_selection} function returns the share of correctly predicted choices. From the output of \fct{model\_selection} above (or alternatively the one in the following) we deduce that \class{model\_train} correctly predicts about 6\% of the choices more than \class{model\_train\_sparse}:
-%
-% <<pred-acc-example>>=
-% pred_acc(model_train, model_train_sparse)
-% @
-%
-% \section{Conclusion} \label{sec:conclusion}
-%
-% %% The problem
-% This paper addressed the problem of specifying mixing distributions in the multinomial probit model with a panel data setting, constituting an important part of the model selection for which the literature does not provide much guidance so far. In the absence of alternatives, many applications of the mixed multinomial probit model rely on different types of standard parametric distributions for modelling heterogeneity in preferences in combination with a likelihood-value based model selection. This course of action is very restrictive and imposes strong assumptions on the distribution of the model parameters that could potentially lead to misspecification and biased estimates.
-%
-% %% Our solution
-% We proposed a new approach that improves the current specification strategies in several ways: First, our approach does not require any distributional assumption, since the latent class setting is flexible enough to approximate practically any distribution shape and allowing for any correlation pattern. Second, the weight-based updating scheme ensures that the number of latent classes does not need to be prespecified. Third, the imposed Bayesian estimation framework avoids many numerical problems that occur in the frequentist approach. Most notably, no likelihood function has to be evaluated nor approximated. Comparing the numerical estimation speed to the non-parametric frequentist approach of \cite{Bauer:2019}, we found that our implementation of the Bayesian approach is at least 10 times faster. The improvement becomes more distinct for panel data settings with a high number of choice occasions. This is due to the fact that for given total sample size $NT$ a large $T$ is beneficial for the Bayesian approach as then the number of vectors $\beta_n,~ n = 1,...,N$ is comparatively small, while in the frequentist approach calculating the likelihood becomes more challenging for increasing the number $T$ of choice situations faced by each of the $N$ individuals. On the other hand, the grid based frequentist approach of \cite{Bauer:2019} can potentially achieve a better approximation (especially of point masses) due to the relatively high number of latent classes. However, this approach requires that a suitable grid is set prior to the estimation with a specification of upper bounds for the coefficients. Additionally, the curse of dimensionality plays a crucial role, which is less of a burden in the Bayesian approach. Note that for a fully specified parametric structure these concerns do not play such a big role also for the frequentist approach.
-%
-% %% Planned extensions
-% Our simulation results verified that the proposed approach achieves good approximations of the mixing distribution in common choice modelling situations, where the underlying heterogeneity cannot be captured by standard parametric distributions. It would be interesting to apply the approach also to empirical data in the future. Additionally,
-% further research on how to properly address sign-restricted coefficients is required.
-%
+\section{Model selection} \label{sec:model_selection}
+
+The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This section outlines the model selection tools implemented in \pkg{RprobitB}. For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives:
+
+<<load-model-train>>=
+data("model_train", package = "RprobitB")
+model_train
+@
+
+As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula \code{choice ~ price | 0`}. (This model is also saved in \pkg{RprobitB} and can be accessed via \code{data("model\_train\_sparse", package = "RprobitB")}.)
+
+<<nested-model-train, eval = FALSE>>=
+model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+@
+
+<<load-train-sparse-model, echo = FALSE>>=
+data("model_train_sparse", package = "RprobitB")
+@
+
+The \fct{nested\_model} function helps to estimate a new version of \code{model\_train} with new specifications. Here, only \code{form} has been changed.
+
+\paragraph{The model selection function:}
+
+\pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria:
+
+<<model-selection-example>>=
+model_selection(model_train, model_train_sparse,
+                criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
+@
+
+Specifying \code{criteria} is optional. Per default, \code{criteria = c("npar", "LL", "AIC", "BIC")}. The available model selection criteria are explained in the following.
+
+\paragraph{npar:}
+
+\code{"npar"} yields the number of model parameters, which is computed by the \fct{npar} method:
+
+<<npar-example>>=
+npar(model_train, model_train_sparse)
+@
+
+Here, \code{model\_train} has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while \code{model\_train\_sparse} has only a single price coefficient.
+
+\paragraph{LL:}
+
+If \code{"LL"} is included in \code{criteria}, \fct{model\_selection} returns the model's log-likelihood values. They can also be directly accessed via the \fct{logLik} method. The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. \fct{logLik} has the argument \code{par\_set}, where alternative statistics for the point estimate can be specified.
+
+<<oglik-example>>=
+logLik(model_train)
+logLik(model_train_sparse)
+@
+
+\paragraph{AIC:}
+
+Including \code{"AIC"} yields the Akaike's Information Criterion \citep{Akaike:1974}, which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
+where $\text{LL}$ is the model's log-likelihood value, $k$ is the penalty per parameter with $k = 2$ per default for the classical AIC, and $\text{npar}$ is the number of parameters in the fitted model.
+
+Alternatively, the \fct{AIC} method also returns the AIC values:
+
+<<aic-example>>=
+AIC(model_train, model_train_sparse, k = 2)
+@
+
+The AIC quantifies the trade-off between over- and under-fitting, where smaller values are preferred. Here, the increase in goodness of fit justifies the additional 3 parameters of \code{model\_train}.
+
+\paragraph{BIC:}
+
+Similar to the AIC, \code{"BIC"} yields the Bayesian Information Criterion \citep{Schwarz:1978}, which is defined as $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
+where $\text{LL}$ is the model's log-likelihood value, $\text{nobs}$ is the number of data points (which can be accessed via the \fct{nobs} method), and $\text{npar}$ is the number of parameters in the fitted model. The interpretation is analogue to AIC.
+
+\pkg{RprobitB} also provided a method for the BIC value:
+
+<<bic-example>>=
+BIC(model_train, model_train_sparse)
+@
+
+\paragraph{WAIC:}
+
+WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion \citep{Watanabe:2010}. As for AIC and BIC, the smaller the WAIC value the better the model. Including \code{"WAIC"} in \code{criteria} yields the WAIC value, its standard error \code{se(WAIC)}, and the effective number of parameters \code{pWAIC}, see below.
+
+The WAIC is defined as
+
+$$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
+
+where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see \cite{McElreath:2016} p. 220 for a reference.
+
+The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
+
+$$\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).$$
+The penalty term is computed as the sum over the variances in log-probability for each observation:
+$$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . $$
+The $\text{WAIC}$ has a standard error of
+$$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
+where $n$ is the number of choices.
+
+Before computing the WAIC of an \code{RprobitB\_fit} object, the probabilities $p_{si}$ must be computed via the \fct{compute\_p\_si} function:
+
+<<compute-psi-train, eval = FALSE>>=
+model_train <- compute_p_si(model_train)
+@
+
+Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:
+
+<<waic-example, eval=FALSE>>=
+WAIC(model_train)
+WAIC(model_train_sparse)
+@
+
+You can visualize the convergence of the WAIC as follows:
+
+<<waictrace, fig=TRUE, eval=FALSE>>=
+plot(WAIC(model_train))
+plot(WAIC(model_train_sparse))
+@
+
+Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing \code{R} in \fct{fit\_model} or decreasing \code{B} or \code{Q} via \fct{transform}, see the vignette on model fitting.
+
+\paragraph{MMLL:}
+
+\code{"MMLL"} in \code{criteria} stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
+
+\pkg{RprobitB} uses the posterior Gibbs samples derived from the \fct{fit\_model} function to approximate the model's marginal likelihood via the posterior harmonic mean estimator \citep{Newton:1994}: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then,
+$$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$
+
+By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
+
+As for the WAIC, computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the \fct{compute\_p\_si} function. Afterwards, the \fct{mml} function can be called with an \class{RprobitB\_fit} object as input. The function returns the \class{RprobitB\_fit} object, where the marginal likelihood value is saved as the entry \code{"mml"} and the marginal log-likelihood value as the attribute \code{"mmll"}. Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.
+
+<<mml_train>>=
+model_train <- mml(model_train)
+model_train$mml
+attr(model_train$mml, "mmll")
+@
+
+Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the \fct{plot} method:
+
+<<mmltrace, fig=TRUE, width = 9>>=
+plot(model_train$mml, log = TRUE)
+@
+
+There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator \citep{Hammersley:1964}: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then,
+
+$$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$
+
+Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
+
+To use the prior arithmetic mean estimator, call the \fct{mml} function with a specification of the number of prior draws \code{S} and set \code{recompute = TRUE}:
+
+<<arithmetic_mean_estimator, eval = FALSE>>=
+model_train <- mml(model_train, S = 1000, recompute = TRUE)
+@
+
+Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as \cite{Gronau:2017} points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number \code{S} of prior samples is required.
+
+\paragraph{Bayes factor:}
+
+The Bayes factor is an index of relative posterior model plausibility of one model over another \citep{Marin:2014}. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
+
+$$
+BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
+$$
+
+The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, \pkg{RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the marginal model likelihoods. A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
+
+Adding \code{"BF"} to the \code{criteria} argument of \fct{model\_selection} yields the Bayes factors. We see a decisive evidence \citep{Jeffreys:1998} in favor of \class{model\_train}.
+
+<<bayes-factor-example, eval = FALSE>>=
+model_selection(model_train, model_train_sparse, criteria = c("BF"))
+@
+
+\paragraph{pred acc:}
+
+Finally, adding \code{"pred_acc"} to the \code{criteria} argument for the \fct{model\_selection} function returns the share of correctly predicted choices. From the output of \fct{model\_selection} above (or alternatively the one in the following) we deduce that \class{model\_train} correctly predicts about 6\% of the choices more than \class{model\_train\_sparse}:
+
+<<pred-acc-example>>=
+pred_acc(model_train, model_train_sparse)
+@
+
+\section{Conclusion} \label{sec:conclusion}
+
+%% The problem
+This paper addressed the problem of specifying mixing distributions in the multinomial probit model with a panel data setting, constituting an important part of the model selection for which the literature does not provide much guidance so far. In the absence of alternatives, many applications of the mixed multinomial probit model rely on different types of standard parametric distributions for modelling heterogeneity in preferences in combination with a likelihood-value based model selection. This course of action is very restrictive and imposes strong assumptions on the distribution of the model parameters that could potentially lead to misspecification and biased estimates.
+
+%% Our solution
+We proposed a new approach that improves the current specification strategies in several ways: First, our approach does not require any distributional assumption, since the latent class setting is flexible enough to approximate practically any distribution shape and allowing for any correlation pattern. Second, the weight-based updating scheme ensures that the number of latent classes does not need to be prespecified. Third, the imposed Bayesian estimation framework avoids many numerical problems that occur in the frequentist approach. Most notably, no likelihood function has to be evaluated nor approximated. Comparing the numerical estimation speed to the non-parametric frequentist approach of \cite{Bauer:2019}, we found that our implementation of the Bayesian approach is at least 10 times faster. The improvement becomes more distinct for panel data settings with a high number of choice occasions. This is due to the fact that for given total sample size $NT$ a large $T$ is beneficial for the Bayesian approach as then the number of vectors $\beta_n,~ n = 1,...,N$ is comparatively small, while in the frequentist approach calculating the likelihood becomes more challenging for increasing the number $T$ of choice situations faced by each of the $N$ individuals. On the other hand, the grid based frequentist approach of \cite{Bauer:2019} can potentially achieve a better approximation (especially of point masses) due to the relatively high number of latent classes. However, this approach requires that a suitable grid is set prior to the estimation with a specification of upper bounds for the coefficients. Additionally, the curse of dimensionality plays a crucial role, which is less of a burden in the Bayesian approach. Note that for a fully specified parametric structure these concerns do not play such a big role also for the frequentist approach.
+
+%% Planned extensions
+Our simulation results verified that the proposed approach achieves good approximations of the mixing distribution in common choice modelling situations, where the underlying heterogeneity cannot be captured by standard parametric distributions. It would be interesting to apply the approach also to empirical data in the future. Additionally,
+further research on how to properly address sign-restricted coefficients is required.
+
 
 \section*{Computational details}
 

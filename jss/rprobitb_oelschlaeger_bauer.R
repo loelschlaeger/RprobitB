@@ -233,13 +233,7 @@ summary(model_sim)
 
 
 ###################################################
-### code chunk number 30: model-sim-mixture
-###################################################
-plot(model_sim, type = "mixture")
-
-
-###################################################
-### code chunk number 31: example 2 sim model fit wb update
+### code chunk number 30: example 2 sim model fit wb update
 ###################################################
 model_sim <- fit_model(
   data = data_sim,
@@ -254,13 +248,13 @@ model_sim <- fit_model(
 
 
 ###################################################
-### code chunk number 32: model-sim-class-seq
+### code chunk number 31: model-sim-class-seq
 ###################################################
 plot(model_sim, type = "class_seq")
 
 
 ###################################################
-### code chunk number 33: simulation dirichlet process
+### code chunk number 32: simulation dirichlet process
 ###################################################
 set.seed(1)
 P_r <- 2
@@ -276,7 +270,7 @@ z_true <- rep(1:3, times = N)
 
 
 ###################################################
-### code chunk number 34: dirichlet process prior parameters
+### code chunk number 33: dirichlet process prior parameters
 ###################################################
 delta <- 0.1
 xi <- numeric(P_r)
@@ -286,7 +280,7 @@ Theta <- diag(P_r)
 
 
 ###################################################
-### code chunk number 35: dirichlet process initial values
+### code chunk number 34: dirichlet process initial values
 ###################################################
 z <- rep(1, ncol(beta))
 C <- 1
@@ -295,7 +289,7 @@ Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
 
 
 ###################################################
-### code chunk number 36: dirichlet process application
+### code chunk number 35: dirichlet process application
 ###################################################
 for(r in 1:100){
   dp <- RprobitB:::update_classes_dp(
@@ -308,7 +302,7 @@ for(r in 1:100){
 
 
 ###################################################
-### code chunk number 37: dp-example
+### code chunk number 36: dp-example
 ###################################################
 par(mfrow = c(1,2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
@@ -316,44 +310,32 @@ RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
 
 
 ###################################################
-### code chunk number 38: load-model-train
+### code chunk number 37: example 4 berserk load model
 ###################################################
-data("model_train", package = "RprobitB")
+data(model_berserk, package = "RprobitB")
 
 
 ###################################################
-### code chunk number 39: predict-model-train
+### code chunk number 38: model-berserk-mixture
+###################################################
+plot(model_berserk, type = "mixture")
+
+
+###################################################
+### code chunk number 39: example 1 train predict confusion matrix
 ###################################################
 predict(model_train)
 
 
 ###################################################
-### code chunk number 40: predict-model-train-indlevel
+### code chunk number 40: example 1 train predict individual level
 ###################################################
 pred <- predict(model_train, overview = FALSE)
-head(pred, n = 10)
+head(pred, n = 5)
 
 
 ###################################################
-### code chunk number 41: model-train-covs
-###################################################
-get_cov(model_train, id = 1, idc = 8)
-
-
-###################################################
-### code chunk number 42: model-train-coeffs
-###################################################
-coef(model_train)
-
-
-###################################################
-### code chunk number 43: model-train-Sigma
-###################################################
-point_estimates(model_train)$Sigma
-
-
-###################################################
-### code chunk number 44: roc-example
+### code chunk number 41: roc-example
 ###################################################
 library(plotROC)
 ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
@@ -362,7 +344,7 @@ ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
 
 
 ###################################################
-### code chunk number 45: predict-model-train-given-covs-1
+### code chunk number 42: predict-model-train-given-covs-1
 ###################################################
 predict(
   model_train,
@@ -372,7 +354,7 @@ predict(
 
 
 ###################################################
-### code chunk number 46: predict-model-train-given-covs-2
+### code chunk number 43: predict-model-train-given-covs-2
 ###################################################
 predict(
   model_train,
@@ -381,5 +363,108 @@ predict(
                     "price_B"   = c(100,100),
                     "comfort_B" = c(1,1)),
   overview = FALSE)
+
+
+###################################################
+### code chunk number 44: load-model-train
+###################################################
+data("model_train", package = "RprobitB")
+model_train
+
+
+###################################################
+### code chunk number 45: nested-model-train (eval = FALSE)
+###################################################
+## model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+
+
+###################################################
+### code chunk number 46: load-train-sparse-model
+###################################################
+data("model_train_sparse", package = "RprobitB")
+
+
+###################################################
+### code chunk number 47: model-selection-example
+###################################################
+model_selection(model_train, model_train_sparse,
+                criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
+
+
+###################################################
+### code chunk number 48: npar-example
+###################################################
+npar(model_train, model_train_sparse)
+
+
+###################################################
+### code chunk number 49: oglik-example
+###################################################
+logLik(model_train)
+logLik(model_train_sparse)
+
+
+###################################################
+### code chunk number 50: aic-example
+###################################################
+AIC(model_train, model_train_sparse, k = 2)
+
+
+###################################################
+### code chunk number 51: bic-example
+###################################################
+BIC(model_train, model_train_sparse)
+
+
+###################################################
+### code chunk number 52: compute-psi-train (eval = FALSE)
+###################################################
+## model_train <- compute_p_si(model_train)
+
+
+###################################################
+### code chunk number 53: waic-example (eval = FALSE)
+###################################################
+## WAIC(model_train)
+## WAIC(model_train_sparse)
+
+
+###################################################
+### code chunk number 54: waictrace (eval = FALSE)
+###################################################
+## plot(WAIC(model_train))
+## plot(WAIC(model_train_sparse))
+
+
+###################################################
+### code chunk number 55: mml_train
+###################################################
+model_train <- mml(model_train)
+model_train$mml
+attr(model_train$mml, "mmll")
+
+
+###################################################
+### code chunk number 56: mmltrace
+###################################################
+plot(model_train$mml, log = TRUE)
+
+
+###################################################
+### code chunk number 57: arithmetic_mean_estimator (eval = FALSE)
+###################################################
+## model_train <- mml(model_train, S = 1000, recompute = TRUE)
+
+
+###################################################
+### code chunk number 58: bayes-factor-example (eval = FALSE)
+###################################################
+## model_selection(model_train, model_train_sparse, criteria = c("BF"))
+
+
+###################################################
+### code chunk number 59: pred-acc-example
+###################################################
+pred_acc(model_train, model_train_sparse)
 
 
