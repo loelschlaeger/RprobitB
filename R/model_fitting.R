@@ -682,11 +682,13 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
 
   ### perform Gibbs sampling
   if (!is.null(seed)) set.seed(seed)
+  timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampling(
     sufficient_statistics = ss, prior = prior,
     latent_classes = unclass(latent_classes),
     init = init, R = R, B = B, print_progress = print_progress
   )
+  timer_end <- Sys.time()
 
   if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     ### update number of latent classes
@@ -740,7 +742,8 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
     latent_classes = latent_classes,
     prior = prior,
     gibbs_samples = gibbs_samples,
-    class_sequence = class_sequence
+    class_sequence = class_sequence,
+    comp_time = difftime(timer_end, timer_start)
   )
 
   ### calculate log-likelihood
@@ -982,6 +985,8 @@ nested_model <- function(x, form, re, alternatives, id, idc, standardize,
 #' An object of class \code{RprobitB_gibbs_samples}.
 #' @param class_sequence
 #' The sequence of class numbers during Gibbs sampling of length \code{R}.
+#' @param comp_time
+#' The time spent for Gibbs sampling.
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}.
@@ -990,7 +995,8 @@ nested_model <- function(x, form, re, alternatives, id, idc, standardize,
 #' internal
 
 RprobitB_fit <- function(data, scale, level, normalization, R, B, Q,
-                         latent_classes, prior, gibbs_samples, class_sequence) {
+                         latent_classes, prior, gibbs_samples, class_sequence,
+                         comp_time) {
 
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
@@ -1003,6 +1009,7 @@ RprobitB_fit <- function(data, scale, level, normalization, R, B, Q,
   stopifnot(inherits(latent_classes, "RprobitB_latent_classes"))
   stopifnot(is.list(prior))
   stopifnot(inherits(gibbs_samples, "RprobitB_gibbs_samples"))
+  stopifnot(inherits(comp_time, "difftime"))
 
   ### create and return object of class "RprobitB_fit"
   out <- list(
@@ -1016,7 +1023,8 @@ RprobitB_fit <- function(data, scale, level, normalization, R, B, Q,
     "latent_classes" = latent_classes,
     "prior" = prior,
     "gibbs_samples" = gibbs_samples,
-    "class_sequence" = class_sequence
+    "class_sequence" = class_sequence,
+    "comp_time" = comp_time
   )
   class(out) <- "RprobitB_fit"
   return(out)

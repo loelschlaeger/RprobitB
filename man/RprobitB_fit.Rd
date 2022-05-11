@@ -15,7 +15,8 @@ RprobitB_fit(
   latent_classes,
   prior,
   gibbs_samples,
-  class_sequence
+  class_sequence,
+  comp_time
 )
 }
 \arguments{
@@ -65,6 +66,8 @@ specified.}
 \item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}.}
 
 \item{class_sequence}{The sequence of class numbers during Gibbs sampling of length \code{R}.}
+
+\item{comp_time}{The time spent for Gibbs sampling.}
 }
 \value{
 An object of class \code{RprobitB_fit}.
