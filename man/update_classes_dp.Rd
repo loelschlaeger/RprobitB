@@ -35,19 +35,25 @@ Set to \code{NA} if \code{P_r = 0}.}
 \code{P_r*P_r} x \code{C}.
 Set to \code{NA} if \code{P_r = 0}.}
 
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)}
-of the Dirichlet prior for \code{s}.}
+\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
+Dirichlet prior for \code{s}.
+Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
+latent classes, \code{delta = 0.1} per default.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.}
+\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+Per default, \code{xi = numeric(P_r)}.}
 
-\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal
-prior for each \code{b_c}.}
+\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal prior for
+each \code{b_c}.
+Per default, \code{D = diag(P_r)}.}
 
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.}
+\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
+Wishart prior for each \code{Omega_c}.
+Per default, \code{nu = P_r + 2}.}
 
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.}
+\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
+each \code{Omega_c}.
+Per default, \code{Theta = diag(P_r)}.}
 
 \item{s_desc}{If \code{TRUE}, sort the classes in descending class weight.}
 }

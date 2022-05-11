@@ -26,30 +26,40 @@ check_prior(
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
-\item{eta}{The mean vector of length \code{P_f} of the normal prior for \code{alpha}.}
+\item{eta}{The mean vector of length \code{P_f} of the normal prior for \code{alpha}.
+Per default, \code{eta = numeric(P_f)}.}
 
-\item{Psi}{The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-normal prior for \code{alpha}.}
+\item{Psi}{The covariance matrix of dimension \code{P_f} x \code{P_f} of the normal prior for
+\code{alpha}.
+Per default, \code{Psi = diag(P_f)}.}
 
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)}
-of the Dirichlet prior for \code{s}.}
+\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
+Dirichlet prior for \code{s}.
+Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
+latent classes, \code{delta = 0.1} per default.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.}
+\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+Per default, \code{xi = numeric(P_r)}.}
 
-\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal
-prior for each \code{b_c}.}
+\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal prior for
+each \code{b_c}.
+Per default, \code{D = diag(P_r)}.}
 
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.}
+\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
+Wishart prior for each \code{Omega_c}.
+Per default, \code{nu = P_r + 2}.}
 
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.}
+\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
+each \code{Omega_c}.
+Per default, \code{Theta = diag(P_r)}.}
 
-\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.}
+\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse
+Wishart prior for \code{Sigma}.
+Per default, \code{kappa = J + 1}.}
 
 \item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
-prior for \code{Sigma}.}
+prior for \code{Sigma}.
+Per default, \code{E = diag(J - 1)}.}
 }
 \value{
 An object of class \code{RprobitB_prior}, which is a list containing all

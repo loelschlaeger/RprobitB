@@ -35,7 +35,7 @@ An object of class \code{RprobitB_latent_classes}.
 \description{
 This function creates an object of class \code{RprobitB_latent_classes} which
 defines the number of latent classes and their updating scheme.
-The \code{RprobitB_latent_classes}-object generated
+The \code{RprobitB_latent_classes} object generated
 by this function is only of relevance if the model possesses at least one
 random coefficient, i.e. if \code{P_r>0}.
 }

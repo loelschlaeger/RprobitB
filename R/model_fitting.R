@@ -6,30 +6,40 @@
 #'
 #' @inheritParams RprobitB_data
 #' @param eta
-#' The mean vector of length \code{P_f} of the normal prior for \code{alpha}.
+#' The mean vector of length `P_f` of the normal prior for `alpha`.
+#' Per default, `eta = numeric(P_f)`.
 #' @param Psi
-#' The covariance matrix of dimension \code{P_f} x \code{P_f} of the
-#' normal prior for \code{alpha}.
+#' The covariance matrix of dimension `P_f` x `P_f` of the normal prior for
+#' `alpha`.
+#' Per default, `Psi = diag(P_f)`.
 #' @param delta
-#' A numeric for the concentration parameter vector \code{rep(delta,C)}
-#' of the Dirichlet prior for \code{s}.
+#' A numeric for the concentration parameter vector `rep(delta,C)` of the
+#' Dirichlet prior for `s`.
+#' Per default, `delta = 1`. In case of Dirichlet process-based updates of the
+#' latent classes, `delta = 0.1` per default.
 #' @param xi
-#' The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+#' The mean vector of length `P_r` of the normal prior for each `b_c`.
+#' Per default, `xi = numeric(P_r)`.
 #' @param D
-#' The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal
-#' prior for each \code{b_c}.
+#' The covariance matrix of dimension `P_r` x `P_r` of the normal prior for
+#' each `b_c`.
+#' Per default, `D = diag(P_r)`.
 #' @param nu
-#' The degrees of freedom (a natural number greater than \code{P_r}) of
-#' the Inverse Wishart prior for each \code{Omega_c}.
+#' The degrees of freedom (a natural number greater than `P_r`) of the Inverse
+#' Wishart prior for each `Omega_c`.
+#' Per default, `nu = P_r + 2`.
 #' @param Theta
-#' The scale matrix of dimension \code{P_r} x \code{P_r} of the
-#' Inverse Wishart prior for each \code{Omega_c}.
+#' The scale matrix of dimension `P_r` x `P_r` of the Inverse Wishart prior for
+#' each `Omega_c`.
+#' Per default, `Theta = diag(P_r)`.
 #' @param kappa
-#' The degrees of freedom (a natural number greater than \code{J-1}) of
-#' the Inverse Wishart prior for \code{Sigma}.
+#' The degrees of freedom (a natural number greater than `J-1`) of the Inverse
+#' Wishart prior for `Sigma`.
+#' Per default, `kappa = J + 1`.
 #' @param E
-#' The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
-#' prior for \code{Sigma}.
+#' The scale matrix of dimension `J-1` x `J-1` of the Inverse Wishart
+#' prior for `Sigma`.
+#' Per default, `E = diag(J - 1)`.
 #'
 #' @details
 #' A priori, we assume that the model parameters follow these distributions:
@@ -44,9 +54,9 @@
 #' the Inverted Wishart distribution.
 #'
 #' @return
-#' An object of class \code{RprobitB_prior}, which is a list containing all
+#' An object of class `RprobitB_prior`, which is a list containing all
 #' prior parameters. Parameters that are not relevant for the model
-#' configuration are set to \code{NA}.
+#' configuration are set to `NA`.
 #'
 #' @export
 #'
@@ -190,14 +200,14 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
   return(init)
 }
 
-#' Create object of class \code{RprobitB_latent_classes}
+#' Create object of class `RprobitB_latent_classes`
 #'
 #' @description
-#' This function creates an object of class \code{RprobitB_latent_classes} which
+#' This function creates an object of class `RprobitB_latent_classes` which
 #' defines the number of latent classes and their updating scheme.
-#' The \code{RprobitB_latent_classes}-object generated
+#' The `RprobitB_latent_classes` object generated
 #' by this function is only of relevance if the model possesses at least one
-#' random coefficient, i.e. if \code{P_r>0}.
+#' random coefficient, i.e. if `P_r>0`.
 #'
 #' @details
 #' ## Why update latent classes?
@@ -643,12 +653,19 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
     stop("'print_progress' must be a boolean.", call. = FALSE)
   }
 
-  ### set normalization, latent classes, and prior parameters
+  ### set normalization
   normalization <- RprobitB_normalization(
     level = NULL, scale = scale, form = data$form, re = data$re,
     alternatives = data$alternatives, base = data$base
   )
+
+  ### set latent classes
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
+  if(latent_classes$dp_update && is.null(prior[["delta"]])) {
+    prior[["delta"]] <- 0.1
+  }
+
+  ### set prior parameters
   prior <- do.call(
     what = check_prior,
     args = c(list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J), prior)

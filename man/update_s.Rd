@@ -7,8 +7,10 @@
 update_s(delta, m)
 }
 \arguments{
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)}
-of the Dirichlet prior for \code{s}.}
+\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
+Dirichlet prior for \code{s}.
+Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
+latent classes, \code{delta = 0.1} per default.}
 
 \item{m}{The vector of current class frequencies.}
 }

@@ -20,7 +20,8 @@ Set to \code{NA} if \code{P_r = 0}.}
 
 \item{m}{The vector of class sizes of length \code{C}.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.}
+\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
+Per default, \code{xi = numeric(P_r)}.}
 
 \item{Dinv}{The precision matrix (i.e. the inverse of the covariance matrix) of dimension \code{P_r} x \code{P_r}
 of the normal prior for each \code{b_c}.}

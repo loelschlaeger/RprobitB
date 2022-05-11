@@ -7,11 +7,13 @@
 update_Sigma(kappa, E, N, S)
 }
 \arguments{
-\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of
-the Inverse Wishart prior for \code{Sigma}.}
+\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse
+Wishart prior for \code{Sigma}.
+Per default, \code{kappa = J + 1}.}
 
 \item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
-prior for \code{Sigma}.}
+prior for \code{Sigma}.
+Per default, \code{E = diag(J - 1)}.}
 
 \item{N}{The draw size.}
 

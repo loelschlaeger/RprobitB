@@ -19,11 +19,13 @@ Set to \code{NA} if \code{P_r = 0}.}
 
 \item{m}{The vector of class sizes of length \code{C}.}
 
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of
-the Inverse Wishart prior for each \code{Omega_c}.}
+\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
+Wishart prior for each \code{Omega_c}.
+Per default, \code{nu = P_r + 2}.}
 
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the
-Inverse Wishart prior for each \code{Omega_c}.}
+\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
+each \code{Omega_c}.
+Per default, \code{Theta = diag(P_r)}.}
 }
 \value{
 A matrix of updated covariance matrices for each class in columns.
