@@ -39,7 +39,7 @@ test_that("choice prediction works", {
     J = 2,
     alternatives = c("bus", "car"),
     seed = 1,
-    alpha = 1:5, Sigma = 1
+    true_parameter = list("alpha" = 1:5, "Sigma" = 1)
   )
   data <- train_test(data, test_proportion = 0.3)
   model <- fit_model(data$train, R = 1000, seed = 1)
@@ -57,7 +57,7 @@ test_that("preference classification works", {
     re = c("cost", "ASC"),
     alternatives = c("train", "bus", "car"),
     seed = 1,
-    C = 2
+    true_parameter = list("C" = 2)
   )
   model <- fit_model(data,
     R = 1000,

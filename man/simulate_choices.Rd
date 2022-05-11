@@ -14,7 +14,7 @@ simulate_choices(
   base = NULL,
   covariates = NULL,
   seed = NULL,
-  ...
+  true_parameter = list()
 )
 }
 \arguments{
@@ -59,8 +59,9 @@ distribution.}
 
 \item{seed}{Set a seed for the simulation.}
 
-\item{...}{Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-\code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.}
+\item{true_parameter}{Optionally specify a named list with true parameters for \code{alpha},
+\code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
+\code{beta}, or \code{z} for the simulation.}
 }
 \value{
 An object of class \code{RprobitB_data}.
@@ -81,9 +82,11 @@ data <- simulate_choices(
   re = c("cost", "time"),
   alternatives = c("car", "bus"),
   seed = 1,
-  alpha = c(-1, 1),
-  b = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
-  C = 2
+  true_parameter = list(
+    "alpha" = c(-1, 1),
+    "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2)),
+    "C" = 2
+  )
 )
 }
 \seealso{

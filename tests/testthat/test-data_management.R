@@ -113,7 +113,7 @@ test_that("simulating choice data works", {
     re = c("cost", "ASC"),
     alternatives = c("train", "bus", "car"),
     seed = 1,
-    C = 2
+    true_parameter = list("C" = 2)
   )
   expect_snapshot(print(data))
   expect_snapshot(summary(data))
@@ -123,7 +123,7 @@ test_that("simulating choice data works", {
 test_that("splitting data set by N works", {
   x <- simulate_choices(
     form = choice ~ covariate, N = 10, T = 1:10, J = 2,
-    re = "covariate", C = 2, seed = 1
+    re = "covariate", true_parameter = list("C" = 2), seed = 1
   )
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "N"))
   expect_snapshot(train_test(x, test_proportion = 0, by = "N"))
@@ -143,7 +143,7 @@ test_that("splitting data set by N works", {
 test_that("splitting data set by T works", {
   x <- simulate_choices(
     form = choice ~ covariate, N = 10, T = 10, J = 2,
-    re = "covariate", C = 2, seed = 1
+    re = "covariate", true_parameter = list("C" = 2), seed = 1
   )
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "T"))
   expect_snapshot(train_test(x,

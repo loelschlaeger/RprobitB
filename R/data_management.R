@@ -148,8 +148,7 @@ print.RprobitB_formula <- function(x, ...) {
 #' @seealso
 #' [check_form()] for checking the model formula specification.
 
-overview_effects <- function(form, re = NULL, alternatives,
-                             base = NULL) {
+overview_effects <- function(form, re = NULL, alternatives, base = NULL) {
 
   ### check input
   if(missing(form)){
@@ -176,11 +175,11 @@ overview_effects <- function(form, re = NULL, alternatives,
   ### determine index of base alternative
   if(is.null(base)){
     base_index <- J
-  } else if (base %in% alternatives) {
+  } else if (any(alternatives == base)) {
     base_index <- which(alternatives == base)
   } else {
     base <- alternatives[J]
-    warning(paste0("'base' not contained in 'alternatives'.\n",
+    warning(paste0("'base' not contained in 'alternatives'. ",
                    "Set 'base = ", alternatives[J], "' instead."),
             immediate. = TRUE, call. = FALSE)
     base_index <- J
@@ -539,11 +538,11 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   if(is.null(base)){
     base <- alternatives[J]
     base_index <- J
-  } else if (base %in% alternatives) {
+  } else if (any(alternatives == base)) {
     base_index <- which(alternatives == base)
   } else {
     base <- alternatives[J]
-    warning(paste0("'base' not contained in choice data set.\n",
+    warning(paste0("'base' not contained in choice data set. ",
                    "Set 'base = ", alternatives[J], "' instead."),
             immediate. = TRUE, call. = FALSE)
     base_index <- J
@@ -828,9 +827,10 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' distribution.
 #' @param seed
 #' Set a seed for the simulation.
-#' @param ...
-#' Optionally specify \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{Sigma_full}, \code{beta}, or \code{z} for the simulation.
+#' @param true_parameter
+#' Optionally specify a named list with true parameters for \code{alpha},
+#' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
+#' \code{beta}, or \code{z} for the simulation.
 #' @inheritParams prepare_data
 #'
 #' @return
@@ -845,9 +845,11 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'   re = c("cost", "time"),
 #'   alternatives = c("car", "bus"),
 #'   seed = 1,
-#'   alpha = c(-1, 1),
-#'   b = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
-#'   C = 2
+#'   true_parameter = list(
+#'     "alpha" = c(-1, 1),
+#'     "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2)),
+#'     "C" = 2
+#'   )
 #' )
 #' @export
 #'
@@ -865,8 +867,8 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' }
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
-                             base = NULL,  covariates = NULL,
-                             seed = NULL, ...) {
+                             base = NULL, covariates = NULL, seed = NULL,
+                             true_parameter = list()) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re)
@@ -920,7 +922,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   if(is.null(base)){
     base <- alternatives[J]
     base_index <- J
-  } else if (base %in% alternatives) {
+  } else if (any(alternatives == base)) {
     base_index <- which(alternatives == base)
   } else {
     base <- alternatives[J]
@@ -989,8 +991,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   }
 
   ### determine number and names of linear coefficients
-  effects <- overview_effects(form, re, alternatives,
-                              base = base)
+  effects <- overview_effects(form, re, alternatives, base = base)
   P_f <- sum(effects$random == FALSE)
   P_r <- sum(effects$random == TRUE)
 
@@ -1002,7 +1003,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
         "P_f" = P_f, "P_r" = P_r,
         "J" = J, "N" = N, "seed" = seed
       ),
-      list(...)
+      true_parameter
     )
   )
 
