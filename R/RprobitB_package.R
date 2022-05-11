@@ -18,12 +18,13 @@ rpb <- function() {
 
 #' @noRd
 
-RprobitB_pp <- function(title, i = NULL, total = NULL) {
+RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
   if (identical(getOption("RprobitB_progress"), TRUE)) {
     if (is.null(i) || is.null(total)) {
       message(title)
     } else {
-      message(paste(title, i, "of", total, "\r"), appendLF = (i == total))
+      message(paste(title, i, "of", total, tail, "\r"),
+              appendLF = (i == total))
     }
   }
 }
@@ -31,9 +32,9 @@ RprobitB_pp <- function(title, i = NULL, total = NULL) {
 #' @noRd
 #' @importFrom progress progress_bar
 
-RprobitB_pb <- function(title, total) {
+RprobitB_pb <- function(title, total, tail = NULL) {
   progress::progress_bar$new(
-    format = paste(title, ":current of :total"),
+    format = paste(title, ":current of :total", tail),
     total = total,
     clear = FALSE
   )

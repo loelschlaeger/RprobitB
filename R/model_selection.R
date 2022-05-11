@@ -369,7 +369,9 @@ plot.RprobitB_waic <- function(x, ...) {
   log_p_si <- log(p_si)
 
   ### compute sequence of waic value for progressive sets of posterior samples
-  pb <- RprobitB_pb(title = "Preparing WAIC convergence plot", total = S)
+  pb <- RprobitB_pb(title = "Preparing WAIC convergence plot",
+                    total = S,
+                    tail = "Gibbs samples")
   waic_seq <- numeric(S)
   se_waic_seq <- numeric(S)
   RprobitB_pb_tick(pb)
@@ -575,7 +577,9 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 
   ### register progress bar
   if(getOption("RprobitB_progress")){
-    pb <- RprobitB_pb(title = "Computing p_si", total = length(pars))
+    pb <- RprobitB_pb(title = "Computing p_si",
+                      total = length(pars),
+                      tail = "parameter sets")
     opts <- list(progress = function(n) pb$tick())
   } else {
     opts <- list()
@@ -722,7 +726,9 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
 
     ### register progress bar
     if(getOption("RprobitB_progress")){
-      pb <- RprobitB_pb(title = "Computing prior arithmetic mean estimate", total = S)
+      pb <- RprobitB_pb(title = "Computing prior arithmetic mean estimate",
+                        total = S,
+                        tail = "parameter sets")
       opts <- list(progress = function(n) pb$tick())
     } else {
       opts <- list()

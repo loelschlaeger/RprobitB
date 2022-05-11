@@ -306,6 +306,9 @@ preference_classification <- function(x, add_true = FALSE) {
 #' }
 #' @param overview
 #' If \code{TRUE}, returns a confusion matrix.
+#' @param digits
+#' The number of digits of the returned choice probabilities. `digits = 2` per
+#' default.
 #' @param ...
 #' Ignored.
 #'
@@ -313,18 +316,24 @@ preference_classification <- function(x, add_true = FALSE) {
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
 #'
 #' @examples
-#' data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1)
+#' data <- simulate_choices(
+#'   form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1
+#' )
 #' data <- train_test(data, test_proportion = 0.5)
 #' model <- fit_model(data$train)
-#' coef(model)
+#'
 #' predict(model)
 #' predict(model, overview = FALSE)
 #' predict(model, data = data$test)
-#' predict(model, data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
-#'         overview = FALSE)
+#' predict(
+#'   model,
+#'   data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
+#'   overview = FALSE
+#' )
 #' @export
 
-predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
+predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
+                                 digits = 2, ...) {
 
   ### choose data
   if (is.null(data)) {
@@ -351,6 +360,10 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
 
   ### compute choice probabilities
   choice_probs <- as.data.frame(choice_probabilities(object, data = data))
+
+  ### round choice probabilities
+  choice_probs[data$alternatives] <- round(choice_probs[data$alternatives],
+                                           digits = digits)
 
   ### check if true choices are available
   if (data$choice_available) {
@@ -886,7 +899,9 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   }
 
   ### define progress bar
-  pb <- RprobitB_pb(title = "Computing choice probabilities", total = data$N)
+  pb <- RprobitB_pb(title = "Computing choice probabilities",
+                    total = data$N,
+                    tail = "deciders")
 
   ### compute probabilities
   probabilities <- matrix(NA, nrow = 0, ncol = data$J)

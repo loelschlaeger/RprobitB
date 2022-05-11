@@ -1,4 +1,4 @@
-\begin{thebibliography}{40}
+\begin{thebibliography}{34}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,12 +8,6 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
-
-\bibitem[{Agresti(2015)}]{Agresti:2015}
-Agresti A (2015).
-\newblock \emph{Foundations of Linear and Generalized Linear Models.}
-\newblock Wiley.
-\newblock ISBN 978-1-118-73003-4.
 
 \bibitem[{Akaike(1974)}]{Akaike:1974}
 Akaike H (1974).
@@ -25,11 +19,6 @@ Albert JH, Chib S (1993).
 \newblock \enquote{Bayesian Analysis of Binary and Polychotomous Response
   Data.}
 \newblock \emph{Journal of the American Statistical Association}, \textbf{88}.
-
-\bibitem[{Aldous(1985)}]{Aldous:1985}
-Aldous DJ (1985).
-\newblock \enquote{Exchangeability and related topics.}
-\newblock \textbf{1117}, 1--198.
 
 \bibitem[{Allenby and Rossi(1998)}]{Allenby:1998}
 Allenby GM, Rossi P (1998).
@@ -54,11 +43,6 @@ Bhat C, Lavieri P (2018).
   non-normal coefficient distributions.}
 \newblock \emph{Theory and Decision}, \textbf{84}.
 
-\bibitem[{Blackwell and MacQueen(1973)}]{Blackwell:1973}
-Blackwell D, MacQueen J (1973).
-\newblock \enquote{Ferguson distributions via Polya urn schemes.}
-\newblock \emph{The Annals of Statistics}, \textbf{1}, 353--355.
-
 \bibitem[{Burda \emph{et~al.}(2008)Burda, Harding, and Hausman}]{Burda:2008}
 Burda M, Harding M, Hausman J (2008).
 \newblock \enquote{A Bayesian mixed logit–probit model for multinomial
@@ -74,13 +58,6 @@ Cirillo C, Axhausen K (2006).
   savings from a six-week diary.}
 \newblock \emph{Transportation Research Part A: Policy and Practice},
   \textbf{40}.
-
-\bibitem[{Croissant(2020)}]{Croissant:2020}
-Croissant Y (2020).
-\newblock \enquote{Estimation of Random Utility Models in {R}: The {mlogit}
-  Package.}
-\newblock \emph{Journal of Statistical Software}, \textbf{95}(11), 1--41.
-\newblock \doi{10.18637/jss.v095.i11}.
 
 \bibitem[{Fawcett(2006)}]{Fawcett:2006}
 Fawcett T (2006).
@@ -143,11 +120,6 @@ Imai K, van Dyk DA (2005).
 \newblock \enquote{A Bayesian analysis of the multinomial probit model using
   marginal data augmentation.}
 \newblock \emph{Journal of Econometrics}, \textbf{124}.
-
-\bibitem[{Jeffreys(1998)}]{Jeffreys:1998}
-Jeffreys H (1998).
-\newblock \emph{The theory of probability}.
-\newblock OUP Oxford.
 
 \bibitem[{Li \emph{et~al.}(2019)Li, Schofield, and Gönen}]{Li:2019}
 Li Y, Schofield E, Gönen M (2019).
@@ -229,12 +201,6 @@ Scaccia L, Marcucci E (2010).
 Schwarz G (1978).
 \newblock \enquote{Estimating the Dimension of a Model.}
 \newblock \emph{The Annals of Statistics}, \textbf{6}.
-
-\bibitem[{Sethuraman(1994)}]{Sethuraman:1994}
-Sethuraman J (1994).
-\newblock \enquote{A constructive definition of dirichlet priors.}
-\newblock \emph{Statistica Sinica}, \textbf{4}(2), 639--650.
-\newblock \urlprefix\url{http://www.jstor.org/stable/24305538}.
 
 \bibitem[{Train(2009)}]{Train:2009}
 Train K (2009).

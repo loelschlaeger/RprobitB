@@ -1101,10 +1101,8 @@ summary.RprobitB_fit <- function(object, FUN = c(
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   cat(crayon::underline("Probit model\n"))
-  cat(deparse1(x$form), "\n")
-  cat("R:", x$R, "\n")
-  cat("B:", x$B, "\n")
-  cat("Q:", x$Q, "\n")
+  cat("Formula:", deparse1(x$form), "\n")
+  cat(paste0("R: ", x$R, ", B: ", x$B, ", Q: ", x$Q, "\n"))
   cat("\n")
 
   ### summary of normalization

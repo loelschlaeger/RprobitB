@@ -13,7 +13,7 @@ data <- prepare_data(
   id = "player_id",
   idc = "game_id",
   standardize = c("rating","rating_diff","min_rem"),
-  impute = "zero_out"
+  impute = "zero"
 )
 
 plot(data, by_choice = TRUE)

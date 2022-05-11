@@ -315,7 +315,8 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 
     ### build progress bar
     pb <- RprobitB_pb(title = paste("create",col_new),
-                      total = length(unique(choice_data[[id]])))
+                      total = length(unique(choice_data[[id]])),
+                      tail = "deciders")
 
     ### create lagged covariate 'col.k'
     for(id_val in unique(choice_data[[id]])) {
@@ -624,7 +625,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   N <- length(ids)
   T <- as.numeric(table(choice_data[, id]))
   data <- list()
-  pb <- RprobitB_pb(title = "Preparing data", total = N)
+  pb <- RprobitB_pb(title = "Preparing data", total = N, tail = "deciders")
   for (n in seq_len(N)) {
     RprobitB_pb_tick(pb)
     data[[n]] <- list()
