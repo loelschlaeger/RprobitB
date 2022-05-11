@@ -31,16 +31,6 @@
         alternative frequency
       1           A      1474
       2           B      1455
-      
-           effect as_value as_coef random
-      1     ASC_A    FALSE    TRUE  FALSE
-      2 comfort_A     TRUE    TRUE  FALSE
-      3 comfort_B     TRUE    TRUE  FALSE
-      4  change_A     TRUE    TRUE  FALSE
-      5  change_B     TRUE    TRUE  FALSE
-      6     price     TRUE   FALSE   TRUE
-      7    time_A     TRUE    TRUE   TRUE
-      8    time_B     TRUE    TRUE   TRUE
 
 # data preparation with non-standard base alternative works
 
@@ -60,16 +50,6 @@
         alternative frequency
       1           A      1474
       2           B      1455
-      
-           effect as_value as_coef random
-      1     ASC_A    FALSE    TRUE  FALSE
-      2 comfort_A     TRUE    TRUE  FALSE
-      3 comfort_B     TRUE    TRUE  FALSE
-      4  change_A     TRUE    TRUE  FALSE
-      5  change_B     TRUE    TRUE  FALSE
-      6     price     TRUE   FALSE   TRUE
-      7    time_A     TRUE    TRUE   TRUE
-      8    time_B     TRUE    TRUE   TRUE
 
 # simulating choice data works
 
@@ -90,16 +70,6 @@
       1         bus         7
       2         car        22
       3       train        26
-      
-            effect as_value as_coef random
-      1 income_bus    FALSE    TRUE  FALSE
-      2 income_car    FALSE    TRUE  FALSE
-      3   time_bus     TRUE    TRUE  FALSE
-      4   time_car     TRUE    TRUE  FALSE
-      5 time_train     TRUE    TRUE  FALSE
-      6       cost     TRUE   FALSE   TRUE
-      7    ASC_bus    FALSE    TRUE   TRUE
-      8    ASC_car    FALSE    TRUE   TRUE
 
 # splitting data set by N works
 

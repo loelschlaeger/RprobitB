@@ -1505,17 +1505,6 @@ print.summary.RprobitB_data <- function(x, ...) {
     row.names = NULL)
   )
 
-  ### summary of covariates
-  cat("\n")
-  print(
-    overview_effects(
-      form = x$form, re = x$re, alternatives = rownames(x$alt_freq),
-      base = x$base
-    )
-  )
-  # coefs <- x$linear_coefs
-  # colnames(coefs) <- c("effect", "alternative specific", "random")
-  # print(coefs)
   return(invisible(x))
 }
 
