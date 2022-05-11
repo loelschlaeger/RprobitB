@@ -134,7 +134,7 @@ The function performs compatibility checks and data transformations and returns 
 
   - `"complete_cases"`, which removes rows containing missing entries (the default),
   
-  - `"zero_out"`, which replaces missing entries by zero,
+  - `"zero"`, which replaces missing entries by zero,
   
   - `"mean"`, which imputes missing entries by the covariate mean.
 

@@ -19,7 +19,7 @@ choice occasion.}
 \itemize{
 \item \code{"complete_cases"}, removes all rows containing missing entries
 (the default),
-\item \code{"zero_out"}, replaces missing entries by zero
+\item \code{"zero"}, replaces missing entries by zero
 (only for numeric columns),
 \item \code{"mean"}, imputes missing entries by the covariate mean
 (only for numeric columns).
@@ -37,7 +37,7 @@ This function checks for and replaces missing entries in \code{choice_data}.
 \examples{
 choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
 missing_data(choice_data, "complete_cases")
-missing_data(choice_data, "zero_out")
+missing_data(choice_data, "zero")
 missing_data(choice_data, "mean")
 
 }

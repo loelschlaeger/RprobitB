@@ -95,7 +95,7 @@ test_that("missing data replacement works", {
     data.frame("A" = c(1), "B" = c(1))
   )
   expect_equal(
-    missing_data(choice_data, "zero_out"),
+    missing_data(choice_data, "zero"),
     data.frame("A" = c(1, 0, 3), "B" = c(1, 2, 0))
   )
   expect_equal(

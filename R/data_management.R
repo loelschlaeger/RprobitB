@@ -735,7 +735,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 #' \itemize{
 #'   \item \code{"complete_cases"}, removes all rows containing missing entries
 #'   (the default),
-#'   \item \code{"zero_out"}, replaces missing entries by zero
+#'   \item \code{"zero"}, replaces missing entries by zero
 #'   (only for numeric columns),
 #'   \item \code{"mean"}, imputes missing entries by the covariate mean
 #'   (only for numeric columns).
@@ -750,7 +750,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 #' @examples
 #' choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
 #' missing_data(choice_data, "complete_cases")
-#' missing_data(choice_data, "zero_out")
+#' missing_data(choice_data, "zero")
 #' missing_data(choice_data, "mean")
 #'
 #' @export
@@ -763,9 +763,9 @@ missing_data <- function(choice_data, impute = "complete_cases",
     stop("'choice_data' must be a data frame.", call. = FALSE)
   }
   if(!(is.character(impute) && length(impute) == 1 &&
-       impute %in% c("complete_cases","zero_out","mean"))) {
+       impute %in% c("complete_cases","zero","mean"))) {
     stop(
-      "'impute' must be either 'complete_cases', 'zero_out' or 'mean'.",
+      "'impute' must be either 'complete_cases', 'zero' or 'mean'.",
       call. = FALSE
     )
   }
@@ -784,7 +784,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
         stop(paste0("Cannot apply 'impute = ", impute,
                     "' to columns that are not numeric."), call. = FALSE)
       }
-      if(impute == "zero_out") {
+      if(impute == "zero") {
         for(i in 1:nrow(na_pos)){
           choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- 0
         }

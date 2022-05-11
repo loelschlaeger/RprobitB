@@ -342,7 +342,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE, ...) {
     data <- prepare_data(
       form = object$data$form, choice_data = as.data.frame(data_build),
       re = object$data$re, alternatives = object$data$alternatives, id = "id",
-      idc = NULL, standardize = NULL, impute = "zero_out")
+      idc = NULL, standardize = NULL, impute = "zero")
   }
   if (!inherits(data,"RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",
