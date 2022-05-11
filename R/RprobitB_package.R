@@ -24,7 +24,8 @@ RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
       message(title)
     } else {
       message(paste(title, i, "of", total, tail, "\r"),
-              appendLF = (i == total))
+        appendLF = (i == total)
+      )
     }
   }
 }
