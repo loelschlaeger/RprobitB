@@ -425,14 +425,14 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #'   form = choice ~ price + time + comfort + change | 1,
 #'   re = "time",
 #'   alternatives = c("A", "B"),
-#'   base_alternative = "A"
+#'   base = "A"
 #' )
 #'
 #' @keywords
 #' internal
 
 RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
-                                   alternatives, base_alternative) {
+                                   alternatives, base) {
 
   ### check inputs
   if(missing(alternatives)){
@@ -463,8 +463,8 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
   if(length(as.character(scale)) != 3){
     stop("'scale' is not in the right format '<parameter> ~ <value>'.", call. = FALSE)
   }
-  if(missing(base_alternative)){
-    stop("Please specify 'base_alternative'.", call. = FALSE)
+  if(missing(base)){
+    stop("Please specify 'base'.", call. = FALSE)
   }
 
   ### set 'level'
@@ -474,7 +474,7 @@ RprobitB_normalization <- function(level, scale = Sigma_1 ~ 1, form, re = NULL,
   ### set 'scale'
   effects <- overview_effects(
     form = form, re = re, alternatives = alternatives,
-    base_alternative = base_alternative
+    base = base
   )
   parameter <- as.character(scale)[2]
   par_name <- NA
@@ -646,7 +646,7 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
   ### set normalization, latent classes, and prior parameters
   normalization <- RprobitB_normalization(
     level = NULL, scale = scale, form = data$form, re = data$re,
-    alternatives = data$alternatives, base_alternative = data$base_alternative
+    alternatives = data$alternatives, base = data$base
   )
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
   prior <- do.call(
@@ -1183,7 +1183,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
       form = x$data$form,
       re = x$data$re,
       alternatives = x$data$alternatives,
-      base_alternative = x$data$base_alternative)
+      base = x$data$base)
     x[["normalization"]] <- normalization
   }
 

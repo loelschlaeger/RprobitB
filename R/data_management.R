@@ -140,7 +140,7 @@ print.RprobitB_formula <- function(x, ...) {
 #'   form = choice ~ price + time + comfort + change | 1,
 #'   re = c("price", "time"),
 #'   alternatives = c("A", "B"),
-#'   base_alternative = "A"
+#'   base = "A"
 #' )
 #'
 #' @export
@@ -149,7 +149,7 @@ print.RprobitB_formula <- function(x, ...) {
 #' [check_form()] for checking the model formula specification.
 
 overview_effects <- function(form, re = NULL, alternatives,
-                             base_alternative = NULL) {
+                             base = NULL) {
 
   ### check input
   if(missing(form)){
@@ -174,16 +174,16 @@ overview_effects <- function(form, re = NULL, alternatives,
   J <- length(alternatives)
 
   ### determine index of base alternative
-  if(is.null(base_alternative)){
-    base_alternative_index <- J
-  } else if (base_alternative %in% alternatives) {
-    base_alternative_index <- which(alternatives == base_alternative)
+  if(is.null(base)){
+    base_index <- J
+  } else if (base %in% alternatives) {
+    base_index <- which(alternatives == base)
   } else {
-    base_alternative <- alternatives[J]
-    warning(paste0("'base_alternative' not contained in 'alternatives'.\n",
-                   "Set 'base_alternative = ", alternatives[J], "' instead."),
+    base <- alternatives[J]
+    warning(paste0("'base' not contained in 'alternatives'.\n",
+                   "Set 'base = ", alternatives[J], "' instead."),
             immediate. = TRUE, call. = FALSE)
-    base_alternative_index <- J
+    base_index <- J
   }
 
   ### check 'form'
@@ -198,7 +198,7 @@ overview_effects <- function(form, re = NULL, alternatives,
     overview <- rbind(overview, c(var, TRUE, FALSE, var %in% re))
   }
   for (var in c(vars[[2]], if (ASC) "ASC")) {
-    for (j in (1:J)[-base_alternative_index]) {
+    for (j in (1:J)[-base_index]) {
       overview <- rbind(overview,
                         c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re))
     }
@@ -445,7 +445,7 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #' }
 
 prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
-                         base_alternative = NULL, id = "id", idc = NULL,
+                         base = NULL, id = "id", idc = NULL,
                          standardize = NULL, impute = "complete_cases") {
 
   ### check 'form'
@@ -536,17 +536,17 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   }
 
   ### determine index of base alternative
-  if(is.null(base_alternative)){
-    base_alternative <- alternatives[J]
-    base_alternative_index <- J
-  } else if (base_alternative %in% alternatives) {
-    base_alternative_index <- which(alternatives == base_alternative)
+  if(is.null(base)){
+    base <- alternatives[J]
+    base_index <- J
+  } else if (base %in% alternatives) {
+    base_index <- which(alternatives == base)
   } else {
-    base_alternative <- alternatives[J]
-    warning(paste0("'base_alternative' not contained in choice data set.\n",
-                   "Set 'base_alternative = ", alternatives[J], "' instead."),
+    base <- alternatives[J]
+    warning(paste0("'base' not contained in choice data set.\n",
+                   "Set 'base = ", alternatives[J], "' instead."),
             immediate. = TRUE, call. = FALSE)
-    base_alternative_index <- J
+    base_index <- J
   }
 
 
@@ -580,7 +580,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
 
   ### determine number and names of linear coefficients
   effects <- overview_effects(form, re, alternatives,
-                              base_alternative = base_alternative)
+                              base = base)
   P_f <- sum(effects$random == FALSE)
   P_r <- sum(effects$random == TRUE)
 
@@ -651,12 +651,12 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
       for (var in c(vars[[2]], if (ASC) "ASC")) {
         old_names <- colnames(X_nt)
         mat <- matrix(0, J, J)
-        for (j in (1:J)[-base_alternative_index]) {
+        for (j in (1:J)[-base_index]) {
           mat[j, j] <- data_nt[, var]
         }
-        mat <- mat[, -base_alternative_index, drop = FALSE]
+        mat <- mat[, -base_index, drop = FALSE]
         X_nt <- cbind(X_nt, mat)
-        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_alternative_index]]))
+        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_index]]))
       }
 
       ### type-3 covariates
@@ -704,7 +704,7 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
     P_f = P_f,
     P_r = P_r,
     alternatives = alternatives,
-    base_alternative = base_alternative,
+    base = base,
     form = form,
     re = re,
     ASC = ASC,
@@ -865,7 +865,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' }
 
 simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
-                             base_alternative = NULL,  covariates = NULL,
+                             base = NULL,  covariates = NULL,
                              seed = NULL, ...) {
 
   ### check 'form'
@@ -917,17 +917,17 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
   alternatives <- sort(alternatives)
 
   ### determine index of base alternative
-  if(is.null(base_alternative)){
-    base_alternative <- alternatives[J]
-    base_alternative_index <- J
-  } else if (base_alternative %in% alternatives) {
-    base_alternative_index <- which(alternatives == base_alternative)
+  if(is.null(base)){
+    base <- alternatives[J]
+    base_index <- J
+  } else if (base %in% alternatives) {
+    base_index <- which(alternatives == base)
   } else {
-    base_alternative <- alternatives[J]
-    warning(paste0("'base_alternative' not contained in alternative set.\n",
-                   "Set 'base_alternative = ", alternatives[J], "' instead."),
+    base <- alternatives[J]
+    warning(paste0("'base' not contained in alternative set.\n",
+                   "Set 'base = ", alternatives[J], "' instead."),
             immediate. = TRUE, call. = FALSE)
-    base_alternative_index <- J
+    base_index <- J
   }
 
   ### draw covariates
@@ -990,7 +990,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
 
   ### determine number and names of linear coefficients
   effects <- overview_effects(form, re, alternatives,
-                              base_alternative = base_alternative)
+                              base = base)
   P_f <- sum(effects$random == FALSE)
   P_r <- sum(effects$random == TRUE)
 
@@ -1042,12 +1042,12 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
       for (var in c(vars[[2]], if (ASC) "ASC")) {
         old_names <- colnames(X_nt)
         mat <- matrix(0, J, J)
-        for (j in (1:J)[-base_alternative_index]) {
+        for (j in (1:J)[-base_index]) {
           mat[j, j] <- data_nt[, var]
         }
-        mat <- mat[, -base_alternative_index, drop = FALSE]
+        mat <- mat[, -base_index, drop = FALSE]
         X_nt <- cbind(X_nt, mat)
-        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_alternative_index]]))
+        colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_index]]))
       }
 
       ### type-3 covariates
@@ -1121,7 +1121,7 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
     P_f = P_f,
     P_r = P_r,
     alternatives = alternatives,
-    base_alternative = base_alternative,
+    base = base,
     form = form,
     re = re,
     ASC = ASC,
@@ -1354,7 +1354,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
 #' If not specified, the choice set is defined by the observed choices.
-#' @param base_alternative
+#' @param base
 #' A character, the name of the base alternative for covariates that are not
 #' alternative specific (type 2 covariates).
 #' @param ASC
@@ -1387,7 +1387,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' internal
 
 RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                          base_alternative, form, re, ASC, effects, standardize,
+                          base, form, re, ASC, effects, standardize,
                           simulated, choice_available, true_parameter,
                           res_var_names) {
 
@@ -1399,7 +1399,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.numeric(P_f), P_f %% 1 == 0)
   stopifnot(is.numeric(P_r), P_r %% 1 == 0)
   stopifnot(is.character(alternatives) || J != length(alternatives))
-  stopifnot(is.character(alternatives), base_alternative %in% alternatives)
+  stopifnot(is.character(alternatives), base %in% alternatives)
   stopifnot(inherits(form, "formula"))
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(choice_available))
@@ -1417,7 +1417,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
     "P_f" = P_f,
     "P_r" = P_r,
     "alternatives" = alternatives,
-    "base_alternative" = base_alternative,
+    "base" = base,
     "form" = form,
     "re" = re,
     "ASC" = ASC,
@@ -1510,7 +1510,7 @@ print.summary.RprobitB_data <- function(x, ...) {
   print(
     overview_effects(
       form = x$form, re = x$re, alternatives = rownames(x$alt_freq),
-      base_alternative = x$base_alternative
+      base = x$base
     )
   )
   # coefs <- x$linear_coefs

@@ -39,31 +39,31 @@ test_that("building of RprobitB_normalization works", {
   expect_warning(
     RprobitB_normalization(
       level = "A", scale = Sigma_1 ~ 1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B"
+      alternatives = alternatives, base = "B"
     )
   )
   expect_snapshot(
     RprobitB_normalization(
       level = "B", scale = price ~ -1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B"
+      alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
       level = "B", scale = time ~ 1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B"
+      alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
       level = "B", scale = Sigma_3 ~ 1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B"
+      alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
       level = "B", scale = Sigma_1 ~ -1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B"
+      alternatives = alternatives, base = "B"
     )
   )
 })
@@ -72,7 +72,7 @@ test_that("Gibbs sampling works", {
   data <- simulate_choices(
     form = choice ~ a | b | c,
     N = 10, T = 1:10, J = 2,
-    seed = 1, base_alternative = "B"
+    seed = 1, base = "B"
   )
   model <- fit_model(data, R = 2000, seed = 1)
   expect_snapshot(print(model))
@@ -89,7 +89,7 @@ test_that("computation of sufficient statistics works", {
     seed = 1
   )
   normalization <- RprobitB:::RprobitB_normalization(
-    form = form, re = re, alternatives = alternatives, base_alternative = "C"
+    form = form, re = re, alternatives = alternatives, base = "C"
   )
   ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
   expect_snapshot(ss)

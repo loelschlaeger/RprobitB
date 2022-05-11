@@ -13,7 +13,7 @@ RprobitB_data(
   P_f,
   P_r,
   alternatives,
-  base_alternative,
+  base,
   form,
   re,
   ASC,
@@ -53,7 +53,7 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
-\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+\item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (type 2 covariates).}
 
 \item{form}{A formula object that is used to specify the probit model.

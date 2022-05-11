@@ -10,7 +10,7 @@ RprobitB_normalization(
   form,
   re = NULL,
   alternatives,
-  base_alternative
+  base
 )
 }
 \arguments{
@@ -47,7 +47,7 @@ To have random effects for the alternative specific constants, include
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
-\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+\item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (type 2 covariates).}
 }
 \value{
@@ -85,7 +85,7 @@ RprobitB:::RprobitB_normalization(
   form = choice ~ price + time + comfort + change | 1,
   re = "time",
   alternatives = c("A", "B"),
-  base_alternative = "A"
+  base = "A"
 )
 
 }

@@ -14,36 +14,18 @@
 \item \code{"mixture"} to visualize the mixing distribution,
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 \item \code{"trace"} for trace plots of the Gibbs samples,
-\item \code{"class_seq"} to visualize the sequence of class numbers,
-\item \code{"class_allocation"} to visualize the class allocation
-(only if \code{P_r = 2}).
+\item \code{"class_seq"} to visualize the sequence of class numbers.
 }
 See the details section for visualization options.}
 
 \item{ignore}{A character (vector) of covariate or parameter names that do not get
 visualized.}
 
-\item{...}{Additional parameters, see the details section.}
+\item{...}{Ignored.}
 }
 \value{
 No return value. Draws a plot to the current device.
 }
 \description{
 This function is the plot method for an object of class \code{RprobitB_fit}.
-}
-\details{
-Some plot types have additional options that can be specified via
-submitting the following parameters as ellipsis arguments.
-\subsection{\code{"type = class_allocation"}}{
-
-\itemize{
-\item A numeric vector \code{iterations} for plotting the class allocation
-at different iterations of the Gibbs sampler.
-\item A numeric \code{perc} between 0 and 1 to draw the \code{perc} percentile
-ellipsoids for the underlying Gaussian distributions
-(\code{perc = 0.95} per default).
-\item A numeric \code{sleep}, the number of seconds to pause after plotting.
-The default is 1.
-}
-}
 }

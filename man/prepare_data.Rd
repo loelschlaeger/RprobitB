@@ -9,7 +9,7 @@ prepare_data(
   choice_data,
   re = NULL,
   alternatives = NULL,
-  base_alternative = NULL,
+  base = NULL,
   id = "id",
   idc = NULL,
   standardize = NULL,
@@ -44,7 +44,7 @@ To have random effects for the alternative specific constants, include
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
-\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+\item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (type 2 covariates).}
 
 \item{id}{A character, the name of the column in \code{choice_data} that contains

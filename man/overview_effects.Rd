@@ -4,7 +4,7 @@
 \alias{overview_effects}
 \title{Effect overview}
 \usage{
-overview_effects(form, re = NULL, alternatives, base_alternative = NULL)
+overview_effects(form, re = NULL, alternatives, base = NULL)
 }
 \arguments{
 \item{form}{A formula object that is used to specify the probit model.
@@ -31,7 +31,7 @@ To have random effects for the alternative specific constants, include
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.}
 
-\item{base_alternative}{A character, the name of the base alternative for covariates that are not
+\item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (type 2 covariates).}
 }
 \value{
@@ -50,7 +50,7 @@ overview_effects(
   form = choice ~ price + time + comfort + change | 1,
   re = c("price", "time"),
   alternatives = c("A", "B"),
-  base_alternative = "A"
+  base = "A"
 )
 
 }

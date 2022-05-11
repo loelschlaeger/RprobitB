@@ -125,7 +125,7 @@
 
     Code
       RprobitB_normalization(level = "B", scale = price ~ -1, form = form, re = re,
-      alternatives = alternatives, base_alternative = "B")
+      alternatives = alternatives, base = "B")
     Output
       Utility normalization
       Level: Utility differences with respect to alternative 'B'.
