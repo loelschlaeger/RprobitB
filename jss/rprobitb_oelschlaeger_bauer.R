@@ -208,8 +208,10 @@ plot(model_sim, type = "class_seq")
 ##   column = c("berserk","lost"), k = 1, id = "player_id"
 ## )
 ## data <- prepare_data(
-##   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak + berserk.1 + lost.1 + 1,
-##   re = c("rating_diff","lost.1"), choice_data = choice_berserk, id = "player_id", idc = "game_id",
+##   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
+##     berserk.1 + lost.1 + 1,
+##   re = c("rating_diff","lost.1"), choice_data = choice_berserk,
+##   id = "player_id", idc = "game_id",
 ##   standardize = c("rating","rating_diff","min_rem"), impute = "zero"
 ## )
 ## model_berserk <- fit_model(

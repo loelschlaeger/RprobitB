@@ -1,4 +1,4 @@
-\begin{thebibliography}{34}
+\begin{thebibliography}{29}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -37,12 +37,6 @@ Bhat C (2011).
   Models.}
 \newblock \emph{Transportation Research Part B: Methodological}, \textbf{45}.
 
-\bibitem[{Bhat and Lavieri(2018)}]{Bhat:2018}
-Bhat C, Lavieri P (2018).
-\newblock \enquote{A new mixed MNP model accommodating a variety of dependent
-  non-normal coefficient distributions.}
-\newblock \emph{Theory and Decision}, \textbf{84}.
-
 \bibitem[{Burda \emph{et~al.}(2008)Burda, Harding, and Hausman}]{Burda:2008}
 Burda M, Harding M, Hausman J (2008).
 \newblock \enquote{A Bayesian mixed logit–probit model for multinomial
@@ -66,21 +60,6 @@ Fawcett T (2006).
 \newblock \doi{10.1016/j.patrec.2005.10.010}.
 \newblock
   \urlprefix\url{https://www.sciencedirect.com/science/article/pii/S016786550500303X}.
-
-\bibitem[{Fountas \emph{et~al.}(2018)Fountas, Anastasopoulos, and
-  Abdel-Aty}]{Fountas:2018}
-Fountas G, Anastasopoulos Ph, Abdel-Aty M (2018).
-\newblock \enquote{Analysis of accident injury-severities using a correlated
-  random parameters ordered probit approach with time variant covariates.}
-\newblock \emph{Analytic Methods in Accident Research}, \textbf{18}.
-
-\bibitem[{Fountas \emph{et~al.}(2019)Fountas, Pantangi, Hulme, and
-  Anastasopoulos}]{Fountas:2019}
-Fountas G, Pantangi SS, Hulme KF, Anastasopoulos PC (2019).
-\newblock \enquote{The effects of driver fatigue, gender, and distracted
-  driving on perceived and observed aggressive driving behavior: A correlated
-  grouped random parameters bivariate probit approach.}
-\newblock \emph{Analytic Methods in Accident Research}, \textbf{22}.
 
 \bibitem[{Gelman and Rubin(1992)}]{Gelman:1992}
 Gelman A, Rubin DB (1992).
@@ -193,10 +172,6 @@ Sachs MC (2017).
   \textbf{79}(2), 1--19.
 \newblock \doi{10.18637/jss.v079.c02}.
 
-\bibitem[{Scaccia and Marcucci(2010)}]{Scaccia:2010}
-Scaccia L, Marcucci E (2010).
-\newblock \enquote{Bayesian Flexible Modelling of Mixed Logit Models.}
-
 \bibitem[{Schwarz(1978)}]{Schwarz:1978}
 Schwarz G (1978).
 \newblock \enquote{Estimating the Dimension of a Model.}
@@ -206,11 +181,6 @@ Schwarz G (1978).
 Train K (2009).
 \newblock \emph{Discrete choice methods with simulation}.
 \newblock 2. ed. edition. Cambridge Univ. Press.
-
-\bibitem[{Train(2016)}]{Train:2016}
-Train K (2016).
-\newblock \enquote{Mixed logit with a flexible mixing distribution.}
-\newblock \emph{Journal of choice modelling}, \textbf{19}.
 
 \bibitem[{Watanabe and Opper(2010)}]{Watanabe:2010}
 Watanabe S, Opper M (2010).
