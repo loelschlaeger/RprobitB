@@ -144,10 +144,8 @@
       summary(model)
     Output
       Probit model
-      choice ~ a | b | c 
-      R: 2000 
-      B: 1000 
-      Q: 1 
+      Formula: choice ~ a | b | c 
+      R: 2000, B: 1000, Q: 1
       
       Utility normalization
       Level: Utility differences with respect to alternative 'B'.

@@ -14,7 +14,7 @@
       MMLL                        -1731.13           -1867.26
       BF(*,model_train)                  1             < 0.01
       BF(*,model_train_sparse)       > 100                  1
-      pred_acc                      69.68%             63.37%
+      pred_acc                      69.61%             63.40%
 
 # AIC computation works
 
