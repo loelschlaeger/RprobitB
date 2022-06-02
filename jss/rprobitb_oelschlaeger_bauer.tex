@@ -77,60 +77,46 @@
 \section{Introduction}
 \label{sec:introduction}
 
-% Opening
-Individual taste differences are of central interest in many choice scenarios: do deciders weight choice attributes like product price or travel time differently? If yes, to what extend? And what groups of deciders share similar preferences? Answering questions of this type is the motivation behind the presented statistical software \pkg{RprobitB}\footnote{The package name is a portmanteau of \proglang{R} (the programming language), the probit model class, and the Bayesian estimation framework.} \citep{Oelschlaeger:2021}. Our discrete choice analysis builds upon the probit model, a random utility model with normally distributed error terms that allows for flexible preference heterogeneity of deciders by imposing mixing distributions on the coefficients, cf.\ \cite{Train:2009} and \cite{Bhat:2011}. Estimation takes places in a Bayesian framework to avoid numerical challenges associated with likelihood maximization.
+Discrete choice models aim to explain past and ultimately predict future choice behavior. They do so by connecting observed choices to observed covariates that influence the decision, for example attributes of the choice alternatives or decider's socio-demographic characteristics. While some influencing characteristics are easily ascertainable through surveys, others are not. For example, car buyers might base their purchase decision between a low-emission car versus an SUV on their green life propensity. Such a political attitude is hard to quantify, so it is typically not queried, in contrast to characteristics like income and household size. But not accounting for such unobserved choice behavior heterogeneity generally leads to inferior model fit and prediction quality. In this paper, we present the \proglang{R} package \pkg{RprobitB}\footnote{The package name is a portmanteau of \proglang{R} (the programming language), the probit model class, and the Bayesian estimation framework.} \citep{Oelschlaeger:2021} that provides state-of-the-art tools for modeling unobserved taste heterogeneity in the context of discrete choices.
 
-% Latent classes and updating schemes
-Decision makers can be classified preference-based via the latent class model extension. However, the specification of the class number is a common obstacle: \cite{Xiong:2013} for example analyzes adolescent driver-injury data, tries-out different class numbers, and performs model selection. \pkg{RprobitB} provides two solutions that avoid pre-specifying the class number: weight-based class updates within the estimation routine (as recently proposed by \cite{Oelschlaeger:2020}) and class updates based on the Dirichlet process (an approach seen in \cite{Burda:2008}).
+We interpret discrete choice models as random utility models, where the decider's latent utility for the available alternatives is decomposed into a linear combination of the covariates and a random error term. The error term distribution determines the model type, where \pkg{RprobitB} implements the probit model with a joint normal distribution across alternatives. The coefficients in the linear combination represent the ceteris paribus effect of the covariates on the utility, and ratios of coefficients quantify substitution patters, for example the willingness to pay more money for a lower CO2 emission rate.
 
-% Comparison to other packages
-The functionality of \pkg{RprobitB} can be grouped into functions for data management, model fitting, and model evaluation (cf.\ Figure \ref{fig:flowchart}). The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion.
+Constant coefficients across deciders lead to substitution patterns that again are constant, which is unreasonable in many scenarios. Instead, we can assume that the coefficients are randomly drawn from an underlying distribution, a so-called mixing distribution. This specification allows for decider-specific coefficients and hence flexible taste heterogeneity, cf.\ \cite{Train:2009} and \cite{Bhat:2011}. The selection of an appropriate mixing distribution is a notoriously difficult task of the model specification. \pkg{RprobitB} therefore implements the recently proposed approach of \cite{Oelschlaeger:2020} to approximate the underlying mixing distribution by a mixture of Gaussian densities, leading to the latent class mixed probit model.
 
-\begin{figure}[t!]
-  \includegraphics{flowchart.png}
-  \caption{Flowchart. The main functions of the \pkg{RprobitB} package are visualized using rectangles, while objects are illustrated as ovals.}
-  \label{fig:flowchart}
-\end{figure}
+The latent class model also enables preference-based decider classification. However, class interpretation demands a proper specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two approaches that avoid pre-specifying the class number: weight-based class updates within the estimation routine (as recently proposed by \cite{Oelschlaeger:2020}) and class updates based on the Dirichlet process (an approach similar to \cite{Burda:2008}).
 
-\pkg{RprobitB} extends the collection of available discrete choice software (cf.\ Table \ref{tab:pkg_overview}) with its focus on updating schemes for latent classes (upd. LC). (cite packages here)
+Model fitting in \pkg{RprobitB} takes places in a Bayesian framework via Markov chain Monte Carlo simulation. This approach has several advantages compared to frequentist inference: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions (instead of point estimates only). Additionally, the Bayesian approach was shown to be faster computationally with increasing number of random effects and normal mixing distributions \citep{Train:2001}.
 
-\begin{table}[!h]
+\pkg{RprobitB} extends the collection of already available software for estimating the probit choice model. \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit model. They also implemented the logit model. The \proglang{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can estimate latent class (LC) models. The \pkg{apollo} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayes estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov Chain Monte Carlo simulation methods similar to \pkg{RprobitB}. \pkg{RprobitB} complements the collection by providing estimation of latent class probit models without pre-specifying the class number. The software comparison is summarized in Table \ref{tab:pkg_overview}.
+
+\begin{table}
 \centering
-\begin{tabular}{l|cccccccc}
-               & Probit      & Logit      & Bayes      & ML         & Ord.       & Mix.       & LC           & upd. LC    \\ \hline
-\pkg{Rchoice}  & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark &              &            \\
-\pkg{mlogit}   & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark &              &            \\
-\pkg{Biogeme}  & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
-\pkg{apollo}   & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
-\pkg{bayesm}   & \checkmark  & \checkmark & \checkmark &            & \checkmark & \checkmark &              &            \\
-\pkg{MNP}      & \checkmark  &            & \checkmark &            & \checkmark &            &              &            \\
-\pkg{RprobitB} & \checkmark  &            & \checkmark &            &            & \checkmark & \checkmark   & \checkmark \\
+\begin{tabular}{ll|ccccccc}
+               &                   & Probit      & Logit      & Bayes      & MLE        & Mixed      & LC           & LC update    \\ \hline
+\pkg{Rchoice}  & \proglang{R}      & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
+\pkg{mlogit}   & \proglang{R}      & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
+\pkg{Biogeme}  & \proglang{Python} & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{apollo}   & \proglang{R}      & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{bayesm}   & \proglang{R}      & \checkmark  & \checkmark & \checkmark &            & \checkmark &              &            \\
+\pkg{MNP}      & \proglang{R}      & \checkmark  &            & \checkmark &            &            &              &            \\
+\pkg{RprobitB} & \proglang{R}      & \checkmark  &            & \checkmark &            & \checkmark & \checkmark   & \checkmark \\
 \end{tabular}
 \label{tab:pkg_overview}
-\caption{Overview of packages for discrete choice modeling.}
+\caption{Overview of software for estimating discrete choice models.}
 \end{table}
 
 % Article overview
-In this article we present the methodology, give an overview over the package functionality, and provide 4 example demonstrations summarized in Table \ref{tab:example_overview}.
+This article is structured as follows. Section 2 defines the probit model and formalizes the concepts of mixing distributions and latent classes. Sections 3 - 6 illustrate the package functionality (the main functions are visualized in Figure \ref{fig:flowchart}), including choice data preparation, model fitting, choice prediction, and model selection. Each section begins with some theoretical background, which is followed by illustrating examples using four different empirical choice data sets as well as simulated data. The sections are complemented by code chunks that can be used to replicate the given examples. Section 7 concludes and gives an outlook of anticipated, future extensions of the \pkg{RprobitB} package.
 
-% Examples
-\begin{table}[!h]
-\centering
-\begin{tabular}{l|l}
-Example                     & Illustrated package functionalities \\ \hline
-1: Train trips              & \fct{prepare\_data}, \fct{fit\_model}, \fct{predict}, \fct{model\_selection} \\
-2: Simulated choices        & \fct{simulate\_choices}, estimation and weight-based update of latent classes \\
-3: Electricity suppliers    & estimation and interpretation of random effects \\
-4: Online chess strategy    & Dirichlet process-based update of latent classes, preference classification \\
-\end{tabular}
-\label{tab:example_overview}
-\caption{Overview of examples.}
-\end{table}
-\newpage
+\begin{figure}
+  \includegraphics{flowchart.png}
+  \caption{Flowchart of the main \pkg{RprobitB} functionalities (rectangles) and objects (ovals).}
+  \label{fig:flowchart}
+\end{figure}
 
 \section{The probit model} \label{sec:probit_model}
 
-To fix our notation, this section briefly defines the probit model based on the concept of latent utilities, introduces mixing distributions for addressing choice behavior heterogeneity, and discusses required model normalization for parameter identification.
+This section defines the probit model based on the concept of latent utilities, introduces mixing distributions and the concept of latent classes for addressing choice behavior heterogeneity, and discusses required model normalization for parameter identification.
 
 \subsection{Latent utilities} \label{subsec:latent_utilities}
 
