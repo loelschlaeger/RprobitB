@@ -9,6 +9,7 @@ RprobitB_parameter(
   P_r,
   J,
   N,
+  ordered,
   alpha = NULL,
   C = NULL,
   s = NULL,
@@ -18,6 +19,7 @@ RprobitB_parameter(
   Sigma_full = NULL,
   beta = NULL,
   z = NULL,
+  gamma = NULL,
   seed = NULL,
   sample = TRUE
 )
@@ -30,6 +32,9 @@ RprobitB_parameter(
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
 \item{N}{The number (greater or equal 1) of decision makers.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{alpha}{The fixed coefficient vector of length \code{P_f}.
 Set to \code{NA} if \code{P_f = 0}.}
@@ -49,13 +54,14 @@ Set to \code{NA} if \code{P_r = 0}.}
 Set to \code{NA} if \code{P_r = 0}.}
 
 \item{Sigma}{The differenced error term covariance matrix of dimension
-\code{J-1} x \code{J-1} with respect to alternative \code{J}.}
+\code{J-1} x \code{J-1} with respect to alternative \code{J}.
+In case of \code{ordered = TRUE}, a numeric, the single error term variance.}
 
 \item{Sigma_full}{The error term covariance matrix of dimension \code{J} x \code{J}.
 Internally, \code{Sigma_full} gets differenced with respect to alternative
 \code{J}, so it becomes an identified covariance matrix of dimension
-\code{J-1} x \code{J-1}. If \code{Sigma} is specified, \code{Sigma_full} is
-ignored.}
+\code{J-1} x \code{J-1}. \code{Sigma_full} is ignored if \code{Sigma} is
+specified or \code{ordered = TRUE}.}
 
 \item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
 \code{P_r} x \code{N}.
@@ -64,9 +70,13 @@ Set to \code{NA} if \code{P_r = 0}.}
 \item{z}{The vector of the allocation variables of length \code{N}.
 Set to \code{NA} if \code{P_r = 0}.}
 
-\item{seed}{Set a seed for sampling missing parameters.}
+\item{gamma}{The numberic vector of utility thresholds in the ordered case of length
+\code{J-1}. The vector elements must be strictly increasing, and the first
+element must be \code{0} (in order to fix the utility level).}
 
-\item{sample}{A boolean, if \code{TRUE} missing parameters get sampled.}
+\item{seed}{Set a seed for the sampling of missing parameters.}
+
+\item{sample}{A boolean, if \code{TRUE} (default) missing parameters get sampled.}
 }
 \value{
 An object of class \code{RprobitB_parameter}, i.e. a named list with the

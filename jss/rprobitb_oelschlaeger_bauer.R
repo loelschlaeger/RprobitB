@@ -4,7 +4,8 @@
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-#library(RprobitB) # UNCOMMENT!
+# install.packages("RprobitB", "plotROC")
+# library(RprobitB) # UNCOMMENT!
 
 
 ###################################################

@@ -23,7 +23,7 @@ RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
     if (is.null(i) || is.null(total)) {
       message(title)
     } else {
-      message(paste(title, i, "of", total, tail, "\r"),
+      message(paste(title, "-", i, "of", total, tail, "\r"),
         appendLF = (i == total)
       )
     }
@@ -35,7 +35,7 @@ RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
 
 RprobitB_pb <- function(title, total, tail = NULL) {
   progress::progress_bar$new(
-    format = paste(title, ":current of :total", tail),
+    format = paste(title, "-", ":current of :total", tail),
     total = total,
     clear = FALSE
   )
