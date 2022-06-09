@@ -147,11 +147,12 @@ Here, $(s_c)_{c}$ are weights satisfying $0 < s_c\leq 1$ for $c=1,\dots,C$ and $
 \end{align*}
 This interpretation allows for decider classifications, see Section \ref{subsec:dp_update} for an example.
 
-Finally, the probit model requires normalization. This is because any utility model is invariant towards the level and the scale of utility \citep[Ch.\ 2]{Train:2009}. We therefore normalize the model by taking utility differences and fixing one error term variance. Formally, equation \eqref{eq:utility} is transformed to
-\begin{align*}
+Finally, the probit model requires normalization, because any utility model is invariant towards the level and the scale of utility \citep[Ch.\ 2]{Train:2009}. We therefore normalize the model by taking differences in \eqref{eq:utility} and fixing one error term variance:
+\begin{equation}
+\label{eq:utility_diff}
 \tilde{U}_{ntj} = \tilde{X}_{ntj}' \beta + \tilde{\epsilon}_{ntj},
-\end{align*}
-$j=1,\dots,J-1$, where (choosing $J$ as the reference alternative), $\tilde{U}_{ntj} = U_{ntj} - U_{ntJ}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntJ}$, and $\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntJ}$. The error term differences $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})'$ again are multivariate normally distributed with mean 0 but transformed covariance matrix $\tilde{\Sigma}$, in which one diagonal element is fixed to a positive number.\footnote{Fixing one element of $\tilde{\Sigma}$ determines the utility scale. Fixing one fixed effect (i.e.\ one entry of $\alpha$) serves the same purpose. Both alternatives are implemented in \pkg{RprobitB}, see Section \ref{subsec:estimation_routine}.}
+\end{equation}
+where (choosing some alternative $k \in \{1,\dots,J\}$ as the reference), $\tilde{U}_{ntj} = U_{ntj} - U_{ntk}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntk}$, and $\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntk}$ for $j\neq k$. The error term differences $(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})'$ again are multivariate normally distributed with mean 0 but transformed covariance matrix $\tilde{\Sigma}$, in which one diagonal element is fixed to a positive number.\footnote{Fixing one element of $\tilde{\Sigma}$ determines the utility scale. Fixing one fixed effect (i.e.\ one entry of $\alpha$) serves the same purpose. Both alternatives are implemented in \pkg{RprobitB}, see Section \ref{subsec:estimation_routine}.}
 
 \section{Choice data} \label{sec:choice_data}
 
@@ -232,9 +233,9 @@ plot(data_train)
 
 \subsection{Ordered alternatives} \label{subsec:ordered_alternatives}
 
-The two choice alternatives in Example 1 are unordered. If we had asked "rate your train trip from 1 (horrible) to 7 (great)", than the respondents would choose their answer from a set of ordered alternatives. Ordered alternatives can by analyzed in \pkg{RprobitB} by setting \code{ordered = TRUE} in \fct{prepare\_data}. In this case, \code{alternatives} becomes a mandatory argument, with the alternative names ordered from worst to best.
+The two choice alternatives in Example 1 are unordered. If we had asked "rate your train trip from 1 (horrible) to 7 (great)", then the respondents would choose their answer from a set of ordered alternatives. Ordered alternatives can by analyzed in \pkg{RprobitB} by setting \code{ordered = TRUE} in \fct{prepare\_data}. In this case, \code{alternatives} becomes a mandatory argument, with the alternative names ordered from worst to best.
 
-The concept of decider's having separate utilities for each alternative is no longer natural for the ordered case \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only one utility value
+In the ordered case, the concept of decider's having separate utilities for each alternative is no longer natural \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only one utility value
 \begin{align*}
   U_{nt} = X_{nt}'\beta_n + \epsilon_{nt}
 \end{align*}
@@ -246,13 +247,9 @@ with end points $\gamma_0 = -\infty$ and $\gamma_J = +\infty$, and new model coe
 
 Normalizing the ordered probit model with respect to the utility level differs from the unordered case: since we model only one utility value, we can no longer take utility differences, but instead fix $\gamma_1 = 0$. For scale normalization however, we again can either fix the variance of the (now univariate) normal distribution of the error term $\epsilon_{nt}$, or fix a fixed effect. Both options are available in \pkg{RprobitB} through the \code{scale} argument for the estimation routine \fct{fit\_model} (cf.\ Section \ref{subsec:estimation_routine}).\footnote{Note that there is even a third option for scale normalization: restricting the value space for the thresholds to a bounded interval also serves the purpose, but is not implemented.}
 
-\paragraph{Example 2: Child wish.}
-
-Missing
-
 \subsection{Ranked choices} \label{subsec:ranked_choices}
 
-Missing
+Ranked choices are yet another variation: rather than recording only the single most preferred alternative, some surveys ask for a full ranking (from most preferred to least preferred) of all the alternatives, which reveals far more about the underlying preferences. Das kann konzeptioenell einfach umgesetzt werden, in dem die Differenzenbildung in equation \eqref{eq:utility_diff} ersetzt wird durch .... In Example ... gibt es ein Beispiel. Kehre Differenzenbildung um und dann differenziere passed zum Ranking. Dann update U. Und um dann wieder auf ein gemeinsames Level zu kommen, kehre das wieder um und differenziere wieder gleich. Schreibe Matrix für die Differenzenbildung konkret auf.
 
 \subsection{Simulating choice data} \label{subsec:simulate_choice_data}
 
@@ -282,7 +279,7 @@ The true model parameters are set at random per default. Alternatively, they can
   \item a numeric vector \code{z} of length \code{N} with elements in \code{1:C}, representing the class allocations.
 \end{itemize}
 
-\paragraph{Example 2: Simulated choices.} For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between the fictitious alternatives \code{alt1} and \code{alt2}. The choices are explained by the alternative specific covariates \code{var1} and \code{var3}. Covariate \code{var2} is only choice occasion specific but connected to a random effect, as well as the ASCs:
+\paragraph{Example 2: Simulated ranked choices.} For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between the fictitious alternatives \code{alt1} and \code{alt2}. The choices are explained by the alternative specific covariates \code{var1} and \code{var3}. Covariate \code{var2} is only choice occasion specific but connected to a random effect, as well as the ASCs:
 
 <<example 2 sim meta>>=
 N <- 100

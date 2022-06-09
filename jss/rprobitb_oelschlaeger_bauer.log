@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2021.8.9)  8 JUN 2022 20:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6800 64-bit) (preloaded format=pdflatex 2021.8.9)  9 JUN 2022 18:45
 entering extended mode
 **./rprobitb_oelschlaeger_bauer.tex
 (rprobitb_oelschlaeger_bauer.tex
@@ -480,7 +480,8 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 \mathdisplay@stack=\toks20
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
-) (rprobitb_oelschlaeger_bauer.aux)
+)
+No file rprobitb_oelschlaeger_bauer.aux.
 \openout1 = `rprobitb_oelschlaeger_bauer.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
@@ -547,11 +548,10 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 60.
 LaTeX Info: Redefining \pageref on input line 60.
 LaTeX Info: Redefining \nameref on input line 60.
-(rprobitb_oelschlaeger_bauer.out) (rprobitb_oelschlaeger_bauer.out)
 \@outlinefile=\write4
 \openout4 = `rprobitb_oelschlaeger_bauer.out'.
 
-<jsslogo.jpg, id=79, 540.0175pt x 393.47pt>
+<jsslogo.jpg, id=3, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
 <use jsslogo.jpg>
 Package pdftex.def Info: jsslogo.jpg  used on input line 60.
@@ -602,16 +602,97 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 80.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 80.
+
+Package natbib Warning: Citation `Oelschlaeger:2021' on page 1 undefined on inp
+ut line 80.
+
 [1
 
 {C:/Users/loelschlaeger/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./j
 sslogo.jpg>]
+
+Package natbib Warning: Citation `Train:2009' on page 2 undefined on input line
+ 84.
+
+
+Package natbib Warning: Citation `Bhat:2011' on page 2 undefined on input line 
+84.
+
+
+Package natbib Warning: Citation `Oelschlaeger:2020' on page 2 undefined on inp
+ut line 84.
+
+
+Package natbib Warning: Citation `Oelschlaeger:2020' on page 2 undefined on inp
+ut line 86.
+
+
+Package natbib Warning: Citation `Burda:2008' on page 2 undefined on input line
+ 86.
+
+
+Package natbib Warning: Citation `Train:2001' on page 2 undefined on input line
+ 88.
+
+
+Package natbib Warning: Citation `Sarrias:2016' on page 2 undefined on input li
+ne 90.
+
+
+Package natbib Warning: Citation `Croissant:2020' on page 2 undefined on input 
+line 90.
+
+
+Package natbib Warning: Citation `Bierlaire:2020' on page 2 undefined on input 
+line 90.
+
+
+Package natbib Warning: Citation `Hess:2019' on page 2 undefined on input line 
+90.
+
+
+Package natbib Warning: Citation `Rossi:2019' on page 2 undefined on input line
+ 90.
+
+
+Package natbib Warning: Citation `Imai:2022' on page 2 undefined on input line 
+90.
+
+
+LaTeX Warning: Reference `tab:pkg_overview' on page 2 undefined on input line 9
+0.
+
+
+LaTeX Warning: Reference `sec:choice_data' on page 2 undefined on input line 10
+9.
+
+
+LaTeX Warning: Reference `sec:model_fitting' on page 2 undefined on input line 
+109.
+
+
+LaTeX Warning: Reference `sec:model_selection' on page 2 undefined on input lin
+e 109.
+
+
+LaTeX Warning: Reference `fig:flowchart' on page 2 undefined on input line 109.
+
+
 LaTeX Font Info:    Try loading font information for T1+lmtt on input line 109.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Package natbib Warning: Citation `Bruderl:2020' on page 2 undefined on input li
+ne 109.
+
+
+LaTeX Warning: Reference `sec:conclusion' on page 2 undefined on input line 109
+.
+
+
+Underfull \vbox (badness 1810) has occurred while \output is active []
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -619,318 +700,60 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [2]
-<flowchart.png, id=153, 1768.6075pt x 1449.415pt>
+<flowchart.png, id=31, 1768.6075pt x 1449.415pt>
 File: flowchart.png Graphic file (type png)
 <use flowchart.png>
 Package pdftex.def Info: flowchart.png  used on input line 112.
 (pdftex.def)             Requested size: 354.12434pt x 290.20961pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 3
  []
 
 [3 <./flowchart.png>]
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 4 []
- []
 
-[4]
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 5
- []
-
-[5]
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 184.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ts1lmr.fd"
-File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 6 []
- []
-
-[6]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 207
-.
-("C:\Program Files\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
-File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 7
- []
-
-[7]
-<rprobitb_oelschlaeger_bauer-train-data.pdf, id=251, 650.43pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-train-data.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-train-data.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-train-data.pdf  used on in
-put line 262.
-(pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
-
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 8 []
- []
-
-[8 <./rprobitb_oelschlaeger_bauer-train-data.pdf>]
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 9
- []
-
-[9]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 10 []
- []
-
-[10]
-<rprobitb_oelschlaeger_bauer-sim-data.pdf, id=286, 650.43pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-sim-data.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-sim-data.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-sim-data.pdf  used on inpu
-t line 366.
-(pdftex.def)             Requested size: 354.12434pt x 236.08995pt.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 11
- []
-
-[11 <./rprobitb_oelschlaeger_bauer-sim-data.pdf>]
-Overfull \hbox (20.74844pt too wide) detected at line 415
-[]
- []
+LaTeX Warning: Reference `eq:utility' on page 4 undefined on input line 126.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 12 []
- []
-
-[12]
-Overfull \hbox (15.57478pt too wide) in paragraph at lines 424--426
-$\OML/lmm/m/it/10.95 [] \OT1/lmr/m/n/10.95 = [](	[]\OML/lmm/m/it/10.95   \OT1
-/lmr/m/n/10.95 + [][] [][](([]) \OMS/lmsy/m/n/10.95   []\OML/lmm/m/it/10.95 []
-\OT1/lmr/m/n/10.95 ))$\T1/lmr/m/n/10.95 , $\OT1/lmr/m/n/10.95 [] = (	[] + [][]
- [][][])[]$\T1/lmr/m/n/10.95 . 
- []
+Package natbib Warning: Citation `Hewig:2011' on page 4 undefined on input line
+ 126.
 
 
-Overfull \hbox (17.18427pt too wide) in paragraph at lines 459--460
-\T1/lmr/m/n/10.95 mented in the \T1/lmtt/m/n/10.95 check_prior() \T1/lmr/m/n/10
-.95 func-tion, see \T1/lmtt/m/n/10.95 help(check_prior, package = "RprobitB")\T
-1/lmr/m/n/10.95 . 
- []
+LaTeX Warning: Reference `eq:utility' on page 4 undefined on input line 133.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 13
- []
-
-[13]
-<rprobitb_oelschlaeger_bauer-coef-model-train.pdf, id=334, 433.62pt x 216.81pt>
-
-File: rprobitb_oelschlaeger_bauer-coef-model-train.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-coef-model-train.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-coef-model-train.pdf  used
- on input line 479.
-(pdftex.def)             Requested size: 354.12434pt x 177.07076pt.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 14 []
- []
-
-[14 <./rprobitb_oelschlaeger_bauer-coef-model-train.pdf>]
-<rprobitb_oelschlaeger_bauer-model-train-trace.pdf, id=352, 722.7pt x 289.08pt>
-
-File: rprobitb_oelschlaeger_bauer-model-train-trace.pdf Graphic file (type pdf)
-
-<use rprobitb_oelschlaeger_bauer-model-train-trace.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-train-trace.pdf  use
-d on input line 520.
-(pdftex.def)             Requested size: 354.12434pt x 141.65044pt.
-<rprobitb_oelschlaeger_bauer-model-train-acf.pdf, id=355, 722.7pt x 289.08pt>
-File: rprobitb_oelschlaeger_bauer-model-train-acf.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-model-train-acf.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-train-acf.pdf  used 
-on input line 530.
-(pdftex.def)             Requested size: 354.12434pt x 141.65044pt.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 15
- []
-
-[15 <./rprobitb_oelschlaeger_bauer-model-train-trace.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 16 []
- []
-
-[16 <./rprobitb_oelschlaeger_bauer-model-train-acf.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 17
- []
-
-[17]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 18 []
- []
-
-[18]
-Overfull \hbox (8.63593pt too wide) in paragraph at lines 686--687
-[]\T1/lmr/m/n/10.95 Adding \T1/lmtt/m/n/10.95 "weight_update" = TRUE \T1/lmr/m/
-n/10.95 to the list for the \T1/lmtt/m/n/10.95 latent_classes \T1/lmr/m/n/10.95
- ar-gu-ment of \T1/lmtt/m/n/10.95 fit_model()
- []
+Package natbib Warning: Citation `Train:2009' on page 4 undefined on input line
+ 133.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 19
- []
-
-[19]
-<rprobitb_oelschlaeger_bauer-model-sim-class-seq.pdf, id=406, 722.7pt x 216.81p
-t>
-File: rprobitb_oelschlaeger_bauer-model-sim-class-seq.pdf Graphic file (type pd
-f)
-<use rprobitb_oelschlaeger_bauer-model-sim-class-seq.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-sim-class-seq.pdf  u
-sed on input line 716.
-(pdftex.def)             Requested size: 354.12434pt x 106.23782pt.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 20 []
- []
-
-[20 <./rprobitb_oelschlaeger_bauer-model-sim-class-seq.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 21
- []
-
-[21]
-<rprobitb_oelschlaeger_bauer-model-berserk-mixture.pdf, id=441, 433.62pt x 433.
-62pt>
-File: rprobitb_oelschlaeger_bauer-model-berserk-mixture.pdf Graphic file (type 
-pdf)
-<use rprobitb_oelschlaeger_bauer-model-berserk-mixture.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-model-berserk-mixture.pdf 
- used on input line 795.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Package natbib Warning: Citation `Train:2009' on page 4 undefined on input line
+ 135.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 22 []
- []
-
-[22]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 23
- []
-
-[23 <./rprobitb_oelschlaeger_bauer-model-berserk-mixture.pdf>]
-<rprobitb_oelschlaeger_bauer-roc-example.pdf, id=462, 433.62pt x 433.62pt>
-File: rprobitb_oelschlaeger_bauer-roc-example.pdf Graphic file (type pdf)
-<use rprobitb_oelschlaeger_bauer-roc-example.pdf>
-Package pdftex.def Info: rprobitb_oelschlaeger_bauer-roc-example.pdf  used on i
-nput line 858.
-(pdftex.def)             Requested size: 354.12434pt x 354.14154pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Package natbib Warning: Citation `Oelschlaeger:2020' on page 4 undefined on inp
+ut line 135.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 24 []
- []
-
-[24]
-Overfull \hbox (26.02675pt too wide) in paragraph at lines 860--861
-\T1/lmr/m/n/10.95 re-sults into the in-sample case out-lined above. Al-ter-na-t
-ively, \T1/lmtt/m/n/10.95 data \T1/lmr/m/n/10.95 can be ei-ther an `\T1/lmtt/m/
-n/10.95 RprobitB_data\T1/lmr/m/n/10.95 '
- []
+LaTeX Warning: Reference `subsec:dp_update' on page 4 undefined on input line 1
+43.
 
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 25
- []
+Package natbib Warning: Citation `Train:2009' on page 4 undefined on input line
+ 145.
 
-[25 <./rprobitb_oelschlaeger_bauer-roc-example.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 26 []
- []
 
-[26]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 27
- []
+LaTeX Warning: Reference `eq:utility' on page 4 undefined on input line 145.
 
-[27] (rprobitb_oelschlaeger_bauer.bbl
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 28 []
- []
-
-[28]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 29
- []
-
-[29])
-LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 967.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 967.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 30 []
- []
-
-[30]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 967.
-(rprobitb_oelschlaeger_bauer.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 967.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 967.
-Package rerunfilecheck Info: File `rprobitb_oelschlaeger_bauer.out' has not cha
-nged.
-(rerunfilecheck)             Checksum: 25256AFC61B0822EDF4EF9F7A9DE029F;1997.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 967.
- ) 
+! Extra }, or forgotten $.
+l.150 ...sing some alternative $k \in \{1,\dots,J}
+                                                  $ as the reference), $\til...
+ 
 Here is how much of TeX's memory you used:
- 8238 strings out of 492973
- 123399 string characters out of 3135909
- 205633 words of memory out of 3000000
- 11744 multiletter control sequences out of 15000+200000
- 106407 words of font info for 75 fonts, out of 3000000 for 9000
+ 7844 strings out of 492973
+ 114003 string characters out of 3135909
+ 200703 words of memory out of 3000000
+ 11502 multiletter control sequences out of 15000+200000
+ 101724 words of font info for 69 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 48i,16n,34p,1265b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files/M
-iKTeX 2.9/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Program Files/MiKTeX 2.9/fonts/e
-nc/dvips/lm/lm-ec.enc}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.en
-c}{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Fil
-es/MiKTeX 2.9/fonts/enc/dvips/lm/lm-mathex.enc}{C:/Program Files/MiKTeX 2.9/fon
-ts/enc/dvips/base/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmb
-10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmbx10.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/lm/lmbx12.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/lm/lmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/lm/lmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi6.pfb>
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmmi8.pfb><C:/Program Files/
-MiKTeX 2.9/fonts/type1/public/lm/lmmi9.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/lm/lmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmr
-6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmr8.pfb><C:/Program F
-iles/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Program Files/MiKTeX 2.9/fon
-ts/type1/public/lm/lmri10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/l
-m/lmri9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmro10.pfb><C:/P
-rogram Files/MiKTeX 2.9/fonts/type1/public/lm/lmss10.pfb><C:/Program Files/MiKT
-eX 2.9/fonts/type1/public/lm/lmss9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
-/public/lm/lmssbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy
-10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy6.pfb><C:/Program
- Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/
-fonts/type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
-c/lm/lmtt9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmtto10.pfb><
-C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/
-Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Pro
-gram Files/MiKTeX 2.9/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on rprobitb_oelschlaeger_bauer.pdf (30 pages, 836494 bytes).
-PDF statistics:
- 682 PDF objects out of 1000 (max. 8388607)
- 133 named destinations out of 1000 (max. 500000)
- 203 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 48i,10n,34p,1151b,362s stack positions out of 5000i,500n,10000p,200000b,50000s
+!  ==> Fatal error occurred, no output PDF file produced!
