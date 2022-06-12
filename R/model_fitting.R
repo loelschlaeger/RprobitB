@@ -619,7 +619,7 @@ print.RprobitB_normalization <- function(x, ...) {
 #' \itemize{
 #'   \item [prepare_data()] and [simulate_choices()] for building an
 #'         \code{RprobitB_data} object
-#'   \item [nested_model()] for estimating nested models
+#'   \item [update()] for estimating nested models
 #'   \item [transform()] for transforming a fitted model
 #' }
 
@@ -922,18 +922,17 @@ sufficient_statistics <- function(data, normalization) {
   return(suff_statistics)
 }
 
-#' Estimating a nested model
+#' Update and re-fit a probit model
 #'
 #' @description
-#' This function is a wrapper for \code{\link{prepare_data}} and
-#' \code{\link{fit_model}} to estimate a nested probit model based on a given
+#' This function estimates a nested probit model based on a given
 #' \code{RprobitB_fit} object.
 #'
 #' @details
-#' All parameters (except for \code{x}) are optional and if not specified
-#' retrieved from the specification for \code{x}.
+#' All parameters (except for \code{object}) are optional and if not specified
+#' retrieved from the specification for \code{object}.
 #'
-#' @param x
+#' @param object
 #' An object of class \code{RprobitB_fit}.
 #' @inheritParams prepare_data
 #' @inheritParams fit_model
@@ -944,30 +943,30 @@ sufficient_statistics <- function(data, normalization) {
 #' @export
 #'
 #' @examples
-#' nested_model(model_train, form = choice ~ time, R = 100, B = 50)
+#' update(model_train, form = choice ~ time, R = 100, B = 50)
 
-nested_model <- function(x, form, re, alternatives, id, idc, standardize,
-                         impute, scale, R, B, Q, print_progress, prior,
-                         latent_classes, seed) {
+update.RprobitB_fit <- function(object, form, re, alternatives, id, idc,
+                                standardize, impute, scale, R, B, Q,
+                                print_progress, prior, latent_classes, seed) {
   data <- prepare_data(
-    form = if(missing(form)) x$data$form else form,
-    choice_data = x$data$choice_data,
-    re = if(missing(re)) x$data$re else re,
-    alternatives = if(missing(alternatives)) x$data$alternatives else alternatives,
-    id = if(missing(id)) x$data$res_var_names$id else id,
-    idc = if(missing(idc)) x$data$res_var_names$idc else idc,
-    standardize = if(missing(standardize)) x$data$standardize else standardize,
+    form = if(missing(form)) object$data$form else form,
+    choice_data = object$data$choice_data,
+    re = if(missing(re)) object$data$re else re,
+    alternatives = if(missing(alternatives)) object$data$alternatives else alternatives,
+    id = if(missing(id)) object$data$res_var_names$id else id,
+    idc = if(missing(idc)) object$data$res_var_names$idc else idc,
+    standardize = if(missing(standardize)) object$data$standardize else standardize,
     impute = if(missing(impute)) "complete_cases" else impute
     )
   model <- fit_model(
     data = data,
-    scale = if(missing(scale)) x$scale else scale,
-    R = if(missing(R)) x$R else R,
-    B = if(missing(B)) x$B else B,
-    Q = if(missing(Q)) x$Q else Q,
+    scale = if(missing(scale)) object$scale else scale,
+    R = if(missing(R)) object$R else R,
+    B = if(missing(B)) object$B else B,
+    Q = if(missing(Q)) object$Q else Q,
     print_progress = if(missing(print_progress)) getOption("RprobitB_progress") else print_progress,
     prior = if(missing(prior)) NULL else prior,
-    latent_classes = if(missing(latent_classes)) x$latent_classes else latent_classes,
+    latent_classes = if(missing(latent_classes)) object$latent_classes else latent_classes,
     seed = if(missing(seed)) NULL else seed
     )
   return(model)

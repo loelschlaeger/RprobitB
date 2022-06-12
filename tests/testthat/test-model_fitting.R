@@ -97,7 +97,7 @@ test_that("computation of sufficient statistics works", {
 
 test_that("estimating a nested model works", {
   model <- RprobitB::model_train
-  mod <- nested_model(model,
+  mod <- update(model,
     form = choice ~ price + time, R = 100, B = 50
   )
   expect_s3_class(mod, "RprobitB_fit")

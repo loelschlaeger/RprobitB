@@ -208,25 +208,25 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   }
 }
 
-#' Autocorrelation plot of Gibbs samples.
+#' Autocorrelation plot of Gibbs samples
 #'
 #' @description
-#' This function plots the autocorrelation of the Gibbs samples, including the
-#' total sample size \code{TSS}, effective sample size \code{ESS} and the factor
-#' \code{TSS/ESS}.
+#' This function plots the autocorrelation of the Gibbs samples. The plots
+#' include the total Gibbs sample size \code{TSS} and the effective sample size
+#' \code{ESS}, see the details.
 #'
 #' @details
 #' The effective sample size is the value
-#' \deqn{\text{TSS} / (1 + 2\sum_{k\geq 1} \rho_k)},
-#' where \eqn{\rho_k} is the auto correlation between the chain offset
-#' by \eqn{k} positions. The auto correlations are estimated via the
-#' `stats::acf()` function.
+#' \deqn{\text{TSS} / \sqrt{1 + 2\sum_{k\geq 1} \rho_k}},
+#' where \eqn{\rho_k} is the auto correlation between the chain offset by
+#' \eqn{k} positions. The auto correlations are estimated via
+#' \code{\link[stats]{spec.ar}}.
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
 #' @param par_labels
-#' A character vector of length equal to the number of columns of
-#' \code{gibbs_samples}, containing labels for the Gibbs samples.
+#' A character vector with labels for the Gibbs samples, of length equal to the
+#' number of columns of \code{gibbs_samples}.
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -234,26 +234,23 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #' @keywords
 #' internal
 #'
-#' @noRd
+#' @examples
+#' gibbs_samples <- matrix(arima.sim(list(order=c(1,0,0), ar = 0.5), n = 100))
+#' plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
 #'
-#' @importFrom stats acf
+#' @importFrom stats spec.ar
 #' @importFrom graphics title legend
 
 plot_acf <- function(gibbs_samples, par_labels) {
   for (c in 1:ncol(gibbs_samples)) {
-    ### compute autocorrelation and produce plot
-    rho <- stats::acf(gibbs_samples[, c], las = 1, main = "")$acf[,,1][-1]
+    x <- gibbs_samples[, c]
+    sum_rho <- (stats::spec.ar(x, plot = F)$spec[1]/var(x) - 1) / 2
+    stats::acf(x, las = 1, main = "")
     graphics::title(par_labels[c], line = 1)
-
-    ### compute effective sample size
-    TSS <- length(gibbs_samples[, c])
-    ESS <- min(TSS / (1 + 2 * sum(rho)), TSS)
-    graphics::legend("topright",
-      x.intersp = -0.5, bg = "white",
-      legend = sprintf(
-        "%s %.0f", paste0(c("TSS", "ESS", "factor"), ":"),
-        c(TSS, ESS, TSS / ESS)
-      )
+    TSS <- length(x)
+    ESS <- min(TSS / (1 + 2 * sum_rho), TSS)
+    graphics::legend("topright", x.intersp = -0.5, bg = "white",
+      legend = sprintf("%s %.0f", paste0(c("TSS", "ESS"), ":"), c(TSS, ESS))
     )
   }
 }
@@ -427,12 +424,15 @@ plot_class_seq <- function(class_sequence, B) {
 }
 
 #' Plot class allocation (for \code{P_r = 2} only)
+#'
 #' @description
 #' This function plots the allocation of decision-maker specific coefficient vectors
 #' \code{beta} given the allocation vector \code{z}, the class means \code{b},
 #' and the class covariance matrices \code{Omega}.
+#'
 #' @details
-#' Only in the two-dimensional case, i.e. only if \code{P_r = 2}.
+#' Only applicable in the two-dimensional case, i.e. only if \code{P_r = 2}.
+#'
 #' @inheritParams RprobitB_parameter
 #' @param ...
 #' Optional visualization parameters:
@@ -443,10 +443,13 @@ plot_class_seq <- function(class_sequence, B) {
 #'   \item \code{r}, the current iteration number of the Gibbs sampler to be displayed in the legend,
 #'   \item \code{sleep}, the number of seconds to pause after plotting.
 #' }
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
+#'
 #' @keywords
 #' internal
+#'
 #' @examples
 #' b <- matrix(c(-1,1,1,1), ncol = 2)
 #' Omega <- matrix(c(0.8,0.5,0.5,1,0.5,-0.2,-0.2,0.3), ncol = 2)
@@ -491,4 +494,70 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
   if(!is.null(graphic_pars[["sleep"]])){
     Sys.sleep(graphic_pars[["sleep"]])
   }
+}
+
+#' Plot ROC curve
+#'
+#' @description
+#' This function
+#'
+#' @param ...
+#' One or more \code{RprobitB_fit} objects or \code{data.frame}s.
+#' @param reference
+#'
+#' @param auc
+#'
+#' @return
+#' No return value. Draws a plot to the current device.
+#'
+#' @examples
+#' roc(RprobitB::model_train)
+#'
+#' @importFrom plotROC geom_roc style_roc
+
+roc <- function(..., reference = NULL, auc = TRUE) {
+  models <- as.list(list(...))
+  model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
+  pred_merge <- NULL
+  for(m in 1:length(models)) {
+    if(inherits(models[[m]], "RprobitB_fit")){
+      if(is.null(reference)){
+        reference <- models[[m]]$data$alternatives[1]
+      }
+      pred <- predict(models[[m]], overview = FALSE, digits = 8)
+      true <- ifelse(pred$true == reference, 1, 0)
+      if(is.null(pred_merge)){
+        pred_merge <- data.frame(true)
+        colnames(pred_merge) <- paste0("d_",model_names[m])
+      } else {
+        pred_merge[,paste0("d_",model_names[m])] <- true
+      }
+      pred_merge[,model_names[m]] <- pred[reference]
+    } else {
+      stop("Not implemented yet.", call. = FALSE)
+    }
+  }
+  if(length(models) > 1) {
+    for(m in 1:(length(models)-1)) {
+      d_m <- pred_merge[paste0("d_",model_names[i])]
+      d_mp <- pred_merge[paste0("d_",model_names[i+1])]
+      if(!identical(d_m,d_mp)) {
+        stop()
+      }
+    }
+    pred_merge <- plotROC::melt_roc(
+      data = pred_merge, d = paste0("d_",model_names[1]), m = model_names)
+  } else {
+    colnames(pred_merge) <- c("D","M")
+  }
+  if(length(models) > 1) {
+    plot <- ggplot2::ggplot(data = pred_merge,
+                            ggplot2::aes(m = M, d = D, color = model_names))
+  } else {
+    plot <- ggplot2::ggplot(data = pred_merge, ggplot2::aes(m = M, d = D))
+  }
+  plot <- plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
+    plotROC::style_roc(theme = ggplot2::theme_grey)
+  print(plot)
+  return(plot)
 }

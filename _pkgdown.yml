@@ -44,7 +44,7 @@ reference:
   contents:
   - check_prior
   - mcmc
-  - nested_model
+  - update
   - transform.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.

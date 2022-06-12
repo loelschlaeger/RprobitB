@@ -669,7 +669,7 @@ where per default $\Pr(M_1) = \Pr(M_2) = 0.5$. The value $\Pr(y \mid M)$ denotes
 We revisit the probit model of travelers deciding between two fictional train route alternatives. As a competing model to \code{model\_train}, we consider explaining the choices only by the alternative's price, i.e.\ the probit model with the formula \code{choice ~ price | 0`}. The \fct{nested\_model} function helps in estimating such a nested model:
 
 <<example 1 train nested model>>=
-model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+model_train_sparse <- update(model_train, form = choice ~ price | 0)
 @
 
 \pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria. The \code{criteria} input is a vector of \code{"npar"} (for the number of model parameters), \code{"LL"} (for the model's log-likelihood value, computed with the point estimates obtained from the Gibbs sample means), \code{"AIC"}, \code{"BIC"}, \code{"WAIC"}, \code{"MMLL"} (the marginal model log-likelihood), \code{"BF"} (for the Bayes factor), and \code{"pred_acc"} (the prediction accuracy). In order to compute WAIC, the marginal model likelihood, and the Bayes factor, the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$ must be pre-computed via the \fct{compute\_p\_si} function:

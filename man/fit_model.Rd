@@ -86,7 +86,7 @@ summary(mod)
 \itemize{
 \item \code{\link[=prepare_data]{prepare_data()}} and \code{\link[=simulate_choices]{simulate_choices()}} for building an
 \code{RprobitB_data} object
-\item \code{\link[=nested_model]{nested_model()}} for estimating nested models
+\item \code{\link[=update]{update()}} for estimating nested models
 \item \code{\link[=transform]{transform()}} for transforming a fitted model
 }
 }

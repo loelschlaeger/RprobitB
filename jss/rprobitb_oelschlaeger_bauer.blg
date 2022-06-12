@@ -1,10 +1,54 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: rprobitb_oelschlaeger_bauer.aux
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: rprobitb_oelschlaeger_bauer.aux
 The style file: jss.bst
 Database file #1: ref.bib
 Warning--entry type for "Geweke:1998" isn't style-file defined
---line 164 of file ref.bib
+--line 327 of file ref.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Warning--empty journal in Akaike:1974
 Warning--empty journal in Hammersley:1964
 Warning--can't use both author and editor fields in Rasmussen:2000
 Warning--empty journal in Rossi:2019
+You've used 35 entries,
+            3215 wiz_defined-function locations,
+            893 strings with 11867 characters,
+and the built_in function-call counts, 34093 in all, are:
+= -- 3324
+> -- 873
+< -- 32
++ -- 353
+- -- 295
+* -- 2415
+:= -- 4146
+add.period$ -- 151
+call.type$ -- 35
+change.case$ -- 244
+chr.to.int$ -- 36
+cite$ -- 39
+duplicate$ -- 3578
+empty$ -- 2688
+format.name$ -- 393
+if$ -- 6895
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 375
+newline$ -- 201
+num.names$ -- 140
+pop$ -- 1771
+preamble$ -- 1
+purify$ -- 238
+quote$ -- 0
+skip$ -- 663
+stack$ -- 0
+substring$ -- 3356
+swap$ -- 824
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 303
+warning$ -- 4
+while$ -- 227
+width$ -- 0
+write$ -- 488
 (There were 5 warnings)
