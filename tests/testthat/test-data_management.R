@@ -187,3 +187,4 @@ test_that("parameter printing works", {
   x <- RprobitB_parameter(P_f = 1, P_r = 1, J = 2, N = 100, seed = 1)
   expect_snapshot(x)
 })
+
