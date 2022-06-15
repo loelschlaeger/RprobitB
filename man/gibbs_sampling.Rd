@@ -8,6 +8,7 @@ gibbs_sampling(
   sufficient_statistics,
   prior,
   latent_classes,
+  fixed_parameter,
   init,
   R,
   B,
@@ -39,9 +40,15 @@ weight-based update of the latent classes.
 a latent class in the weight-based updating scheme.
 \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 a latent class in the weight-based updating scheme.
-\item \code{distmin}: The (non-negative) threshold difference in class means
+\item \code{distmin}: The (non-negative) threshold in class mean difference
 for joining two latent classes in the weight-based updating scheme.
 }}
+
+\item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
+\code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
+\code{beta}, \code{z}, or \code{gamma} for the simulation.
+See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
+for definitions of these variables.}
 
 \item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
 

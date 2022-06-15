@@ -9,7 +9,7 @@ RprobitB_parameter(
   P_r,
   J,
   N,
-  ordered,
+  ordered = FALSE,
   alpha = NULL,
   C = NULL,
   s = NULL,

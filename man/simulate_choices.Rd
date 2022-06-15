@@ -73,7 +73,7 @@ distribution.}
 
 \item{seed}{Set a seed for the simulation.}
 
-\item{true_parameter}{Optionally specify a named list with true parameters for \code{alpha},
+\item{true_parameter}{Optionally specify a named list with true parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
 \code{beta}, \code{z}, or \code{gamma} for the simulation.
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
@@ -120,7 +120,7 @@ data <- simulate_choices(
   seed = 1,
   true_parameter = list(
     "alpha" = c(-1, 1),
-    "gamma" = c(1,2)
+    "gamma" = 0:3
   )
 )
 
