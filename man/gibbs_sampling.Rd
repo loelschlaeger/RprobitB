@@ -12,7 +12,9 @@ gibbs_sampling(
   init,
   R,
   B,
-  print_progress
+  print_progress,
+  ordered,
+  ranked
 )
 }
 \arguments{
@@ -46,7 +48,7 @@ for joining two latent classes in the weight-based updating scheme.
 
 \item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, \code{z}, or \code{gamma} for the simulation.
+\code{beta}, \code{z}, or \code{d} for the simulation.
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 
@@ -59,6 +61,11 @@ be discarded.}
 
 \item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
 estimated remaining computation time.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{ranked}{TBA}
 }
 \value{
 A list of Gibbs samples for

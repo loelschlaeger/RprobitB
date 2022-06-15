@@ -53,7 +53,9 @@ If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
@@ -75,7 +77,7 @@ distribution.}
 
 \item{true_parameter}{Optionally specify a named list with true parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, \code{z}, or \code{gamma} for the simulation.
+\code{beta}, \code{z}, or \code{d} for the simulation.
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 }
@@ -112,7 +114,7 @@ data <- simulate_choices(
   N = 10,
   T = 1:10,
   J = 5,
-  alternatives = c("very good", "good", "indifferent", "bad", "very bad"),
+  alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
   ordered = TRUE,
   covariates = list(
     "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
@@ -120,9 +122,12 @@ data <- simulate_choices(
   seed = 1,
   true_parameter = list(
     "alpha" = c(-1, 1),
-    "gamma" = 0:3
+    "d" = rep(0,3)
   )
 )
+
+### simulate data from a ranked probit model
+TBA
 
 }
 \seealso{

@@ -10,7 +10,8 @@ RprobitB_normalization(
   form,
   re = NULL,
   alternatives,
-  base
+  base,
+  ordered = FALSE
 )
 }
 \arguments{
@@ -49,20 +50,26 @@ If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
 
 \item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
 \code{NULL} if the model has no alternative specific covariates (e.g. in the
 ordered probit model).
 Per default, \code{base} is the last element of \code{alternatives}.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 }
 \value{
 An object of class \code{RprobitB_normalization}, which is a list of
 \itemize{
 \item \code{level}, a list with the elements \code{level} (the number of the
 alternative specified by the input \code{level}) and \code{name} (the name of
-the alternative, i.e. the input \code{level}),
+the alternative, i.e. the input \code{level}), or alternatively
+\code{NA} in the ordered probit case,
 \item and \code{scale}, a list with the elements \code{parameter} (either \code{"s"} for
 an element of \code{Sigma} or \code{"a"}for an element of \code{alpha}), the
 parameter \code{index}, and the fixed \code{value}. If \code{parameter = "a"}, also
@@ -79,10 +86,13 @@ scale.
 \itemize{
 \item For level normalization, {RprobitB} takes utility differences with
 respect to one alternative.
-\item For scale normalization, RprobitB fixes a model parameter. Per
-default, the first error-term variance is fixed to \code{1}, i.e.
-\code{scale = Sigma_1 ~ 1}. Alternatively, any error-term variance or
-any non-random coefficient can be fixed.
+For the ordered model where only one utility is modeled, {RprobitB}
+fixes the first utility threshold to 0.
+\item For scale normalization, RprobitB fixes one model parameter. Per
+default, the first error-term variance is fixed to \code{1}.
+This is specified via \code{scale = Sigma_1 ~ 1}.
+Alternatively, any error-term variance or any non-random coefficient
+can be fixed.
 }
 }
 \examples{

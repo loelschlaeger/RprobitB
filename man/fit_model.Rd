@@ -2,12 +2,12 @@
 % Please edit documentation in R/model_fitting.R
 \name{fit_model}
 \alias{fit_model}
-\title{Probit model fitting via Markov chain Monte Carlo simulation}
+\title{Fitting probit models via Markov chain Monte Carlo simulation}
 \usage{
 fit_model(
   data,
   scale = Sigma_1 ~ 1,
-  R = 10000,
+  R = 1000,
   B = R/2,
   Q = 1,
   print_progress = getOption("RprobitB_progress"),
@@ -66,7 +66,7 @@ for joining two latent classes in the weight-based updating scheme.
 
 \item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, \code{z}, or \code{gamma} for the simulation.
+\code{beta}, \code{z}, or \code{d} for the simulation.
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 }
@@ -74,8 +74,9 @@ for definitions of these variables.}
 An object of class \code{RprobitB_fit}.
 }
 \description{
-This function performs Markov chain Monte Carlo simulation for fitting a
-(latent class) (mixed) (multinomial) probit model to discrete choice data.
+This function performs Markov chain Monte Carlo simulation for fitting
+different types of probit models (binary, multivariate, mixed, latent class,
+ordered, ranked) to discrete choice data.
 }
 \details{
 See \href{https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html}{the vignette on model fitting}

@@ -419,6 +419,84 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
   return (U_update);
 }
 
+//' Transform threshold increments to thresholds
+//' @description
+//' This helper function transforms the threshold increments \code{d} to the
+//' thresholds \code{gamma}.
+//' @param d
+//' A numeric vector of threshold increments.
+//' @details
+//' The threshold vector \code{gamma} is computed from the threshold increments
+//' \code{d} as \code{c(-100,0,cumsum(exp(d)),100)}, where the bounds
+//' \code{-100} and \code{100} exist for numerical reasons and the first
+//' threshold is fixed to \code{0} for identification.
+//' @return
+//' A numeric vector of the thresholds.
+//' @examples
+//' d_to_gamma(c(0,0,0))
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec d_to_gamma (arma::vec d) {
+  int length_d = d.size();
+  double acc = 0;
+  for(int i = 0; i < length_d; i++) {
+    d[i] = exp(d[i]) + acc;
+    acc = d[i];
+  }
+  arma::vec gamma(length_d+3);
+  gamma[0] = -100;
+  gamma[1] = 0;
+  for(int i = 0; i < length_d; i++) {
+    gamma[2+i] = d[i];
+  }
+  gamma[length_d+2] = 100;
+  return(gamma);
+}
+
+//' Conditional choice probability in the ordered probit model
+//' @description
+//' This function computes the conditional probability of one choice occasion
+//' given the threshold increments \code{d}.
+//' @param d
+//' A numeric vector of threshold increments.
+//' @param y
+//'
+//' @param mu
+//'
+//' @param log
+//' A boolean, if \code{TRUE} the logged probability is returned.
+//' @details
+//'
+//' @return
+//' The choice probability.
+//' @examples
+//' ll_d(c(0,0,0), 1, 1, FALSE)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+double ll_d (arma::vec d, int y, double mu, bool log) {
+  int J = d.size()+2;
+  if(y > J) {
+    Rcpp::stop("'y' is misspecified.");
+  }
+  arma::vec gamma = d_to_gamma(d);
+  double ub = gamma[y];
+  double lb = gamma[y-1];
+  double prob = R::pnorm(ub - mu,0.0,1.0,1,0) - R::pnorm(lb - mu,0.0,1.0,1,0);
+  if(prob < 1e-10) {
+    prob = 1e-10;
+  }
+  if(log) {
+    prob = std::log(prob);
+  }
+  return prob;
+}
+
 //' Gibbs sampler for the (mixed) multinomial probit model
 //'
 //' @description
@@ -431,6 +509,7 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' @param sufficient_statistics
 //' The output of \code{\link{sufficient_statistics}}.
 //' @inheritParams fit_model
+//' @inheritParams RprobitB_data
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return
@@ -447,9 +526,11 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' internal
 //'
 // [[Rcpp::export]]
-List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes,
-                     Rcpp::List fixed_parameter, List init, int R, int B,
-                     bool print_progress) {
+List gibbs_sampling (
+    List sufficient_statistics, List prior, List latent_classes,
+    Rcpp::List fixed_parameter, List init, int R, int B, bool print_progress,
+    bool ordered, bool ranked
+    ) {
 
   // extract 'sufficient_statistics' parameters
   int N = as<int>(sufficient_statistics["N"]);
@@ -507,6 +588,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat Dinv;
   int kappa = as<int>(prior["kappa"]);
   mat E = as<mat>(prior["E"]);
+  vec zeta;
+  mat Z;
   if(P_f>0){
     eta = as<vec>(prior["eta"]);
     Psiinv = arma::inv(as<mat>(prior["Psi"]));
@@ -519,6 +602,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     nu = as<int>(prior["nu"]);
     Theta = as<mat>(prior["Theta"]);
   }
+  if(ordered){
+    zeta = as<vec>(prior["zeta"]);
+    Z = as<mat>(prior["Z"]);
+  }
 
   // extract 'init' parameters
   vec m0;
@@ -529,6 +616,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat beta0;
   mat U0 = as<mat>(init["U0"]);
   mat Sigma0 = as<mat>(init["Sigma0"]);
+  vec d0;
   if(P_f>0){
     alpha0 = as<vec>(init["alpha0"]);
   }
@@ -538,6 +626,9 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     b0 = as<mat>(init["b0"]);
     Omega0 = as<mat>(init["Omega0"]);
     beta0 = as<mat>(init["beta0"]);
+  }
+  if(ordered){
+    d0 = as<vec>(init["d0"]);
   }
 
   // define helper variables and functions
@@ -557,6 +648,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   arma::mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
   arma::mat alpha_draws = zeros<mat>(R,P_f);
   mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
+  arma::mat d_draws = zeros<mat>(R,J-2);
   arma::vec class_sequence(R);
 
   // set initial values
@@ -570,6 +662,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   arma::mat beta = beta0;
   arma::mat Sigma = Sigma0;
   arma::mat Sigmainv = arma::inv(Sigma);
+  arma::vec d = d0;
 
   // set fixed parameter values
   bool do_update_s = true;

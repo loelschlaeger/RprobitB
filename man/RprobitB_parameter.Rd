@@ -19,7 +19,7 @@ RprobitB_parameter(
   Sigma_full = NULL,
   beta = NULL,
   z = NULL,
-  gamma = NULL,
+  d = NULL,
   seed = NULL,
   sample = TRUE
 )
@@ -70,9 +70,8 @@ Set to \code{NA} if \code{P_r = 0}.}
 \item{z}{The vector of the allocation variables of length \code{N}.
 Set to \code{NA} if \code{P_r = 0}.}
 
-\item{gamma}{The numberic vector of utility thresholds in the ordered case of length
-\code{J-1}. The vector elements must be strictly increasing, and the first
-element must be \code{0} (in order to fix the utility level).}
+\item{d}{The numeric vector of the logarithmic increases of the utility thresholds
+in the ordered probit case of length \code{J-1}.}
 
 \item{seed}{Set a seed for the sampling of missing parameters.}
 

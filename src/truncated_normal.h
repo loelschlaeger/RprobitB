@@ -13,4 +13,6 @@ double trunNormBelow(double const& a);
 
 double rtnorm(double mu, double sig, double trunpt, bool above);
 
+double rttnorm(double mu, double sig, double lower_bound, double upper_bound);
+
 #endif
