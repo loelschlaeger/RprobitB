@@ -5,10 +5,11 @@
 #' \code{RprobitB_gibbs_samples_statistics}.
 #'
 #' @param gibbs_samples
-#' An object of class \code{RprobitB_gibbs_samples}.
+#' An object of class \code{RprobitB_gibbs_samples}, which generally is located
+#' as object \code{gibbs_samples} in an \code{RprobitB_model} object.
 #' @param FUN
 #' A (preferably named) list of functions that compute parameter statistics
-#' from the Gibbs samples, i.e.
+#' from the Gibbs samples, for example
 #' \itemize{
 #'   \item \code{mean} for the mean,
 #'   \item \code{sd} for the standard deviation,
@@ -27,7 +28,8 @@
 #' @keywords
 #' internal
 
-RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
+RprobitB_gibbs_samples_statistics <- function(
+    gibbs_samples, FUN = list("mean" = mean)) {
 
   ### check inputs
   if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
@@ -87,7 +89,7 @@ RprobitB_gibbs_samples_statistics <- function(gibbs_samples, FUN) {
 #' @param x
 #' An object of class \code{RprobitB_gibbs_samples_statistics}.
 #' @param true
-#' Either \code{NULL} or an object of class \code{RprobitB_true_parameter}.
+#' Either \code{NULL} or an object of class \code{RprobitB_parameter}.
 #' @inheritParams print.summary.RprobitB_fit
 #' @param ...
 #' Ignored.
@@ -137,8 +139,17 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
     }
     cat(header)
 
-    ### print table elements
+    ### determine order of parameters
     order_of_parameters <- c("alpha", "s", "b", "Omega", "Sigma")
+
+    ### ignore 's' if it is trivial
+    if ("s" %in% names(x)) {
+      if ((is.null(true) || true$C == 1) && length(x[["s"]] == 1)) {
+        x[["s"]] <- NULL
+      }
+    }
+
+    ### print table elements
     for (par_name in intersect(order_of_parameters, names(x))) {
       out <- x[[par_name]]
       if (!is.null(true)) {
