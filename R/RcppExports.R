@@ -561,8 +561,8 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' @keywords
 #' internal
 #'
-gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, init, R, B, print_progress) {
-    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, init, R, B, print_progress)
+gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress) {
+    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress)
 }
 
 #' Draw from truncated normal

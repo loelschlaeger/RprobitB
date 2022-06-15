@@ -224,19 +224,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // gibbs_sampling
-List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, List init, int R, int B, bool print_progress);
-RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP) {
+List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, Rcpp::List fixed_parameter, List init, int R, int B, bool print_progress);
+RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP fixed_parameterSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type sufficient_statistics(sufficient_statisticsSEXP);
     Rcpp::traits::input_parameter< List >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< List >::type latent_classes(latent_classesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type fixed_parameter(fixed_parameterSEXP);
     Rcpp::traits::input_parameter< List >::type init(initSEXP);
     Rcpp::traits::input_parameter< int >::type R(RSEXP);
     Rcpp::traits::input_parameter< int >::type B(BSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(sufficient_statistics, prior, latent_classes, init, R, B, print_progress));
+    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -271,7 +272,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_reg", (DL_FUNC) &_RprobitB_update_reg, 4},
     {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
     {"_RprobitB_update_U", (DL_FUNC) &_RprobitB_update_U, 4},
-    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 7},
+    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 8},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {NULL, NULL, 0}
 };

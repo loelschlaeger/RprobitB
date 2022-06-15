@@ -957,8 +957,8 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 compute_choice_probabilities <- function(X, alternatives, parameter) {
 
   ### unpack and check inputs
-  if (class(parameter) != "RprobitB_parameter") {
-    stop("'parameter' is not of class 'RprobitB_parameter.")
+  if (!inherits(parameter, "RprobitB_parameter")) {
+    stop("'parameter' is not of class 'RprobitB_parameter.", call. = FALSE)
   }
   alpha <- parameter$alpha
   s <- ifelse(is.na(parameter$s), 1, parameter$s)

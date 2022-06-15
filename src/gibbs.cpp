@@ -448,7 +448,8 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //'
 // [[Rcpp::export]]
 List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes,
-                     List init, int R, int B, bool print_progress) {
+                     Rcpp::List fixed_parameter, List init, int R, int B,
+                     bool print_progress) {
 
   // extract 'sufficient_statistics' parameters
   int N = as<int>(sufficient_statistics["N"]);
@@ -559,15 +560,54 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   arma::vec class_sequence(R);
 
   // set initial values
-  vec s = ones(C)/C;
-  vec z = z0;
-  vec m = m0;
-  mat b = b0;
-  mat Omega = Omega0;
-  mat U = U0;
-  vec alpha = alpha0;
-  mat beta = beta0;
-  mat Sigmainv = arma::inv(Sigma0);
+  arma::vec s = ones(C)/C;
+  arma::vec z = z0;
+  arma::vec m = m0;
+  arma::mat b = b0;
+  arma::mat Omega = Omega0;
+  arma::mat U = U0;
+  arma::vec alpha = alpha0;
+  arma::mat beta = beta0;
+  arma::mat Sigma = Sigma0;
+  arma::mat Sigmainv = arma::inv(Sigma);
+
+  // set fixed parameter values
+  bool do_update_s = true;
+  if(fixed_parameter.containsElementNamed("s")){
+    do_update_s = false;
+    s = as<vec>(fixed_parameter["s"]);
+  }
+  bool do_update_z = true;
+  if(fixed_parameter.containsElementNamed("z")){
+    do_update_s = false;
+    z = as<vec>(fixed_parameter["z"]);
+  }
+  bool do_update_b = true;
+  if(fixed_parameter.containsElementNamed("b")){
+    do_update_b = false;
+    b = as<mat>(fixed_parameter["b"]);
+  }
+  bool do_update_Omega = true;
+  if(fixed_parameter.containsElementNamed("Omega")){
+    do_update_Omega = false;
+    Omega = as<mat>(fixed_parameter["Omega"]);
+  }
+  bool do_update_alpha = true;
+  if(fixed_parameter.containsElementNamed("alpha")){
+    do_update_alpha = false;
+    alpha = as<vec>(fixed_parameter["alpha"]);
+  }
+  bool do_update_beta = true;
+  if(fixed_parameter.containsElementNamed("beta")){
+    do_update_beta = false;
+    beta = as<mat>(fixed_parameter["beta"]);
+  }
+  bool do_update_Sigma = true;
+  if(fixed_parameter.containsElementNamed("Sigma")){
+    do_update_Sigma = false;
+    Sigma = as<mat>(fixed_parameter["Sigma"]);
+    Sigmainv = arma::inv(Sigma);
+  }
 
   // set progress output
   Environment pkg = Environment::namespace_env("RprobitB");
@@ -597,43 +637,54 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       // - no DP or
       // - outside updating period
       if(dp_update == false || r+1 > B || r == 0){
+
         // update s (but only if draw is descending)
-        arma::vec s_cand = update_s(delta,m);
-        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater_equal<double>())){
-          s = s_cand;
+        if(do_update_s) {
+          arma::vec s_cand = update_s(delta,m);
+          if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater_equal<double>())){
+            s = s_cand;
+          }
         }
 
         // update z
-        z = update_z(s, beta, b, Omega);
+        if(do_update_z) {
+          z = update_z(s, beta, b, Omega);
+        }
 
         // update m
         m = update_m(C, z, true);
 
         // update b
-        b = update_b(beta, Omega, z, m, xi, Dinv);
+        if(do_update_b) {
+          b = update_b(beta, Omega, z, m, xi, Dinv);
+        }
 
         // update Omega
-        Omega = update_Omega(beta, b, z, m, nu, Theta);
+        if(do_update_Omega) {
+          Omega = update_Omega(beta, b, z, m, nu, Theta);
+        }
       }
 
       // update beta
-      for(int n = 0; n<N; n++){
-        for(int c = 0; c<C; c++){
-          if(z[n]==c+1){
-            Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
-            b_c = b(span::all,c);
+      if(do_update_beta) {
+        for(int n = 0; n<N; n++){
+          for(int c = 0; c<C; c++){
+            if(z[n]==c+1){
+              Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
+              b_c = b(span::all,c);
+            }
           }
+          mat XSigX = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
+          vec XSigU = zeros<vec>(P_r);
+          for(int t = 0; t<Tvec[n]; t++){
+            ind = csTvec[n]+t;
+            if(P_f==0)
+              XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
+            if(P_f>0)
+              XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
+          }
+          beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
         }
-        mat XSigX = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
-        vec XSigU = zeros<vec>(P_r);
-        for(int t = 0; t<Tvec[n]; t++){
-          ind = csTvec[n]+t;
-          if(P_f==0)
-            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
-          if(P_f>0)
-            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
-        }
-        beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
       }
 
       // weight-based update of classes
@@ -661,18 +712,20 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
     if(P_f>0){
       // update alpha
-      mat WSigW = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
-      vec WSigU = zeros<vec>(P_f);
-      for(int n = 0; n<N; n++){
-        for(int t = 0; t<Tvec[n]; t++){
-          ind = csTvec[n]+t;
-          if(P_r==0)
-            WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
-          if(P_r>0)
-            WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+      if(do_update_alpha) {
+        mat WSigW = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
+        vec WSigU = zeros<vec>(P_f);
+        for(int n = 0; n<N; n++){
+          for(int t = 0; t<Tvec[n]; t++){
+            ind = csTvec[n]+t;
+            if(P_r==0)
+              WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
+            if(P_r>0)
+              WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+          }
         }
+        alpha = update_reg(eta,Psiinv,WSigW,WSigU);
       }
-      alpha = update_reg(eta,Psiinv,WSigW,WSigU);
     }
 
     // update U
@@ -693,23 +746,25 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     }
 
     // update Sigma
-    S = zeros<mat>(Jm1,Jm1);
-    for(int n = 0; n<N; n++){
-      for(int t = 0; t<Tvec[n]; t++){
-        ind = csTvec[n]+t;
-        if(P_f>0 && P_r>0)
-          eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f>0 && P_r==0)
-          eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
-        if(P_f==0 && P_r>0)
-          eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f==0 && P_r==0)
-          eps = U(span::all,ind);
-        S += eps * trans(eps);
+    if(do_update_Sigma){
+      S = zeros<mat>(Jm1,Jm1);
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          if(P_f>0 && P_r>0)
+            eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
+          if(P_f>0 && P_r==0)
+            eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
+          if(P_f==0 && P_r>0)
+            eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
+          if(P_f==0 && P_r==0)
+            eps = U(span::all,ind);
+          S += eps * trans(eps);
+        }
       }
+      Sigma = update_Sigma(kappa, E, sum(Tvec), S);
+      Sigmainv = arma::inv(Sigma);
     }
-    arma::mat Sigma = update_Sigma(kappa, E, sum(Tvec), S);
-    Sigmainv = arma::inv(Sigma);
 
     // save draws
     if(P_f>0)

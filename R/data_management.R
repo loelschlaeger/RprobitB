@@ -867,7 +867,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' @param seed
 #' Set a seed for the simulation.
 #' @param true_parameter
-#' Optionally specify a named list with true parameters for \code{alpha},
+#' Optionally specify a named list with true parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
 #' \code{beta}, \code{z}, or \code{gamma} for the simulation.
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
@@ -1494,7 +1494,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(choice_available))
   if (!is.null(true_parameter)) {
-    stopifnot(class(true_parameter) == "RprobitB_parameter")
+    stopifnot(inherits(true_parameter, "RprobitB_parameter"))
   }
 
   ### create and return object of class "RprobitB_data"
@@ -1709,21 +1709,25 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     }
 
     ### s
-    if (is.null(s) && !sample) {
-      s <- NA
+    if (C == 1) {
+      s <- 1
     } else {
-      if (is.null(s)) {
-        s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
-        s[C] <- 1 - sum(s[-C])
+      if (is.null(s) && !sample) {
+        s <- NA
+      } else {
+        if (is.null(s)) {
+          s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
+          s[C] <- 1 - sum(s[-C])
+        }
+        if (length(s) != C || !is.numeric(s) ||
+            abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
+          stop("'s' must be a non-ascending numeric vector of length ", C,
+               " which sums up to 1.",
+               call. = FALSE
+          )
+        }
+        names(s) <- create_labels_s(P_r, C)
       }
-      if (length(s) != C || !is.numeric(s) ||
-          abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
-        stop("'s' must be a non-ascending numeric vector of length ", C,
-             " which sums up to 1.",
-             call. = FALSE
-        )
-      }
-      names(s) <- create_labels_s(P_r, C)
     }
 
     ### b
@@ -1882,7 +1886,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     "z" = z,
     "gamma" = gamma
   )
-  class(out) <- "RprobitB_parameter"
+  class(out) <- c("RprobitB_parameter", "list")
   return(out)
 }
 

@@ -251,7 +251,7 @@ set_initial_gibbs_values <- function(N, T, J, P_f, P_r, C) {
 #'         a latent class in the weight-based updating scheme.
 #'   \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 #'         a latent class in the weight-based updating scheme.
-#'   \item \code{distmin}: The (non-negative) threshold difference in class means
+#'   \item \code{distmin}: The (non-negative) threshold in class mean difference
 #'         for joining two latent classes in the weight-based updating scheme.
 #' }
 #'
@@ -291,13 +291,15 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
   ### determine whether latent classes should be weight-based updated
   latent_classes[["weight_update"]] <-
-    ifelse(is.na(latent_classes[["weight_update"]]) || !is.logical(latent_classes[["weight_update"]]),
+    ifelse(is.na(latent_classes[["weight_update"]]) ||
+             !is.logical(latent_classes[["weight_update"]]),
            FALSE, latent_classes[["weight_update"]]
     )
 
   ### determine whether latent classes should be DP-based updated
   latent_classes[["dp_update"]] <-
-    ifelse(is.na(latent_classes[["dp_update"]]) || !is.logical(latent_classes[["dp_update"]]),
+    ifelse(is.na(latent_classes[["dp_update"]]) ||
+             !is.logical(latent_classes[["dp_update"]]),
            FALSE, latent_classes[["dp_update"]]
     )
 
@@ -313,10 +315,14 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
     }
 
     ### set missing parameters to default values
-    if (is.null(latent_classes[["buffer"]])) latent_classes[["buffer"]] <- 100
-    if (is.null(latent_classes[["epsmin"]])) latent_classes[["epsmin"]] <- 0.01
-    if (is.null(latent_classes[["epsmax"]])) latent_classes[["epsmax"]] <- 0.99
-    if (is.null(latent_classes[["distmin"]])) latent_classes[["distmin"]] <- 0.1
+    if (is.null(latent_classes[["buffer"]]))
+      latent_classes[["buffer"]] <- 100
+    if (is.null(latent_classes[["epsmin"]]))
+      latent_classes[["epsmin"]] <- 0.01
+    if (is.null(latent_classes[["epsmax"]]))
+      latent_classes[["epsmax"]] <- 0.99
+    if (is.null(latent_classes[["distmin"]]))
+      latent_classes[["distmin"]] <- 0.1
 
     ### remove redundant parameters
     req_names <- c("C", "weight_update", "dp_update", "Cmax")
@@ -327,34 +333,46 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   }
 
   ### check 'latent_classes'
-  if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 || !latent_classes$C > 0) {
-    stop("'latent_classes$C' must be a positive integer.")
+  if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 ||
+      !latent_classes$C > 0) {
+    stop("'latent_classes$C' must be a positive integer.", call. = FALSE)
   }
   if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
-    if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 || !latent_classes$Cmax > 0) {
-      stop("'latent_classes$Cmax' must be a positive integer.")
+    if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 ||
+        !latent_classes$Cmax > 0) {
+      stop("'latent_classes$Cmax' must be a positive integer.", call. = FALSE)
     }
   }
   if (latent_classes[["weight_update"]]) {
-    if (!is.numeric(latent_classes$buffer) || !latent_classes$buffer %% 1 == 0 ||
+    if (!is.numeric(latent_classes$buffer) ||
+        !latent_classes$buffer %% 1 == 0 ||
         !latent_classes$buffer > 0) {
-      stop("'latent_classes$buffer' must be a positive integer.")
+      stop("'latent_classes$buffer' must be a positive integer.", call. = FALSE)
     }
     if (!is.numeric(latent_classes$epsmin) || !latent_classes$epsmin <= 1 ||
         !latent_classes$epsmin >= 0) {
-      stop("'latent_classes$epsmin' must be a numeric between 0 and 1.")
+      stop("'latent_classes$epsmin' must be a numeric between 0 and 1.",
+           call. = FALSE)
     }
     if (!is.numeric(latent_classes$epsmax) || !latent_classes$epsmax <= 1 ||
         !latent_classes$epsmax >= 0 ||
         !latent_classes$epsmin < latent_classes$epsmax) {
       stop(
         "'latent_classes$epsmax' must be a numeric between 0 and 1 and",
-        "greater than 'latent_classes$epsmin'."
+        "greater than 'latent_classes$epsmin'.", call. = FALSE
       )
     }
     if (!is.numeric(latent_classes$distmin) || !0 <= latent_classes$distmin) {
-      stop("'latent_classes$distmin' must be a non-negative numeric value.")
+      stop("'latent_classes$distmin' must be a non-negative numeric value.",
+           call. = FALSE)
     }
+  }
+
+  ### add boolean for class update
+  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
+    latent_classes[["class_update"]] <- TRUE
+  } else {
+    latent_classes[["class_update"]] <- FALSE
   }
 
   ### add class to 'latent_classes'
@@ -370,7 +388,7 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
 print.RprobitB_latent_classes <- function(x, ...) {
   cat(crayon::underline("Latent classes\n"))
-  if(!x[["weight_update"]] && !x[["dp_update"]]){
+  if(!x[["class_update"]]){
     cat("C =", x$C, "\n")
   } else {
     cat("DP-based update:", x[["dp_update"]], "\n")
@@ -599,6 +617,12 @@ print.RprobitB_normalization <- function(x, ...) {
 #' @inheritParams RprobitB_latent_classes
 #' @param seed
 #' Set a seed for the Gibbs sampling.
+#' @param fixed_parameter
+#' Optionally specify a named list with fixed parameter values for \code{alpha},
+#' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
+#' \code{beta}, \code{z}, or \code{gamma} for the simulation.
+#' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
+#' for definitions of these variables.
 #'
 #' @return
 #' An object of class \code{RprobitB_fit}.
@@ -625,7 +649,8 @@ print.RprobitB_normalization <- function(x, ...) {
 
 fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
                       print_progress = getOption("RprobitB_progress"),
-                      prior = NULL, latent_classes = NULL, seed = NULL) {
+                      prior = NULL, latent_classes = NULL, seed = NULL,
+                      fixed_parameter = list()) {
 
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
@@ -641,7 +666,7 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
     )
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.")
+    stop("'R' must be a positive integer.", call. = FALSE)
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
     stop("'B' must be a positive integer smaller than 'R'.", call. = FALSE)
@@ -665,6 +690,24 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
     prior[["delta"]] <- 0.1
   }
 
+  ### set fixed parameter
+  fixed_parameter <- unclass(do.call(
+    what = RprobitB_parameter,
+    args = c(
+      list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
+           "C" = latent_classes$C, "ordered" = data$ordered, sample = FALSE),
+      fixed_parameter
+    )
+  ))[names(fixed_parameter)]
+  if(latent_classes[["class_update"]]) {
+    no_fix <- c("s","z","b","Omega")
+    if(any(names(fixed_parameter) %in% no_fix)) {
+      stop("You cannot fix parameter ",
+           paste(intersect(no_fix, names(fixed_parameter)), collapse = ", "),
+           " when updating C.", call. = FALSE)
+    }
+  }
+
   ### set prior parameters
   prior <- do.call(
     what = check_prior,
@@ -681,23 +724,28 @@ fit_model <- function(data, scale = Sigma_1 ~ 1, R = 1e4, B = R / 2, Q = 1,
   )
 
   ### perform Gibbs sampling
-  if (!is.null(seed)) set.seed(seed)
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampling(
     sufficient_statistics = ss, prior = prior,
-    latent_classes = unclass(latent_classes),
+    latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
     init = init, R = R, B = B, print_progress = print_progress
   )
   timer_end <- Sys.time()
 
-  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
+  if (latent_classes[["class_update"]]) {
     ### update number of latent classes
     latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
 
     ### remove zeros for unoccupied classes
-    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, 1:latent_classes[["C"]], drop = FALSE]
-    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * latent_classes[["C"]]), drop = FALSE]
-    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * latent_classes[["C"]]), drop = FALSE]
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][,
+                                          1:latent_classes[["C"]], drop = FALSE]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][,
+                        1:(data[["P_r"]] * latent_classes[["C"]]), drop = FALSE]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][,
+                      1:(data[["P_r"]]^2 * latent_classes[["C"]]), drop = FALSE]
   }
 
   ### save class sequence
