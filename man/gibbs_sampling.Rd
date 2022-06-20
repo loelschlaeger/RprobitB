@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler for the (mixed) multinomial probit model}
+\title{Markov chain Monte Carlo simulation for the probit model}
 \usage{
 gibbs_sampling(
   sufficient_statistics,
@@ -73,15 +73,17 @@ A list of Gibbs samples for
 \item \code{Sigma},
 \item \code{alpha} (if \code{P_f>0}),
 \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
+\item \code{d} (if \code{ordered = TRUE}),
 }
 and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 entry is the number of latent classes after iteration \code{r}.
 }
 \description{
-This function draws Gibbs samples from the posterior distribution of the
-(mixed) multinomial probit model parameters.
+This function draws from the posterior distribution of the probit model via
+Markov chain Monte Carlo simulation-
 }
 \details{
-This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
+This function is not supposed to be called directly, but rather via
+\code{\link{fit_model}}.
 }
 \keyword{internal}

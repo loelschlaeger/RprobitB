@@ -289,12 +289,12 @@ update_z <- function(s, beta, b, Omega) {
 #' @return
 #' An updated class size vector.
 #' @examples
-#' update_m(C = 3, z = c(1,1,1,2,2,3))
+#' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 #' @export
 #' @keywords
 #' posterior
 #'
-update_m <- function(C, z, nozero = FALSE) {
+update_m <- function(C, z, nozero) {
     .Call(`_RprobitB_update_m`, C, z, nozero)
 }
 
@@ -557,40 +557,60 @@ d_to_gamma <- function(d) {
     .Call(`_RprobitB_d_to_gamma`, d)
 }
 
-#' Conditional choice probability in the ordered probit model
+#' Choice probability in the ordered probit model
 #' @description
 #' This function computes the conditional probability of one choice occasion
 #' given the threshold increments \code{d}.
 #' @param d
 #' A numeric vector of threshold increments.
 #' @param y
-#'
+#' TBA
 #' @param mu
-#'
-#' @param log
-#' A boolean, if \code{TRUE} the logged probability is returned.
+#' TBA
+#' @param Tvec
+#' TBA
 #' @details
-#'
+#' TBA
 #' @return
-#' The choice probability.
+#' TBA
 #' @examples
-#' ll_d(c(0,0,0), 1, 1, FALSE)
+#' ll_ordered(c(0,0,0), 1, 1, FALSE)
 #' @export
 #' @keywords
 #' posterior
 #'
-ll_d <- function(d, y, mu, log) {
-    .Call(`_RprobitB_ll_d`, d, y, mu, log)
+ll_ordered <- function(d, y, mu, Tvec) {
+    .Call(`_RprobitB_ll_ordered`, d, y, mu, Tvec)
 }
 
-#' Gibbs sampler for the (mixed) multinomial probit model
-#'
+#' Update utility threshold increments
 #' @description
-#' This function draws Gibbs samples from the posterior distribution of the
-#' (mixed) multinomial probit model parameters.
+#' This function updates the utility threshold increments
+#' @param
 #'
 #' @details
-#' This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
+#'
+#' @return
+#'
+#' @examples
+#'
+#' @export
+#' @keywords
+#' posterior
+#'
+update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
+    .Call(`_RprobitB_update_d`, d, y, mu, ll, zeta, Z, Tvec)
+}
+
+#' Markov chain Monte Carlo simulation for the probit model
+#'
+#' @description
+#' This function draws from the posterior distribution of the probit model via
+#' Markov chain Monte Carlo simulation-
+#'
+#' @details
+#' This function is not supposed to be called directly, but rather via
+#' \code{\link{fit_model}}.
 #'
 #' @param sufficient_statistics
 #' The output of \code{\link{sufficient_statistics}}.
@@ -604,6 +624,7 @@ ll_d <- function(d, y, mu, log) {
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),
 #'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
+#'   \item \code{d} (if \code{ordered = TRUE}),
 #' }
 #' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 #' entry is the number of latent classes after iteration \code{r}.

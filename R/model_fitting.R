@@ -225,6 +225,8 @@ set_initial_gibbs_values <- function(
   ### special case of ordered probit
   if (ordered) {
     d0 <- rep(0,J-2)
+    U0 <- matrix(0, nrow = 1, ncol = N * max(T))
+    Sigma0 <- diag(1)
     if (!is.null(ss)) {
       if (P_f > 0) {
         W_mat <- Reduce(rbind, ss$W)
@@ -638,7 +640,7 @@ RprobitB_normalization <- function(
 
 print.RprobitB_normalization <- function(x, ...) {
   cat(crayon::underline("Utility normalization\n"))
-  if(!identical(NA,x$level)) {
+  if(identical(NA,x$level)) {
     cat(paste0(
       "Level: Fixed first utility threshold to 0.\n"
     ))
@@ -805,10 +807,9 @@ fit_model <- function(
     ranked = data[["ranked"]], ss = ss
   )
 
-  ### perform Gibbs sampling
-  if (!is.null(seed)) {
+  ### Gibbs sampling
+  if (!is.null(seed))
     set.seed(seed)
-  }
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampling(
     sufficient_statistics = ss, prior = prior,
@@ -817,6 +818,14 @@ fit_model <- function(
     ordered = data[["ordered"]], ranked = data[["ranked"]]
   )
   timer_end <- Sys.time()
+
+  ### filter Gibbs samples
+  if (data$P_f == 0)
+    gibbs_samples["alpha"] <- NULL
+  if (data$P_r == 0)
+    gibbs_samples[c("s","z","b","Omega","class_sequence")] <- NULL
+  if (!data$ordered)
+    gibbs_samples["d"] <- NULL
 
   if (latent_classes[["class_update"]]) {
     ### update number of latent classes
@@ -842,7 +851,7 @@ fit_model <- function(
   ### label Gibbs samples
   labels <- parameter_labels(
     P_f = data$P_f, P_r = data$P_r, J = data$J, C = latent_classes[["C"]],
-    cov_sym = TRUE, drop_par = NULL
+    ordered = data$ordered, cov_sym = TRUE, drop_par = NULL
   )
   for (par in names(labels)) {
     colnames(gibbs_samples[[par]]) <- labels[[par]]
@@ -857,7 +866,8 @@ fit_model <- function(
   ### normalize true model parameters based on 'normalization'
   if (data$simulated) {
     data$true_parameter <- transform_parameter(
-      parameter = data$true_parameter, normalization = normalization
+      parameter = data$true_parameter, normalization = normalization,
+      ordered = data$ordered
     )
   }
 
@@ -879,7 +889,7 @@ fit_model <- function(
 
   ### calculate log-likelihood
   RprobitB_pp("Computing log-likelihood")
-  out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
+  #out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out)) TODO: Remove
 
   ### return 'RprobitB_fit' object
   return(out)
@@ -1032,7 +1042,7 @@ sufficient_statistics <- function(data, normalization) {
     }
   }
 
-  ### for each fixed n, compute \sum kronecker(t(X_nt),t(X_nt))
+  ### for each n, compute \sum kronecker(t(X_nt),t(X_nt))
   RprobitB_pp("Computing sufficient statistics", 4, 4)
   XkX <- NA
   if (P_r > 0) {
@@ -1205,12 +1215,14 @@ summary.RprobitB_fit <- function(object, FUN = c(
       P_f = object$data$P_f,
       P_r = object$data$P_r,
       J = object$data$J,
-      C = ifelse(object$data$simulated,
-                 max(object$latent_classes$C, object$data$true_parameter$C),
-                 object$latent_classes$C
+      C = ifelse(
+        object$data$simulated,
+        max(object$latent_classes$C, object$data$true_parameter$C),
+        object$latent_classes$C
       ),
+      ordered = object$data$ordered,
       cov_sym = FALSE,
-      drop_par = NULL
+      drop_par = NULL,
     ),
     FUN = FUN
   )
@@ -1409,19 +1421,20 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### check inputs
   if (!is.list(gibbs_samples)){
-    stop("'gibbs_samples' must be a list of Gibbs samples.")
+    stop("'gibbs_samples' must be a list of Gibbs samples.", call. = FALSE)
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.")
+    stop("'R' must be a positive integer.", call. = FALSE)
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.")
+    stop("'B' must be a positive integer smaller than 'R'.", call. = FALSE)
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.")
+    stop("'Q' must be a positive integer smaller than 'R'.", call. = FALSE)
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
-    stop("'normalization' must be of class 'RprobitB_normalization'.")
+    stop("'normalization' must be of class 'RprobitB_normalization'.",
+         call. = FALSE)
   }
 
   ### function to scale the samples
@@ -1433,6 +1446,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   scale <- normalization[["scale"]]
   s_n <- scaling(gibbs_samples[["s"]], 1)
   z_n <- scaling(gibbs_samples[["z"]], 1)
+  d_n <- scaling(gibbs_samples[["d"]], 1)
   if (scale[["parameter"]] == "a") {
     factor <- scale[["value"]] / gibbs_samples[["alpha"]][, scale[["index"]]]
     alpha_n <- scaling(gibbs_samples[["alpha"]], factor)
@@ -1458,7 +1472,8 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     "beta" = beta_n,
     "b" = b_n,
     "Omega" = Omega_n,
-    "Sigma" = Sigma_n
+    "Sigma" = Sigma_n,
+    "d" = d_n
   )
   gibbs_samples_n <- gibbs_samples_n[lengths(gibbs_samples_n) != 0]
 
@@ -1484,6 +1499,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   Omega_nb <- burn(Omega_n)
   Sigma_nb <- burn(Sigma_n)
   beta_nb <- burn(beta_n)
+  d_nb <- burn(d_n)
   gibbs_samples_nb <- list(
     "s" = s_nb,
     "z" = z_nb,
@@ -1491,7 +1507,8 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     "beta" = beta_nb,
     "b" = b_nb,
     "Omega" = Omega_nb,
-    "Sigma" = Sigma_nb
+    "Sigma" = Sigma_nb,
+    "d" = d_nb
   )
   gibbs_samples_nb <- gibbs_samples_nb[lengths(gibbs_samples_nb) != 0]
 
@@ -1517,6 +1534,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   Omega_nt <- thin(Omega_n, R)
   Sigma_nt <- thin(Sigma_n, R)
   beta_nt <- thin(beta_n, R)
+  d_nt <- thin(d_n, R)
   gibbs_samples_nt <- list(
     "s" = s_nt,
     "z" = z_nt,
@@ -1524,7 +1542,8 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     "beta" = beta_nt,
     "b" = b_nt,
     "Omega" = Omega_nt,
-    "Sigma" = Sigma_nt
+    "Sigma" = Sigma_nt,
+    "d" = d_nt
   )
   gibbs_samples_nt <- gibbs_samples_nt[lengths(gibbs_samples_nt) != 0]
 
@@ -1536,6 +1555,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   Omega_nbt <- thin(Omega_nb, R - B)
   Sigma_nbt <- thin(Sigma_nb, R - B)
   beta_nbt <- thin(beta_nb, R - B)
+  d_nbt = thin(d_nb, R - B)
   gibbs_samples_nbt <- list(
     "s" = s_nbt,
     "z" = z_nbt,
@@ -1543,7 +1563,8 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
     "beta" = beta_nbt,
     "b" = b_nbt,
     "Omega" = Omega_nbt,
-    "Sigma" = Sigma_nbt
+    "Sigma" = Sigma_nbt,
+    "d" = d_nbt
   )
   gibbs_samples_nbt <- gibbs_samples_nbt[lengths(gibbs_samples_nbt) != 0]
 
@@ -1565,6 +1586,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 #' An object of class \code{RprobitB_parameter}.
 #' @param normalization
 #' An object of class \code{RprobitB_normalization}.
+#' @inheritParams RprobitB_data
 #'
 #' @return
 #' An object of class \code{RprobitB_parameter}.
@@ -1572,14 +1594,18 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 #' @keywords
 #' internal
 
-transform_parameter <- function(parameter, normalization) {
+transform_parameter <- function(parameter, normalization, ordered = FALSE) {
 
   ### check inputs
   if (!inherits(parameter, "RprobitB_parameter")) {
-    stop("'parameter' must be of class 'RprobitB_parameter'.")
+    stop("'parameter' must be of class 'RprobitB_parameter'.", stop = FALSE)
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
-    stop("'normalization' must be of class 'RprobitB_normalization'.")
+    stop("'normalization' must be of class 'RprobitB_normalization'.",
+         stop = FALSE)
+  }
+  if (!is.logical(ordered)) {
+    stop("'ordered' must be a boolean.", stop = FALSE)
   }
 
   ### function to scale the parameters
@@ -1605,13 +1631,20 @@ transform_parameter <- function(parameter, normalization) {
     parameter[["beta"]] <- scaling(parameter[["beta"]], factor)
   }
   if (scale[["parameter"]] == "s") {
-    factor <- scale[["value"]] / parameter[["Sigma"]][scale[["index"]], scale[["index"]]]
+    factor <- if(ordered) {
+      scale[["value"]] / parameter[["Sigma"]]
+    } else {
+      scale[["value"]] / parameter[["Sigma"]][scale[["index"]], scale[["index"]]]
+    }
     parameter[["alpha"]] <- scaling(parameter[["alpha"]], sqrt(factor))
     parameter[["b"]] <- scaling(parameter[["b"]], sqrt(factor))
     parameter[["Omega"]] <- scaling(parameter[["Omega"]], factor)
     parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor)
     parameter[["beta"]] <- scaling(parameter[["beta"]], sqrt(factor))
-    parameter[["Sigma_full"]] <- undiff_Sigma(parameter[["Sigma"]], normalization[["level"]][["level"]])
+    if (!ordered) {
+      parameter[["Sigma_full"]] <- undiff_Sigma(
+        parameter[["Sigma"]], normalization[["level"]][["level"]])
+    }
   }
 
   ### return 'parameter'

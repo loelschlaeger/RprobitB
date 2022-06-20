@@ -1663,11 +1663,11 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' @examples
 #' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
 
-RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
-                               C = NULL, s = NULL, b = NULL, Omega = NULL,
-                               Sigma = NULL, Sigma_full = NULL, beta = NULL,
-                               z = NULL, d = NULL, seed = NULL,
-                               sample = TRUE) {
+RprobitB_parameter <- function(
+    P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
+    Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
+    d = NULL, seed = NULL, sample = TRUE
+    ) {
 
   ### seed for sampling missing parameters
   if (!is.null(seed)) {
@@ -1832,6 +1832,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
       if (length(Sigma) != 1 || !is.numeric(Sigma) || is.matrix(Sigma)) {
         stop("'Sigma' must be a single numeric value.", call. = FALSE)
       }
+      names(Sigma) <- create_labels_Sigma(J, ordered = TRUE)
     } else {
       if (is.null(Sigma)) {
         if (is.null(Sigma_full)) {
@@ -1869,6 +1870,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     if(length(d) != J-2 || !is.numeric(d)) {
       stop("'d' must be a numeric vector of length ", J-2, ".", call. = FALSE)
     }
+    names(d) <- create_labels_d(J, ordered = TRUE)
   } else {
     d <- NA
   }

@@ -220,7 +220,7 @@ Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b
   arma::mat Omega_full(P_r*P_r,Cmax);
   Omega_full(span::all,span(0,C-1)) = Omega;
   arma::vec m_full(Cmax);
-  m_full(span(0,C-1)) = update_m(C, z);
+  m_full(span(0,C-1)) = update_m(C, z, true);
 
   // Dirichlet process
   for(int n = 0; n<N; n++) {

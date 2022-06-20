@@ -234,17 +234,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// ll_d
-double ll_d(arma::vec d, int y, double mu, bool log);
-RcppExport SEXP _RprobitB_ll_d(SEXP dSEXP, SEXP ySEXP, SEXP muSEXP, SEXP logSEXP) {
+// ll_ordered
+double ll_ordered(arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec);
+RcppExport SEXP _RprobitB_ll_ordered(SEXP dSEXP, SEXP ySEXP, SEXP muSEXP, SEXP TvecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type d(dSEXP);
-    Rcpp::traits::input_parameter< int >::type y(ySEXP);
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(ll_d(d, y, mu, log));
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Tvec(TvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(ll_ordered(d, y, mu, Tvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_d
+List update_d(arma::vec d, arma::mat y, arma::mat mu, double ll, arma::vec zeta, arma::mat Z, arma::vec Tvec);
+RcppExport SEXP _RprobitB_update_d(SEXP dSEXP, SEXP ySEXP, SEXP muSEXP, SEXP llSEXP, SEXP zetaSEXP, SEXP ZSEXP, SEXP TvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type d(dSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type ll(llSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type zeta(zetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Tvec(TvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_d(d, y, mu, ll, zeta, Z, Tvec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -314,7 +331,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
     {"_RprobitB_update_U", (DL_FUNC) &_RprobitB_update_U, 4},
     {"_RprobitB_d_to_gamma", (DL_FUNC) &_RprobitB_d_to_gamma, 1},
-    {"_RprobitB_ll_d", (DL_FUNC) &_RprobitB_ll_d, 4},
+    {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
+    {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 10},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {"_RprobitB_rttnorm", (DL_FUNC) &_RprobitB_rttnorm, 4},

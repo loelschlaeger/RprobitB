@@ -99,8 +99,8 @@ RprobitB_gibbs_samples_statistics <- function(
 #' @export
 #' @importFrom crayon underline
 
-print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
-                                                    digits = 2, ...) {
+print.RprobitB_gibbs_samples_statistics <- function(
+    x, true = NULL, digits = 2, ...) {
 
   ### check inputs
   if (!inherits(x,"RprobitB_gibbs_samples_statistics")) {
@@ -140,7 +140,7 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
     cat(header)
 
     ### determine order of parameters
-    order_of_parameters <- c("alpha", "s", "b", "Omega", "Sigma")
+    order_of_parameters <- c("alpha", "s", "b", "Omega", "Sigma", "d")
 
     ### ignore 's' if it is trivial
     if ("s" %in% names(x)) {
@@ -183,16 +183,17 @@ print.RprobitB_gibbs_samples_statistics <- function(x, true = NULL,
 #'
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples} filtered by the labels of
-#' \code{parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)}.
+#' \code{\link{parameter_labels}}.
 #'
 #' @keywords
 #' internal
 
 filter_gibbs_samples <- function(
-  x, P_f, P_r, J, C, cov_sym, keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
-  drop_par = NULL
+  x, P_f, P_r, J, C, cov_sym, ordered = FALSE,
+  keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"), drop_par = NULL
   ) {
-  labels <- parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)
+  labels <- parameter_labels(
+    P_f, P_r, J, C, cov_sym, ordered, keep_par, drop_par)
   for (gs in names(x)) {
     for (par in names(x[[gs]])) {
       if (!par %in% names(labels)) {
@@ -484,7 +485,7 @@ point_estimates <- function(x, FUN = mean) {
 #' Create parameters labels
 #'
 #' @description
-#' This function model parameter labels.
+#' This function creates model parameter labels.
 #'
 #' @inheritParams RprobitB_data
 #' @param cov_sym
@@ -503,15 +504,18 @@ point_estimates <- function(x, FUN = mean) {
 #' @keywords
 #' internal
 
-parameter_labels <- function(P_f, P_r, J, C, cov_sym,
-                             keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
-                             drop_par = NULL) {
+parameter_labels <- function(
+    P_f, P_r, J, C, cov_sym, ordered = FALSE,
+    keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"), drop_par = NULL) {
 
   ### check inputs
   if (P_r > 0) {
     if (!(is.numeric(C) && C %% 1 == 0 && C >= 1)) {
-      stop("'C' must be a number greater or equal 1.")
+      stop("'C' must be a number greater or equal 1.", call. = FALSE)
     }
+  }
+  if (!is.logical(ordered)) {
+    stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
   ### build labels
@@ -520,11 +524,13 @@ parameter_labels <- function(P_f, P_r, J, C, cov_sym,
     "alpha" = create_labels_alpha(P_f),
     "b" = create_labels_b(P_r, C),
     "Omega" = create_labels_Omega(P_r, C, cov_sym),
-    "Sigma" = create_labels_Sigma(J, cov_sym)
+    "Sigma" = create_labels_Sigma(J, cov_sym, ordered),
+    "d" = create_labels_d(J, ordered)
   )
 
   ### filter and return labels
-  labels <- labels[lengths(labels) != 0 & names(labels) %in% keep_par & !names(labels) %in% drop_par]
+  labels <- labels[lengths(labels) != 0 & names(labels) %in% keep_par &
+                     !names(labels) %in% drop_par]
   return(labels)
 }
 
@@ -636,24 +642,59 @@ create_labels_Omega <- function(P_r, C, cov_sym) {
 #' This function creates labels for the model parameter \code{Sigma}.
 #' @details
 #' The labels are of the form \code{"j1,j2"}, where \code{j1,j2} are indices
-#' of two alternatives.
+#' of the two alternatives \code{j1} and \code{j2}.
 #' @inheritParams parameter_labels
 #' @return
 #' A vector of labels for the model parameter \code{Sigma} of length
-#' \code{(J-1)^2} if \code{cov_sym = TRUE} or of length \code{P_r*(P_r+1)/2*C}
+#' \code{(J-1)^2} if \code{cov_sym = TRUE} or of length \code{J*(J-1)/2}
 #' if \code{cov_sym = FALSE}.
+#' If \code{ordered = TRUE}, \code{Sigma} has only one element.
 #' @examples
 #' RprobitB:::create_labels_Sigma(3, cov_sym = TRUE)
 #' RprobitB:::create_labels_Sigma(4, cov_sym = FALSE)
+#' RprobitB:::create_labels_Sigma(4, ordered = TRUE)
 #' @keywords
 #' internal
 
-create_labels_Sigma <- function(J, cov_sym) {
-  Sigma_id <- rep(TRUE, (J - 1) * (J - 1))
-  if (!cov_sym) {
-    Sigma_id[-which(lower.tri(matrix(NA, J - 1, J - 1), diag = TRUE) == TRUE)] <- FALSE
+create_labels_Sigma <- function(J, cov_sym, ordered = FALSE) {
+  if (ordered) {
+    "1,1"
+  } else {
+    Sigma_id <- rep(TRUE, (J - 1) * (J - 1))
+    if (!cov_sym) {
+      ids <- which(lower.tri(matrix(NA, J - 1, J - 1), diag = TRUE) == TRUE)
+      Sigma_id[-ids] <- FALSE
+    }
+    paste0(rep(1:(J - 1), each = J - 1), ",", rep(1:(J - 1),
+                                                  times = J - 1))[Sigma_id]
   }
-  paste0(rep(1:(J - 1), each = J - 1), ",", rep(1:(J - 1), times = J - 1))[Sigma_id]
+}
+
+#' Create labels for \code{d}
+#' @description
+#' This function creates labels for the model parameter \code{d}.
+#' @details
+#' Note that \code{J} must be greater or equal \code{3} in the ordered probit
+#' model.
+#' @inheritParams parameter_labels
+#' @return
+#' A vector of labels for the model parameter \code{d} of length \code{J - 2} if
+#' \code{ordered = TRUE} and \code{NULL} otherwise.
+#' @examples
+#' RprobitB:::create_labels_d(5, TRUE)
+#' @keywords
+#' internal
+
+create_labels_d <- function(J, ordered) {
+  if (J < 3) {
+    stop("'J' must be greater or equal 3 in the ordered probit model.",
+         call. = FALSE)
+  }
+  if (ordered) {
+    as.character(seq_len(J-2))
+  } else {
+    NULL
+  }
 }
 
 #' Linear coefficients

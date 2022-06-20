@@ -10,7 +10,8 @@ parameter_labels(
   J,
   C,
   cov_sym,
-  keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+  ordered = FALSE,
+  keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"),
   drop_par = NULL
 )
 }
@@ -23,6 +24,9 @@ parameter_labels(
 
 \item{cov_sym}{Set to \code{TRUE} for labels of symmetric covariance elements.}
 
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
 \item{keep_par}{A vector of parameter names which are kept.}
 
 \item{drop_par}{A vector of parameter names which get dropped.}
@@ -31,7 +35,7 @@ parameter_labels(
 A list of labels for the selected model parameters.
 }
 \description{
-This function model parameter labels.
+This function creates model parameter labels.
 }
 \examples{
 RprobitB:::parameter_labels(P_f = 1, P_r = 2, J = 3, C = 2, cov_sym = TRUE)
