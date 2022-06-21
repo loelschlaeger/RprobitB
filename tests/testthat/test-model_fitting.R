@@ -80,6 +80,27 @@ test_that("Gibbs sampling works", {
   expect_snapshot(print(coef(model)))
 })
 
+test_that("setting fixed parameters for the Gibbs sampling works", {
+  par <- list("Sigma" = 1, "alpha" = 1:2, b = 1, Omega = 0.1)
+  data <- simulate_choices(
+    form = choice ~ a | b, N = 10, T = 1:10, J = 2, seed = 1, base = "B",
+    re = "b", true_parameter = par
+  )
+  model <- fit_model(
+    data, R = 2000, seed = 1, fixed_parameter = par
+  )
+  true <- do.call(
+    what = RprobitB_parameter,
+    args = c(
+      list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
+           "ordered" = data$ordered, sample = FALSE),
+      par
+    )
+  )
+  est <- point_estimates(model)
+  expect_true(all.equal(true, est))
+})
+
 test_that("computation of sufficient statistics works", {
   form <- choice ~ v1 | v2
   re <- "v2"

@@ -53,7 +53,9 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}

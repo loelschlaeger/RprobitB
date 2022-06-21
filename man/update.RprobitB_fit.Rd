@@ -52,7 +52,13 @@ If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
+<<<<<<< HEAD
 If not specified, the choice set is defined by the observed choices.}
+=======
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
+>>>>>>> fe40f0c9d09b674a96e461d2c3f2d68c83767a9c
 
 \item{id}{A character, the name of the column in \code{choice_data} that contains
 unique identifier for each decision maker. The default is \code{"id"}.}
@@ -116,7 +122,11 @@ weight-based update of the latent classes.
 a latent class in the weight-based updating scheme.
 \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 a latent class in the weight-based updating scheme.
+<<<<<<< HEAD
 \item \code{distmin}: The (non-negative) threshold difference in class means
+=======
+\item \code{distmin}: The (non-negative) threshold in class mean difference
+>>>>>>> fe40f0c9d09b674a96e461d2c3f2d68c83767a9c
 for joining two latent classes in the weight-based updating scheme.
 }}
 

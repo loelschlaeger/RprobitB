@@ -59,9 +59,10 @@ double trunNormBelow(double const& a){
   return(z);
 }
 
-//' Draw from truncated normal
+//' Draw from one-sided truncated normal
 //' @description
-//' This function draws from a truncated univariate normal distribution.
+//' This function draws from a one-sided truncated univariate normal
+//' distribution.
 //' @param mu
 //' The mean.
 //' @param sig
@@ -74,10 +75,9 @@ double trunNormBelow(double const& a){
 //' A numeric value.
 //' @export
 //' @examples
-//' ### draw R samples from a standard normal truncated at 1 from above
+//' ### samples from a standard normal truncated at 1 from above
 //' R <- 1e4
-//' draws <- replicate(R, rtnorm(1,1,1,TRUE))
-//' ### draw the density
+//' draws <- replicate(R, rtnorm(0,1,1,TRUE))
 //' plot(density(draws))
 //' @keywords
 //' distribution
@@ -97,3 +97,34 @@ double rtnorm(double mu, double sig, double trunpt, bool above){
   }
   return(draw);
 }
+
+//' Draw from two-sided truncated normal
+//' @description
+//' This function draws from a two-sided truncated univariate normal
+//' distribution.
+//' @param mu
+//' The mean.
+//' @param sig
+//' The standard deviation.
+//' @param lower_bound
+//' The lower truncation point.
+//' @param upper_bound
+//' The upper truncation point.
+//' @return
+//' A numeric value.
+//' @export
+//' @examples
+//' ### samples from a standard normal truncated at -2 and 2
+//' R <- 1e4
+//' draws <- replicate(R, rttnorm(0,1,-2,2))
+//' plot(density(draws))
+//' @keywords
+//' distribution
+//'
+// [[Rcpp::export]]
+double rttnorm(double mu, double sig, double lower_bound, double upper_bound){
+  double a = R::pnorm((lower_bound-mu)/sig,0,1,1,0);
+  double b = R::pnorm((upper_bound-mu)/sig,0,1,1,0);
+  return mu + sig * R::qnorm(R::runif(0.0,1.0)*(b-a)+a,0,1,1,0);
+}
+

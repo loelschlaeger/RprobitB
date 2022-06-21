@@ -2,16 +2,19 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampling}
 \alias{gibbs_sampling}
-\title{Gibbs sampler for the (mixed) multinomial probit model}
+\title{Markov chain Monte Carlo simulation for the probit model}
 \usage{
 gibbs_sampling(
   sufficient_statistics,
   prior,
   latent_classes,
+  fixed_parameter,
   init,
   R,
   B,
-  print_progress
+  print_progress,
+  ordered,
+  ranked
 )
 }
 \arguments{
@@ -39,9 +42,15 @@ weight-based update of the latent classes.
 a latent class in the weight-based updating scheme.
 \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 a latent class in the weight-based updating scheme.
-\item \code{distmin}: The (non-negative) threshold difference in class means
+\item \code{distmin}: The (non-negative) threshold in class mean difference
 for joining two latent classes in the weight-based updating scheme.
 }}
+
+\item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
+\code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
+\code{beta}, \code{z}, or \code{d} for the simulation.
+See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
+for definitions of these variables.}
 
 \item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
 
@@ -52,6 +61,11 @@ be discarded.}
 
 \item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
 estimated remaining computation time.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{ranked}{TBA}
 }
 \value{
 A list of Gibbs samples for
@@ -59,15 +73,17 @@ A list of Gibbs samples for
 \item \code{Sigma},
 \item \code{alpha} (if \code{P_f>0}),
 \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
+\item \code{d} (if \code{ordered = TRUE}),
 }
 and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 entry is the number of latent classes after iteration \code{r}.
 }
 \description{
-This function draws Gibbs samples from the posterior distribution of the
-(mixed) multinomial probit model parameters.
+This function draws from the posterior distribution of the probit model via
+Markov chain Monte Carlo simulation-
 }
 \details{
-This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
+This function is not supposed to be called directly, but rather via
+\code{\link{fit_model}}.
 }
 \keyword{internal}

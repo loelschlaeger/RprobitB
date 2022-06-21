@@ -867,9 +867,9 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' @param seed
 #' Set a seed for the simulation.
 #' @param true_parameter
-#' Optionally specify a named list with true parameters for \code{alpha},
+#' Optionally specify a named list with true parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-#' \code{beta}, \code{z}, or \code{gamma} for the simulation.
+#' \code{beta}, \code{z}, or \code{d} for the simulation.
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
 #' for definitions of these variables.
 #' @inheritParams prepare_data
@@ -900,7 +900,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'   N = 10,
 #'   T = 1:10,
 #'   J = 5,
-#'   alternatives = c("very good", "good", "indifferent", "bad", "very bad"),
+#'   alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
 #'   ordered = TRUE,
 #'   covariates = list(
 #'     "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
@@ -908,9 +908,12 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'   seed = 1,
 #'   true_parameter = list(
 #'     "alpha" = c(-1, 1),
-#'     "gamma" = 0:3
+#'     "d" = rep(0,3)
 #'   )
 #' )
+#'
+#' ### simulate data from a ranked probit model
+#' TBA
 #'
 #' @export
 #'
@@ -927,10 +930,11 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'   \item [train_test()] for splitting choice data into a train and test subset
 #' }
 
-simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
-                             ordered = FALSE, ranked = FALSE, base = NULL,
-                             covariates = NULL, seed = NULL,
-                             true_parameter = list()) {
+simulate_choices <- function(
+    form, N, T, J, re = NULL, alternatives = NULL, ordered = FALSE,
+    ranked = FALSE, base = NULL, covariates = NULL, seed = NULL,
+    true_parameter = list()
+    ) {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
@@ -1157,7 +1161,8 @@ simulate_choices <- function(form, N, T, J, re = NULL, alternatives = NULL,
           V_nt <- as.numeric(X_nt %*% coef)
           U_nt <- V_nt + eps
         }
-        y_nt_ind <- cut(U_nt, breaks = c(-Inf, true_parameter$gamma, Inf),
+        gamma <- c(0, cumsum(exp(true_parameter[["d"]])))
+        y_nt_ind <- cut(U_nt, breaks = c(-Inf, gamma, Inf),
                         right = TRUE, include.lowest = TRUE, labels = FALSE)
         y_n[t] <- alternatives[y_nt_ind]
       } else {
@@ -1433,6 +1438,8 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
 #' If not specified, the choice set is defined by the observed choices.
+#' If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+#' alternatives ordered from worst to best.
 #' @param ordered
 #' A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 #' \code{alternatives} is assumed to be ordered from worst to best.
@@ -1494,7 +1501,7 @@ RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
   stopifnot(is.logical(simulated))
   stopifnot(is.logical(choice_available))
   if (!is.null(true_parameter)) {
-    stopifnot(class(true_parameter) == "RprobitB_parameter")
+    stopifnot(inherits(true_parameter, "RprobitB_parameter"))
   }
 
   ### create and return object of class "RprobitB_data"
@@ -1636,10 +1643,9 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' @param z
 #' The vector of the allocation variables of length \code{N}.
 #' Set to \code{NA} if \code{P_r = 0}.
-#' @param gamma
-#' The numberic vector of utility thresholds in the ordered case of length
-#' \code{J-1}. The vector elements must be strictly increasing, and the first
-#' element must be \code{0} (in order to fix the utility level).
+#' @param d
+#' The numeric vector of the logarithmic increases of the utility thresholds
+#' in the ordered probit case of length \code{J-1}.
 #' @param sample
 #' A boolean, if \code{TRUE} (default) missing parameters get sampled.
 #' @param seed
@@ -1657,11 +1663,11 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' @examples
 #' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
 
-RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
-                               C = NULL, s = NULL, b = NULL, Omega = NULL,
-                               Sigma = NULL, Sigma_full = NULL, beta = NULL,
-                               z = NULL, gamma = NULL, seed = NULL,
-                               sample = TRUE) {
+RprobitB_parameter <- function(
+    P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
+    Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
+    d = NULL, seed = NULL, sample = TRUE
+    ) {
 
   ### seed for sampling missing parameters
   if (!is.null(seed)) {
@@ -1709,21 +1715,25 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     }
 
     ### s
-    if (is.null(s) && !sample) {
-      s <- NA
+    if (C == 1) {
+      s <- 1
     } else {
-      if (is.null(s)) {
-        s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
-        s[C] <- 1 - sum(s[-C])
+      if (is.null(s) && !sample) {
+        s <- NA
+      } else {
+        if (is.null(s)) {
+          s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
+          s[C] <- 1 - sum(s[-C])
+        }
+        if (length(s) != C || !is.numeric(s) ||
+            abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
+          stop("'s' must be a non-ascending numeric vector of length ", C,
+               " which sums up to 1.",
+               call. = FALSE
+          )
+        }
+        names(s) <- create_labels_s(P_r, C)
       }
-      if (length(s) != C || !is.numeric(s) ||
-          abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
-        stop("'s' must be a non-ascending numeric vector of length ", C,
-             " which sums up to 1.",
-             call. = FALSE
-        )
-      }
-      names(s) <- create_labels_s(P_r, C)
     }
 
     ### b
@@ -1822,6 +1832,7 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
       if (length(Sigma) != 1 || !is.numeric(Sigma) || is.matrix(Sigma)) {
         stop("'Sigma' must be a single numeric value.", call. = FALSE)
       }
+      names(Sigma) <- create_labels_Sigma(J, ordered = TRUE)
     } else {
       if (is.null(Sigma)) {
         if (is.null(Sigma_full)) {
@@ -1851,22 +1862,17 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     }
   }
 
-  ### gamma
+  ### d
   if (ordered) {
-    if(is.null(gamma)) {
-      gamma <- round(c(0, cumsum(exp(runif(J-2)))), 2)
+    if(is.null(d)) {
+      d <- round(runif(J-2),2)
     }
-    if(length(gamma) != J-1 || !is.numeric(gamma)) {
-      stop("'gamma' must be a numeric vector of length J-1.", call. = FALSE)
+    if(length(d) != J-2 || !is.numeric(d)) {
+      stop("'d' must be a numeric vector of length ", J-2, ".", call. = FALSE)
     }
-    if(gamma[1] != 0) {
-      stop("The first element in 'gamma' must be 0.", call. = FALSE)
-    }
-    if(!all(diff(gamma) > 0)) {
-      stop("The elements in 'gamma' must be strictly increasing.", call. = FALSE)
-    }
+    names(d) <- create_labels_d(J, ordered = TRUE)
   } else {
-    gamma <- NA
+    d <- NA
   }
 
   ### build and return 'RprobitB_parameter'-object
@@ -1880,9 +1886,9 @@ RprobitB_parameter <- function(P_f, P_r, J, N, ordered = FALSE, alpha = NULL,
     "Sigma_full" = Sigma_full,
     "beta" = beta,
     "z" = z,
-    "gamma" = gamma
+    "d" = d
   )
-  class(out) <- "RprobitB_parameter"
+  class(out) <- c("RprobitB_parameter", "list")
   return(out)
 }
 

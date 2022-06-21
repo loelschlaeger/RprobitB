@@ -4,13 +4,14 @@
 \alias{RprobitB_gibbs_samples_statistics}
 \title{Create object of class \code{RprobitB_gibbs_samples_statistics}}
 \usage{
-RprobitB_gibbs_samples_statistics(gibbs_samples, FUN)
+RprobitB_gibbs_samples_statistics(gibbs_samples, FUN = list(mean = mean))
 }
 \arguments{
-\item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}.}
+\item{gibbs_samples}{An object of class \code{RprobitB_gibbs_samples}, which generally is located
+as object \code{gibbs_samples} in an \code{RprobitB_model} object.}
 
 \item{FUN}{A (preferably named) list of functions that compute parameter statistics
-from the Gibbs samples, i.e.
+from the Gibbs samples, for example
 \itemize{
 \item \code{mean} for the mean,
 \item \code{sd} for the standard deviation,

@@ -39,7 +39,7 @@ This function plots the allocation of decision-maker specific coefficient vector
 and the class covariance matrices \code{Omega}.
 }
 \details{
-Only in the two-dimensional case, i.e. only if \code{P_r = 2}.
+Only applicable in the two-dimensional case, i.e. only if \code{P_r = 2}.
 }
 \examples{
 b <- matrix(c(-1,1,1,1), ncol = 2)

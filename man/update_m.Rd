@@ -4,7 +4,7 @@
 \alias{update_m}
 \title{Update class sizes}
 \usage{
-update_m(C, z, nozero = FALSE)
+update_m(C, z, nozero)
 }
 \arguments{
 \item{C}{The number (greater or equal 1) of latent classes of decision makers.
@@ -23,6 +23,6 @@ An updated class size vector.
 This function updates the class size vector.
 }
 \examples{
-update_m(C = 3, z = c(1,1,1,2,2,3))
+update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 }
 \keyword{posterior}
