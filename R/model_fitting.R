@@ -888,8 +888,11 @@ fit_model <- function(
   )
 
   ### calculate log-likelihood
-  RprobitB_pp("Computing log-likelihood")
-  #out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out)) TODO: Remove
+  ### TODO: also for ordered
+  if(!data$ordered) {
+    RprobitB_pp("Computing log-likelihood")
+    out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
+  }
 
   ### return 'RprobitB_fit' object
   return(out)

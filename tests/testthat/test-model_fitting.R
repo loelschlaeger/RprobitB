@@ -71,7 +71,7 @@ test_that("building of RprobitB_normalization works", {
 test_that("Gibbs sampling works", {
   data <- simulate_choices(
     form = choice ~ a | b | c,
-    N = 10, T = 1:10, J = 2,
+    N = 50, T = 1:50, J = 2,
     seed = 1, base = "B"
   )
   model <- fit_model(data, R = 2000, seed = 1)
@@ -114,14 +114,6 @@ test_that("computation of sufficient statistics works", {
   )
   ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
   expect_snapshot(ss)
-})
-
-test_that("estimating a nested model works", {
-  model <- RprobitB::model_train
-  mod <- update(model,
-    form = choice ~ price + time, R = 100, B = 50
-  )
-  expect_s3_class(mod, "RprobitB_fit")
 })
 
 test_that("transforming B in RprobitB_fit works", {

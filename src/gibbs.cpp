@@ -904,14 +904,18 @@ List gibbs_sampling (
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
           if(P_f>0 && P_r>0)
-            U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
           if(P_f>0 && P_r==0)
-            U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha, Sigmainv);
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(W[ind])*alpha, Sigmainv);
           if(P_f==0 && P_r>0)
-            U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(X[ind])*beta(span::all,n), Sigmainv);
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(X[ind])*beta(span::all,n), Sigmainv);
           if(P_f==0 && P_r==0){
             arma::vec mu_null(Jm1);
-            U(span::all,ind) = update_U(U(span::all,ind), y(n,t), mu_null, Sigmainv);
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              mu_null, Sigmainv);
           }
         }
       }

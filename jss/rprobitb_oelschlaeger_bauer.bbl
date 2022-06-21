@@ -12,7 +12,7 @@
 \bibitem[{Akaike(1974)}]{Akaike:1974}
 Akaike H (1974).
 \newblock \enquote{A New Look at the Statistical Model Identification.}
-\newblock \textbf{19}.
+\newblock \emph{IEEE Transactions on Automatic Control}, \textbf{19}.
 
 \bibitem[{Albert and Chib(1993)}]{Albert:1993}
 Albert JH, Chib S (1993).
@@ -92,6 +92,7 @@ Geweke J (1998).
 \newblock \enquote{Efficient Simulation from the Multivariate Normal and
   Student-t Distributions Subject to Linear Constraints and the Evaluation of
   Constraint Probabilities.}
+\newblock \emph{Comput. Sci. Statist.}, \textbf{23}.
 
 \bibitem[{Gronau \emph{et~al.}(2017)Gronau, Sarafoglou, Matzke, Ly, Boehm,
   Marsman, Leslie, Forster, Wagenmakers, and Steingroever}]{Gronau:2017}
@@ -103,7 +104,7 @@ Gronau QF, Sarafoglou A, Matzke D, Ly A, Boehm U, Marsman M, Leslie DS, Forster
 \bibitem[{Hammersley and Handscomb(1964)}]{Hammersley:1964}
 Hammersley JM, Handscomb DC (1964).
 \newblock \enquote{General principles of the monte carlo method.}
-\newblock pp. 50--75.
+\newblock \emph{Springer}, pp. 50--75.
 
 \bibitem[{Hess and Palma(2019)}]{Hess:2019}
 Hess S, Palma D (2019).

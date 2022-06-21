@@ -686,11 +686,11 @@ create_labels_Sigma <- function(J, cov_sym, ordered = FALSE) {
 #' internal
 
 create_labels_d <- function(J, ordered) {
-  if (J < 3) {
-    stop("'J' must be greater or equal 3 in the ordered probit model.",
-         call. = FALSE)
-  }
   if (ordered) {
+    if (J < 3) {
+      stop("'J' must be greater or equal 3 in the ordered probit model.",
+           call. = FALSE)
+    }
     as.character(seq_len(J-2))
   } else {
     NULL

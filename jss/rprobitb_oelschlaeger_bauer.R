@@ -248,30 +248,8 @@ predict(model_train)
 ###################################################
 ### code chunk number 33: example 1 train predict individual level
 ###################################################
-pred <- predict(model_train, overview = FALSE, digits = 8)
+pred <- predict(model_train, overview = FALSE)
 head(pred, n = 5)
-
-### mlogit
-library("mlogit")
-data("Train", package = "mlogit")
-Train$choiceid <- 1:nrow(Train)
-Tr <- dfidx(Train, choice = "choice", varying = 4:11, sep = "_",
-            opposite = c("price", "comfort", "time", "change"),
-            idx = list(c("choiceid", "id")), idnames = c("chid", "alt"))
-Tr$price <- Tr$price / 100 * 2.20371
-Tr$time <- Tr$time / 60
-Train.ml <- mlogit(choice ~ price + time + change + comfort | - 1, Tr)
-
-### merge pred
-pred_merge <- data.frame(
-  "d" = ifelse(pred$true == "A", 1, 0),
-  "RprobitB" = pred$A,
-  "mlogit" = Train.ml$probabilities[,1])
-pred_merge <- melt_roc(data = pred_merge, d = "d", m = c("RprobitB", "mlogit"))
-ggplot(data = pred_merge, aes(m = M, d = D, color = name)) +
-  geom_roc(n.cuts = 20, labels = FALSE) +
-  style_roc(theme = theme_grey)
-
 
 
 ###################################################
