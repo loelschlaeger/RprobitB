@@ -87,7 +87,7 @@ The latent class model extension enables preference-based decider classification
 
 The model fitting in \pkg{RprobitB} is Bayesian via Markov chain Monte Carlo simulation. We chose this approach because it has several benefits compared to frequentist inference: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf. \cite{Train:2001} for a simulation study in the logit case.
 
-With \pkg{RprobitB}, we aim to extend the collection of available open-source software for choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. The \pkg{apollo} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayes estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. \pkg{RprobitB} complements the collection by implementing latent class mixed probit models and class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
+With \pkg{RprobitB}, we aim to extend the collection of available open-source software for choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. The \pkg{apollo} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayes estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements the collection by implementing latent class mixed probit models and class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
 
 \begin{table}[!ht]
 \centering
@@ -484,7 +484,7 @@ The results indicate that the deciders value one hour travel time by about 8 eur
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ price + time + comfort + change | 0
+Formula: choice ~ price + time + comfort + change | 0 
 R: 1000, B: 500, Q: 1
 
 Utility normalization
@@ -494,14 +494,14 @@ Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 Gibbs sample statistics
           mean      sd      R^
  alpha
-
+                              
      1   -1.00    0.00    1.00
      2   -8.02  555.20    1.01
      3   19.81  434.67    1.00
      4   -3.89  326.93    1.00
 
  Sigma
-
+                                         
    1,1 247912882.32 3863511587.06    1.00
 \end{Soutput}
 \end{Schunk}
@@ -631,7 +631,7 @@ We previously simulated the \class{RprobitB\_data} object \code{data\_sim} from 
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ var1 | var2 | var3
+Formula: choice ~ var1 | var2 | var3 
 R: 1000, B: 500, Q: 1
 
 Utility normalization
@@ -639,30 +639,30 @@ Level: Utility differences with respect to alternative 'alt2'.
 Scale: Coefficient of the 1. error term variance fixed to 1.
 
 Latent classes
-C = 2
+C = 2 
 
 Gibbs sample statistics
           true    mean      sd      R^
  alpha
-
+                                      
      1   -1.00   -0.99    0.09    1.20
      2    0.00   -0.03    0.04    1.03
      3    1.00    0.93    0.09    1.07
 
  s
-
+                                      
      1    0.70    0.70    0.09    1.01
      2    0.30    0.30    0.09    1.01
 
  b
-
+                                      
    1.1    2.00    2.04    0.21    1.06
    1.2   -0.50   -0.51    0.28    1.00
    2.1    1.00    0.74    0.41    1.05
    2.2    1.00    1.20    0.32    1.00
 
  Omega
-
+                                      
  1.1,1    0.31    0.23    0.14    1.71
  1.1,2    0.71    0.37    0.25    1.52
  1.2,2    4.67    4.33    1.16    1.04
@@ -671,7 +671,7 @@ Gibbs sample statistics
  2.2,2    0.87    0.66    0.31    1.01
 
  Sigma
-
+                                      
    1,1    1.00    1.00    0.00    1.00
 \end{Soutput}
 \end{Schunk}

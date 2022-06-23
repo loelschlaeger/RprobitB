@@ -79,6 +79,14 @@ options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 %%   of Statistical Software" above) they should be in sentence case (like
 %%   "generalized linear models" below).
 
+%% -- TODO-List ----------------------------------------------------------------
+
+%% - log-normal coefficients -> formula?
+%% - Example 2 with simulated ranked data
+%% - add MCMC formulas for U in ordered and ranked case
+%% - scale framework ":="
+%% - logarithm for chess rating
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -92,7 +100,7 @@ The latent class model extension enables preference-based decider classification
 
 The model fitting in \pkg{RprobitB} is Bayesian via Markov chain Monte Carlo simulation. We chose this approach because it has several benefits compared to frequentist inference: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf. \cite{Train:2001} for a simulation study in the logit case.
 
-With \pkg{RprobitB}, we aim to extend the collection of available open-source software for choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. The \pkg{apollo} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayes estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements the collection by implementing latent class mixed probit models and class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
+\pkg{RprobitB} aims to extend the collection of available open-source software for choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. The \pkg{apollo} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayes estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements the collection by implementing latent class mixed probit models and class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
 
 \begin{table}[!ht]
 \centering
@@ -111,7 +119,7 @@ With \pkg{RprobitB}, we aim to extend the collection of available open-source so
 \end{table}
 
 % Article overview
-This article provides a general description of \pkg{RprobitB} and is structured as follows. To fix our notation, Section \ref{sec:choice_data} defines the probit model and formalizes the concepts of mixing distributions and latent classes. Sections \ref{sec:model_fitting} - \ref{sec:model_selection} describe the package functionality, including choice data preparation, simulation, model fitting, choice prediction, preference classification, and model selection (the main functions for these tasks are visualized in Figure \ref{fig:flowchart}). For illustration, we use four different empirical data sets: the two stated-choice data sets \code{Train} and \code{Electricity} from the \pkg{mlogit} package, a revealed-choice data set about online chess strategy that is contained in \pkg{RprobiB}, and ordered choice data from the German family panel pairfam \citep{Bruderl:2020}. Section \ref{sec:conclusion} concludes and gives an outlook of anticipated package extensions.
+This article provides a general description of choice modeling with \pkg{RprobitB} and is structured as follows. To fix our notation, Section \ref{sec:choice_data} defines the probit model and formalizes the concepts of mixing distributions and latent classes. Sections \ref{sec:model_fitting} - \ref{sec:model_selection} describe the package functionality, including choice data preparation, simulation, model fitting, choice prediction, preference classification, and model selection (the main functions for these tasks are visualized in Figure \ref{fig:flowchart}). For illustration, we use three different empirical data sets: the two stated-choice data sets \code{Train} and \code{Electricity} from the \pkg{mlogit} package and a revealed-choice data set about online chess strategy that is contained in \pkg{RprobiB}. Section \ref{sec:conclusion} concludes and gives an outlook of anticipated package extensions.
 
 \begin{figure}[!ht]
   \includegraphics{flowchart.png}
@@ -167,7 +175,7 @@ Different covariate types can be considered: covariates that are constant across
 \end{align}
 Here, the covariates $A$ and $C$ depend on the alternative $j$, while $B$ is only decider and choice occasion specific. The coefficient $\beta_1$ for $A$ is generic (i.e.\ the same for each alternative), whereas $\beta_{2j}$ and $\beta_{3j}$ for $B$ and $C$ are alternative specific. The intercept $\beta_0j$ is called alternative specific constant (ASC). ASCs capture the average effect on the alternative's utility of all factors that are not included in the model.
 
-The full collections $(\beta_{0j})_{j=1,\dots,J}$ of ASCs and $(\beta_{2j})_{j=1,\dots,J}$ of coefficients for covariate type $B$ are not identified. This is because we took utility differences for model normalization (cf.\ Section \ref{sec:probit_model}), and hence one coefficient is a linear combination of the others, respectively. We therefore fix $\beta_{0k}$ and $\beta_{2k}$ to 0 for one base alternative $k$. The coefficients $(\beta_{0j})_{j\neq k}$ and $(\beta_{2j})_{j\neq k}$ then have to be interpreted with respect to $k$.
+Note that the full collections $(\beta_{0j})_{j=1,\dots,J}$ of ASCs and $(\beta_{2j})_{j=1,\dots,J}$ of coefficients for covariate type $B$ are not identified. This is because we took utility differences for model normalization (cf.\ Section \ref{sec:probit_model}), and hence one coefficient is a linear combination of the others, respectively. We therefore fix $\beta_{0k}$ and $\beta_{2k}$ to 0 for one base alternative $k$. The coefficients $(\beta_{0j})_{j\neq k}$ and $(\beta_{2j})_{j\neq k}$ then have to be interpreted with respect to $k$.
 
 \subsection{Formula framework} \label{subsec:formula}
 
@@ -187,7 +195,7 @@ The function performs compatibility checks and data transformations, and returns
 \begin{itemize}
   \item \code{re}: A character vector of covariate names in \code{form} with random effects. Per default \code{re = NULL}, i.e.\ no random effects.
   \item \code{alternatives}: A character vector of the alternative names, defining the choice set. If not specified, all alternatives chosen in \code{choice\_data} are considered.
-  \item \code{ordered} and \code{ranked}: Two booleans, that are set to \code{FALSE} per default. If set to \code{TRUE}, the alternatives are interpreted as ordered, and the choices are interpreted as ranked, respectively. See Sections \ref{subsec:ordered_alternatives} and \ref{subsec:ranked_choices} for details.
+  \item \code{ordered} and \code{ranked}: Two booleans, that are set to \code{FALSE} per default. If set to \code{TRUE}, the alternatives are interpreted as ordered, or the choices are interpreted as ranked, respectively. See Sections \ref{subsec:ordered_alternatives} and \ref{subsec:ranked_choices} for details.
   \item \code{base}: One element of \code{alternatives} specifying the base alternative (cf.\ Section \ref{subsec:covariate_types}). Per default, \code{base} is the last element of \code{alternatives}.
   \item \code{id} and \code{idc}: The names of the columns in \code{choice_data} that contain unique identifier for each decision maker and for each choice occasion, respectively. Per default, \code{id = "id"} and \code{idc = NULL}, in which case the choice occasion identifier are generated by the appearance of the choices in the \code{choice\_data}.
   \item \code{standardize}: A character vector of variable names of \code{form} that get standardized, i.e.\ rescaled to have a mean of 0 and a standard deviation of 1 (none per default).
@@ -235,7 +243,7 @@ plot(data_train)
 
 The two choice alternatives in Example 1 are unordered. If we had asked "rate your train trip from 1 (horrible) to 7 (great)", then the respondents would choose their answer from a set of ordered alternatives. Ordered alternatives can by analyzed in \pkg{RprobitB} by setting \code{ordered = TRUE} in \fct{prepare\_data}. In this case, \code{alternatives} becomes a mandatory argument, with the alternative names ordered from worst to best.
 
-In the ordered case, the concept of decider's having separate utilities for each alternative is no longer natural \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only one utility value
+In the ordered case, the concept of decider's having separate utilities for each alternative is no longer natural \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only a single utility value
 \begin{align*}
   U_{nt} = X_{nt}'\beta_n + \epsilon_{nt}
 \end{align*}
@@ -243,31 +251,31 @@ per decider $n$ and choice occasion $t$, which we interpret as the "level of ass
 \begin{align*}
    y_{nt} = \sum_{j = 1,\dots,J} j \cdot I(\gamma_{j-1} < U_{nt} \leq \gamma_{j}),
 \end{align*}
-with end points $\gamma_0 = -\infty$ and $\gamma_J = +\infty$, and new model coefficients $(\gamma_j)_{j=1,\dots,J-1}$.
+with end points $\gamma_0 = -\infty$ and $\gamma_J = +\infty$, and thresholds $(\gamma_j)_{j=1,\dots,J-1}$. To ensure monotonicity of the thresholds, we rather estimate logarithmic threshold increments $d_j$ with $\gamma_j = \sum_{i=1,\dots,j} \exp{d_i}$, $j=1,\dots,J-1$.
 
 Normalizing the ordered probit model with respect to the utility level differs from the unordered case: since we model only one utility value, we can no longer take utility differences, but instead fix $\gamma_1 = 0$. For scale normalization however, we again can either fix the variance of the (now univariate) normal distribution of the error term $\epsilon_{nt}$, or fix a fixed effect. Both options are available in \pkg{RprobitB} through the \code{scale} argument for the estimation routine \fct{fit\_model} (cf.\ Section \ref{subsec:estimation_routine}).\footnote{Note that there is even a third option for scale normalization: restricting the value space for the thresholds to a bounded interval also serves the purpose, but is not implemented.}
 
 \subsection{Ranked choices} \label{subsec:ranked_choices}
 
-Ranked choices are yet another variation: rather than recording only the single most preferred alternative, some surveys ask for a full ranking (from most preferred to least preferred) of all the alternatives, which reveals far more about the underlying preferences. Das kann konzeptioenell einfach umgesetzt werden, in dem die Differenzenbildung in equation \eqref{eq:utility_diff} ersetzt wird durch .... In Example ... gibt es ein Beispiel. Kehre Differenzenbildung um und dann differenziere passed zum Ranking. Dann update U. Und um dann wieder auf ein gemeinsames Level zu kommen, kehre das wieder um und differenziere wieder gleich. Schreibe Matrix für die Differenzenbildung konkret auf.
+Ranked choices are yet another variation: rather than recording only the single most preferred alternative, some surveys ask for a full ranking (from most preferred to least preferred) of all the alternatives, which reveals far more about the underlying preferences. Ranked choices can by analyzed in \pkg{RprobitB} by setting \code{ranked = TRUE} in \fct{prepare\_data}. In this case, the column of choices in \code{choice_data} must be of \class{character} type, containing for each choice occasion the full ranking of the available alternatives separated by commas, cf. Example 2. The ranked probit model follows directly from the basic multivariate model by replacing the differencing of equation \eqref{eq:utility_diff} such that the resulting utility vector is always negative, see \citep[Ch.\ 7.3]{Train:2009} for details.
 
 \subsection{Simulating choice data} \label{subsec:simulate_choice_data}
 
-The \fct{simulate\_choices} function simulates choice data from a pre-specified probit model. Say we want to simulate the choices of \code{N} deciders in \code{T} choice occasions\footnote{\code{T} can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length \code{N} with decision maker specific numbers of choice occasions} among \code{J} alternatives. Together with a model formula \code{form}, we would have to call
+The \fct{simulate\_choices} function simulates choice data from a pre-specified probit model. In order to simulate the choices of \code{N} deciders in \code{T} choice occasions\footnote{\code{T} can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length \code{N} with decision maker specific numbers of choice occasions} among \code{J} alternatives,
 
 <<simulate choices call, eval=FALSE>>=
 data <- simulate_choices(form = form, N = N, T = T, J = J)
 @
 
-The function \fct{simulate\_choices} has the following optional arguments:
+where \code{form} is a model formula introduced in Section \ref{subsec:formula}. The function \fct{simulate\_choices} has the following optional arguments:
 \begin{itemize}
-  \item \code{re}, \code{base}, \code{standardize}: Analogue to \fct{prepare\_data} (cf.\ Section \ref{subsec:prepare_data}).
+  \item \code{re}, \code{ordered}, \code{ranked}, \code{base}, \code{standardize}: Analogue to \fct{prepare\_data} (cf.\ Section \ref{subsec:prepare_data}).
   \item \code{alternatives}: A character vector of length \code{J} with the names of the choice alternatives (per default the first \code{J} upper-case letters of the Roman alphabet).
   \item \code{covariates}: A named list of covariate values. Each element must be a vector of length equal to the number of choice occasions and named according to a covariate. Unspecified covariates are drawn from a standard normal distribution.
   \item \code{seed}: Optionally set a seed for the simulation.
 \end{itemize}
 
-The true model parameters are set at random per default. Alternatively, they can be specified via a named list that is passed to the function's \code{true\_parameter} argument and contains:
+The true model parameters are set at random per default. Alternatively, they can be specified via a named list for the function's \code{true\_parameter} argument. The list can contain contains
 \begin{itemize}
   \item a numeric vector \code{alpha} with the fixed effects,
   \item the number \code{C} of latent classes (\code{C = 1} per default),
@@ -276,10 +284,13 @@ The true model parameters are set at random per default. Alternatively, they can
   \item a matrix \code{Omega} with the class covariance matrices as columns,
   \item a matrix \code{Sigma\_full} (\code{Sigma}), the (differenced) error term covariance matrix,
   \item a matrix \code{beta} with the decision-maker specific coefficient vectors as columns,
-  \item a numeric vector \code{z} of length \code{N} with elements in \code{1:C}, representing the class allocations.
+  \item a numeric vector \code{z} of length \code{N} with elements in \code{1:C}, representing the class allocations,
+  \item a numeric vector \code{d} of the logarithmic threshold increments in the ordered probit case.
 \end{itemize}
 
-\paragraph{Example 2: Simulated ranked choices.} For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between the fictitious alternatives \code{alt1} and \code{alt2}. The choices are explained by the alternative specific covariates \code{var1} and \code{var3}. Covariate \code{var2} is only choice occasion specific but connected to a random effect, as well as the ASCs:
+\paragraph{Example 2: Simulated ranked choices.}
+% Change to ranked
+For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between the fictitious alternatives \code{alt1} and \code{alt2}. The choices are explained by the alternative specific covariates \code{var1} and \code{var3}. Covariate \code{var2} is only choice occasion specific but connected to a random effect, as well as the ASCs:
 
 <<example 2 sim meta>>=
 N <- 100
@@ -295,14 +306,17 @@ The \fct{overview\_effects} function provides an overview of the effect types:
 overview_effects(form = form, re = re, alternatives = alternatives)
 @
 
-The model has three fixed effects (\code{random = FALSE}), consequently the vector \code{alpha} must be of length 3, where the elements 1 to 3 correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. Additionally, the model has two random effects (\code{random = TRUE}), hence the matrix \code{b} must be of dimension \code{2 x C}, where row 1 and 2 correspond to \code{var2\_alt1} and \code{ASC\_alt1}, respectively. We specify \code{C = 2} latent classes in the data generating process, which we will reproduce in Sections \ref{subsec:latent_classes} and \ref{subsec:weight_update}:
+The model has three fixed effects (\code{random = FALSE}), consequently the vector \code{alpha} must be of length 3, where the elements 1 to 3 correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. Additionally, the model has two random effects (\code{random = TRUE}), hence the matrix \code{b} must be of dimension \code{2 x C}, where row 1 and 2 correspond to \code{var2\_alt1} and \code{ASC\_alt1}, respectively. We specify \code{C = 2} latent classes in the data generating process, which we will reproduce in Sections \ref{subsec:latent_classes} and \ref{subsec:weight_update}.
+
+As simulation parameters, we specify $\alpha = \begin{pmatrix} -1 & 0 & 1 \end{pmatrix}^t$, class weights $s = \begin{pmatrix} 0.7 & 0.3 \end{pmatrix}$, class means $b_1 = \begin{pmatrix} 2 & -0.5 \end{pmatrix}^t$ and $b_2 = \begin{pmatrix} 1 & 1 \end{pmatrix}^t$, and $\Sigma = 1$. The class covariances $\Omega_1$ and $\Omega_2$ remain unspecified and hence are set at random.
 
 <<example 2 sim simulation>>=
 data_sim <- simulate_choices(
   form = form, N = N, T = T, J = 2,
   re = re, alternatives = alternatives, seed = 1,
-  true_parameter = list(alpha = c(-1,0,1), C = 2, s = c(0.7,0.3),
-                        b = matrix(c(2,-0.5,1,1), ncol = 2), Sigma = 1)
+  true_parameter = list(
+    alpha = c(-1,0,1), C = 2, s = c(0.7,0.3),
+    b = matrix(c(2,-0.5,1,1), ncol = 2), Sigma = 1)
 )
 @
 
@@ -328,7 +342,8 @@ We a priori assume the following (conjugate) parameter distributions:
   \item $\alpha\sim \text{MVN}_{P_f}(\psi,\Psi)$, where $\text{MVN}_{P_f}$ denotes the $P_f$-dimensional normal distribution with mean $\psi$ and covariance $\Psi$,
   \item $b_c \sim \text{MVN}_{P_r}(\xi,\Xi)$, independent for all $c$,
   \item $\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)$, independent for all $c$, where $W^{-1}_{P_r}(\nu,\Theta)$ denotes the $P_r$-dimensional inverse Wishart distribution with $\nu$ degrees of freedom and scale matrix $\Theta$,
-  \item and $\tilde{\Sigma} \sim W^{-1}_{J-1}(\kappa,\Lambda)$.
+  \item $\tilde{\Sigma} \sim W^{-1}_{J-1}(\kappa,\Lambda)$,
+  \item and $\gamma \sim MVN_{J-2}(\zeta,Z)$.
 \end{itemize}
 
 These priors imply the following conditional posterior distributions (we are closely following \cite{Oelschlaeger:2020}):
@@ -365,6 +380,10 @@ These priors imply the following conditional posterior distributions (we are clo
   \mu_{\tilde{U}_{ntj}} = \tilde{W}_{ntj}'\alpha + \tilde{X}_{ntj}'\beta_n - \Sigma_{\tilde{U}_{ntj}} (\tilde{\Sigma}^{-1})_{j(-j)}   (\tilde{U}_{nt(-j)} - \tilde{W}_{nt(-j)}'\alpha - \tilde{X}_{nt(-j)}' \beta_n ),
   \end{align*}
   where $(\tilde{\Sigma}^{-1})_{jj}$ denotes the $(j,j)$-th element of $\tilde{\Sigma}^{-1}$, $(\tilde{\Sigma}^{-1})_{j(-j)}$ the $j$-th row without the $j$-th entry, $\tilde{W}_{nt(-j)}$ and $\tilde{X}_{nt(-j)}$ the differenced covariate matrices connected to fixed and random effects, respectively, with the $j$-th column removed.
+
+  In the ranked case ...
+
+  In the ordered case ...
   \item Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $\tilde{W}_{nt}$ on the regressands $(\tilde{U}_{nt:})-\tilde{X}_{nt}'\beta_n$, i.e.\
   \begin{align*}
   \alpha \mid \Psi,\psi,\tilde{W},\tilde{\Sigma},\tilde{U},\tilde{X},\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
@@ -382,7 +401,7 @@ These priors imply the following conditional posterior distributions (we are clo
   where $S = \sum_{n=1,t=1}^{N,T} \tilde{\varepsilon}_{nt} \tilde{\varepsilon}_{nt}'$ and $\tilde{\varepsilon}_{nt} = (\tilde{U}_{nt:}) - \tilde{W}_{nt}'\alpha - \tilde{X}_{nt}'\beta_n$.
 \end{itemize}
 
-The Gibbs samples obtained from this updating scheme (except for $s$ and $z$ draws) lack identification w.r.t.\ scale (cf.\ Section \ref{sec:probit_model}). Subsequent to the sampling and for the $i$-th updates in each iteration $i$, we therefore apply the normalization $\alpha^{(i)} \cdot \omega^{(i)}$, $b_c^{(i)} \cdot \omega^{(i)}$, $\tilde{U}_{nt}^{(i)} \cdot \omega^{(i)}$, $\beta_n^{(i)} \cdot \omega^{(i)}$, $\Omega_c^{(i)} \cdot (\omega^{(i)})^2$, and $\tilde{\Sigma}^{(i)} \cdot (\omega^{(i)})^2$, where either $\omega^{(i)} = \sqrt{\text{const} / (\tilde{\Sigma}^{(i)})_{jj}}$ with $(\tilde{\Sigma}^{(i)})_{jj}$ the $j$-th diagonal element of $\tilde{\Sigma}^{(i)}$, $1\leq j \leq J-1$, or alternatively $\omega^{(i)} = \text{const} / \alpha^{(i)}_p$ for some coordinate $1\leq p \leq P_f$ of the $i$-th draw for the coefficient vector $\alpha$. Here, $\text{const}$ is a constant to specify custom utility scales.
+The Gibbs samples obtained from this updating scheme (except for $s$ and $z$ draws) lack identification with respect to the scale (cf.\ Section \ref{sec:probit_model}). Subsequent to the sampling and for the $i$-th updates in each iteration $i$, we therefore apply the normalization $\alpha^{(i)} \cdot \omega^{(i)}$, $b_c^{(i)} \cdot \omega^{(i)}$, $\tilde{U}_{nt}^{(i)} \cdot \omega^{(i)}$, $\beta_n^{(i)} \cdot \omega^{(i)}$, $\Omega_c^{(i)} \cdot (\omega^{(i)})^2$, and $\tilde{\Sigma}^{(i)} \cdot (\omega^{(i)})^2$, where either $\omega^{(i)} = \sqrt{\text{const} / (\tilde{\Sigma}^{(i)})_{jj}}$ with $(\tilde{\Sigma}^{(i)})_{jj}$ the $j$-th diagonal element of $\tilde{\Sigma}^{(i)}$, $1\leq j \leq J-1$, or alternatively $\omega^{(i)} = \text{const} / \alpha^{(i)}_p$ for some coordinate $1\leq p \leq P_f$ of the $i$-th draw for the coefficient vector $\alpha$. Here, $\text{const}$ is a constant to specify custom utility scales.
 
 \subsection{The estimation routine} \label{subsec:estimation_routine}
 
