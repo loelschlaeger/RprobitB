@@ -92,7 +92,7 @@ See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the v
 for more details.
 }
 \examples{
-### simulate data from a mixed probit model with two latent classes
+### simulate data from a binary probit model with two latent classes
 data <- simulate_choices(
   form = choice ~ cost | income | time,
   N = 100,
@@ -110,7 +110,7 @@ data <- simulate_choices(
 
 ### simulate data from an ordered probit model
 data <- simulate_choices(
-  form = opinion_on_sth ~ age + gender,
+  form = opinion ~ age + gender,
   N = 10,
   T = 1:10,
   J = 5,
@@ -119,15 +119,19 @@ data <- simulate_choices(
   covariates = list(
     "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
     ),
-  seed = 1,
-  true_parameter = list(
-    "alpha" = c(-1, 1),
-    "d" = rep(0,3)
-  )
+  seed = 1
 )
 
 ### simulate data from a ranked probit model
-TBA
+data <- simulate_choices(
+  form = product ~ price,
+  N = 10,
+  T = 1:10,
+  J = 3,
+  alternatives = c("A", "B", "C"),
+  ranked = TRUE,
+  seed = 1
+)
 
 }
 \seealso{

@@ -119,6 +119,36 @@ test_that("simulating choice data works", {
   expect_snapshot(summary(data))
 })
 
+test_that("simulating ordered choices works", {
+  data <- simulate_choices(
+    form = opinion ~ age + gender,
+    N = 10,
+    T = 1:10,
+    J = 5,
+    alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
+    ordered = TRUE,
+    covariates = list(
+      "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
+      ),
+    seed = 1
+  )
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})
+
+test_that("simulating ranked choices works", {
+  data <- simulate_choices(
+    form = product ~ price,
+    N = 10,
+    T = 1:10,
+    J = 3,
+    alternatives = c("A", "B", "C"),
+    ranked = TRUE,
+    seed = 1
+  )
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})
 
 test_that("splitting data set by N works", {
   x <- simulate_choices(

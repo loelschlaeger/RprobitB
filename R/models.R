@@ -24,7 +24,7 @@
 #'   data = data,
 #'   R = 10000,
 #'   Q = 10,
-#'   scale = price ~ -1)
+#'   scale = "price := -1")
 #' )
 #' }
 #'
@@ -81,7 +81,7 @@
 #'   data = data,
 #'   R = 5000,
 #'   Q = 10,
-#'   scale = pf ~ -1
+#'   scale = "pf := -1"
 #' )
 #' }
 #'

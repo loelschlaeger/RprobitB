@@ -38,3 +38,7 @@ test_that("printing abbreviated matrices and vectors works", {
     name = "big matrix"
   ))
 })
+
+test_that("computation of permutations works", {
+  expect_snapshot(RprobitB:::permutations(x = c("a","b","c")))
+})

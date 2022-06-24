@@ -223,6 +223,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_U_ranked
+arma::vec update_U_ranked(arma::vec U, arma::vec sys, arma::mat Sigmainv);
+RcppExport SEXP _RprobitB_update_U_ranked(SEXP USEXP, SEXP sysSEXP, SEXP SigmainvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type U(USEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sys(sysSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Sigmainv(SigmainvSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_U_ranked(U, sys, Sigmainv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // d_to_gamma
 arma::vec d_to_gamma(arma::vec d);
 RcppExport SEXP _RprobitB_d_to_gamma(SEXP dSEXP) {
@@ -330,6 +343,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_reg", (DL_FUNC) &_RprobitB_update_reg, 4},
     {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
     {"_RprobitB_update_U", (DL_FUNC) &_RprobitB_update_U, 4},
+    {"_RprobitB_update_U_ranked", (DL_FUNC) &_RprobitB_update_U_ranked, 3},
     {"_RprobitB_d_to_gamma", (DL_FUNC) &_RprobitB_d_to_gamma, 1},
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},

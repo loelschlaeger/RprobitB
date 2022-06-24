@@ -17,7 +17,6 @@
 \SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
 <<preliminaries, echo=FALSE, results=hide>>=
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-# install.packages("RprobitB", "plotROC")
 # library(RprobitB) # UNCOMMENT!
 @
 
@@ -702,7 +701,7 @@ model_selection(
 )
 @
 
-\section{Conclusion} \label{sec:conclusion}
+\section{Future developments} \label{sec:conclusion}
 
 The \pkg{RprobitB} package aims at making probit models accessible to \proglang{R} users with an interest in choice behavior heterogeneity. It contains functions to prepare and simulate choice data, to fit models, to update the class size, to use a fitted model for choice prediction, and to perform model selection. The \pkg{RprobitB} package has a user-friendly design: the different package objects can be seamlessly passed between functions and its usage follows a clear workflow (see Figure \ref{fig:flowchart}). In this paper, we demonstrated for examples that serves as a starting point for \proglang{R} users who want to apply latent class mixed probit models to their own choice data.
 

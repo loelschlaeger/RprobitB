@@ -456,10 +456,10 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #'   \item [train_test()] for splitting choice data into a train and test subset
 #' }
 
-prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
-                         ordered = FALSE, ranked = FALSE, base = NULL,
-                         id = "id", idc = NULL, standardize = NULL,
-                         impute = "complete_cases") {
+prepare_data <- function(
+    form, choice_data, re = NULL, alternatives = NULL, ordered = FALSE,
+    ranked = FALSE, base = NULL, id = "id", idc = NULL, standardize = NULL,
+    impute = "complete_cases") {
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
@@ -527,15 +527,13 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   choice_data <- choice_data[order(choice_data[, id], choice_data[, idc]), ]
 
   ### check alternative set
-  if (ordered) {
-    if (ranked) {
+  if (ordered || ranked) {
+    if (ordered && ranked) {
       stop("'ordered' and 'ranked' cannot both be TRUE.", call. = FALSE)
     }
     if (is.null(alternatives)) {
-      stop("Please specify 'alternatives' if 'ordered = TRUE'.", call. = FALSE)
+      stop("Please specify 'alternatives'.", call. = FALSE)
     }
-  } else if (ranked) {
-    stop("Not yet implemented.")
   } else {
     if (is.null(alternatives)) {
       if (choice_available) {
@@ -564,6 +562,14 @@ prepare_data <- function(form, choice_data, re = NULL, alternatives = NULL,
   J <- length(alternatives)
   if (J <= 1) {
     stop("At least two choice alternatives are required, only one was provided.",
+         call. = FALSE)
+  }
+  if(ordered == TRUE && J <= 2) {
+    stop("Please specify 3 or more alternatives for the ordered probit model.",
+         call. = FALSE)
+  }
+  if(ranked == TRUE && J <= 2) {
+    stop("Please specify 3 or more alternatives for the ranked probit model.",
          call. = FALSE)
   }
 
@@ -878,7 +884,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' An object of class \code{RprobitB_data}.
 #'
 #' @examples
-#' ### simulate data from a mixed probit model with two latent classes
+#' ### simulate data from a binary probit model with two latent classes
 #' data <- simulate_choices(
 #'   form = choice ~ cost | income | time,
 #'   N = 100,
@@ -896,7 +902,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'
 #' ### simulate data from an ordered probit model
 #' data <- simulate_choices(
-#'   form = opinion_on_sth ~ age + gender,
+#'   form = opinion ~ age + gender,
 #'   N = 10,
 #'   T = 1:10,
 #'   J = 5,
@@ -905,15 +911,19 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #'   covariates = list(
 #'     "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
 #'     ),
-#'   seed = 1,
-#'   true_parameter = list(
-#'     "alpha" = c(-1, 1),
-#'     "d" = rep(0,3)
-#'   )
+#'   seed = 1
 #' )
 #'
 #' ### simulate data from a ranked probit model
-#' TBA
+#' data <- simulate_choices(
+#'   form = product ~ price,
+#'   N = 10,
+#'   T = 1:10,
+#'   J = 3,
+#'   alternatives = c("A", "B", "C"),
+#'   ranked = TRUE,
+#'   seed = 1
+#' )
 #'
 #' @export
 #'
@@ -931,7 +941,7 @@ missing_data <- function(choice_data, impute = "complete_cases",
 #' }
 
 simulate_choices <- function(
-    form, N, T, J, re = NULL, alternatives = NULL, ordered = FALSE,
+    form, N, T = 1, J, re = NULL, alternatives = NULL, ordered = FALSE,
     ranked = FALSE, base = NULL, covariates = NULL, seed = NULL,
     true_parameter = list()
     ) {
@@ -946,8 +956,7 @@ simulate_choices <- function(
 
   ### check other inputs
   if (!is.numeric(N) || N %% 1 != 0) {
-    stop("'N' must be a non-negative number.",
-         call. = FALSE)
+    stop("'N' must be a non-negative number.", call. = FALSE)
   }
   if (length(T) == 1) {
     T <- rep(T, N)
@@ -957,13 +966,11 @@ simulate_choices <- function(
          call. = FALSE)
   }
   if (!is.numeric(J) || J %% 1 != 0 || !J >= 2) {
-    stop("'J' must be a number greater or equal 2.",
-         call. = FALSE)
+    stop("'J' must be a number greater or equal 2.", call. = FALSE)
   }
   if (is.null(alternatives)) {
     if (J > 26) {
-      stop("Please specify 'alternatives'.",
-           call. = FALSE)
+      stop("Please specify 'alternatives'.", call. = FALSE)
     } else {
       alternatives <- LETTERS[1:J]
     }
@@ -980,6 +987,14 @@ simulate_choices <- function(
   }
   if(ordered == TRUE && ranked == TRUE) {
     stop("'ordered' and 'ranked' cannot both be TRUE.", call. = FALSE)
+  }
+  if(ordered == TRUE && J <= 2) {
+    stop("'J' must be greater or equal 3 in the ordered probit model.",
+         call. = FALSE)
+  }
+  if(ranked == TRUE && J <= 2) {
+    stop("'J' must be greater or equal 3 in the ranked probit model.",
+         call. = FALSE)
   }
   if (!is.null(covariates)) {
     for (i in 1:length(covariates)) {
@@ -1173,7 +1188,12 @@ simulate_choices <- function(
           V_nt <- X_nt %*% coef
           U_nt <- V_nt + eps
         }
-        y_n[t] <- alternatives[which.max(U_nt)]
+        if (ranked) {
+          y_n[t] <- paste(alternatives[order(as.vector(U_nt), decreasing = TRUE)],
+                          collapse = ",")
+        } else {
+          y_n[t] <- alternatives[which.max(U_nt)]
+        }
       }
     }
 
@@ -1429,6 +1449,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' @param T
 #' The number (greater or equal 1) of choice occasions or a vector of choice
 #' occasions of length \code{N} (i.e. a decision maker specific number).
+#' Per default, \code{T = 1}.
 #' @param J
 #' The number (greater or equal 2) of choice alternatives.
 #' @param P_f
@@ -1558,7 +1579,14 @@ summary.RprobitB_data <- function(object, ...) {
   ### alternative frequency
   alt_freq <- data.frame(matrix(NA, nrow = 0, ncol = 1))
   colnames(alt_freq) <- "frequency"
-  for (i in object$alternatives) {
+  if (object$ranked) {
+    choice_set <- sapply(permutations(object$alternatives), paste, collapse = ",")
+  } else {
+    choice_set <- object$alternatives
+  }
+
+
+  for (i in choice_set) {
     alt_freq[nrow(alt_freq) + 1, ] <-
       sum(unlist(lapply(object$data, function(x) x[["y"]])) == i)
     rownames(alt_freq)[nrow(alt_freq)] <- i

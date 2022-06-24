@@ -154,7 +154,7 @@ data_elec <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model_elec <- fit_model(data_elec, R = 1000, scale = pf ~ -1)
+model_elec <- fit_model(data_elec, R = 1000, scale = "pf := -1")
 
 
 ###################################################

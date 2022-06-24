@@ -184,7 +184,7 @@ check_prior <- function(
 #' @inheritParams RprobitB_data
 #' @param C
 #' The number (greater or equal 1) of latent classes.
-#' @param y
+#' @param ss
 #' Optionally the output of \code{\link{sufficient_statistics}}.
 #'
 #' @return
@@ -244,7 +244,9 @@ set_initial_gibbs_values <- function(
     d0 <- NA
   }
 
-  ### TODO: special case of ranked probit
+  if (ranked) {
+
+  }
 
   ### define 'init'
   init <- list(
@@ -484,7 +486,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #'         fixes the first utility threshold to 0.
 #'   \item For scale normalization, RprobitB fixes one model parameter. Per
 #'         default, the first error-term variance is fixed to `1`.
-#'         This is specified via `scale = Sigma_1 ~ 1`.
+#'         This is specified via `scale = "Sigma_1 := 1"`.
 #'         Alternatively, any error-term variance or any non-random coefficient
 #'         can be fixed.
 #' }
@@ -494,8 +496,8 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' Currently, only differences with respect to the last alternative can be
 #' computed.
 #' @param scale
-#' A formula object which determines the utility scale. It is of the form
-#' `<parameter> ~ <value>`, where `<parameter>` is either the name of a fixed
+#' A character which determines the utility scale. It is of the form
+#' `<parameter> := <value>`, where `<parameter>` is either the name of a fixed
 #' effect or `Sigma_<j>` for the `<j>`th diagonal element of `Sigma`, and
 #' `<value>` is the value of the fixed parameter.
 #' @inheritParams overview_effects
@@ -517,7 +519,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' @examples
 #' RprobitB:::RprobitB_normalization(
 #'   level = "B",
-#'   scale = price ~ -1,
+#'   scale = "price := -1",
 #'   form = choice ~ price + time + comfort + change | 1,
 #'   re = "time",
 #'   alternatives = c("A", "B"),
@@ -528,7 +530,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' internal
 
 RprobitB_normalization <- function(
-    level, scale = Sigma_1 ~ 1, form, re = NULL, alternatives, base,
+    level, scale = "Sigma_1 := 1", form, re = NULL, alternatives, base,
     ordered = FALSE
     ) {
 
@@ -555,12 +557,12 @@ RprobitB_normalization <- function(
   if(!(is.character(level) && length(level) == 1 && level %in% alternatives)){
     stop("'level' must be one element of 'alternatives'.", call. = FALSE)
   }
-  if(!inherits(scale, "formula")){
-    stop("'scale' must be of class 'formula'.", call. = FALSE)
+  if(!(is.character(scale) && length(scale) == 1)){
+    stop("'scale' must be a single character.", call. = FALSE)
   }
-  if(length(as.character(scale)) != 3){
-    stop("'scale' is not in the right format '<parameter> ~ <value>'.",
-         call. = FALSE)
+  scale <- gsub(" ", "", scale, fixed = TRUE)
+  if(!grepl(":=", scale, fixed = TRUE)) {
+    stop("'scale' is not in format '<parameter> := <value>'.", call. = FALSE)
   }
   if(missing(base)){
     stop("Please specify 'base'.", call. = FALSE)
@@ -583,7 +585,7 @@ RprobitB_normalization <- function(
     form = form, re = re, alternatives = alternatives,
     base = base
   )
-  parameter <- as.character(scale)[2]
+  parameter <- strsplit(scale, ":=", fixed = TRUE)[[1]][1]
   par_name <- NA
   if(parameter %in% effects[["effect"]]){
     index <- which(parameter == effects[["effect"]])
@@ -599,11 +601,11 @@ RprobitB_normalization <- function(
       parameter <- "s"
       index <- suppressWarnings(as.numeric(parameter_split[2]))
       if(is.na(index) || index %% 1 != 0 || index <= 0){
-        stop(paste("'<parameter>' in 'scale = <parameter> ~ <value>' is not in",
+        stop(paste("'<parameter>' in 'scale = <parameter> := <value>' is not in",
                    "the form 'Sigma_<j>' for an integer <j>."), call. = FALSE)
       }
       if(index > length(alternatives)) {
-        stop(paste("'<j>' in 'Sigma_<j>' for '<parameter>' in 'scale = <parameter> ~ <value>'",
+        stop(paste("'<j>' in 'Sigma_<j>' for '<parameter>' in 'scale = <parameter> := <value>'",
                    "must not be greater than the length of 'alternatives'."),
              call. = FALSE)
       }
@@ -611,17 +613,19 @@ RprobitB_normalization <- function(
       stop("Please check the specification of 'scale'.", call. = FALSE)
     }
   }
-  value <- suppressWarnings(as.numeric(as.character(scale)[3]))
+  value <- suppressWarnings(
+    as.numeric(strsplit(scale, ":=", fixed = TRUE)[[1]][2])
+    )
   if(is.na(value)) {
-    stop(paste("'<value>' in 'scale = <parameter> ~ <value>' is",
+    stop(paste("'<value>' in 'scale = <parameter> := <value>' is not",
                "a numeric value."), call. = FALSE)
   }
   if(value == 0){
-    stop("'<value>' in 'scale = <parameter> ~ <value>' must be non-zero.",
+    stop("'<value>' in 'scale = <parameter> := <value>' must be non-zero.",
          call. = FALSE)
   }
   if(value < 0 && parameter == "s"){
-    stop("'<value>' in 'scale = <parameter> ~ <value>' must be non-zero ",
+    stop("'<value>' in 'scale = <parameter> := <value>' must be non-zero ",
          "when fixing an error term variance.",
          call. = FALSE)
   }
@@ -644,23 +648,26 @@ print.RprobitB_normalization <- function(x, ...) {
     cat(paste0(
       "Level: Fixed first utility threshold to 0.\n"
     ))
+    cat(paste0(
+      "Scale: Error term variance fixed to ", x$scale$value, ".\n"
+    ))
   } else {
     cat(paste0(
       "Level: Utility differences with respect to alternative '",
       x$level$name, "'.\n"
     ))
-  }
-  if (x$scale$parameter == "a") {
-    cat(paste0(
-      "Scale: Coefficient of effect '", x$scale$name, "' (alpha_", x$scale$index,
-      ") fixed to ", x$scale$value, ".\n"
-    ))
-  }
-  if (x$scale$parameter == "s") {
-    cat(paste0(
-      "Scale: Coefficient of the ", x$scale$index, ". error term variance ",
-      "fixed to ", x$scale$value, ".\n"
-    ))
+    if (x$scale$parameter == "a") {
+      cat(paste0(
+        "Scale: Coefficient of effect '", x$scale$name, "' (alpha_", x$scale$index,
+        ") fixed to ", x$scale$value, ".\n"
+      ))
+    }
+    if (x$scale$parameter == "s") {
+      cat(paste0(
+        "Scale: Coefficient of the ", x$scale$index, ". error term variance ",
+        "fixed to ", x$scale$value, ".\n"
+      ))
+    }
   }
   return(invisible(x))
 }
@@ -712,8 +719,8 @@ print.RprobitB_normalization <- function(x, ...) {
 #' data <- simulate_choices(
 #'   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1
 #' )
-#' mod <- fit_model(data = data, R = 1000, seed = 1)
-#' summary(mod)
+#' model <- fit_model(data = data, R = 1000, seed = 1)
+#' summary(model)
 #'
 #' @export
 #'
@@ -729,7 +736,7 @@ print.RprobitB_normalization <- function(x, ...) {
 #' }
 
 fit_model <- function(
-    data, scale = Sigma_1 ~ 1, R = 1000, B = R / 2, Q = 1,
+    data, scale = "Sigma_1 := 1", R = 1000, B = R / 2, Q = 1,
     print_progress = getOption("RprobitB_progress"), prior = NULL,
     latent_classes = NULL, seed = NULL, fixed_parameter = list()
     ) {
@@ -804,7 +811,7 @@ fit_model <- function(
   init <- set_initial_gibbs_values(
     N = data[["N"]], T = data[["T"]], J = data[["J"]], P_f = data[["P_f"]],
     P_r = data[["P_r"]], C = latent_classes[["C"]], ordered = data[["ordered"]],
-    ranked = data[["ranked"]], ss = ss
+    ss = ss
   )
 
   ### Gibbs sampling
@@ -888,8 +895,8 @@ fit_model <- function(
   )
 
   ### calculate log-likelihood
-  ### TODO: also for ordered
-  if(!data$ordered) {
+  ### TODO: also for ordered and ranked
+  if(!data$ordered && !data$ranked) {
     RprobitB_pp("Computing log-likelihood")
     out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
   }
@@ -908,7 +915,7 @@ fit_model <- function(
 #' An object of class `RprobitB_data`.
 #' @param normalization
 #' An object of class `RprobitB_normalization`, which can be created
-#' via `\link{RprobitB_normalization}`.
+#' via \code{\link{RprobitB_normalization}}.
 #'
 #' @return
 #' A list of sufficient statistics on the data for Gibbs sampling, containing
@@ -937,20 +944,11 @@ fit_model <- function(
 #'         with itself,
 #'   \item \code{XkX}, a list of length \code{N}, each element is constructed in
 #'         the same way as \code{WkW} but with the elements in \code{X} and
-#'         separately for each decider.
+#'         separately for each decider,
+#'   \item \code{rdiff} (for the ranked case only), a list of matrices that
+#'         reverse the base differencing and instead difference in such a way
+#'         that the resulting utility vector is negative.
 #' }
-#'
-#' @examples
-#' form <- choice ~ v1 | v2
-#' re <- "v2"
-#' alternatives <- c("A","B","C")
-#' data <- simulate_choices(
-#'   form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives
-#' )
-#' normalization <- RprobitB:::RprobitB_normalization(
-#'   form = form, re = re, alternatives = alternatives
-#' )
-#' RprobitB:::sufficient_statistics(data = data, normalization = normalization)
 #'
 #' @keywords
 #' internal
@@ -980,7 +978,7 @@ sufficient_statistics <- function(data, normalization) {
   ### compute utility differences with respect to 'normalization$level$level'
   ### (not for an ordered probit model)
   RprobitB_pp("Computing sufficient statistics", 0, 4)
-  if (!identical(NA,normalization$level)) {
+  if (!data$ordered) {
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
         data_copy$data[[n]]$X[[t]] <- delta(J, normalization$level$level) %*%
@@ -992,8 +990,13 @@ sufficient_statistics <- function(data, normalization) {
   ### decode choice to numeric with respect to appearance
   RprobitB_pp("Computing sufficient statistics", 1, 4)
   y <- matrix(0, nrow = N, ncol = max(Tvec))
+  if (data$ranked) {
+    choice_set <- sapply(permutations(data$alternatives), paste, collapse = ",")
+  } else {
+    choice_set <- data$alternatives
+  }
   for (n in 1:N) {
-    y_n <- match(data_copy$data[[n]][[2]], data_copy$alternatives)
+    y_n <- match(data_copy$data[[n]][[2]], choice_set)
     y[n, ] <- c(y_n, rep(NA, max(Tvec) - length(y_n)))
   }
 
@@ -1064,6 +1067,18 @@ sufficient_statistics <- function(data, normalization) {
     }
   }
 
+  ### compute 'rdiff' (only in the ranked case)
+  if (data$ranked) {
+    rdiff <- list()
+    perm <- permutations(data$alternatives)
+    Dinv <- round(MASS::ginv(delta(J, normalization$level$level)))
+    for(p in 1:length(perm)) {
+      rdiff[[p]] <- M(ranking = match(data$alternatives, perm[[p]])) %*% Dinv
+    }
+  } else {
+    rdiff <- NA
+  }
+
   ### build and return 'suff_statistics'
   suff_statistics <- list(
     "N" = N,
@@ -1077,7 +1092,8 @@ sufficient_statistics <- function(data, normalization) {
     "X" = X,
     "y" = y,
     "WkW" = WkW,
-    "XkX" = XkX
+    "XkX" = XkX,
+    "rdiff" = rdiff
   )
   return(suff_statistics)
 }
@@ -1105,9 +1121,10 @@ sufficient_statistics <- function(data, normalization) {
 #' @examples
 #' update(model_train, form = choice ~ time, R = 100, B = 50)
 
-update.RprobitB_fit <- function(object, form, re, alternatives, id, idc,
-                                standardize, impute, scale, R, B, Q,
-                                print_progress, prior, latent_classes, seed) {
+update.RprobitB_fit <- function(
+    object, form, re, alternatives, id, idc, standardize, impute, scale, R, B,
+    Q, print_progress, prior, latent_classes, seed
+    ) {
   data <- prepare_data(
     form = if(missing(form)) object$data$form else form,
     choice_data = object$data$choice_data,
@@ -1153,13 +1170,14 @@ update.RprobitB_fit <- function(object, form, re, alternatives, id, idc,
 #' @keywords
 #' internal
 
-RprobitB_fit <- function(data, scale, level, normalization, R, B, Q,
-                         latent_classes, prior, gibbs_samples, class_sequence,
-                         comp_time) {
+RprobitB_fit <- function(
+    data, scale, level, normalization, R, B, Q, latent_classes, prior,
+    gibbs_samples, class_sequence, comp_time
+    ) {
 
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
-  stopifnot(inherits(scale, "formula"))
+  stopifnot(is.character("scale"))
   stopifnot(is.character("level"))
   stopifnot(inherits(normalization, "RprobitB_normalization"))
   stopifnot(is.numeric(R), R %% 1 == 0, R > 0)
@@ -1318,7 +1336,7 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 #' transform(model_train, Q = 1)
 #'
 #' ### change the scale
-#' transform(model_train, scale = Sigma_1 ~ 1)
+#' transform(model_train, scale = "Sigma_1 := 1")
 #'
 #' @export
 #'
@@ -1358,8 +1376,9 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
     if (check_preference_flip) {
       preference_flip(
         model_old = x,
-        model_new = transform.RprobitB_fit(x, scale = scale,
-                                           check_preference_flip = FALSE))
+        model_new = transform.RprobitB_fit(
+          x, scale = scale, check_preference_flip = FALSE)
+        )
     }
     normalization <- RprobitB_normalization(
       level = x$level,

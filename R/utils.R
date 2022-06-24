@@ -41,6 +41,38 @@ delta <- function(J, i) {
   return(Delta)
 }
 
+#' Matrix difference operator for ranked vectors
+#'
+#' @description
+#' This function creates the difference operator matrix for differencing ranked
+#' vector elements such that the resulting vector is negative.
+#'
+#' @param ranking
+#' A numeric vector of the ranking in decreasing order.
+#'
+#' @return
+#' A matrix of dimension \code{length(rank)-1} x \code{length(rank)}.
+#'
+#' @examples
+#' x <- c(-1,5,10,2)
+#' ranking <- order(x, decreasing = TRUE)
+#' RprobitB:::M(ranking) %*% x
+#'
+#' @export
+#'
+#' @keywords
+#' utils
+
+M <- function(ranking) {
+  J <- length(ranking)
+  out <- matrix(0, nrow = J-1, ncol = J)
+  for(i in 1:(J-1)) {
+    out[i,ranking[i]] <- -1
+    out[i,ranking[i+1]] <- 1
+  }
+  return(out)
+}
+
 #' Compute Gelman-Rubin statistic
 #'
 #' @description
@@ -273,4 +305,47 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
 
   ### return 'x' invisibly
   return(invisible(x))
+}
+
+#' Permutations of a vector
+#'
+#' @description
+#' This function returns all permutations of a given vector.
+#'
+#' @references
+#' This function is a modified version of
+#' <https://stackoverflow.com/a/20199902/15157768>.
+#'
+#' @param x
+#' A vector.
+#'
+#' @return
+#' A list of all permutations of \code{x}.
+#'
+#' @examples
+#' RprobitB:::permutations(x = c("a","b","c"))
+#'
+#' @keywords
+#' utils
+
+permutations <- function(x){
+  perm_index <- function(n){
+    if(n==1){
+      return(matrix(1))
+    } else {
+      sp <- perm_index(n-1)
+      p <- nrow(sp)
+      A <- matrix(nrow=n*p,ncol=n)
+      for(i in 1:n){
+        A[(i-1)*p+1:p,] <- cbind(i,sp+(sp>=i))
+      }
+      return(A)
+    }
+  }
+  p <- perm_index(length(x))
+  out <- list()
+  for(i in 1:nrow(p)) {
+    out <- c(out, list(x[p[i,]]))
+  }
+  return(out)
 }

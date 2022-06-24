@@ -419,6 +419,48 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
   return (U_update);
 }
 
+//' Update latent utility vector in the ranked probit case
+//' @description
+//' This function updates the latent utility vector in the ranked probit case.
+//' @param U
+//' The current utility vector of length \code{J-1}, differenced such that
+//' the vector is negative.
+//' @param sys
+//' A vector of length \code{J-1}, the systematic utility part.
+//' @param Sigmainv
+//' The inverted error term covariance matrix of dimension
+//' \code{J-1} x \code{J-1}.
+//' @details
+//' This update is basically the same as in the non-ranked case, despite that
+//' the truncation point is zero.
+//' @return
+//' An updated utility vector of length \code{J-1}.
+//' @examples
+//' U <- c(0,0)
+//' sys <- c(0,0)
+//' Sigmainv <- diag(2)
+//' update_U_ranked(U, sys, Sigmainv)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
+  int Jm1 = U.size();
+  arma::vec U_update = U;
+  double m;
+  for(int i = 0; i<Jm1; i++){
+    m = 0.0;
+    for(int k = 0; k<Jm1; k++){
+      if (k!=i){
+        m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
+      }
+    }
+    U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), 0.0, true);
+  }
+  return (U_update);
+}
+
 //' Transform threshold increments to thresholds
 //' @description
 //' This helper function transforms the threshold increments \code{d} to the
@@ -578,6 +620,7 @@ List gibbs_sampling (
   mat y = as<mat>(sufficient_statistics["y"]);
   mat WkW;
   List XkX;
+  List rdiff;
   if(P_f>0){
     W = as<List>(sufficient_statistics["W"]);
     WkW = as<mat>(sufficient_statistics["WkW"]);
@@ -585,6 +628,9 @@ List gibbs_sampling (
   if(P_r>0){
     X = as<List>(sufficient_statistics["X"]);
     XkX = as<List>(sufficient_statistics["XkX"]);
+  }
+  if(ranked){
+    rdiff = as<List>(sufficient_statistics["rdiff"]);
   }
 
   // extract 'latent_classes' parameters
@@ -873,7 +919,7 @@ List gibbs_sampling (
           for(int t = 0; t<Tvec[n]; t++){
             ind = csTvec[n]+t;
             if(P_r==0)
-              WSigU += trans(as<mat>(W[ind]))*U(span::all,ind);
+              WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
             if(P_r>0)
               WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
           }
@@ -887,32 +933,60 @@ List gibbs_sampling (
       for(int n = 0; n<N; n++){
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
-          if(P_f>0 && P_r>0)
+          if(P_f>0 && P_r>0) {
             mu_mat_tmp = as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n);
-          if(P_f>0 && P_r==0)
+          }
+          if(P_f>0 && P_r==0) {
             mu_mat_tmp = as<mat>(W[ind])*alpha;
-          if(P_f==0 && P_r>0)
+          }
+          if(P_f==0 && P_r>0) {
             mu_mat_tmp = as<mat>(X[ind])*beta(span::all,n);
-          if(P_f==0 && P_r==0){
+          }
+          if(P_f==0 && P_r==0) {
             mu_mat_tmp = zeros<mat>(1,1);
           }
           U(span::all,ind) = rttnorm(mu_mat_tmp(0,0), 1.0, gamma[y(n,t)], gamma[y(n,t)-1]);
+        }
+      }
+    } else if (ranked) {
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          arma::mat rdiff_tmp = as<mat>(rdiff[y(n,t)-1]);
+          arma::vec U_tmp = rdiff_tmp * U(span::all,ind);
+          arma::vec mu_vec_tmp = zeros<vec>(Jm1);
+          arma::mat Sigmainv_tmp = arma::inv(rdiff_tmp * Sigma * trans(rdiff_tmp));
+          if(P_f>0 && P_r>0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(W[ind]) * alpha +
+              rdiff_tmp * as<mat>(X[ind]) * beta(span::all,n);
+          }
+          if(P_f>0 && P_r==0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(W[ind]) * alpha;
+          }
+          if(P_f==0 && P_r>0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(X[ind]) * beta(span::all,n);
+          }
+          U(span::all,ind) = arma::inv(rdiff_tmp) *
+            update_U_ranked(U_tmp, mu_vec_tmp, Sigmainv_tmp);
         }
       }
     } else {
       for(int n = 0; n<N; n++){
         for(int t = 0; t<Tvec[n]; t++){
           ind = csTvec[n]+t;
-          if(P_f>0 && P_r>0)
+          if(P_f>0 && P_r>0) {
             U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
               as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
-          if(P_f>0 && P_r==0)
+          }
+          if(P_f>0 && P_r==0) {
             U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
               as<mat>(W[ind])*alpha, Sigmainv);
-          if(P_f==0 && P_r>0)
+          }
+          if(P_f==0 && P_r>0) {
             U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
               as<mat>(X[ind])*beta(span::all,n), Sigmainv);
-          if(P_f==0 && P_r==0){
+          }
+          if(P_f==0 && P_r==0) {
             arma::vec mu_null(Jm1);
             U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
               mu_null, Sigmainv);

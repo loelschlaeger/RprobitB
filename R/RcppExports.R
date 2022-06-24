@@ -534,6 +534,35 @@ update_U <- function(U, y, sys, Sigmainv) {
     .Call(`_RprobitB_update_U`, U, y, sys, Sigmainv)
 }
 
+#' Update latent utility vector in the ranked probit case
+#' @description
+#' This function updates the latent utility vector in the ranked probit case.
+#' @param U
+#' The current utility vector of length \code{J-1}, differenced such that
+#' the vector is negative.
+#' @param sys
+#' A vector of length \code{J-1}, the systematic utility part.
+#' @param Sigmainv
+#' The inverted error term covariance matrix of dimension
+#' \code{J-1} x \code{J-1}.
+#' @details
+#' This update is basically the same as in the non-ranked case, despite that
+#' the truncation point is zero.
+#' @return
+#' An updated utility vector of length \code{J-1}.
+#' @examples
+#' U <- c(0,0)
+#' sys <- c(0,0)
+#' Sigmainv <- diag(2)
+#' update_U_ranked(U, sys, Sigmainv)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_U_ranked <- function(U, sys, Sigmainv) {
+    .Call(`_RprobitB_update_U_ranked`, U, sys, Sigmainv)
+}
+
 #' Transform threshold increments to thresholds
 #' @description
 #' This helper function transforms the threshold increments \code{d} to the

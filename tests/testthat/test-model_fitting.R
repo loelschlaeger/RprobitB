@@ -38,31 +38,31 @@ test_that("building of RprobitB_normalization works", {
   alternatives <- c("A", "B")
   expect_warning(
     RprobitB_normalization(
-      level = "A", scale = Sigma_1 ~ 1, form = form, re = re,
+      level = "A", scale = "Sigma_1 := 1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
   expect_snapshot(
     RprobitB_normalization(
-      level = "B", scale = price ~ -1, form = form, re = re,
+      level = "B", scale = "price := -1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
-      level = "B", scale = time ~ 1, form = form, re = re,
+      level = "B", scale = "time := 1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
-      level = "B", scale = Sigma_3 ~ 1, form = form, re = re,
+      level = "B", scale = "Sigma_3 := 1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
-      level = "B", scale = Sigma_1 ~ -1, form = form, re = re,
+      level = "B", scale = "Sigma_1 := -1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
@@ -75,6 +75,39 @@ test_that("Gibbs sampling works", {
     seed = 1, base = "B"
   )
   model <- fit_model(data, R = 2000, seed = 1)
+  expect_snapshot(print(model))
+  expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
+})
+
+test_that("Ordered probit model estimation works", {
+  data <- simulate_choices(
+      form = opinion_on_sth ~ age + gender,
+      N = 50,
+      T = 1:50,
+      J = 5,
+      alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
+      ordered = TRUE,
+      covariates = list(
+        "gender" = rep(sample(c(0,1), 50, replace = TRUE), times = 1:50)
+        ),
+      seed = 1
+    )
+  model <- fit_model(data)
+  expect_snapshot(print(model))
+  expect_snapshot(summary(model))
+  expect_snapshot(print(coef(model)))
+})
+
+test_that("Ranked probit model estimation works", {
+  data <- simulate_choices(
+    form = product ~ price,
+    N = 100,
+    J = 3,
+    ranked = TRUE,
+    seed = 1
+  )
+  model <- fit_model(data)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
@@ -136,16 +169,10 @@ test_that("transforming scale in RprobitB_fit works", {
   model <- RprobitB::model_train
   model_new_scale <- transform(
     model,
-    scale = Sigma_1 ~ 1, check_preference_flip = FALSE
+    scale = "Sigma_1 := 1", check_preference_flip = FALSE
   )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
-})
-
-test_that("check for preference flip in RprobitB_fit works", {
-  model <- RprobitB::model_train
-  scale_bad <- list("parameter" = "a", "index" = 1, "value" = 1)
-  expect_error(transform(model, scale = scale_bad))
 })
 
 test_that("Sigma backtransformation after differencing works", {
