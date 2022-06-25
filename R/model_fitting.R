@@ -1007,10 +1007,10 @@ sufficient_statistics <- function(data, normalization) {
   if (P_f > 0 & P_r > 0) {
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
-        W[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][,
-                                                     seq_len(P_f), drop = FALSE]
-        X[[sum(Tvec[seq_len(n - 1)]) + t]] <- data_copy$data[[n]][[1]][[t]][,
-                                                    -seq_len(P_f), drop = FALSE]
+        W[[sum(Tvec[seq_len(n - 1)]) + t]] <-
+          data_copy$data[[n]][[1]][[t]][,seq_len(P_f), drop = FALSE]
+        X[[sum(Tvec[seq_len(n - 1)]) + t]] <-
+          data_copy$data[[n]][[1]][[t]][,-seq_len(P_f), drop = FALSE]
       }
     }
   }
@@ -1073,7 +1073,7 @@ sufficient_statistics <- function(data, normalization) {
     perm <- permutations(data$alternatives)
     Dinv <- round(MASS::ginv(delta(J, normalization$level$level)))
     for(p in 1:length(perm)) {
-      rdiff[[p]] <- M(ranking = match(data$alternatives, perm[[p]])) %*% Dinv
+      rdiff[[p]] <- M(ranking = match(perm[[p]], data$alternatives)) %*% Dinv
     }
   } else {
     rdiff <- NA

@@ -103,6 +103,7 @@ test_that("Ranked probit model estimation works", {
   data <- simulate_choices(
     form = product ~ price,
     N = 100,
+    T = 10,
     J = 3,
     ranked = TRUE,
     seed = 1

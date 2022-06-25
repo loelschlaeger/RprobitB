@@ -1501,10 +1501,11 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' @keywords
 #' internal
 
-RprobitB_data <- function(data, choice_data, N, T, J, P_f, P_r, alternatives,
-                          ordered, ranked, base, form, re, ASC, effects,
-                          standardize, simulated, choice_available,
-                          true_parameter, res_var_names) {
+RprobitB_data <- function(
+    data, choice_data, N, T, J, P_f, P_r, alternatives, ordered, ranked, base,
+    form, re, ASC, effects, standardize, simulated, choice_available,
+    true_parameter, res_var_names
+    ) {
 
   ### check inputs
   stopifnot(is.list(data))
