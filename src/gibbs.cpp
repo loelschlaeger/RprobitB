@@ -874,7 +874,7 @@ List gibbs_sampling (
           for(int t = 0; t<Tvec[n]; t++){
             ind = csTvec[n]+t;
             if(P_f==0)
-              XSigU += trans(as<mat>(X[ind]))*U(span::all,ind);
+              XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)U(span::all,ind);
             if(P_f>0)
               XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
           }
