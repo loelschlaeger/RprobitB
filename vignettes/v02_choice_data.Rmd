@@ -26,7 +26,7 @@ No choice model without choice data, so this vignette^[This vignette is build us
 
 ## Requirements to choice data
 
-{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:09, p. 16]: Choices need to be
+{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:09]: Choices need to be
 
 1. mutually exclusive (one can choose one and only one alternative that are all different),
 
@@ -173,7 +173,7 @@ The function `simulate_choices()` has the following optional arguments:
 
 - `seed`: Set a seed for the simulation.
 
-We can specify the true parameters^[See the vignette on the model definition for more details, especially for the meaning of the parameters.] by adding values for
+We can specify the true parameters^[See the vignette on the model definition for more details, especially for the meaning of the parameters.] by adding a named list with values for
 
 - `alpha`, the fixed coefficient vector,
   
@@ -201,7 +201,7 @@ For illustration, we simulate the choices of `N = 100` deciders at `T = 10` choi
 N <- 100
 T <- 10
 alternatives <- c("A", "B")
-base_alternative <- "B"
+base <- "B"
 form <- choice ~ var1 | var2 | var3
 re <- c("ASC", "var2")
 ```
@@ -209,7 +209,7 @@ re <- c("ASC", "var2")
 {RprobitB} provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified:
 
 ```{r, data-sim-overview}
-overview_effects(form = form, re = re, alternatives = alternatives, base_alternative = base_alternative)
+overview_effects(form = form, re = re, alternatives = alternatives, base = base)
 ```
 
 Hence, the coefficient vector `alpha` must be of length 3, where the elements 1 to 3 correspond to `var1`, `var3_A`, and `var3_B`, respectively. The matrix `b` must be of dimension 2 x `C`, where (by default) `C = 1` and row 1 and 2 correspond to `var2_A` and `ASC_A`, respectively.
@@ -223,8 +223,10 @@ data <- simulate_choices(
   re = re, 
   alternatives = alternatives, 
   seed = 1,
-  alpha = c(-1,0,1),
-  b = matrix(c(2,-0.5), ncol = 1)
+  true_parameter = list(
+    alpha = c(-1,0,1),
+    b = matrix(c(2,-0.5), ncol = 1)
+  )
 )
 summary(data)
 ```

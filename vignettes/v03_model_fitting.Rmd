@@ -128,7 +128,7 @@ fit_model(data = data)
 
 where `data` must be an `RprobitB_data` object (see the vignette about choice data). The function has the following optional arguments:
 
-- `scale`: A formula object which determines the [utility scale](#parameter-normalization). It is of the form `<parameter> ~ <value>`, where `<parameter>` is either the name of a fixed effect or `Sigma_<j>` for the `<j>`th diagonal element of `Sigma`, and `<value>` is the value of the fixed parameter (i.e. $\text{const}$ introduced [above](#parameter-normalization)). Per default `scale = Sigma\_1 ~ 1`, i.e. the first error-term variance is fixed to 1.
+- `scale`: A character which determines the [utility scale](#parameter-normalization). It is of the form `"<parameter> := <value>"`, where `<parameter>` is either the name of a fixed effect or `Sigma_<j>` for the `<j>`th diagonal element of `Sigma`, and `<value>` is the value of the fixed parameter (i.e. $\text{const}$ introduced [above](#parameter-normalization)). Per default `scale = "Sigma\_1 := 1"`, i.e. the first error-term variance is fixed to 1.
 
 - `R`: The number of iterations of the Gibbs sampler. The default is `R = 10000`.
 
@@ -183,7 +183,7 @@ form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
 model_train <- fit_model(
   data = data,
-  scale = price ~ -1)
+  scale = "price := -1")
 )
 ```
 
@@ -273,7 +273,7 @@ model_train <- transform(model_train, Q = 100)
 
 3. or change the model normalization `scale`, for example
 ```{r, eval = FALSE} 
-model_train <- transform(model_train, scale = Sigma_1 ~ 1)
+model_train <- transform(model_train, scale = "Sigma_1 := 1")
 ```
 
 ## References
