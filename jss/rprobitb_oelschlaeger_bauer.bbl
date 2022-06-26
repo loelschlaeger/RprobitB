@@ -1,4 +1,4 @@
-\begin{thebibliography}{35}
+\begin{thebibliography}{34}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -41,20 +41,6 @@ Bhat C (2011).
 Bierlaire M (2020).
 \newblock \enquote{A short introduction to PandasBiogeme.}
 \newblock \emph{A short introduction to PandasBiogeme}.
-
-\bibitem[{Br{\"u}derl \emph{et~al.}(2020)Br{\"u}derl, Drobnič, Hank, Neyer,
-  Walper, Alt, Borschel, Bozoyan, Garrett, Geissler, Gonzalez~Avilés,
-  Gr{\"o}pler, Hajek, Herzig, Huyer-May, Lenke, Lorenz, Lutz, Minkus, Peter,
-  Phan, Preetz, Reim, Sawatzki, Schmiedeberg, Sch{\"u}tze, Schumann,
-  Th{\"o}nnissen, Timmermann, and Wetzel}]{Bruderl:2020}
-Br{\"u}derl J, Drobnič S, Hank K, Neyer FJ, Walper S, Alt P, Borschel E,
-  Bozoyan C, Garrett M, Geissler S, Gonzalez~Avilés T, Gr{\"o}pler N, Hajek K,
-  Herzig M, Huyer-May B, Lenke R, Lorenz R, Lutz K, Minkus L, Peter T, Phan T,
-  Preetz R, Reim J, Sawatzki B, Schmiedeberg C, Sch{\"u}tze P, Schumann N,
-  Th{\"o}nnissen C, Timmermann K, Wetzel M (2020).
-\newblock \enquote{Beziehungs- und Familienpanel (pairfam).}
-\newblock \emph{GESIS Datenarchiv, K{\"o}ln. ZA5678 Datenfile Version 11.0.0}.
-\newblock \doi{10.4232/pairfam.5678.11.0.0}.
 
 \bibitem[{Burda \emph{et~al.}(2008)Burda, Harding, and Hausman}]{Burda:2008}
 Burda M, Harding M, Hausman J (2008).

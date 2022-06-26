@@ -4,7 +4,6 @@
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-# install.packages("RprobitB", "plotROC")
 # library(RprobitB) # UNCOMMENT!
 
 
@@ -79,8 +78,9 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 data_sim <- simulate_choices(
   form = form, N = N, T = T, J = 2,
   re = re, alternatives = alternatives, seed = 1,
-  true_parameter = list(alpha = c(-1,0,1), C = 2, s = c(0.7,0.3),
-                        b = matrix(c(2,-0.5,1,1), ncol = 2), Sigma = 1)
+  true_parameter = list(
+    alpha = c(-1,0,1), C = 2, s = c(0.7,0.3),
+    b = matrix(c(2,-0.5,1,1), ncol = 2), Sigma = 1)
 )
 
 
@@ -99,7 +99,7 @@ plot(data_sim, by_choice = TRUE)
 ###################################################
 ### code chunk number 14: example 1 train fit
 ###################################################
-model_train <- fit_model(data = data_train, R = 1000, scale = price ~ -1)
+model_train <- fit_model(data = data_train, R = 1000, scale = "price := -1")
 
 
 ###################################################

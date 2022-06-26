@@ -80,10 +80,8 @@ options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 
 %% -- TODO-List ----------------------------------------------------------------
 
-%% - log-normal coefficients -> formula?
 %% - Example 2 with simulated ranked data
 %% - add MCMC formulas for U in ordered and ranked case
-%% - scale framework ":="
 %% - logarithm for chess rating
 
 \section{Introduction}
@@ -413,8 +411,8 @@ fit_model(data = data)
 where \code{data} is an \class{RprobitB\_data} object (cf.\ Section \ref{sec:choice_data}). Optional arguments are:
 
 \begin{itemize}
-  \item \code{scale}: A formula object, which determines the utility scale (cf.\ Section \ref{sec:probit_model}). It is of the form \code{<parameter> ~ <value>}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>} for the \code{<j>}-th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e.\ $\text{const}$ introduced in Section \ref{subsec:prior_and_posterior}). Per default \code{scale = Sigma\_1 ~ 1}, i.e.\ the first error-term variance is fixed to 1.
-  \item \code{R}: The number of iterations of the Gibbs sampler. The default is \code{R = 10000}.
+  \item \code{scale}: A character which determines the utility scale (cf.\ Section \ref{sec:probit_model}). It is of the form \code{"<parameter> := <value>"}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>} for the \code{<j>}-th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e.\ $\text{const}$ introduced in Section \ref{subsec:prior_and_posterior}). Per default \code{scale = "Sigma\_1 := 1"}, i.e.\ the first error-term variance is fixed to 1.
+  \item \code{R}: The number of iterations of the Gibbs sampler. The default is \code{R = 1000}.
   \item \code{B}: The length of the burn-in period (\code{B = R/2} per default).\footnote{The theory behind Gibbs sampling constitutes that the sequence of samples produced by the
 updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first \code{B} out of \code{R} samples (the so-called burn-in period).}
   \item \code{Q}: The thinning factor for the Gibbs samples (\code{Q = 1} per default).
@@ -427,7 +425,7 @@ updating scheme is a Markov chain with stationary distribution equal to the desi
 Recall the \code{Train} data set of stated train trip alternatives, characterized by their \code{price}, \code{time}, number of \code{change}s, and level of \code{comfort}. From this data, we previously build the \class{RprobitB\_data} object \code{data\_train}, which we now pass to the estimation routine \fct{fit\_model}. For model normalization, we fix the \code{price} coefficient to \code{-1}, which has the advantage that we can interpret the other coefficients as monetary values:
 
 <<example 1 train fit>>=
-model_train <- fit_model(data = data_train, R = 1000, scale = price ~ -1)
+model_train <- fit_model(data = data_train, R = 1000, scale = "price := -1")
 @
 
 The estimated coefficients (using the mean of the Gibbs samples as a point estimate) can be visualized via
@@ -457,7 +455,7 @@ par(mfrow = c(1,2))
 plot(model_train, type = "acf", ignore = c("alpha_1", "alpha_2", "alpha_3"))
 @
 
-To obtain more independent samples, the \fct{transform} method can be used to increase the thinning factor:\footnote{The function can also be used to increase the length of the burn-in period (via \code{transform(model\_train, B = B\_new)}) or to change the utility scale, for example \code{transform(model\_train, scale = Sigma\_1 ~ 1)}.}
+To obtain more independent samples, the \fct{transform} method can be used to increase the thinning factor:\footnote{The function can also be used to increase the length of the burn-in period (via \code{transform(model\_train, B = B\_new)}) or to change the utility scale, for example \code{transform(model\_train, scale = "Sigma\_1 := 1")}.}
 
 <<example 1 train new Q>>=
 model_train <- transform(model_train, Q = 5)
@@ -490,7 +488,7 @@ data_elec <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model_elec <- fit_model(data_elec, R = 1000, scale = pf ~ -1)
+model_elec <- fit_model(data_elec, R = 1000, scale = "pf := -1")
 @
 
 Calling the \fct{coef} method on the estimated model returns a table of the average effects and the estimated (marginal) variances of the mixing distribution:
