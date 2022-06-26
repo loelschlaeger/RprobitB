@@ -950,6 +950,8 @@ fit_model <- function(
 #'         that the resulting utility vector is negative.
 #' }
 #'
+#' @importFrom MASS ginv
+#'
 #' @keywords
 #' internal
 
@@ -1110,6 +1112,8 @@ sufficient_statistics <- function(data, normalization) {
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
+#' @param ...
+#' Ignored.
 #' @inheritParams prepare_data
 #' @inheritParams fit_model
 #'
@@ -1123,7 +1127,7 @@ sufficient_statistics <- function(data, normalization) {
 
 update.RprobitB_fit <- function(
     object, form, re, alternatives, id, idc, standardize, impute, scale, R, B,
-    Q, print_progress, prior, latent_classes, seed
+    Q, print_progress, prior, latent_classes, seed, ...
     ) {
   data <- prepare_data(
     form = if(missing(form)) object$data$form else form,

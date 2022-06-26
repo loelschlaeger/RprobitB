@@ -20,7 +20,8 @@
   print_progress,
   prior,
   latent_classes,
-  seed
+  seed,
+  ...
 )
 }
 \arguments{
@@ -123,6 +124,8 @@ for joining two latent classes in the weight-based updating scheme.
 }}
 
 \item{seed}{Set a seed for the Gibbs sampling.}
+
+\item{...}{Ignored.}
 }
 \value{
 An object of class \code{RprobitB_fit}.

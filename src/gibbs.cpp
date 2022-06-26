@@ -541,6 +541,8 @@ double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
 //' This function updates the utility threshold increments
 //' @param d
 //' The current vector of utility threshold increments.
+//' @param ll
+//' Current log-likelihood value.
 //' @param zeta
 //' The mean vector of the normal prior for \code{d}.
 //' @param Z

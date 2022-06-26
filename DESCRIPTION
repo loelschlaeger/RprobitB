@@ -38,7 +38,9 @@ Imports:
     foreach,
     progress,
     gridExtra,
-    crayon
+    crayon,
+    plotROC,
+    MASS
 LinkingTo:
     Rcpp,
     RcppArmadillo
@@ -46,7 +48,6 @@ Suggests:
     knitr,
     rmarkdown,
     mlogit,
-    plotROC,
     testthat (>= 3.0.0),
     covr
 Depends: R (>= 3.5.0)

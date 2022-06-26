@@ -13,6 +13,8 @@ update_d(d, y, mu, ll, zeta, Z, Tvec)
 
 \item{mu}{A matrix of the systematic utilities.}
 
+\item{ll}{Current log-likelihood value.}
+
 \item{zeta}{The mean vector of the normal prior for \code{d}.}
 
 \item{Z}{The covariance matrix of the normal prior for \code{d}.}

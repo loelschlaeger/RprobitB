@@ -615,6 +615,8 @@ ll_ordered <- function(d, y, mu, Tvec) {
 #' This function updates the utility threshold increments
 #' @param d
 #' The current vector of utility threshold increments.
+#' @param ll
+#' Current log-likelihood value.
 #' @param zeta
 #' The mean vector of the normal prior for \code{d}.
 #' @param Z

@@ -152,8 +152,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
     est_b <- apply(est$b, 2, as.numeric, simplify =  F)
     est_Omega <- apply(est$Omega, 2, matrix, nrow = x$data$P_r, simplify = F)
     est_s <- est$s
-    re <- NULL
-    cov_names <- subset(x$data$effects, random == TRUE)$effect
+    cov_names <- x$data$effects[x$data$effects$random == TRUE, "effect"]
     plots <- list()
     for(p1 in 1:x$data$P_r) for(p2 in 1:x$data$P_r) {
       if(any(cov_names[c(p1,p2)] %in% ignore)) next
@@ -515,49 +514,49 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #'
 #' @importFrom plotROC geom_roc style_roc
 
-roc <- function(..., reference = NULL, auc = TRUE) {
-  models <- as.list(list(...))
-  model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
-  pred_merge <- NULL
-  for(m in 1:length(models)) {
-    if(inherits(models[[m]], "RprobitB_fit")){
-      if(is.null(reference)){
-        reference <- models[[m]]$data$alternatives[1]
-      }
-      pred <- predict(models[[m]], overview = FALSE, digits = 8)
-      true <- ifelse(pred$true == reference, 1, 0)
-      if(is.null(pred_merge)){
-        pred_merge <- data.frame(true)
-        colnames(pred_merge) <- paste0("d_",model_names[m])
-      } else {
-        pred_merge[,paste0("d_",model_names[m])] <- true
-      }
-      pred_merge[,model_names[m]] <- pred[reference]
-    } else {
-      stop("Not implemented yet.", call. = FALSE)
-    }
-  }
-  if(length(models) > 1) {
-    for(m in 1:(length(models)-1)) {
-      d_m <- pred_merge[paste0("d_",model_names[i])]
-      d_mp <- pred_merge[paste0("d_",model_names[i+1])]
-      if(!identical(d_m,d_mp)) {
-        stop()
-      }
-    }
-    pred_merge <- plotROC::melt_roc(
-      data = pred_merge, d = paste0("d_",model_names[1]), m = model_names)
-  } else {
-    colnames(pred_merge) <- c("D","M")
-  }
-  if(length(models) > 1) {
-    plot <- ggplot2::ggplot(data = pred_merge,
-                            ggplot2::aes(m = M, d = D, color = model_names))
-  } else {
-    plot <- ggplot2::ggplot(data = pred_merge, ggplot2::aes(m = M, d = D))
-  }
-  plot <- plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
-    plotROC::style_roc(theme = ggplot2::theme_grey)
-  print(plot)
-  return(plot)
-}
+# roc <- function(..., reference = NULL, auc = TRUE) {
+#   models <- as.list(list(...))
+#   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
+#   pred_merge <- NULL
+#   for(m in 1:length(models)) {
+#     if(inherits(models[[m]], "RprobitB_fit")){
+#       if(is.null(reference)){
+#         reference <- models[[m]]$data$alternatives[1]
+#       }
+#       pred <- predict(models[[m]], overview = FALSE, digits = 8)
+#       true <- ifelse(pred$true == reference, 1, 0)
+#       if(is.null(pred_merge)){
+#         pred_merge <- data.frame(true)
+#         colnames(pred_merge) <- paste0("d_",model_names[m])
+#       } else {
+#         pred_merge[,paste0("d_",model_names[m])] <- true
+#       }
+#       pred_merge[,model_names[m]] <- pred[reference]
+#     } else {
+#       stop("Not implemented yet.", call. = FALSE)
+#     }
+#   }
+#   if(length(models) > 1) {
+#     for(m in 1:(length(models)-1)) {
+#       d_m <- pred_merge[paste0("d_",model_names[m])]
+#       d_mp <- pred_merge[paste0("d_",model_names[m+1])]
+#       if(!identical(d_m,d_mp)) {
+#         stop()
+#       }
+#     }
+#     pred_merge <- plotROC::melt_roc(
+#       data = pred_merge, d = paste0("d_",model_names[1]), m = model_names)
+#   } else {
+#     colnames(pred_merge) <- c("D","M")
+#   }
+#   if(length(models) > 1) {
+#     plot <- ggplot2::ggplot(data = pred_merge,
+#                             ggplot2::aes(m = M, d = D, color = model_names))
+#   } else {
+#     plot <- ggplot2::ggplot(data = pred_merge, ggplot2::aes(m = M, d = D))
+#   }
+#   plot <- plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
+#     plotROC::style_roc(theme = ggplot2::theme_grey)
+#   print(plot)
+#   return(plot)
+# }
