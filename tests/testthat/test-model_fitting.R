@@ -82,17 +82,17 @@ test_that("Gibbs sampling works", {
 
 test_that("Ordered probit model estimation works", {
   data <- simulate_choices(
-      form = opinion_on_sth ~ age + gender,
-      N = 50,
-      T = 1:50,
-      J = 5,
-      alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
-      ordered = TRUE,
-      covariates = list(
-        "gender" = rep(sample(c(0,1), 50, replace = TRUE), times = 1:50)
-        ),
-      seed = 1
-    )
+    form = opinion_on_sth ~ age + gender,
+    N = 50,
+    T = 1:50,
+    J = 5,
+    alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
+    ordered = TRUE,
+    covariates = list(
+      "gender" = rep(sample(c(0, 1), 50, replace = TRUE), times = 1:50)
+    ),
+    seed = 1
+  )
   model <- fit_model(data)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
@@ -121,13 +121,16 @@ test_that("setting fixed parameters for the Gibbs sampling works", {
     re = "b", true_parameter = par
   )
   model <- fit_model(
-    data, R = 2000, seed = 1, fixed_parameter = par
+    data,
+    R = 2000, seed = 1, fixed_parameter = par
   )
   true <- do.call(
     what = RprobitB_parameter,
     args = c(
-      list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
-           "ordered" = data$ordered, sample = FALSE),
+      list(
+        "P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
+        "ordered" = data$ordered, sample = FALSE
+      ),
       par
     )
   )
