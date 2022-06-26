@@ -20,7 +20,8 @@ set_initial_gibbs_values(
 \item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).}
+occasions of length \code{N} (i.e. a decision maker specific number).
+Per default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
@@ -35,7 +36,7 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 
 \item{ranked}{TBA}
 
-\item{y}{Optionally the output of \code{\link{sufficient_statistics}}.}
+\item{ss}{Optionally the output of \code{\link{sufficient_statistics}}.}
 }
 \value{
 A list of initial values for the Gibbs sampler.

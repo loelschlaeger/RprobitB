@@ -2,28 +2,25 @@
 % Please edit documentation in R/RcppExports.R
 \name{ll_ordered}
 \alias{ll_ordered}
-\title{Choice probability in the ordered probit model}
+\title{Log-likelihood in the ordered probit model}
 \usage{
 ll_ordered(d, y, mu, Tvec)
 }
 \arguments{
 \item{d}{A numeric vector of threshold increments.}
 
-\item{y}{TBA}
+\item{y}{A matrix of the choices.}
 
-\item{mu}{TBA}
+\item{mu}{A matrix of the systematic utilities.}
 
-\item{Tvec}{TBA}
+\item{Tvec}{The element \code{Tvec} in \code{\link{sufficient_statistics}}.}
 }
 \value{
-TBA
+The log-likelihood value.
 }
 \description{
 This function computes the conditional probability of one choice occasion
 given the threshold increments \code{d}.
-}
-\details{
-TBA
 }
 \examples{
 ll_ordered(c(0,0,0), 1, 1, FALSE)

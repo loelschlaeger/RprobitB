@@ -6,16 +6,23 @@
 \usage{
 update_d(d, y, mu, ll, zeta, Z, Tvec)
 }
-\value{
+\arguments{
+\item{d}{The current vector of utility threshold increments.}
 
+\item{y}{A matrix of the choices.}
+
+\item{mu}{A matrix of the systematic utilities.}
+
+\item{zeta}{The mean vector of the normal prior for \code{d}.}
+
+\item{Z}{The covariance matrix of the normal prior for \code{d}.}
+
+\item{Tvec}{The element \code{Tvec} in \code{\link{sufficient_statistics}}.}
+}
+\value{
+The updated value for \code{d}.
 }
 \description{
 This function updates the utility threshold increments
-}
-\details{
-
-}
-\examples{
-
 }
 \keyword{posterior}

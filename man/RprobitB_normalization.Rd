@@ -6,7 +6,7 @@
 \usage{
 RprobitB_normalization(
   level,
-  scale = Sigma_1 ~ 1,
+  scale = "Sigma_1 := 1",
   form,
   re = NULL,
   alternatives,
@@ -19,8 +19,8 @@ RprobitB_normalization(
 Currently, only differences with respect to the last alternative can be
 computed.}
 
-\item{scale}{A formula object which determines the utility scale. It is of the form
-\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+\item{scale}{A character which determines the utility scale. It is of the form
+\verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
@@ -90,7 +90,7 @@ For the ordered model where only one utility is modeled, {RprobitB}
 fixes the first utility threshold to 0.
 \item For scale normalization, RprobitB fixes one model parameter. Per
 default, the first error-term variance is fixed to \code{1}.
-This is specified via \code{scale = Sigma_1 ~ 1}.
+This is specified via \code{scale = "Sigma_1 := 1"}.
 Alternatively, any error-term variance or any non-random coefficient
 can be fixed.
 }
@@ -98,7 +98,7 @@ can be fixed.
 \examples{
 RprobitB:::RprobitB_normalization(
   level = "B",
-  scale = price ~ -1,
+  scale = "price := -1",
   form = choice ~ price + time + comfort + change | 1,
   re = "time",
   alternatives = c("A", "B"),

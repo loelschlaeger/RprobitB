@@ -22,8 +22,8 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{scale}{A formula object which determines the utility scale. It is of the form
-\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+\item{scale}{A character which determines the utility scale. It is of the form
+\verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
@@ -56,6 +56,6 @@ transform(model_train, B = 1)
 transform(model_train, Q = 1)
 
 ### change the scale
-transform(model_train, scale = Sigma_1 ~ 1)
+transform(model_train, scale = "Sigma_1 := 1")
 
 }

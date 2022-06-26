@@ -498,22 +498,20 @@ arma::vec d_to_gamma (arma::vec d) {
   return(gamma);
 }
 
-//' Choice probability in the ordered probit model
+//' Log-likelihood in the ordered probit model
 //' @description
 //' This function computes the conditional probability of one choice occasion
 //' given the threshold increments \code{d}.
 //' @param d
 //' A numeric vector of threshold increments.
 //' @param y
-//' TBA
+//' A matrix of the choices.
 //' @param mu
-//' TBA
+//' A matrix of the systematic utilities.
 //' @param Tvec
-//' TBA
-//' @details
-//' TBA
+//' The element \code{Tvec} in \code{\link{sufficient_statistics}}.
 //' @return
-//' TBA
+//' The log-likelihood value.
 //' @examples
 //' ll_ordered(c(0,0,0), 1, 1, FALSE)
 //' @export
@@ -541,14 +539,15 @@ double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
 //' Update utility threshold increments
 //' @description
 //' This function updates the utility threshold increments
-//' @param
-//'
-//' @details
-//'
+//' @param d
+//' The current vector of utility threshold increments.
+//' @param zeta
+//' The mean vector of the normal prior for \code{d}.
+//' @param Z
+//' The covariance matrix of the normal prior for \code{d}.
+//' @inheritParams ll_ordered
 //' @return
-//'
-//' @examples
-//'
+//' The updated value for \code{d}.
 //' @export
 //' @keywords
 //' posterior

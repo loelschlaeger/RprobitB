@@ -6,7 +6,7 @@
 \usage{
 fit_model(
   data,
-  scale = Sigma_1 ~ 1,
+  scale = "Sigma_1 := 1",
   R = 1000,
   B = R/2,
   Q = 1,
@@ -20,8 +20,8 @@ fit_model(
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
 
-\item{scale}{A formula object which determines the utility scale. It is of the form
-\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+\item{scale}{A character which determines the utility scale. It is of the form
+\verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
