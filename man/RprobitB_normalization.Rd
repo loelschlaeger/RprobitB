@@ -6,11 +6,12 @@
 \usage{
 RprobitB_normalization(
   level,
-  scale = Sigma_1 ~ 1,
+  scale = "Sigma_1 := 1",
   form,
   re = NULL,
   alternatives,
-  base
+  base,
+  ordered = FALSE
 )
 }
 \arguments{
@@ -18,14 +19,15 @@ RprobitB_normalization(
 Currently, only differences with respect to the last alternative can be
 computed.}
 
-\item{scale}{A formula object which determines the utility scale. It is of the form
-\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+\item{scale}{A character which determines the utility scale. It is of the form
+\verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
-\item{form}{A formula object that is used to specify the probit model.
+\item{form}{A \code{formula} object that is used to specify the model equation.
 The structure is \code{choice ~ A | B | C}, where
 \itemize{
+\item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
 covariates with a generic coefficient,
 \item \code{B} are names of choice situation specific covariates with
@@ -33,29 +35,41 @@ alternative specific coefficients,
 \item and \code{C} are names of alternative and choice situation specific
 covariates with alternative specific coefficients.
 }
-Separate multiple covariates of one type by a \code{+} sign.
-By default, alternative specific constants (ASCs) are added to the model
-(for all except for the last alternative due to identifiability).
+
+Multiple covariates (of one type) are seperated by a \code{+} sign.
+By default, alternative specific constants (ASCs) are added to the model.
 They can be removed by adding \code{+0} in the second spot.
-See the vignette on choice data for more details.}
+
+In the ordered probit model (\code{ordered = TRUE}), covariates are always
+constant across alternatives and have generic coefficients. The
+\code{formula} object here has the simple structure \code{choice ~ A}.
+ASCs are not estimated.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the alternative specific constants, include
-\code{"ASC"} in \code{re}.}
+To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
 
 \item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (type 2 covariates).}
+alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
+\code{NULL} if the model has no alternative specific covariates (e.g. in the
+ordered probit model).
+Per default, \code{base} is the last element of \code{alternatives}.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 }
 \value{
 An object of class \code{RprobitB_normalization}, which is a list of
 \itemize{
 \item \code{level}, a list with the elements \code{level} (the number of the
 alternative specified by the input \code{level}) and \code{name} (the name of
-the alternative, i.e. the input \code{level}),
+the alternative, i.e. the input \code{level}), or alternatively
+\code{NA} in the ordered probit case,
 \item and \code{scale}, a list with the elements \code{parameter} (either \code{"s"} for
 an element of \code{Sigma} or \code{"a"}for an element of \code{alpha}), the
 parameter \code{index}, and the fixed \code{value}. If \code{parameter = "a"}, also
@@ -72,16 +86,19 @@ scale.
 \itemize{
 \item For level normalization, {RprobitB} takes utility differences with
 respect to one alternative.
-\item For scale normalization, RprobitB fixes a model parameter. Per
-default, the first error-term variance is fixed to \code{1}, i.e.
-\code{scale = Sigma_1 ~ 1}. Alternatively, any error-term variance or
-any non-random coefficient can be fixed.
+For the ordered model where only one utility is modeled, {RprobitB}
+fixes the first utility threshold to 0.
+\item For scale normalization, RprobitB fixes one model parameter. Per
+default, the first error-term variance is fixed to \code{1}.
+This is specified via \code{scale = "Sigma_1 := 1"}.
+Alternatively, any error-term variance or any non-random coefficient
+can be fixed.
 }
 }
 \examples{
 RprobitB:::RprobitB_normalization(
   level = "B",
-  scale = price ~ -1,
+  scale = "price := -1",
   form = choice ~ price + time + comfort + change | 1,
   re = "time",
   alternatives = c("A", "B"),

@@ -8,6 +8,7 @@ check_prior(
   P_f,
   P_r,
   J,
+  ordered = FALSE,
   eta = numeric(P_f),
   Psi = diag(P_f),
   delta = 1,
@@ -15,8 +16,10 @@ check_prior(
   D = diag(P_r),
   nu = P_r + 2,
   Theta = diag(P_r),
-  kappa = J + 1,
-  E = diag(J - 1)
+  kappa = if (ordered) 4 else (J + 1),
+  E = if (ordered) diag(1) else diag(J - 1),
+  zeta = numeric(J - 2),
+  Z = diag(J - 2)
 )
 }
 \arguments{
@@ -25,6 +28,9 @@ check_prior(
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{eta}{The mean vector of length \code{P_f} of the normal prior for \code{alpha}.
 Per default, \code{eta = numeric(P_f)}.}
@@ -60,6 +66,14 @@ Per default, \code{kappa = J + 1}.}
 \item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
 prior for \code{Sigma}.
 Per default, \code{E = diag(J - 1)}.}
+
+\item{zeta}{The mean vector of length \code{J - 2} of the normal prior for the increments \code{d}
+of the utility thresholds in the ordered probit model.
+Per default, \code{zeta = numeric(J - 2)}.}
+
+\item{Z}{The covariance matrix of dimension \code{J-2} x \code{J-2} of the normal prior for the
+increments \code{d} of the utility thresholds in the ordered probit model.
+Per default, \code{Z = diag(J - 2)}.}
 }
 \value{
 An object of class \code{RprobitB_prior}, which is a list containing all
@@ -78,6 +92,7 @@ A priori, we assume that the model parameters follow these distributions:
 \item \eqn{b_c \sim N(\xi, D)} for all classes \eqn{c}
 \item \eqn{\Omega_c \sim IW(\nu,\Theta)} for all classes \eqn{c}
 \item \eqn{\Sigma \sim IW(\kappa,E)}
+\item \eqn{d \sim N(\zeta, Z)}
 }
 where \eqn{N} denotes the normal, \eqn{Dir} the Dirichlet, and \eqn{IW}
 the Inverted Wishart distribution.

@@ -33,14 +33,14 @@ model_train
 As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula `choice ~ price | 0`:^[This model is also saved in {RprobitB} and can be accessed via `data("model_train_sparse", package = "RprobitB")`.]
 
 ```{r, eval = FALSE}
-model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+model_train_sparse <- update(model_train, form = choice ~ price | 0)
 ```
 
 ```{r, echo = FALSE}
 data("model_train_sparse", package = "RprobitB")
 ```
 
-The `nested_model()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.  
+The `update()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.  
 
 ## The `model_selection()` function
 

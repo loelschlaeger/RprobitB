@@ -915,8 +915,8 @@ posterior_pars <- function(x){
 draw_from_prior <- function(prior, C = 1) {
 
   ### input checks
-  if(class(prior) != "RprobitB_prior"){
-    stop("'prior' must be of class 'RprobitB_prior.")
+  if(!inherits(prior,"RprobitB_prior")){
+    stop("'prior' must be of class 'RprobitB_prior.", call. = FALSE)
   }
 
   ### alpha ~ MVN(eta,Psi)

@@ -41,6 +41,38 @@ delta <- function(J, i) {
   return(Delta)
 }
 
+#' Matrix difference operator for ranked vectors
+#'
+#' @description
+#' This function creates the difference operator matrix for differencing ranked
+#' vector elements such that the resulting vector is negative.
+#'
+#' @param ranking
+#' A numeric vector of the ranking in decreasing order.
+#'
+#' @return
+#' A matrix of dimension \code{length(rank)-1} x \code{length(rank)}.
+#'
+#' @examples
+#' x <- c(-1,5,10,2)
+#' ranking <- order(x, decreasing = TRUE)
+#' RprobitB:::M(ranking) %*% x
+#'
+#' @export
+#'
+#' @keywords
+#' utils
+
+M <- function(ranking) {
+  J <- length(ranking)
+  out <- matrix(0, nrow = J-1, ncol = J)
+  for(i in 1:(J-1)) {
+    out[i,ranking[i]] <- -1
+    out[i,ranking[i+1]] <- 1
+  }
+  return(out)
+}
+
 #' Compute Gelman-Rubin statistic
 #'
 #' @description
@@ -169,7 +201,7 @@ is_covariance_matrix <- function(x) {
 pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
                    desc = TRUE) {
 
-  ### Add dots
+  ### helper function
   add_dots <- function(x, pos = 3) {
     if (length(x) > pos) {
       c(x[seq_len(pos-1)], "...", x[length(x)])
@@ -178,36 +210,36 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
     }
   }
 
-  ### Distinguish between single numbers, vectors and matrices
+  ### distinguish between single numbers, vectors and matrices
   if(length(x) == 1){
     if(desc) if(!is.null(name)) cat(name, ": ")
     cat(x)
   } else if(!is.matrix(x)) {
-    if(desc) if(!is.null(name)) cat(name, ":", typeof(x), "vector of length",
-                                    length(x), "\n\n")
+    if(desc) if(!is.null(name))
+      cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
     res <- if(is.numeric(x)) round(x,digits) else x
     cat(noquote(add_dots(res, coldots)))
   } else {
 
-    ### Row labels
+    ### row labels
     row_labels <- if (is.null(rownames(x))) {
       paste0("[", seq_len(nrow(x)), ",]")
     } else {
       rownames(x)
     }
 
-    ### Columns labels
+    ### columns labels
     col_labels <- if (is.null(colnames(x))) {
       paste0("[,", seq_len(ncol(x)), "]")
     } else {
       colnames(x)
     }
 
-    ### Adjust values for 'coldots' and 'rowdots'
+    ### adjust values for 'coldots' and 'rowdots'
     coldots <- max(1,min(ncol(x)-1, coldots))
     rowdots <- max(1,min(nrow(x)-1, rowdots))
 
-    ### Omit all values that will not be printed
+    ### omit all values that will not be printed
     x2 <- if(nrow(x) == 1) {
       cbind(x[1, 1:coldots, drop = FALSE], x[1, ncol(x), drop = FALSE])
     } else if(ncol(x) == 1) {
@@ -219,7 +251,7 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
                   x[nrow(x), ncol(x), drop = FALSE]))
     }
 
-    ### Convert to character matrix (after rounding, if appropriate)
+    ### convert to character matrix
     charx <- if (typeof(x2) == "character") {
       x2
     } else if (typeof(x2) %in% c("integer", "logical")) {
@@ -250,7 +282,6 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
 
     ### Case 4: rows and columns have dots
     if (nrow(x) > rowdots + 1 && ncol(x) > coldots + 1) {
-      # Add first rowdots-1 rows
       smallx <- t(apply(charx[seq_len(rowdots - 1), ], 1, add_dots,
                         pos = coldots))
       res <- rbind(smallx,
@@ -260,7 +291,7 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
       col_labels <- add_dots(col_labels, pos = coldots)
     }
 
-    ### Print "pretty" matrix
+    ### print matrix
     if(desc){
       if(!is.null(name)){
         cat(name,": ")
@@ -272,6 +303,49 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
              right = TRUE)
   }
 
-  ### Return a (temporarily) invisible copy of x
-  invisible(x)
+  ### return 'x' invisibly
+  return(invisible(x))
+}
+
+#' Permutations of a vector
+#'
+#' @description
+#' This function returns all permutations of a given vector.
+#'
+#' @references
+#' This function is a modified version of
+#' <https://stackoverflow.com/a/20199902/15157768>.
+#'
+#' @param x
+#' A vector.
+#'
+#' @return
+#' A list of all permutations of \code{x}.
+#'
+#' @examples
+#' RprobitB:::permutations(x = c("a","b","c"))
+#'
+#' @keywords
+#' utils
+
+permutations <- function(x){
+  perm_index <- function(n){
+    if(n==1){
+      return(matrix(1))
+    } else {
+      sp <- perm_index(n-1)
+      p <- nrow(sp)
+      A <- matrix(nrow=n*p,ncol=n)
+      for(i in 1:n){
+        A[(i-1)*p+1:p,] <- cbind(i,sp+(sp>=i))
+      }
+      return(A)
+    }
+  }
+  p <- perm_index(length(x))
+  out <- list()
+  for(i in 1:nrow(p)) {
+    out <- c(out, list(x[p[i,]]))
+  }
+  return(out)
 }

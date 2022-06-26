@@ -4,7 +4,7 @@
 \alias{predict.RprobitB_fit}
 \title{Choice prediction}
 \usage{
-\method{predict}{RprobitB_fit}(object, data = NULL, overview = TRUE, ...)
+\method{predict}{RprobitB_fit}(object, data = NULL, overview = TRUE, digits = 2, ...)
 }
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
@@ -21,6 +21,9 @@ Missing columns or \code{NA} values are set to 0.
 
 \item{overview}{If \code{TRUE}, returns a confusion matrix.}
 
+\item{digits}{The number of digits of the returned choice probabilities. \code{digits = 2} per
+default.}
+
 \item{...}{Ignored.}
 }
 \value{
@@ -36,13 +39,18 @@ on how to visualize the model's sensitivity and specificity by means of a
 receiver operating characteristic (ROC) curve.
 }
 \examples{
-data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1)
+data <- simulate_choices(
+  form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1
+)
 data <- train_test(data, test_proportion = 0.5)
 model <- fit_model(data$train)
-coef(model)
+
 predict(model)
 predict(model, overview = FALSE)
 predict(model, data = data$test)
-predict(model, data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
-        overview = FALSE)
+predict(
+  model,
+  data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
+  overview = FALSE
+)
 }

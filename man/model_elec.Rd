@@ -28,7 +28,7 @@ model_elec <- fit_model(
   data = data,
   R = 5000,
   Q = 10,
-  scale = pf ~ -1
+  scale = "pf := -1"
 )
 }
 }

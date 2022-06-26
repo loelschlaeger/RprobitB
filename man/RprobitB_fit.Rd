@@ -22,8 +22,8 @@ RprobitB_fit(
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
 
-\item{scale}{A formula object which determines the utility scale. It is of the form
-\verb{<parameter> ~ <value>}, where \verb{<parameter>} is either the name of a fixed
+\item{scale}{A character which determines the utility scale. It is of the form
+\verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
@@ -55,7 +55,7 @@ weight-based update of the latent classes.
 a latent class in the weight-based updating scheme.
 \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 a latent class in the weight-based updating scheme.
-\item \code{distmin}: The (non-negative) threshold difference in class means
+\item \code{distmin}: The (non-negative) threshold in class mean difference
 for joining two latent classes in the weight-based updating scheme.
 }}
 

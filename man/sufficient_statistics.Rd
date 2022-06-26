@@ -10,7 +10,7 @@ sufficient_statistics(data, normalization)
 \item{data}{An object of class \code{RprobitB_data}.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
-via \verb{\link{RprobitB_normalization}}.}
+via \code{\link{RprobitB_normalization}}.}
 }
 \value{
 A list of sufficient statistics on the data for Gibbs sampling, containing
@@ -39,24 +39,14 @@ sum over Kronecker products of each transposed element in \code{W}
 with itself,
 \item \code{XkX}, a list of length \code{N}, each element is constructed in
 the same way as \code{WkW} but with the elements in \code{X} and
-separately for each decider.
+separately for each decider,
+\item \code{rdiff} (for the ranked case only), a list of matrices that
+reverse the base differencing and instead difference in such a way
+that the resulting utility vector is negative.
 }
 }
 \description{
 This function computes sufficient statistics from an \code{RprobitB_data}
 object for the Gibbs sampler to save computation time.
-}
-\examples{
-form <- choice ~ v1 | v2
-re <- "v2"
-alternatives <- c("A","B","C")
-data <- simulate_choices(
-  form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives
-)
-normalization <- RprobitB:::RprobitB_normalization(
-  form = form, re = re, alternatives = alternatives
-)
-RprobitB:::sufficient_statistics(data = data, normalization = normalization)
-
 }
 \keyword{internal}

@@ -45,9 +45,19 @@ Now let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative 
 y_{nt} = {\arg \max}_{j = 1,\dots,J} U_{ntj}.
 \end{equation}
 
+In the ordered probit case, the concept of decider's having separate utilities for each alternative is no longer natural [Train:2009]. Instead, we model only a single utility value
+\begin{align*}
+  U_{nt} = X_{nt}'\beta_n + \epsilon_{nt}
+\end{align*}
+per decider $n$ and choice occasion $t$, which we interpret as the "level of association" that $n$ has with the choice question. The utility value falls into discrete categories, which in turn are linked to the ordered alternatives $j=1,\dots,J$. Formally,
+\begin{align*}
+   y_{nt} = \sum_{j = 1,\dots,J} j \cdot I(\gamma_{j-1} < U_{nt} \leq \gamma_{j}),
+\end{align*}
+with end points $\gamma_0 = -\infty$ and $\gamma_J = +\infty$, and thresholds $(\gamma_j)_{j=1,\dots,J-1}$. To ensure monotonicity of the thresholds, we rather estimate logarithmic threshold increments $d_j$ with $\gamma_j = \sum_{i=1,\dots,j} \exp{d_i}$, $j=1,\dots,J-1$.
+
 ## Choice behavior heterogeneity
 
-Note that the coefficient vector $\beta$ in the above definition is constant across decision makers. This assumption is too restrictive for many applications.^[For example, consider the case of modeling the choice of a means of transportation to work: It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.] Heterogeneity in choice behavior can be modeled by imposing a distribution on $\beta$ such that each decider can have their own preferences.
+Note that the coefficient vector $\beta$ is constant across decision makers. This assumption is too restrictive for many applications.^[For example, consider the case of modeling the choice of a means of transportation to work: It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.] Heterogeneity in choice behavior can be modeled by imposing a distribution on $\beta$ such that each decider can have their own preferences.
 
 Formally, we define $\beta = (\alpha, \beta_n)$, where $\alpha$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients. Consequently, $P = P_f + P_r$. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, the so-called mixing distribution.
 

@@ -4,13 +4,24 @@
 \alias{set_initial_gibbs_values}
 \title{Set initial values for the Gibbs sampler}
 \usage{
-set_initial_gibbs_values(N, T, J, P_f, P_r, C)
+set_initial_gibbs_values(
+  N,
+  T,
+  J,
+  P_f,
+  P_r,
+  C,
+  ordered = FALSE,
+  ranked = FALSE,
+  ss = NULL
+)
 }
 \arguments{
 \item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).}
+occasions of length \code{N} (i.e. a decision maker specific number).
+Per default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
@@ -19,6 +30,13 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{C}{The number (greater or equal 1) of latent classes.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{ranked}{TBA}
+
+\item{ss}{Optionally the output of \code{\link{sufficient_statistics}}.}
 }
 \value{
 A list of initial values for the Gibbs sampler.

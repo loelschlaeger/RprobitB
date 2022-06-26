@@ -13,6 +13,8 @@ RprobitB_data(
   P_f,
   P_r,
   alternatives,
+  ordered,
+  ranked,
   base,
   form,
   re,
@@ -42,7 +44,8 @@ choice occasion.}
 \item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).}
+occasions of length \code{N} (i.e. a decision maker specific number).
+Per default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
@@ -51,14 +54,25 @@ occasions of length \code{N} (i.e. a decision maker specific number).}
 \item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{ranked}{TBA}
 
 \item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (type 2 covariates).}
+alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
+\code{NULL} if the model has no alternative specific covariates (e.g. in the
+ordered probit model).
+Per default, \code{base} is the last element of \code{alternatives}.}
 
-\item{form}{A formula object that is used to specify the probit model.
+\item{form}{A \code{formula} object that is used to specify the model equation.
 The structure is \code{choice ~ A | B | C}, where
 \itemize{
+\item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
 covariates with a generic coefficient,
 \item \code{B} are names of choice situation specific covariates with
@@ -66,16 +80,19 @@ alternative specific coefficients,
 \item and \code{C} are names of alternative and choice situation specific
 covariates with alternative specific coefficients.
 }
-Separate multiple covariates of one type by a \code{+} sign.
-By default, alternative specific constants (ASCs) are added to the model
-(for all except for the last alternative due to identifiability).
+
+Multiple covariates (of one type) are seperated by a \code{+} sign.
+By default, alternative specific constants (ASCs) are added to the model.
 They can be removed by adding \code{+0} in the second spot.
-See the vignette on choice data for more details.}
+
+In the ordered probit model (\code{ordered = TRUE}), covariates are always
+constant across alternatives and have generic coefficients. The
+\code{formula} object here has the simple structure \code{choice ~ A}.
+ASCs are not estimated.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the alternative specific constants, include
-\code{"ASC"} in \code{re}.}
+To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{ASC}{A boolean, determining whether the model has ASCs.}
 

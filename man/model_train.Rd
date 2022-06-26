@@ -32,7 +32,7 @@ model_train <- fit_model(
   data = data,
   R = 10000,
   Q = 10,
-  scale = price ~ -1)
+  scale = "price := -1")
 )
 }
 }

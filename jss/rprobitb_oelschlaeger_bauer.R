@@ -4,7 +4,8 @@
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-#library(RprobitB) # UNCOMMENT!
+# install.packages("RprobitB", "plotROC")
+# library(RprobitB) # UNCOMMENT!
 
 
 ###################################################
@@ -153,7 +154,7 @@ data_elec <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model_elec <- fit_model(data_elec, R = 1000, scale = pf ~ -1)
+model_elec <- fit_model(data_elec, R = 1000, scale = "pf := -1")
 
 
 ###################################################
@@ -283,7 +284,7 @@ predict(
 ###################################################
 ### code chunk number 37: example 1 train nested model
 ###################################################
-model_train_sparse <- nested_model(model_train, form = choice ~ price | 0)
+model_train_sparse <- update(model_train, form = choice ~ price | 0)
 
 
 ###################################################

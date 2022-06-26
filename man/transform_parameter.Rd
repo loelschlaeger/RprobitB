@@ -4,12 +4,15 @@
 \alias{transform_parameter}
 \title{Transformation of parameter values}
 \usage{
-transform_parameter(parameter, normalization)
+transform_parameter(parameter, normalization, ordered = FALSE)
 }
 \arguments{
 \item{parameter}{An object of class \code{RprobitB_parameter}.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 }
 \value{
 An object of class \code{RprobitB_parameter}.

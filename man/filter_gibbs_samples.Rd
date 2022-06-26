@@ -11,7 +11,8 @@ filter_gibbs_samples(
   J,
   C,
   cov_sym,
-  keep_par = c("s", "alpha", "b", "Omega", "Sigma"),
+  ordered = FALSE,
+  keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"),
   drop_par = NULL
 )
 }
@@ -26,13 +27,16 @@ filter_gibbs_samples(
 
 \item{cov_sym}{Set to \code{TRUE} for labels of symmetric covariance elements.}
 
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
 \item{keep_par}{A vector of parameter names which are kept.}
 
 \item{drop_par}{A vector of parameter names which get dropped.}
 }
 \value{
 An object of class \code{RprobitB_gibbs_samples} filtered by the labels of
-\code{parameter_labels(P_f, P_r, J, C, cov_sym, keep_par, drop_par)}.
+\code{\link{parameter_labels}}.
 }
 \description{
 This is a helper function that filters Gibbs samples.

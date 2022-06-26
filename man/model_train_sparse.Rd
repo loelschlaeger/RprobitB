@@ -19,7 +19,7 @@ package with the model formula \code{choice ~ price | 0}.
 The model was derived from the \code{\link{model_train}} object via
 \preformatted{
 data("model_train", package = "RprobitB")
-model_train_sparse <- nested_model(
+model_train_sparse <- update(
   model_train,
   form = choice ~ price | 0
 )

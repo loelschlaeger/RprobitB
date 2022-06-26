@@ -1,9 +1,5 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: rprobitb_oelschlaeger_bauer.aux
 The style file: jss.bst
 Database file #1: ref.bib
-Warning--entry type for "Geweke:1998" isn't style-file defined
---line 149 of file ref.bib
-Warning--empty journal in Akaike:1974
-Warning--empty journal in Hammersley:1964
-Warning--can't use both author and editor fields in Rasmussen:2000
-(There were 4 warnings)
+Warning--empty journal in Rossi:2019
+(There was 1 warning)

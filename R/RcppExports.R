@@ -289,12 +289,12 @@ update_z <- function(s, beta, b, Omega) {
 #' @return
 #' An updated class size vector.
 #' @examples
-#' update_m(C = 3, z = c(1,1,1,2,2,3))
+#' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 #' @export
 #' @keywords
 #' posterior
 #'
-update_m <- function(C, z, nozero = FALSE) {
+update_m <- function(C, z, nozero) {
     .Call(`_RprobitB_update_m`, C, z, nozero)
 }
 
@@ -534,18 +534,118 @@ update_U <- function(U, y, sys, Sigmainv) {
     .Call(`_RprobitB_update_U`, U, y, sys, Sigmainv)
 }
 
-#' Gibbs sampler for the (mixed) multinomial probit model
+#' Update latent utility vector in the ranked probit case
+#' @description
+#' This function updates the latent utility vector in the ranked probit case.
+#' @param U
+#' The current utility vector of length \code{J-1}, differenced such that
+#' the vector is negative.
+#' @param sys
+#' A vector of length \code{J-1}, the systematic utility part.
+#' @param Sigmainv
+#' The inverted error term covariance matrix of dimension
+#' \code{J-1} x \code{J-1}.
+#' @details
+#' This update is basically the same as in the non-ranked case, despite that
+#' the truncation point is zero.
+#' @return
+#' An updated utility vector of length \code{J-1}.
+#' @examples
+#' U <- c(0,0)
+#' sys <- c(0,0)
+#' Sigmainv <- diag(2)
+#' update_U_ranked(U, sys, Sigmainv)
+#' @export
+#' @keywords
+#' posterior
+#'
+update_U_ranked <- function(U, sys, Sigmainv) {
+    .Call(`_RprobitB_update_U_ranked`, U, sys, Sigmainv)
+}
+
+#' Transform threshold increments to thresholds
+#' @description
+#' This helper function transforms the threshold increments \code{d} to the
+#' thresholds \code{gamma}.
+#' @param d
+#' A numeric vector of threshold increments.
+#' @details
+#' The threshold vector \code{gamma} is computed from the threshold increments
+#' \code{d} as \code{c(-100,0,cumsum(exp(d)),100)}, where the bounds
+#' \code{-100} and \code{100} exist for numerical reasons and the first
+#' threshold is fixed to \code{0} for identification.
+#' @return
+#' A numeric vector of the thresholds.
+#' @examples
+#' d_to_gamma(c(0,0,0))
+#' @export
+#' @keywords
+#' posterior
+#'
+d_to_gamma <- function(d) {
+    .Call(`_RprobitB_d_to_gamma`, d)
+}
+
+#' Log-likelihood in the ordered probit model
+#' @description
+#' This function computes the conditional probability of one choice occasion
+#' given the threshold increments \code{d}.
+#' @param d
+#' A numeric vector of threshold increments.
+#' @param y
+#' A matrix of the choices.
+#' @param mu
+#' A matrix of the systematic utilities.
+#' @param Tvec
+#' The element \code{Tvec} in \code{\link{sufficient_statistics}}.
+#' @return
+#' The log-likelihood value.
+#' @examples
+#' ll_ordered(c(0,0,0), 1, 1, FALSE)
+#' @export
+#' @keywords
+#' posterior
+#'
+ll_ordered <- function(d, y, mu, Tvec) {
+    .Call(`_RprobitB_ll_ordered`, d, y, mu, Tvec)
+}
+
+#' Update utility threshold increments
+#' @description
+#' This function updates the utility threshold increments
+#' @param d
+#' The current vector of utility threshold increments.
+#' @param ll
+#' Current log-likelihood value.
+#' @param zeta
+#' The mean vector of the normal prior for \code{d}.
+#' @param Z
+#' The covariance matrix of the normal prior for \code{d}.
+#' @inheritParams ll_ordered
+#' @return
+#' The updated value for \code{d}.
+#' @export
+#' @keywords
+#' posterior
+#'
+update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
+    .Call(`_RprobitB_update_d`, d, y, mu, ll, zeta, Z, Tvec)
+}
+
+#' Markov chain Monte Carlo simulation for the probit model
 #'
 #' @description
-#' This function draws Gibbs samples from the posterior distribution of the
-#' (mixed) multinomial probit model parameters.
+#' This function draws from the posterior distribution of the probit model via
+#' Markov chain Monte Carlo simulation-
 #'
 #' @details
-#' This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
+#' This function is not supposed to be called directly, but rather via
+#' \code{\link{fit_model}}.
 #'
 #' @param sufficient_statistics
 #' The output of \code{\link{sufficient_statistics}}.
 #' @inheritParams fit_model
+#' @inheritParams RprobitB_data
 #' @param init
 #' The output of \code{\link{set_initial_gibbs_values}}.
 #' @return
@@ -554,6 +654,7 @@ update_U <- function(U, y, sys, Sigmainv) {
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),
 #'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
+#'   \item \code{d} (if \code{ordered = TRUE}),
 #' }
 #' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 #' entry is the number of latent classes after iteration \code{r}.
@@ -561,13 +662,14 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' @keywords
 #' internal
 #'
-gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, init, R, B, print_progress) {
-    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, init, R, B, print_progress)
+gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked) {
+    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
 }
 
-#' Draw from truncated normal
+#' Draw from one-sided truncated normal
 #' @description
-#' This function draws from a truncated univariate normal distribution.
+#' This function draws from a one-sided truncated univariate normal
+#' distribution.
 #' @param mu
 #' The mean.
 #' @param sig
@@ -580,15 +682,41 @@ gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, init, R
 #' A numeric value.
 #' @export
 #' @examples
-#' ### draw R samples from a standard normal truncated at 1 from above
+#' ### samples from a standard normal truncated at 1 from above
 #' R <- 1e4
-#' draws <- replicate(R, rtnorm(1,1,1,TRUE))
-#' ### draw the density
+#' draws <- replicate(R, rtnorm(0,1,1,TRUE))
 #' plot(density(draws))
 #' @keywords
 #' distribution
 #'
 rtnorm <- function(mu, sig, trunpt, above) {
     .Call(`_RprobitB_rtnorm`, mu, sig, trunpt, above)
+}
+
+#' Draw from two-sided truncated normal
+#' @description
+#' This function draws from a two-sided truncated univariate normal
+#' distribution.
+#' @param mu
+#' The mean.
+#' @param sig
+#' The standard deviation.
+#' @param lower_bound
+#' The lower truncation point.
+#' @param upper_bound
+#' The upper truncation point.
+#' @return
+#' A numeric value.
+#' @export
+#' @examples
+#' ### samples from a standard normal truncated at -2 and 2
+#' R <- 1e4
+#' draws <- replicate(R, rttnorm(0,1,-2,2))
+#' plot(density(draws))
+#' @keywords
+#' distribution
+#'
+rttnorm <- function(mu, sig, lower_bound, upper_bound) {
+    .Call(`_RprobitB_rttnorm`, mu, sig, lower_bound, upper_bound)
 }
 

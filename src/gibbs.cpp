@@ -100,13 +100,13 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' @return
 //' An updated class size vector.
 //' @examples
-//' update_m(C = 3, z = c(1,1,1,2,2,3))
+//' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 //' @export
 //' @keywords
 //' posterior
 //'
 // [[Rcpp::export]]
-arma::vec update_m (int C, arma::vec z, bool nozero = false) {
+arma::vec update_m (int C, arma::vec z, bool nozero) {
   int N = z.size();
   arma::vec m(C);
   for(int c = 0; c<C; c++){
@@ -419,18 +419,173 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
   return (U_update);
 }
 
-//' Gibbs sampler for the (mixed) multinomial probit model
+//' Update latent utility vector in the ranked probit case
+//' @description
+//' This function updates the latent utility vector in the ranked probit case.
+//' @param U
+//' The current utility vector of length \code{J-1}, differenced such that
+//' the vector is negative.
+//' @param sys
+//' A vector of length \code{J-1}, the systematic utility part.
+//' @param Sigmainv
+//' The inverted error term covariance matrix of dimension
+//' \code{J-1} x \code{J-1}.
+//' @details
+//' This update is basically the same as in the non-ranked case, despite that
+//' the truncation point is zero.
+//' @return
+//' An updated utility vector of length \code{J-1}.
+//' @examples
+//' U <- c(0,0)
+//' sys <- c(0,0)
+//' Sigmainv <- diag(2)
+//' update_U_ranked(U, sys, Sigmainv)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
+  int Jm1 = U.size();
+  arma::vec U_update = U;
+  double m;
+  for(int i = 0; i<Jm1; i++){
+    m = 0.0;
+    for(int k = 0; k<Jm1; k++){
+      if (k!=i){
+        m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
+      }
+    }
+    U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), 0.0, true);
+  }
+  return (U_update);
+}
+
+//' Transform threshold increments to thresholds
+//' @description
+//' This helper function transforms the threshold increments \code{d} to the
+//' thresholds \code{gamma}.
+//' @param d
+//' A numeric vector of threshold increments.
+//' @details
+//' The threshold vector \code{gamma} is computed from the threshold increments
+//' \code{d} as \code{c(-100,0,cumsum(exp(d)),100)}, where the bounds
+//' \code{-100} and \code{100} exist for numerical reasons and the first
+//' threshold is fixed to \code{0} for identification.
+//' @return
+//' A numeric vector of the thresholds.
+//' @examples
+//' d_to_gamma(c(0,0,0))
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+arma::vec d_to_gamma (arma::vec d) {
+  int length_d = d.size();
+  double acc = 0;
+  for(int i = 0; i < length_d; i++) {
+    d[i] = exp(d[i]) + acc;
+    acc = d[i];
+  }
+  arma::vec gamma(length_d+3);
+  gamma[0] = -100;
+  gamma[1] = 0;
+  for(int i = 0; i < length_d; i++) {
+    gamma[2+i] = d[i];
+  }
+  gamma[length_d+2] = 100;
+  return(gamma);
+}
+
+//' Log-likelihood in the ordered probit model
+//' @description
+//' This function computes the conditional probability of one choice occasion
+//' given the threshold increments \code{d}.
+//' @param d
+//' A numeric vector of threshold increments.
+//' @param y
+//' A matrix of the choices.
+//' @param mu
+//' A matrix of the systematic utilities.
+//' @param Tvec
+//' The element \code{Tvec} in \code{\link{sufficient_statistics}}.
+//' @return
+//' The log-likelihood value.
+//' @examples
+//' ll_ordered(c(0,0,0), 1, 1, FALSE)
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
+  int N = Tvec.size();
+  double ll = 0.0;
+  double ub, lb, prob;
+  arma::vec gamma = d_to_gamma(d);
+  for(int n = 0; n<N; n++){
+    for(int t = 0; t<Tvec[n]; t++){
+      ub = gamma[y(n,t)];
+      lb = gamma[y(n,t)-1];
+      prob = R::pnorm(ub-mu(n,t),0.0,1.0,1,0) - R::pnorm(lb-mu(n,t),0.0,1.0,1,0);
+      if(prob < 1e-10) prob = 1e-10;
+      ll += std::log(prob);
+    }
+  }
+  return ll;
+}
+
+//' Update utility threshold increments
+//' @description
+//' This function updates the utility threshold increments
+//' @param d
+//' The current vector of utility threshold increments.
+//' @param ll
+//' Current log-likelihood value.
+//' @param zeta
+//' The mean vector of the normal prior for \code{d}.
+//' @param Z
+//' The covariance matrix of the normal prior for \code{d}.
+//' @inheritParams ll_ordered
+//' @return
+//' The updated value for \code{d}.
+//' @export
+//' @keywords
+//' posterior
+//'
+// [[Rcpp::export]]
+List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
+               arma::vec zeta, arma::mat Z, arma::vec Tvec) {
+  int length_d = d.size();
+  arma::vec d_cand = d + 0.1 * as<vec>(Rcpp::rnorm(length_d,0.0,1.0));
+  double ll_cand = ll_ordered(d_cand, y, mu, Tvec);
+  double post_cand = ll_cand + dmvnorm(d_cand, zeta, Z, true);
+  double ll_diff = post_cand - ll - dmvnorm(d, zeta, Z, true);
+  double alpha = std::exp(ll_diff);
+  double unif = 0.0;
+  if (alpha < 1) unif = R::runif(0.0,1.0);
+  if (unif <= alpha) {
+    d = d_cand;
+    ll = ll_cand;
+  }
+  return List::create(Named("d") = d, Named("ll") = ll);
+}
+
+//' Markov chain Monte Carlo simulation for the probit model
 //'
 //' @description
-//' This function draws Gibbs samples from the posterior distribution of the
-//' (mixed) multinomial probit model parameters.
+//' This function draws from the posterior distribution of the probit model via
+//' Markov chain Monte Carlo simulation-
 //'
 //' @details
-//' This function is not supposed to be called directly, but rather via \code{\link{fit_model}}.
+//' This function is not supposed to be called directly, but rather via
+//' \code{\link{fit_model}}.
 //'
 //' @param sufficient_statistics
 //' The output of \code{\link{sufficient_statistics}}.
 //' @inheritParams fit_model
+//' @inheritParams RprobitB_data
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
 //' @return
@@ -439,6 +594,7 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //'   \item \code{Sigma},
 //'   \item \code{alpha} (if \code{P_f>0}),
 //'   \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
+//'   \item \code{d} (if \code{ordered = TRUE}),
 //' }
 //' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 //' entry is the number of latent classes after iteration \code{r}.
@@ -447,21 +603,25 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' internal
 //'
 // [[Rcpp::export]]
-List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes,
-                     List init, int R, int B, bool print_progress) {
+List gibbs_sampling (
+    List sufficient_statistics, List prior, List latent_classes,
+    Rcpp::List fixed_parameter, List init, int R, int B, bool print_progress,
+    bool ordered, bool ranked
+) {
 
   // extract 'sufficient_statistics' parameters
   int N = as<int>(sufficient_statistics["N"]);
   int J = as<int>(sufficient_statistics["J"]);
   int P_f = as<int>(sufficient_statistics["P_f"]);
   int P_r = as<int>(sufficient_statistics["P_r"]);
-  vec Tvec = as<vec>(sufficient_statistics["Tvec"]);
-  vec csTvec = as<vec>(sufficient_statistics["csTvec"]);
+  arma::vec Tvec = as<vec>(sufficient_statistics["Tvec"]);
+  arma::vec csTvec = as<vec>(sufficient_statistics["csTvec"]);
   List W;
   List X;
   mat y = as<mat>(sufficient_statistics["y"]);
   mat WkW;
   List XkX;
+  List rdiff;
   if(P_f>0){
     W = as<List>(sufficient_statistics["W"]);
     WkW = as<mat>(sufficient_statistics["WkW"]);
@@ -469,6 +629,9 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   if(P_r>0){
     X = as<List>(sufficient_statistics["X"]);
     XkX = as<List>(sufficient_statistics["XkX"]);
+  }
+  if(ranked){
+    rdiff = as<List>(sufficient_statistics["rdiff"]);
   }
 
   // extract 'latent_classes' parameters
@@ -506,6 +669,8 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat Dinv;
   int kappa = as<int>(prior["kappa"]);
   mat E = as<mat>(prior["E"]);
+  vec zeta;
+  mat Z;
   if(P_f>0){
     eta = as<vec>(prior["eta"]);
     Psiinv = arma::inv(as<mat>(prior["Psi"]));
@@ -518,6 +683,10 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     nu = as<int>(prior["nu"]);
     Theta = as<mat>(prior["Theta"]);
   }
+  if(ordered){
+    zeta = as<vec>(prior["zeta"]);
+    Z = as<mat>(prior["Z"]);
+  }
 
   // extract 'init' parameters
   vec m0;
@@ -528,6 +697,7 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   mat beta0;
   mat U0 = as<mat>(init["U0"]);
   mat Sigma0 = as<mat>(init["Sigma0"]);
+  vec d0;
   if(P_f>0){
     alpha0 = as<vec>(init["alpha0"]);
   }
@@ -538,16 +708,23 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     Omega0 = as<mat>(init["Omega0"]);
     beta0 = as<mat>(init["beta0"]);
   }
+  if(ordered){
+    d0 = as<vec>(init["d0"]);
+  }
 
   // define helper variables and functions
-  vec s_cand;
-  mat Omega_c_inv;
-  vec b_c;
-  mat S;
-  mat IW;
-  vec eps;
+  arma::vec s_cand;
+  arma::mat Omega_c_inv;
+  arma::vec b_c;
+  arma::mat S;
+  arma::mat IW;
+  arma::vec eps;
+  arma::mat mu_mat = zeros<mat>(N,Tvec.size());
+  arma::mat mu_mat_tmp = zeros<mat>(1,1);
   int ind;
-  int Jm1 = J - 1;
+  int Jm1 = J-1;
+  double old_ll = 0.0;
+  List update_d_out;
 
   // allocate space for output
   arma::mat s_draws = zeros<mat>(R,Cdrawsize);
@@ -555,19 +732,72 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
   arma::mat b_draws = zeros<mat>(R,P_r*Cdrawsize);
   arma::mat Omega_draws = zeros<mat>(R,P_r*P_r*Cdrawsize);
   arma::mat alpha_draws = zeros<mat>(R,P_f);
-  mat Sigma_draws = zeros<mat>(R,Jm1*Jm1);
+  mat Sigma_draws;
+  if(ordered) {
+    Sigma_draws = zeros<mat>(R,1);
+  } else {
+    Sigma_draws = zeros<mat>(R,Jm1*Jm1);
+  }
+  arma::mat d_draws = zeros<mat>(R,J-2);
   arma::vec class_sequence(R);
 
   // set initial values
-  vec s = ones(C)/C;
-  vec z = z0;
-  vec m = m0;
-  mat b = b0;
-  mat Omega = Omega0;
-  mat U = U0;
-  vec alpha = alpha0;
-  mat beta = beta0;
-  mat Sigmainv = arma::inv(Sigma0);
+  arma::vec s = ones(C)/C;
+  arma::vec z = z0;
+  arma::vec m = m0;
+  arma::mat b = b0;
+  arma::mat Omega = Omega0;
+  arma::mat U = U0;
+  arma::vec alpha = alpha0;
+  arma::mat beta = beta0;
+  arma::mat Sigma = Sigma0;
+  arma::mat Sigmainv = arma::inv(Sigma);
+  arma::vec d = d0;
+  arma::vec gamma;
+  if (ordered) gamma = d_to_gamma(d0);
+
+  // set fixed parameter values
+  bool do_update_s = true;
+  if(fixed_parameter.containsElementNamed("s")){
+    do_update_s = false;
+    s = as<vec>(fixed_parameter["s"]);
+  }
+  bool do_update_z = true;
+  if(fixed_parameter.containsElementNamed("z")){
+    do_update_s = false;
+    z = as<vec>(fixed_parameter["z"]);
+  }
+  bool do_update_b = true;
+  if(fixed_parameter.containsElementNamed("b")){
+    do_update_b = false;
+    b = as<mat>(fixed_parameter["b"]);
+  }
+  bool do_update_Omega = true;
+  if(fixed_parameter.containsElementNamed("Omega")){
+    do_update_Omega = false;
+    Omega = as<mat>(fixed_parameter["Omega"]);
+  }
+  bool do_update_alpha = true;
+  if(fixed_parameter.containsElementNamed("alpha")){
+    do_update_alpha = false;
+    alpha = as<vec>(fixed_parameter["alpha"]);
+  }
+  bool do_update_beta = true;
+  if(fixed_parameter.containsElementNamed("beta")){
+    do_update_beta = false;
+    beta = as<mat>(fixed_parameter["beta"]);
+  }
+  bool do_update_Sigma = true;
+  if(fixed_parameter.containsElementNamed("Sigma")){
+    do_update_Sigma = false;
+    Sigma = as<mat>(fixed_parameter["Sigma"]);
+    Sigmainv = arma::inv(Sigma);
+  }
+  if(ordered){
+    do_update_Sigma = false;
+    Sigma = ones<mat>(1,1);
+    Sigmainv = arma::inv(Sigma);
+  }
 
   // set progress output
   Environment pkg = Environment::namespace_env("RprobitB");
@@ -579,9 +809,9 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
     // print progress
     if(print_progress && ((r+1)%10 == 0 || r == 0)){
       if(weight_update==false && dp_update==false){
-        RprobitB_pp("Gibbs sampler iteration", r+1, R);
+        RprobitB_pp("MCMC iteration", r+1, R);
       } else {
-        RprobitB_pp("Gibbs sampler iteration (C = " + std::to_string(C) + ")", r+1, R);
+        RprobitB_pp("MCMC iteration (C = " + std::to_string(C) + ")", r+1, R);
       }
     }
 
@@ -597,43 +827,60 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
       // - no DP or
       // - outside updating period
       if(dp_update == false || r+1 > B || r == 0){
+
         // update s (but only if draw is descending)
-        arma::vec s_cand = update_s(delta,m);
-        if(std::is_sorted(std::begin(s_cand),std::end(s_cand),std::greater_equal<double>())){
-          s = s_cand;
+        if(do_update_s) {
+          arma::vec s_cand = update_s(delta,m);
+          if(std::is_sorted(std::begin(s_cand),std::end(s_cand),
+                            std::greater_equal<double>())){
+            s = s_cand;
+          }
         }
 
         // update z
-        z = update_z(s, beta, b, Omega);
+        if(do_update_z) {
+          z = update_z(s, beta, b, Omega);
+        }
 
         // update m
         m = update_m(C, z, true);
 
         // update b
-        b = update_b(beta, Omega, z, m, xi, Dinv);
+        if(do_update_b) {
+          b = update_b(beta, Omega, z, m, xi, Dinv);
+        }
 
         // update Omega
-        Omega = update_Omega(beta, b, z, m, nu, Theta);
+        if(do_update_Omega) {
+          Omega = update_Omega(beta, b, z, m, nu, Theta);
+        }
       }
 
       // update beta
-      for(int n = 0; n<N; n++){
-        for(int c = 0; c<C; c++){
-          if(z[n]==c+1){
-            Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
-            b_c = b(span::all,c);
+      if(do_update_beta) {
+        for(int n = 0; n<N; n++){
+          for(int c = 0; c<C; c++){
+            if(z[n]==c+1){
+              Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
+              b_c = b(span::all,c);
+            }
           }
+          arma::mat XSigX;
+          if (ordered){
+            XSigX = reshape(as<mat>(XkX[n]),P_r,P_r);
+          } else {
+            XSigX = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
+          }
+          vec XSigU = zeros<vec>(P_r);
+          for(int t = 0; t<Tvec[n]; t++){
+            ind = csTvec[n]+t;
+            if(P_f==0)
+              XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
+            if(P_f>0)
+              XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
+          }
+          beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
         }
-        mat XSigX = reshape(as<mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
-        vec XSigU = zeros<vec>(P_r);
-        for(int t = 0; t<Tvec[n]; t++){
-          ind = csTvec[n]+t;
-          if(P_f==0)
-            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind);
-          if(P_f>0)
-            XSigU += trans(as<mat>(X[ind]))*Sigmainv*U(span::all,ind)-trans(as<mat>(X[ind]))*Sigmainv*as<mat>(W[ind])*alpha;
-        }
-        beta(span::all,n) = update_reg(b_c,Omega_c_inv,XSigX,XSigU);
       }
 
       // weight-based update of classes
@@ -661,55 +908,137 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
 
     if(P_f>0){
       // update alpha
-      mat WSigW = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
-      vec WSigU = zeros<vec>(P_f);
-      for(int n = 0; n<N; n++){
-        for(int t = 0; t<Tvec[n]; t++){
-          ind = csTvec[n]+t;
-          if(P_r==0)
-            WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
-          if(P_r>0)
-            WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+      if(do_update_alpha) {
+        arma::mat WSigW;
+        if (ordered) {
+          WSigW = reshape(WkW,P_f,P_f);
+        } else {
+          WSigW = reshape(WkW*reshape(Sigmainv,Jm1*Jm1,1),P_f,P_f);
         }
+        vec WSigU = zeros<vec>(P_f);
+        for(int n = 0; n<N; n++){
+          for(int t = 0; t<Tvec[n]; t++){
+            ind = csTvec[n]+t;
+            if(P_r==0)
+              WSigU += trans(as<mat>(W[ind]))*Sigmainv*U(span::all,ind);
+            if(P_r>0)
+              WSigU += trans(as<mat>(W[ind]))*Sigmainv*(U(span::all,ind)-as<mat>(X[ind])*beta(span::all,n));
+          }
+        }
+        alpha = update_reg(eta,Psiinv,WSigW,WSigU);
       }
-      alpha = update_reg(eta,Psiinv,WSigW,WSigU);
     }
 
     // update U
-    for(int n = 0; n<N; n++){
-      for(int t = 0; t<Tvec[n]; t++){
-        ind = csTvec[n]+t;
-        if(P_f>0 && P_r>0)
-          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
-        if(P_f>0 && P_r==0)
-          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(W[ind])*alpha, Sigmainv);
-        if(P_f==0 && P_r>0)
-          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), as<mat>(X[ind])*beta(span::all,n), Sigmainv);
-        if(P_f==0 && P_r==0){
-          arma::vec mu_null(Jm1);
-          U(span::all,ind) = update_U(U(span::all,ind), y(n,t), mu_null, Sigmainv);
+    if(ordered) {
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          if(P_f>0 && P_r>0) {
+            mu_mat_tmp = as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n);
+          }
+          if(P_f>0 && P_r==0) {
+            mu_mat_tmp = as<mat>(W[ind])*alpha;
+          }
+          if(P_f==0 && P_r>0) {
+            mu_mat_tmp = as<mat>(X[ind])*beta(span::all,n);
+          }
+          if(P_f==0 && P_r==0) {
+            mu_mat_tmp = zeros<mat>(1,1);
+          }
+          U(span::all,ind) = rttnorm(mu_mat_tmp(0,0), 1.0, gamma[y(n,t)], gamma[y(n,t)-1]);
+        }
+      }
+    } else if (ranked) {
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          arma::mat rdiff_tmp = as<mat>(rdiff[y(n,t)-1]);
+          arma::vec U_tmp = rdiff_tmp * U(span::all,ind);
+          arma::vec mu_vec_tmp = zeros<vec>(Jm1);
+          arma::mat Sigmainv_tmp = arma::inv(rdiff_tmp * Sigma * trans(rdiff_tmp));
+          if(P_f>0 && P_r>0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(W[ind]) * alpha +
+              rdiff_tmp * as<mat>(X[ind]) * beta(span::all,n);
+          }
+          if(P_f>0 && P_r==0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(W[ind]) * alpha;
+          }
+          if(P_f==0 && P_r>0) {
+            mu_vec_tmp = rdiff_tmp * as<mat>(X[ind]) * beta(span::all,n);
+          }
+          U(span::all,ind) = arma::inv(rdiff_tmp) *
+            update_U_ranked(U_tmp, mu_vec_tmp, Sigmainv_tmp);
+        }
+      }
+    } else {
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          if(P_f>0 && P_r>0) {
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n), Sigmainv);
+          }
+          if(P_f>0 && P_r==0) {
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(W[ind])*alpha, Sigmainv);
+          }
+          if(P_f==0 && P_r>0) {
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              as<mat>(X[ind])*beta(span::all,n), Sigmainv);
+          }
+          if(P_f==0 && P_r==0) {
+            arma::vec mu_null(Jm1);
+            U(span::all,ind) = update_U(U(span::all,ind), y(n,t),
+              mu_null, Sigmainv);
+          }
         }
       }
     }
 
     // update Sigma
-    S = zeros<mat>(Jm1,Jm1);
-    for(int n = 0; n<N; n++){
-      for(int t = 0; t<Tvec[n]; t++){
-        ind = csTvec[n]+t;
-        if(P_f>0 && P_r>0)
-          eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f>0 && P_r==0)
-          eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
-        if(P_f==0 && P_r>0)
-          eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
-        if(P_f==0 && P_r==0)
-          eps = U(span::all,ind);
-        S += eps * trans(eps);
+    if(do_update_Sigma){
+      S = zeros<mat>(Jm1,Jm1);
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          if(P_f>0 && P_r>0)
+            eps = U(span::all,ind) - as<mat>(W[ind])*alpha - as<mat>(X[ind])*beta(span::all,n);
+          if(P_f>0 && P_r==0)
+            eps = U(span::all,ind) - as<mat>(W[ind])*alpha;
+          if(P_f==0 && P_r>0)
+            eps = U(span::all,ind) - as<mat>(X[ind])*beta(span::all,n);
+          if(P_f==0 && P_r==0)
+            eps = U(span::all,ind);
+          S += eps * trans(eps);
+        }
       }
+      Sigma = update_Sigma(kappa, E, sum(Tvec), S);
+      Sigmainv = arma::inv(Sigma);
     }
-    arma::mat Sigma = update_Sigma(kappa, E, sum(Tvec), S);
-    Sigmainv = arma::inv(Sigma);
+
+    // update d (for the ordered probit model)
+    if (ordered) {
+      for(int n = 0; n<N; n++){
+        for(int t = 0; t<Tvec[n]; t++){
+          ind = csTvec[n]+t;
+          if(P_f>0 && P_r>0)
+            mu_mat_tmp = as<mat>(W[ind])*alpha+as<mat>(X[ind])*beta(span::all,n);
+          if(P_f>0 && P_r==0)
+            mu_mat_tmp = as<mat>(W[ind])*alpha;
+          if(P_f==0 && P_r>0)
+            mu_mat_tmp = as<mat>(X[ind])*beta(span::all,n);
+          if(P_f==0 && P_r==0){
+            mu_mat_tmp = zeros<mat>(1,1);
+          }
+          mu_mat(n,t) = mu_mat_tmp(0,0);
+        }
+      }
+      if(r == 0) old_ll = ll_ordered(d, y, mu_mat, Tvec);
+      update_d_out = update_d(d, y, mu_mat, old_ll, zeta, Z, Tvec);
+      d = as<vec>(update_d_out["d"]);
+      old_ll = as<double>(update_d_out["ll"]);
+    }
 
     // save draws
     if(P_f>0)
@@ -724,29 +1053,18 @@ List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes
         trans(vectorise_Omega);
     }
     Sigma_draws(r,span::all) = trans(vectorise(Sigma));
+    if(ordered)
+      d_draws(r,span::all) = trans(d);
   }
 
-  // build and return output list 'out'
-  List out;
-  if(P_f>0 && P_r>0)
-    out = List::create(Named("s") = s_draws,
-                       Named("z") = z_draws,
-                       Named("alpha") = alpha_draws,
-                       Named("b") = b_draws,
-                       Named("Omega") = Omega_draws,
-                       Named("Sigma") = Sigma_draws,
-                       Named("class_sequence") = class_sequence);
-  if(P_f>0 && P_r==0)
-    out = List::create(Named("alpha") = alpha_draws,
-                       Named("Sigma") = Sigma_draws);
-  if(P_f==0 && P_r>0)
-    out = List::create(Named("s") = s_draws,
-                       Named("z") = z_draws,
-                       Named("b") = b_draws,
-                       Named("Omega") = Omega_draws,
-                       Named("Sigma") = Sigma_draws,
-                       Named("class_sequence") = class_sequence);
-  if(P_f==0 && P_r==0)
-    out = List::create(Named("Sigma") = Sigma_draws);
-  return out;
+  // return Gibbs samples
+  return List::create(
+    Named("s") = s_draws,
+    Named("z") = z_draws,
+    Named("alpha") = alpha_draws,
+    Named("b") = b_draws,
+    Named("Omega") = Omega_draws,
+    Named("Sigma") = Sigma_draws,
+    Named("d") = d_draws,
+    Named("class_sequence") = class_sequence);
 }

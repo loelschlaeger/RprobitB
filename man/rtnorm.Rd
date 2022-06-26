@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{rtnorm}
 \alias{rtnorm}
-\title{Draw from truncated normal}
+\title{Draw from one-sided truncated normal}
 \usage{
 rtnorm(mu, sig, trunpt, above)
 }
@@ -19,13 +19,13 @@ rtnorm(mu, sig, trunpt, above)
 A numeric value.
 }
 \description{
-This function draws from a truncated univariate normal distribution.
+This function draws from a one-sided truncated univariate normal
+distribution.
 }
 \examples{
-### draw R samples from a standard normal truncated at 1 from above
+### samples from a standard normal truncated at 1 from above
 R <- 1e4
-draws <- replicate(R, rtnorm(1,1,1,TRUE))
-### draw the density
+draws <- replicate(R, rtnorm(0,1,1,TRUE))
 plot(density(draws))
 }
 \keyword{distribution}

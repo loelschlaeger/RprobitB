@@ -7,10 +7,12 @@
 simulate_choices(
   form,
   N,
-  T,
+  T = 1,
   J,
   re = NULL,
   alternatives = NULL,
+  ordered = FALSE,
+  ranked = FALSE,
   base = NULL,
   covariates = NULL,
   seed = NULL,
@@ -18,9 +20,10 @@ simulate_choices(
 )
 }
 \arguments{
-\item{form}{A formula object that is used to specify the probit model.
+\item{form}{A \code{formula} object that is used to specify the model equation.
 The structure is \code{choice ~ A | B | C}, where
 \itemize{
+\item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
 covariates with a generic coefficient,
 \item \code{B} are names of choice situation specific covariates with
@@ -28,29 +31,43 @@ alternative specific coefficients,
 \item and \code{C} are names of alternative and choice situation specific
 covariates with alternative specific coefficients.
 }
-Separate multiple covariates of one type by a \code{+} sign.
-By default, alternative specific constants (ASCs) are added to the model
-(for all except for the last alternative due to identifiability).
+
+Multiple covariates (of one type) are seperated by a \code{+} sign.
+By default, alternative specific constants (ASCs) are added to the model.
 They can be removed by adding \code{+0} in the second spot.
-See the vignette on choice data for more details.}
+
+In the ordered probit model (\code{ordered = TRUE}), covariates are always
+constant across alternatives and have generic coefficients. The
+\code{formula} object here has the simple structure \code{choice ~ A}.
+ASCs are not estimated.}
 
 \item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).}
+occasions of length \code{N} (i.e. a decision maker specific number).
+Per default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the alternative specific constants, include
-\code{"ASC"} in \code{re}.}
+To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.}
+If not specified, the choice set is defined by the observed choices.
+If \code{ordered = TRUE}, \code{alternatives} must be specified with the
+alternatives ordered from worst to best.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{ranked}{TBA}
 
 \item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (type 2 covariates).}
+alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
+\code{NULL} if the model has no alternative specific covariates (e.g. in the
+ordered probit model).
+Per default, \code{base} is the last element of \code{alternatives}.}
 
 \item{covariates}{A named list of covariate values. Each element must be a vector of length
 equal to the number of choice occasions and named according to a covariate.
@@ -59,21 +76,24 @@ distribution.}
 
 \item{seed}{Set a seed for the simulation.}
 
-\item{true_parameter}{Optionally specify a named list with true parameters for \code{alpha},
+\item{true_parameter}{Optionally specify a named list with true parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, or \code{z} for the simulation.}
+\code{beta}, \code{z}, or \code{d} for the simulation.
+See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
+for definitions of these variables.}
 }
 \value{
 An object of class \code{RprobitB_data}.
 }
 \description{
-This function simulates choice data.
+This function simulates choice data from a probit model.
 }
 \details{
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
 for more details.
 }
 \examples{
+### simulate data from a binary probit model with two latent classes
 data <- simulate_choices(
   form = choice ~ cost | income | time,
   N = 100,
@@ -88,13 +108,39 @@ data <- simulate_choices(
     "C" = 2
   )
 )
+
+### simulate data from an ordered probit model
+data <- simulate_choices(
+  form = opinion ~ age + gender,
+  N = 10,
+  T = 1:10,
+  J = 5,
+  alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
+  ordered = TRUE,
+  covariates = list(
+    "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
+    ),
+  seed = 1
+)
+
+### simulate data from a ranked probit model
+data <- simulate_choices(
+  form = product ~ price,
+  N = 10,
+  T = 1:10,
+  J = 3,
+  alternatives = c("A", "B", "C"),
+  ranked = TRUE,
+  seed = 1
+)
+
 }
 \seealso{
 \itemize{
 \item \code{\link[=check_form]{check_form()}} for checking the model formula
 \item \code{\link[=overview_effects]{overview_effects()}} for an overview of the model effects
 \item \code{\link[=create_lagged_cov]{create_lagged_cov()}} for creating lagged covariates
-\item \code{\link[=as_cov_names]{as_cov_names()}} for renaming alternative-specific covariates
+\item \code{\link[=as_cov_names]{as_cov_names()}} for re-labeling alternative-specific covariates
 \item \code{\link[=prepare_data]{prepare_data()}} for preparing empirical choice data
 \item \code{\link[=train_test]{train_test()}} for splitting choice data into a train and test subset
 }
