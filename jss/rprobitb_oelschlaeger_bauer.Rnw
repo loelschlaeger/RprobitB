@@ -20,9 +20,6 @@ options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 # library(RprobitB) # UNCOMMENT!
 @
 
-%% TODO
-%% - add DOIs
-
 %% -- Article metainformation (author, title, ...) -----------------------------
 
 %% - \author{} with primary affiliation
@@ -56,11 +53,16 @@ options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 %% - May contain multiple authors for the same affiliation
 %%   (in the same first line, separated by comma).
 \Address{
-  Lennart Oelschl\"ager, Dietmar Bauer\\
+  Lennart Oelschl\"ager\\
+  Department of Business Administration and Economics\\
+  Bielefeld University\\
+  Postfach 10 01 31, Germany\\
+  E-mail: \email{lennart.oelschlaeger@uni-bielefeld.de}\\ \\
+  Dietmar Bauer\\
   Department of Business Administration and Economics\\
   Bielefeld University\\
   Postfach 10 01 31\\
-  E-mail: \email{lennart.oelschlaeger@uni-bielefeld.de}, \email{dietmar.bauer@uni-bielefeld.de}
+  E-mail: \email{dietmar.bauer@uni-bielefeld.de}
 }
 
 \begin{document}
@@ -695,25 +697,18 @@ The more complex model is clearly preferred.
 
 \section{Future developments} \label{sec:conclusion}
 
-The \pkg{RprobitB} package provides ... functionality for estimating choice behavior heterogeneity in probit models.
+\pkg{RprobitB} implements Bayesian analysis of binary, multivariate, ordered, and ranked choices via the latent class mixed probit model. Working with the package follows a user-friendly workflow, from data management over model fitting to different types of model evaluations, cf.\ Figure \ref{fig:flowchart}. This paper serves as a manual for \proglang{R} users who want to analyze choice behavior heterogeneity in their applications.
 
-This paper serves as a starting point for \proglang{R} users who want to apply latent class mixed probit models to their own choice data.
+The inclusion of new package functionality is ongoing and can be followed on the project web page www.github.com/loelschlaeger. The following enhancements are currently under development, and we invite the community to suggest further features that we can implement in future package versions:
 
-The inclusion of new features in the package is ongoing and the development of the package can be followed via the Github page https://github.com/loelschlaeger/RprobitB.
-
-The following are package enhancements currently under development:
-
-- latent classes for the fixed effects \code{alpha}
-
-- AR(1) process for Sigma
-
-- other mixing distributions
-
-- fixing specific parameter values
-
-- update in predict function
-
-We plan to overcome these limitations and invite the community to suggest further features that we can implement in future package versions.
+\begin{itemize}
+  \item Custom prior distributions ---
+  \item AR(1) process for panel models ---
+  \item Other types of parametric mixing distributions ---
+  \item Fixing specific parameter values ---
+  \item Using a decider's previous observations for the choice prediction ---
+  \item Latent classes for the fixed effects ---
+\end{itemize}
 
 \section*{Computational details}
 

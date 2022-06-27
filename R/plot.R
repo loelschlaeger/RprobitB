@@ -512,6 +512,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' plot_roc(RprobitB::model_train)
 #'
 #' @importFrom plotROC geom_roc style_roc
+#' @importFrom ggplot2 element_blank
 
 plot_roc <- function(..., reference = NULL) {
   models <- as.list(list(...))
@@ -557,7 +558,7 @@ plot_roc <- function(..., reference = NULL) {
   plot <- plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
     plotROC::style_roc(theme = ggplot2::theme_grey) +
     theme(legend.position = "top") +
-    theme(legend.title=element_blank())
+    theme(legend.title = ggplot2::element_blank())
   print(plot)
   return(plot)
 }
