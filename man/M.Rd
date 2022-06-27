@@ -19,7 +19,7 @@ vector elements such that the resulting vector is negative.
 \examples{
 x <- c(-1,5,10,2)
 ranking <- order(x, decreasing = TRUE)
-RprobitB:::M(ranking) \%*\% x
+M(ranking) \%*\% x
 
 }
 \keyword{utils}

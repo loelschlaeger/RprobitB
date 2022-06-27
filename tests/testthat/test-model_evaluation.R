@@ -64,5 +64,5 @@ test_that("preference classification works", {
     seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(preference_classification(model, add_true = TRUE))
+  expect_snapshot(classification(model, add_true = TRUE))
 })

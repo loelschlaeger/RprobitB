@@ -251,7 +251,7 @@ filter_gibbs_samples <- function(
 #'
 #' @export
 
-preference_classification <- function(x, add_true = FALSE) {
+classification <- function(x, add_true = FALSE) {
 
   ### check input
   if (!inherits(x, "RprobitB_fit")) {

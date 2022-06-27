@@ -643,7 +643,6 @@ RprobitB_normalization <- function(
 #' @importFrom crayon underline
 
 print.RprobitB_normalization <- function(x, ...) {
-  cat(crayon::underline("Utility normalization\n"))
   if(identical(NA,x$level)) {
     cat(paste0(
       "Level: Fixed first utility threshold to 0.\n"
@@ -1286,13 +1285,8 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   cat(crayon::underline("Probit model\n"))
   cat("Formula:", deparse1(x$form), "\n")
   cat(paste0("R: ", x$R, ", B: ", x$B, ", Q: ", x$Q, "\n"))
-  cat("\n")
-
-  ### summary of normalization
   print(x$normalization)
   cat("\n")
-
-  ### legend of latent classes
   if (x$P_r > 0) {
     print(x$latent_classes)
     cat("\n")
