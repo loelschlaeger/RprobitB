@@ -4,7 +4,7 @@
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-# library(RprobitB) # UNCOMMENT!
+# library("RprobitB") # UNCOMMENT!
 
 
 ###################################################
@@ -75,12 +75,14 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 ###################################################
 ### code chunk number 11: example 2 sim simulation
 ###################################################
+sim_par <- list(
+  alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2),
+  b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
+  Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4), ncol = 3)
+)
 data_sim <- simulate_choices(
-  form = form, N = N, T = T, J = 2, re = re,
-  alternatives = alternatives, seed = 1,
-  true_parameter = list(
-    alpha = c(-2,0,1), C = 3, s = c(0.6,0.3,0.1),
-    b = matrix(c(-1,1,0,2,2,-1), ncol = 3), Sigma = 1)
+  form = form, N = N, T = T, J = 2, re = re, alternatives = alternatives,
+  seed = 1, true_parameter = c(sim_par, "Sigma" = 1)
 )
 
 
@@ -226,40 +228,47 @@ plot(model_sim, type = "class_seq")
 ###################################################
 ### code chunk number 30: example 4 berserk access pre-computed model
 ###################################################
-data(model_berserk, package = "RprobitB")
+data("model_berserk", package = "RprobitB")
 coef(model_berserk)
 
 
 ###################################################
-### code chunk number 31: model-berserk-mixture
+### code chunk number 31: example 4 berserk estimated class sizes
+###################################################
+est <- point_estimates(model_berserk)
+round(est[["s"]], 2)
+
+
+###################################################
+### code chunk number 32: model-berserk-mixture
 ###################################################
 plot(model_berserk, type = "mixture")
 
 
 ###################################################
-### code chunk number 32: example 4 berserk classification
+### code chunk number 33: example 4 berserk classification
 ###################################################
 player <- c("zhigalko_sergei", "serg_01")
 classification(model_berserk)[player,]
 
 
 ###################################################
-### code chunk number 33: example 1 train predict confusion matrix
+### code chunk number 34: example 1 train predict confusion matrix
 ###################################################
 predict(model_train)
 
 
 ###################################################
-### code chunk number 34: example 1 train predict individual level
+### code chunk number 35: example 1 train predict individual level
 ###################################################
 pred <- predict(model_train, overview = FALSE)
 head(pred, n = 5)
 
 
 ###################################################
-### code chunk number 35: roc-example
+### code chunk number 36: roc-example
 ###################################################
-library(mlogit)
+library("mlogit")
 Train$choiceid <- 1:nrow(Train)
 Tr <- dfidx(
   Train, choice = "choice", varying = 4:11, sep = "_",
@@ -274,14 +283,14 @@ plot_roc(model_train, model_train_mlogit)
 
 
 ###################################################
-### code chunk number 36: predict-model-train-given-covs-1
+### code chunk number 37: predict-model-train-given-covs-1
 ###################################################
 predict(model_train, overview = FALSE,
         data = data.frame("price_A" = c(100,110), "price_B" = c(100,100)))
 
 
 ###################################################
-### code chunk number 37: predict-model-train-given-covs-2
+### code chunk number 38: predict-model-train-given-covs-2
 ###################################################
 predict(model_train, overview = FALSE,
         data = data.frame("price_A" = c(100,110), "comfort_A" = c(1,0),
@@ -289,13 +298,13 @@ predict(model_train, overview = FALSE,
 
 
 ###################################################
-### code chunk number 38: example 1 train nested model
+### code chunk number 39: example 1 train nested model
 ###################################################
 model_train_sparse <- update(model_train, form = choice ~ price | 0)
 
 
 ###################################################
-### code chunk number 39: example 1 train model selection
+### code chunk number 40: example 1 train model selection
 ###################################################
 model_train <- compute_p_si(model_train)
 model_train_sparse <- compute_p_si(model_train_sparse)

@@ -19,7 +19,7 @@ plot_mixture_contour(means, covs, weights, names)
 No return value. Draws a plot to the current device.
 }
 \description{
-This function plots an estimated ivariate contour mixing distributions.
+This function plots an estimated bivariate contour mixing distributions.
 }
 \examples{
 means <- list(c(0,0),c(1,1))
