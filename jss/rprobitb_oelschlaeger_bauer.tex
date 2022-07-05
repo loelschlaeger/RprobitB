@@ -34,7 +34,7 @@
 
 %% - \Abstract{} almost as usual
 \Abstract{
-\pkg{RprobitB} is an \proglang{R} package for Bayes estimation of probit choice models, both in the cross-sectional and panel setting. The package can analyze binary, multivariate, ordered, and ranked choices, and places a special focus on modeling heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Markov chain Monte Carlo methods, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating scheme. This allows for flexible modeling of choice behavior without the need to impose structural constraints. Applying the method, we identify three different playing strategies of participants in an online chess tournament, where each chess player can be assigned a probability for following each of the strategies.
+\pkg{RprobitB} is an \proglang{R} package for Bayes estimation of probit choice models, both in the cross-sectional and panel setting. The package can analyze binary, multivariate, ordered, and ranked choices, and places a special focus on modeling heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Markov chain Monte Carlo methods, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating scheme. This allows for flexible modeling of choice behavior without the need to impose structural constraints. By applying the method, we reveal three different playing strategies of participants in an online chess tournament, where each chess player can be assigned a probability of following each of the strategies.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
@@ -49,16 +49,11 @@
 %% - May contain multiple authors for the same affiliation
 %%   (in the same first line, separated by comma).
 \Address{
-  Lennart Oelschl\"ager\\
+  Lennart Oelschl\"ager, Dietmar Bauer\\
   Department of Business Administration and Economics\\
   Bielefeld University\\
   Postfach 10 01 31, Germany\\
-  E-mail: \email{lennart.oelschlaeger@uni-bielefeld.de}\\ \\
-  Dietmar Bauer\\
-  Department of Business Administration and Economics\\
-  Bielefeld University\\
-  Postfach 10 01 31\\
-  E-mail: \email{dietmar.bauer@uni-bielefeld.de}
+  E-mail: \email{lennart.oelschlaeger@uni-bielefeld.de}, \email{dietmar.bauer@uni-bielefeld.de}
 }
 
 \begin{document}
@@ -79,37 +74,38 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Discrete choice models aim to explain past and predict future choice behavior. They do so by connecting observed choices to observed covariates that influence the decision, such as attributes of the choice alternatives or decider's socio-demographic characteristics. While some influencing characteristics are easily measurable through surveys (income and household size, for example), others are not. The preference for a low-emission car or an SUV powered by a combustion engine will be influenced by the environmental concerns. Such a political attitude is hard to quantify, so it is typically not queried. Not accounting for unobserved choice behavior heterogeneity generally leads to an inferior model fit. The \proglang{R} \citep{R} package \pkg{RprobitB}\footnote{The package name is a portmanteau of the language \proglang{R}, the probit model, and the Bayes framework.} \citep{Oelschlaeger:2021} implements state-of-the-art tools for modeling taste heterogeneity in the context of discrete choices.
+Discrete choice models aim to explain past and predict future choice behavior. They do so by connecting observed choices to observed covariates that influence the decision, such as attributes of the choice alternatives or decider's socio-demographic characteristics. While some influencing characteristics are easily measurable through surveys (like income and household size), others are not. For example, the preference for a low-emission car versus an SUV powered by a combustion engine will be influenced by the environmental concerns. The political attitude of the car buyer is hard to quantify, so it is typically not queried. But not accounting for such unobserved choice behavior heterogeneity generally leads to an inferior model fit. The \proglang{R} \citep{R} package \pkg{RprobitB}\footnote{The package name is a portmanteau of the language \proglang{R}, the probit model, and the Bayes framework.} \citep{Oelschlaeger:2021} implements state-of-the-art tools for modeling taste heterogeneity in the context of discrete choices.
 
-Discrete choice models may be interpreted as random utility models, which assume that the deciders obtain utility values for the available alternatives which they seek to maximize. The utilities are unobserved and hence modeled by a function of the covariates, in our case a linear combination of those, and a random error term. The error term distribution determines the model type, where \pkg{RprobitB} implements the probit model assuming a joint normal distribution across alternatives (as opposed e.g., to the logit model which assumes independent extreme value distributions). The coefficients of the linear combination represent the ceteris paribus effect of the covariates on the utility, and ratios of coefficients quantify substitution patters, for example the willingness to pay more money for a lower CO2 emission rate.
+Discrete choice models are commonly interpreted as random utility models. This model class assumes that the deciders obtain utility values for the available alternatives which they seek to maximize. The utilities are unobserved by the researcher and hence modeled by a function of the covariates, in our case a linear combination of those, and a random error term. The error term distribution determines the model type, where \pkg{RprobitB} implements the probit model, assuming a joint normal distribution across alternatives (as opposed, e.g., to the logit model which assumes independent extreme value distributions). The coefficients of the linear combination represent the ceteris paribus effect of the covariates on the utility, and ratios of coefficients quantify substitution patters, for example the willingness to pay more money for a lower CO2 emission rate.
 
-Constant coefficients across deciders result in substitution patterns that again are constant. This can be unreasonable in certain scenarios, including the car purchase example from above. In such cases, explicit modeling of the dependence of the decider's preferences would be preferable but limited by data availability. In the panel data case with many observations for each decider, fixed effect models provide options. For short panels or in cross-sectional data sets the random effect model is a remedy, where the coefficients are assumed to be stemming from a multivariate normal (mixing) distribution. This specification allows for decider-specific coefficients and characterizes the taste heterogeneity, cf., \cite{Train:2009} and \cite{Bhat:2011}. Some applications require even more flexibility: the empirical study \cite{Cirillo:2006} for example fits a bi-modal distribution to the values of travel time savings. For such cases, \pkg{RprobitB} provides the recently proposed approach of \cite{Oelschlaeger:2020} that approximates any underlying mixing distributions by a mixture of Gaussian densities, leading to the latent class mixed probit model.
+Constant coefficients across deciders result in substitution patterns that again are constant. This can be unreasonable in certain scenarios, including the car purchase example from above. In such cases, explicit modeling of the decider's preferences would be preferable but limited by data availability. In the panel data case with many observations for each decider, fixed effect models provide options. For short panels or in cross-sectional data sets, the random effect model is a remedy, where the coefficients are assumed to be stemming from a multivariate normal (mixing) distribution. This specification allows for decider-specific coefficients and characterizes the taste heterogeneity, cf., \cite{Train:2009} and \cite{Bhat:2011}. Some applications require even more flexibility: the empirical study \cite{Cirillo:2006} for example fits a bi-modal distribution to the values of travel time savings. For such cases, \pkg{RprobitB} provides the recently proposed approach of \cite{Oelschlaeger:2020} that approximates any underlying mixing distributions by a mixture of Gaussian densities, leading to the latent class mixed probit model.
 
-The latent class model extension also enables preference-based decider classification, i.e. identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two data-driven approaches that avoid pre-specifying the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
+The latent class model extension also enables preference-based decider classification, i.e., identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two data-driven approaches that avoid pre-specifying the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
 
-\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf. \cite{Train:2001} for a simulation study in the logit case.
+\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
 
-Some open-source software for discrete choice modeling already exists: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} \citep{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. In \proglang{Julia} \citep{Julia}, the \pkg{DiscreteChoiceModels.jl} package \citep{Bhagat:2022} currently only supports the multinomial logit model. The \pkg{apollo} \proglang{R} package \citep{Hess:2019} allows for flexible logit and probit model specifications, with both maximum likelihood and Bayesian estimation. \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements this collection by implementing latent class mixed probit models and class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
+There already exist several open-source implementations for discrete choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} \citep{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. In \proglang{Julia} \citep{Julia}, the \pkg{DiscreteChoiceModels.jl} package \citep{Bhagat:2022} currently only supports the multinomial logit model. The \proglang{R} package \pkg{gmnl} \citep{Sarrias:2017} provides generalized and latent class mixed multinomial logit models, while the \pkg{apollo} package \citep{Hess:2019} allows for more flexible logit and probit model specifications, with both maximum likelihood and Bayesian estimation. The \proglang{R} packages \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayes estimating of the probit model, both providing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements this collection by implementing latent class mixed probit models in conjunction with class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
 
 \begin{table}[!ht]
 \centering
 \begin{tabular}{l|ccccccc}
-               & Probit      & Logit      & Bayes      & MLE        & Mixed      & LC           & LC update  \\ \hline
-\pkg{Rchoice}  & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
-\pkg{mlogit}   & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
-\pkg{DiscreteChoiceModels.jl} & & \checkmark &         & \checkmark &            &              &            \\
-\pkg{Biogeme}  & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark   &            \\
-\pkg{apollo}   & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
-\pkg{bayesm}   & \checkmark  & \checkmark & \checkmark &            & \checkmark &              &            \\
-\pkg{MNP}      & \checkmark  &            & \checkmark &            &            &              &            \\
-\pkg{RprobitB}& \checkmark  &            & \checkmark &            & \checkmark & \checkmark   & \checkmark \\
+                              & Probit      & Logit      & Bayes      & MLE        & Mixed      & LC           & LC update  \\ \hline
+\pkg{Rchoice}                 & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
+\pkg{mlogit}                  & \checkmark  & \checkmark &            & \checkmark & \checkmark &              &            \\
+\pkg{Biogeme}                 & \checkmark  & \checkmark &            & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{DiscreteChoiceModels.jl} &             & \checkmark &            & \checkmark &            &              &            \\
+\pkg{gmnl}                    &             & \checkmark &            & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{apollo}                  & \checkmark  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark   &            \\
+\pkg{bayesm}                  & \checkmark  & \checkmark & \checkmark &            & \checkmark &              &            \\
+\pkg{MNP}                     & \checkmark  &            & \checkmark &            &            &              &            \\
+\pkg{RprobitB}                & \checkmark  &            & \checkmark &            & \checkmark & \checkmark   & \checkmark \\
 \end{tabular}
 \label{tab:pkg_overview}
 \caption{Overview of open-source software for estimating discrete choice models.}
 \end{table}
 
 % Article overview
-This article provides a general description of choice modeling with \pkg{RprobitB} and is structured as follows. To fix our notation, Section \ref{sec:probit_model} defines the probit model and formalizes the concepts of mixing distributions and latent classes. Sections \ref{sec:choice_data} to \ref{sec:model_selection} describe the package workflow, including choice data preparation, simulation, model fitting, choice prediction, preference classification, and model selection. The main functions for these tasks are visualized in the flowchart Figure \ref{fig:flowchart}. For illustration, we use three different real world data sets: the two stated-choice data sets \code{Train} and \code{Electricity} from \pkg{mlogit} (for comparison across packages and between the probit and logit model class) and a revealed-choice data set about online chess strategy that is contained in \pkg{RprobitB} (for a demonstration of the preference classification). Section \ref{sec:conclusion} concludes the paper and gives an outlook of anticipated package extensions.
+This article provides a general description of choice modeling with \pkg{RprobitB} and is structured as follows. To fix our notation, Section \ref{sec:probit_model} defines the probit model and formalizes the concepts of mixing distributions and latent classes. Sections \ref{sec:choice_data} to \ref{sec:model_selection} describe the package workflow, including choice data preparation, simulation, model fitting, choice prediction, preference classification, and model selection. The main functions for these tasks are visualized in the flowchart Figure \ref{fig:flowchart}. We illustrate the functions throughout the paper using three different real world data sets: the two stated-choice data sets \code{Train} and \code{Electricity} from \pkg{mlogit} allow for result comparison across packages and between the probit and logit model class, while we use a revealed-choice data set about online chess strategy (that is contained in \pkg{RprobitB}) to demonstrate flexible preference classification using the Dirichlet process. A simulation example shows the reproducibility of the model parameters. Section \ref{sec:conclusion} concludes and gives an outlook of anticipated package extensions.
 
 \begin{figure}[!ht]
   \centering
@@ -298,9 +294,9 @@ where $\gamma_0 = -\infty$ and $\gamma_J = +\infty$. This implies that alternati
 
 \subsection{Ranked choices} \label{subsec:ranked_choices}
 
-Ranked choices are yet another model variation: rather than recording only the single most preferred alternative, some surveys ask for a full ranking of all the alternatives, which reveals far more about the underlying preferences. Ranked choices can by analyzed by setting \code{ranked = TRUE} in \fct{prepare\_data}. The choice column of the data set must provide the full ranking for each choice occasion (from most preferred to least preferred), where the alternatives are separated by commas (see \code{help(prepare\_data, package = "RprobitB")} for details).
+Ranked choices are yet another model variation: rather than recording only the single most preferred alternative, some surveys ask for a full ranking of all the alternatives, which reveals far more about the underlying preferences. Ranked choices can by analyzed by setting \code{ranked = TRUE} in \fct{prepare\_data}. The choice column of the data set must provide the full ranking for each choice occasion (from most preferred to least preferred), where the alternatives are separated by commas, see \code{help(prepare\_data, package = "RprobitB")} for details.
 
-The ranked probit model follows directly from the basic multivariate case. The only difference is that we take flexible utility differences such that the differenced utility vector is always negative, in contrast to \eqref{eq:utility_diff} where we differenced with respect to a fixed reference alternative. Thereby, we incorporate information of the full ranking, see \citep[Ch.\ 7.3]{Train:2009} for details.
+The ranked probit model follows directly from the basic multivariate case. The only difference is that we take flexible utility differences such that the differenced utility vector is always negative, in contrast to \eqref{eq:utility_diff} where we differenced with respect to a fixed reference alternative. Thereby, we incorporate information of the full ranking \citep[Ch.\ 7.3]{Train:2009}.
 
 \subsection{Simulating choice data} \label{subsec:simulate_choice_data}
 
@@ -363,18 +359,19 @@ The \fct{overview\_effects} function provides an overview of the effect names (\
 \end{Soutput}
 \end{Schunk}
 
-The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-1,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 2.6 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.6 & -1.2 \\ -1.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 1.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1.
+The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-1,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 2.6 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.6 & -1.2 \\ -1.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 1.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1 here.
 
 \begin{Schunk}
 \begin{Sinput}
-> sim_par <- list(
-+    alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2),
+> true_parameter <- list(
++    alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
 +    b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
-+    Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4), ncol = 3)
++    Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4),
++                   ncol = 3)
 +  )
 > data_sim <- simulate_choices(
 +    form = form, N = N, T = T, J = 2, re = re, alternatives = alternatives,
-+    seed = 1, true_parameter = c(sim_par, "Sigma" = 1)
++    seed = 1, true_parameter = true_parameter
 +  )
 \end{Sinput}
 \end{Schunk}
@@ -482,15 +479,7 @@ The Gibbs samples obtained from this updating scheme (except for $s$ and $z$) la
 
 \subsection{The estimation routine} \label{subsec:estimation_routine}
 
-The Gibbs sampling scheme can be executed via the function call
-
-\begin{Schunk}
-\begin{Sinput}
-> fit_model(data = data)
-\end{Sinput}
-\end{Schunk}
-
-where \code{data} is an \class{RprobitB\_data} object (cf., Section \ref{sec:choice_data}).\footnote{The \class{RprobitB\_data} object already contains the model formula and the random effect specifications.} Optional arguments are:
+The Gibbs sampling scheme can be executed via \code{fit\_model(data = data)}, where \code{data} is an \class{RprobitB\_data} object (introduced in Section \ref{sec:choice_data}).\footnote{The \class{RprobitB\_data} object already contains the model formula and the random effect specification.} Optional arguments are:
 
 \begin{itemize}
   \item \code{scale}: A character which determines the utility scale (cf., Section \ref{sec:probit_model}). It is of the form \code{"<parameter> := <value>"}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>} for the \code{<j>}-th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e., $\text{const}$ from above). Per default \code{scale = "Sigma\_1 := 1"}, i.e., the first error term variance is fixed to 1.
@@ -525,8 +514,7 @@ The results indicate that the deciders value one hour travel time by about 26 eu
 
 \begin{Schunk}
 \begin{Sinput}
-> FUN <- c("mean" = mean, "sd" = stats::sd, "R^" = RprobitB::R_hat)
-> summary(model_train, FUN = FUN)
+> summary(model_train, FUN = c("mean" = mean, "sd" = stats::sd, "R^" = R_hat))
 \end{Sinput}
 \begin{Soutput}
 Probit model
@@ -550,7 +538,7 @@ Gibbs sample statistics
 \end{Soutput}
 \end{Schunk}
 
-The \fct{plot} method with the additional argument \code{type = "trace"} visualizes the trace of the transformed and thinned Gibbs samples after the burn-in phase:
+The \fct{plot} method with the additional argument \code{type = "trace"} visualizes the trace of the transformed and thinned Gibbs samples after the burn-in period:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -560,7 +548,7 @@ The \fct{plot} method with the additional argument \code{type = "trace"} visuali
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-train-trace}
 
-Additionally, we can plot the autocorrelation of the Gibbs samples via \code{type = "acf"}, below exemplary for \code{alpha\_4} and \code{Sigma\_1,1}. The boxes in the plot's top-right corner state the total sample size TSS, given by (\code{R} - \code{B}) / \code{Q}, and the effective sample size ESS. The effective sample size is the value $\text{TSS} \sigma^2 / f(0)$, where $f(0) = \sigma^2(1 + 2\sum_{k\geq 1} \rho_k)$ denotes the spectrum at frequency zero of the stationary output of the Gibbs sampler \citep{Marin:2014}. The spectrum is estimated via the \fct{stats::spec.ar} function.
+Additionally, we can plot the autocorrelation of the Gibbs samples via \code{type = "acf"}, below exemplary for \code{alpha\_4} and \code{Sigma\_1,1}. The boxes in the plot's top-right corner state the total sample size TSS, given by (\code{R} - \code{B}) / \code{Q}, and the effective sample size ESS. The effective sample size is the value $\text{TSS} \cdot \sigma^2 / f(0)$, where $f(0) = \sigma^2(1 + 2\sum_{k\geq 1} \rho_k)$ denotes the spectrum at frequency zero of the stationary output of the Gibbs sampler \citep{Marin:2014}. The spectrum is estimated via the \fct{stats::spec.ar} function.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -570,7 +558,7 @@ Additionally, we can plot the autocorrelation of the Gibbs samples via \code{typ
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-train-acf}
 
-One notices significant autocorrelation up to the fifth lag. The \fct{transform} method can be used to reduce the correlation in a subsample (commonly referred to "thinning"):\footnote{The function can also be used to change the length of the burn-in period with \code{transform(model\_train, B = B\_new)} or the utility scale, e.g., \code{transform(model\_train, scale = "Sigma\_1 := 1")}.}
+The \fct{transform} method can be used to reduce the autocorrelation in a subsample (commonly referred to as "thinning"):\footnote{The function can also be used to change the length of the burn-in period with \code{transform(model\_train, B = B\_new)} or the utility scale, e.g., \code{transform(model\_train, scale = "Sigma\_1 := 1")}.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -715,7 +703,7 @@ Gibbs sample statistics
 \end{Soutput}
 \end{Schunk}
 
-We note that $R = 1000$ iterations here are not enough for proper convergence, as indicated by the Gelman-Rubin statistic. Furthermore, the data basis probably is too small for more precise estimates, especially for those coefficients characterizing the least frequent class three.
+We note that more than $R = 1000$ iterations are required for proper convergence, as indicated by the Gelman-Rubin statistic. Furthermore, the data basis in this example probably is too small for more precise estimates, especially for those coefficients characterizing the least frequent classes two and three.
 
 \subsection{Weight-based update of latent classes} \label{subsec:weight_update}
 
@@ -723,8 +711,8 @@ Adding \code{"weight_update" = TRUE} to the list for the \code{latent\_classes} 
 
 \begin{itemize}
   \item Class $c$ is removed, if $s_c<\varepsilon_{\text{min}}$, i.e., if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
-  \item Class $c$ is splitted into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the largest diagonal element of $\Omega_c$.
-  \item Classes $c_1$ and $c_2$ are joined to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e., if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
+  \item Class $c$ is splitted into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the largest diagonal element of the class covariance matrix $\Omega_c$.
+  \item Classes $c_1$ and $c_2$ are joined to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e., if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of the new class $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
 \end{itemize}
 
 The values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$ can be specified via the \code{latent\_classes} argument (by default \code{epsmin = 0.01}, \code{epsmax = 0.99}, and \code{distmin = 0.1}).
@@ -737,7 +725,7 @@ We apply the weight-based updating scheme to reproduce the true number $C = 3$ o
 \begin{Sinput}
 > model_sim <- fit_model(
 +    data = data_sim, seed = 1,
-+    latent_classes = list("C" = 10, "weight_update" = TRUE, "buffer" = 5),
++    latent_classes = list("C" = 10, "weight_update" = TRUE, "buffer" = 5)
 +  )
 \end{Sinput}
 \end{Schunk}
@@ -778,21 +766,24 @@ The Dirichlet process directly integrates to the existing Gibbs sampler: given $
 
 \paragraph{Example 4: Online chess strategy.}
 
-\pkg{RprobitB} contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Both players start a game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs up looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
+\pkg{RprobitB} contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Both players start a game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs up looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
 
 Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk?
 
-The \code{choice\_berserk} data set provides the following information: whether a player berserked (\code{berserk = 1}, if yes), whether they had the \code{white} pieces, their \code{rating} (a value provided by the platform indicating the playing strength), the rating difference to the opponent (\code{rating\_diff}), whether they lost the game (\code{lost = 1}, if yes), the remaining tournament time in minutes (\code{min\_rem}), and whether they are currently on a winning \code{streak} (which gives extra points). We additionally consider the lagged covariates \code{berserk.1} (the berserking choice in the previous game) and \code{lost.1} (the result of a player's previous game):
+The \code{choice\_berserk} data set provides the following information: whether a player berserked (\code{berserk = 1}, if yes), whether they had the \code{white} pieces (i.e., whether they made the first move, which is considered to be an advantage), their \code{rating} (a value provided by the platform, indicating the playing strength), the rating difference to the opponent (\code{rating\_diff}), whether they lost the game (\code{lost = 1}, if yes), the remaining tournament time in minutes (\code{min\_rem}), and whether they are currently on a winning \code{streak} (which gives extra points).
+
+We additionally consider the lagged covariates \code{berserk.1} (the berserking choice in the previous game) and \code{lost.1} (the result of a player's previous game). They can be generated by the convenience function \fct{create\_lagged\_cov}:
 
 \begin{Schunk}
 \begin{Sinput}
 > choice_berserk <- create_lagged_cov(
-+    choice_data = choice_berserk, column = c("berserk","lost"), id = "player_id"
++    choice_data = choice_berserk, column = c("berserk","lost"),
++    id = "player_id"
 +  )
 \end{Sinput}
 \end{Schunk}
 
-We specify random effects for the rating difference and the result of the previous game and apply the Dirichlet process for class updates.
+We specify random effects for the rating difference and the result of the previous game:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -803,6 +794,13 @@ We specify random effects for the rating difference and the result of the previo
 +    id = "player_id", idc = "game_id",
 +    standardize = c("rating","rating_diff","min_rem"), impute = "zero"
 +  )
+\end{Sinput}
+\end{Schunk}
+
+The Dirichlet process is applied for class updates:
+
+\begin{Schunk}
+\begin{Sinput}
 > model_berserk <- fit_model(
 +    data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
 +  )
@@ -833,7 +831,7 @@ Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasion
 \end{Soutput}
 \end{Schunk}
 
-The estimated class sizes are as follows:
+The estimated class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -846,9 +844,15 @@ The estimated class sizes are as follows:
 \end{Soutput}
 \end{Schunk}
 
-For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). In contrast, players more likely berserk towards the tournament end and when they already berserked in the last round.
+For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). This is as expected: starting the game with the white pieces and having the higher rating already gives an advantage which would be undermined by the berserking; berserking while being on a streak increases the risk of losing the streak benefits. In contrast, players more likely berserk towards the tournament end (which can be interpreted as the behavior to improve the standing as much as possible in the last minutes) and when they already berserked in the last round (continuity in behavior).
 
-In terms of taste heterogeneity, three types of players were inferred by the Dirichlet process. Group number one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}). Group number two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance). Group number three is willing to take risks: when they lost, they have an increased chance of berserking in the next round (\code{lost.1\_0 [3] = -1.09}), and they like to berserk against weaker opponents (\code{rating\_diff_0 [3] = -1.65}).
+In terms of taste heterogeneity, we can characterize three types of players:
+
+\begin{itemize}
+  \item Type one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}).
+  \item Type two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance).
+  \item Type three is willing to take risks: when they lost, they have an increased chance of berserking in the next round (\code{lost.1\_0 [3] = -1.09}), and they like to berserk against weaker opponents (\code{rating\_diff_0 [3] = -1.65}).
+\end{itemize}
 
 The different types can be visualized via the \fct{plot} method (the numbers mark the class means):
 
@@ -859,7 +863,7 @@ The different types can be visualized via the \fct{plot} method (the numbers mar
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-berserk-mixture}
 
-The winner of the tournament, Grandmaster Sergei Zhigalko, and the unknown runner-up clearly followed different strategies:\footnote{For the classification probabilities, we compute relative frequencies of the Gibbs samples for the class allocation variables \code{z}.}
+For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko, and the unknown runner-up clearly followed different strategies:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -873,9 +877,11 @@ serg_01         0.936 0.056 0.008   1
 \end{Soutput}
 \end{Schunk}
 
+\newpage
+
 \section{Choice prediction} \label{sec:choice_prediction}
 
-\pkg{RprobitB} provides a \fct{predict} method for in-sample and out-of-sample prediction. The former case refers to reproducing the observed choices on the basis of the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit our probit model of travelers deciding between two fictional train route alternatives.
+\pkg{RprobitB} provides a \fct{predict} method for in-sample and out-of-sample prediction. The former case refers to reproducing the observed choices on the basis of the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit our probit model of train travelers.
 
 \paragraph{Example 1: Train trips (cont.).}
 
@@ -910,7 +916,7 @@ The method can also return predictions on the level of individual choice occasio
 \end{Soutput}
 \end{Schunk}
 
-The receiver operating characteristic (ROC) curve \citep{Fawcett:2006} can be used to compare the prediction accuracy, for example between \pkg{RprobitB} and \code{mlogit}:
+The receiver operating characteristic (ROC) curve \citep{Fawcett:2006} can be used to compare the prediction accuracy, for example between \pkg{RprobitB} and \pkg{mlogit}:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -1019,11 +1025,9 @@ The more complex model is clearly preferred.
 The inclusion of new package functionality is ongoing and can be followed on the project web page www.github.com/loelschlaeger. The following enhancements are currently under development, and we invite the community to suggest further features that we can implement in future package versions:
 
 \begin{itemize}
-  \item Custom prior distributions ---
-  \item AR(1) process for panel models ---
-  \item Other types of parametric mixing distributions ---
-  \item Fixing specific parameter values ---
-  \item Using a decider's previous observations for the choice prediction ---
+  \item Custom prior distributions --- \pkg{RprobitB} currently only supports conjugate prior distributions due to their computational advantages (conjugate priors yield conditional posterior distributions in closed form which facilitates Gibbs sampling). An implementation with custom prior distributions would offer more flexibility. For example, prior distributions with strictly positive support enable sign restrictions that the user can impose on (some of) the (fixed) effects. However, custom prior distributions require a Metropolis–Hastings-type sampling scheme with increased risk of convergence problems and numerical cost.
+  \item Imposing parameter constraints --- \pkg{RprobitB} currently only offers parameter constraints by fixing for example the full vector of fixed effects or a full covariance matrix. In some applications, however, the researcher might want to fix only specific covariances, or impose equality restrictions between specific effects. We see a challenge in integrating such constraints in the Gibbs sampling scheme.
+  \item Other types of mixing distributions --- \pkg{RprobitB} currently is limited to the multivariate normal mixing distribution but offers approximation of any underlying mixing distribution by a mixture of Gaussian densities. Implementing other types of parametric mixing distributions (for example the log-normal or tent distribution) is possible by replacing the conditional posteriors for $\beta$, $b$, and $\Omega$, which is currently under development.
 \end{itemize}
 
 \section*{Computational details}

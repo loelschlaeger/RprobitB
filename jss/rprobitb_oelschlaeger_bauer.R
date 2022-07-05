@@ -75,14 +75,15 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 ###################################################
 ### code chunk number 11: example 2 sim simulation
 ###################################################
-sim_par <- list(
-  alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2),
+true_parameter <- list(
+  alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
   b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
-  Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4), ncol = 3)
+  Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4),
+                 ncol = 3)
 )
 data_sim <- simulate_choices(
   form = form, N = N, T = T, J = 2, re = re, alternatives = alternatives,
-  seed = 1, true_parameter = c(sim_par, "Sigma" = 1)
+  seed = 1, true_parameter = true_parameter
 )
 
 
@@ -93,52 +94,45 @@ plot(data_sim, by_choice = TRUE)
 
 
 ###################################################
-### code chunk number 13: fit_model call (eval = FALSE)
-###################################################
-## fit_model(data = data)
-
-
-###################################################
-### code chunk number 14: example 1 train fit
+### code chunk number 13: example 1 train fit
 ###################################################
 model_train <- fit_model(data = data_train, scale = "price := -1")
 
 
 ###################################################
-### code chunk number 15: coef-model-train
+### code chunk number 14: coef-model-train
 ###################################################
 plot(coef(model_train), sd = 3)
 
 
 ###################################################
-### code chunk number 16: example 1 train summary
+### code chunk number 15: example 1 train summary
 ###################################################
-FUN <- c("mean" = mean, "sd" = stats::sd, "R^" = RprobitB::R_hat)
-summary(model_train, FUN = FUN)
+summary(model_train, FUN = c("mean" = mean, "sd" = stats::sd, "R^" = R_hat))
 
 
 ###################################################
-### code chunk number 17: model-train-trace
+### code chunk number 16: model-train-trace
 ###################################################
 par(mfrow = c(1,2))
 plot(model_train, type = "trace")
 
 
 ###################################################
-### code chunk number 18: model-train-acf
+### code chunk number 17: model-train-acf
 ###################################################
 par(mfrow = c(1,2))
 plot(model_train, type = "acf", ignore = c("alpha_1", "alpha_2", "alpha_3"))
 
 
 ###################################################
-### code chunk number 19: example 1 train new Q
+### code chunk number 18: example 1 train new Q
 ###################################################
 model_train <- transform(model_train, Q = 5)
 
 
 ###################################################
-### code chunk number 20: example 3 elec relabel covariates
+### code chunk number 19: example 3 elec relabel covariates
 ###################################################
 data("Electricity", package = "mlogit")
 Electricity <- as_cov_names(
@@ -148,7 +142,7 @@ Electricity <- as_cov_names(
 
 
 ###################################################
-### code chunk number 21: example 3 elec estimation
+### code chunk number 20: example 3 elec estimation
 ###################################################
 data_elec <- prepare_data(
   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
@@ -159,13 +153,13 @@ model_elec <- fit_model(data_elec, scale = "pf := -1")
 
 
 ###################################################
-### code chunk number 22: example 3 elec coef
+### code chunk number 21: example 3 elec coef
 ###################################################
 coef(model_elec)
 
 
 ###################################################
-### code chunk number 23: example 3 elec share mixing distribution
+### code chunk number 22: example 3 elec share mixing distribution
 ###################################################
 cl_mu <- coef(model_elec)["cl","mean"]
 cl_sd <- sqrt(coef(model_elec)["cl","var"])
@@ -173,13 +167,13 @@ pnorm(cl_mu / cl_sd)
 
 
 ###################################################
-### code chunk number 24: example 3 elec correlation
+### code chunk number 23: example 3 elec correlation
 ###################################################
 round(cov_mix(model_elec, cor = TRUE), 2)
 
 
 ###################################################
-### code chunk number 25: example 2 sim model fit C fixed
+### code chunk number 24: example 2 sim model fit C fixed
 ###################################################
 model_sim <- fit_model(
   data = data_sim, R = 1000, latent_classes = list("C" = 3), seed = 1
@@ -188,30 +182,31 @@ summary(model_sim)
 
 
 ###################################################
-### code chunk number 26: example 2 sim model fit wb update
+### code chunk number 25: example 2 sim model fit wb update
 ###################################################
 model_sim <- fit_model(
   data = data_sim, seed = 1,
-  latent_classes = list("C" = 10, "weight_update" = TRUE, "buffer" = 5),
+  latent_classes = list("C" = 10, "weight_update" = TRUE, "buffer" = 5)
 )
 
 
 ###################################################
-### code chunk number 27: model-sim-class-seq
+### code chunk number 26: model-sim-class-seq
 ###################################################
 plot(model_sim, type = "class_seq")
 
 
 ###################################################
-### code chunk number 28: example 4 berserk model covariates (eval = FALSE)
+### code chunk number 27: example 4 berserk create covariates (eval = FALSE)
 ###################################################
 ## choice_berserk <- create_lagged_cov(
-##   choice_data = choice_berserk, column = c("berserk","lost"), id = "player_id"
+##   choice_data = choice_berserk, column = c("berserk","lost"),
+##   id = "player_id"
 ## )
 
 
 ###################################################
-### code chunk number 29: example 4 berserk fit model (eval = FALSE)
+### code chunk number 28: example 4 berserk prepare data (eval = FALSE)
 ###################################################
 ## data <- prepare_data(
 ##   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
@@ -220,6 +215,11 @@ plot(model_sim, type = "class_seq")
 ##   id = "player_id", idc = "game_id",
 ##   standardize = c("rating","rating_diff","min_rem"), impute = "zero"
 ## )
+
+
+###################################################
+### code chunk number 29: example 4 berserk fit model (eval = FALSE)
+###################################################
 ## model_berserk <- fit_model(
 ##   data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
 ## )
