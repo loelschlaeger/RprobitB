@@ -70,8 +70,8 @@ Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
 If \code{standardize = "all"}, all covariates get standardized.}
 
-\item{impute}{A character that specifies how to handle missing entries (the elements of)
-\code{as_missing}) in \code{choice_data}, one of:
+\item{impute}{A character that specifies how to handle missing entries in
+\code{choice_data}, one of:
 \itemize{
 \item \code{"complete_cases"}, removes all rows containing missing entries
 (the default),

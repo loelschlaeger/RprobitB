@@ -70,7 +70,7 @@ RprobitB_gibbs_samples_statistics <- function(
       } else {
         paste(names(FUN[i]), seq_len(nvalue), sep = "_", recycle0 = TRUE)
       }
-      append <- matrix(NA,
+      append <- matrix(NA_real_,
                        nrow = length(values), ncol = nvalue,
                        dimnames = list(labels, fun_name)
       )
@@ -258,13 +258,11 @@ classification <- function(x, add_true = FALSE) {
     stop("'x' must be of class 'RprobitB_fit'.",
          call. = FALSE)
   }
-  if (!is.logical(add_true) || length(add_true) != 1) {
-    stop("'add_true' must be either TRUE or FALSE.",
-         call. = FALSE)
+  if (!isTRUE(add_true) && !isFALSE(add_true)) {
+    stop("'add_true' must be either TRUE or FALSE.", call. = FALSE)
   }
   if (x$data$P_r == 0) {
-    stop("No classification available, because the model has no random coefficients.",
-         call. = FALSE)
+    stop("Tthe model has no random coefficients.", call. = FALSE)
   }
 
   ### create allocation matrix
@@ -514,7 +512,7 @@ parameter_labels <- function(
       stop("'C' must be a number greater or equal 1.", call. = FALSE)
     }
   }
-  if (!is.logical(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
@@ -730,16 +728,16 @@ coef.RprobitB_fit <- function(object, ...) {
   )
 
   ### allocate space for output
-  coef <- matrix(NA, nrow = 0, ncol = 4)
+  coef <- matrix(NA_real_, nrow = 0, ncol = 4)
   coef_name <- c()
   coef_class <- c()
 
   ### create entries for fixed-effect coefficients
   fixed_coefs <- object$data$effects[object$data$effects$random == FALSE, ]
   for (row in seq_len(nrow(fixed_coefs))) {
-    coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA, NA))
+    coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA_real_, NA_real_))
     coef_name <- c(coef_name, fixed_coefs[row, "effect"])
-    coef_class <- c(coef_class, NA)
+    coef_class <- c(coef_class, NA_real_)
   }
 
   ### create entries for random-effect coefficients
@@ -956,7 +954,7 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
                     tail = "deciders")
 
   ### compute probabilities
-  probabilities <- matrix(NA, nrow = 0, ncol = data$J)
+  probabilities <- matrix(NA_real_, nrow = 0, ncol = data$J)
   for (n in 1:data$N) {
     RprobitB_pb_tick(pb)
     for (t in 1:data$T[n]) {
@@ -1017,8 +1015,8 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
   b <- parameter$b
   Omega <- parameter$Omega
   Sigma_full <- parameter$Sigma_full
-  P_f <- ifelse(any(is.na(alpha)), 0, length(alpha))
-  P_r <- ifelse(any(is.na(parameter$s)), 0, nrow(parameter$b))
+  P_f <- ifelse(anyNA(alpha), 0, length(alpha))
+  P_r <- ifelse(anyNA(parameter$s), 0, nrow(parameter$b))
   J <- nrow(Sigma_full)
 
   ### check inputs

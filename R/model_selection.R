@@ -55,10 +55,11 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
   }
 
   ### create output matrix
-  output <- matrix(NA, nrow = 0, ncol = length(models))
+  output <- matrix(NA_real_, nrow = 0, ncol = length(models))
   colnames(output) <- model_names
   if(add_form){
-    output <- rbind(output, "form" = sapply(models, function(x) deparse1(x$data$form)))
+    output <- rbind(output,
+                    "form" = sapply(models, function(x) deparse1(x$data$form)))
   }
 
   ### fill output

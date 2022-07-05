@@ -16,7 +16,7 @@ plot_mixture_contour(means, covs, weights, names)
 \item{names}{}
 }
 \value{
-No return value. Draws a plot to the current device.
+GGplot TODO
 }
 \description{
 This function plots an estimated bivariate contour mixing distributions.

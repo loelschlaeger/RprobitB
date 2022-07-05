@@ -356,15 +356,15 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
   ### determine whether latent classes should be weight-based updated
   latent_classes[["weight_update"]] <-
-    ifelse(is.na(latent_classes[["weight_update"]]) ||
-             !is.logical(latent_classes[["weight_update"]]),
+    ifelse(!isTRUE(latent_classes[["weight_update"]]) &&
+             !isFALSE(latent_classes[["weight_update"]]),
            FALSE, latent_classes[["weight_update"]]
     )
 
   ### determine whether latent classes should be DP-based updated
   latent_classes[["dp_update"]] <-
-    ifelse(is.na(latent_classes[["dp_update"]]) ||
-             !is.logical(latent_classes[["dp_update"]]),
+    ifelse(!isTRUE(latent_classes[["dp_update"]]) ||
+             !isFALSE(latent_classes[["dp_update"]]),
            FALSE, latent_classes[["dp_update"]]
     )
 
@@ -567,7 +567,7 @@ RprobitB_normalization <- function(
   if(missing(base)){
     stop("Please specify 'base'.", call. = FALSE)
   }
-  if(!is.logical(ordered)) {
+  if(!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
@@ -762,7 +762,7 @@ fit_model <- function(
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
     stop("'Q' must be a positive integer smaller than 'R'.", call. = FALSE)
   }
-  if (!is.logical(print_progress)) {
+  if (!isTRUE(print_progress) && !isFALSE(print_progress)) {
     stop("'print_progress' must be a boolean.", call. = FALSE)
   }
 
@@ -1624,13 +1624,13 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
          stop = FALSE)
   }
-  if (!is.logical(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", stop = FALSE)
   }
 
   ### function to scale the parameters
   scaling <- function(par, factor) {
-    if (any(is.na(par))) {
+    if (anyNA(par)) {
       NA
     } else {
       out <- par * factor

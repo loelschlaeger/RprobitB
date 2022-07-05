@@ -16,7 +16,7 @@ plot_mixture_marginal(mean, cov, weights, name)
 \item{name}{}
 }
 \value{
-No return value. Draws a plot to the current device.
+GGplot TODO
 }
 \description{
 This function plots an estimated marginal mixing distributions.

@@ -60,7 +60,7 @@ check_form <- function(form, re = NULL, ordered = FALSE) {
       stop("'re' must be a character (vector).", call. = FALSE)
     }
   }
-  if (!is.logical(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
@@ -470,10 +470,10 @@ prepare_data <- function(
   ASC <- check_form_out$ASC
 
   ### check other inputs
-  if(!is.logical(ordered)) {
+  if(!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean", call. = FALSE)
   }
-  if(!is.logical(ranked)) {
+  if(!isTRUE(ranked) && !isFALSE(ranked)) {
     stop("'ranked' must be a boolean", call. = FALSE)
   }
 
@@ -678,7 +678,7 @@ prepare_data <- function(
         colnames(X_nt) <- vars[[2]]
 
       } else {
-        X_nt <- matrix(NA, nrow = J, ncol = 0)
+        X_nt <- matrix(NA_real_, nrow = J, ncol = 0)
 
         ### type-1 covariates
         for (var in vars[[1]]) {
@@ -774,8 +774,8 @@ prepare_data <- function(
 #'
 #' @inheritParams prepare_data
 #' @param impute
-#' A character that specifies how to handle missing entries (the elements of)
-#' \code{as_missing}) in \code{choice_data}, one of:
+#' A character that specifies how to handle missing entries in
+#' \code{choice_data}, one of:
 #' \itemize{
 #'   \item \code{"complete_cases"}, removes all rows containing missing entries
 #'   (the default),
@@ -784,9 +784,6 @@ prepare_data <- function(
 #'   \item \code{"mean"}, imputes missing entries by the covariate mean
 #'   (only for numeric columns).
 #' }
-#' @param as_missing
-#' A vector of elements that are interpreted as missing data entries,
-#' the default is \code{as_missing = c(NA, NaN, -Inf, Inf)}.
 #'
 #' @return
 #' The input \code{choice_data}, in which missing entries were addressed.
@@ -799,8 +796,7 @@ prepare_data <- function(
 #'
 #' @export
 
-missing_data <- function(choice_data, impute = "complete_cases",
-                         as_missing = c(NA, NaN, -Inf, Inf)) {
+missing_data <- function(choice_data, impute = "complete_cases") {
 
   ### check input
   if (!is.data.frame(choice_data)) {
@@ -815,7 +811,8 @@ missing_data <- function(choice_data, impute = "complete_cases",
   }
 
   ### find NA values
-  na_pos <- which(sapply(choice_data, `%in%`, as_missing), arr.ind = TRUE)
+  na_pos <- which(sapply(choice_data, function(x) !is.finite(x)),
+                  arr.ind = TRUE)
 
   if(nrow(na_pos) > 0){
 
@@ -979,10 +976,10 @@ simulate_choices <- function(
     stop("'alternatives' must be a character (vector) of length 'J'.",
          call. = FALSE)
   }
-  if(!is.logical(ordered)) {
+  if(!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean", call. = FALSE)
   }
-  if(!is.logical(ranked)) {
+  if(!isTRUE(ranked) && !isFALSE(ranked)) {
     stop("'ranked' must be a boolean", call. = FALSE)
   }
   if(ordered == TRUE && ranked == TRUE) {
@@ -1115,7 +1112,7 @@ simulate_choices <- function(
         colnames(X_nt) <- vars[[2]]
 
       } else {
-        X_nt <- matrix(NA, nrow = J, ncol = 0)
+        X_nt <- matrix(NA_real_, nrow = J, ncol = 0)
 
         ### type-1 covariates
         for (var in vars[[1]]) {
@@ -1319,7 +1316,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
   if (!(length(by) == 1 && by %in% c("N", "T"))) {
     stop("'by' must be 'N' or 'T'.", call. = FALSE)
   }
-  if (!is.logical(random)) {
+  if (!isTRUE(random) && !isFALSE(random)) {
     stop("'random' must be a boolean.", call. = FALSE)
   }
   if (!is.null(seed)) {
@@ -1578,7 +1575,7 @@ summary.RprobitB_data <- function(object, ...) {
   }
 
   ### alternative frequency
-  alt_freq <- data.frame(matrix(NA, nrow = 0, ncol = 1))
+  alt_freq <- data.frame(matrix(NA_integer_, nrow = 0, ncol = 1))
   colnames(alt_freq) <- "frequency"
   if (object$ranked) {
     choice_set <- sapply(permutations(object$alternatives), paste, collapse = ",")

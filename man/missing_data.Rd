@@ -4,18 +4,14 @@
 \alias{missing_data}
 \title{Handle missing choice data}
 \usage{
-missing_data(
-  choice_data,
-  impute = "complete_cases",
-  as_missing = c(NA, NaN, -Inf, Inf)
-)
+missing_data(choice_data, impute = "complete_cases")
 }
 \arguments{
 \item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
 choice occasion.}
 
-\item{impute}{A character that specifies how to handle missing entries (the elements of)
-\code{as_missing}) in \code{choice_data}, one of:
+\item{impute}{A character that specifies how to handle missing entries in
+\code{choice_data}, one of:
 \itemize{
 \item \code{"complete_cases"}, removes all rows containing missing entries
 (the default),
@@ -24,9 +20,6 @@ choice occasion.}
 \item \code{"mean"}, imputes missing entries by the covariate mean
 (only for numeric columns).
 }}
-
-\item{as_missing}{A vector of elements that are interpreted as missing data entries,
-the default is \code{as_missing = c(NA, NaN, -Inf, Inf)}.}
 }
 \value{
 The input \code{choice_data}, in which missing entries were addressed.
