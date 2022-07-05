@@ -1,16 +1,15 @@
 ### R code from vignette source 'rprobitb_oelschlaeger_bauer.Rnw'
 
+### Set this flag to 'TRUE' to refit everything, or to 'FALSE' to re-use
+### already available results of long computations.
+refit <- FALSE
+
+
 ###################################################
 ### code chunk number 1: preliminaries
 ###################################################
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-# library("RprobitB") # UNCOMMENT!
-
-
-###################################################
-### code chunk number 2: prepare data call (eval = FALSE)
-###################################################
-## prepare_data(form = form, choice_data = choice_data)
+library("RprobitB")
 
 
 ###################################################
@@ -48,12 +47,6 @@ summary(data_train)
 ### code chunk number 7: train-data
 ###################################################
 plot(data_train)
-
-
-###################################################
-### code chunk number 8: simulate choices call (eval = FALSE)
-###################################################
-## simulate_choices(form = form, N = N, T = T, J = J)
 
 
 ###################################################
@@ -197,39 +190,47 @@ plot(model_sim, type = "class_seq")
 
 
 ###################################################
-### code chunk number 27: example 4 berserk create covariates (eval = FALSE)
+### code chunk number 27: example 4 berserk create covariates
 ###################################################
-## choice_berserk <- create_lagged_cov(
-##   choice_data = choice_berserk, column = c("berserk","lost"),
-##   id = "player_id"
-## )
+if(refit) {
+  choice_berserk <- create_lagged_cov(
+     choice_data = choice_berserk, column = c("berserk","lost"),
+     id = "player_id"
+  )
+}
 
 
 ###################################################
-### code chunk number 28: example 4 berserk prepare data (eval = FALSE)
+### code chunk number 28: example 4 berserk prepare data
 ###################################################
-## data <- prepare_data(
-##   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
-##     berserk.1 + lost.1 + 1,
-##   re = c("rating_diff","lost.1"), choice_data = choice_berserk,
-##   id = "player_id", idc = "game_id",
-##   standardize = c("rating","rating_diff","min_rem"), impute = "zero"
-## )
+if(refit) {
+  data <- prepare_data(
+    form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
+      berserk.1 + lost.1 + 1,
+    re = c("rating_diff","lost.1"), choice_data = choice_berserk,
+    id = "player_id", idc = "game_id",
+    standardize = c("rating","rating_diff","min_rem"), impute = "zero"
+  )
+}
 
 
 ###################################################
-### code chunk number 29: example 4 berserk fit model (eval = FALSE)
+### code chunk number 29: example 4 berserk fit model
 ###################################################
-## model_berserk <- fit_model(
-##   data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
-## )
+if(refit) {
+  model_berserk <- fit_model(
+    data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
+  )
+}
 
 
 ###################################################
 ### code chunk number 30: example 4 berserk access pre-computed model
 ###################################################
-data("model_berserk", package = "RprobitB")
-coef(model_berserk)
+if(!refit) {
+  data("model_berserk", package = "RprobitB")
+  coef(model_berserk)
+}
 
 
 ###################################################
