@@ -29,3 +29,4 @@ dmvnorm(x = x, mean = mean, Sigma = Sigma)
 dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
 }
 \keyword{distribution}
+\keyword{internal}

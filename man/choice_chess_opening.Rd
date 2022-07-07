@@ -3,7 +3,7 @@
 \docType{data}
 \name{choice_chess_opening}
 \alias{choice_chess_opening}
-\title{Choice of a chess opening}
+\title{Data of chess opening choice}
 \format{
 A data frame with the following columns:
 \itemize{

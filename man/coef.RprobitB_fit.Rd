@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{coef.RprobitB_fit}
 \alias{coef.RprobitB_fit}
-\title{Linear coefficients}
+\title{Extract model effects}
 \usage{
 \method{coef}{RprobitB_fit}(object, ...)
 }
@@ -15,5 +15,5 @@
 An object of class \code{RprobitB_coef}.
 }
 \description{
-This function returns the estimated linear coefficients.
+This function extracts the estimated model effects.
 }

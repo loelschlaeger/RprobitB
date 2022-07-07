@@ -20,4 +20,5 @@ symmetric, numeric matrix with non-negative eigenvalues.
 x <- diag(2)
 RprobitB:::is_covariance_matrix(x)
 }
+\keyword{internal}
 \keyword{utils}

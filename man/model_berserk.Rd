@@ -3,7 +3,7 @@
 \docType{data}
 \name{model_berserk}
 \alias{model_berserk}
-\title{Latent class mixed probit model for binary berserking choice}
+\title{Model for binary berserking choice}
 \format{
 An object of class \code{RprobitB_fit}.
 }

@@ -25,4 +25,5 @@ given the threshold increments \code{d}.
 \examples{
 ll_ordered(c(0,0,0), 1, 1, FALSE)
 }
+\keyword{internal}
 \keyword{posterior}
