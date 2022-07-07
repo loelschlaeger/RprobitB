@@ -59,4 +59,5 @@ XSigU <- Reduce(`+`, mapply(function(X, U) t(X) \%*\% solve(Sigma) \%*\% U, X, U
 beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
 rowMeans(beta_draws)
 }
+\keyword{internal}
 \keyword{posterior}

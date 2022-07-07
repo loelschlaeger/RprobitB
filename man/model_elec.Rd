@@ -3,7 +3,7 @@
 \docType{data}
 \name{model_elec}
 \alias{model_elec}
-\title{Mixed probit model for multivariate choice between electricity suppliers}
+\title{Model for multivariate choice between electricity suppliers}
 \format{
 An object of class \code{RprobitB_fit}.
 }
@@ -12,7 +12,8 @@ data(model_elec)
 }
 \description{
 This object is a fitted mixed probit model to the Electricity dataset of the
-{mlogit} package with the model formula \code{choice ~ pf + cl + loc + wk + tod + seas | 0}.
+{mlogit} package with the model formula
+\code{choice ~ pf + cl + loc + wk + tod + seas | 0}.
 }
 \details{
 The model was estimated via

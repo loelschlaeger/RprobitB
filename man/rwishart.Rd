@@ -31,3 +31,4 @@ the number of dimensions.
 rwishart(nu = 2, V = diag(2))
 }
 \keyword{distribution}
+\keyword{internal}

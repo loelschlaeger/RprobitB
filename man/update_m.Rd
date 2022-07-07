@@ -25,4 +25,5 @@ This function updates the class size vector.
 \examples{
 update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 }
+\keyword{internal}
 \keyword{posterior}

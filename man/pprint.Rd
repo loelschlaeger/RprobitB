@@ -38,4 +38,5 @@ RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 \references{
 This function is a modified version of \code{\link[ramify]{pprint}}.
 }
+\keyword{internal}
 \keyword{utils}

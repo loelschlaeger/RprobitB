@@ -59,4 +59,5 @@ Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
 apply(Sigma_draws, 1:2, mean)
 apply(Sigma_draws, 1:2, stats::sd)
 }
+\keyword{internal}
 \keyword{posterior}

@@ -27,4 +27,5 @@ The updated value for \code{d}.
 \description{
 This function updates the utility threshold increments
 }
+\keyword{internal}
 \keyword{posterior}

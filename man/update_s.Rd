@@ -41,4 +41,5 @@ delta <- 1
 ### updated class weight vector
 update_s(delta = 1, m = m)
 }
+\keyword{internal}
 \keyword{posterior}
