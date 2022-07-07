@@ -19,7 +19,7 @@ using namespace Rcpp;
 //' The euclidean distance.
 //' @export
 //' @keywords
-//' utils
+//' internal utils
 //'
 // [[Rcpp::export]]
 double euc_dist (arma::vec a, arma::vec b){

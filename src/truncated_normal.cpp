@@ -80,7 +80,7 @@ double trunNormBelow(double const& a){
 //' draws <- replicate(R, rtnorm(0,1,1,TRUE))
 //' plot(density(draws))
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 double rtnorm(double mu, double sig, double trunpt, bool above){
@@ -119,7 +119,7 @@ double rtnorm(double mu, double sig, double trunpt, bool above){
 //' draws <- replicate(R, rttnorm(0,1,-2,2))
 //' plot(density(draws))
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 double rttnorm(double mu, double sig, double lower_bound, double upper_bound){

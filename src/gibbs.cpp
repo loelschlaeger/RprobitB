@@ -39,7 +39,7 @@ using namespace Rcpp;
 //' update_s(delta = 1, m = m)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_s (int delta, arma::vec m) {
@@ -71,7 +71,7 @@ arma::vec update_s (int delta, arma::vec m) {
 //' update_z(s = s, beta = beta, b = b, Omega = Omega)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
@@ -103,7 +103,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 //' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_m (int C, arma::vec z, bool nozero) {
@@ -161,7 +161,7 @@ arma::vec update_m (int C, arma::vec z, bool nozero) {
 //' update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, arma::vec xi, arma::mat Dinv) {
@@ -217,7 +217,7 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
 //' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, int nu, arma::mat Theta) {
@@ -290,7 +290,7 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 //' @export
 //' @importFrom stats sd
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU) {
@@ -343,7 +343,7 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 //' apply(Sigma_draws, 1:2, stats::sd)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
@@ -387,7 +387,7 @@ arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
 //' update_U(U, y, sys, Sigmainv)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
@@ -442,7 +442,7 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 //' update_U_ranked(U, sys, Sigmainv)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
@@ -478,7 +478,7 @@ arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
 //' d_to_gamma(c(0,0,0))
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 arma::vec d_to_gamma (arma::vec d) {
@@ -516,7 +516,7 @@ arma::vec d_to_gamma (arma::vec d) {
 //' ll_ordered(c(0,0,0), 1, 1, FALSE)
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
@@ -552,7 +552,7 @@ double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
 //' The updated value for \code{d}.
 //' @export
 //' @keywords
-//' posterior
+//' internal posterior
 //'
 // [[Rcpp::export]]
 List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
