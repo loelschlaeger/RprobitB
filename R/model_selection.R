@@ -156,46 +156,8 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
   print(x)
 }
 
-#' Akaike's Information Criterion
-#'
-#' @description
-#' This function calculates Akaike's Information Criterion (AIC) for an
-#' \code{RprobitB_fit} object.
-#'
-#' @details
-#' The AIC is computed as
-#' \deqn{-2 \cdot \text{LL} + k \cdot \text{npar},}
-#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
-#' parameters, \eqn{k} is the penalty per parameter (\eqn{k = 2} for the
-#' classical AIC), and \eqn{npar} is the number of parameters in the fitted model.
-#' The AIC quantifies the trade-off between over- and under-fitting, where
-#' smaller values are preferred.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Optionally more objects of class \code{RprobitB_fit}.
-#'
-#' @param k
-#' A numeric, the penalty per parameter. The default is \code{k = 2} for the
-#' classical AIC.
-#'
-#' @return
-#' Either a numeric value (if just one object is provided) or a numeric vector.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' AIC(model_train)
-#'
-#' @export
-
-AIC <- function(object, ..., k) {
-  UseMethod("AIC")
-}
-
-#' @export
-#' @rdname AIC
+#' @exportS3Method
+#' @importFrom stats AIC
 
 AIC.RprobitB_fit <- function(object, ..., k = 2) {
   models <- list(...)
@@ -210,41 +172,8 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
   return(aic)
 }
 
-#' Bayesian Information Criterion
-#'
-#' @description
-#' This function calculates the Bayesian Information Criterion (BIC) or
-#' Schwarz Information Criterion for an \code{RprobitB_fit} object.
-#'
-#' @details
-#' The BIC is computed as
-#' \deqn{-2 \cdot \text{LL} + \text{npar} \cdot \ln{\text{nobs}},}
-#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
-#' parameters, \eqn{npar} is the number of parameters in the fitted model,
-#' and \eqn{\text{nobs}} is the number of data points. The BIC quantifies the
-#' trade-off between over- and under-fitting, where smaller values are preferred.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Optionally more objects of class \code{RprobitB_fit}.
-#'
-#' @return
-#' Either a numeric value (if just one object is provided) or a numeric vector.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' BIC(model_train)
-#'
-#' @export
-
-BIC <- function(object, ...) {
-  UseMethod("BIC")
-}
-
-#' @export
-#' @rdname BIC
+#' @exportS3Method
+#' @importFrom stats BIC
 
 BIC.RprobitB_fit <- function(object, ...) {
   models <- list(...)
@@ -400,68 +329,15 @@ plot.RprobitB_waic <- function(x, ...) {
   print(p)
 }
 
-#' Number of observations
-#'
-#' @description
-#' This function extracts the number of observations from an \code{RprobitB_fit}
-#' object.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Ignored.
-#'
-#' @return
-#' An integer.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' nobs(model_train)
-#'
-#' @export
-
-nobs <- function(object, ...) {
-  UseMethod("nobs")
-}
-
-#' @export
-#' @rdname nobs
+#' @exportS3Method
+#' @importFrom stats nobs
 
 nobs.RprobitB_fit <- function(object, ...) {
   return(sum(object$data$T))
 }
 
-#' Log-likelihood value
-#'
-#' @description
-#' This function computes the log-likelihood value of an \code{RprobitB_fit}
-#' object.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#' @inheritParams choice_probabilities
-#' @param recompute
-#' Set to \code{TRUE} to recompute the log-likelihood value if it is already
-#' saved in \code{object}.
-#' @param ...
-#' Ignored.
-#'
-#' @return
-#' A numeric.
-#'
-#' @export
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' logLik(model_train)
-
-logLik <- function(object, par_set, recompute, ...) {
-  UseMethod("logLik")
-}
-
-#' @export
-#' @rdname logLik
+#' @exportS3Method
+#' @importFrom stats logLik
 
 logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
   if(!is.null(object[["ll"]]) && !recompute){
