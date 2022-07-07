@@ -1756,10 +1756,10 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
     ### check inputs
     Sigma <- as.matrix(Sigma)
     if (!is_covariance_matrix(Sigma)) {
-      stop("'Sigma' is no covariance matrix.")
+      stop("'Sigma' is no covariance matrix.", call. = FALSE)
     }
     if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
-      stop("'i' must be an alternative number.")
+      stop("'i' must be an alternative number.", call. = FALSE)
     }
   }
 

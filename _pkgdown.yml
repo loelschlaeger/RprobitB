@@ -61,10 +61,6 @@ reference:
   desc: Use these functions for model selection.
   contents:
   - model_selection
-  - AIC
-  - BIC
-  - logLik
-  - nobs
   - npar
   - mml
   - compute_p_si

@@ -695,10 +695,10 @@ create_labels_d <- function(J, ordered) {
   }
 }
 
-#' Linear coefficients
+#' Extract model effects
 #'
 #' @description
-#' This function returns the estimated linear coefficients.
+#' This function extracts the estimated model effects.
 #'
 #' @return
 #' An object of class \code{RprobitB_coef}.
@@ -892,10 +892,11 @@ cov_mix <- function(x, cor = FALSE) {
 }
 
 
-#' Return choice probabilities of an \code{RprobitB_fit}.
+#' Compute choice probabilities
 #'
 #' @description
-#' This function returns the choice probabilities of an \code{RprobitB_fit}.
+#' This function returns the choice probabilities of an \code{RprobitB_fit}
+#' object.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.

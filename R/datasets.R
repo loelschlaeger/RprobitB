@@ -1,4 +1,4 @@
-#' Choice of berserking
+#' Data of berserking choice
 #'
 #' @description
 #' This dataset includes the binary 'berserking' choice of participants in the
@@ -59,7 +59,7 @@
 #'
 "choice_berserk"
 
-#' Choice of a chess opening
+#' Data of chess opening choice
 #'
 #' @description
 #' This dataset includes opening choices in 37229 chess games.

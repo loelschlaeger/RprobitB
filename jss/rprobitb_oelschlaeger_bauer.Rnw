@@ -17,7 +17,7 @@
 \SweaveOpts{engine=R, eps=FALSE, keep.source = TRUE}
 <<preliminaries, echo=FALSE, results=hide>>=
 options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-# library("RprobitB") # UNCOMMENT!
+library("RprobitB")
 @
 
 %% -- Article metainformation (author, title, ...) -----------------------------

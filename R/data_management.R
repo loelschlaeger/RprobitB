@@ -344,7 +344,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
   return(choice_data)
 }
 
-#' Re-label the alternative specific covariates to the required format
+#' Re-label alternative specific covariates in required format
 #'
 #' @description
 #' In {RprobitB}, alternative specific covariates must be named in the format
@@ -795,6 +795,9 @@ prepare_data <- function(
 #' missing_data(choice_data, "mean")
 #'
 #' @export
+#'
+#' @keywords
+#' internal
 
 missing_data <- function(choice_data, impute = "complete_cases") {
 
@@ -1630,7 +1633,8 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' Create object of class \code{RprobitB_parameter}
 #'
 #' @description
-#' This function creates an object of class \code{RprobitB_parameter}.
+#' This function creates an object of class \code{RprobitB_parameter}, which
+#' contains the parameters of a probit model.
 #' If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 #' checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 #'
@@ -1671,7 +1675,7 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' Set to \code{NA} if \code{P_r = 0}.
 #' @param d
 #' The numeric vector of the logarithmic increases of the utility thresholds
-#' in the ordered probit case of length \code{J-1}.
+#' in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.
 #' @param sample
 #' A boolean, if \code{TRUE} (default) missing parameters get sampled.
 #' @param seed
@@ -1732,9 +1736,7 @@ RprobitB_parameter <- function(
     ### C
     if (!is.null(C)) {
       if (!is.numeric(C) || !C %% 1 == 0 || !C > 0) {
-        stop("'C' must be a number greater or equal 1.",
-             call. = FALSE
-        )
+        stop("'C' must be a number greater or equal 1.", call. = FALSE)
       }
     } else {
       C <- 1
@@ -1748,14 +1750,13 @@ RprobitB_parameter <- function(
         s <- NA
       } else {
         if (is.null(s)) {
-          s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = TRUE), 2)
+          s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = T), 2)
           s[C] <- 1 - sum(s[-C])
         }
         if (length(s) != C || !is.numeric(s) ||
             abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
           stop("'s' must be a non-ascending numeric vector of length ", C,
-               " which sums up to 1.",
-               call. = FALSE
+               " which sums up to 1.", call. = FALSE
           )
         }
         names(s) <- create_labels_s(P_r, C)
@@ -1794,8 +1795,7 @@ RprobitB_parameter <- function(
           ncol(Omega) != C) {
         stop(
           "'Omega' must be a numeric matrix of dimension ", P_r * P_r, " x ",
-          C, ".",
-          call. = FALSE
+          C, ".", call. = FALSE
         )
       }
       for (c in 1:C) {

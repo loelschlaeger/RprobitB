@@ -1,4 +1,4 @@
-#' Probit model for binary choice between Train trip alternatives
+#' Model for binary choice between Train trip alternatives
 #'
 #' @description
 #' This object is a fitted probit model to the Train data set of the {mlogit}
@@ -34,8 +34,8 @@
 #' model
 "model_train"
 
-#' Probit model for binary choice between Train trip alternatives with the price
-#' as the only explanatory variable
+#' Model for for binary choice between Train trip alternatives with the
+#' price as the only explanatory variable
 #'
 #' @description
 #' This object is a fitted probit model to the Train data set of the {mlogit}
@@ -59,11 +59,12 @@
 #' model
 "model_train_sparse"
 
-#' Mixed probit model for multivariate choice between electricity suppliers
+#' Model for multivariate choice between electricity suppliers
 #'
 #' @description
 #' This object is a fitted mixed probit model to the Electricity dataset of the
-#' {mlogit} package with the model formula `choice ~ pf + cl + loc + wk + tod + seas | 0`.
+#' {mlogit} package with the model formula
+#' `choice ~ pf + cl + loc + wk + tod + seas | 0`.
 #'
 #' @usage data(model_elec)
 #'
@@ -91,7 +92,7 @@
 #' model
 "model_elec"
 
-#' Latent class mixed probit model for binary berserking choice
+#' Model for binary berserking choice
 #'
 #' @description
 #' This object is a fitted mixed probit model to the \code{choice_berserk}
@@ -132,7 +133,7 @@
 #' model
 "model_berserk"
 
-#' Latent class mixed probit model for chess opening choice
+#' Model for chess opening choice
 #'
 #' @description
 #' This object is a fitted mixed probit model to the \code{choice_chess_opening}
