@@ -248,14 +248,16 @@ WAIC <- function(x) {
 
   ### check input
   if(class(x) != "RprobitB_fit"){
-    stop("'x' must be an object of class 'RprobitB_fit'.")
+    stop("'x' must be an object of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
 
   ### check if 'x' contains 'p_si'
   if(is.null(x[["p_si"]])){
     stop("Cannot compute WAIC.\n",
          "Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si'.", call. = FALSE)
+         "For that, use the function 'compute_p_si()'.",
+         call. = FALSE)
   }
 
   ### calculate p_si and log(p_si)
@@ -284,7 +286,8 @@ WAIC <- function(x) {
 #' @export
 
 print.RprobitB_waic <- function(x, digits = 2, ...) {
-  cat(sprintf(paste0("%.", digits, "f", " (%.", digits, "f)"), x, attr(x, "se_waic")))
+  cat(sprintf(paste0("%.", digits, "f", " (%.", digits, "f)"), x,
+              attr(x, "se_waic")))
 }
 
 #' @noRd
@@ -356,8 +359,8 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
 #' Number of model parameters
 #'
 #' @description
-#' This function extracts the number of model parameters of an \code{RprobitB_fit}
-#' object.
+#' This function extracts the number of model parameters of an
+#' \code{RprobitB_fit} object.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.

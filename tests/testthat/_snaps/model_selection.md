@@ -51,6 +51,20 @@
     Output
       [1] -1727.704
 
+# logLik computation in the ranked case works
+
+    Code
+      logLik(model_train, recompute = TRUE)
+    Output
+      [1] -1727.704
+
+# logLik computation in the ordered case works
+
+    Code
+      logLik(model_train, recompute = TRUE)
+    Output
+      [1] -1727.704
+
 # npar works
 
     Code

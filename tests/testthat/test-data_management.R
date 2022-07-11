@@ -46,8 +46,7 @@ test_that("lagged choice covariates can be created", {
 test_that("alternative-specific covariates can be renamed", {
   choice_data <- as_cov_names(
     choice_data = data.frame(
-      "A1" = NA, "A2" = NA, "B1" = NA, "B2" = NA,
-      "C" = NA
+      "A1" = NA, "A2" = NA, "B1" = NA, "B2" = NA, "C" = NA
     ),
     cov = c("A", "B"),
     alternatives = c("1", "2")
@@ -88,19 +87,21 @@ test_that("data preparation with non-standard base alternative works", {
   expect_snapshot(summary(data))
 })
 
-test_that("missing data replacement works", {
-  choice_data <- data.frame("A" = c(1, NA, 3), "B" = c(1, 2, Inf))
-  expect_equal(
-    missing_data(choice_data, "complete_cases"),
-    data.frame("A" = c(1), "B" = c(1))
+test_that("missing covariates replacement works", {
+  choice_data <- data.frame(
+    "choice" = 1:3, "A" = c(1, NA, 3), "B" = c(1, 2, Inf)
   )
   expect_equal(
-    missing_data(choice_data, "zero"),
-    data.frame("A" = c(1, 0, 3), "B" = c(1, 2, 0))
+    missing_covariates(choice_data, "complete_cases"),
+    data.frame("choice" = 1, "A" = c(1), "B" = c(1))
   )
   expect_equal(
-    missing_data(choice_data, "mean"),
-    data.frame("A" = c(1, 2, 3), "B" = c(1, 2, 1.5))
+    missing_covariates(choice_data, "zero"),
+    data.frame("choice" = 1:3, "A" = c(1, 0, 3), "B" = c(1, 2, 0))
+  )
+  expect_equal(
+    missing_covariates(choice_data, "mean"),
+    data.frame("choice" = 1:3, "A" = c(1, 2, 3), "B" = c(1, 2, 1.5))
   )
 })
 

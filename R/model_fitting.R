@@ -744,26 +744,32 @@ fit_model <- function(
   if (!inherits(data, "RprobitB_data")) {
     stop(
       "'data' must an object of class 'RprobitB_data', i.e. the output of",
-      " 'RprobitB::prepare()' or 'RprobitB::simulate()'.", call. = FALSE
+      " 'RprobitB::prepare()' or 'RprobitB::simulate()'.",
+      call. = FALSE
     )
   }
   if (!data[["choice_available"]]) {
     stop(
       "Cannot use 'data' for model fitting because information on choices",
-      " is not available.", call. = FALSE
+      " is not available.",
+      call. = FALSE
     )
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.", call. = FALSE)
+    stop("'R' must be a positive integer.",
+         call. = FALSE)
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'B' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'Q' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!isTRUE(print_progress) && !isFALSE(print_progress)) {
-    stop("'print_progress' must be a boolean.", call. = FALSE)
+    stop("'print_progress' must be a boolean.",
+         call. = FALSE)
   }
 
   ### set normalization
@@ -894,11 +900,8 @@ fit_model <- function(
   )
 
   ### calculate log-likelihood
-  ### TODO: also for ordered and ranked
-  if(!data$ordered && !data$ranked) {
-    RprobitB_pp("Computing log-likelihood")
-    out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
-  }
+  RprobitB_pp("Computing log-likelihood")
+  out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
 
   ### return 'RprobitB_fit' object
   return(out)

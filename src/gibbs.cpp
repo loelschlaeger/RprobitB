@@ -500,8 +500,8 @@ arma::vec d_to_gamma (arma::vec d) {
 
 //' Log-likelihood in the ordered probit model
 //' @description
-//' This function computes the conditional probability of one choice occasion
-//' given the threshold increments \code{d}.
+//' This function computes the log-likelihood value given the threshold
+//' increments \code{d}.
 //' @param d
 //' A numeric vector of threshold increments.
 //' @param y

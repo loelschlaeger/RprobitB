@@ -9,7 +9,7 @@
 #' \itemize{
 #'   \item \code{choice} is the name of the dependent variable (the choices),
 #'   \item \code{A} are names of alternative and choice situation specific
-#'   covariates with a generic coefficient,
+#'   covariates with a coefficient that is constant across alternatives,
 #'   \item \code{B} are names of choice situation specific covariates with
 #'   alternative specific coefficients,
 #'   \item and \code{C} are names of alternative and choice situation specific
@@ -20,10 +20,8 @@
 #' By default, alternative specific constants (ASCs) are added to the model.
 #' They can be removed by adding \code{+0} in the second spot.
 #'
-#' In the ordered probit model (\code{ordered = TRUE}), covariates are always
-#' constant across alternatives and have generic coefficients. The
-#' \code{formula} object here has the simple structure \code{choice ~ A}.
-#' ASCs are not estimated.
+#' In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
+#' object has the simple structure \code{choice ~ A}. ASCs are not estimated.
 #' @param re
 #' A character (vector) of covariates of \code{form} with random effects.
 #' If \code{re = NULL} (the default), there are no random effects.
@@ -148,28 +146,34 @@ overview_effects <- function(form, re = NULL, alternatives,
 
   ### check input
   if(missing(form)){
-    stop("'Please specify 'form'.", call. = FALSE)
+    stop("'Please specify 'form'.",
+         call. = FALSE)
   }
   if(!inherits(form, "formula")) {
-    stop("'form' must be of class 'formula'.", call. = FALSE)
+    stop("'form' must be of class 'formula'.",
+         call. = FALSE)
   }
   if(!(is.null(re) || is.character(re))) {
-    stop("'re' must be either 'NULL' or a character (vector).", call. = FALSE)
+    stop("'re' must be either 'NULL' or a character (vector).",
+         call. = FALSE)
   }
   if(missing(alternatives)){
-    stop("'Please specify 'alternatives'.", call. = FALSE)
+    stop("'Please specify 'alternatives'.",
+         call. = FALSE)
   }
   if(!is.character(alternatives) || length(alternatives) < 2) {
-    stop("'alternatives' must be a character vector of length greater or equal 2.",
+    stop("'alternatives' must be a character vector of length >= 2.",
          call. = FALSE)
   }
   if(!is.null(base)) {
     if(!(length(base) == 1 && is.character(base) && base %in% alternatives)) {
-      stop("'base' must be one element of 'alternatives'.", call. = FALSE)
+      stop("'base' must be one element of 'alternatives'.",
+           call. = FALSE)
     }
   }
   if(!(length(ordered) == 1 && is.logical(ordered))) {
-    stop("'ordered' must be a boolean.", call. = FALSE)
+    stop("'ordered' must be a boolean.",
+         call. = FALSE)
   }
 
   ### check 'form'
@@ -210,13 +214,15 @@ overview_effects <- function(form, re = NULL, alternatives,
     for (var in c(vars[[2]], if (ASC) "ASC")) {
       for (j in (1:J)[-base_index]) {
         overview <- rbind(overview,
-                          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re))
+                          c(paste0(var, "_", alternatives[j]), FALSE, TRUE,
+                            var %in% re))
       }
     }
     for (var in vars[[3]]) {
       for (j in 1:J) {
         overview <- rbind(overview,
-                          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re))
+                          c(paste0(var, "_", alternatives[j]), TRUE, TRUE,
+                            var %in% re))
       }
     }
   }
@@ -234,10 +240,8 @@ overview_effects <- function(form, re = NULL, alternatives,
 #' Create lagged choice covariates
 #'
 #' @description
-#' This convenience function creates lagged choice covariates from a data frame
-#' \code{choice_data}, which is assumed to be sorted by choice
-#' occasions: First choice occasions on top. The function is vectorized over
-#' \code{column} and \code{k}.
+#' This function creates lagged choice covariates from the \code{data.frame}
+#' \code{choice_data}, which is assumed to be sorted by the choice occasions.
 #'
 #' @details
 #' Say that \code{choice_data} contains the column \code{column}. Then, the
@@ -246,9 +250,9 @@ overview_effects <- function(form, re = NULL, alternatives,
 #' create_lagged_cov(choice_data, column, k, id)
 #' }
 #' returns the input \code{choice_data} which includes a new column named
-#' \code{column.k}. This column contains for each decider (based on
-#' \code{id}) and each choice occasion the covariate faced before
-#' \code{k} choice occasions. If this data point is not available, it is set to
+#' \code{column.k}. This column contains for each decider (based on \code{id})
+#' and each choice occasion the covariate faced before \code{k} choice
+#' occasions. If this data point is not available, it is set to
 #' \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 #' be \code{NA} (initial condition problem).
 #'
@@ -261,16 +265,15 @@ overview_effects <- function(form, re = NULL, alternatives,
 #' details. Can be a vector. The default is \code{k = 1}.
 #'
 #' @return
-#' The input data frame \code{choice_data} with the additional columns
-#' named \code{column.k} for each element \code{column} and each number \code{k}
+#' The input \code{choice_data} with the additional columns named
+#' \code{column.k} for each element \code{column} and each number \code{k}
 #' containing the lagged covariates.
 #'
 #' @examples
-#' ### add covariate 'lost' and 'berserk' from previous choice occasion
-#' \dontrun{
+#' \donttest{
 #' choice_data <- create_lagged_cov(
 #'   choice_data = choice_berserk,
-#'   column = c("lost", "berserk"),
+#'   column = "lost",
 #'   k = 1,
 #'   id = "player_id"
 #' )
@@ -282,16 +285,20 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 
   ### check inputs
   if (!is.data.frame(choice_data)) {
-    stop("'choice_data' must be a data frame.", call. = FALSE)
+    stop("'choice_data' must be a data frame.",
+         call. = FALSE)
   }
   if (!is.character(column)) {
-    stop("'column' must be a character (vector).", call. = FALSE)
+    stop("'column' must be a character (vector).",
+         call. = FALSE)
   }
   if (!all(is.numeric(k) && k%%1==0 && k>0)) {
-    stop("'k' must be a number or a vector of numbers.", call. = FALSE)
+    stop("'k' must be a number or a vector of numbers.",
+         call. = FALSE)
   }
   if (!is.character(id) || length(id) != 1) {
-    stop("'id' must be a character.", call. = FALSE)
+    stop("'id' must be a character.",
+         call. = FALSE)
   }
   for(col in c(column,id)) {
     if(!col %in% colnames(choice_data)) {
@@ -307,8 +314,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
     col_new <- paste(col,k_val,sep=".")
     if(col_new %in% colnames(choice_data)) {
       warning(
-        paste0("Column '", col_new, "' already exists in 'choice_data'. ",
-               "It would be overwritten, hence it is skipped."),
+        paste0("Column '", col_new, "' already exists in 'choice_data'."),
         call. = FALSE, immediate. = TRUE
       )
       next()
@@ -316,7 +322,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 
     ### add column 'col.k'
     cols_old <- colnames(choice_data)
-    choice_data <- cbind(choice_data, NA)
+    choice_data <- cbind(choice_data, NA_real_)
     colnames(choice_data) <- c(cols_old, col_new)
 
     ### preserve factors
@@ -334,9 +340,8 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
     for(id_val in unique(choice_data[[id]])) {
       RprobitB_pb_tick(pb)
       id_rows <- which(choice_data[[id]] == id_val)
-      for(i in seq_along(id_rows)[-(1:k_val)]) {
-        choice_data[id_rows[i], col_new] <- choice_data[id_rows[i - k_val], col]
-      }
+      i <- seq_along(id_rows)[-(1:k_val)]
+      choice_data[id_rows[i], col_new] <- choice_data[id_rows[i - k_val], col]
     }
   }
 
@@ -387,13 +392,13 @@ as_cov_names <- function(choice_data, cov, alternatives) {
   return(choice_data)
 }
 
-#' Prepare empirical choice data for estimation
+#' Prepare choice data for estimation
 #'
 #' @description
-#' This function prepares empirical choice data.
+#' This function prepares choice data for estimation.
 #'
 #' @details
-#' Requirements for \code{choice_data}:
+#' Requirements for the \code{data.frame} \code{choice_data}:
 #' \itemize{
 #'   \item It **must** contain a column named \code{id} which contains unique
 #'         identifier for each decision maker.
@@ -412,23 +417,26 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #'         in \code{form} that is constant across alternatives.
 #' }
 #'
+#' In the ordered case (\code{ordered = TRUE}), the column \code{choice} must
+#' contain the full ranking of the alternatives in each choice occasion as a
+#' character, where the alternatives are separated by commas, see the examples.
+#'
 #' See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html)
 #' for more details.
 #'
 #' @inheritParams check_form
 #' @param choice_data
-#' A data frame of choice data in wide format, i.e. each row represents one
-#' choice occasion.
+#' A \code{data.frame} of choice data in wide format, i.e. each row represents
+#' one choice occasion.
 #' @param id
 #' A character, the name of the column in \code{choice_data} that contains
 #' unique identifier for each decision maker. The default is \code{"id"}.
 #' @param idc
 #' A character, the name of the column in \code{choice_data} that contains
 #' unique identifier for each choice situation of each decision maker.
-#' The default is \code{NULL}, in which case these identifier are generated
-#' automatically.
+#' Per default, these identifier are generated by the order of appearance.
 #' @inheritParams RprobitB_data
-#' @inheritParams missing_data
+#' @inheritParams missing_covariates
 #'
 #' @return
 #' An object of class \code{RprobitB_data}.
@@ -442,6 +450,16 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #'   id = "id",
 #'   idc = "choiceid",
 #'   standardize = c("price", "time")
+#' )
+#'
+#' ### ranked case
+#' choice_data <- data.frame(
+#'   "id" = 1:3, "choice" = c("A,B,C","A,C,B","B,C,A"), "cov" = 1
+#' )
+#' data <- prepare_data(
+#'   form = choice ~ 0 | cov + 0,
+#'   choice_data = choice_data,
+#'   ranked = TRUE
 #' )
 #'
 #' @export
@@ -471,30 +489,41 @@ prepare_data <- function(
 
   ### check other inputs
   if(!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean", call. = FALSE)
+    stop("'ordered' must be a boolean",
+         call. = FALSE)
   }
   if(!isTRUE(ranked) && !isFALSE(ranked)) {
-    stop("'ranked' must be a boolean", call. = FALSE)
+    stop("'ranked' must be a boolean",
+         call. = FALSE)
+  }
+  if (ordered && ranked) {
+    stop("'ordered' and 'ranked' cannot both be TRUE.",
+         call. = FALSE)
   }
 
   ### check 'choice_data'
   if (!is.data.frame(choice_data)) {
-    stop("'choice_data' must be a data frame.", call. = FALSE)
+    stop("'choice_data' must be a data frame.",
+         call. = FALSE)
   }
   if (!(is.character(id) && length(id) == 1)) {
-    stop("'id' must be a character.", call. = FALSE)
+    stop("'id' must be a character.",
+         call. = FALSE)
   }
   if (!id %in% colnames(choice_data)) {
     stop(paste0("Decider identification column '", id,
-                "' not found in 'choice_data'."), call. = FALSE)
+                "' not found in 'choice_data'."),
+         call. = FALSE)
   }
   if (!is.null(idc)) {
     if (!(is.character(idc) && length(idc) == 1)) {
-      stop("'idc' must be a character.", call. = FALSE)
+      stop("'idc' must be a character.",
+           call. = FALSE)
     }
     if (!idc %in% colnames(choice_data)) {
       stop(paste0("Choice occasion identification column '", idc,
-                  "' not found in 'choice_data'."), call. = FALSE)
+                  "' not found in 'choice_data'."),
+           call. = FALSE)
     }
   }
 
@@ -504,8 +533,10 @@ prepare_data <- function(
     choice <- NA
   }
 
-  ### handle missing data
-  choice_data <- missing_data(choice_data = choice_data, impute = impute)
+  ### handle missing covariates
+  choice_data <- missing_covariates(
+    choice_data = choice_data, impute = impute, choice = choice
+  )
 
   ### transform 'id' of 'choice_data' to factor
   choice_data[, id] <- as.factor(choice_data[, id])
@@ -527,33 +558,36 @@ prepare_data <- function(
   choice_data <- choice_data[order(choice_data[, id], choice_data[, idc]), ]
 
   ### check alternative set
-  if (ordered || ranked) {
-    if (ordered && ranked) {
-      stop("'ordered' and 'ranked' cannot both be TRUE.", call. = FALSE)
-    }
+  if (ordered) {
     if (is.null(alternatives)) {
-      stop("Please specify 'alternatives'.", call. = FALSE)
+      stop("Please specify 'alternatives', ordered from worst to best.",
+           call. = FALSE)
     }
   } else {
     if (is.null(alternatives)) {
       if (choice_available) {
         alternatives <- as.character(unique(choice_data[[choice]]))
+        if(ranked) {
+          alternatives <- unique(unlist(strsplit(alternatives, ",")))
+        }
       } else {
         stop("Please specify 'alternatives' if choices are not available.",
              call. = FALSE)
       }
     } else {
       if (!is.character(alternatives)) {
-        stop("'alternatives' must be a character vector.", call. = FALSE)
+        stop("'alternatives' must be a character vector.",
+             call. = FALSE)
       }
-      if (choice_available) {
+      if (choice_available && !ranked) {
         choice_data <- choice_data[choice_data[[choice]] %in% alternatives, ]
         choice_data[,id] <- droplevels(choice_data[,id])
         choice_data[,idc] <- droplevels(choice_data[,idc])
         if (nrow(choice_data) == 0) {
           stop(paste(
             "No choices for", paste(alternatives, collapse = ", "), "found."
-          ), call. = FALSE)
+          ),
+          call. = FALSE)
         }
       }
     }
@@ -561,15 +595,15 @@ prepare_data <- function(
   }
   J <- length(alternatives)
   if (J <= 1) {
-    stop("At least two choice alternatives are required, only one was provided.",
+    stop("At least two choice alternatives are required, only one provided.",
          call. = FALSE)
   }
   if(ordered == TRUE && J <= 2) {
-    stop("Please specify 3 or more alternatives for the ordered probit model.",
+    stop("Please specify 3 or more alternatives for the ordered case.",
          call. = FALSE)
   }
   if(ranked == TRUE && J <= 2) {
-    stop("Please specify 3 or more alternatives for the ranked probit model.",
+    stop("Please specify 3 or more alternatives for the ranked case.",
          call. = FALSE)
   }
 
@@ -606,13 +640,15 @@ prepare_data <- function(
     for (j in alternatives) {
       if (!paste0(var, "_", j) %in% names(choice_data)) {
         stop(
-          paste0("Column '", paste0(var, "_", j), "' not found in 'choice_data'."),
+          paste0("Column '", paste0(var, "_", j),
+                 "' not found in 'choice_data'."),
           call. = FALSE
           )
       }
       if (!is.numeric(choice_data[,paste0(var, "_", j)])){
         stop(
-          paste0("Column '", paste0(var, "_", j), "' in 'choice_data' is not numeric."),
+          paste0("Column '", paste0(var, "_", j),
+                 "' in 'choice_data' is not numeric."),
           call. = FALSE
           )
       }
@@ -640,7 +676,8 @@ prepare_data <- function(
       )
     }
     if ("ASC" %in% standardize) {
-      warning("Removed 'ASC' from 'standardize'.", call. = FALSE, immediate = TRUE)
+      warning("Removed 'ASC' from 'standardize'.",
+              call. = FALSE, immediate. = TRUE)
       standardize <- standardize[-which(standardize == "ASC")]
     }
     for (var in vars[[2]]) {
@@ -700,7 +737,9 @@ prepare_data <- function(
           }
           mat <- mat[, -base_index, drop = FALSE]
           X_nt <- cbind(X_nt, mat)
-          colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_index]]))
+          colnames(X_nt) <- c(old_names,
+                              paste0(var, "_",
+                                     alternatives[(1:J)[-base_index]]))
         }
 
         ### type-3 covariates
@@ -767,21 +806,22 @@ prepare_data <- function(
   return(out)
 }
 
-#' Handle missing choice data
+#' Handle missing covariates
 #'
 #' @description
-#' This function checks for and replaces missing entries in \code{choice_data}.
+#' This function checks for and replaces missing covariate entries in
+#' \code{choice_data}.
 #'
 #' @inheritParams prepare_data
 #' @param impute
 #' A character that specifies how to handle missing entries in
 #' \code{choice_data}, one of:
 #' \itemize{
-#'   \item \code{"complete_cases"}, removes all rows containing missing entries
-#'   (the default),
-#'   \item \code{"zero"}, replaces missing entries by zero
+#'   \item \code{"complete_cases"}, removes all rows containing missing
+#'   covariate entries entries (the default),
+#'   \item \code{"zero"}, replaces missing covariate entries by zero
 #'   (only for numeric columns),
-#'   \item \code{"mean"}, imputes missing entries by the covariate mean
+#'   \item \code{"mean"}, imputes missing covariate entries by the mean
 #'   (only for numeric columns).
 #' }
 #'
@@ -790,32 +830,44 @@ prepare_data <- function(
 #'
 #' @examples
 #' choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
-#' missing_data(choice_data, "complete_cases")
-#' missing_data(choice_data, "zero")
-#' missing_data(choice_data, "mean")
-#'
-#' @export
+#' RprobitB:::missing_covariates(choice_data)
+#' RprobitB:::missing_covariates(choice_data, "zero")
+#' RprobitB:::missing_covariates(choice_data, "mean")
 #'
 #' @keywords
 #' internal
 
-missing_data <- function(choice_data, impute = "complete_cases") {
+missing_covariates <- function(
+    choice_data, impute = "complete_cases", choice = "choice"
+    ) {
 
   ### check input
   if (!is.data.frame(choice_data)) {
-    stop("'choice_data' must be a data frame.", call. = FALSE)
+    stop("'choice_data' must be a data frame.",
+         call. = FALSE)
   }
-  if(!(is.character(impute) && length(impute) == 1 &&
+  if (!(is.character(impute) && length(impute) == 1 &&
        impute %in% c("complete_cases","zero","mean"))) {
     stop(
       "'impute' must be either 'complete_cases', 'zero' or 'mean'.",
       call. = FALSE
     )
   }
+  if (!(is.character(choice) && length(choice) == 1)) {
+    stop("'choice' must be a character of length 1.",
+         call. = FALSE)
+  }
+  if (!choice %in% colnames(choice_data)) {
+    stop("'choice' is not a column name of 'choice_data'.",
+         call. = FALSE)
+  }
 
   ### find NA values
-  na_pos <- which(sapply(choice_data, function(x) !is.finite(x)),
-                  arr.ind = TRUE)
+  na_pos <- which(
+    sapply(choice_data, function(x) !is.finite(x)),
+    arr.ind = TRUE
+  )
+  na_pos <- na_pos[na_pos[,"col"] != which(choice == colnames(choice_data)), ]
 
   if(nrow(na_pos) > 0){
 
@@ -1459,8 +1511,8 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 #' @param alternatives
 #' A character vector with the names of the choice alternatives.
 #' If not specified, the choice set is defined by the observed choices.
-#' If \code{ordered = TRUE}, \code{alternatives} must be specified with the
-#' alternatives ordered from worst to best.
+#' If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
+#' the alternatives ordered from worst to best.
 #' @param ordered
 #' A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 #' \code{alternatives} is assumed to be ordered from worst to best.
