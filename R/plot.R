@@ -28,7 +28,7 @@
 #'  T = 10,
 #'  J = 2,
 #'  alternatives = c("bus", "car"),
-#'  alpha = -1
+#'  true_parameter = list("alpha" = -1)
 #' )
 #' plot(data, by_choice = TRUE)
 
@@ -235,7 +235,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @examples
 #' gibbs_samples <- matrix(arima.sim(list(order=c(1,0,0), ar = 0.5), n = 100))
-#' plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
+#' RprobitB:::plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
 #'
 #' @importFrom stats spec.ar
 #' @importFrom graphics title legend
@@ -540,7 +540,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' No return value. Draws a plot to the current device.
 #'
 #' @examples
-#' plot_roc(RprobitB::model_train)
+#' RprobitB:::plot_roc(RprobitB::model_train)
 #'
 #' @importFrom plotROC geom_roc style_roc
 #' @importFrom ggplot2 element_blank

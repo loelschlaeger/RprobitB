@@ -28,7 +28,7 @@ data <- simulate_choices(
  T = 10,
  J = 2,
  alternatives = c("bus", "car"),
- alpha = -1
+ true_parameter = list("alpha" = -1)
 )
 plot(data, by_choice = TRUE)
 }

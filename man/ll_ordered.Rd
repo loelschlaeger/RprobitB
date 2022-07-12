@@ -23,7 +23,7 @@ This function computes the log-likelihood value given the threshold
 increments \code{d}.
 }
 \examples{
-ll_ordered(c(0,0,0), 1, 1, FALSE)
+ll_ordered(c(0,0,0), matrix(1), matrix(1), 1)
 }
 \keyword{internal}
 \keyword{posterior}

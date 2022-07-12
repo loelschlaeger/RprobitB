@@ -43,7 +43,7 @@ reference:
   contents:
   - check_prior
   - fit_model
-  - update
+  - update.RprobitB_fit
   - transform.RprobitB_fit
 - title: Model evaluation
   desc: Use these functions for model evaluation.

@@ -102,7 +102,7 @@ data <- simulate_choices(
   seed = 1,
   true_parameter = list(
     "alpha" = c(-1, 1),
-    "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2)),
+    "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
     "C" = 2
   )
 )

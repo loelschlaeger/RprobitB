@@ -135,6 +135,3 @@ This function estimates a nested probit model based on a given
 All parameters (except for \code{object}) are optional and if not specified
 retrieved from the specification for \code{object}.
 }
-\examples{
-update(model_train, form = choice ~ time, R = 100, B = 50)
-}

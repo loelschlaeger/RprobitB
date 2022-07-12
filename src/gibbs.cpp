@@ -513,7 +513,7 @@ arma::vec d_to_gamma (arma::vec d) {
 //' @return
 //' The log-likelihood value.
 //' @examples
-//' ll_ordered(c(0,0,0), 1, 1, FALSE)
+//' ll_ordered(c(0,0,0), matrix(1), matrix(1), 1)
 //' @export
 //' @keywords
 //' internal posterior

@@ -29,7 +29,7 @@ where \eqn{\rho_k} is the auto correlation between the chain offset by
 }
 \examples{
 gibbs_samples <- matrix(arima.sim(list(order=c(1,0,0), ar = 0.5), n = 100))
-plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
+RprobitB:::plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
 
 }
 \keyword{internal}

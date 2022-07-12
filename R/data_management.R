@@ -608,7 +608,7 @@ prepare_data <- function(
   }
 
   ### determine index of base alternative
-  if (ordered || !ASC || (length(vars[[1]]) == 0 && length(vars[[2]]) == 0 )) {
+  if (ordered || (!ASC && length(vars[[1]]) == 0 && length(vars[[2]]) == 0)) {
     base <- NULL
   } else {
     if(is.null(base)){
@@ -666,7 +666,8 @@ prepare_data <- function(
   ### standardize covariates
   if (!is.null(standardize)) {
     if (!is.character(standardize)) {
-      stop("'standardize' must be a character (vector).", call. = FALSE)
+      stop("'standardize' must be a character (vector).",
+           call. = FALSE)
     }
     if (identical(standardize, "all")) {
       standardize <- c(
@@ -828,12 +829,6 @@ prepare_data <- function(
 #' @return
 #' The input \code{choice_data}, in which missing entries were addressed.
 #'
-#' @examples
-#' choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
-#' RprobitB:::missing_covariates(choice_data)
-#' RprobitB:::missing_covariates(choice_data, "zero")
-#' RprobitB:::missing_covariates(choice_data, "mean")
-#'
 #' @keywords
 #' internal
 
@@ -951,7 +946,7 @@ missing_covariates <- function(
 #'   seed = 1,
 #'   true_parameter = list(
 #'     "alpha" = c(-1, 1),
-#'     "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2)),
+#'     "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
 #'     "C" = 2
 #'   )
 #' )

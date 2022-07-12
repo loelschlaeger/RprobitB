@@ -1127,9 +1127,6 @@ sufficient_statistics <- function(data, normalization) {
 #' An object of class \code{RprobitB_fit}.
 #'
 #' @export
-#'
-#' @examples
-#' update(model_train, form = choice ~ time, R = 100, B = 50)
 
 update.RprobitB_fit <- function(
     object, form, re, alternatives, id, idc, standardize, impute, scale, R, B,

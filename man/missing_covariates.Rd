@@ -28,11 +28,4 @@ The input \code{choice_data}, in which missing entries were addressed.
 This function checks for and replaces missing covariate entries in
 \code{choice_data}.
 }
-\examples{
-choice_data <- data.frame("A" = c(1,NA,3), "B" = c(1,2,Inf))
-RprobitB:::missing_covariates(choice_data)
-RprobitB:::missing_covariates(choice_data, "zero")
-RprobitB:::missing_covariates(choice_data, "mean")
-
-}
 \keyword{internal}
