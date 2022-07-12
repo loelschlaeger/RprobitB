@@ -34,7 +34,7 @@ options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 %% - \Shorttitle{} with LaTeX markup (if any), used as running title
 \title{\pkg{RprobitB}: Bayes Estimation of Choice Behavior Heterogeneity in \proglang{R}}
 \Plaintitle{RprobitB: Bayes Estimation of Choice Behavior Heterogeneity in R}
-\Shorttitle{RprobitB}
+\Shorttitle{\pkg{RprobitB}}
 
 %% - \Abstract{} almost as usual
 \Abstract{
