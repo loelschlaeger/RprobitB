@@ -52,7 +52,7 @@ reference:
   - cov_mix
   - point_estimates
   - choice_probabilities
-  - preference_classification
+  - classification
   - get_cov
   - predict.RprobitB_fit
   - plot.RprobitB_fit
