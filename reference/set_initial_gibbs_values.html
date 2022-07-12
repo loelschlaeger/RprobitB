@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,35 +68,72 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">set_initial_gibbs_values</span><span class="op">(</span><span class="va">N</span>, <span class="cn">T</span>, <span class="va">J</span>, <span class="va">P_f</span>, <span class="va">P_r</span>, <span class="va">C</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_initial_gibbs_values</span><span class="op">(</span></span>
+<span>  <span class="va">N</span>,</span>
+<span>  <span class="cn">T</span>,</span>
+<span>  <span class="va">J</span>,</span>
+<span>  <span class="va">P_f</span>,</span>
+<span>  <span class="va">P_r</span>,</span>
+<span>  <span class="va">C</span>,</span>
+<span>  ordered <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ranked <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ss <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>N</dt>
 <dd><p>The number (greater or equal 1) of decision makers.</p></dd>
+
+
 <dt>T</dt>
 <dd><p>The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length <code>N</code> (i.e. a decision maker specific number).</p></dd>
+occasions of length <code>N</code> (i.e. a decision maker specific number).
+Per default, <code>T = 1</code>.</p></dd>
+
+
 <dt>J</dt>
 <dd><p>The number (greater or equal 2) of choice alternatives.</p></dd>
+
+
 <dt>P_f</dt>
 <dd><p>The number of covariates connected to a fixed coefficient (can be 0).</p></dd>
+
+
 <dt>P_r</dt>
 <dd><p>The number of covariates connected to a random coefficient (can be 0).</p></dd>
+
+
 <dt>C</dt>
 <dd><p>The number (greater or equal 1) of latent classes.</p></dd>
+
+
+<dt>ordered</dt>
+<dd><p>A boolean, <code>FALSE</code> per default. If <code>TRUE</code>, the choice set
+<code>alternatives</code> is assumed to be ordered from worst to best.</p></dd>
+
+
+<dt>ranked</dt>
+<dd><p>TBA</p></dd>
+
+
+<dt>ss</dt>
+<dd><p>Optionally the output of <code><a href="sufficient_statistics.html">sufficient_statistics</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of initial values for the Gibbs sampler.</p>
+    
+
+<p>A list of initial values for the Gibbs sampler.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">set_initial_gibbs_values</span><span class="op">(</span></span>
-<span class="r-in">  N <span class="op">=</span> <span class="fl">2</span>, T <span class="op">=</span> <span class="fl">3</span>, J <span class="op">=</span> <span class="fl">3</span>, P_f <span class="op">=</span> <span class="fl">1</span>, P_r <span class="op">=</span> <span class="fl">2</span>, C <span class="op">=</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">set_initial_gibbs_values</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  N <span class="op">=</span> <span class="fl">2</span>, T <span class="op">=</span> <span class="fl">3</span>, J <span class="op">=</span> <span class="fl">3</span>, P_f <span class="op">=</span> <span class="fl">1</span>, P_r <span class="op">=</span> <span class="fl">2</span>, C <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $alpha0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -134,6 +170,9 @@ occasions of length <code>N</code> (i.e. a decision maker specific number).</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $d0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -145,7 +184,7 @@ occasions of length <code>N</code> (i.e. a decision maker specific number).</p><
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

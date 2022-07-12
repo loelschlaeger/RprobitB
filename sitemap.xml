@@ -34,9 +34,6 @@
     <loc>https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/articles/v07_applications.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/authors.html</loc>
   </url>
   <url>
@@ -46,10 +43,7 @@
     <loc>https://loelschlaeger.de/RprobitB/news/index.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/AIC.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/BIC.html</loc>
+    <loc>https://loelschlaeger.de/RprobitB/reference/M.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/R_hat.html</loc>
@@ -97,6 +91,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/choice_probabilities.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/classification.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/coef.RprobitB_fit.html</loc>
   </url>
   <url>
@@ -121,10 +118,16 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/create_labels_b.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/create_labels_d.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/create_labels_s.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/create_lagged_cov.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/d_to_gamma.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/delta.html</loc>
@@ -142,6 +145,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/filter_gibbs_samples.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/fit_model.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/get_cov.html</loc>
   </url>
   <url>
@@ -154,16 +160,19 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/is_covariance_matrix.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/logLik.html</loc>
+    <loc>https://loelschlaeger.de/RprobitB/reference/ll_ordered.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/mcmc.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/missing_data.html</loc>
+    <loc>https://loelschlaeger.de/RprobitB/reference/missing_covariates.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/mml.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/model_berserk.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/model_chessop.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/model_elec.html</loc>
@@ -178,12 +187,6 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/model_train_sparse.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/nested_model.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/nobs.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/npar.html</loc>
   </url>
   <url>
@@ -193,10 +196,16 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/parameter_labels.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/permutations.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot.RprobitB_data.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot.RprobitB_fit.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/plot_acf.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot_class_allocation.html</loc>
@@ -206,6 +215,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot_mixture_marginal.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/plot_roc.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/point_estimates.html</loc>
@@ -223,9 +235,6 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/predict.RprobitB_fit.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/preference_classification.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/preference_flip.html</loc>
   </url>
   <url>
@@ -239,6 +248,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/rtnorm.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/rttnorm.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/rwishart.html</loc>
@@ -268,6 +280,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/undiff_Sigma.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/update.RprobitB_fit.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_Omega.html</loc>
   </url>
   <url>
@@ -277,6 +292,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/update_U.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/update_U_ranked.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_b.html</loc>
   </url>
   <url>
@@ -284,6 +302,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_classes_wb.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/update_d.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/update_m.html</loc>

@@ -12,7 +12,7 @@ object for the Gibbs sampler to save computation time."><meta property="og:image
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,6 @@ object for the Gibbs sampler to save computation time."><meta property="og:image
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,31 +71,36 @@ object for the Gibbs sampler to save computation time.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sufficient_statistics</span><span class="op">(</span><span class="va">data</span>, <span class="va">normalization</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sufficient_statistics</span><span class="op">(</span><span class="va">data</span>, <span class="va">normalization</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
 <dd><p>An object of class <code>RprobitB_data</code>.</p></dd>
+
+
 <dt>normalization</dt>
 <dd><p>An object of class <code>RprobitB_normalization</code>, which can be created
 via <code><a href="RprobitB_normalization.html">RprobitB_normalization</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of sufficient statistics on the data for Gibbs sampling, containing</p><ul><li><p>the elements <code>N</code>, <code>T</code>, <code>J</code>, <code>P_f</code> and <code>P_r</code>
+    
+
+<p>A list of sufficient statistics on the data for Gibbs sampling, containing</p><ul><li><p>the elements <code>N</code>, <code>T</code>, <code>J</code>, <code>P_f</code> and <code>P_r</code>
 from <code>data</code>,</p></li>
 <li><p><code>Tvec</code>, the vector of choice occasions for each decider of
 length <code>N</code>,</p></li>
 <li><p><code>csTvec</code>, a vector of length <code>N</code> with the cumulated sums of
 <code>Tvec</code> starting from <code>0</code>,</p></li>
 <li><p><code>W</code>, a list of design matrices differenced with respect to
-alternative number <code>normalization$level</code>
+alternative number <code>normalization$level$level</code>
 for each decider in each choice occasion with covariates that
 are linked to a fixed coefficient (or <code>NA</code> if <code>P_f = 0</code>),</p></li>
 <li><p><code>X</code>, a list of design matrices differenced with respect to
-alternative number <code>normalization$level</code>
+alternative number <code>normalization$level$level</code>
 for each decider in each choice occasion with covariates that
 are linked to a random coefficient (or <code>NA</code> if <code>P_r = 0</code>),</p></li>
 <li><p><code>y</code>, a matrix of dimension <code>N</code> x <code>max(Tvec)</code> with the
@@ -109,111 +113,12 @@ sum over Kronecker products of each transposed element in <code>W</code>
 with itself,</p></li>
 <li><p><code>XkX</code>, a list of length <code>N</code>, each element is constructed in
 the same way as <code>WkW</code> but with the elements in <code>X</code> and
-separately for each decider.</p></li>
+separately for each decider,</p></li>
+<li><p><code>rdiff</code> (for the ranked case only), a list of matrices that
+reverse the base differencing and instead difference in such a way
+that the resulting utility vector is negative.</p></li>
 </ul></div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">sufficient_statistics</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span><span class="va">choice</span> <span class="op">~</span> <span class="va">v1</span> <span class="op">|</span> <span class="va">v2</span>, N <span class="op">=</span> <span class="fl">2</span>, T <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, J <span class="op">=</span> <span class="fl">3</span>, re <span class="op">=</span> <span class="st">"v2"</span><span class="op">)</span>,</span>
-<span class="r-in">  normalization <span class="op">=</span> <span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="RprobitB_normalization.html">RprobitB_normalization</a></span><span class="op">(</span>J <span class="op">=</span> <span class="fl">3</span>, P_f <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 0 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 1 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 2 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 3 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 4 of 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $T</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $J</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P_f</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P_r</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $Tvec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $csTvec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $W[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              v1 ASC_A ASC_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.1134949     1     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.8146276     0     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $W[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             v1 ASC_A ASC_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.4088111     1     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.2051665     0     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $W[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              v1 ASC_A ASC_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.5144790     1     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.2588766     0     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $X[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            v2_A       v2_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.08900887 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.00000000 0.08900887</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $X[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             v2_A        v2_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.09891759  0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.00000000 -0.09891759</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $X[[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           v2_A      v2_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -1.315725  0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.000000 -1.315725</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    2   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $WkW</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]        [,2]        [,3]     [,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 2.473654 0.008166166 0.008166166 2.183061</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 1.809795 0.000000000 1.760917453 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 0.000000 1.809795217 0.000000000 1.760917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 1.809795 1.760917453 0.000000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 3.000000 0.000000000 0.000000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 0.000000 3.000000000 0.000000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 0.000000 0.000000000 1.809795217 1.760917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 0.000000 0.000000000 3.000000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 0.000000 0.000000000 0.000000000 3.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $XkX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $XkX[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2]        [,3]        [,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.007922579 0.000000000 0.000000000 0.000000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000000 0.007922579 0.000000000 0.000000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.000000000 0.000000000 0.007922579 0.000000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.000000000 0.000000000 0.000000000 0.007922579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $XkX[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]     [,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.740916 0.000000 0.000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000 1.740916 0.000000 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.000000 0.000000 1.740916 0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.000000 0.000000 0.000000 1.740916</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -223,7 +128,7 @@ separately for each decider.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,7 +87,7 @@
 
 
 <script src="v03_model_fitting_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Model fitting</h1>
             
       
@@ -98,11 +97,11 @@
 
     
     
-<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.0 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a> is a documentation of the estimation procedure <code><a href="../reference/mcmc.html">mcmc()</a></code> in {RprobitB}.</p>
+<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.0 package.&lt;/p&gt;"><sup>1</sup></a> is a documentation of the estimation procedure <code><a href="../reference/fit_model.html">fit_model()</a></code> in {RprobitB}.</p>
 <div class="section level2">
 <h2 id="bayes-estimation-of-the-probit-model">Bayes estimation of the probit model<a class="anchor" aria-label="anchor" href="#bayes-estimation-of-the-probit-model"></a>
 </h2>
-<p>Bayes estimation of the probit model builds upon the work of <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch:94" role="doc-biblioref">1994</a>)</span>, <span class="citation">Nobile (<a href="#ref-Nobile:1998" role="doc-biblioref">1998</a>)</span>, <span class="citation">Allenby and Rossi (<a href="#ref-Allenby:1998" role="doc-biblioref">1998</a>)</span>, and <span class="citation">Imai and Dyk (<a href="#ref-Imai:2005" role="doc-biblioref">2005</a>)</span>. A key ingredient is the concept of data augmentation, see <span class="citation">Albert and Chib (<a href="#ref-Albert:1993" role="doc-biblioref">1993</a>)</span>: The idea is to treat the latent utilities <span class="math inline">\(U\)</span> in the model equation <span class="math inline">\(U = X\beta + \epsilon\)</span> as additional parameters. Then, conditional on <span class="math inline">\(U\)</span>, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).</p>
+<p>Bayes estimation of the probit model builds upon the work of <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch:1994" role="doc-biblioref">1994</a>)</span>, <span class="citation">Nobile (<a href="#ref-Nobile:1998" role="doc-biblioref">1998</a>)</span>, <span class="citation">Allenby and Rossi (<a href="#ref-Allenby:1998" role="doc-biblioref">1998</a>)</span>, and <span class="citation">Imai and Dyk (<a href="#ref-Imai:2005" role="doc-biblioref">2005</a>)</span>. A key ingredient is the concept of data augmentation, see <span class="citation">Albert and Chib (<a href="#ref-Albert:1993" role="doc-biblioref">1993</a>)</span>: The idea is to treat the latent utilities <span class="math inline">\(U\)</span> in the model equation <span class="math inline">\(U = X\beta + \epsilon\)</span> as additional parameters. Then, conditional on <span class="math inline">\(U\)</span>, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).</p>
 <p>A priori, we assume the following (conjugate) parameter distributions:</p>
 <ul>
 <li><p><span class="math inline">\((s_1,\dots,s_C)\sim D_C(\delta)\)</span>, where <span class="math inline">\(D_C(\delta)\)</span> denotes the <span class="math inline">\(C\)</span>-dimensional Dirichlet distribution with concentration parameter vector <span class="math inline">\(\delta = (\delta_1,\dots,\delta_C)\)</span>,</p></li>
@@ -139,7 +138,7 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 \end{equation}\]</span> where <span class="math inline">\(\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )\)</span> and <span class="math inline">\(\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}\)</span>.</p></li>
 <li><p>Analogously to <span class="math inline">\(\alpha\)</span>, the random coefficients <span class="math inline">\((\beta_n)_n\)</span> are updated independently via <span class="math display">\[\begin{equation}
 \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
-\end{equation}\]</span> where <span class="math inline">\(\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )\)</span> and <span class="math inline">\(\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}\)</span> .</p></li>
+\end{equation}\]</span> where <span class="math inline">\(\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )\)</span> and <span class="math inline">\(\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}\)</span> .</p></li>
 <li><p>The error term covariance matrix <span class="math inline">\(\Sigma\)</span> is updated by means of <span class="math display">\[\begin{equation}
 \Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
 \end{equation}\]</span> where <span class="math inline">\(S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'\)</span> and <span class="math inline">\(\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n\)</span>.</p></li>
@@ -165,22 +164,14 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 </div>
 </div>
 <div class="section level2">
-<h2 id="the-mcmc-function">The <code>mcmc()</code> function<a class="anchor" aria-label="anchor" href="#the-mcmc-function"></a>
+<h2 id="the-fit_model-function">The <code>fit_model()</code> function<a class="anchor" aria-label="anchor" href="#the-fit_model-function"></a>
 </h2>
 <p>The Gibbs sampling scheme described above can be executed by applying the function</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_model.html">fit_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <p>where <code>data</code> must be an <code>RprobitB_data</code> object (see the vignette about choice data). The function has the following optional arguments:</p>
 <ul>
-<li>
-<p><code>scale</code>: A named list of three elements, determining the <a href="#parameter-normalization">parameter normalization</a>:</p>
-<ul>
-<li><p><code>parameter</code>: Either <code>"a"</code> (for an element of <code>alpha</code>) or <code>"s"</code> (for a diagonal element of <code>Sigma</code>).<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the &lt;code&gt;&lt;a href="../reference/overview_effects.html"&gt;overview_effects()&lt;/a&gt;&lt;/code&gt; function to determine the parameter index. Note that you can set &lt;code&gt;"parameter" = "a"&lt;/code&gt; only if the model has parameters with a fixed coefficient, i.e. only if &lt;code&gt;P_f&amp;gt;0&lt;/code&gt;.&lt;/p&gt;'><sup>3</sup></a></p></li>
-<li><p><code>index</code>: The index of the parameter that gets fixed.</p></li>
-<li><p><code>value</code>: The value for the fixed parameter (i.e. the value <span class="math inline">\(\text{const}\)</span> introduced <a href="#parameter-normalization">above</a>).</p></li>
-</ul>
-<p>Per default, the first error-term variance is fixed to 1, i.e. <code>scale = list("parameter" = "s", "index" = 1, "value" = 1)</code>.</p>
-</li>
+<li><p><code>scale</code>: A character which determines the <a href="#parameter-normalization">utility scale</a>. It is of the form <code>"&lt;parameter&gt; := &lt;value&gt;"</code>, where <code>&lt;parameter&gt;</code> is either the name of a fixed effect or <code>Sigma_&lt;j&gt;,&lt;j&gt;</code> for the <code>&lt;j&gt;</code>th diagonal element of <code>Sigma</code>, and <code>&lt;value&gt;</code> is the value of the fixed parameter (i.e. <span class="math inline">\(\text{const}\)</span> introduced <a href="#parameter-normalization">above</a>). Per default <code>scale = "Sigma\_1,1 := 1"</code>, i.e. the first error-term variance is fixed to 1.</p></li>
 <li><p><code>R</code>: The number of iterations of the Gibbs sampler. The default is <code>R = 10000</code>.</p></li>
 <li><p><code>B</code>: The length of the burn-in period, i.e. a non-negative number of samples to be discarded. The default is <code>B = R/2</code>.</p></li>
 <li><p><code>Q</code>: The thinning factor for the Gibbs samples, i.e. only every <code>Q</code>th sample is kept. The default is <code>Q = 1</code>.</p></li>
@@ -205,102 +196,97 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>In <a href="https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html">the previous vignette on choice data</a>, we introduced the <a href="https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format" class="external-link">Train data set</a> from the mlogit package <span class="citation">(Croissant <a href="#ref-mlogit" role="doc-biblioref">2020</a>)</span> that contains 2922 choices between two fictional train route alternatives. First, we transform the travel <code>time</code> from minutes to hours and the travel <code>price</code> from guilders to euros:</p>
+<p>In <a href="https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html">the previous vignette on choice data</a>, we introduced the <a href="https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format" class="external-link">Train data set</a> from the mlogit package <span class="citation">(Croissant <a href="#ref-Croissant:2020" role="doc-biblioref">2020</a>)</span> that contains 2922 choices between two fictional train route alternatives. First, we transform the travel <code>time</code> from minutes to hours and the travel <code>price</code> from guilders to euros:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
-<span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span>
-<span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span>
-<span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">/</span> <span class="fl">60</span>
-<span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">/</span> <span class="fl">60</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
+<span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span></span>
+<span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span></span>
+<span><span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">/</span> <span class="fl">60</span></span>
+<span><span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">/</span> <span class="fl">60</span></span></code></pre></div>
 <p>The following lines fit a probit model that explains the chosen trip alternatives (<code>choice</code>) by their <code>price</code>, <code>time</code>, number of <code>change</code>s, and level of <code>comfort</code> (the lower this value the higher the comfort). For normalization, the first linear coefficient, the <code>price</code>, was fixed to <code>-1</code>, which allows to interpret the other coefficients as monetary values:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span><span class="op">)</span>
-<span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mcmc.html">mcmc</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">data</span>,
-  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"parameter"</span> <span class="op">=</span> <span class="st">"a"</span>, index <span class="op">=</span> <span class="fl">1</span>, value <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>form &lt;-<span class="st"> </span>choice <span class="op">~</span><span class="st"> </span>price <span class="op">+</span><span class="st"> </span>time <span class="op">+</span><span class="st"> </span>change <span class="op">+</span><span class="st"> </span>comfort <span class="op">|</span><span class="st"> </span><span class="dv">0</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>data &lt;-<span class="st"> </span><span class="kw">prepare_data</span>(<span class="dt">form =</span> form, <span class="dt">choice_data =</span> Train)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>model_train &lt;-<span class="st"> </span><span class="kw">fit_model</span>(</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="dt">data =</span> data,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="dt">scale =</span> <span class="st">"price := -1"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="er">)</span></span></code></pre></div>
 <p>The estimated model is saved in {RprobitB} and can be accessed via</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">model_train</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">model_train</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></code></pre></div>
 <p>The estimated coefficients (using the mean of the Gibbs samples as a point estimate) can be printed via</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
-<span class="co">#&gt;            Estimate   (sd)</span>
-<span class="co">#&gt; 1   price     -1.00 (0.00)</span>
-<span class="co">#&gt; 2    time    -25.39 (2.23)</span>
-<span class="co">#&gt; 3  change     -4.79 (0.86)</span>
-<span class="co">#&gt; 4 comfort    -14.40 (0.90)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            Estimate   (sd)</span></span>
+<span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
+<span><span class="co">#&gt; 2    time    -25.89 (2.21)</span></span>
+<span><span class="co">#&gt; 3  change     -4.94 (0.88)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.45 (0.86)</span></span></code></pre></div>
 <p>and visualized via</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot-coef-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
-<p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;These results are consistent with the ones that are presented &lt;a href="https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train" class="external-link"&gt;in a vignette of the mlogit package&lt;/a&gt; on the same data set but using the logit model.&lt;/p&gt;'><sup>4</sup></a></p>
+<p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;These results are consistent with the ones that are presented &lt;a href="https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train" class="external-link"&gt;in a vignette of the mlogit package&lt;/a&gt; on the same data set but using the logit model.&lt;/p&gt;'><sup>3</sup></a></p>
 </div>
 <div class="section level2">
 <h2 id="checking-the-gibbs-samples">Checking the Gibbs samples<a class="anchor" aria-label="anchor" href="#checking-the-gibbs-samples"></a>
 </h2>
 <p>The Gibbs samples are saved in list form in the <code>RprobitB_fit</code> object at the entry <code>"gibbs_samples"</code>, i.e.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">gibbs_samples</span>, max.level <span class="op">=</span> <span class="fl">2</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ gibbs_samples_nbt:List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 607 581 627 615 850 ...</span>
-<span class="co">#&gt;  $ gibbs_samples_raw:List of 2</span>
-<span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.000739 -0.017192 -0.027834 -0.034068 -0.035992 ...</span>
-<span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 1.022 0.992 0.941 0.921 0.905 ...</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">gibbs_samples</span>, max.level <span class="op">=</span> <span class="fl">2</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ gibbs_samples_raw:List of 2</span></span>
+<span><span class="co">#&gt;   ..$ alpha: num [1:10000, 1:4] -0.00239 -0.02179 -0.02986 -0.03343 -0.03584 ...</span></span>
+<span><span class="co">#&gt;   ..$ Sigma: num [1:10000, 1] 0.978 0.949 0.862 0.864 0.911 ...</span></span>
+<span><span class="co">#&gt;  $ gibbs_samples_nbt:List of 2</span></span>
+<span><span class="co">#&gt;   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span></span>
+<span><span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 649 541 662 691 623 ...</span></span></code></pre></div>
 <p>This object contains 2 elements:</p>
 <ul>
 <li><p><code>gibbs_samples_raw</code> is a list of the raw samples from the Gibbs sampler,</p></li>
 <li><p>and <code>gibbs_samples_nbt</code> are the Gibbs samples used for parameter estimates, i.e. the normalized and thinned Gibbs samples after the burn-in.</p></li>
 </ul>
-<p>Calling the summary function on the estimated <code>RprobitB_fit</code> object yields additional information about the Gibbs samples <code>gibbs_samples_nbt</code>. You can specify a list <code>FUN</code> of functions that compute any point estimate of the Gibbs samples<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the function &lt;code&gt;&lt;a href="../reference/point_estimates.html"&gt;point_estimates()&lt;/a&gt;&lt;/code&gt; to access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code&gt; object.&lt;/p&gt;'><sup>5</sup></a>, for example</p>
+<p>Calling the summary function on the estimated <code>RprobitB_fit</code> object yields additional information about the Gibbs samples <code>gibbs_samples_nbt</code>. You can specify a list <code>FUN</code> of functions that compute any point estimate of the Gibbs samples<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Use the function &lt;code&gt;&lt;a href="../reference/point_estimates.html"&gt;point_estimates()&lt;/a&gt;&lt;/code&gt; to access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code&gt; object.&lt;/p&gt;'><sup>4</sup></a>, for example</p>
 <ul>
 <li><p><code>mean</code> for the arithmetic mean,</p></li>
 <li><p><code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd</a></code> for the standard deviation,</p></li>
-<li><p><code>R_hat</code> for the Gelman-Rubin statistic <span class="citation">(Gelman and Rubin <a href="#ref-Gelman:1992" role="doc-biblioref">1992</a>)</span>,<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution.&lt;/p&gt;"><sup>6</sup></a></p></li>
+<li><p><code>R_hat</code> for the Gelman-Rubin statistic <span class="citation">(Gelman and Rubin <a href="#ref-Gelman:1992" role="doc-biblioref">1992</a>)</span>,<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution.&lt;/p&gt;"><sup>5</sup></a></p></li>
 <li><p>or custom statistics like the absolute difference between the median and the mean.</p></li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>, 
-        FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>        <span class="op">=</span> <span class="va">mean</span>, 
-                <span class="st">"sd"</span>          <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>, 
-                <span class="st">"R^"</span>          <span class="op">=</span> <span class="va">R_hat</span>,
-                <span class="st">"custom_stat"</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
-                <span class="op">)</span>
-       <span class="op">)</span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Probit model</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>choice ~ price + time + change + comfort | 0 </span>
-<span class="co">#&gt; R: 10000 </span>
-<span class="co">#&gt; B: 5000 </span>
-<span class="co">#&gt; Q: 10 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Normalization</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>Level: Utility differences with respect to alternative 2.</span>
-<span class="co">#&gt; Scale: Coefficient of alpha_1 fixed to -1.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Gibbs sample statistics</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>               mean           sd           R^  custom_stat</span>
-<span class="co">#&gt;  alpha</span>
-<span class="co">#&gt;                                                           </span>
-<span class="co">#&gt;      1        -1.00         0.00         1.00         0.00</span>
-<span class="co">#&gt;      2       -25.39         2.23         1.01         0.00</span>
-<span class="co">#&gt;      3        -4.79         0.86         1.00         0.02</span>
-<span class="co">#&gt;      4       -14.40         0.90         1.00         0.01</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Sigma</span>
-<span class="co">#&gt;                                                           </span>
-<span class="co">#&gt;    1,1       658.58        62.47         1.00         6.38</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>, </span>
+<span>        FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>        <span class="op">=</span> <span class="va">mean</span>, </span>
+<span>                <span class="st">"sd"</span>          <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>, </span>
+<span>                <span class="st">"R^"</span>          <span class="op">=</span> <span class="va">R_hat</span>,</span>
+<span>                <span class="st">"custom_stat"</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>                <span class="op">)</span></span>
+<span>       <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="text-decoration: underline;">Probit model</span></span></span>
+<span><span class="co"><span style="text-decoration: underline;">#&gt; </span>Formula: choice ~ price + time + change + comfort | 0 </span></span>
+<span><span class="co">#&gt; R: 10000, B: 5000, Q: 10</span></span>
+<span><span class="co">#&gt; Level: Utility differences with respect to alternative 'B'.</span></span>
+<span><span class="co">#&gt; Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="text-decoration: underline;">Gibbs sample statistics</span></span></span>
+<span><span class="co"><span style="text-decoration: underline;">#&gt; </span>               mean           sd           R^  custom_stat</span></span>
+<span><span class="co">#&gt;  alpha</span></span>
+<span><span class="co">#&gt;                                                           </span></span>
+<span><span class="co">#&gt;      1        -1.00         0.00         1.00         0.00</span></span>
+<span><span class="co">#&gt;      2       -25.89         2.21         1.00         0.02</span></span>
+<span><span class="co">#&gt;      3        -4.94         0.88         1.01         0.01</span></span>
+<span><span class="co">#&gt;      4       -14.45         0.86         1.00         0.02</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Sigma</span></span>
+<span><span class="co">#&gt;                                                           </span></span>
+<span><span class="co">#&gt;    1,1       655.56        65.79         1.00         7.28</span></span></code></pre></div>
 <p>Calling the <code>plot</code> method with the additional argument <code>type = "trace"</code> plots the trace of the Gibbs samples <code>gibbs_samples_nbt</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot-trace-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Additionally, we can visualize the serial correlation of the Gibbs samples via the argument <code>type = "acf"</code>. The boxes in the top-right corner state the total sample size TSS (here <code>R</code> - <code>B</code> = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot-acf-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, the effective sample size is the value <span class="math inline">\(\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)\)</span>, where <span class="math inline">\(\rho_k\)</span> is the auto correlation between the chain offset by <span class="math inline">\(k\)</span> positions. The auto correlations are estimated via the <code><a href="https://rdrr.io/r/stats/acf.html" class="external-link">stats::acf()</a></code> function.</p>
 </div>
@@ -312,45 +298,45 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 <li>change the length <code>B</code> of the burn-in period, for example</li>
 </ol>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>change the thinning factor <code>Q</code> of the Gibbs samples, for example</li>
 </ol>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, Q <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, Q <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>or change the model normalization <code>scale</code>, for example</li>
 </ol>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameter <span class="op">=</span> <span class="st">"s"</span>, index <span class="op">=</span> <span class="fl">1</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, scale <span class="op">=</span> <span class="st">"Sigma_1 := 1"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references">
 <div id="ref-Albert:1993">
-<p>Albert, J. H., and S. Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88.</p>
+<p>Albert, J. H., and S. Chib. 1993. “Bayesian Analysis of Binary and Polychotomous Response Data.” <em>Journal of the American Statistical Association</em> 88. <a href="https://doi.org/10.2307/2290350" class="external-link">https://doi.org/10.2307/2290350</a>.</p>
 </div>
 <div id="ref-Allenby:1998">
-<p>Allenby, G. M., and P. Rossi. 1998. “Marketing Models of Consumer Heterogeneity.” <em>Journal of Econometrics</em> 89.</p>
+<p>Allenby, G. M., and P. Rossi. 1998. “Marketing Models of Consumer Heterogeneity.” <em>Journal of Econometrics</em> 89. <a href="https://doi.org/10.1016/S0304-4076(98)00055-4" class="external-link">https://doi.org/10.1016/S0304-4076(98)00055-4</a>.</p>
 </div>
-<div id="ref-mlogit">
-<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
+<div id="ref-Croissant:2020">
+<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The Mlogit Package.” <em>Journal of Statistical Software</em> 95 (11). <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
 </div>
 <div id="ref-Gelman:1992">
-<p>Gelman, A., and D. B. Rubin. 1992. “Inference from Iterative Simulation Using Multiple Sequences.” <em>Statistical Science</em> 7 (4): 457–72. <a href="https://doi.org/10.1214/ss/1177011136" class="external-link">https://doi.org/10.1214/ss/1177011136</a>.</p>
+<p>Gelman, A., and D. B. Rubin. 1992. “Inference from Iterative Simulation Using Multiple Sequences.” <em>Statistical Science</em> 7 (4). <a href="https://doi.org/10.1214/ss/1177011136" class="external-link">https://doi.org/10.1214/ss/1177011136</a>.</p>
 </div>
 <div id="ref-Geweke:1998">
-<p>Geweke, J. 1998. “Efficient Simulation from the Multivariate Normal and Student-T Distributions Subject to Linear Constraints and the Evaluation of Constraint Probabilities.” <em>Comput. Sci. Statist.</em></p>
+<p>Geweke, J. 1998. “Efficient Simulation from the Multivariate Normal and Student-T Distributions Subject to Linear Constraints and the Evaluation of Constraint Probabilities.” <em>Computing Science and Statistics</em> 23.</p>
 </div>
 <div id="ref-Imai:2005">
-<p>Imai, K., and D. A. van Dyk. 2005. “A Bayesian Analysis of the Multinomial Probit Model Using Marginal Data Augmentation.” <em>Journal of Econometrics</em> 124.</p>
+<p>Imai, K., and D. A. van Dyk. 2005. “A Bayesian Analysis of the Multinomial Probit Model Using Marginal Data Augmentation.” <em>Journal of Econometrics</em> 124. <a href="https://doi.org/j.jeconom.2004.02.002" class="external-link">https://doi.org/j.jeconom.2004.02.002</a>.</p>
 </div>
-<div id="ref-McCulloch:94">
-<p>McCulloch, R., and P. Rossi. 1994. “An Exact Likelihood Analysis of the Multinomial Probit Model.” <em>Journal of Econometrics</em> 64.</p>
+<div id="ref-McCulloch:1994">
+<p>McCulloch, R., and P. Rossi. 1994. “An Exact Likelihood Analysis of the Multinomial Probit Model.” <em>Journal of Econometrics</em> 64. <a href="https://doi.org/10.1016/0304-4076(94)90064-7" class="external-link">https://doi.org/10.1016/0304-4076(94)90064-7</a>.</p>
 </div>
 <div id="ref-Nobile:1998">
-<p>Nobile, A. 1998. “A Hybrid Markov Chain for the Bayesian Analysis of the Multinomial Probit Model.” <em>Statistics and Computing</em> 8.</p>
+<p>Nobile, A. 1998. “A Hybrid Markov Chain for the Bayesian Analysis of the Multinomial Probit Model.” <em>Statistics and Computing</em> 8. <a href="https://doi.org/10.1023/A:1008905311214" class="external-link">https://doi.org/10.1023/A:1008905311214</a>.</p>
 </div>
 </div>
 </div>
@@ -368,7 +354,7 @@ U_{ntj} \mid U_{nt(-j)},y_{nt},\Sigma,W,\alpha,X,\beta
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

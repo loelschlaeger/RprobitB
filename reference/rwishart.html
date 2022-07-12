@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,19 +68,24 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rwishart</span><span class="op">(</span><span class="va">nu</span>, <span class="va">V</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rwishart</span><span class="op">(</span><span class="va">nu</span>, <span class="va">V</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>nu</dt>
 <dd><p>A numeric, the degrees of freedom. Must be at least the number of dimensions.</p></dd>
+
+
 <dt>V</dt>
 <dd><p>A matrix, the scale matrix.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list, the draws from the Wishart (<code>W</code>), inverted Wishart (<code>IW</code>), and
+    
+
+<p>A list, the draws from the Wishart (<code>W</code>), inverted Wishart (<code>IW</code>), and
 corresponding Choleski decomposition (<code>C</code> and <code>CI</code>).</p>
     </div>
     <div class="section level2">
@@ -97,26 +101,26 @@ the number of dimensions.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">rwishart</span><span class="op">(</span>nu <span class="op">=</span> <span class="fl">2</span>, V <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">rwishart</span><span class="op">(</span>nu <span class="op">=</span> <span class="fl">2</span>, V <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 4.573638 2.976911</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 2.976911 1.957824</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.277530 -2.393022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -2.393022  4.494557</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $IW</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  21.19319 -32.22468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -32.22468  49.50904</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 292.2886 155.62223</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 155.6222  83.07991</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.138607 1.3919862</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000 0.1421208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]       [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.130279 -2.1171964</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.000000  0.1097115</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $CI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.4675942 -4.579798</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0000000  7.036266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.8847376 17.073542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0000000  9.114818</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
@@ -129,7 +133,7 @@ the number of dimensions.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

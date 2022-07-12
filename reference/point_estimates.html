@@ -18,7 +18,7 @@ Gibbs samples can be specified for FUN."><meta property="og:image" content="http
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,6 @@ Gibbs samples can be specified for FUN."><meta property="og:image" content="http
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -81,1038 +80,142 @@ Gibbs samples can be specified for <code>FUN</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">point_estimates</span><span class="op">(</span><span class="va">x</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">point_estimates</span><span class="op">(</span><span class="va">x</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>An object of class <code><a href="RprobitB_fit.html">RprobitB_fit</a></code>.</p></dd>
+
+
 <dt>FUN</dt>
 <dd><p>A function that computes a single numeric value out of a vector of numeric
 values.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code><a href="RprobitB_parameter.html">RprobitB_parameter</a></code>.</p>
+    
+
+<p>An object of class <code><a href="RprobitB_parameter.html">RprobitB_parameter</a></code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">covariate</span>, N <span class="op">=</span> <span class="fl">10</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="mcmc.html">mcmc</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 0 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 1 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 2 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 3 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics 4 of 4 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 10 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 20 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 30 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 40 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 50 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 60 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 70 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 80 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 90 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 1990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 2990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 3990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 4990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 5990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 6990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 7990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 8990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9000 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9010 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9020 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9030 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9040 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9050 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9060 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9070 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9080 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9090 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9100 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9110 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9120 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9130 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9140 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9150 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9160 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9170 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9180 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9190 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9200 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9210 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9220 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9230 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9240 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9250 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9260 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9270 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9280 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9290 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9300 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9310 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9320 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9330 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9340 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9350 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9360 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9370 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9380 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9390 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9400 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9410 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9420 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9430 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9440 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9450 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9460 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9470 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9480 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9490 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9500 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9510 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9520 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9530 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9540 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9550 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9560 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9570 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9580 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9590 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9600 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9610 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9620 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9630 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9640 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9650 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9660 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9670 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9680 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9690 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9700 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9710 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9720 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9730 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9740 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9750 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9760 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9770 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9780 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9790 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9800 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9810 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9820 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9830 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9840 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9850 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9860 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9870 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9880 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9890 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9900 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9910 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9920 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9930 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9940 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9950 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9960 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9970 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9980 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 9990 of 10000 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler iteration 10000 of 10000 </span>
-<span class="r-in"><span class="fu">point_estimates</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RprobitB model parameter</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">covariate</span>, N <span class="op">=</span> <span class="fl">10</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_model.html">fit_model</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 0 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 1 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 2 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 3 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 4 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 1 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 10 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 20 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 30 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 40 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 50 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 60 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 70 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 80 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 90 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 100 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 110 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 120 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 130 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 140 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 150 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 160 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 170 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 180 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 190 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 200 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 210 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 220 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 230 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 240 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 250 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 260 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 270 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 280 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 290 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 300 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 310 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 320 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 330 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 340 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 350 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 360 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 370 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 380 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 390 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 400 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 410 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 420 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 430 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 440 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 450 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 460 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 470 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 480 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 490 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 500 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 510 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 520 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 530 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 540 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 550 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 560 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 570 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 580 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 590 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 600 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 610 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 620 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 630 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 640 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 650 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 660 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 670 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 680 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 690 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 700 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 710 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 720 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 730 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 740 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 750 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 760 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 770 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 780 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 790 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 800 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 810 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 820 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 830 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 840 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 850 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 860 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 870 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 880 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 890 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 900 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 910 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 920 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 930 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 940 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 950 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 960 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 970 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 980 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 990 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MCMC iteration - 1000 of 1000  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing log-likelihood</span>
+<span class="r-in"><span><span class="fu">point_estimates</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> alpha : double vector of length 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1527 -0.2265</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2.1268 2.2299</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C : NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1135,12 +238,12 @@ values.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z : NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu">point_estimates</span><span class="op">(</span><span class="va">model</span>, FUN <span class="op">=</span> <span class="va">median</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RprobitB model parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d : NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="fu">point_estimates</span><span class="op">(</span><span class="va">model</span>, FUN <span class="op">=</span> <span class="va">median</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> alpha : double vector of length 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.1522 -0.2245</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2.1029 2.2128</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C : NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -1163,7 +266,9 @@ values.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z : NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> d : NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -1175,7 +280,7 @@ values.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
