@@ -80,7 +80,7 @@ covariate entries entries (the default),
 
 \item{scale}{A character which determines the utility scale. It is of the form
 \verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
-effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
+effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
 \item{R}{The number of iterations of the Gibbs sampler.}

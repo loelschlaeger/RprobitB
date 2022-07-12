@@ -24,7 +24,7 @@ sample is kept.}
 
 \item{scale}{A character which determines the utility scale. It is of the form
 \verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
-effect or \verb{Sigma_<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
+effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
 \item{check_preference_flip}{Set to \code{TRUE} to check for flip in preferences after new \code{scale}.}
@@ -56,6 +56,6 @@ transform(model_train, B = 1)
 transform(model_train, Q = 1)
 
 ### change the scale
-transform(model_train, scale = "Sigma_1 := 1")
+transform(model_train, scale = "Sigma_1,1 := 1")
 
 }

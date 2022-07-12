@@ -490,7 +490,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #'         fixes the first utility threshold to 0.
 #'   \item For scale normalization, RprobitB fixes one model parameter. Per
 #'         default, the first error-term variance is fixed to `1`.
-#'         This is specified via `scale = "Sigma_1 := 1"`.
+#'         This is specified via `scale = "Sigma_1,1 := 1"`.
 #'         Alternatively, any error-term variance or any non-random coefficient
 #'         can be fixed.
 #' }
@@ -502,7 +502,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' @param scale
 #' A character which determines the utility scale. It is of the form
 #' `<parameter> := <value>`, where `<parameter>` is either the name of a fixed
-#' effect or `Sigma_<j>` for the `<j>`th diagonal element of `Sigma`, and
+#' effect or `Sigma_<j>,<j>` for the `<j>`th diagonal element of `Sigma`, and
 #' `<value>` is the value of the fixed parameter.
 #' @inheritParams overview_effects
 #' @inheritParams RprobitB_data
@@ -534,16 +534,18 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' internal
 
 RprobitB_normalization <- function(
-    level, scale = "Sigma_1 := 1", form, re = NULL, alternatives, base,
+    level, scale = "Sigma_1,1 := 1", form, re = NULL, alternatives, base,
     ordered = FALSE
     ) {
 
   ### check inputs
   if(missing(alternatives)){
-    stop("Please specify 'alternatives'.", call. = FALSE)
+    stop("Please specify 'alternatives'.",
+         call. = FALSE)
   }
   if(!is.character(alternatives)) {
-    stop("'alternatives' must be a character vector", call. = FALSE)
+    stop("'alternatives' must be a character vector",
+         call. = FALSE)
   }
   if(missing(level) || is.null(level)){
     level <- tail(alternatives, n = 1)
@@ -556,23 +558,29 @@ RprobitB_normalization <- function(
             immediate. = TRUE, call. = FALSE)
   }
   if(missing(form)){
-    stop("Please specify 'form'.", call. = FALSE)
+    stop("Please specify 'form'.",
+         call. = FALSE)
   }
   if(!(is.character(level) && length(level) == 1 && level %in% alternatives)){
-    stop("'level' must be one element of 'alternatives'.", call. = FALSE)
+    stop("'level' must be one element of 'alternatives'.",
+         call. = FALSE)
   }
   if(!(is.character(scale) && length(scale) == 1)){
-    stop("'scale' must be a single character.", call. = FALSE)
+    stop("'scale' must be a single character.",
+         call. = FALSE)
   }
   scale <- gsub(" ", "", scale, fixed = TRUE)
   if(!grepl(":=", scale, fixed = TRUE)) {
-    stop("'scale' is not in format '<parameter> := <value>'.", call. = FALSE)
+    stop("'scale' is not in format '<parameter> := <value>'.",
+         call. = FALSE)
   }
   if(missing(base)){
-    stop("Please specify 'base'.", call. = FALSE)
+    stop("Please specify 'base'.",
+         call. = FALSE)
   }
   if(!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean.", call. = FALSE)
+    stop("'ordered' must be a boolean.",
+         call. = FALSE)
   }
 
   ### set 'level'
@@ -595,7 +603,8 @@ RprobitB_normalization <- function(
     index <- which(parameter == effects[["effect"]])
     if(effects[index, "random"]){
       stop(paste0("'", parameter, "' is a random effect and cannot be used ",
-                  "for scale normalization."), call. = FALSE)
+                  "for scale normalization."),
+           call. = FALSE)
     }
     par_name <- parameter
     parameter <- "a"
@@ -603,18 +612,23 @@ RprobitB_normalization <- function(
     parameter_split <- strsplit(parameter, split = "_")[[1]]
     if(parameter_split[1] %in% c("Sigma","sigma")) {
       parameter <- "s"
-      index <- suppressWarnings(as.numeric(parameter_split[2]))
+      index <- suppressWarnings(
+        as.numeric(strsplit(parameter_split[2], split = ",")[[1]][1])
+      )
       if(is.na(index) || index %% 1 != 0 || index <= 0){
-        stop(paste("'<parameter>' in 'scale = <parameter> := <value>' is not in",
-                   "the form 'Sigma_<j>' for an integer <j>."), call. = FALSE)
+        stop(paste("'<parameter>' in 'scale = <parameter> := <value>' is not",
+                   "in the form 'Sigma_<j>,<j>' for an integer <j>."),
+             call. = FALSE)
       }
       if(index > length(alternatives)) {
-        stop(paste("'<j>' in 'Sigma_<j>' for '<parameter>' in 'scale = <parameter> := <value>'",
-                   "must not be greater than the length of 'alternatives'."),
+        stop(paste("'<j>' in 'Sigma_<j>,<j>' for '<parameter>' in",
+                   "'scale = <parameter> := <value>' must not be greater than",
+                   "the length of 'alternatives'."),
              call. = FALSE)
       }
     } else {
-      stop("Please check the specification of 'scale'.", call. = FALSE)
+      stop("Please check the specification of 'scale'.",
+           call. = FALSE)
     }
   }
   value <- suppressWarnings(
@@ -622,7 +636,8 @@ RprobitB_normalization <- function(
     )
   if(is.na(value)) {
     stop(paste("'<value>' in 'scale = <parameter> := <value>' is not",
-               "a numeric value."), call. = FALSE)
+               "a numeric value."),
+         call. = FALSE)
   }
   if(value == 0){
     stop("'<value>' in 'scale = <parameter> := <value>' must be non-zero.",
@@ -739,7 +754,7 @@ print.RprobitB_normalization <- function(x, ...) {
 #' }
 
 fit_model <- function(
-    data, scale = "Sigma_1 := 1", R = 1000, B = R / 2, Q = 1,
+    data, scale = "Sigma_1,1 := 1", R = 1000, B = R / 2, Q = 1,
     print_progress = getOption("RprobitB_progress"), prior = NULL,
     latent_classes = NULL, seed = NULL, fixed_parameter = list()
     ) {
@@ -1338,7 +1353,7 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 #' transform(model_train, Q = 1)
 #'
 #' ### change the scale
-#' transform(model_train, scale = "Sigma_1 := 1")
+#' transform(model_train, scale = "Sigma_1,1 := 1")
 #'
 #' @export
 #'

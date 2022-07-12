@@ -38,7 +38,7 @@ test_that("building of RprobitB_normalization works", {
   alternatives <- c("A", "B")
   expect_warning(
     RprobitB_normalization(
-      level = "A", scale = "Sigma_1 := 1", form = form, re = re,
+      level = "A", scale = "Sigma_1,1 := 1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
@@ -56,13 +56,13 @@ test_that("building of RprobitB_normalization works", {
   )
   expect_error(
     RprobitB_normalization(
-      level = "B", scale = "Sigma_3 := 1", form = form, re = re,
+      level = "B", scale = "Sigma_3,3 := 1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
   expect_error(
     RprobitB_normalization(
-      level = "B", scale = "Sigma_1 := -1", form = form, re = re,
+      level = "B", scale = "Sigma_1,1 := -1", form = form, re = re,
       alternatives = alternatives, base = "B"
     )
   )
@@ -173,7 +173,7 @@ test_that("transforming scale in RprobitB_fit works", {
   model <- RprobitB::model_train
   model_new_scale <- transform(
     model,
-    scale = "Sigma_1 := 1", check_preference_flip = FALSE
+    scale = "Sigma_1,1 := 1", check_preference_flip = FALSE
   )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
