@@ -260,15 +260,15 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' This function plots an estimated marginal mixing distributions.
 #'
 #' @param mean
-#'
+#' The class means.
 #' @param cov
-#'
+#' The class covariances.
 #' @param weights
-#'
+#' The class weights.
 #' @param name
-#'
+#' The covariate name.
 #' @return
-#' No return value. Draws a plot to the current device.
+#' An object of class \code{ggplot}.
 #'
 #' @keywords
 #' internal
@@ -280,7 +280,7 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' name <- "test"
 #' RprobitB:::plot_mixture_marginal(mean, cov, weights, name)
 #'
-#' @importFrom ggplot2 ggplot aes geom_line labs
+#' @importFrom ggplot2 ggplot aes geom_line labs geom_text
 #' @importFrom stats dnorm
 
 plot_mixture_marginal <- function(mean, cov, weights, name) {
@@ -288,28 +288,43 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
   x_min <- min(mapply(function(x,y) x-3*y, mean, cov))
   x_max <- max(mapply(function(x,y) x+3*y, mean, cov))
   x <- seq(x_min, x_max, length.out = 200)
-  y <- Reduce("+", sapply(1:C, function(c) weights[c] * stats::dnorm(x, mean[[c]], sd = cov[[c]]),
-                          simplify = F))
-  ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
+  y <- Reduce("+", sapply(1:C, function(c) weights[c] *
+                            stats::dnorm(x, mean[[c]], sd = cov[[c]]),
+                          simplify = FALSE))
+
+  xint <- grp <- NULL
+  out <- ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
     ggplot2::geom_line() +
     ggplot2::labs(x = bquote(beta[.(name)]), y = "")
+
+  if(C > 1) {
+    class_means <- data.frame(xint = unlist(mean), grp = factor(1:C))
+    out <- out +
+      ggplot2::geom_text(
+        data = class_means,
+        mapping = ggplot2::aes(x = xint, y = 0, label = grp,  color = grp),
+        size = 5,
+        show.legend = FALSE)
+  }
+
+  return(out)
 }
 
 #' Plot bivariate contour of mixing distributions
 #'
 #' @description
-#' This function plots an estimated ivariate contour mixing distributions.
+#' This function plots an estimated bivariate contour mixing distributions.
 #'
 #' @param means
-#'
+#' The class means.
 #' @param covs
-#'
+#' The class covariances.
 #' @param weights
-#'
+#' The class weights.
 #' @param names
-#'
+#' The covariate names.
 #' @return
-#' No return value. Draws a plot to the current device.
+#' An object of class \code{ggplot}.
 #'
 #' @keywords
 #' internal
@@ -321,7 +336,7 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #' names <- c("A","B")
 #' RprobitB:::plot_mixture_contour(means, covs, weights, names)
 #'
-#' @importFrom ggplot2 ggplot aes geom_contour labs
+#' @importFrom ggplot2 ggplot aes geom_contour labs geom_text
 #' @importFrom rlang .data
 
 plot_mixture_contour <- function(means, covs, weights, names) {
@@ -332,12 +347,28 @@ plot_mixture_contour <- function(means, covs, weights, names) {
   y_max <- max(mapply(function(x,y) x[2] + 5 * y[2,2], means, covs))
   data.grid <- expand.grid(x = seq(x_min, x_max, length.out = 200),
                            y = seq(y_min, y_max, length.out = 200))
-  z <- Reduce("+", sapply(1:C, function(c) mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]),
-                          simplify = F))
-  ggplot2::ggplot(data = cbind(data.grid, z),
+  z <- Reduce("+", sapply(1:C, function(c)
+    mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]), simplify = FALSE))
+
+  x <- y <- grp <- NULL
+  out <- ggplot2::ggplot(data = cbind(data.grid, z),
                   ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)) +
     ggplot2::geom_contour() +
     ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
+
+  if(C > 1) {
+    class_means <- data.frame(
+      x = sapply(means, "[[", 1), y = sapply(means, "[[", 2), z = 0,
+      grp = factor(1:C))
+    out <- out +
+      ggplot2::geom_text(
+        data = class_means,
+        mapping = ggplot2::aes(x = x, y = y, label = grp, color = grp),
+        size = 5,
+        show.legend = FALSE)
+  }
+
+  return(out)
 }
 
 #' Visualizing the trace of Gibbs samples.
@@ -515,6 +546,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @importFrom ggplot2 element_blank
 
 plot_roc <- function(..., reference = NULL) {
+  D <- name <- NULL
   models <- as.list(list(...))
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
   pred_merge <- NULL
@@ -523,7 +555,7 @@ plot_roc <- function(..., reference = NULL) {
       if(is.null(reference)){
         reference <- models[[m]]$data$alternatives[1]
       }
-      pred <- predict(models[[m]], overview = FALSE, digits = 8)
+      pred <- predict.RprobitB_fit(models[[m]], overview = FALSE, digits = 8)
       true <- ifelse(pred$true == reference, 1, 0)
       if(is.null(pred_merge)){
         pred_merge <- data.frame(true)

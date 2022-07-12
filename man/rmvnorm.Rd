@@ -30,3 +30,4 @@ Sigma <- diag(2)
 rmvnorm(mu = mu, Sigma = Sigma)
 }
 \keyword{distribution}
+\keyword{internal}

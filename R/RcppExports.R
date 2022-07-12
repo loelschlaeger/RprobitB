@@ -12,7 +12,7 @@
 #' The euclidean distance.
 #' @export
 #' @keywords
-#' utils
+#' internal utils
 #'
 euc_dist <- function(a, b) {
     .Call(`_RprobitB_euc_dist`, a, b)
@@ -136,7 +136,7 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, 
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma)
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 dmvnorm <- function(x, mean, Sigma, log = FALSE) {
     .Call(`_RprobitB_dmvnorm`, x, mean, Sigma, log)
@@ -163,7 +163,7 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
 #' Sigma <- diag(2)
 #' rmvnorm(mu = mu, Sigma = Sigma)
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 rmvnorm <- function(mu, Sigma) {
     .Call(`_RprobitB_rmvnorm`, mu, Sigma)
@@ -180,7 +180,7 @@ rmvnorm <- function(mu, Sigma) {
 #' @examples
 #' rdirichlet(delta = 1:3)
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 rdirichlet <- function(delta) {
     .Call(`_RprobitB_rdirichlet`, delta)
@@ -208,7 +208,7 @@ rdirichlet <- function(delta) {
 #' @examples
 #' rwishart(nu = 2, V = diag(2))
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 rwishart <- function(nu, V) {
     .Call(`_RprobitB_rwishart`, nu, V)
@@ -229,7 +229,7 @@ rwishart <- function(nu, V) {
 #' The conjugate prior \eqn{p(s)} for \eqn{s} is a Dirichlet distribution, which has a density function
 #' proportional to \deqn{\prod_{i=1}^C s_i^{\delta_i-1},} where \eqn{\delta = (\delta_1,\dots,\delta_C)}
 #' is the concentration parameter vector.
-#' Note that in RprobitB, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
+#' Note that in {RprobitB}, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
 #' The posterior distribution of \eqn{s} is proportional to \deqn{p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},}
 #' which in turn is proportional to a Dirichlet distribution with parameters \eqn{\delta+m}.
 #' @examples
@@ -243,7 +243,7 @@ rwishart <- function(nu, V) {
 #' update_s(delta = 1, m = m)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_s <- function(delta, m) {
     .Call(`_RprobitB_update_s`, delta, m)
@@ -273,7 +273,7 @@ update_s <- function(delta, m) {
 #' update_z(s = s, beta = beta, b = b, Omega = Omega)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_z <- function(s, beta, b, Omega) {
     .Call(`_RprobitB_update_z`, s, beta, b, Omega)
@@ -292,7 +292,7 @@ update_z <- function(s, beta, b, Omega) {
 #' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_m <- function(C, z, nozero) {
     .Call(`_RprobitB_update_m`, C, z, nozero)
@@ -337,7 +337,7 @@ update_m <- function(C, z, nozero) {
 #' update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_b <- function(beta, Omega, z, m, xi, Dinv) {
     .Call(`_RprobitB_update_b`, beta, Omega, z, m, xi, Dinv)
@@ -377,7 +377,7 @@ update_b <- function(beta, Omega, z, m, xi, Dinv) {
 #' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_Omega <- function(beta, b, z, m, nu, Theta) {
     .Call(`_RprobitB_update_Omega`, beta, b, z, m, nu, Theta)
@@ -435,7 +435,7 @@ update_Omega <- function(beta, b, z, m, nu, Theta) {
 #' @export
 #' @importFrom stats sd
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_reg <- function(mu0, Tau0, XSigX, XSigU) {
     .Call(`_RprobitB_update_reg`, mu0, Tau0, XSigX, XSigU)
@@ -485,7 +485,7 @@ update_reg <- function(mu0, Tau0, XSigX, XSigU) {
 #' apply(Sigma_draws, 1:2, stats::sd)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_Sigma <- function(kappa, E, N, S) {
     .Call(`_RprobitB_update_Sigma`, kappa, E, N, S)
@@ -528,7 +528,7 @@ update_Sigma <- function(kappa, E, N, S) {
 #' update_U(U, y, sys, Sigmainv)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_U <- function(U, y, sys, Sigmainv) {
     .Call(`_RprobitB_update_U`, U, y, sys, Sigmainv)
@@ -557,7 +557,7 @@ update_U <- function(U, y, sys, Sigmainv) {
 #' update_U_ranked(U, sys, Sigmainv)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_U_ranked <- function(U, sys, Sigmainv) {
     .Call(`_RprobitB_update_U_ranked`, U, sys, Sigmainv)
@@ -580,7 +580,7 @@ update_U_ranked <- function(U, sys, Sigmainv) {
 #' d_to_gamma(c(0,0,0))
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 d_to_gamma <- function(d) {
     .Call(`_RprobitB_d_to_gamma`, d)
@@ -588,8 +588,8 @@ d_to_gamma <- function(d) {
 
 #' Log-likelihood in the ordered probit model
 #' @description
-#' This function computes the conditional probability of one choice occasion
-#' given the threshold increments \code{d}.
+#' This function computes the log-likelihood value given the threshold
+#' increments \code{d}.
 #' @param d
 #' A numeric vector of threshold increments.
 #' @param y
@@ -604,7 +604,7 @@ d_to_gamma <- function(d) {
 #' ll_ordered(c(0,0,0), 1, 1, FALSE)
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 ll_ordered <- function(d, y, mu, Tvec) {
     .Call(`_RprobitB_ll_ordered`, d, y, mu, Tvec)
@@ -626,7 +626,7 @@ ll_ordered <- function(d, y, mu, Tvec) {
 #' The updated value for \code{d}.
 #' @export
 #' @keywords
-#' posterior
+#' internal posterior
 #'
 update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
     .Call(`_RprobitB_update_d`, d, y, mu, ll, zeta, Z, Tvec)
@@ -687,7 +687,7 @@ gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_p
 #' draws <- replicate(R, rtnorm(0,1,1,TRUE))
 #' plot(density(draws))
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 rtnorm <- function(mu, sig, trunpt, above) {
     .Call(`_RprobitB_rtnorm`, mu, sig, trunpt, above)
@@ -714,7 +714,7 @@ rtnorm <- function(mu, sig, trunpt, above) {
 #' draws <- replicate(R, rttnorm(0,1,-2,2))
 #' plot(density(draws))
 #' @keywords
-#' distribution
+#' internal distribution
 #'
 rttnorm <- function(mu, sig, lower_bound, upper_bound) {
     .Call(`_RprobitB_rttnorm`, mu, sig, lower_bound, upper_bound)

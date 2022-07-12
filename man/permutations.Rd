@@ -23,4 +23,5 @@ RprobitB:::permutations(x = c("a","b","c"))
 This function is a modified version of
 \url{https://stackoverflow.com/a/20199902/15157768}.
 }
+\keyword{internal}
 \keyword{utils}

@@ -46,4 +46,5 @@ to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs 
 from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
 of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
 }
+\keyword{internal}
 \keyword{posterior}

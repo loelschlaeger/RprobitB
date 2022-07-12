@@ -32,12 +32,12 @@ RprobitB_gibbs_samples_statistics <- function(
     gibbs_samples, FUN = list("mean" = mean)) {
 
   ### check inputs
-  if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
+  if (!inherits(gibbs_samples,"RprobitB_gibbs_samples")) {
     stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",
          call. = FALSE)
   }
   for (i in seq_len(length(FUN))) {
-    if (class(FUN[[i]]) != "function") {
+    if (!inherits(class(FUN[[i]]), "function")) {
       stop("Element ", i, " in 'FUN' is not of class 'function'.",
            call. = FALSE)
     }
@@ -70,7 +70,7 @@ RprobitB_gibbs_samples_statistics <- function(
       } else {
         paste(names(FUN[i]), seq_len(nvalue), sep = "_", recycle0 = TRUE)
       }
-      append <- matrix(NA,
+      append <- matrix(NA_real_,
                        nrow = length(values), ncol = nvalue,
                        dimnames = list(labels, fun_name)
       )
@@ -258,12 +258,12 @@ classification <- function(x, add_true = FALSE) {
     stop("'x' must be of class 'RprobitB_fit'.",
          call. = FALSE)
   }
-  if (!is.logical(add_true) || length(add_true) != 1) {
+  if (!isTRUE(add_true) && !isFALSE(add_true)) {
     stop("'add_true' must be either TRUE or FALSE.",
          call. = FALSE)
   }
   if (x$data$P_r == 0) {
-    stop("No classification available, because the model has no random coefficients.",
+    stop("The model has no random coefficients.",
          call. = FALSE)
   }
 
@@ -342,6 +342,7 @@ classification <- function(x, add_true = FALSE) {
 #'   data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
 #'   overview = FALSE
 #' )
+#'
 #' @export
 
 predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
@@ -352,7 +353,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
     data <- object$data
   } else if (is.data.frame(data)) {
     cov <- object$data$res_var_names$cov
-    data_build <- matrix(0, nrow = nrow(data), ncol = 1 + length(cov))
+    data_build <- matrix(NA_real_, nrow = nrow(data), ncol = 1 + length(cov))
     colnames(data_build) <- c("id", cov)
     data_build[,"id"] <- 1:nrow(data)
     for(col in colnames(data)){
@@ -361,9 +362,15 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
       }
     }
     data <- prepare_data(
-      form = object$data$form, choice_data = as.data.frame(data_build),
-      re = object$data$re, alternatives = object$data$alternatives, id = "id",
-      idc = NULL, standardize = NULL, impute = "zero")
+      form = object$data$form,
+      choice_data = as.data.frame(data_build),
+      re = object$data$re,
+      alternatives = object$data$alternatives,
+      id = "id",
+      idc = NULL,
+      standardize = NULL,
+      impute = "zero"
+    )
   }
   if (!inherits(data,"RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",
@@ -436,14 +443,16 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
 point_estimates <- function(x, FUN = mean) {
 
   ### check input
-  if (!class(x) == "RprobitB_fit") {
-    stop("'x' is not of class 'RprobitB_fit'.")
+  if (!inherits(x, "RprobitB_fit")) {
+    stop("'x' is not of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
   if (!is.list(FUN)) {
     FUN <- list(FUN)
   }
-  if (length(FUN) != 1 || class(FUN[[1]]) != "function") {
-    stop("'FUN' must be a function.")
+  if (length(FUN) != 1 || !inherits(FUN[[1]],"function")) {
+    stop("'FUN' must be a function.",
+         call. = FALSE)
   }
 
   ### extract meta parameters
@@ -451,6 +460,7 @@ point_estimates <- function(x, FUN = mean) {
   P_r <- x$data$P_r
   J <- x$data$J
   C <- x$latent_classes$C
+  ordered <- x$data$ordered
   point_estimates <- RprobitB_gibbs_samples_statistics(
     gibbs_samples = x$gibbs_samples, FUN = FUN
   )
@@ -470,13 +480,19 @@ point_estimates <- function(x, FUN = mean) {
     b <- NULL
     Omega <- NULL
   }
-  Sigma <- matrix(point_estimates$Sigma, nrow = J - 1, ncol = J - 1)
+  if (ordered) {
+    Sigma <- as.numeric(point_estimates$Sigma)
+    d <- as.numeric(point_estimates$d)
+  } else {
+    Sigma <- matrix(point_estimates$Sigma, nrow = J - 1, ncol = J - 1)
+    d <- NULL
+  }
 
   ### build an return an object of class 'RprobitB_parameter'
   out <- RprobitB_parameter(
-    P_f = P_f, P_r = P_r, J = J,
+    P_f = P_f, P_r = P_r, J = J, ordered = ordered,
     alpha = alpha, C = C, s = s, b = b, Omega = Omega,
-    Sigma = Sigma, sample = FALSE
+    Sigma = Sigma, d = d, sample = FALSE
   )
   return(out)
 }
@@ -514,7 +530,7 @@ parameter_labels <- function(
       stop("'C' must be a number greater or equal 1.", call. = FALSE)
     }
   }
-  if (!is.logical(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
@@ -697,10 +713,10 @@ create_labels_d <- function(J, ordered) {
   }
 }
 
-#' Linear coefficients
+#' Extract model effects
 #'
 #' @description
-#' This function returns the estimated linear coefficients.
+#' This function extracts the estimated model effects.
 #'
 #' @return
 #' An object of class \code{RprobitB_coef}.
@@ -730,16 +746,16 @@ coef.RprobitB_fit <- function(object, ...) {
   )
 
   ### allocate space for output
-  coef <- matrix(NA, nrow = 0, ncol = 4)
+  coef <- matrix(NA_real_, nrow = 0, ncol = 4)
   coef_name <- c()
   coef_class <- c()
 
   ### create entries for fixed-effect coefficients
   fixed_coefs <- object$data$effects[object$data$effects$random == FALSE, ]
   for (row in seq_len(nrow(fixed_coefs))) {
-    coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA, NA))
+    coef <- rbind(coef, c(statistics$alpha[row, 1:2], NA_real_, NA_real_))
     coef_name <- c(coef_name, fixed_coefs[row, "effect"])
-    coef_class <- c(coef_class, NA)
+    coef_class <- c(coef_class, NA_real_)
   }
 
   ### create entries for random-effect coefficients
@@ -894,10 +910,11 @@ cov_mix <- function(x, cor = FALSE) {
 }
 
 
-#' Return choice probabilities of an \code{RprobitB_fit}.
+#' Compute choice probabilities
 #'
 #' @description
-#' This function returns the choice probabilities of an \code{RprobitB_fit}.
+#' This function returns the choice probabilities of an \code{RprobitB_fit}
+#' object.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
@@ -934,20 +951,26 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   } else if (identical(par_set, "true")) {
     parameter <- x$data$true_parameter
     if (is.null(parameter)) {
-      stop("True parameters are not available.")
+      stop("True parameters are not available.",
+           call. = FALSE)
     }
-  } else if (class(par_set) == "RprobitB_parameter") {
+  } else if (inherits(par_set,"RprobitB_parameter")) {
     parameter <- par_set
   } else {
-    stop("'par_set' must be either a function, 'true' or an 'RprobitB_parameter' object.")
+    stop(
+      paste("'par_set' must be either a function, 'true' or an",
+            "'RprobitB_parameter' object."),
+      call. = FALSE
+      )
   }
 
   ### choose data
   if (is.null(data)) {
     data <- x$data
   }
-  if (class(data) != "RprobitB_data") {
-    stop("'data' is not of class 'RprobitB_data'.")
+  if (!inherits(data, "RprobitB_data")) {
+    stop("'data' is not of class 'RprobitB_data'.",
+         call. = FALSE)
   }
 
   ### define progress bar
@@ -956,14 +979,15 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
                     tail = "deciders")
 
   ### compute probabilities
-  probabilities <- matrix(NA, nrow = 0, ncol = data$J)
+  probabilities <- matrix(NA_real_, nrow = 0, ncol = data$J)
   for (n in 1:data$N) {
     RprobitB_pb_tick(pb)
     for (t in 1:data$T[n]) {
       P_nt <- compute_choice_probabilities(
         X = data$data[[n]]$X[[t]],
         alternatives = 1:data$J,
-        parameter = parameter
+        parameter = parameter,
+        ordered = x$data$ordered
       )
       probabilities <- rbind(probabilities, P_nt)
     }
@@ -984,11 +1008,12 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   return(out)
 }
 
-#' Compute probit choice probabilities for a single choice situation.
+#' Compute probit choice probabilities
 #'
 #' @description
-#' This function computes the probit choice probabilities for a single choice
-#' situation with \code{J} alternatives.
+#' This is a helper function for \code{\link{choice_probabilities}} and computes
+#' the probit choice probabilities for a single choice situation with \code{J}
+#' alternatives.
 #'
 #' @param X
 #' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
@@ -999,62 +1024,161 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 #' alternatives for which choice probabilities are to be computed.
 #' @param parameter
 #' An object of class \code{RprobitB_parameter}.
+#' @inheritParams RprobitB_data
 #'
 #' @return
 #' A probability vector of length \code{length(alternatives)}.
 #'
 #' @keywords
 #' internal
+#'
+#' @importFrom stats pnorm
 
-compute_choice_probabilities <- function(X, alternatives, parameter) {
+compute_choice_probabilities <- function(
+    X, alternatives, parameter, ordered = FALSE
+    ) {
 
   ### unpack and check inputs
   if (!inherits(parameter, "RprobitB_parameter")) {
-    stop("'parameter' is not of class 'RprobitB_parameter.", call. = FALSE)
+    stop("'parameter' is not of class 'RprobitB_parameter.",
+         call. = FALSE)
   }
   alpha <- parameter$alpha
   s <- ifelse(is.na(parameter$s), 1, parameter$s)
   b <- parameter$b
   Omega <- parameter$Omega
-  Sigma_full <- parameter$Sigma_full
-  P_f <- ifelse(any(is.na(alpha)), 0, length(alpha))
-  P_r <- ifelse(any(is.na(parameter$s)), 0, nrow(parameter$b))
-  J <- nrow(Sigma_full)
+  P_f <- ifelse(anyNA(alpha), 0, length(alpha))
+  P_r <- ifelse(anyNA(parameter$s), 0, nrow(parameter$b))
+  if (ordered) {
+    Sigma <- parameter$Sigma
+    d <- parameter$d
+    gamma <- as.vector(d_to_gamma(d))
+    J <- length(d) + 2
+  } else {
+    Sigma_full <- parameter$Sigma_full
+    J <- nrow(Sigma_full)
+  }
 
   ### check inputs
-  if (!(is.numeric(alternatives) && identical(alternatives, unique(alternatives)) &&
+  if (!(is.numeric(alternatives) &&
+        identical(alternatives, unique(alternatives)) &&
         length(setdiff(alternatives, 1:J)) == 0)) {
-    stop("'alternatives' must be a vector with unique integers from 1 to 'J'.")
+    stop("'alternatives' must be a vector with unique integers from 1 to 'J'.",
+         call. = FALSE)
   }
   if (P_f > 0 || P_r > 0) {
     if (!is.matrix(X)) {
-      stop("'X' must be a matrix.")
+      stop("'X' must be a matrix.",
+           call. = FALSE)
     }
     if (ncol(X) != (P_f + P_r)) {
-      stop("'X' must have 'P_f'+'P_r' columns.")
+      stop("'X' must have 'P_f'+'P_r' columns.",
+           call. = FALSE)
     }
-    if (nrow(X) != J) {
-      stop("'X' must have 'J' columns.")
+    if (!ordered && nrow(X) != J) {
+      stop("'X' must have 'J' columns.",
+           call. = FALSE)
     }
   }
 
   ### compute choice probabilities
-  probabilities <- rep(NA, J)
+  probabilities <- rep(NA_real_, J)
   for (j in alternatives) {
-    if (P_f > 0) {
-      if (P_r > 0) {
-        probabilities[j] <- ccp_pfpr(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r)
+    if (ordered) {
+      ub <- gamma[j+1]
+      lb <- gamma[j]
+      if (P_f > 0) {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                mu <- X %*% c(alpha, b[, c])
+                sd <- sqrt(X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
+                  t(X[, -(1:P_f)]) + Sigma)
+                s[c] * (stats::pnorm(q = ub - mu, mean = 0, sd = sd) -
+                          stats::pnorm(q = lb - mu, mean = 0, sd = sd))
+              }
+            )
+          )
+        } else {
+          mu <- X %*% alpha
+          sd <- sqrt(Sigma)
+          probabilities[j] <- pnorm(q = ub - mu, mean = 0, sd = sd) -
+            pnorm(q = lb - mu, mean = 0, sd = sd)
+        }
+      } else {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                mu <- X %*% b[, c]
+                sd <- sqrt(X %*% matrix(Omega[, c], P_r, P_r) %*%
+                             t(X) + Sigma)
+                s[c] * (pnorm(q = ub - mu, mean = 0, sd = sd) -
+                          pnorm(q = lb - mu, mean = 0, sd = sd))
+              }
+            )
+          )
+        } else {
+          mu <- 0
+          sd <- sqrt(Sigma)
+          probabilities[j] <- pnorm(q = ub - mu, mean = 0, sd = sd) -
+            pnorm(q = lb - mu, mean = 0, sd = sd)
+        }
       }
-      if (P_r == 0) {
-        probabilities[j] <- ccp_pf(j, J, Sigma_full, X, alpha)
-      }
-    }
-    if (P_f == 0) {
-      if (P_r > 0) {
-        probabilities[j] <- ccp_pr(j, J, Sigma_full, X, b, Omega, s, P_r)
-      }
-      if (P_r == 0) {
-        probabilities[j] <- ccp(j, J, Sigma_full)
+    } else {
+      if (P_f > 0) {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                s[c] * mvtnorm::pmvnorm(
+                  lower = rep(-Inf, J - 1),
+                  upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
+                  mean = rep(0, J - 1),
+                  sigma = delta(J, j) %*%
+                    (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
+                       t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta(J, j))
+                  )
+              }
+            )
+          )
+        } else {
+          probabilities[j] <- mvtnorm::pmvnorm(
+            lower = rep(-Inf, J - 1),
+            upper = as.vector(-delta(J, j) %*% X %*% alpha),
+            mean = rep(0, J - 1),
+            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+          )[1]
+        }
+      } else {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                s[c] * mvtnorm::pmvnorm(
+                  lower = rep(-Inf, J - 1),
+                  upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
+                  mean = rep(0, J - 1),
+                  sigma = delta(J, j) %*%
+                    (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
+                    t(delta(J, j))
+                  )
+              }
+            )
+          )
+        } else {
+          probabilities[j] <- mvtnorm::pmvnorm(
+            lower = rep(-Inf, J - 1),
+            upper = rep(0, J - 1),
+            mean = rep(0, J - 1),
+            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+          )[1]
+        }
       }
     }
   }
@@ -1062,127 +1186,6 @@ compute_choice_probabilities <- function(X, alternatives, parameter) {
   ### return probabilities
   return(probabilities)
 }
-
-#' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r = 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f = 0} and \code{P_r = 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp <- function(j, J, Sigma_full) {
-  mvtnorm::pmvnorm(
-    lower = rep(-Inf, J - 1),
-    upper = rep(0, J - 1),
-    mean = rep(0, J - 1),
-    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-  )[1]
-}
-
-#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r = 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f > 0} and \code{P_r = 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pf <- function(j, J, Sigma_full, X, alpha) {
-  mvtnorm::pmvnorm(
-    lower = rep(-Inf, J - 1),
-    upper = as.vector(-delta(J, j) %*% X %*% alpha),
-    mean = rep(0, J - 1),
-    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-  )[1]
-}
-
-#' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r > 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f = 0} and \code{P_r > 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
-  out <- 0
-  for (c in seq_along(s)) {
-    out <- out + s[c] * mvtnorm::pmvnorm(
-      lower = rep(-Inf, J - 1),
-      upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
-      mean = rep(0, J - 1),
-      sigma = delta(J, j) %*%
-        (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
-        t(delta(J, j))
-    )[1]
-  }
-  return(out)
-}
-
-#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r > 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f > 0} and \code{P_r > 0}.
-#'
-#' @param j
-#' An integer between 1 and \code{J}.
-#' @inheritParams compute_choice_probabilities
-#' @param X
-#' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
-#' the first \code{P_f} columns are connected to fixed coefficients and the last
-#' \code{P_r} columns are connected to random coefficients.
-#' @param parameter
-#' An object of class \code{RprobitB_parameter}.
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
-  out <- 0
-  for (c in seq_along(s)) {
-    out <- out + s[c] * mvtnorm::pmvnorm(
-      lower = rep(-Inf, J - 1),
-      upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
-      mean = rep(0, J - 1),
-      sigma = delta(J, j) %*%
-        (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*% t(X[, -(1:P_f)]) +
-           Sigma_full) %*% t(delta(J, j))
-    )[1]
-  }
-  return(out)
-}
-
 
 #' Get covariates of choice situation
 #'
@@ -1219,7 +1222,8 @@ get_cov <- function(x, id, idc, idc_label){
     ind <- x$choice_data[[id_label]] %in% id & x$choice_data[[idc_label]] %in% idc
     out <- x$choice_data[ind,]
     if(nrow(out) == 0){
-      stop("Requested choice occasion not found.", call. = FALSE)
+      stop("Requested choice occasion not found.",
+           call. = FALSE)
     }
     return(out)
   } else {

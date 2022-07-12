@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
   fig.dim = c(8, 6), 
   out.width = "75%"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
 In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.].
 
 ## Estimating a joint normal mixing distribution
 
-The {mlogit} package [@mlogit] contains the data set `Electricity`, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
+The {mlogit} package [@Croissant:2020] contains the data set `Electricity`, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
 
 1. their fixed price `pf` per kWh,
 2. their contract length `cf`,

@@ -41,13 +41,13 @@
 #' prior for `Sigma`.
 #' Per default, `E = diag(J - 1)`.
 #' @param zeta
-#' The mean vector of length `J - 2` of the normal prior for the increments `d`
-#' of the utility thresholds in the ordered probit model.
+#' The mean vector of length `J - 2` of the normal prior for the logarithmic
+#' increments `d` of the utility thresholds in the ordered probit model.
 #' Per default, `zeta = numeric(J - 2)`.
 #' @param Z
 #' The covariance matrix of dimension `J-2` x `J-2` of the normal prior for the
-#' increments `d` of the utility thresholds in the ordered probit model.
-#' Per default, `Z = diag(J - 2)`.
+#' logarithmic increments `d` of the utility thresholds in the ordered probit
+#' model. Per default, `Z = diag(J - 2)`.
 #'
 #' @details
 #' A priori, we assume that the model parameters follow these distributions:
@@ -70,7 +70,7 @@
 #' @export
 #'
 #' @examples
-#' check_prior(P_f = 1, P_r = 2, J = 3)
+#' check_prior(P_f = 1, P_r = 2, J = 3, ordered = TRUE)
 
 check_prior <- function(
     P_f, P_r, J, ordered = FALSE, eta = numeric(P_f), Psi = diag(P_f),
@@ -88,7 +88,8 @@ check_prior <- function(
 
     ### alpha ~ MVN(eta,Psi)
     if (!is.numeric(eta) || length(eta) != P_f) {
-      stop("'eta' must be a numeric vector of length 'P_f'.", call. = FALSE)
+      stop("'eta' must be a numeric vector of length 'P_f'.",
+           call. = FALSE)
     }
     if (!is.numeric(Psi) || !is.matrix(Psi) || any(dim(Psi) != c(P_f, P_f))) {
       stop("'Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.",
@@ -102,12 +103,14 @@ check_prior <- function(
 
     ### s ~ D(delta)
     if (!is.numeric(delta) || length(delta) != 1) {
-      stop("'delta' must be a single numeric value.", call. = FALSE)
+      stop("'delta' must be a single numeric value.",
+           call. = FALSE)
     }
 
     ### b_c ~ MVN(xi,D)
     if (!is.numeric(xi) || length(xi) != P_r) {
-      stop("'xi' must be a numeric vector of length 'P_r'.", call. = FALSE)
+      stop("'xi' must be a numeric vector of length 'P_r'.",
+           call. = FALSE)
     }
     if (!is.numeric(D) || !is.matrix(D) ||
         any(dim(D) != c(P_r, P_r))) {
@@ -157,7 +160,8 @@ check_prior <- function(
   ### d ~ N(zeta,Z)
   if (ordered) {
     if (!is.numeric(zeta) || length(zeta) != J-2) {
-      stop("'zeta' must be a numeric vector of length 'J - 2'.", call. = FALSE)
+      stop("'zeta' must be a numeric vector of length 'J - 2'.",
+           call. = FALSE)
     }
     if (!is.numeric(Z) || !is.matrix(Z) || any(dim(Z) != c(J - 2, J - 2))) {
       stop("'Z' must be a numeric matrix of dimension 'J-2' x 'J-2'.",
@@ -356,15 +360,15 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
   ### determine whether latent classes should be weight-based updated
   latent_classes[["weight_update"]] <-
-    ifelse(is.na(latent_classes[["weight_update"]]) ||
-             !is.logical(latent_classes[["weight_update"]]),
+    ifelse(!isTRUE(latent_classes[["weight_update"]]) &&
+             !isFALSE(latent_classes[["weight_update"]]),
            FALSE, latent_classes[["weight_update"]]
     )
 
   ### determine whether latent classes should be DP-based updated
   latent_classes[["dp_update"]] <-
-    ifelse(is.na(latent_classes[["dp_update"]]) ||
-             !is.logical(latent_classes[["dp_update"]]),
+    ifelse(!isTRUE(latent_classes[["dp_update"]]) ||
+             !isFALSE(latent_classes[["dp_update"]]),
            FALSE, latent_classes[["dp_update"]]
     )
 
@@ -567,7 +571,7 @@ RprobitB_normalization <- function(
   if(missing(base)){
     stop("Please specify 'base'.", call. = FALSE)
   }
-  if(!is.logical(ordered)) {
+  if(!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", call. = FALSE)
   }
 
@@ -744,26 +748,32 @@ fit_model <- function(
   if (!inherits(data, "RprobitB_data")) {
     stop(
       "'data' must an object of class 'RprobitB_data', i.e. the output of",
-      " 'RprobitB::prepare()' or 'RprobitB::simulate()'.", call. = FALSE
+      " 'RprobitB::prepare()' or 'RprobitB::simulate()'.",
+      call. = FALSE
     )
   }
   if (!data[["choice_available"]]) {
     stop(
       "Cannot use 'data' for model fitting because information on choices",
-      " is not available.", call. = FALSE
+      " is not available.",
+      call. = FALSE
     )
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.", call. = FALSE)
+    stop("'R' must be a positive integer.",
+         call. = FALSE)
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'B' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'Q' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
-  if (!is.logical(print_progress)) {
-    stop("'print_progress' must be a boolean.", call. = FALSE)
+  if (!isTRUE(print_progress) && !isFALSE(print_progress)) {
+    stop("'print_progress' must be a boolean.",
+         call. = FALSE)
   }
 
   ### set normalization
@@ -894,11 +904,8 @@ fit_model <- function(
   )
 
   ### calculate log-likelihood
-  ### TODO: also for ordered and ranked
-  if(!data$ordered && !data$ranked) {
-    RprobitB_pp("Computing log-likelihood")
-    out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
-  }
+  RprobitB_pp("Computing log-likelihood")
+  out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
 
   ### return 'RprobitB_fit' object
   return(out)
@@ -1624,13 +1631,13 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
          stop = FALSE)
   }
-  if (!is.logical(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.", stop = FALSE)
   }
 
   ### function to scale the parameters
   scaling <- function(par, factor) {
-    if (any(is.na(par))) {
+    if (anyNA(par)) {
       NA
     } else {
       out <- par * factor
@@ -1756,10 +1763,10 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
     ### check inputs
     Sigma <- as.matrix(Sigma)
     if (!is_covariance_matrix(Sigma)) {
-      stop("'Sigma' is no covariance matrix.")
+      stop("'Sigma' is no covariance matrix.", call. = FALSE)
     }
     if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
-      stop("'i' must be an alternative number.")
+      stop("'i' must be an alternative number.", call. = FALSE)
     }
   }
 

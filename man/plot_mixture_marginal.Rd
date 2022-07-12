@@ -7,16 +7,16 @@
 plot_mixture_marginal(mean, cov, weights, name)
 }
 \arguments{
-\item{mean}{}
+\item{mean}{The class means.}
 
-\item{cov}{}
+\item{cov}{The class covariances.}
 
-\item{weights}{}
+\item{weights}{The class weights.}
 
-\item{name}{}
+\item{name}{The covariate name.}
 }
 \value{
-No return value. Draws a plot to the current device.
+An object of class \code{ggplot}.
 }
 \description{
 This function plots an estimated marginal mixing distributions.

@@ -3,7 +3,7 @@
 \docType{data}
 \name{model_train}
 \alias{model_train}
-\title{Probit model for binary choice between Train trip alternatives}
+\title{Model for binary choice between Train trip alternatives}
 \format{
 An object of class \code{RprobitB_fit}.
 }

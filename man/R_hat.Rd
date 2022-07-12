@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{R_hat}
 \alias{R_hat}
-\title{Compute Gelman-Rubin statistic}
+\title{Gelman-Rubin statistic}
 \usage{
 R_hat(samples, parts = 2)
 }
@@ -22,7 +22,7 @@ This function computes the Gelman-Rubin statistic \code{R_hat}.
 \examples{
 no_chains <- 2
 length_chains <- 1e3
-samples <- matrix(NA, length_chains, no_chains)
+samples <- matrix(NA_real_, length_chains, no_chains)
 samples[1, ] <- 1
 Gamma <- matrix(c(0.8, 0.1, 0.2, 0.9), 2, 2)
 for (c in 1:no_chains) {

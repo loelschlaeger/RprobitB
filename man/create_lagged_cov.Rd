@@ -7,8 +7,8 @@
 create_lagged_cov(choice_data, column, k = 1, id = "id")
 }
 \arguments{
-\item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
-choice occasion.}
+\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
+one choice occasion.}
 
 \item{column}{A character, the column name in \code{choice_data}, i.e. the covariate name.
 Can be a vector.}
@@ -20,15 +20,13 @@ details. Can be a vector. The default is \code{k = 1}.}
 unique identifier for each decision maker. The default is \code{"id"}.}
 }
 \value{
-The input data frame \code{choice_data} with the additional columns
-named \code{column.k} for each element \code{column} and each number \code{k}
+The input \code{choice_data} with the additional columns named
+\code{column.k} for each element \code{column} and each number \code{k}
 containing the lagged covariates.
 }
 \description{
-This convenience function creates lagged choice covariates from a data frame
-\code{choice_data}, which is assumed to be sorted by choice
-occasions: First choice occasions on top. The function is vectorized over
-\code{column} and \code{k}.
+This function creates lagged choice covariates from the \code{data.frame}
+\code{choice_data}, which is assumed to be sorted by the choice occasions.
 }
 \details{
 Say that \code{choice_data} contains the column \code{column}. Then, the
@@ -37,18 +35,17 @@ function call
 create_lagged_cov(choice_data, column, k, id)
 }
 returns the input \code{choice_data} which includes a new column named
-\code{column.k}. This column contains for each decider (based on
-\code{id}) and each choice occasion the covariate faced before
-\code{k} choice occasions. If this data point is not available, it is set to
+\code{column.k}. This column contains for each decider (based on \code{id})
+and each choice occasion the covariate faced before \code{k} choice
+occasions. If this data point is not available, it is set to
 \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 be \code{NA} (initial condition problem).
 }
 \examples{
-### add covariate 'lost' and 'berserk' from previous choice occasion
-\dontrun{
+\donttest{
 choice_data <- create_lagged_cov(
   choice_data = choice_berserk,
-  column = c("lost", "berserk"),
+  column = "lost",
   k = 1,
   id = "player_id"
 )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{choice_probabilities}
 \alias{choice_probabilities}
-\title{Return choice probabilities of an \code{RprobitB_fit}.}
+\title{Compute choice probabilities}
 \usage{
 choice_probabilities(x, data = NULL, par_set = mean)
 }
@@ -27,7 +27,8 @@ alternatives in columns. The first two columns are the decider identifier
 \code{"id"} and the choice situation identifier \code{"idc"}.
 }
 \description{
-This function returns the choice probabilities of an \code{RprobitB_fit}.
+This function returns the choice probabilities of an \code{RprobitB_fit}
+object.
 }
 \examples{
 data <- simulate_choices(form = choice ~ covariate, N = 10, T = 10, J = 2)

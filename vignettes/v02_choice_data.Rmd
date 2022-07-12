@@ -18,15 +18,15 @@ knitr::opts_chunk$set(
   fig.dim = c(8, 6), 
   out.width = "75%"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
-No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the {mlogit} package [@mlogit] for illustration. 
+No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the {mlogit} package [@Croissant:2020] for illustration. 
 
 
 ## Requirements to choice data
 
-{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:09]: Choices need to be
+{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:2009]: Choices need to be
 
 1. mutually exclusive (one can choose one and only one alternative that are all different),
 
@@ -34,9 +34,7 @@ No choice model without choice data, so this vignette^[This vignette is build us
 
 3. and finitely many.
 
-In {RprobitB} only unordered alternatives (that is, alternatives cannot be ranked) are modeled. Every decider may take one or repeated choices (called choice occasions).
-
-The data set thus contains information on
+Every decider may take one or repeated choices (called choice occasions). The data set thus contains information on
 
 1. an identifier for each decider (and optionally for each choice situation),
 
@@ -46,7 +44,7 @@ The data set thus contains information on
 
 Additionally, {RprobitB} asks the following formal requirements:
   
-1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform data frames into this format.]
+1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform a `data.frame` into this format.]
 
 2. It **must** contain a column with unique identifiers for each decision maker. Additionally, it **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
 
@@ -118,7 +116,7 @@ Before model estimation with {RprobitB}, any empirical choice data set `choice_d
 data <- prepare_data(form = form, choice_data = choice_data)
 ```
 
-The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `fit_model`. The following arguments are optional:
+The function performs compatibility checks and data transformations and returns an object of class `RprobitB_data` that can be fed into the estimation routine `fit_model()`. The following arguments are optional:
 
 - `re`: The character vector of variable names of `form` with random effects. `re = NULL` per default, i.e. no random effects.
 
@@ -152,6 +150,16 @@ The `summary` and `plot` methods provide a quick data overview:
 summary(data)
 plot(data)
 ```
+
+## Ordered alternatives
+
+The two choice alternatives from the train trip example are unordered. If we had asked "rate your train trip from 1 (horrible) to 7 (great)", then the respondents would choose from a set of ordered alternatives. Such ordered alternatives can by analyzed by setting `ordered = TRUE` in `prepare_data`. In this case, `alternatives` becomes a mandatory argument, where the alternatives must be named from worst to best.
+
+## Ranked choices
+
+Rather than recording only the single most preferred alternative, some surveys ask for a full ranking of all the alternatives, which reveals far more about the underlying preferences. Ranked choices can by analyzed by setting `ranked = TRUE` in `prepare_data()`. The choice column of the data set must provide the full ranking for each choice occasion (from most preferred to least preferred), where the alternatives are separated by commas.
+
+The ranked probit model follows directly from the basic multivariate case. The only difference is that we take flexible utility differences such that the differenced utility vector is always negative. Thereby, we incorporate information of the full ranking.
 
 ## Simulate choices
 
@@ -189,7 +197,9 @@ We can specify the true parameters^[See the vignette on the model definition for
 
 - `beta`, the matrix of the decision-maker specific coefficient vectors,
 
-- `z`, the class allocation vector.
+- `z`, the class allocation vector,
+
+- `d`, the vector of logarithmic threshold increments in the ordered probit case.
 
 True parameters that are not specified will be set at random.
 

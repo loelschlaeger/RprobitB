@@ -3,8 +3,8 @@
 \docType{data}
 \name{model_train_sparse}
 \alias{model_train_sparse}
-\title{Probit model for binary choice between Train trip alternatives with the price
-as the only explanatory variable}
+\title{Model for for binary choice between Train trip alternatives with the
+price as the only explanatory variable}
 \format{
 An object of class \code{RprobitB_fit}.
 }

@@ -28,4 +28,5 @@ x <- matrix(1, nrow = J, ncol = 2)
 RprobitB:::delta(J, 1) \%*\% x
 
 }
+\keyword{internal}
 \keyword{utils}

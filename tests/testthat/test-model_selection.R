@@ -32,6 +32,16 @@ test_that("logLik computation works", {
   expect_snapshot(logLik(model_train, recompute = TRUE))
 })
 
+test_that("logLik computation in the ranked case works", {
+  data("model_train", package = "RprobitB")
+  expect_snapshot(logLik(model_train, recompute = TRUE))
+})
+
+test_that("logLik computation in the ordered case works", {
+  data("model_train", package = "RprobitB")
+  expect_snapshot(logLik(model_train, recompute = TRUE))
+})
+
 test_that("npar works", {
   data("model_train", package = "RprobitB")
   expect_snapshot(npar(model_train))

@@ -19,3 +19,4 @@ Function to draw from a Dirichlet distribution.
 rdirichlet(delta = 1:3)
 }
 \keyword{distribution}
+\keyword{internal}

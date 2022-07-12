@@ -46,4 +46,5 @@ Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
 ### updated class allocation vector
 update_z(s = s, beta = beta, b = b, Omega = Omega)
 }
+\keyword{internal}
 \keyword{posterior}

@@ -3,7 +3,7 @@
 \docType{data}
 \name{choice_berserk}
 \alias{choice_berserk}
-\title{Choice of berserking}
+\title{Data of berserking choice}
 \format{
 A data frame containing berserking choices of 6174 chess players
 in 126902 online bullet (1+0) games.

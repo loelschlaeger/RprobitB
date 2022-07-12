@@ -19,10 +19,11 @@ ll_ordered(d, y, mu, Tvec)
 The log-likelihood value.
 }
 \description{
-This function computes the conditional probability of one choice occasion
-given the threshold increments \code{d}.
+This function computes the log-likelihood value given the threshold
+increments \code{d}.
 }
 \examples{
 ll_ordered(c(0,0,0), 1, 1, FALSE)
 }
+\keyword{internal}
 \keyword{posterior}

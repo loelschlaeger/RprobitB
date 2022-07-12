@@ -31,4 +31,5 @@ sys <- c(0,0)
 Sigmainv <- diag(2)
 update_U_ranked(U, sys, Sigmainv)
 }
+\keyword{internal}
 \keyword{posterior}

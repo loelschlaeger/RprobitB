@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
   fig.dim = c(8, 6), 
   out.width = "75%"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
 This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.
 
 ## Bayes estimation of the probit model
 
-Bayes estimation of the probit model builds upon the work of @McCulloch:94, @Nobile:1998, @Allenby:1998, and @Imai:2005. A key ingredient is the concept of data augmentation, see @Albert:1993: The idea is to treat the latent utilities $U$ in the model equation $U = X\beta + \epsilon$ as additional parameters. Then, conditional on $U$, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
+Bayes estimation of the probit model builds upon the work of @McCulloch:1994, @Nobile:1998, @Allenby:1998, and @Imai:2005. A key ingredient is the concept of data augmentation, see @Albert:1993: The idea is to treat the latent utilities $U$ in the model equation $U = X\beta + \epsilon$ as additional parameters. Then, conditional on $U$, the probit model constitutes a standard Bayesian linear regression set-up. Its posterior distribution can be approximated by iteratively drawing and updating each model parameter conditional on the other parameters (the so-called Gibbs sampling approach).
 
 A priori, we assume the following (conjugate) parameter distributions:
 
@@ -88,7 +88,7 @@ where $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \
 \begin{equation}
 \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
 \end{equation}
-where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
+where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
 
 - The error term covariance matrix $\Sigma$ is updated by means of 
 \begin{equation}
@@ -162,7 +162,7 @@ where `data` must be an `RprobitB_data` object (see the vignette about choice da
 
 ## Example
 
-In [the previous vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html), we introduced the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the mlogit package [@mlogit] that contains 2922 choices between two fictional train route alternatives. First, we transform the travel `time` from minutes to hours and the travel `price` from guilders to euros:
+In [the previous vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html), we introduced the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the mlogit package [@Croissant:2020] that contains 2922 choices between two fictional train route alternatives. First, we transform the travel `time` from minutes to hours and the travel `price` from guilders to euros:
 
 ```{r, transform-Train}
 data("Train", package = "mlogit")

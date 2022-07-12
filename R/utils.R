@@ -24,7 +24,7 @@
 #' @export
 #'
 #' @keywords
-#' utils
+#' internal utils
 
 delta <- function(J, i) {
   stopifnot(is.numeric(J), J %% 1 == 0, J >= 2)
@@ -61,7 +61,7 @@ delta <- function(J, i) {
 #' @export
 #'
 #' @keywords
-#' utils
+#' internal utils
 
 M <- function(ranking) {
   J <- length(ranking)
@@ -73,7 +73,7 @@ M <- function(ranking) {
   return(out)
 }
 
-#' Compute Gelman-Rubin statistic
+#' Gelman-Rubin statistic
 #'
 #' @description
 #' This function computes the Gelman-Rubin statistic \code{R_hat}.
@@ -94,7 +94,7 @@ M <- function(ranking) {
 #' @examples
 #' no_chains <- 2
 #' length_chains <- 1e3
-#' samples <- matrix(NA, length_chains, no_chains)
+#' samples <- matrix(NA_real_, length_chains, no_chains)
 #' samples[1, ] <- 1
 #' Gamma <- matrix(c(0.8, 0.1, 0.2, 0.9), 2, 2)
 #' for (c in 1:no_chains) {
@@ -152,7 +152,7 @@ R_hat <- function(samples, parts = 2) {
 #' x <- diag(2)
 #' RprobitB:::is_covariance_matrix(x)
 #' @keywords
-#' utils
+#' internal utils
 
 is_covariance_matrix <- function(x) {
   is.matrix(x) &&
@@ -196,7 +196,7 @@ is_covariance_matrix <- function(x) {
 #' RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 #'
 #' @keywords
-#' utils
+#' internal utils
 
 pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
                    desc = TRUE) {
@@ -326,7 +326,7 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
 #' RprobitB:::permutations(x = c("a","b","c"))
 #'
 #' @keywords
-#' utils
+#' internal utils
 
 permutations <- function(x){
   perm_index <- function(n){

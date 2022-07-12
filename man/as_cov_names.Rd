@@ -2,13 +2,13 @@
 % Please edit documentation in R/data_management.R
 \name{as_cov_names}
 \alias{as_cov_names}
-\title{Re-label the alternative specific covariates to the required format}
+\title{Re-label alternative specific covariates in required format}
 \usage{
 as_cov_names(choice_data, cov, alternatives)
 }
 \arguments{
-\item{choice_data}{A data frame of choice data in wide format, i.e. each row represents one
-choice occasion.}
+\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
+one choice occasion.}
 
 \item{cov}{A character vector of the names of alternative specific covariates in
 \code{choice_data}.}

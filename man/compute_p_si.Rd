@@ -24,7 +24,7 @@ probabilities are required to compute the \code{\link{WAIC}} and the
 marginal model likelihood \code{\link{mml}}.
 }
 \examples{
-\dontrun{
+\donttest{
 ### takes ~5 min computation time
 data("model_train", package = "RprobitB")
 model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)

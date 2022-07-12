@@ -71,7 +71,7 @@ Set to \code{NA} if \code{P_r = 0}.}
 Set to \code{NA} if \code{P_r = 0}.}
 
 \item{d}{The numeric vector of the logarithmic increases of the utility thresholds
-in the ordered probit case of length \code{J-1}.}
+in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.}
 
 \item{seed}{Set a seed for the sampling of missing parameters.}
 
@@ -83,7 +83,8 @@ model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
 }
 \description{
-This function creates an object of class \code{RprobitB_parameter}.
+This function creates an object of class \code{RprobitB_parameter}, which
+contains the parameters of a probit model.
 If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 }

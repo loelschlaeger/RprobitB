@@ -33,7 +33,6 @@ reference:
   - overview_effects
   - create_lagged_cov
   - as_cov_names
-  - missing_data
   - prepare_data
   - RprobitB_parameter
   - simulate_choices
@@ -43,7 +42,7 @@ reference:
   desc: Use these function for fitting a probit model to choice data.
   contents:
   - check_prior
-  - mcmc
+  - fit_model
   - update
   - transform.RprobitB_fit
 - title: Model evaluation
@@ -61,10 +60,6 @@ reference:
   desc: Use these functions for model selection.
   contents:
   - model_selection
-  - AIC
-  - BIC
-  - logLik
-  - nobs
   - npar
   - mml
   - compute_p_si

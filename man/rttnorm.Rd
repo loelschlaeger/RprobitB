@@ -29,3 +29,4 @@ draws <- replicate(R, rttnorm(0,1,-2,2))
 plot(density(draws))
 }
 \keyword{distribution}
+\keyword{internal}

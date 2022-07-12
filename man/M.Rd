@@ -22,4 +22,5 @@ ranking <- order(x, decreasing = TRUE)
 M(ranking) \%*\% x
 
 }
+\keyword{internal}
 \keyword{utils}

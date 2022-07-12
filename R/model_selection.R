@@ -44,21 +44,26 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
   for (i in seq_len(length(models))) {
     if (!inherits(models[[i]], "RprobitB_fit")) {
-      stop(paste0("Input '", model_names[i], "' is not of class 'RprobitB_fit'."))
+      stop(paste0("Input '", model_names[i],
+                  "' is not of class 'RprobitB_fit'."),
+           call. = FALSE)
     }
   }
   if (!is.character(criteria)) {
-    stop("'criteria' must be a character vector.")
+    stop("'criteria' must be a character vector.",
+         call. = FALSE)
   }
-  if (!(length(add_form) == 1 && class(add_form) == "logical")) {
-    stop("'add_form' must be a boolean.")
+  if (!(length(add_form) == 1 && inherits(add_form,"logical"))) {
+    stop("'add_form' must be a boolean.",
+         call. = FALSE)
   }
 
   ### create output matrix
-  output <- matrix(NA, nrow = 0, ncol = length(models))
+  output <- matrix(NA_real_, nrow = 0, ncol = length(models))
   colnames(output) <- model_names
   if(add_form){
-    output <- rbind(output, "form" = sapply(models, function(x) deparse1(x$data$form)))
+    output <- rbind(output,
+                    "form" = sapply(models, function(x) deparse1(x$data$form)))
   }
 
   ### fill output
@@ -155,46 +160,8 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
   print(x)
 }
 
-#' Akaike's Information Criterion
-#'
-#' @description
-#' This function calculates Akaike's Information Criterion (AIC) for an
-#' \code{RprobitB_fit} object.
-#'
-#' @details
-#' The AIC is computed as
-#' \deqn{-2 \cdot \text{LL} + k \cdot \text{npar},}
-#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
-#' parameters, \eqn{k} is the penalty per parameter (\eqn{k = 2} for the
-#' classical AIC), and \eqn{npar} is the number of parameters in the fitted model.
-#' The AIC quantifies the trade-off between over- and under-fitting, where
-#' smaller values are preferred.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Optionally more objects of class \code{RprobitB_fit}.
-#'
-#' @param k
-#' A numeric, the penalty per parameter. The default is \code{k = 2} for the
-#' classical AIC.
-#'
-#' @return
-#' Either a numeric value (if just one object is provided) or a numeric vector.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' AIC(model_train)
-#'
-#' @export
-
-AIC <- function(object, ..., k) {
-  UseMethod("AIC")
-}
-
-#' @export
-#' @rdname AIC
+#' @exportS3Method
+#' @importFrom stats AIC
 
 AIC.RprobitB_fit <- function(object, ..., k = 2) {
   models <- list(...)
@@ -209,41 +176,8 @@ AIC.RprobitB_fit <- function(object, ..., k = 2) {
   return(aic)
 }
 
-#' Bayesian Information Criterion
-#'
-#' @description
-#' This function calculates the Bayesian Information Criterion (BIC) or
-#' Schwarz Information Criterion for an \code{RprobitB_fit} object.
-#'
-#' @details
-#' The BIC is computed as
-#' \deqn{-2 \cdot \text{LL} + \text{npar} \cdot \ln{\text{nobs}},}
-#' where \eqn{\text{LL}} is the model's log-likelihood value at the estimated
-#' parameters, \eqn{npar} is the number of parameters in the fitted model,
-#' and \eqn{\text{nobs}} is the number of data points. The BIC quantifies the
-#' trade-off between over- and under-fitting, where smaller values are preferred.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Optionally more objects of class \code{RprobitB_fit}.
-#'
-#' @return
-#' Either a numeric value (if just one object is provided) or a numeric vector.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' BIC(model_train)
-#'
-#' @export
-
-BIC <- function(object, ...) {
-  UseMethod("BIC")
-}
-
-#' @export
-#' @rdname BIC
+#' @exportS3Method
+#' @importFrom stats BIC
 
 BIC.RprobitB_fit <- function(object, ...) {
   models <- list(...)
@@ -318,14 +252,16 @@ WAIC <- function(x) {
 
   ### check input
   if(class(x) != "RprobitB_fit"){
-    stop("'x' must be an object of class 'RprobitB_fit'.")
+    stop("'x' must be an object of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
 
   ### check if 'x' contains 'p_si'
   if(is.null(x[["p_si"]])){
     stop("Cannot compute WAIC.\n",
          "Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si'.", call. = FALSE)
+         "For that, use the function 'compute_p_si()'.",
+         call. = FALSE)
   }
 
   ### calculate p_si and log(p_si)
@@ -354,7 +290,8 @@ WAIC <- function(x) {
 #' @export
 
 print.RprobitB_waic <- function(x, digits = 2, ...) {
-  cat(sprintf(paste0("%.", digits, "f", " (%.", digits, "f)"), x, attr(x, "se_waic")))
+  cat(sprintf(paste0("%.", digits, "f", " (%.", digits, "f)"), x,
+              attr(x, "se_waic")))
 }
 
 #' @noRd
@@ -399,68 +336,15 @@ plot.RprobitB_waic <- function(x, ...) {
   print(p)
 }
 
-#' Number of observations
-#'
-#' @description
-#' This function extracts the number of observations from an \code{RprobitB_fit}
-#' object.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#'
-#' @param ...
-#' Ignored.
-#'
-#' @return
-#' An integer.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' nobs(model_train)
-#'
-#' @export
-
-nobs <- function(object, ...) {
-  UseMethod("nobs")
-}
-
-#' @export
-#' @rdname nobs
+#' @exportS3Method
+#' @importFrom stats nobs
 
 nobs.RprobitB_fit <- function(object, ...) {
   return(sum(object$data$T))
 }
 
-#' Log-likelihood value
-#'
-#' @description
-#' This function computes the log-likelihood value of an \code{RprobitB_fit}
-#' object.
-#'
-#' @param object
-#' An object of class \code{RprobitB_fit}.
-#' @inheritParams choice_probabilities
-#' @param recompute
-#' Set to \code{TRUE} to recompute the log-likelihood value if it is already
-#' saved in \code{object}.
-#' @param ...
-#' Ignored.
-#'
-#' @return
-#' A numeric.
-#'
-#' @export
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' logLik(model_train)
-
-logLik <- function(object, par_set, recompute, ...) {
-  UseMethod("logLik")
-}
-
-#' @export
-#' @rdname logLik
+#' @exportS3Method
+#' @importFrom stats logLik
 
 logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
   if(!is.null(object[["ll"]]) && !recompute){
@@ -470,7 +354,12 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
     choices <- as.character(unlist(sapply(object$data$data, `[[`, "y")))
     ll <- 0
     for (row in 1:nrow(probs)){
-      ll <- ll + log(probs[row, choices[row]])
+      if (object$data$ranked) {
+        y_seq <- strsplit(choices[row], ",")[[1]][1]
+        ll <- ll + log(probs[row, y_seq])
+      } else {
+        ll <- ll + log(probs[row, choices[row]])
+      }
     }
   }
   return(as.numeric(ll))
@@ -479,8 +368,8 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
 #' Number of model parameters
 #'
 #' @description
-#' This function extracts the number of model parameters of an \code{RprobitB_fit}
-#' object.
+#' This function extracts the number of model parameters of an
+#' \code{RprobitB_fit} object.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
@@ -540,7 +429,7 @@ npar.RprobitB_fit <- function(object, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ### takes ~5 min computation time
 #' data("model_train", package = "RprobitB")
 #' model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)
@@ -681,21 +570,26 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
 
   ### input checks
-  if(class(x) != "RprobitB_fit"){
-    stop("'x' must be of class 'RprobitB_fit.", call. = FALSE)
+  if(!inherits(x,"RprobitB_fit")) {
+    stop("'x' must be of class 'RprobitB_fit.",
+         call. = FALSE)
   }
   if(is.null(x[["p_si"]])){
     stop("Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si()'.", call. = FALSE)
+         "For that, use the function 'compute_p_si()'.",
+         call. = FALSE)
   }
   if(!(is.numeric(S) && length(S)==1 && S>=0 && S%%1==0)){
-    stop("'S' must be an integer.")
+    stop("'S' must be an integer.",
+         call. = FALSE)
   }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
-    stop("'ncores' must be a positive integer.", call. = FALSE)
+    stop("'ncores' must be a positive integer.",
+         call. = FALSE)
   }
-  if(!(length(recompute) == 1 && class(recompute) == "logical")){
-    stop("'recompute' must be a boolean.", call. = FALSE)
+  if(!(length(recompute) == 1 && inherits(recompute, "logical"))){
+    stop("'recompute' must be a boolean.",
+         call. = FALSE)
   }
 
   ### check if 'mml' in 'x' already exists if 'recompute = FALSE'
@@ -848,8 +742,9 @@ plot.RprobitB_mml <- function(x, log = FALSE, ...) {
 posterior_pars <- function(x){
 
   ### check input
-  if(class(x) != "RprobitB_fit"){
-    stop("'x' must be an object of class 'RprobitB_fit'.")
+  if(!inherits(x, "RprobitB_fit")){
+    stop("'x' must be an object of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
 
   ### extract meta parameters

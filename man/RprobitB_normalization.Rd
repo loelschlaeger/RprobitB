@@ -29,21 +29,19 @@ The structure is \code{choice ~ A | B | C}, where
 \itemize{
 \item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
-covariates with a generic coefficient,
+covariates with a coefficient that is constant across alternatives,
 \item \code{B} are names of choice situation specific covariates with
 alternative specific coefficients,
 \item and \code{C} are names of alternative and choice situation specific
 covariates with alternative specific coefficients.
 }
 
-Multiple covariates (of one type) are seperated by a \code{+} sign.
+Multiple covariates (of one type) are separated by a \code{+} sign.
 By default, alternative specific constants (ASCs) are added to the model.
 They can be removed by adding \code{+0} in the second spot.
 
-In the ordered probit model (\code{ordered = TRUE}), covariates are always
-constant across alternatives and have generic coefficients. The
-\code{formula} object here has the simple structure \code{choice ~ A}.
-ASCs are not estimated.}
+In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
+object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
 
 \item{re}{A character (vector) of covariates of \code{form} with random effects.
 If \code{re = NULL} (the default), there are no random effects.
@@ -51,8 +49,8 @@ To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.
-If \code{ordered = TRUE}, \code{alternatives} must be specified with the
-alternatives ordered from worst to best.}
+If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
+the alternatives ordered from worst to best.}
 
 \item{base}{A character, the name of the base alternative for covariates that are not
 alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to

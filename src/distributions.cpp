@@ -28,7 +28,7 @@ using namespace Rcpp;
 //' dmvnorm(x = x, mean = mean, Sigma = Sigma)
 //' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log = false) {
@@ -64,7 +64,7 @@ double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma
 //' Sigma <- diag(2)
 //' rmvnorm(mu = mu, Sigma = Sigma)
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
@@ -85,7 +85,7 @@ arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
 //' @examples
 //' rdirichlet(delta = 1:3)
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 arma::vec rdirichlet(arma::vec delta) {
@@ -125,7 +125,7 @@ arma::vec rdirichlet(arma::vec delta) {
 //' @examples
 //' rwishart(nu = 2, V = diag(2))
 //' @keywords
-//' distribution
+//' internal distribution
 //'
 // [[Rcpp::export]]
 List rwishart(double nu, arma::mat const& V){

@@ -59,4 +59,5 @@ Dinv <- diag(2)
 ### updated class means (in columns)
 update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
 }
+\keyword{internal}
 \keyword{posterior}

@@ -7,16 +7,11 @@ The following tasks are on our agenda and will be tackled as time permits.
 ### Gibbs sampler
 
 - [ ] Use `transform()` to keep on Gibbs sampling, i.e. change `R`.
-- [ ] Show average covariates of classes after classification via `preference_classification()`.
+- [ ] Show average covariates of classes after classification via `classification()`.
   
 ### Data
 
 - [ ] Variable choice set.
-
-### Ordered Probit
-
-- [x] Implement ordered probit model.
-- [ ] Computation of choice probabilities for ordered probit models.
 
 ## Outputs
 
@@ -36,7 +31,7 @@ The following tasks are on our agenda and will be tackled as time permits.
 
 ### Demos
 
-- [ ] `rpb()` for demonstration with consdole feedback.
+- [ ] `rpb()` for demonstration with console feedback (or Shiny app).
 
 ### Function documentation
 

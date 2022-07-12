@@ -3,7 +3,7 @@
 \docType{data}
 \name{model_chessop}
 \alias{model_chessop}
-\title{Latent class mixed probit model for chess opening choice}
+\title{Model for chess opening choice}
 \format{
 An object of class \code{RprobitB_fit}.
 }

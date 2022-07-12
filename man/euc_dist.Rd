@@ -17,4 +17,5 @@ The euclidean distance.
 \description{
 This function computes the euclidean distance between two vectors.
 }
+\keyword{internal}
 \keyword{utils}

@@ -1,26 +1,36 @@
 Package: RprobitB
 Type: Package
 Title: Bayes Estimation of Mixed Multinomial Probit Models
-Version: 1.0.0.9000
-Date: 2021-11-11
+Version: 1.1.0
+Date: 2022-07-07
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
            email = "lennart.oelschlaeger@uni-bielefeld.de", 
-           role = c("aut", "cre")),
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5421-9313")),
     person("Dietmar", "Bauer", 
            email = "dietmar.bauer@uni-bielefeld.de", 
-           role = "aut"),
+           role = "aut",
+           comment = c(ORCID = "0000-0003-2920-7032")),
     person("Sebastian", "B\u00fcscher", 
            email = "sebastian.buescher@uni-bielefeld.de", 
            role = "ctb"),
     person("Manuel", "Batram", 
            email = "manuel.batram@uni-bielefeld.de", 
            role = "ctb"))
-Description: 
-    Fitting latent class mixed multinomial probit (LCMMNP) models to simulated
-    or empirical choice data via Bayesian estimation. The number of latent 
-    classes can be updated within the algorithm on a weight-based strategy. 
-    For a reference on the method see Oelschlaeger and Bauer (2021) 
+Description:
+    Bayes estimation of probit choice models, both in the cross-sectional and 
+    panel setting. The package can analyze binary, multivariate, ordered, and 
+    ranked choices, and places a special focus on modeling heterogeneity of 
+    choice behavior among deciders. The main functionality includes model 
+    fitting via Markov chain Monte Carlo methods, tools for convergence 
+    diagnostic, choice data simulation, in-sample and out-of-sample choice 
+    prediction, and model selection using information criteria and Bayes 
+    factors. The latent class model extension facilitates preference-based 
+    decider classification, where the number of latent classes can be inferred 
+    via the Dirichlet process or a weightbased updating scheme. This allows for 
+    flexible modeling of choice behavior without the need to impose structural 
+    constraints. For a reference on the method see Oelschlaeger and Bauer (2021) 
     <https://trid.trb.org/view/1759753>.
 URL: https://loelschlaeger.de/RprobitB/
 BugReports: https://github.com/loelschlaeger/RprobitB/issues
@@ -31,7 +41,6 @@ Imports:
     mvtnorm,
     viridis,
     ggplot2,
-    tidyr,
     rlang,
     mixtools,
     doSNOW,
