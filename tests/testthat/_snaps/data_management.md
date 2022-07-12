@@ -33,6 +33,53 @@
       - 'A'             1474
       - 'B'             1455
 
+# data preparation with ordered choices works
+
+    Code
+      print(data)
+    Output
+      Empirical data of 55 (ordered) choices.
+
+---
+
+    Code
+      summary(data)
+    Output
+                       count
+      deciders            10
+      choice occasions  1-10
+      total choices       55
+      alternatives         5
+      - 'very bad'        32
+      - 'bad'             19
+      - 'indifferent'      3
+      - 'good'             1
+      - 'very good'        0
+
+# data preparation with ranked choices works
+
+    Code
+      print(data)
+    Output
+      Empirical data of 55 (ranked) choices.
+
+---
+
+    Code
+      summary(data)
+    Output
+                       count
+      deciders            10
+      choice occasions  1-10
+      total choices       55
+      alternatives         6
+      - 'A,B,C'            3
+      - 'A,C,B'            9
+      - 'B,A,C'            4
+      - 'B,C,A'           17
+      - 'C,A,B'            7
+      - 'C,B,A'           15
+
 # data preparation with non-standard base alternative works
 
     Code

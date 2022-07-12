@@ -260,15 +260,15 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' This function plots an estimated marginal mixing distributions.
 #'
 #' @param mean
-#'
+#' The class means.
 #' @param cov
-#'
+#' The class covariances.
 #' @param weights
-#'
+#' The class weights.
 #' @param name
-#'
+#' The covariate name.
 #' @return
-#' GGplot TODO
+#' An object of class \code{ggplot}.
 #'
 #' @keywords
 #' internal
@@ -315,15 +315,15 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #' This function plots an estimated bivariate contour mixing distributions.
 #'
 #' @param means
-#'
+#' The class means.
 #' @param covs
-#'
+#' The class covariances.
 #' @param weights
-#'
+#' The class weights.
 #' @param names
-#'
+#' The covariate names.
 #' @return
-#' GGplot TODO
+#' An object of class \code{ggplot}.
 #'
 #' @keywords
 #' internal

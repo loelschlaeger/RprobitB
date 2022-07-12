@@ -67,13 +67,13 @@ Per default, \code{kappa = J + 1}.}
 prior for \code{Sigma}.
 Per default, \code{E = diag(J - 1)}.}
 
-\item{zeta}{The mean vector of length \code{J - 2} of the normal prior for the increments \code{d}
-of the utility thresholds in the ordered probit model.
+\item{zeta}{The mean vector of length \code{J - 2} of the normal prior for the logarithmic
+increments \code{d} of the utility thresholds in the ordered probit model.
 Per default, \code{zeta = numeric(J - 2)}.}
 
 \item{Z}{The covariance matrix of dimension \code{J-2} x \code{J-2} of the normal prior for the
-increments \code{d} of the utility thresholds in the ordered probit model.
-Per default, \code{Z = diag(J - 2)}.}
+logarithmic increments \code{d} of the utility thresholds in the ordered probit
+model. Per default, \code{Z = diag(J - 2)}.}
 }
 \value{
 An object of class \code{RprobitB_prior}, which is a list containing all
@@ -98,5 +98,5 @@ where \eqn{N} denotes the normal, \eqn{Dir} the Dirichlet, and \eqn{IW}
 the Inverted Wishart distribution.
 }
 \examples{
-check_prior(P_f = 1, P_r = 2, J = 3)
+check_prior(P_f = 1, P_r = 2, J = 3, ordered = TRUE)
 }

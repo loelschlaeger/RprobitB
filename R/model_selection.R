@@ -350,7 +350,12 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
     choices <- as.character(unlist(sapply(object$data$data, `[[`, "y")))
     ll <- 0
     for (row in 1:nrow(probs)){
-      ll <- ll + log(probs[row, choices[row]])
+      if (object$data$ranked) {
+        y_seq <- strsplit(choices[row], ",")[[1]][1]
+        ll <- ll + log(probs[row, y_seq])
+      } else {
+        ll <- ll + log(probs[row, choices[row]])
+      }
     }
   }
   return(as.numeric(ll))
@@ -420,7 +425,7 @@ npar.RprobitB_fit <- function(object, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ### takes ~5 min computation time
 #' data("model_train", package = "RprobitB")
 #' model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)

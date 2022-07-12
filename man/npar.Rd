@@ -18,8 +18,8 @@ npar(object, ...)
 Either a numeric value (if just one object is provided) or a numeric vector.
 }
 \description{
-This function extracts the number of model parameters of an \code{RprobitB_fit}
-object.
+This function extracts the number of model parameters of an
+\code{RprobitB_fit} object.
 }
 \examples{
 data("model_train", package = "RprobitB")

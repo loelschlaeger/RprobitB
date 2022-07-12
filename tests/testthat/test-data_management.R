@@ -70,6 +70,53 @@ test_that("data preparation works", {
   expect_snapshot(summary(data))
 })
 
+test_that("data preparation with ordered choices works", {
+  form <- opinion ~ age + gender
+  alternatives <- c("very bad", "bad", "indifferent", "good", "very good")
+  choice_data <- simulate_choices(
+    form = form,
+    N = 10,
+    T = 1:10,
+    J = 5,
+    alternatives = alternatives,
+    ordered = TRUE,
+    covariates = list(
+      "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
+      ),
+    seed = 1)$choice_data
+  data <- prepare_data(
+    form = form,
+    choice_data = choice_data,
+    alternatives = alternatives,
+    ordered = TRUE
+  )
+  expect_s3_class(data, "RprobitB_data")
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})
+
+test_that("data preparation with ranked choices works", {
+  form <- product ~ price
+  alternatives <- c("A", "B", "C")
+  choice_data <- simulate_choices(
+    form = form,
+    N = 10,
+    T = 1:10,
+    J = 3,
+    alternatives = alternatives,
+    ranked = TRUE,
+    seed = 1)$choice_data
+  data <- prepare_data(
+    form = form,
+    choice_data = choice_data,
+    alternatives = alternatives,
+    ranked = TRUE
+  )
+  expect_s3_class(data, "RprobitB_data")
+  expect_snapshot(print(data))
+  expect_snapshot(summary(data))
+})
+
 test_that("data preparation with non-standard base alternative works", {
   data("Train", package = "mlogit")
   data <- prepare_data(

@@ -81,7 +81,7 @@ alternative specific coefficients,
 covariates with alternative specific coefficients.
 }
 
-Multiple covariates (of one type) are seperated by a \code{+} sign.
+Multiple covariates (of one type) are separated by a \code{+} sign.
 By default, alternative specific constants (ASCs) are added to the model.
 They can be removed by adding \code{+0} in the second spot.
 

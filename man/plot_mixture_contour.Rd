@@ -7,16 +7,16 @@
 plot_mixture_contour(means, covs, weights, names)
 }
 \arguments{
-\item{means}{}
+\item{means}{The class means.}
 
-\item{covs}{}
+\item{covs}{The class covariances.}
 
-\item{weights}{}
+\item{weights}{The class weights.}
 
-\item{names}{}
+\item{names}{The covariate names.}
 }
 \value{
-GGplot TODO
+An object of class \code{ggplot}.
 }
 \description{
 This function plots an estimated bivariate contour mixing distributions.

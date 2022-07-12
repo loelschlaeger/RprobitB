@@ -2,9 +2,9 @@
 % Please edit documentation in R/model_evaluation.R
 \name{compute_choice_probabilities}
 \alias{compute_choice_probabilities}
-\title{Compute probit choice probabilities for a single choice situation.}
+\title{Compute probit choice probabilities}
 \usage{
-compute_choice_probabilities(X, alternatives, parameter)
+compute_choice_probabilities(X, alternatives, parameter, ordered = FALSE)
 }
 \arguments{
 \item{X}{A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
@@ -15,12 +15,16 @@ the first \code{P_f} columns are connected to fixed coefficients and the last
 alternatives for which choice probabilities are to be computed.}
 
 \item{parameter}{An object of class \code{RprobitB_parameter}.}
+
+\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
+\code{alternatives} is assumed to be ordered from worst to best.}
 }
 \value{
 A probability vector of length \code{length(alternatives)}.
 }
 \description{
-This function computes the probit choice probabilities for a single choice
-situation with \code{J} alternatives.
+This is a helper function for \code{\link{choice_probabilities}} and computes
+the probit choice probabilities for a single choice situation with \code{J}
+alternatives.
 }
 \keyword{internal}

@@ -16,7 +16,7 @@
 #'   covariates with alternative specific coefficients.
 #' }
 #'
-#' Multiple covariates (of one type) are seperated by a \code{+} sign.
+#' Multiple covariates (of one type) are separated by a \code{+} sign.
 #' By default, alternative specific constants (ASCs) are added to the model.
 #' They can be removed by adding \code{+0} in the second spot.
 #'
@@ -1008,7 +1008,8 @@ simulate_choices <- function(
 
   ### check other inputs
   if (!is.numeric(N) || N %% 1 != 0) {
-    stop("'N' must be a non-negative number.", call. = FALSE)
+    stop("'N' must be a non-negative number.",
+         call. = FALSE)
   }
   if (length(T) == 1) {
     T <- rep(T, N)
@@ -1018,11 +1019,13 @@ simulate_choices <- function(
          call. = FALSE)
   }
   if (!is.numeric(J) || J %% 1 != 0 || !J >= 2) {
-    stop("'J' must be a number greater or equal 2.", call. = FALSE)
+    stop("'J' must be a number greater or equal 2.",
+         call. = FALSE)
   }
   if (is.null(alternatives)) {
     if (J > 26) {
-      stop("Please specify 'alternatives'.", call. = FALSE)
+      stop("Please specify 'alternatives'.",
+           call. = FALSE)
     } else {
       alternatives <- LETTERS[1:J]
     }
@@ -1032,13 +1035,16 @@ simulate_choices <- function(
          call. = FALSE)
   }
   if(!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean", call. = FALSE)
+    stop("'ordered' must be a boolean",
+         call. = FALSE)
   }
   if(!isTRUE(ranked) && !isFALSE(ranked)) {
-    stop("'ranked' must be a boolean", call. = FALSE)
+    stop("'ranked' must be a boolean",
+         call. = FALSE)
   }
   if(ordered == TRUE && ranked == TRUE) {
-    stop("'ordered' and 'ranked' cannot both be TRUE.", call. = FALSE)
+    stop("'ordered' and 'ranked' cannot both be TRUE.",
+         call. = FALSE)
   }
   if(ordered == TRUE && J <= 2) {
     stop("'J' must be greater or equal 3 in the ordered probit model.",
@@ -1052,7 +1058,8 @@ simulate_choices <- function(
     for (i in 1:length(covariates)) {
       if (length(covariates[[i]]) != sum(T)) {
         stop(paste0("In 'covariates', there must be ", sum(T), " values for '",
-                    names(covariates)[i], "'."), call. = FALSE)
+                    names(covariates)[i], "'."),
+             call. = FALSE)
       }
     }
   }
@@ -1124,7 +1131,8 @@ simulate_choices <- function(
   if (length(names(covariates)) > 0) {
     warning(paste(
       "The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
-      "in 'covariates' are ignored."), call. = FALSE, immediate. = TRUE
+      "in 'covariates' are ignored."),
+      call. = FALSE, immediate. = TRUE
       )
   }
 

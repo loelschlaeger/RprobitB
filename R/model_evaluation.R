@@ -961,7 +961,8 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
     data <- x$data
   }
   if (class(data) != "RprobitB_data") {
-    stop("'data' is not of class 'RprobitB_data'.")
+    stop("'data' is not of class 'RprobitB_data'.",
+         call. = FALSE)
   }
 
   ### define progress bar
@@ -999,11 +1000,12 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   return(out)
 }
 
-#' Compute probit choice probabilities for a single choice situation.
+#' Compute probit choice probabilities
 #'
 #' @description
-#' This function computes the probit choice probabilities for a single choice
-#' situation with \code{J} alternatives.
+#' This is a helper function for \code{\link{choice_probabilities}} and computes
+#' the probit choice probabilities for a single choice situation with \code{J}
+#' alternatives.
 #'
 #' @param X
 #' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
@@ -1070,26 +1072,102 @@ compute_choice_probabilities <- function(
   }
 
   ### compute choice probabilities
-  probabilities <- rep(NA, J)
+  probabilities <- rep(NA_real_, J)
   for (j in alternatives) {
     if (ordered) {
-
+      ub <- gamma[j+1]
+      lb <- gamma[j]
+      if (P_f > 0) {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                mu <- X %*% c(alpha, b[, c])
+                sd <- sqrt(X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
+                  t(X[, -(1:P_f)]) + Sigma)
+                s[c] * (pnorm(q = ub - mu, mean = 0, sd = sd) -
+                          pnorm(q = lb - mu, mean = 0, sd = sd))
+              }
+            )
+          )
+        } else {
+          mu <- X %*% alpha
+          sd <- sqrt(Sigma)
+          probabilities[j] <- pnorm(q = ub - mu, mean = 0, sd = sd) -
+            pnorm(q = lb - mu, mean = 0, sd = sd)
+        }
+      } else {
+        if (P_r > 0) {
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                mu <- X %*% b[, c]
+                sd <- sqrt(X %*% matrix(Omega[, c], P_r, P_r) %*%
+                             t(X) + Sigma)
+                s[c] * (pnorm(q = ub - mu, mean = 0, sd = sd) -
+                          pnorm(q = lb - mu, mean = 0, sd = sd))
+              }
+            )
+          )
+        } else {
+          mu <- 0
+          sd <- sqrt(Sigma)
+          probabilities[j] <- pnorm(q = ub - mu, mean = 0, sd = sd) -
+            pnorm(q = lb - mu, mean = 0, sd = sd)
+        }
+      }
     } else {
       if (P_f > 0) {
         if (P_r > 0) {
-          probabilities[j] <- ccp_pfpr(j, J, Sigma_full, X, alpha, b, Omega, s,
-                                       P_f, P_r)
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                s[c] * mvtnorm::pmvnorm(
+                  lower = rep(-Inf, J - 1),
+                  upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
+                  mean = rep(0, J - 1),
+                  sigma = delta(J, j) %*%
+                    (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
+                       t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta(J, j))
+                  )
+              }
+            )
+          )
+        } else {
+          probabilities[j] <- mvtnorm::pmvnorm(
+            lower = rep(-Inf, J - 1),
+            upper = as.vector(-delta(J, j) %*% X %*% alpha),
+            mean = rep(0, J - 1),
+            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+          )[1]
         }
-        if (P_r == 0) {
-          probabilities[j] <- ccp_pf(j, J, Sigma_full, X, alpha)
-        }
-      }
-      if (P_f == 0) {
+      } else {
         if (P_r > 0) {
-          probabilities[j] <- ccp_pr(j, J, Sigma_full, X, b, Omega, s, P_r)
-        }
-        if (P_r == 0) {
-          probabilities[j] <- ccp(j, J, Sigma_full)
+          probabilities[j] <- sum(
+            sapply(
+              X = seq_along(s),
+              FUN = function(c) {
+                s[c] * mvtnorm::pmvnorm(
+                  lower = rep(-Inf, J - 1),
+                  upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
+                  mean = rep(0, J - 1),
+                  sigma = delta(J, j) %*%
+                    (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
+                    t(delta(J, j))
+                  )
+              }
+            )
+          )
+        } else {
+          probabilities[j] <- mvtnorm::pmvnorm(
+            lower = rep(-Inf, J - 1),
+            upper = rep(0, J - 1),
+            mean = rep(0, J - 1),
+            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+          )[1]
         }
       }
     }
@@ -1098,128 +1176,6 @@ compute_choice_probabilities <- function(
   ### return probabilities
   return(probabilities)
 }
-
-#' Compute probit choice probability in case of \code{P_f = 0} and
-#' \code{P_r = 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f = 0} and \code{P_r = 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp <- function(j, J, Sigma_full) {
-  mvtnorm::pmvnorm(
-    lower = rep(-Inf, J - 1),
-    upper = rep(0, J - 1),
-    mean = rep(0, J - 1),
-    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-  )[1]
-}
-
-#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r = 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f > 0} and \code{P_r = 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pf <- function(j, J, Sigma_full, X, alpha) {
-  mvtnorm::pmvnorm(
-    lower = rep(-Inf, J - 1),
-    upper = as.vector(-delta(J, j) %*% X %*% alpha),
-    mean = rep(0, J - 1),
-    sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
-  )[1]
-}
-
-#' Compute probit choice probability in case of \code{P_f = 0} and \code{P_r > 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f = 0} and \code{P_r > 0}.
-#'
-#' @inheritParams ccp_pfpr
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pr <- function(j, J, Sigma_full, X, b, Omega, s, P_r) {
-  out <- 0
-  for (c in seq_along(s)) {
-    out <- out + s[c] * mvtnorm::pmvnorm(
-      lower = rep(-Inf, J - 1),
-      upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
-      mean = rep(0, J - 1),
-      sigma = delta(J, j) %*%
-        (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
-        t(delta(J, j))
-    )[1]
-  }
-  return(out)
-}
-
-#' Compute probit choice probability in case of \code{P_f > 0} and \code{P_r > 0}.
-#'
-#' @description
-#' This function computes the probit choice probability for alternative \code{j}
-#' in case of \code{P_f > 0} and \code{P_r > 0}.
-#'
-#' @param j
-#' An integer between 1 and \code{J}.
-#' @inheritParams compute_choice_probabilities
-#' @param X
-#' A matrix of covariates with \code{J} rows and \code{P_f + P_r} columns, where
-#' the first \code{P_f} columns are connected to fixed coefficients and the last
-#' \code{P_r} columns are connected to random coefficients.
-#' @param parameter
-#' An object of class \code{RprobitB_parameter}.
-#'
-#' @return
-#' A probability.
-#'
-#' @keywords
-#' internal
-#'
-#' @noRd
-
-ccp_pfpr <- function(j, J, Sigma_full, X, alpha, b, Omega, s, P_f, P_r) {
-  out <- 0
-  for (c in seq_along(s)) {
-    out <- out + s[c] * mvtnorm::pmvnorm(
-      lower = rep(-Inf, J - 1),
-      upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
-      mean = rep(0, J - 1),
-      sigma = delta(J, j) %*%
-        (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*% t(X[, -(1:P_f)]) +
-           Sigma_full) %*% t(delta(J, j))
-    )[1]
-  }
-  return(out)
-}
-
 
 #' Get covariates of choice situation
 #'

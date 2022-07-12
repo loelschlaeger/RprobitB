@@ -41,13 +41,13 @@
 #' prior for `Sigma`.
 #' Per default, `E = diag(J - 1)`.
 #' @param zeta
-#' The mean vector of length `J - 2` of the normal prior for the increments `d`
-#' of the utility thresholds in the ordered probit model.
+#' The mean vector of length `J - 2` of the normal prior for the logarithmic
+#' increments `d` of the utility thresholds in the ordered probit model.
 #' Per default, `zeta = numeric(J - 2)`.
 #' @param Z
 #' The covariance matrix of dimension `J-2` x `J-2` of the normal prior for the
-#' increments `d` of the utility thresholds in the ordered probit model.
-#' Per default, `Z = diag(J - 2)`.
+#' logarithmic increments `d` of the utility thresholds in the ordered probit
+#' model. Per default, `Z = diag(J - 2)`.
 #'
 #' @details
 #' A priori, we assume that the model parameters follow these distributions:
@@ -70,7 +70,7 @@
 #' @export
 #'
 #' @examples
-#' check_prior(P_f = 1, P_r = 2, J = 3)
+#' check_prior(P_f = 1, P_r = 2, J = 3, ordered = TRUE)
 
 check_prior <- function(
     P_f, P_r, J, ordered = FALSE, eta = numeric(P_f), Psi = diag(P_f),
@@ -88,7 +88,8 @@ check_prior <- function(
 
     ### alpha ~ MVN(eta,Psi)
     if (!is.numeric(eta) || length(eta) != P_f) {
-      stop("'eta' must be a numeric vector of length 'P_f'.", call. = FALSE)
+      stop("'eta' must be a numeric vector of length 'P_f'.",
+           call. = FALSE)
     }
     if (!is.numeric(Psi) || !is.matrix(Psi) || any(dim(Psi) != c(P_f, P_f))) {
       stop("'Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.",
@@ -102,12 +103,14 @@ check_prior <- function(
 
     ### s ~ D(delta)
     if (!is.numeric(delta) || length(delta) != 1) {
-      stop("'delta' must be a single numeric value.", call. = FALSE)
+      stop("'delta' must be a single numeric value.",
+           call. = FALSE)
     }
 
     ### b_c ~ MVN(xi,D)
     if (!is.numeric(xi) || length(xi) != P_r) {
-      stop("'xi' must be a numeric vector of length 'P_r'.", call. = FALSE)
+      stop("'xi' must be a numeric vector of length 'P_r'.",
+           call. = FALSE)
     }
     if (!is.numeric(D) || !is.matrix(D) ||
         any(dim(D) != c(P_r, P_r))) {
@@ -157,7 +160,8 @@ check_prior <- function(
   ### d ~ N(zeta,Z)
   if (ordered) {
     if (!is.numeric(zeta) || length(zeta) != J-2) {
-      stop("'zeta' must be a numeric vector of length 'J - 2'.", call. = FALSE)
+      stop("'zeta' must be a numeric vector of length 'J - 2'.",
+           call. = FALSE)
     }
     if (!is.numeric(Z) || !is.matrix(Z) || any(dim(Z) != c(J - 2, J - 2))) {
       stop("'Z' must be a numeric matrix of dimension 'J-2' x 'J-2'.",
