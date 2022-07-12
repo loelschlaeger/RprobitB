@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,34 +68,43 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_mixture_marginal</span><span class="op">(</span><span class="va">mean</span>, <span class="va">cov</span>, <span class="va">weights</span>, <span class="va">name</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_mixture_marginal</span><span class="op">(</span><span class="va">mean</span>, <span class="va">cov</span>, <span class="va">weights</span>, <span class="va">name</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>mean</dt>
-<dd></dd>
+<dd><p>The class means.</p></dd>
+
+
 <dt>cov</dt>
-<dd></dd>
+<dd><p>The class covariances.</p></dd>
+
+
 <dt>weights</dt>
-<dd></dd>
+<dd><p>The class weights.</p></dd>
+
+
 <dt>name</dt>
-<dd></dd>
+<dd><p>The covariate name.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>No return value. Draws a plot to the current device.</p>
+    
+
+<p>An object of class <code>ggplot</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.7</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">name</span> <span class="op">&lt;-</span> <span class="st">"test"</span></span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">plot_mixture_marginal</span><span class="op">(</span><span class="va">mean</span>, <span class="va">cov</span>, <span class="va">weights</span>, <span class="va">name</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.7</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">name</span> <span class="op">&lt;-</span> <span class="st">"test"</span></span></span>
+<span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">plot_mixture_marginal</span><span class="op">(</span><span class="va">mean</span>, <span class="va">cov</span>, <span class="va">weights</span>, <span class="va">name</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_mixture_marginal-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -108,7 +116,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

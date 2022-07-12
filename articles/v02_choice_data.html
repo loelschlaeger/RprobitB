@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,7 +87,7 @@
 
 
 <script src="v02_choice_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Choice data</h1>
             
       
@@ -98,18 +97,17 @@
 
     
     
-<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is build using R 4.2.0 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a> provides a reference for data management in {RprobitB}. We use the <a href="https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format" class="external-link">Train data set</a> from the {mlogit} package <span class="citation">(Croissant <a href="#ref-mlogit" role="doc-biblioref">2020</a>)</span> for illustration.</p>
+<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is build using R 4.2.1 with the {RprobitB} 1.1.0 package.&lt;/p&gt;"><sup>1</sup></a> provides a reference for data management in {RprobitB}. We use the <a href="https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format" class="external-link">Train data set</a> from the {mlogit} package <span class="citation">(Croissant <a href="#ref-Croissant:2020" role="doc-biblioref">2020</a>)</span> for illustration.</p>
 <div class="section level2">
 <h2 id="requirements-to-choice-data">Requirements to choice data<a class="anchor" aria-label="anchor" href="#requirements-to-choice-data"></a>
 </h2>
-<p>{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties <span class="citation">(Train <a href="#ref-Train:09" role="doc-biblioref">2009</a>, 16)</span>: Choices need to be</p>
+<p>{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties <span class="citation">(Train <a href="#ref-Train:2009" role="doc-biblioref">2009</a>)</span>: Choices need to be</p>
 <ol style="list-style-type: decimal">
 <li><p>mutually exclusive (one can choose one and only one alternative that are all different),</p></li>
 <li><p>exhaustive (the alternatives do not leave other options open),</p></li>
 <li><p>and finitely many.</p></li>
 </ol>
-<p>In {RprobitB} only unordered alternatives (that is, alternatives cannot be ranked) are modeled. Every decider may take one or repeated choices (called choice occasions).</p>
-<p>The data set thus contains information on</p>
+<p>Every decider may take one or repeated choices (called choice occasions). The data set thus contains information on</p>
 <ol style="list-style-type: decimal">
 <li><p>an identifier for each decider (and optionally for each choice situation),</p></li>
 <li><p>the choices,</p></li>
@@ -117,7 +115,7 @@
 </ol>
 <p>Additionally, {RprobitB} asks the following formal requirements:</p>
 <ol style="list-style-type: decimal">
-<li><p>The data set <strong>must</strong> be in “wide” format, that means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The {tidyr} package &lt;a href="https://tidyr.tidyverse.org/articles/pivot.html" class="external-link"&gt;contains functionality&lt;/a&gt; that can transform data frames into this format.&lt;/p&gt;'><sup>2</sup></a></p></li>
+<li><p>The data set <strong>must</strong> be in “wide” format, that means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The {tidyr} package &lt;a href="https://tidyr.tidyverse.org/articles/pivot.html" class="external-link"&gt;contains functionality&lt;/a&gt; that can transform a &lt;code&gt;data.frame&lt;/code&gt; into this format.&lt;/p&gt;'><sup>2</sup></a></p></li>
 <li><p>It <strong>must</strong> contain a column with unique identifiers for each decision maker. Additionally, it <strong>can</strong> contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.&lt;/p&gt;"><sup>3</sup></a></p></li>
 <li><p>It <strong>can</strong> contain a column with the observed choices. Such a column is required for model fitting but not for prediction.</p></li>
 <li><p>It <strong>must</strong> contain columns for the values of each alternative specific covariate for each alternative and for each decider specific covariate.</p></li>
@@ -127,20 +125,20 @@
 </h3>
 <p>The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns <code>id</code> and <code>choiceid</code> identify the deciders and the choice occasions, respectively. The column <code>choice</code> gives the observed choices. Four alternative-specific covariates are available, namely <code>price</code>, <code>time</code>, <code>change</code>, and <code>comfort</code>. There values are given for each alternative.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For alternative specific variables, the alternative names must be added to the covariates via the &lt;code&gt;_&lt;/code&gt; separator.&lt;/p&gt;"><sup>4</sup></a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Train</span><span class="op">)</span>
-<span class="co">#&gt; 'data.frame':    2929 obs. of  11 variables:</span>
-<span class="co">#&gt;  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...</span>
-<span class="co">#&gt;  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="co">#&gt;  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...</span>
-<span class="co">#&gt;  $ price_A  : num  2400 2400 2400 4000 2400 4000 2400 2400 4000 2400 ...</span>
-<span class="co">#&gt;  $ time_A   : num  150 150 115 130 150 115 150 115 115 150 ...</span>
-<span class="co">#&gt;  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="co">#&gt;  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...</span>
-<span class="co">#&gt;  $ price_B  : num  4000 3200 4000 3200 3200 2400 3200 3200 3200 4000 ...</span>
-<span class="co">#&gt;  $ time_B   : num  150 130 115 150 150 130 115 150 130 115 ...</span>
-<span class="co">#&gt;  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="co">#&gt;  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Train</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    2929 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ price_A  : num  2400 2400 2400 4000 2400 4000 2400 2400 4000 2400 ...</span></span>
+<span><span class="co">#&gt;  $ time_A   : num  150 150 115 130 150 115 150 115 115 150 ...</span></span>
+<span><span class="co">#&gt;  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ price_B  : num  4000 3200 4000 3200 3200 2400 3200 3200 3200 4000 ...</span></span>
+<span><span class="co">#&gt;  $ time_B   : num  150 130 115 150 150 130 115 150 130 115 ...</span></span>
+<span><span class="co">#&gt;  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -168,29 +166,19 @@
 </h3>
 <p>We specify a model formula for the Train data set. Say we want to include all the covariates <code>price</code>, <code>time</code>, <code>comfort</code>, and <code>change</code>, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span> <span class="op">|</span> <span class="fl">0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span> <span class="op">|</span> <span class="fl">0</span></span></code></pre></div>
 <p>Additionally, we specify random effects for <code>price</code> and <code>time</code> (because we would typically expect heterogeneity here):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span></code></pre></div>
-<p>{RprobitB} provides the function <code><a href="../reference/check_form.html">check_form()</a></code> which can be used to check if <code>form</code> and <code>re</code> are correctly interpreted:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/check_form.html">check_form</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, re <span class="op">=</span> <span class="va">re</span><span class="op">)</span>
-<span class="co">#&gt; choice ~ price + time + comfort + change | 0</span>
-<span class="co">#&gt; - dependent variable: choice </span>
-<span class="co">#&gt; - type 1 covariate(s): price, time, comfort, change </span>
-<span class="co">#&gt; - type 2 covariate(s):  </span>
-<span class="co">#&gt; - type 3 covariate(s):  </span>
-<span class="co">#&gt; - random effects: price, time </span>
-<span class="co">#&gt; - ASC: FALSE</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="the-prepare_data-function">The <code>prepare_data()</code> function<a class="anchor" aria-label="anchor" href="#the-prepare_data-function"></a>
 </h2>
 <p>Before model estimation with {RprobitB}, any empirical choice data set <code>choice_data</code> must pass the <code><a href="../reference/prepare_data.html">prepare_data()</a></code> function:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></code></pre></div>
-<p>The function performs compatibility checks and data transformations and returns an object of class <code>RprobitB_data</code> that can be fed into the estimation routine <code>mcmc</code>. The following arguments are optional:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></span></code></pre></div>
+<p>The function performs compatibility checks and data transformations and returns an object of class <code>RprobitB_data</code> that can be fed into the estimation routine <code><a href="../reference/fit_model.html">fit_model()</a></code>. The following arguments are optional:</p>
 <ul>
 <li><p><code>re</code>: The character vector of variable names of <code>form</code> with random effects. <code>re = NULL</code> per default, i.e. no random effects.</p></li>
 <li><p><code>alternatives</code>: We may not want to consider all alternatives in <code>choice_data</code>. In that case, we can specify a character vector <code>alternatives</code> with selected names of alternatives. If not specified, the choice set is defined by the observed choices.</p></li>
@@ -201,7 +189,7 @@
 <p><code>impute</code>: Specifies how to handle missing entries (<code>NA, NaN, -Inf, Inf</code>) in <code>choice_data</code>. The following options are available:</p>
 <ul>
 <li><p><code>"complete_cases"</code>, which removes rows containing missing entries (the default),</p></li>
-<li><p><code>"zero_out"</code>, which replaces missing entries by zero,</p></li>
+<li><p><code>"zero"</code>, which replaces missing entries by zero,</p></li>
 <li><p><code>"mean"</code>, which imputes missing entries by the covariate mean.</p></li>
 </ul>
 </li>
@@ -210,37 +198,39 @@
 <h3 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h3>
 <p>Let’s prepare the Train data set for estimation with our previous specification of <code>form</code> and <code>re</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"id"</span>, idc <span class="op">=</span> <span class="st">"choiceid"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"id"</span>, idc <span class="op">=</span> <span class="st">"choiceid"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>summary</code> and <code>plot</code> methods provide a quick data overview:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Summary of empirical choice data</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>235 decision makers </span>
-<span class="co">#&gt; 5 to 19 choice occasions each </span>
-<span class="co">#&gt; 2929 choices in total</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Alternatives</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>  frequency</span>
-<span class="co">#&gt; A      1474</span>
-<span class="co">#&gt; B      1455</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Linear coefficients</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>     name    re</span>
-<span class="co">#&gt; 1 comfort FALSE</span>
-<span class="co">#&gt; 2  change FALSE</span>
-<span class="co">#&gt; 3   price  TRUE</span>
-<span class="co">#&gt; 4    time  TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  count</span></span>
+<span><span class="co">#&gt; deciders           235</span></span>
+<span><span class="co">#&gt; choice occasions  5-19</span></span>
+<span><span class="co">#&gt; total choices     2929</span></span>
+<span><span class="co">#&gt; alternatives         2</span></span>
+<span><span class="co">#&gt; - 'A'             1474</span></span>
+<span><span class="co">#&gt; - 'B'             1455</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="summary-Train-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="ordered-alternatives">Ordered alternatives<a class="anchor" aria-label="anchor" href="#ordered-alternatives"></a>
+</h2>
+<p>The two choice alternatives from the train trip example are unordered. If we had asked “rate your train trip from 1 (horrible) to 7 (great)”, then the respondents would choose from a set of ordered alternatives. Such ordered alternatives can by analyzed by setting <code>ordered = TRUE</code> in <code>prepare_data</code>. In this case, <code>alternatives</code> becomes a mandatory argument, where the alternatives must be named from worst to best.</p>
+</div>
+<div class="section level2">
+<h2 id="ranked-choices">Ranked choices<a class="anchor" aria-label="anchor" href="#ranked-choices"></a>
+</h2>
+<p>Rather than recording only the single most preferred alternative, some surveys ask for a full ranking of all the alternatives, which reveals far more about the underlying preferences. Ranked choices can by analyzed by setting <code>ranked = TRUE</code> in <code><a href="../reference/prepare_data.html">prepare_data()</a></code>. The choice column of the data set must provide the full ranking for each choice occasion (from most preferred to least preferred), where the alternatives are separated by commas.</p>
+<p>The ranked probit model follows directly from the basic multivariate case. The only difference is that we take flexible utility differences such that the differenced utility vector is always negative. Thereby, we incorporate information of the full ranking.</p>
 </div>
 <div class="section level2">
 <h2 id="simulate-choices">Simulate choices<a class="anchor" aria-label="anchor" href="#simulate-choices"></a>
 </h2>
 <p>The <code>simulate_choices</code> function simulates discrete choice data from a prespecified probit model. Say we want to simulate the choices of <code>N</code> deciders in <code>T</code> choice occasions<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;&lt;code&gt;T&lt;/code&gt; can be either a positive number, representing a fixed number of choice occasions for each decision maker, or a vector of length &lt;code&gt;N&lt;/code&gt; with decision maker specific numbers of choice occasions.&lt;/p&gt;"><sup>7</sup></a> among <code>J</code> alternatives from a model formulation <code>form</code>, we have to call</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, N <span class="op">=</span> <span class="va">N</span>, T <span class="op">=</span> <span class="cn">T</span>, J <span class="op">=</span> <span class="va">J</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, N <span class="op">=</span> <span class="va">N</span>, T <span class="op">=</span> <span class="cn">T</span>, J <span class="op">=</span> <span class="va">J</span><span class="op">)</span></span></code></pre></div>
 <p>The function <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code> has the following optional arguments:</p>
 <ul>
 <li><p><code>re</code>: The character vector of variable names of <code>form</code> with random effects.</p></li>
@@ -249,7 +239,7 @@
 <li><p><code>standardize</code>: A character vector of variable names of <code>form</code> that get standardized.</p></li>
 <li><p><code>seed</code>: Set a seed for the simulation.</p></li>
 </ul>
-<p>We can specify the true parameters<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See the vignette on the model definition for more details, especially for the meaning of the parameters.&lt;/p&gt;"><sup>8</sup></a> by adding values for</p>
+<p>We can specify the true parameters<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See the vignette on the model definition for more details, especially for the meaning of the parameters.&lt;/p&gt;"><sup>8</sup></a> by adding a named list with values for</p>
 <ul>
 <li><p><code>alpha</code>, the fixed coefficient vector,</p></li>
 <li><p><code>C</code>, the number (greater or equal 1) of latent classes of decision makers,</p></li>
@@ -258,62 +248,56 @@
 <li><p><code>Omega</code>, the matrix of class covariance matrices as columns,</p></li>
 <li><p><code>Sigma</code>, the differenced error term covariance matrix, or <code>Sigma_full</code>, the full error term covariance matrix,</p></li>
 <li><p><code>beta</code>, the matrix of the decision-maker specific coefficient vectors,</p></li>
-<li><p><code>z</code>, the class allocation vector.</p></li>
+<li><p><code>z</code>, the class allocation vector,</p></li>
+<li><p><code>d</code>, the vector of logarithmic threshold increments in the ordered probit case.</p></li>
 </ul>
 <p>True parameters that are not specified will be set at random.</p>
 <div class="section level3">
 <h3 id="example-3">Example<a class="anchor" aria-label="anchor" href="#example-3"></a>
 </h3>
 <p>For illustration, we simulate the choices of <code>N = 100</code> deciders at <code>T = 10</code> choice occasions between the alternatives <code>A</code> and <code>B</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">alternatives</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>
-<span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var1</span> <span class="op">|</span> <span class="va">var2</span> <span class="op">|</span> <span class="va">var3</span>
-<span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASC"</span>, <span class="st">"var2"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">alternatives</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span></span>
+<span><span class="va">base</span> <span class="op">&lt;-</span> <span class="st">"B"</span></span>
+<span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var1</span> <span class="op">|</span> <span class="va">var2</span> <span class="op">|</span> <span class="va">var3</span></span>
+<span><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASC"</span>, <span class="st">"var2"</span><span class="op">)</span></span></code></pre></div>
 <p>{RprobitB} provides the function <code><a href="../reference/overview_effects.html">overview_effects()</a></code> which can be used to get an overview of the effects for which parameters can be specified:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/overview_effects.html">overview_effects</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, re <span class="op">=</span> <span class="va">re</span>, alternatives <span class="op">=</span> <span class="va">alternatives</span><span class="op">)</span>
-<span class="co">#&gt;     name    re</span>
-<span class="co">#&gt; 1   var1 FALSE</span>
-<span class="co">#&gt; 2 var3_A FALSE</span>
-<span class="co">#&gt; 3 var3_B FALSE</span>
-<span class="co">#&gt; 4 var2_A  TRUE</span>
-<span class="co">#&gt; 5  ASC_A  TRUE</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/overview_effects.html">overview_effects</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, re <span class="op">=</span> <span class="va">re</span>, alternatives <span class="op">=</span> <span class="va">alternatives</span>, base <span class="op">=</span> <span class="va">base</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   effect as_value as_coef random</span></span>
+<span><span class="co">#&gt; 1   var1     TRUE   FALSE  FALSE</span></span>
+<span><span class="co">#&gt; 2 var3_A     TRUE    TRUE  FALSE</span></span>
+<span><span class="co">#&gt; 3 var3_B     TRUE    TRUE  FALSE</span></span>
+<span><span class="co">#&gt; 4 var2_A    FALSE    TRUE   TRUE</span></span>
+<span><span class="co">#&gt; 5  ASC_A    FALSE    TRUE   TRUE</span></span></code></pre></div>
 <p>Hence, the coefficient vector <code>alpha</code> must be of length 3, where the elements 1 to 3 correspond to <code>var1</code>, <code>var3_A</code>, and <code>var3_B</code>, respectively. The matrix <code>b</code> must be of dimension 2 x <code>C</code>, where (by default) <code>C = 1</code> and row 1 and 2 correspond to <code>var2_A</code> and <code>ASC_A</code>, respectively.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span>
-  form <span class="op">=</span> <span class="va">form</span>, 
-  N <span class="op">=</span> <span class="va">N</span>, 
-  T <span class="op">=</span> <span class="cn">T</span>, 
-  J <span class="op">=</span> <span class="fl">2</span>, 
-  re <span class="op">=</span> <span class="va">re</span>, 
-  alternatives <span class="op">=</span> <span class="va">alternatives</span>, 
-  seed <span class="op">=</span> <span class="fl">1</span>,
-  alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,
-  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Summary of simulated choice data</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>100 decision makers </span>
-<span class="co">#&gt; 10 choice occasions each </span>
-<span class="co">#&gt; 1000 choices in total</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Alternatives</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>  frequency</span>
-<span class="co">#&gt; A       489</span>
-<span class="co">#&gt; B       511</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="text-decoration: underline;">Linear coefficients</span></span>
-<span class="co"><span style="text-decoration: underline;">#&gt; </span>    name    re</span>
-<span class="co">#&gt; 1   var1 FALSE</span>
-<span class="co">#&gt; 2 var3_A FALSE</span>
-<span class="co">#&gt; 3 var3_B FALSE</span>
-<span class="co">#&gt; 4 var2_A  TRUE</span>
-<span class="co">#&gt; 5  ASC_A  TRUE</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
+<span>  form <span class="op">=</span> <span class="va">form</span>, </span>
+<span>  N <span class="op">=</span> <span class="va">N</span>, </span>
+<span>  T <span class="op">=</span> <span class="cn">T</span>, </span>
+<span>  J <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>  re <span class="op">=</span> <span class="va">re</span>, </span>
+<span>  alternatives <span class="op">=</span> <span class="va">alternatives</span>, </span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  true_parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,</span>
+<span>    b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  count</span></span>
+<span><span class="co">#&gt; deciders           100</span></span>
+<span><span class="co">#&gt; choice occasions    10</span></span>
+<span><span class="co">#&gt; total choices     1000</span></span>
+<span><span class="co">#&gt; alternatives         2</span></span>
+<span><span class="co">#&gt; - 'A'              435</span></span>
+<span><span class="co">#&gt; - 'B'              565</span></span></code></pre></div>
 <p>We can visualize the covariates grouped by the chosen alternatives:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, by_choice <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, by_choice <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="data-plot-by-choice-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>What we see is consistent with our specification: Higher values of <code>var1_A</code> for example correspond more frequently to choice <code>B</code> (upper-right panel), because the coefficient of <code>var1</code> (the first value of <code>alpha</code>) is negative.</p>
 </div>
@@ -322,31 +306,31 @@
 <h2 id="train-and-test-data-set">Train and test data set<a class="anchor" aria-label="anchor" href="#train-and-test-data-set"></a>
 </h2>
 <p>The function <code><a href="../reference/train_test.html">train_test()</a></code> can be used to split the output of <code><a href="../reference/prepare_data.html">prepare_data()</a></code> or <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code> into a train and a test subset. This is useful when evaluating the prediction performance of a fitted model. For example, the following code puts 70% of deciders from our simulated <code>data</code> into the train subsample and 30% of deciders in the test subsample:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_proportion <span class="op">=</span> <span class="fl">0.3</span>, by <span class="op">=</span> <span class="st">"N"</span><span class="op">)</span>
-<span class="co">#&gt; $train</span>
-<span class="co">#&gt; Simulated data of 700 choices.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $test</span>
-<span class="co">#&gt; Simulated data of 300 choices.</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_proportion <span class="op">=</span> <span class="fl">0.3</span>, by <span class="op">=</span> <span class="st">"N"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $train</span></span>
+<span><span class="co">#&gt; Simulated data of 700 choices.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $test</span></span>
+<span><span class="co">#&gt; Simulated data of 300 choices.</span></span></code></pre></div>
 <p>Alternatively, the following code puts 2 randomly chosen choice occasions per decider from <code>data</code> into the test subsample, the rest goes into the train subsample:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_number <span class="op">=</span> <span class="fl">2</span>, by <span class="op">=</span> <span class="st">"T"</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co">#&gt; $train</span>
-<span class="co">#&gt; Simulated data of 800 choices.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $test</span>
-<span class="co">#&gt; Simulated data of 200 choices.</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_number <span class="op">=</span> <span class="fl">2</span>, by <span class="op">=</span> <span class="st">"T"</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $train</span></span>
+<span><span class="co">#&gt; Simulated data of 800 choices.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $test</span></span>
+<span><span class="co">#&gt; Simulated data of 200 choices.</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references">
-<div id="ref-mlogit">
-<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The mlogit Package.” <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
+<div id="ref-Croissant:2020">
+<p>Croissant, Y. 2020. “Estimation of Random Utility Models in R: The Mlogit Package.” <em>Journal of Statistical Software</em> 95 (11). <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.</p>
 </div>
-<div id="ref-Train:09">
-<p>Train, K. 2009. <em>Discrete Choice Methods with Simulation</em>. 2. ed. Cambridge Univ. Press.</p>
+<div id="ref-Train:2009">
+<p>Train, K. 2009. <em>Discrete Choice Methods with Simulation</em>. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271" class="external-link">https://doi.org/10.1017/CBO9780511805271</a>.</p>
 </div>
 </div>
 </div>
@@ -364,7 +348,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

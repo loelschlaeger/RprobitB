@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,28 +68,41 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pprint</span><span class="op">(</span><span class="va">x</span>, rowdots <span class="op">=</span> <span class="fl">4</span>, coldots <span class="op">=</span> <span class="fl">4</span>, digits <span class="op">=</span> <span class="fl">4</span>, name <span class="op">=</span> <span class="cn">NULL</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pprint</span><span class="op">(</span><span class="va">x</span>, rowdots <span class="op">=</span> <span class="fl">4</span>, coldots <span class="op">=</span> <span class="fl">4</span>, digits <span class="op">=</span> <span class="fl">4</span>, name <span class="op">=</span> <span class="cn">NULL</span>, desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>A (numeric or character) matrix or a vector.</p></dd>
+
+
 <dt>rowdots</dt>
 <dd><p>The row number which is replaced by dots.</p></dd>
+
+
 <dt>coldots</dt>
 <dd><p>The column number which is replaced by dots.</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>If <code>x</code> is numeric, sets the number of decimal places.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>Either <code>NULL</code> or a label for <code>x</code>. Only printed if
 <code>desc = TRUE</code>.</p></dd>
+
+
 <dt>desc</dt>
 <dd><p>Set to <code>TRUE</code> to print the name and the dimension of <code>x</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly returns <code>x</code>.</p>
+    
+
+<p>Invisibly returns <code>x</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -99,28 +111,28 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"single integer"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"single integer"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> single integer : 1</span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">26</span><span class="op">]</span>, name <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">26</span><span class="op">]</span>, name <span class="op">=</span> <span class="st">"letters"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> letters : character vector of length 26 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A B C ... Z</span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">                  name <span class="op">=</span> <span class="st">"single column matrix"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  name <span class="op">=</span> <span class="st">"single column matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> single column matrix : 100 x 1 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]   -0.2807</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]   -0.4937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]   -0.4492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1.1144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]   -0.0042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]   -1.0775</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ...        ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [100,] -1.5750</span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"single row matrix"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100,] -0.4254</span>
+<span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"single row matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> single row matrix : 1 x 100 matrix of integers </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] ... [,100]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    2    3 ...    100</span>
-<span class="r-in"><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">]</span>, ncol <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"big matrix"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">pprint</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">]</span>, ncol <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"big matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> big matrix : 4 x 6 matrix of characters </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] ... [,6]</span>
@@ -128,7 +140,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    B    F    J ...    V</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    C    G    K ...    W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    D    H    L ...    X</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -140,7 +152,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

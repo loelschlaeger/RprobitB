@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -91,17 +90,12 @@
           
           <code><a href="as_cov_names.html">as_cov_names()</a></code> 
         </dt>
-        <dd>Relabel the alternative specific covariates to the required format</dd>
-      </dl><dl><dt>
-          
-          <code><a href="missing_data.html">missing_data()</a></code> 
-        </dt>
-        <dd>Handle missing choice data</dd>
+        <dd>Re-label alternative specific covariates in required format</dd>
       </dl><dl><dt>
           
           <code><a href="prepare_data.html">prepare_data()</a></code> 
         </dt>
-        <dd>Prepare empirical choice data for estimation</dd>
+        <dd>Prepare choice data for estimation</dd>
       </dl><dl><dt>
           
           <code><a href="RprobitB_parameter.html">RprobitB_parameter()</a></code> 
@@ -140,14 +134,14 @@
         <dd>Check prior parameters</dd>
       </dl><dl><dt>
           
-          <code><a href="mcmc.html">mcmc()</a></code> 
+          <code><a href="fit_model.html">fit_model()</a></code> 
         </dt>
-        <dd>Probit model fitting via Markov chain Monte Carlo simulation</dd>
+        <dd>Fitting probit models via Markov chain Monte Carlo simulation</dd>
       </dl><dl><dt>
           
-          <code><a href="nested_model.html">nested_model()</a></code> 
+          <code><a href="update.RprobitB_fit.html">update(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Estimating a nested model</dd>
+        <dd>Update and re-fit a probit model</dd>
       </dl><dl><dt>
           
           <code><a href="transform.html">transform(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
@@ -168,7 +162,7 @@
           
           <code><a href="coef.RprobitB_fit.html">coef(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Linear coefficients</dd>
+        <dd>Extract model effects</dd>
       </dl><dl><dt>
           
           <code><a href="cov_mix.html">cov_mix()</a></code> 
@@ -184,10 +178,10 @@ object</dd>
           
           <code><a href="choice_probabilities.html">choice_probabilities()</a></code> 
         </dt>
-        <dd>Return choice probabilities of an <code>RprobitB_fit</code>.</dd>
+        <dd>Compute choice probabilities</dd>
       </dl><dl><dt>
           
-          <code><a href="preference_classification.html">preference_classification()</a></code> 
+          <code><a href="classification.html">classification()</a></code> 
         </dt>
         <dd>Classify deciders based on their preferences</dd>
       </dl><dl><dt>
@@ -223,26 +217,6 @@ object</dd>
         <dd>Compare fitted models</dd>
       </dl><dl><dt>
           
-          <code><a href="AIC.html">AIC()</a></code> 
-        </dt>
-        <dd>Akaike's Information Criterion</dd>
-      </dl><dl><dt>
-          
-          <code><a href="BIC.html">BIC()</a></code> 
-        </dt>
-        <dd>Bayesian Information Criterion</dd>
-      </dl><dl><dt>
-          
-          <code><a href="logLik.html">logLik()</a></code> 
-        </dt>
-        <dd>Log-likelihood value</dd>
-      </dl><dl><dt>
-          
-          <code><a href="nobs.html">nobs()</a></code> 
-        </dt>
-        <dd>Number of observations</dd>
-      </dl><dl><dt>
-          
           <code><a href="npar.html">npar()</a></code> 
         </dt>
         <dd>Number of model parameters</dd>
@@ -276,12 +250,12 @@ object</dd>
           
           <code><a href="choice_berserk.html">choice_berserk</a></code> 
         </dt>
-        <dd>Choice of berserking</dd>
+        <dd>Data of berserking choice</dd>
       </dl><dl><dt>
           
           <code><a href="choice_chess_opening.html">choice_chess_opening</a></code> 
         </dt>
-        <dd>Choice of a chess opening</dd>
+        <dd>Data of chess opening choice</dd>
       </dl></div><div class="section level2">
       <h2 id="fitted-model">Fitted model<a class="anchor" aria-label="anchor" href="#fitted-model"></a></h2>
       
@@ -295,20 +269,30 @@ object</dd>
 
       <dl><dt>
           
+          <code><a href="model_berserk.html">model_berserk</a></code> 
+        </dt>
+        <dd>Model for binary berserking choice</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_chessop.html">model_chessop</a></code> 
+        </dt>
+        <dd>Model for chess opening choice</dd>
+      </dl><dl><dt>
+          
           <code><a href="model_elec.html">model_elec</a></code> 
         </dt>
-        <dd>Mixed probit model for multivariate choice between electricity suppliers</dd>
+        <dd>Model for multivariate choice between electricity suppliers</dd>
       </dl><dl><dt>
           
           <code><a href="model_train.html">model_train</a></code> 
         </dt>
-        <dd>Probit model for binary choice between Train trip alternatives</dd>
+        <dd>Model for binary choice between Train trip alternatives</dd>
       </dl><dl><dt>
           
           <code><a href="model_train_sparse.html">model_train_sparse</a></code> 
         </dt>
-        <dd>Probit model for binary choice between Train trip alternatives with the price
-as the only explanatory variable</dd>
+        <dd>Model for for binary choice between Train trip alternatives with the
+price as the only explanatory variable</dd>
       </dl></div><div class="section level2">
       <h2 id="distributions">Distributions<a class="anchor" aria-label="anchor" href="#distributions"></a></h2>
       
@@ -339,7 +323,12 @@ as the only explanatory variable</dd>
           
           <code><a href="rtnorm.html">rtnorm()</a></code> 
         </dt>
-        <dd>Draw from truncated normal</dd>
+        <dd>Draw from one-sided truncated normal</dd>
+      </dl><dl><dt>
+          
+          <code><a href="rttnorm.html">rttnorm()</a></code> 
+        </dt>
+        <dd>Draw from two-sided truncated normal</dd>
       </dl><dl><dt>
           
           <code><a href="rwishart.html">rwishart()</a></code> 
@@ -358,6 +347,16 @@ as the only explanatory variable</dd>
 
       <dl><dt>
           
+          <code><a href="d_to_gamma.html">d_to_gamma()</a></code> 
+        </dt>
+        <dd>Transform threshold increments to thresholds</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ll_ordered.html">ll_ordered()</a></code> 
+        </dt>
+        <dd>Log-likelihood in the ordered probit model</dd>
+      </dl><dl><dt>
+          
           <code><a href="update_Omega.html">update_Omega()</a></code> 
         </dt>
         <dd>Update class covariances</dd>
@@ -373,9 +372,19 @@ as the only explanatory variable</dd>
         <dd>Update latent utility vector</dd>
       </dl><dl><dt>
           
+          <code><a href="update_U_ranked.html">update_U_ranked()</a></code> 
+        </dt>
+        <dd>Update latent utility vector in the ranked probit case</dd>
+      </dl><dl><dt>
+          
           <code><a href="update_b.html">update_b()</a></code> 
         </dt>
         <dd>Update class means</dd>
+      </dl><dl><dt>
+          
+          <code><a href="update_d.html">update_d()</a></code> 
+        </dt>
+        <dd>Update utility threshold increments</dd>
       </dl><dl><dt>
           
           <code><a href="update_m.html">update_m()</a></code> 
@@ -409,9 +418,14 @@ as the only explanatory variable</dd>
 
       <dl><dt>
           
+          <code><a href="M.html">M()</a></code> 
+        </dt>
+        <dd>Matrix difference operator for ranked vectors</dd>
+      </dl><dl><dt>
+          
           <code><a href="R_hat.html">R_hat()</a></code> 
         </dt>
-        <dd>Compute Gelman-Rubin statistic</dd>
+        <dd>Gelman-Rubin statistic</dd>
       </dl><dl><dt>
           
           <code><a href="delta.html">delta()</a></code> 
@@ -429,6 +443,11 @@ as the only explanatory variable</dd>
         <dd>Check covariance matrix properties</dd>
       </dl><dl><dt>
           
+          <code><a href="permutations.html">permutations()</a></code> 
+        </dt>
+        <dd>Permutations of a vector</dd>
+      </dl><dl><dt>
+          
           <code><a href="pprint.html">pprint()</a></code> 
         </dt>
         <dd>Print abbreviated matrices and vectors</dd>
@@ -442,7 +461,7 @@ as the only explanatory variable</dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

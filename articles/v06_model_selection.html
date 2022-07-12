@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,7 +87,7 @@
 
 
 <script src="v06_model_selection_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Model selection</h1>
             
       
@@ -98,35 +97,35 @@
 
     
     
-<p>The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.0 with the {RprobitB} 1.0.0.9000 package.&lt;/p&gt;"><sup>1</sup></a> outlines the model selection tools implemented in {RprobitB}.</p>
+<p>The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.0 package.&lt;/p&gt;"><sup>1</sup></a> outlines the model selection tools implemented in {RprobitB}.</p>
 <p>For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from <a href="https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html">the vignette on model fitting</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span>
-<span class="va">model_train</span>
-<span class="co">#&gt; Probit model 'choice ~ price + time + change + comfort | 0'.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span>
+<span><span class="va">model_train</span></span>
+<span><span class="co">#&gt; Probit model 'choice ~ price + time + change + comfort | 0'.</span></span></code></pre></div>
 <p>As a competing model, we consider explaining the choices only by the alternative’s price, i.e. the probit model with the formula <code>choice ~ price | 0</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This model is also saved in {RprobitB} and can be accessed via &lt;code&gt;data("model_train_sparse", package = "RprobitB")&lt;/code&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train_sparse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/nested_model.html">nested_model</a></span><span class="op">(</span><span class="va">model_train</span>, form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
-<p>The <code><a href="../reference/nested_model.html">nested_model()</a></code> function helps to estimate a new version of <code>model_train</code> with new specifications. Here, only <code>form</code> has been changed.</p>
+<code class="sourceCode R"><span><span class="va">model_train_sparse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">model_train</span>, form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<p>The <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> function helps to estimate a new version of <code>model_train</code> with new specifications. Here, only <code>form</code> has been changed.</p>
 <div class="section level2">
 <h2 id="the-model_selection-function">The <code>model_selection()</code> function<a class="anchor" aria-label="anchor" href="#the-model_selection-function"></a>
 </h2>
 <p>{RprobitB} provides the convenience function <code><a href="../reference/model_selection.html">model_selection()</a></code>, which takes an arbitrary number of <code>RprobitB_fit</code> objects and returns a matrix of model selection criteria:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, 
-                criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"WAIC"</span>, <span class="st">"MMLL"</span>, <span class="st">"BF"</span>, <span class="st">"pred_acc"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;                          model_train model_train_sparse</span>
-<span class="co">#&gt; npar                               4                  1</span>
-<span class="co">#&gt; LL                          -1727.74           -1865.86</span>
-<span class="co">#&gt; AIC                          3463.48            3733.72</span>
-<span class="co">#&gt; BIC                          3487.41            3739.70</span>
-<span class="co">#&gt; WAIC                         3463.76            3733.91</span>
-<span class="co">#&gt; se(WAIC)                        0.18               0.07</span>
-<span class="co">#&gt; pWAIC                           4.32               1.15</span>
-<span class="co">#&gt; MMLL                        -1732.14           -1867.48</span>
-<span class="co">#&gt; BF(*,model_train)                  1             &lt; 0.01</span>
-<span class="co">#&gt; BF(*,model_train_sparse)       &gt; 100                  1</span>
-<span class="co">#&gt; pred_acc                      69.55%             63.37%</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, </span>
+<span>                criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"WAIC"</span>, <span class="st">"MMLL"</span>, <span class="st">"BF"</span>, <span class="st">"pred_acc"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                          model_train model_train_sparse</span></span>
+<span><span class="co">#&gt; npar                               4                  1</span></span>
+<span><span class="co">#&gt; LL                          -1727.70           -1865.86</span></span>
+<span><span class="co">#&gt; AIC                          3463.41            3733.73</span></span>
+<span><span class="co">#&gt; BIC                          3487.34            3739.71</span></span>
+<span><span class="co">#&gt; WAIC                         3463.74            3733.87</span></span>
+<span><span class="co">#&gt; se(WAIC)                        0.19               0.07</span></span>
+<span><span class="co">#&gt; pWAIC                           4.37               1.13</span></span>
+<span><span class="co">#&gt; MMLL                        -1731.13           -1867.26</span></span>
+<span><span class="co">#&gt; BF(*,model_train)                  1             &lt; 0.01</span></span>
+<span><span class="co">#&gt; BF(*,model_train_sparse)       &gt; 100                  1</span></span>
+<span><span class="co">#&gt; pred_acc                      69.61%             63.40%</span></span></code></pre></div>
 <p>Specifying <code>criteria</code> is optional. Per default, <code>criteria = c("npar", "LL", "AIC", "BIC")</code>.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;To show the model formulas in the output of &lt;code&gt;&lt;a href="../reference/model_selection.html"&gt;model_selection()&lt;/a&gt;&lt;/code&gt;, add the argument &lt;code&gt;add_form = TRUE&lt;/code&gt;.&lt;/p&gt;'><sup>3</sup></a> The available model selection criteria are explained in the following.</p>
 <div class="section level3">
 <h3 id="npar">
@@ -134,41 +133,41 @@
 </h3>
 <p><code>"npar"</code> yields the number of model parameters, which is computed by the <code><a href="../reference/npar.html">npar()</a></code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/npar.html">npar</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span>
-<span class="co">#&gt; [1] 4 1</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/npar.html">npar</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4 1</span></span></code></pre></div>
 <p>Here, <code>model_train</code> has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while <code>model_train_sparse</code> has only a single price coefficient.</p>
 </div>
 <div class="section level3">
 <h3 id="ll">
 <code>LL</code><a class="anchor" aria-label="anchor" href="#ll"></a>
 </h3>
-<p>If <code>"LL"</code> is included in <code>criteria</code>, <code><a href="../reference/model_selection.html">model_selection()</a></code> returns the model’s log-likelihood values. They can also be directly accessed via the <code><a href="../reference/logLik.html">logLik()</a></code> method:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. &lt;code&gt;&lt;a href="../reference/logLik.html"&gt;logLik()&lt;/a&gt;&lt;/code&gt; has the argument &lt;code&gt;par_set&lt;/code&gt;, where alternative statistics for the point estimate can be specified.&lt;/p&gt;'><sup>4</sup></a></p>
+<p>If <code>"LL"</code> is included in <code>criteria</code>, <code><a href="../reference/model_selection.html">model_selection()</a></code> returns the model’s log-likelihood values. They can also be directly accessed via the <code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik()</a></code> method:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The log-likelihood values are per default computed at the point estimates derived from the Gibbs sample means. &lt;code&gt;&lt;a href="https://rdrr.io/r/stats/logLik.html" class="external-link"&gt;logLik()&lt;/a&gt;&lt;/code&gt; has the argument &lt;code&gt;par_set&lt;/code&gt;, where alternative statistics for the point estimate can be specified.&lt;/p&gt;'><sup>4</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/logLik.html">logLik</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
-<span class="co">#&gt; [1] -1727.742</span>
-<span class="fu"><a href="../reference/logLik.html">logLik</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span>
-<span class="co">#&gt; [1] -1865.861</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -1727.704</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -1865.863</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="aic">
 <code>AIC</code><a class="anchor" aria-label="anchor" href="#aic"></a>
 </h3>
 <p>Including <code>"AIC"</code> yields the Akaike’s Information Criterion <span class="citation">(Akaike <a href="#ref-Akaike:1974" role="doc-biblioref">1974</a>)</span>, which is computed as <span class="math display">\[-2 \cdot \text{LL} + k \cdot \text{npar},\]</span> where <span class="math inline">\(\text{LL}\)</span> is the <a href="#ll">model’s log-likelihood value</a>, <span class="math inline">\(k\)</span> is the penalty per parameter with <span class="math inline">\(k = 2\)</span> per default for the classical AIC, and <span class="math inline">\(\text{npar}\)</span> is the number of parameters in the fitted model.</p>
-<p>Alternatively, the <code><a href="../reference/AIC.html">AIC()</a></code> method also returns the AIC values:</p>
+<p>Alternatively, the <code><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC()</a></code> method also returns the AIC values:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/AIC.html">AIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 3463.485 3733.723</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3463.408 3733.725</span></span></code></pre></div>
 <p>The AIC quantifies the trade-off between over- and under-fitting, where smaller values are preferred. Here, the increase in goodness of fit justifies the additional 3 parameters of <code>model_train</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="bic">
 <code>BIC</code><a class="anchor" aria-label="anchor" href="#bic"></a>
 </h3>
-<p>Similar to the AIC, <code>"BIC"</code> yields the Bayesian Information Criterion <span class="citation">(Schwarz <a href="#ref-Schwarz:1978" role="doc-biblioref">1978</a>)</span>, which is defined as <span class="math display">\[-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},\]</span> where <span class="math inline">\(\text{LL}\)</span> is the <a href="#ll">model’s log-likelihood value</a>, <span class="math inline">\(\text{nobs}\)</span> is the number of data points (which can be accessed via the <code><a href="../reference/nobs.html">nobs()</a></code> method), and <span class="math inline">\(\text{npar}\)</span> is the <a href="#npar">number of parameters in the fitted model</a>. The interpretation is analogue to AIC.</p>
+<p>Similar to the AIC, <code>"BIC"</code> yields the Bayesian Information Criterion <span class="citation">(Schwarz <a href="#ref-Schwarz:1978" role="doc-biblioref">1978</a>)</span>, which is defined as <span class="math display">\[-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},\]</span> where <span class="math inline">\(\text{LL}\)</span> is the <a href="#ll">model’s log-likelihood value</a>, <span class="math inline">\(\text{nobs}\)</span> is the number of data points (which can be accessed via the <code><a href="https://rdrr.io/r/stats/nobs.html" class="external-link">nobs()</a></code> method), and <span class="math inline">\(\text{npar}\)</span> is the <a href="#npar">number of parameters in the fitted model</a>. The interpretation is analogue to AIC.</p>
 <p>{RprobitB} also provided a method for the <code>BIC</code> value:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/BIC.html">BIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span>
-<span class="co">#&gt; [1] 3487.414 3739.705</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3487.338 3739.708</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="waic-with-sewaic-and-pwaic">
@@ -177,51 +176,51 @@
 <p>WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion <span class="citation">(Watanabe and Opper <a href="#ref-Watanabe:2010" role="doc-biblioref">2010</a>)</span>. As for AIC and BIC, the smaller the WAIC value the better the model. Including <code>"WAIC"</code> in <code>criteria</code> yields the WAIC value, its standard error <code>se(WAIC)</code>, and the effective number of parameters <code>pWAIC</code>, see below.</p>
 <p>The WAIC is defined as</p>
 <p><span class="math display">\[-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},\]</span></p>
-<p>where <span class="math inline">\(\text{lppd}\)</span> stands for log pointwise predictive density and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see <span class="citation">McElreath (<a href="#ref-McElreath:16" role="doc-biblioref">2020</a>)</span> p. 220 for a reference.</p>
+<p>where <span class="math inline">\(\text{lppd}\)</span> stands for log pointwise predictive density and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see <span class="citation">McElreath (<a href="#ref-McElreath:2016" role="doc-biblioref">2020</a>)</span> p. 220 for a reference.</p>
 <p>The <span class="math inline">\(\text{lppd}\)</span> is approximated as follows. Let <span class="math display">\[p_{si} = \Pr(y_i\mid \theta_s)\]</span> be the probability of observation <span class="math inline">\(y_i\)</span> (here the single choices) given the <span class="math inline">\(s\)</span>-th set <span class="math inline">\(\theta_s\)</span> of parameter samples from the posterior. Then</p>
 <p><span class="math display">\[\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).\]</span> The penalty term is computed as the sum over the variances in log-probability for each observation: <span class="math display">\[p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . \]</span> The <span class="math inline">\(\text{WAIC}\)</span> has a standard error of <span class="math display">\[\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},\]</span> where <span class="math inline">\(n\)</span> is the number of choices.</p>
 <p>Before computing the WAIC of an  object, the probabilities <span class="math inline">\(p_{si}\)</span> must be computed via the <code><a href="../reference/compute_p_si.html">compute_p_si()</a></code> function:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This computation has been outsourced because it is very time consuming. For example, the computation for &lt;code&gt;model_train&lt;/code&gt; took about 5 minutes. To decrease the computation time, the function offers parallelization via specifying the number &lt;code&gt;ncores&lt;/code&gt; of parallel CPU cores.&lt;/p&gt;"><sup>5</sup></a></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_p_si.html">compute_p_si</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_p_si.html">compute_p_si</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span></code></pre></div>
 <p>Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
-<span class="co">#&gt; 3463.76 (0.18)</span>
-<span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span>
-<span class="co">#&gt; 3733.91 (0.07)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 3463.74 (0.19)</span></span>
+<span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 3733.87 (0.07)</span></span></code></pre></div>
 <p>You can visualize the convergence of the WAIC as follows:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="waictrace-1.png" width="75%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="waictrace-2.png" width="75%" style="display: block; margin: auto;"></p>
-<p>Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing <code>R</code> in <code><a href="../reference/mcmc.html">mcmc()</a></code> or decreasing <code>B</code> or <code>Q</code> via <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code>, see the vignette on model fitting.</p>
+<p>Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing <code>R</code> in <code><a href="../reference/fit_model.html">fit_model()</a></code> or decreasing <code>B</code> or <code>Q</code> via <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code>, see the vignette on model fitting.</p>
 </div>
 <div class="section level3">
 <h3 id="mmll">
 <code>MMLL</code><a class="anchor" aria-label="anchor" href="#mmll"></a>
 </h3>
 <p><code>"MMLL"</code> in <code>criteria</code> stands for marginal model log-likelihood. The model’s marginal likelihood <span class="math inline">\(\Pr(y\mid M)\)</span> for a model <span class="math inline">\(M\)</span> and data <span class="math inline">\(y\)</span> is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.</p>
-<p>{RprobitB} uses the posterior Gibbs samples derived from the <code><a href="../reference/mcmc.html">mcmc()</a></code> function to approximate the model’s marginal likelihood via the posterior harmonic mean estimator <span class="citation">(Newton and Raftery <a href="#ref-Newton:1994" role="doc-biblioref">1994</a>)</span>: Let <span class="math inline">\(S\)</span> denote the number of available posterior samples <span class="math inline">\(\theta_1,\dots,\theta_S\)</span>. Then, <span class="math display">\[\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).\]</span></p>
+<p>{RprobitB} uses the posterior Gibbs samples derived from the <code>mcmc()</code> function to approximate the model’s marginal likelihood via the posterior harmonic mean estimator <span class="citation">(Newton and Raftery <a href="#ref-Newton:1994" role="doc-biblioref">1994</a>)</span>: Let <span class="math inline">\(S\)</span> denote the number of available posterior samples <span class="math inline">\(\theta_1,\dots,\theta_S\)</span>. Then, <span class="math display">\[\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).\]</span></p>
 <p>By the law of large numbers, <span class="math inline">\(\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)\)</span> almost surely as <span class="math inline">\(S \to \infty\)</span>.</p>
 <p>As for the <a href="#waic">WAIC</a>, computing the MMLL relies on the probabilities <span class="math inline">\(p_{si} = \Pr(y_i\mid \theta_s)\)</span>, which must first be computed via the <code><a href="../reference/compute_p_si.html">compute_p_si()</a></code> function. Afterwards, the <code><a href="../reference/mml.html">mml()</a></code> function can be called with an <code>RprobitB_fit</code> object as input. The function returns the <code>RprobitB_fit</code> object, where the marginal likelihood value is saved as the entry <code>"mml"</code> and the marginal log-likelihood value as the attribute <code>"mmll"</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.&lt;/p&gt;"><sup>6</sup></a></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mml.html">mml</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>
-<span class="va">model_train</span><span class="op">$</span><span class="va">mml</span>
-<span class="co">#&gt; 3.54e-117 * exp(-1464)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">mml</span>, <span class="st">"mmll"</span><span class="op">)</span>
-<span class="co">#&gt; [1] -1732.138</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mml.html">mml</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
+<span><span class="va">model_train</span><span class="op">$</span><span class="va">mml</span></span>
+<span><span class="co">#&gt; 9.72e-117 * exp(-1464)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">mml</span>, <span class="st">"mmll"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -1731.128</span></span></code></pre></div>
 <p>Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Set &lt;code&gt;log = FALSE&lt;/code&gt; to plot the non-log-transformed likelihood instead.&lt;/p&gt;"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">mml</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">mml</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mmltrace-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator <span class="citation">(Hammersley and Handscomb <a href="#ref-Hammersley:1964" role="doc-biblioref">1964</a>)</span>: For this approach, <span class="math inline">\(S\)</span> samples <span class="math inline">\(\theta_1,\dots,\theta_S\)</span> are drawn from the model’s prior distribution. Then,</p>
 <p><span class="math display">\[\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).\]</span></p>
 <p>Again, it hols by the law of large numbers, that <span class="math inline">\(\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)\)</span> almost surely as <span class="math inline">\(S \to \infty\)</span>. The final approximation of the model’s marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.</p>
 <p>To use the prior arithmetic mean estimator, call the <code><a href="../reference/mml.html">mml()</a></code> function with a specification of the number of prior draws <code>S</code> and set <code>recompute = TRUE</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The &lt;code&gt;&lt;a href="../reference/mml.html"&gt;mml()&lt;/a&gt;&lt;/code&gt; function offers parallelization via specifying the number &lt;code&gt;ncores&lt;/code&gt; of parallel CPU cores.&lt;/p&gt;'><sup>8</sup></a></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mml.html">mml</a></span><span class="op">(</span><span class="va">model_train</span>, S <span class="op">=</span> <span class="fl">1000</span>, recompute <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mml.html">mml</a></span><span class="op">(</span><span class="va">model_train</span>, S <span class="op">=</span> <span class="fl">1000</span>, recompute <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as <span class="citation">Gronau et al. (<a href="#ref-Gronau:2017" role="doc-biblioref">2017</a>)</span> points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number <code>S</code> of prior samples is required.</p>
 </div>
 <div class="section level3">
@@ -235,10 +234,10 @@ BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(
 <p>The ratio <span class="math inline">\(\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})\)</span> expresses the factor by which <span class="math inline">\(\texttt{mod0}\)</span> a priori is assumed to be the correct model. Per default, {RprobitB} sets <span class="math inline">\(\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5\)</span>. The front part <span class="math inline">\(\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})\)</span> is the ratio of the <a href="#mmll">marginal model likelihoods</a>. A value of <span class="math inline">\(BF(\texttt{mod0},\texttt{mod1}) &gt; 1\)</span> means that the model <span class="math inline">\(\texttt{mod0}\)</span> is more strongly supported by the data under consideration than <span class="math inline">\(\texttt{mod1}\)</span>.</p>
 <p>Adding <code>"BF"</code> to the <code>criteria</code> argument of <code>model_selection</code> yields the Bayes factors. We see a decisive evidence <span class="citation">(Jeffreys <a href="#ref-Jeffreys:1998" role="doc-biblioref">1998</a>)</span> in favor of <code>model_train</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BF"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;                          model_train model_train_sparse</span>
-<span class="co">#&gt; BF(*,model_train)                  1             &lt; 0.01</span>
-<span class="co">#&gt; BF(*,model_train_sparse)       &gt; 100                  1</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BF"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                          model_train model_train_sparse</span></span>
+<span><span class="co">#&gt; BF(*,model_train)                  1             &lt; 0.01</span></span>
+<span><span class="co">#&gt; BF(*,model_train_sparse)       &gt; 100                  1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="pred_acc">
@@ -246,8 +245,8 @@ BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(
 </h3>
 <p>Finally, adding <code>"pred_acc"</code> to the <code>criteria</code> argument for the <code><a href="../reference/model_selection.html">model_selection()</a></code> function returns the share of correctly predicted choices. From the output of <code><a href="../reference/model_selection.html">model_selection()</a></code> above (or alternatively the one in the following) we deduce that <code>model_train</code> correctly predicts about 6% of the choices more than <code>model_train_sparse</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See the vignette on choice prediction for more nuanced performance comparison in terms of sensitivity and specificity.&lt;/p&gt;"><sup>9</sup></a></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pred_acc.html">pred_acc</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.6954592 0.6336634</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pred_acc.html">pred_acc</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.6961420 0.6340048</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2 unnumbered">
@@ -255,25 +254,25 @@ BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(
 </h2>
 <div id="refs" class="references">
 <div id="ref-Akaike:1974">
-<p>Akaike, H. 1974. “A New Look at the Statistical Model Identification” 19.</p>
+<p>Akaike, H. 1974. “A New Look at the Statistical Model Identification.” <em>IEEE Transactions on Automatic Control</em> 19. <a href="https://doi.org/10.1109/TAC.1974.1100705" class="external-link">https://doi.org/10.1109/TAC.1974.1100705</a>.</p>
 </div>
 <div id="ref-Gronau:2017">
-<p>Gronau, Q. F., A. Sarafoglou, D. Matzke, A. Ly, U. Boehm, M. Marsman, D. S. Leslie, J. J. Forster, E. Wagenmakers, and H. Steingroever. 2017. “A Tutorial on Bridge Sampling.” <em>Journal of Mathematical Psychology</em> 81: 80–97.</p>
+<p>Gronau, Q. F., A. Sarafoglou, D. Matzke, A. Ly, U. Boehm, M. Marsman, D. S. Leslie, J. J. Forster, E. Wagenmakers, and H. Steingroever. 2017. “A Tutorial on Bridge Sampling.” <em>Journal of Mathematical Psychology</em> 81. <a href="https://doi.org/10.1016/j.jmp.2017.09.005" class="external-link">https://doi.org/10.1016/j.jmp.2017.09.005</a>.</p>
 </div>
 <div id="ref-Hammersley:1964">
-<p>Hammersley, J. M., and D. C. Handscomb. 1964. “General Principles of the Monte Carlo Method,” 50–75.</p>
+<p>Hammersley, J. M., and D. C. Handscomb. 1964. “General Principles of the Monte Carlo Method.” <em>Springer Verlag</em>. <a href="https://doi.org/10.1007/978-94-009-5819-7_5" class="external-link">https://doi.org/10.1007/978-94-009-5819-7_5</a>.</p>
 </div>
 <div id="ref-Jeffreys:1998">
 <p>Jeffreys, Harold. 1998. <em>The Theory of Probability</em>. OUP Oxford.</p>
 </div>
 <div id="ref-Marin:2014">
-<p>Marin, J., and C. Robert. 2014. <em>Bayesian essentials with R</em>. Springer Textbooks in Statistics. Springer Verlag, New York.</p>
+<p>Marin, J., and C. Robert. 2014. <em>Bayesian Essentials with R</em>. Springer Verlag. <a href="https://doi.org/10.1007/978-1-4614-8687-9" class="external-link">https://doi.org/10.1007/978-1-4614-8687-9</a>.</p>
 </div>
-<div id="ref-McElreath:16">
-<p>McElreath, R. 2020. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. 2. ed. Chapman; Hall/CRC.</p>
+<div id="ref-McElreath:2016">
+<p>McElreath, R. 2020. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Chapman; Hall/CRC. <a href="https://doi.org/10.1201/9780429029608" class="external-link">https://doi.org/10.1201/9780429029608</a>.</p>
 </div>
 <div id="ref-Newton:1994">
-<p>Newton, M. A., and A. E. Raftery. 1994. “Approximate Bayesian Inference with the Weighted Likelihood Bootstrap.” <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 56 (1): 3–26.</p>
+<p>Newton, M. A., and A. E. Raftery. 1994. “Approximate Bayesian Inference with the Weighted Likelihood Bootstrap.” <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 56 (1). <a href="https://doi.org/j.2517-6161.1994.tb01956.x" class="external-link">https://doi.org/j.2517-6161.1994.tb01956.x</a>.</p>
 </div>
 <div id="ref-Schwarz:1978">
 <p>Schwarz, G. 1978. “Estimating the Dimension of a Model.” <em>The Annals of Statistics</em> 6.</p>
@@ -297,7 +296,7 @@ BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

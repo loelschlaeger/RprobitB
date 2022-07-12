@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,22 +68,24 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">model_selection</span><span class="op">(</span>
-  <span class="va">...</span>,
-  criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span><span class="op">)</span>,
-  add_form <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">model_selection</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span><span class="op">)</span>,</span>
+<span>  add_form <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>...</dt>
 <dd><p>One or more objects of class <code>RprobitB_fit</code>.</p></dd>
+
+
 <dt>criteria</dt>
 <dd><p>A vector of one or more of the following characters:</p><ul><li><p><code>"npar"</code> for the number of model parameters (see <code><a href="npar.html">npar</a></code>),</p></li>
-<li><p><code>"LL"</code> for the log-likelihood value (see <code><a href="logLik.html">logLik</a></code>),</p></li>
-<li><p><code>"AIC"</code> for the AIC value (see <code><a href="AIC.html">AIC</a></code>),</p></li>
-<li><p><code>"BIC"</code> for the BIC value (see <code><a href="BIC.html">BIC</a></code>),</p></li>
+<li><p><code>"LL"</code> for the log-likelihood value (see <code><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></code>),</p></li>
+<li><p><code>"AIC"</code> for the AIC value (see <code><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></code>),</p></li>
+<li><p><code>"BIC"</code> for the BIC value (see <code><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></code>),</p></li>
 <li><p><code>"WAIC"</code> for the WAIC value (also shows its standard error
 <code>sd(WAIC)</code> and the number <code>pWAIC</code> of effective model parameters,
 see <code><a href="WAIC.html">WAIC</a></code>),</p></li>
@@ -92,12 +93,17 @@ see <code><a href="WAIC.html">WAIC</a></code>),</p></li>
 <li><p><code>"BF"</code> for the Bayes factor,</p></li>
 <li><p><code>"pred_acc"</code> for the prediction accuracy (see <code><a href="pred_acc.html">pred_acc</a></code>).</p></li>
 </ul></dd>
+
+
 <dt>add_form</dt>
 <dd><p>Set to <code>TRUE</code> to add the model formulas.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame, criteria in columns, models in rows.</p>
+    
+
+<p>A data frame, criteria in columns, models in rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -106,22 +112,22 @@ see <code><a href="WAIC.html">WAIC</a></code>),</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train_sparse"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">criteria</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"WAIC"</span>, <span class="st">"MMLL"</span>, <span class="st">"BF"</span>, <span class="st">"pred_acc"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">model_selection</span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="va">criteria</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train_sparse"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">criteria</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"WAIC"</span>, <span class="st">"MMLL"</span>, <span class="st">"BF"</span>, <span class="st">"pred_acc"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">model_selection</span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="va">criteria</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          model_train model_train_sparse</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> npar                               4                  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LL                          -1727.74           -1865.86</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC                          3463.48            3733.72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC                          3487.41            3739.70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WAIC                         3463.76            3733.91</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> se(WAIC)                        0.18               0.07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> pWAIC                           4.32               1.15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MMLL                        -1732.14           -1867.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LL                          -1727.70           -1865.86</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AIC                          3463.41            3733.73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BIC                          3487.34            3739.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WAIC                         3463.74            3733.87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> se(WAIC)                        0.19               0.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pWAIC                           4.37               1.13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MMLL                        -1731.13           -1867.26</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BF(*,model_train)                  1             &lt; 0.01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> BF(*,model_train_sparse)       &gt; 100                  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> pred_acc                      69.55%             63.37%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pred_acc                      69.61%             63.40%</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -133,7 +139,7 @@ see <code><a href="WAIC.html">WAIC</a></code>),</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

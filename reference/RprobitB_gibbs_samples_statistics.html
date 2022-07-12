@@ -12,7 +12,7 @@ RprobitB_gibbs_samples_statistics."><meta property="og:image" content="https://l
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,6 @@ RprobitB_gibbs_samples_statistics."><meta property="og:image" content="https://l
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,16 +71,19 @@ RprobitB_gibbs_samples_statistics."><meta property="og:image" content="https://l
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">RprobitB_gibbs_samples_statistics</span><span class="op">(</span><span class="va">gibbs_samples</span>, <span class="va">FUN</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RprobitB_gibbs_samples_statistics</span><span class="op">(</span><span class="va">gibbs_samples</span>, FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>gibbs_samples</dt>
-<dd><p>An object of class <code>RprobitB_gibbs_samples</code>.</p></dd>
+<dd><p>An object of class <code>RprobitB_gibbs_samples</code>, which generally is located
+as object <code>gibbs_samples</code> in an <code>RprobitB_model</code> object.</p></dd>
+
+
 <dt>FUN</dt>
 <dd><p>A (preferably named) list of functions that compute parameter statistics
-from the Gibbs samples, i.e.</p><ul><li><p><code>mean</code> for the mean,</p></li>
+from the Gibbs samples, for example</p><ul><li><p><code>mean</code> for the mean,</p></li>
 <li><p><code>sd</code> for the standard deviation,</p></li>
 <li><p><code>min</code> for the minimum,</p></li>
 <li><p><code>max</code> for the maximum,</p></li>
@@ -89,10 +91,13 @@ from the Gibbs samples, i.e.</p><ul><li><p><code>mean</code> for the mean,</p></
 <li><p><code>function(x) quantile(x, p)</code> for the <code>p</code>th quantile,</p></li>
 <li><p><code>R_hat</code> for the Gelman-Rubin statistic.</p></li>
 </ul></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>RprobitB_gibbs_samples_statistics</code>, which is a list
+    
+
+<p>An object of class <code>RprobitB_gibbs_samples_statistics</code>, which is a list
 of statistics from <code>gibbs_samples</code> obtained by applying the elements of
 <code>FUN</code>.</p>
     </div>
@@ -106,7 +111,7 @@ of statistics from <code>gibbs_samples</code> obtained by applying the elements 
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@
     <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-    <a class="dropdown-item" href="../articles/v07_applications.html">Applications</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,7 +68,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">update_Omega</span><span class="op">(</span><span class="va">beta</span>, <span class="va">b</span>, <span class="va">z</span>, <span class="va">m</span>, <span class="va">nu</span>, <span class="va">Theta</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_Omega</span><span class="op">(</span><span class="va">beta</span>, <span class="va">b</span>, <span class="va">z</span>, <span class="va">m</span>, <span class="va">nu</span>, <span class="va">Theta</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,24 +77,39 @@
 <dd><p>The matrix of the decision-maker specific coefficient vectors of dimension
 <code>P_r</code> x <code>N</code>.
 Set to <code>NA</code> if <code>P_r = 0</code>.</p></dd>
+
+
 <dt>b</dt>
 <dd><p>The matrix of class means as columns of dimension <code>P_r</code> x <code>C</code>.
 Set to <code>NA</code> if <code>P_r = 0</code>.</p></dd>
+
+
 <dt>z</dt>
 <dd><p>The vector of the allocation variables of length <code>N</code>.
 Set to <code>NA</code> if <code>P_r = 0</code>.</p></dd>
+
+
 <dt>m</dt>
 <dd><p>The vector of class sizes of length <code>C</code>.</p></dd>
+
+
 <dt>nu</dt>
-<dd><p>The degrees of freedom (a natural number greater than <code>P_r</code>) of
-the Inverse Wishart prior for each <code>Omega_c</code>.</p></dd>
+<dd><p>The degrees of freedom (a natural number greater than <code>P_r</code>) of the Inverse
+Wishart prior for each <code>Omega_c</code>.
+Per default, <code>nu = P_r + 2</code>.</p></dd>
+
+
 <dt>Theta</dt>
-<dd><p>The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the
-Inverse Wishart prior for each <code>Omega_c</code>.</p></dd>
+<dd><p>The scale matrix of dimension <code>P_r</code> x <code>P_r</code> of the Inverse Wishart prior for
+each <code>Omega_c</code>.
+Per default, <code>Theta = diag(P_r)</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A matrix of updated covariance matrices for each class in columns.</p>
+    
+
+<p>A matrix of updated covariance matrices for each class in columns.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -112,23 +126,23 @@ the product is over the values \(n\) for which \(z_n=c\) holds.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes</span></span>
-<span class="r-in"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
-<span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">(</span><span class="va">Omega_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0.3</span>,<span class="fl">0.3</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="op">-</span><span class="fl">0.3</span>,<span class="op">-</span><span class="fl">0.3</span>,<span class="fl">0.8</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes</span></span></span>
+<span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">Omega_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0.3</span>,<span class="fl">0.3</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="op">-</span><span class="fl">0.3</span>,<span class="op">-</span><span class="fl">0.3</span>,<span class="fl">0.8</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.0  1.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.3 -0.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.3 -0.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.5  0.8</span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="rmvnorm.html">rmvnorm</a></span><span class="op">(</span><span class="va">b</span><span class="op">[</span>,<span class="va">z</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">Omega_true</span><span class="op">[</span>,<span class="va">z</span><span class="op">]</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">### degrees of freedom and scale matrix for the Wishart prior</span></span>
-<span class="r-in"><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="va">Theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">### updated class covariance matrices (in columns)</span></span>
-<span class="r-in"><span class="fu">update_Omega</span><span class="op">(</span>beta <span class="op">=</span> <span class="va">beta</span>, b <span class="op">=</span> <span class="va">b</span>, z <span class="op">=</span> <span class="va">z</span>, m <span class="op">=</span> <span class="va">m</span>, nu <span class="op">=</span> <span class="va">nu</span>, Theta <span class="op">=</span> <span class="va">Theta</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="rmvnorm.html">rmvnorm</a></span><span class="op">(</span><span class="va">b</span><span class="op">[</span>,<span class="va">z</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">Omega_true</span><span class="op">[</span>,<span class="va">z</span><span class="op">]</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">### degrees of freedom and scale matrix for the Wishart prior</span></span></span>
+<span class="r-in"><span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="va">Theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">### updated class covariance matrices (in columns)</span></span></span>
+<span class="r-in"><span><span class="fu">update_Omega</span><span class="op">(</span>beta <span class="op">=</span> <span class="va">beta</span>, b <span class="op">=</span> <span class="va">b</span>, z <span class="op">=</span> <span class="va">z</span>, m <span class="op">=</span> <span class="va">m</span>, nu <span class="op">=</span> <span class="va">nu</span>, Theta <span class="op">=</span> <span class="va">Theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]       [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.5829456  1.2182977</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.1225124 -0.4149462</span>
@@ -145,7 +159,7 @@ the product is over the values \(n\) for which \(z_n=c\) holds.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
