@@ -80,9 +80,7 @@ test_that("data preparation with ordered choices works", {
     J = 5,
     alternatives = alternatives,
     ordered = TRUE,
-    covariates = list(
-      "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
-    ),
+    covariates = list("gender" = rep(c(0,1,1,0,1), 11)),
     seed = 1
   )$choice_data
   data <- prepare_data(
@@ -177,9 +175,7 @@ test_that("simulating ordered choices works", {
     J = 5,
     alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
     ordered = TRUE,
-    covariates = list(
-      "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
-    ),
+    covariates = list("gender" = rep(c(0,1,1,0,1), 11)),
     seed = 1
   )
   expect_snapshot(print(data))

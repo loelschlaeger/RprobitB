@@ -326,7 +326,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
     colnames(choice_data) <- c(cols_old, col_new)
 
     ### preserve factors
-    if(inherits(choice_data[[col]],"factor")) {
+    if(is.factor(choice_data[[col]])) {
       choice_data[[col_new]] <- factor(choice_data[[col_new]],
                                        levels = levels(choice_data[[col]]))
     }

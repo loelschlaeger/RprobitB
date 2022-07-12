@@ -53,10 +53,6 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
     stop("'criteria' must be a character vector.",
          call. = FALSE)
   }
-  if (!(length(add_form) == 1 && inherits(add_form,"logical"))) {
-    stop("'add_form' must be a boolean.",
-         call. = FALSE)
-  }
 
   ### create output matrix
   output <- matrix(NA_real_, nrow = 0, ncol = length(models))
@@ -585,10 +581,6 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
   }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
     stop("'ncores' must be a positive integer.",
-         call. = FALSE)
-  }
-  if(!(length(recompute) == 1 && inherits(recompute, "logical"))){
-    stop("'recompute' must be a boolean.",
          call. = FALSE)
   }
 

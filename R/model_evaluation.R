@@ -37,7 +37,7 @@ RprobitB_gibbs_samples_statistics <- function(
          call. = FALSE)
   }
   for (i in seq_len(length(FUN))) {
-    if (!inherits(class(FUN[[i]]), "function")) {
+    if (!is.function(FUN[[i]])) {
       stop("Element ", i, " in 'FUN' is not of class 'function'.",
            call. = FALSE)
     }
@@ -450,7 +450,7 @@ point_estimates <- function(x, FUN = mean) {
   if (!is.list(FUN)) {
     FUN <- list(FUN)
   }
-  if (length(FUN) != 1 || !inherits(FUN[[1]],"function")) {
+  if (length(FUN) != 1 || !is.function(FUN[[1]])) {
     stop("'FUN' must be a function.",
          call. = FALSE)
   }
