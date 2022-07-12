@@ -482,7 +482,7 @@ The Gibbs samples obtained from this updating scheme (except for $s$ and $z$) la
 The Gibbs sampling scheme can be executed via \code{fit\_model(data = data)}, where \code{data} is an \class{RprobitB\_data} object (introduced in Section \ref{sec:choice_data}).\footnote{The \class{RprobitB\_data} object already contains the model formula and the random effect specification.} Optional arguments are:
 
 \begin{itemize}
-  \item \code{scale}: A character which determines the utility scale (cf., Section \ref{sec:probit_model}). It is of the form \code{"<parameter> := <value>"}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>} for the \code{<j>}-th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e., $\text{const}$ from above). Per default \code{scale = "Sigma\_1 := 1"}, i.e., the first error term variance is fixed to 1.
+  \item \code{scale}: A character which determines the utility scale (cf., Section \ref{sec:probit_model}). It is of the form \code{"<parameter> := <value>"}, where \code{<parameter>} is either the name of a fixed effect or \code{Sigma\_<j>,<j>} for the \code{<j>}-th diagonal element of \code{Sigma}, and \code{<value>} is the value of the fixed parameter (i.e., $\text{const}$ from above). Per default \code{scale = "Sigma\_1,1 := 1"}, i.e., the first error term variance is fixed to 1.
   \item \code{R}: The number of iterations of the Gibbs sampler. The default is \code{R = 1000}.
   \item \code{B}: The length of the burn-in period (\code{B = R/2} by default).\footnote{The theory behind Gibbs sampling constitutes that the sequence of samples produced by the
 updating scheme is a Markov chain with stationary distribution equal to the desired joint posterior distribution. It takes a certain number of iterations for that stationary distribution to be approximated reasonably well. Therefore, it is common practice to discard the first \code{B} out of \code{R} samples (the so-called burn-in period).}
@@ -558,7 +558,7 @@ Additionally, we can plot the autocorrelation of the Gibbs samples via \code{typ
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-train-acf}
 
-The \fct{transform} method can be used to reduce the autocorrelation in a subsample (commonly referred to as "thinning"):\footnote{The function can also be used to change the length of the burn-in period with \code{transform(model\_train, B = B\_new)} or the utility scale, e.g., \code{transform(model\_train, scale = "Sigma\_1 := 1")}.}
+The \fct{transform} method can be used to reduce the autocorrelation in a subsample (commonly referred to as "thinning"):\footnote{The function can also be used to change the length of the burn-in period with \code{transform(model\_train, B = B\_new)} or the utility scale, e.g., \code{transform(model\_train, scale = "Sigma\_1,1 := 1")}.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -1033,8 +1033,8 @@ The inclusion of new package functionality is ongoing and can be followed on the
 \section*{Computational details}
 
 The results in this paper were obtained using
-\proglang{R}~4.1.0 with the
-\pkg{RprobitB}~1.0.0.9000 package. \proglang{R} itself
+\proglang{R}~4.1.3 with the
+\pkg{RprobitB}~1.1.0 package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.
 
