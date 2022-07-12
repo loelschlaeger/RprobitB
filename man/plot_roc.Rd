@@ -22,3 +22,4 @@ This function draws receiver operating characteristic (ROC) curves.
 RprobitB:::plot_roc(RprobitB::model_train)
 
 }
+\keyword{internal}
