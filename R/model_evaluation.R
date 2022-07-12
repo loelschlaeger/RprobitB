@@ -342,6 +342,7 @@ classification <- function(x, add_true = FALSE) {
 #'   data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
 #'   overview = FALSE
 #' )
+#'
 #' @export
 
 predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
@@ -352,7 +353,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
     data <- object$data
   } else if (is.data.frame(data)) {
     cov <- object$data$res_var_names$cov
-    data_build <- matrix(0, nrow = nrow(data), ncol = 1 + length(cov))
+    data_build <- matrix(NA_real_, nrow = nrow(data), ncol = 1 + length(cov))
     colnames(data_build) <- c("id", cov)
     data_build[,"id"] <- 1:nrow(data)
     for(col in colnames(data)){
@@ -361,9 +362,15 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
       }
     }
     data <- prepare_data(
-      form = object$data$form, choice_data = as.data.frame(data_build),
-      re = object$data$re, alternatives = object$data$alternatives, id = "id",
-      idc = NULL, standardize = NULL, impute = "zero")
+      form = object$data$form,
+      choice_data = as.data.frame(data_build),
+      re = object$data$re,
+      alternatives = object$data$alternatives,
+      id = "id",
+      idc = NULL,
+      standardize = NULL,
+      impute = "zero"
+    )
   }
   if (!inherits(data,"RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",

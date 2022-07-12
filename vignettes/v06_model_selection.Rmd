@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   fig.dim = c(8, 6), 
   out.width = "75%"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
 The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
@@ -105,7 +105,7 @@ The WAIC is defined as
 
 $$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
 
-where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:16 p. 220 for a reference.
+where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:2016 p. 220 for a reference.
 
 The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
 

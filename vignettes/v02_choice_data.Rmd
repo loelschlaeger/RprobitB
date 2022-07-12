@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   fig.dim = c(8, 6), 
   out.width = "75%"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
 No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the {mlogit} package [@Croissant:2020] for illustration. 

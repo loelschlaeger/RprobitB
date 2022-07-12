@@ -853,13 +853,15 @@ missing_covariates <- function(
       call. = FALSE
     )
   }
-  if (!(is.character(choice) && length(choice) == 1)) {
-    stop("'choice' must be a character of length 1.",
-         call. = FALSE)
-  }
-  if (!choice %in% colnames(choice_data)) {
-    stop("'choice' is not a column name of 'choice_data'.",
-         call. = FALSE)
+  if (!is.na(choice)) {
+    if (!(is.character(choice) && length(choice) == 1)) {
+      stop("'choice' must be a character of length 1.",
+           call. = FALSE)
+    }
+    if (!choice %in% colnames(choice_data)) {
+      stop("'choice' is not a column name of 'choice_data'.",
+           call. = FALSE)
+    }
   }
 
   ### find NA values
@@ -867,7 +869,9 @@ missing_covariates <- function(
     sapply(choice_data, function(x) !is.finite(x)),
     arr.ind = TRUE
   )
-  na_pos <- na_pos[na_pos[,"col"] != which(choice == colnames(choice_data)), ]
+  if (!is.na(choice)) {
+    na_pos <- na_pos[na_pos[,"col"] != which(choice == colnames(choice_data)), ]
+  }
 
   if(nrow(na_pos) > 0){
 
