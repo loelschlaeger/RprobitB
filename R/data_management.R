@@ -326,7 +326,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
     colnames(choice_data) <- c(cols_old, col_new)
 
     ### preserve factors
-    if(class(choice_data[[col]]) == "factor") {
+    if(inherits(choice_data[[col]],"factor")) {
       choice_data[[col_new]] <- factor(choice_data[[col_new]],
                                        levels = levels(choice_data[[col]]))
     }
@@ -1357,8 +1357,9 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
                        random = FALSE, seed = NULL) {
 
   ### input checks
-  if (class(x) != "RprobitB_data") {
-    stop("'x' must be of class 'RprobitB_data'.", call. = FALSE)
+  if (!inherits(x,"RprobitB_data")) {
+    stop("'x' must be of class 'RprobitB_data'.",
+         call. = FALSE)
   }
   if (is.null(test_proportion) && is.null(test_number)) {
     stop("Either 'test_proportion' or 'test_number' must be specified.",

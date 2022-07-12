@@ -50,10 +50,10 @@
       choice occasions  1-10
       total choices       55
       alternatives         5
-      - 'very bad'        32
-      - 'bad'             19
-      - 'indifferent'      3
-      - 'good'             1
+      - 'very bad'        31
+      - 'bad'             22
+      - 'indifferent'      2
+      - 'good'             0
       - 'very good'        0
 
 # data preparation with ranked choices works

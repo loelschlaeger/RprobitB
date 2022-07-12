@@ -41,7 +41,6 @@ Imports:
     mvtnorm,
     viridis,
     ggplot2,
-    tidyr,
     rlang,
     mixtools,
     doSNOW,

@@ -44,14 +44,18 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
   for (i in seq_len(length(models))) {
     if (!inherits(models[[i]], "RprobitB_fit")) {
-      stop(paste0("Input '", model_names[i], "' is not of class 'RprobitB_fit'."))
+      stop(paste0("Input '", model_names[i],
+                  "' is not of class 'RprobitB_fit'."),
+           call. = FALSE)
     }
   }
   if (!is.character(criteria)) {
-    stop("'criteria' must be a character vector.")
+    stop("'criteria' must be a character vector.",
+         call. = FALSE)
   }
-  if (!(length(add_form) == 1 && class(add_form) == "logical")) {
-    stop("'add_form' must be a boolean.")
+  if (!(length(add_form) == 1 && inherits(add_form,"logical"))) {
+    stop("'add_form' must be a boolean.",
+         call. = FALSE)
   }
 
   ### create output matrix
@@ -566,21 +570,26 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
 
   ### input checks
-  if(class(x) != "RprobitB_fit"){
-    stop("'x' must be of class 'RprobitB_fit.", call. = FALSE)
+  if(!inherits(x,"RprobitB_fit")) {
+    stop("'x' must be of class 'RprobitB_fit.",
+         call. = FALSE)
   }
   if(is.null(x[["p_si"]])){
     stop("Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si()'.", call. = FALSE)
+         "For that, use the function 'compute_p_si()'.",
+         call. = FALSE)
   }
   if(!(is.numeric(S) && length(S)==1 && S>=0 && S%%1==0)){
-    stop("'S' must be an integer.")
+    stop("'S' must be an integer.",
+         call. = FALSE)
   }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
-    stop("'ncores' must be a positive integer.", call. = FALSE)
+    stop("'ncores' must be a positive integer.",
+         call. = FALSE)
   }
-  if(!(length(recompute) == 1 && class(recompute) == "logical")){
-    stop("'recompute' must be a boolean.", call. = FALSE)
+  if(!(length(recompute) == 1 && inherits(recompute, "logical"))){
+    stop("'recompute' must be a boolean.",
+         call. = FALSE)
   }
 
   ### check if 'mml' in 'x' already exists if 'recompute = FALSE'
@@ -733,8 +742,9 @@ plot.RprobitB_mml <- function(x, log = FALSE, ...) {
 posterior_pars <- function(x){
 
   ### check input
-  if(class(x) != "RprobitB_fit"){
-    stop("'x' must be an object of class 'RprobitB_fit'.")
+  if(!inherits(x, "RprobitB_fit")){
+    stop("'x' must be an object of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
 
   ### extract meta parameters

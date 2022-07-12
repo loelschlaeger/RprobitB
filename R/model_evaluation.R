@@ -32,12 +32,12 @@ RprobitB_gibbs_samples_statistics <- function(
     gibbs_samples, FUN = list("mean" = mean)) {
 
   ### check inputs
-  if (class(gibbs_samples) != "RprobitB_gibbs_samples") {
+  if (!inherits(gibbs_samples,"RprobitB_gibbs_samples")) {
     stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",
          call. = FALSE)
   }
   for (i in seq_len(length(FUN))) {
-    if (class(FUN[[i]]) != "function") {
+    if (!inherits(class(FUN[[i]]), "function")) {
       stop("Element ", i, " in 'FUN' is not of class 'function'.",
            call. = FALSE)
     }
@@ -443,15 +443,16 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
 point_estimates <- function(x, FUN = mean) {
 
   ### check input
-  if (!class(x) == "RprobitB_fit") {
+  if (!inherits(x, "RprobitB_fit")) {
     stop("'x' is not of class 'RprobitB_fit'.",
          call. = FALSE)
   }
   if (!is.list(FUN)) {
     FUN <- list(FUN)
   }
-  if (length(FUN) != 1 || class(FUN[[1]]) != "function") {
-    stop("'FUN' must be a function.")
+  if (length(FUN) != 1 || !inherits(FUN[[1]],"function")) {
+    stop("'FUN' must be a function.",
+         call. = FALSE)
   }
 
   ### extract meta parameters
@@ -953,7 +954,7 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
       stop("True parameters are not available.",
            call. = FALSE)
     }
-  } else if (class(par_set) == "RprobitB_parameter") {
+  } else if (inherits(par_set,"RprobitB_parameter")) {
     parameter <- par_set
   } else {
     stop(
@@ -967,7 +968,7 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   if (is.null(data)) {
     data <- x$data
   }
-  if (class(data) != "RprobitB_data") {
+  if (!inherits(data, "RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",
          call. = FALSE)
   }
@@ -1030,6 +1031,8 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 #'
 #' @keywords
 #' internal
+#'
+#' @importFrom stats pnorm
 
 compute_choice_probabilities <- function(
     X, alternatives, parameter, ordered = FALSE
@@ -1093,8 +1096,8 @@ compute_choice_probabilities <- function(
                 mu <- X %*% c(alpha, b[, c])
                 sd <- sqrt(X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
                   t(X[, -(1:P_f)]) + Sigma)
-                s[c] * (pnorm(q = ub - mu, mean = 0, sd = sd) -
-                          pnorm(q = lb - mu, mean = 0, sd = sd))
+                s[c] * (stats::pnorm(q = ub - mu, mean = 0, sd = sd) -
+                          stats::pnorm(q = lb - mu, mean = 0, sd = sd))
               }
             )
           )

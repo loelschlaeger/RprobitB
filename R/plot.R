@@ -292,6 +292,7 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
                             stats::dnorm(x, mean[[c]], sd = cov[[c]]),
                           simplify = FALSE))
 
+  xint <- grp <- NULL
   out <- ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
     ggplot2::geom_line() +
     ggplot2::labs(x = bquote(beta[.(name)]), y = "")
@@ -349,6 +350,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
   z <- Reduce("+", sapply(1:C, function(c)
     mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]]), simplify = FALSE))
 
+  x <- y <- grp <- NULL
   out <- ggplot2::ggplot(data = cbind(data.grid, z),
                   ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)) +
     ggplot2::geom_contour() +
@@ -544,6 +546,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @importFrom ggplot2 element_blank
 
 plot_roc <- function(..., reference = NULL) {
+  D <- name <- NULL
   models <- as.list(list(...))
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
   pred_merge <- NULL
@@ -552,7 +555,7 @@ plot_roc <- function(..., reference = NULL) {
       if(is.null(reference)){
         reference <- models[[m]]$data$alternatives[1]
       }
-      pred <- predict(models[[m]], overview = FALSE, digits = 8)
+      pred <- predict.RprobitB_fit(models[[m]], overview = FALSE, digits = 8)
       true <- ifelse(pred$true == reference, 1, 0)
       if(is.null(pred_merge)){
         pred_merge <- data.frame(true)
