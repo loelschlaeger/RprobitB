@@ -42,7 +42,7 @@ reference:
   desc: Use these function for fitting a probit model to choice data.
   contents:
   - check_prior
-  - mcmc
+  - fit_model
   - update
   - transform.RprobitB_fit
 - title: Model evaluation
