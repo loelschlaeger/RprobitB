@@ -81,9 +81,10 @@ test_that("data preparation with ordered choices works", {
     alternatives = alternatives,
     ordered = TRUE,
     covariates = list(
-      "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
-      ),
-    seed = 1)$choice_data
+      "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
+    ),
+    seed = 1
+  )$choice_data
   data <- prepare_data(
     form = form,
     choice_data = choice_data,
@@ -105,7 +106,8 @@ test_that("data preparation with ranked choices works", {
     J = 3,
     alternatives = alternatives,
     ranked = TRUE,
-    seed = 1)$choice_data
+    seed = 1
+  )$choice_data
   data <- prepare_data(
     form = form,
     choice_data = choice_data,
