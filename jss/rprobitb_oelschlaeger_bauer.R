@@ -52,7 +52,7 @@ plot(data_train)
 ###################################################
 ### code chunk number 9: example 2 sim meta
 ###################################################
-N <- 100
+N <- 200
 T <- 30
 alternatives <- c("alt1","alt2")
 form <- choice ~ var1 | var2 | var3
@@ -70,8 +70,8 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 ###################################################
 true_parameter <- list(
   alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
-  b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
-  Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4),
+  b = matrix(c(-2,1,0,2,2,-1), ncol = 3),
+  Omega = matrix(c(0.3,0.7,0.7,1.9,1.3,-0.2,-0.2,0.9,0.6,-0.9,-0.9,2.4),
                  ncol = 3)
 )
 data_sim <- simulate_choices(

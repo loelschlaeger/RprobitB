@@ -247,7 +247,7 @@ BIC.RprobitB_fit <- function(object, ...) {
 WAIC <- function(x) {
 
   ### check input
-  if(class(x) != "RprobitB_fit"){
+  if(!inherits(x,"RprobitB_fit")){
     stop("'x' must be an object of class 'RprobitB_fit'.",
          call. = FALSE)
   }
@@ -438,14 +438,13 @@ npar.RprobitB_fit <- function(object, ...) {
 compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FALSE) {
 
   ### check input
-  if(class(x) != "RprobitB_fit"){
-    stop("'x' must be an object of class 'RprobitB_fit'.")
+  if(!inherits(x,"RprobitB_fit")){
+    stop("'x' must be an object of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
   if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
-    stop("'ncores' must be a positive integer.")
-  }
-  if(!(length(recompute) == 1 && class(recompute) == "logical")){
-    stop("'recompute' must be a boolean.")
+    stop("'ncores' must be a positive integer.",
+         call. = FALSE)
   }
 
   ### check if 'p_si' in 'x' already exists if 'recompute = FALSE'

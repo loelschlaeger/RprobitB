@@ -86,14 +86,7 @@ Constant coefficients across deciders result in substitution patterns that again
 
 The latent class model extension also enables preference-based decider classification, i.e., identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two data-driven approaches that avoid the need to pre-specify the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
 
-\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models:
-\begin{itemize}
-  \item it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation),
-  \item it avoids numerical challenges associated with finding the likelihood optimum,
-  \item it enables to impose prior believes on the model parameters,
-  \item and it provides posterior parameter distributions instead of point estimates only.
-\end{itemize}
-Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
+\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
 
 There already exist several open-source implementations for discrete choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} \citep{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. In \proglang{Julia} \citep{Julia}, the \pkg{DiscreteChoiceModels.jl} package \citep{Bhagat:2022} currently only supports the multinomial logit model. The \proglang{R} package \pkg{gmnl} \citep{Sarrias:2017} provides generalized and latent class mixed multinomial logit models, while the \pkg{apollo} package \citep{Hess:2019} allows for more flexible logit and probit model specifications, with both maximum likelihood and Bayesian estimation. The \proglang{R} packages \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayesian estimation of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements this collection by implementing latent class mixed probit models in conjunction with class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
 
@@ -312,10 +305,10 @@ The model parameters are set at random by default. Alternatively, they can be sp
 
 \paragraph{Example 2: Simulated choices.}
 
-For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between two fictitious alternatives:
+For illustration, we simulate the choices of \code{N = 200} deciders at \code{T = 30} choice occasions between two fictitious alternatives:
 
 <<example 2 sim meta>>=
-N <- 100
+N <- 200
 T <- 30
 alternatives <- c("alt1","alt2")
 form <- choice ~ var1 | var2 | var3
@@ -328,13 +321,13 @@ The \fct{overview\_effects} function provides an overview of the effect names (\
 overview_effects(form = form, re = re, alternatives = alternatives)
 @
 
-The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-1,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 2.6 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.6 & -1.2 \\ -1.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 1.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1 here.
+The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-2,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 1.9 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.3 & -0.2 \\ -0.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 2.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1 here.
 
 <<example 2 sim simulation>>=
 true_parameter <- list(
   alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
-  b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
-  Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4),
+  b = matrix(c(-2,1,0,2,2,-1), ncol = 3),
+  Omega = matrix(c(0.3,0.7,0.7,1.9,1.3,-0.2,-0.2,0.9,0.6,-0.9,-0.9,2.4),
                  ncol = 3)
 )
 data_sim <- simulate_choices(

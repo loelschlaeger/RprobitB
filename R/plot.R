@@ -542,8 +542,7 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @examples
 #' RprobitB:::plot_roc(RprobitB::model_train)
 #'
-#' @keywords
-#' internal
+#' @export
 #'
 #' @importFrom plotROC geom_roc style_roc
 #' @importFrom ggplot2 element_blank

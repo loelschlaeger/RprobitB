@@ -82,14 +82,7 @@ Constant coefficients across deciders result in substitution patterns that again
 
 The latent class model extension also enables preference-based decider classification, i.e., identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two data-driven approaches that avoid the need to pre-specify the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
 
-\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models:
-\begin{itemize}
-  \item it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation),
-  \item it avoids numerical challenges associated with finding the likelihood optimum,
-  \item it enables to impose prior believes on the model parameters,
-  \item and it provides posterior parameter distributions instead of point estimates only.
-\end{itemize}
-Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
+\pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
 
 There already exist several open-source implementations for discrete choice modeling: \pkg{Rchoice} \citep{Sarrias:2016} and \pkg{mlogit} \citep{Croissant:2020} are two \proglang{R} packages for maximum likelihood estimation (MLE) of the (mixed) probit and logit model. The \proglang{Python} \citep{Python} library \pkg{Biogeme} \citep{Bierlaire:2020} can additionally estimate latent class (LC) models. In \proglang{Julia} \citep{Julia}, the \pkg{DiscreteChoiceModels.jl} package \citep{Bhagat:2022} currently only supports the multinomial logit model. The \proglang{R} package \pkg{gmnl} \citep{Sarrias:2017} provides generalized and latent class mixed multinomial logit models, while the \pkg{apollo} package \citep{Hess:2019} allows for more flexible logit and probit model specifications, with both maximum likelihood and Bayesian estimation. The \proglang{R} packages \pkg{bayesm} \citep{Rossi:2019} and \pkg{MNP} \citep{Imai:2022} are two alternatives for Bayesian estimation of the probit model, both implementing Markov chain Monte Carlo simulation methods similar to \pkg{RprobitB}. The \pkg{RprobitB} package complements this collection by implementing latent class mixed probit models in conjunction with class updating schemes, as outlined above. The software comparison is summarized in Table \ref{tab:pkg_overview}.
 
@@ -346,11 +339,11 @@ The model parameters are set at random by default. Alternatively, they can be sp
 
 \paragraph{Example 2: Simulated choices.}
 
-For illustration, we simulate the choices of \code{N = 100} deciders at \code{T = 30} choice occasions between two fictitious alternatives:
+For illustration, we simulate the choices of \code{N = 200} deciders at \code{T = 30} choice occasions between two fictitious alternatives:
 
 \begin{Schunk}
 \begin{Sinput}
-> N <- 100
+> N <- 200
 > T <- 30
 > alternatives <- c("alt1","alt2")
 > form <- choice ~ var1 | var2 | var3
@@ -374,14 +367,14 @@ The \fct{overview\_effects} function provides an overview of the effect names (\
 \end{Soutput}
 \end{Schunk}
 
-The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-1,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 2.6 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.6 & -1.2 \\ -1.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 1.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1 here.
+The model has three fixed effects, consequently the vector \code{alpha} must be of length three, where the coefficients correspond to \code{var1}, \code{var3\_alt1}, and \code{var3\_alt2}, respectively. We set $\alpha = (-2,0,1)$. Additionally, the model has two random effects \code{var2\_alt1} and \code{ASC\_alt1}, hence the matrix \code{b} must be of dimension \code{2 x C}, with the mean effect in the different classes as columns. We specify \code{C = 3} latent classes with class weights $s = (0.5,0.3,0.2)$ and class means $b_1 = (-2,1)$, $b_2 = (0,2)$, and $b_3 = (2,-1)$. As class covariance matrices, we specify $\Omega_1 = \begin{pmatrix} 0.3 & 0.7 \\ 0.7 & 1.9 \end{pmatrix}$, $\Omega_2 = \begin{pmatrix} 1.3 & -0.2 \\ -0.2 & 0.9 \end{pmatrix}$, and $\Omega_3 = \begin{pmatrix} 0.6 & -0.9 \\ -0.9 & 2.4 \end{pmatrix}$. The differenced error term matrix $\tilde{\Sigma}$ is fixed to 1 here.
 
 \begin{Schunk}
 \begin{Sinput}
 > true_parameter <- list(
 +    alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
-+    b = matrix(c(-1,1,0,2,2,-1), ncol = 3),
-+    Omega = matrix(c(0.3,0.7,0.7,2.6,1.6,-1.2,-1.2,0.9,0.6,-0.9,-0.9,1.4),
++    b = matrix(c(-2,1,0,2,2,-1), ncol = 3),
++    Omega = matrix(c(0.3,0.7,0.7,1.9,1.3,-0.2,-0.2,0.9,0.6,-0.9,-0.9,2.4),
 +                   ncol = 3)
 +  )
 > data_sim <- simulate_choices(
@@ -543,13 +536,13 @@ Gibbs sample statistics
  alpha
                               
      1   -1.00    0.00    1.00
-     2  -25.75    2.07    1.02
-     3  -14.47    0.89    1.00
-     4   -4.83    0.89    1.02
+     2  -25.89    2.28    1.00
+     3  -14.44    0.90    1.00
+     4   -4.91    0.89    1.01
 
  Sigma
                               
-   1,1  663.26   60.60    1.00
+   1,1  656.92   63.81    1.04
 \end{Soutput}
 \end{Schunk}
 
@@ -619,15 +612,15 @@ The \fct{coef} method returns the average effects and the estimated (marginal) v
 \begin{Soutput}
         Estimate   (sd) Variance   (sd)
 1   pf     -1.00 (0.00)       NA   (NA)
-2   cl     -0.26 (0.04)     0.33 (0.05)
-3  loc      2.84 (0.29)     7.16 (1.38)
-4   wk      2.06 (0.22)     3.78 (0.79)
-5  tod     -9.68 (0.24)    10.91 (2.16)
-6 seas     -9.92 (0.26)     6.46 (1.70)
+2   cl     -0.26 (0.03)     0.36 (0.06)
+3  loc      2.88 (0.26)     7.20 (1.24)
+4   wk      2.10 (0.21)     4.01 (0.75)
+5  tod     -9.85 (0.24)    12.15 (2.01)
+6 seas     -9.90 (0.19)     6.26 (0.95)
 \end{Soutput}
 \end{Schunk}
 
-We deduce, for example, that a longer contract length has a negative effect on average (-0.26). However, our model shows that 32\% of the customers still prefer to have a longer contract length. This share is estimated by computing the proportion under the mixing distribution that yields a positive coefficient for \code{cl}:
+We deduce, for example, that a longer contract length has a negative effect on average (-0.26). However, our model shows that 33\% of the customers still prefer to have a longer contract length. This share is estimated by computing the proportion under the mixing distribution that yields a positive coefficient for \code{cl}:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -636,23 +629,23 @@ We deduce, for example, that a longer contract length has a negative effect on a
 > pnorm(cl_mu / cl_sd)
 \end{Sinput}
 \begin{Soutput}
-[1] 0.3243118
+[1] 0.3316322
 \end{Soutput}
 \end{Schunk}
 
-The estimated joint mixing distribution additionally allows to infer correlation patterns between effects. For example, we find a correlation of 0.78 between \code{loc} and \code{wk} (deciders that prefer local suppliers also prefer well known companies):
+The estimated joint mixing distribution additionally allows to infer correlation patterns between effects. For example, we find a correlation of 0.79 between \code{loc} and \code{wk} (deciders that prefer local suppliers also prefer well known companies):
 
 \begin{Schunk}
 \begin{Sinput}
 > round(cov_mix(model_elec, cor = TRUE), 2)
 \end{Sinput}
 \begin{Soutput}
-        cl  loc    wk   tod  seas
-cl    1.00 0.11  0.08 -0.06 -0.14
-loc   0.11 1.00  0.78  0.10  0.01
-wk    0.08 0.78  1.00  0.11 -0.01
-tod  -0.06 0.10  0.11  1.00  0.50
-seas -0.14 0.01 -0.01  0.50  1.00
+        cl   loc    wk   tod  seas
+cl    1.00  0.09  0.06 -0.05 -0.11
+loc   0.09  1.00  0.79  0.08 -0.01
+wk    0.06  0.79  1.00  0.09 -0.03
+tod  -0.05  0.08  0.09  1.00  0.55
+seas -0.11 -0.01 -0.03  0.55  1.00
 \end{Soutput}
 \end{Schunk}
 
@@ -665,399 +658,3 @@ We previously simulated the \class{RprobitB\_data} object \code{data\_sim} from 
 > model_sim <- fit_model(
 +    data = data_sim, R = 1000, latent_classes = list("C" = 3), seed = 1
 +  )
-> summary(model_sim)
-\end{Sinput}
-\begin{Soutput}
-Probit model
-Formula: choice ~ var1 | var2 | var3 
-R: 1000, B: 500, Q: 1
-Level: Utility differences with respect to alternative 'alt2'.
-Scale: Coefficient of the 1. error term variance fixed to 1.
-
-Latent classes
-C = 3 
-
-Gibbs sample statistics
-          true    mean      sd      R^
- alpha
-                                      
-     1   -2.00   -1.90    0.19    1.37
-     2    0.00    0.02    0.05    1.02
-     3    1.00    1.01    0.12    1.26
-
- s
-                                      
-     1    0.50    0.53    0.07    1.45
-     2    0.30    0.34    0.07    1.08
-     3    0.20    0.14    0.07    2.70
-
- b
-                                      
-   1.1   -1.00   -1.11    0.21    1.36
-   1.2    1.00    0.62    0.27    1.14
-   2.1    0.00    0.29    0.54    2.70
-   2.2    2.00    1.25    0.80    4.46
-   3.1    2.00    1.98    0.62    1.05
-   3.2   -1.00   -0.51    0.82    2.51
-
- Omega
-                                      
- 1.1,1    0.30    0.54    0.23    1.02
- 1.1,2    0.70    0.62    0.26    1.01
- 1.2,2    2.60    1.64    0.50    1.01
- 2.1,1    1.60    1.99    0.81    1.01
- 2.1,2   -1.20   -1.88    1.11    1.81
- 2.2,2    0.90    2.66    1.63    2.33
- 3.1,1    0.60    0.59    0.66    1.07
- 3.1,2   -0.90   -0.17    0.52    1.37
- 3.2,2    1.40    1.19    0.87    1.50
-
- Sigma
-                                      
-   1,1    1.00    1.00    0.00    1.00
-\end{Soutput}
-\end{Schunk}
-
-We note that more than $R = 1000$ iterations are required for proper convergence, as indicated by the Gelman-Rubin statistic. Furthermore, the data basis in this example probably is too small for more precise estimates, especially for those coefficients characterizing the least frequent classes two and three.
-
-\subsection{Weight-based update of latent classes} \label{subsec:weight_update}
-
-Adding \code{"weight_update" = TRUE} to the list for the \code{latent\_classes} argument of \fct{fit\_model} executes the following weight-based updating scheme of the latent classes:
-
-\begin{itemize}
-  \item Class $c$ is removed, if $s_c<\varepsilon_{\text{min}}$, i.e., if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
-  \item Class $c$ is split into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the largest diagonal element of the class covariance matrix $\Omega_c$.
-  \item Classes $c_1$ and $c_2$ are joined to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e., if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of the new class $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
-\end{itemize}
-
-The values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$ can be specified via the \code{latent\_classes} argument (by default \code{epsmin = 0.01}, \code{epsmax = 0.99}, and \code{distmin = 0.1}).
-
-\paragraph{Example 2: Simulated choices (cont.).}
-
-We apply the weight-based updating scheme to reproduce the true number $C = 3$ of latent classes. The scheme is initialized with \code{"C" = 10} classes and executed every \code{"buffer" = 5}-th iteration:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_sim <- fit_model(
-+    data = data_sim, seed = 1,
-+    latent_classes = list("C" = 10, "weight_update" = TRUE, "buffer" = 5)
-+  )
-\end{Sinput}
-\end{Schunk}
-
-The updating behavior can be visualized:
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(model_sim, type = "class_seq")
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-model-sim-class-seq}
-
-\subsection{Dirichlet process-based update of latent classes} \label{subsec:dp_update}
-
-The Dirichlet process is a Bayesian nonparametric method that adds as many mixture components as needed for a good approximation. A priori, the mixture weights $(s_c)_c$ are Dirichlet distributed with concentration parameter $\delta/C$. \cite{Rasmussen:2000} shows that
-%
-\begin{align}
-  \label{eq:all_prob}
-  \Pr(z \mid \delta) = \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c + \delta/C)}{\Gamma(\delta/C)},
-\end{align}
-%
-where $\Gamma(\cdot)$ denotes the gamma function. Crucially, Equation~\ref{eq:all_prob} is independent of the class weights $(s_c)_c$ (in contrast to the conditional posterior distribution stated in Section \ref{subsec:prior_and_posterior}). From this equation, \cite{Li:2019} shows that
-%
-\begin{align*}
-  \Pr(z_n = c \mid z_{-n}, \delta) = \frac{m_{c,-n} + \delta/C}{N-1+\delta} \to \frac{m_{c,-n}}{N-1+\delta},
-\end{align*}
-%
-for $C \to \infty$, and $z_{-n}$ denotes the vector $z$ without the $n$-th element. Now,
-%
-\begin{align*}
-  1 - \sum_{c = 1}^C \frac{m_{c,-n}}{N-1+\delta} = \frac{\delta}{N-1+\delta}
-\end{align*}
-%
-equals the probability that a new class for observation $n$ is created. This probability depends strictly monotonously increasing on the prior parameter $\delta$ \citep{Neal:2000}: a greater value for $\delta$ encourages the creation of new classes, smaller values increase the probability of an allocation to an already existing class. The total class number can theoretically rise to infinity but is practically bounded by $N$, since we delete unoccupied classes.
-
-The Dirichlet process directly integrates to the existing Gibbs sampler: given $(\beta_n)_n$, we update the class means $b_c$ and covariance matrices $\Omega_c$ by means of their posterior predictive distribution. Mean vectors and covariance matrices for new classes are drawn from their prior predictive distribution, cf., \cite{Li:2019}.
-
-\paragraph{Example 4: Online chess strategy.}
-
-\pkg{RprobitB} contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Both players start a game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs out looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
-
-Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk?
-
-The \code{choice\_berserk} data set provides the following information: whether a player berserked (\code{berserk = 1}, if yes), whether they had the \code{white} pieces (i.e., whether they made the first move, which is considered to be an advantage), their \code{rating} (a value provided by the platform, indicating the playing strength), the rating difference to the opponent (\code{rating\_diff}), whether they lost the game (\code{lost = 1}, if yes), the remaining tournament time in minutes (\code{min\_rem}), and whether they are currently on a winning \code{streak} (which gives extra points).
-
-We additionally consider the lagged covariates \code{berserk.1} (the berserking choice in the previous game) and \code{lost.1} (the result of a player's previous game). They can be generated by the convenience function \fct{create\_lagged\_cov}:
-
-\begin{Schunk}
-\begin{Sinput}
-> choice_berserk <- create_lagged_cov(
-+    choice_data = choice_berserk, column = c("berserk","lost"),
-+    id = "player_id"
-+  )
-\end{Sinput}
-\end{Schunk}
-
-We specify random effects for the rating difference and the result of the previous game:
-
-\begin{Schunk}
-\begin{Sinput}
-> data <- prepare_data(
-+    form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
-+      berserk.1 + lost.1 + 1,
-+    re = c("rating_diff","lost.1"), choice_data = choice_berserk,
-+    id = "player_id", idc = "game_id",
-+    standardize = c("rating","rating_diff","min_rem"), impute = "zero"
-+  )
-\end{Sinput}
-\end{Schunk}
-
-The Dirichlet process is applied for class updates:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_berserk <- fit_model(
-+    data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
-+  )
-\end{Sinput}
-\end{Schunk}
-
-Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasions and $126902$ choices in total took about 4 hours computation time. For convenience, we pre-computed the model and saved the resulting \code{model\_berserk} object in the package:
-
-\begin{Schunk}
-\begin{Sinput}
-> data("model_berserk", package = "RprobitB")
-> coef(model_berserk)
-\end{Sinput}
-\begin{Soutput}
-                     Estimate   (sd) Variance   (sd)
-1           white_0      0.04 (0.02)       NA   (NA)
-2          rating_0      0.11 (0.01)       NA   (NA)
-3         min_rem_0     -0.04 (0.01)       NA   (NA)
-4          streak_0      0.27 (0.03)       NA   (NA)
-5       berserk.1_0     -1.21 (0.02)       NA   (NA)
-6             ASC_0      2.05 (0.03)       NA   (NA)
-7  rating_diff_0 [1]    -0.10 (0.02)     0.08 (0.01)
-8  rating_diff_0 [2]    -0.98 (0.06)     0.25 (0.05)
-9  rating_diff_0 [3]    -1.65 (0.21)     1.72 (0.32)
-10      lost.1_0 [1]     0.98 (0.09)     0.54 (0.10)
-11      lost.1_0 [2]    -0.03 (0.08)     0.28 (0.06)
-12      lost.1_0 [3]    -1.09 (0.18)     0.99 (0.21)
-\end{Soutput}
-\end{Schunk}
-
-The estimated class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
-
-\begin{Schunk}
-\begin{Sinput}
-> est <- point_estimates(model_berserk)
-> round(est[["s"]], 2)
-\end{Sinput}
-\begin{Soutput}
-   1    2    3 
-0.54 0.36 0.10 
-\end{Soutput}
-\end{Schunk}
-
-For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). This is as expected: starting the game with the white pieces and having the higher rating already gives an advantage which would be undermined by the berserking; berserking while being on a streak increases the risk of losing the streak benefits. In contrast, players more likely berserk towards the tournament end (which can be interpreted as the behavior to improve the standing as much as possible in the last minutes) and when they already berserked in the last round (continuity in behavior).
-
-In terms of taste heterogeneity, we can characterize three types of players:
-
-\begin{itemize}
-  \item Type one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}).
-  \item Type two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance).
-  \item Type three is willing to take risks: when they lost, they have an increased chance of berserking in the next round (\code{lost.1\_0 [3] = -1.09}), and they like to berserk against weaker opponents (\code{rating\_diff_0 [3] = -1.65}).
-\end{itemize}
-
-The different types can be visualized via the \fct{plot} method (the numbers mark the class means):
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(model_berserk, type = "mixture")
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-model-berserk-mixture}
-
-For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko, and the unknown runner-up clearly followed different strategies:
-
-\begin{Schunk}
-\begin{Sinput}
-> player <- c("zhigalko_sergei", "serg_01")
-> classification(model_berserk)[player,]
-\end{Sinput}
-\begin{Soutput}
-                    1     2     3 est
-zhigalko_sergei 0.180 0.804 0.016   2
-serg_01         0.936 0.056 0.008   1
-\end{Soutput}
-\end{Schunk}
-
-\newpage
-
-\section{Choice prediction} \label{sec:choice_prediction}
-
-\pkg{RprobitB} provides a \fct{predict} method for in-sample and out-of-sample prediction. The former case refers to reproducing the observed choices on the basis of the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes. For illustration, we revisit our probit model of train travelers.
-
-\paragraph{Example 1: Train trips (cont.).}
-
-Per default, the \fct{predict} method returns a confusion matrix based on predicting the alternative with the largest choice probability, which gives an overview of the in-sample prediction performance:
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(model_train)
-\end{Sinput}
-\begin{Soutput}
-    predicted
-true    A    B
-   A 1032  442
-   B  451 1004
-\end{Soutput}
-\end{Schunk}
-
-The method can also return predictions on the level of individual choice occasions:\footnote{Incorrect predictions can be analyzed via the convenience function \fct{get\_cov}, which extracts the characteristics of a particular choice situation.}
-
-\begin{Schunk}
-\begin{Sinput}
-> pred <- predict(model_train, overview = FALSE)
-> head(pred, n = 5)
-\end{Sinput}
-\begin{Soutput}
-  id choiceid    A    B true predicted correct
-1  1        1 0.91 0.09    A         A    TRUE
-2  1        2 0.64 0.36    A         A    TRUE
-3  1        3 0.79 0.21    A         A    TRUE
-4  1        4 0.18 0.82    B         B    TRUE
-5  1        5 0.55 0.45    B         A   FALSE
-\end{Soutput}
-\end{Schunk}
-
-The receiver operating characteristic (ROC) curve \citep{Fawcett:2006} can be used to compare the prediction accuracy, for example between \pkg{RprobitB} and \pkg{mlogit}:
-
-\begin{Schunk}
-\begin{Sinput}
-> library("mlogit")
-> Train$choiceid <- 1:nrow(Train)
-> Tr <- dfidx(
-+    Train, choice = "choice", varying = 4:11, sep = "_",
-+    opposite = c("price", "comfort", "time", "change"),
-+    idx = list(c("choiceid", "id")), idnames = c("chid", "alt")
-+  )
-> Tr$price <- Tr$price / 100 * 2.20371
-> Tr$time <- Tr$time / 60
-> form <- choice ~ price + time + change + comfort | - 1
-> model_train_mlogit <- mlogit(form, Tr)$probabilities
-> plot_roc(model_train, model_train_mlogit)
-\end{Sinput}
-\end{Schunk}
-\includegraphics{rprobitb_oelschlaeger_bauer-roc-example}
-
-The \fct{predict} method has an additional \code{data} argument for out-of-sample prediction. For example, assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100 to 110 euros (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices:
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(model_train, overview = FALSE,
-+          data = data.frame("price_A" = c(100,110), "price_B" = c(100,100)))
-\end{Sinput}
-\begin{Soutput}
-  id choiceid    A    B prediction
-1  1        1 0.50 0.50          A
-2  2        1 0.35 0.65          B
-\end{Soutput}
-\end{Schunk}
-
-However, a better comfort class compensates for the higher price and even results in a gain of 7\% market share:
-
-\begin{Schunk}
-\begin{Sinput}
-> predict(model_train, overview = FALSE,
-+          data = data.frame("price_A" = c(100,110), "comfort_A" = c(1,0),
-+                            "price_B" = c(100,100), "comfort_B" = c(1,1)))
-\end{Sinput}
-\begin{Soutput}
-  id choiceid    A    B prediction
-1  1        1 0.50 0.50          A
-2  2        1 0.57 0.43          A
-\end{Soutput}
-\end{Schunk}
-
-\section{Model selection} \label{sec:model_selection}
-
-\pkg{RprobitB} provides several tools to identify the most appropriate model among competing ones, including the information criteria AIC \citep{Akaike:1974}, BIC \citep{Schwarz:1978}, and WAIC \citep{Watanabe:2010}, and the Bayes factor.
-
-The WAIC is a Bayesian version of AIC and BIC and defined as $-2 \cdot \text{lppd} + 2\cdot p_\text{WAIC}$, where $\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right)$ is the log-pointwise predictive density, $p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \log (p_{si})$ a penalty term proportional to the variance in the posterior, and $p_{si} = \Pr(y_i\mid \theta_s)$ the probability of choice $y_i$ given the $s$-th set $\theta_s$ of parameter samples \citep[p.\ 220]{McElreath:2016}.
-
-The Bayes factor is an index of relative posterior model plausibility of one model over another \citep{Marin:2014}: given data $y$ and two models $M_1$ and $M_2$, it is defined as
-%
-\begin{align*}
-BF(M_1,M_2) = \frac{\Pr(M_1 \mid y)}{\Pr(M_2 \mid y)} = \frac{\Pr(y \mid M_1 )}{\Pr(y \mid M_2)}~/~\frac{\Pr(M_1)}{\Pr(M_2)},
-\end{align*}
-%
-where by default $\Pr(M_1) = \Pr(M_2) = 0.5$. The value $\Pr(y \mid M)$ denotes the marginal model likelihood, which has no closed form and must be approximated numerically. \pkg{RprobitB} uses Gibbs samples to approximate the likelihood via the posterior harmonic mean estimator \citep{Newton:1994} in combination with the prior arithmetic mean estimator \citep{Hammersley:1964}. Both estimators converge with rising posterior samples to the marginal model likelihood by the law of large numbers. Convergence is fast if the prior and posterior distribution have a strong overlap \citep{Gronau:2017}. \pkg{RprobitB} provides plotting methods for analyzing the convergence behavior, see \code{help(mml, package = "RprobitB")} for details.
-
-\paragraph{Example 1: Train trips (cont.).}
-
-As a competing model to \code{model\_train}, we consider explaining the choices only by the alternative's price, i.e., the probit model with the formula \code{choice ~ price | 0}. The \fct{update} method helps in estimating such a nested model:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train_sparse <- update(model_train, form = choice ~ price | 0)
-\end{Sinput}
-\end{Schunk}
-
-\pkg{RprobitB} provides the convenience function \fct{model\_selection}, which takes an arbitrary number of \class{RprobitB\_fit} objects and returns a matrix of model selection criteria. The \code{criteria} input is a vector of \code{"npar"} (for the number of model parameters), \code{"LL"} (for the model's log-likelihood value, computed with the point estimates obtained from the Gibbs sample means), \code{"AIC"}, \code{"BIC"}, \code{"WAIC"}, \code{"MMLL"} (the marginal model log-likelihood), \code{"BF"} (for the Bayes factor), and \code{"pred_acc"} (the prediction accuracy). In order to compute WAIC, the marginal model likelihood, and the Bayes factor, the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$ must be pre-computed:
-
-\begin{Schunk}
-\begin{Sinput}
-> model_train <- compute_p_si(model_train)
-> model_train_sparse <- compute_p_si(model_train_sparse)
-> model_selection(
-+    model_train, model_train_sparse,
-+    criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc")
-+  )
-\end{Sinput}
-\begin{Soutput}
-                         model_train model_train_sparse
-npar                               4                  1
-LL                          -1727.72           -1865.86
-AIC                          3463.44            3733.72
-BIC                          3487.37            3739.70
-WAIC                         3462.71            3733.79
-se(WAIC)                        0.16               0.07
-pWAIC                           3.80               1.09
-MMLL                        -1730.24           -1866.71
-BF(*,model_train)                  1             < 0.01
-BF(*,model_train_sparse)       > 100                  1
-pred_acc                      69.51%             63.40%
-\end{Soutput}
-\end{Schunk}
-
-The more complex model is clearly preferred.
-
-\section{Future developments} \label{sec:conclusion}
-
-\pkg{RprobitB} implements Bayesian analysis of binary, multivariate, ordered, and ranked choices via the latent class mixed probit model. Working with the package follows a user-friendly workflow, from data management over model fitting to different types of model evaluations (Figure \ref{fig:flowchart}). This paper serves as a manual for \proglang{R} users who want to analyze choice behavior heterogeneity in their applications.
-
-The inclusion of new package functionality is ongoing and can be followed on the project web page www.github.com/loelschlaeger. The following enhancements are currently under development, and we invite the community to suggest further features that we can implement in future package versions:
-
-\begin{itemize}
-  \item Custom prior distributions --- \pkg{RprobitB} currently only supports conjugate prior distributions due to their computational advantages (conjugate priors yield conditional posterior distributions in closed form which facilitates Gibbs sampling). An implementation with custom prior distributions would offer more flexibility. For example, prior distributions with strictly positive support enable sign restrictions that the user can impose on (some of) the (fixed) effects. However, custom prior distributions require a Metropolis–Hastings-type sampling scheme with increased risk of convergence problems and numerical cost.
-  \item Imposing parameter constraints --- \pkg{RprobitB} currently only offers parameter constraints by fixing for example the full vector of fixed effects or a full covariance matrix. In some applications, however, the researcher might want to fix only specific covariances, or impose equality restrictions between specific effects. We see a challenge in integrating such constraints in the Gibbs sampling scheme.
-  \item Other types of mixing distributions --- \pkg{RprobitB} currently is limited to the multivariate normal mixing distribution but offers approximation of any underlying mixing distribution by a mixture of Gaussian densities. Implementing other types of parametric mixing distributions (for example the log-normal or tent distribution) is possible by replacing the conditional posteriors for $\beta$, $b$, and $\Omega$, which is currently under development.
-\end{itemize}
-
-\section*{Computational details}
-
-The results in this paper were obtained using
-\proglang{R}~4.1.3 with the
-\pkg{RprobitB}~1.1.0 package. \proglang{R} itself
-and all packages used are available from the Comprehensive
-\proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.
-
-
-\section*{Acknowledgments}
-
-This work has been financed partly by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - Projektnummer 356500581 which is gratefully acknowledged.
-
-\bibliography{ref}
-
-\end{document}

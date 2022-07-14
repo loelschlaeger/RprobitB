@@ -107,9 +107,9 @@ predict(
   data = data.frame("price_A" = c(100,110), 
                     "price_B" = c(100,100)),
   overview = FALSE)
-#>   id choiceid         A         B prediction
-#> 1  1        1 0.5000000 0.5000000          A
-#> 2  2        1 0.3483907 0.6516093          B
+#>   id choiceid    A    B prediction
+#> 1  1        1 0.50 0.50          A
+#> 2  2        1 0.35 0.65          B
 ```
 
 However, offering a better comfort class (`0` here is better than `1`)
@@ -124,9 +124,9 @@ predict(
                     "price_B"   = c(100,100),
                     "comfort_B" = c(1,1)),
   overview = FALSE)
-#>   id choiceid         A         B prediction
-#> 1  1        1 0.5000000 0.5000000          A
-#> 2  2        1 0.5680923 0.4319077          A
+#>   id choiceid    A    B prediction
+#> 1  1        1 0.50 0.50          A
+#> 2  2        1 0.57 0.43          A
 ```
 
 This is just the tip of the iceberg: {RprobitB} offers tools for
