@@ -192,18 +192,17 @@ plot(model_sim, type = "class_seq")
 ###################################################
 ### code chunk number 27: example 4 berserk create covariates
 ###################################################
-if(refit) {
-  choice_berserk <- create_lagged_cov(
-     choice_data = choice_berserk, column = c("berserk","lost"),
-     id = "player_id"
-  )
-}
+choice_berserk <- create_lagged_cov(
+   choice_data = choice_berserk, column = c("berserk","lost"),
+   id = "player_id"
+)
 
 
 ###################################################
 ### code chunk number 28: example 4 berserk prepare data
 ###################################################
 if(refit) {
+  ### ~ 3 minutes computation time
   data <- prepare_data(
     form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
       berserk.1 + lost.1 + 1,
@@ -218,6 +217,7 @@ if(refit) {
 ### code chunk number 29: example 4 berserk fit model
 ###################################################
 if(refit) {
+  ### ~ 4 hours computation time
   model_berserk <- fit_model(
     data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
   )
