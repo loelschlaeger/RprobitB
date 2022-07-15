@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.RprobitB_data}
 \alias{plot.RprobitB_data}
-\title{Plot method for \code{RprobitB_data}}
+\title{Visualize choice data}
 \usage{
 \method{plot}{RprobitB_data}(x, by_choice = FALSE, alpha = 1, position = "dodge", ...)
 }

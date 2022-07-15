@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_management.R
 \name{check_form}
 \alias{check_form}
-\title{Check the model formula}
+\title{Check model formula}
 \usage{
 check_form(form, re = NULL, ordered = FALSE)
 }

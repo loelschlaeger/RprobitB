@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_management.R
 \name{train_test}
 \alias{train_test}
-\title{Split choice data set in two parts}
+\title{Split choice data in train and test subset}
 \usage{
 train_test(
   x,

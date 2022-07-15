@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.RprobitB_fit}
 \alias{plot.RprobitB_fit}
-\title{Plot method for \code{RprobitB_fit}}
+\title{Visualize fitted probit model}
 \usage{
 \method{plot}{RprobitB_fit}(x, type, ignore = NULL, ...)
 }

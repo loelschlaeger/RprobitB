@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_selection.R
 \name{compute_p_si}
 \alias{compute_p_si}
-\title{Compute probability for each observed choice at posterior samples}
+\title{Compute choice probabilities at posterior samples}
 \usage{
 compute_p_si(x, ncores = parallel::detectCores() - 1, recompute = FALSE)
 }

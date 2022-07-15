@@ -691,7 +691,7 @@ print.RprobitB_normalization <- function(x, ...) {
 }
 
 
-#' Fitting probit models via Markov chain Monte Carlo simulation
+#' Fit probit model to choice data
 #'
 #' @description
 #' This function performs Markov chain Monte Carlo simulation for fitting
@@ -1121,7 +1121,7 @@ sufficient_statistics <- function(data, normalization) {
   return(suff_statistics)
 }
 
-#' Update and re-fit a probit model
+#' Update and re-fit probit model
 #'
 #' @description
 #' This function estimates a nested probit model based on a given
@@ -1318,7 +1318,7 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   return(invisible(x))
 }
 
-#' Transform an \code{RprobitB_fit} object
+#' Transform fitted probit model
 #'
 #' @description
 #' Given an object of class \code{RprobitB_fit}, this function can:

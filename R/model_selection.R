@@ -361,7 +361,7 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
   return(as.numeric(ll))
 }
 
-#' Number of model parameters
+#' Extract number of model parameters
 #'
 #' @description
 #' This function extracts the number of model parameters of an
@@ -386,7 +386,7 @@ npar <- function(object, ...) {
   UseMethod("npar")
 }
 
-#' @export
+#' @exportS3Method
 #' @rdname npar
 
 npar.RprobitB_fit <- function(object, ...) {
@@ -403,7 +403,7 @@ npar.RprobitB_fit <- function(object, ...) {
   return(npar)
 }
 
-#' Compute probability for each observed choice at posterior samples
+#' Compute choice probabilities at posterior samples
 #'
 #' @description
 #' This function computes the probability for each observed choice at the
@@ -499,7 +499,7 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
   return(x)
 }
 
-#' Marginal model likelihood
+#' Approximate marginal model likelihood
 #'
 #' @description
 #' This function approximates the model's marginal likelihood.
@@ -849,7 +849,7 @@ draw_from_prior <- function(prior, C = 1) {
   return(draws)
 }
 
-#' Prediction accuracy
+#' Compute prediction accuracy
 #'
 #' @description
 #' This function computes the prediction accuracy of an \code{RprobitB_fit}

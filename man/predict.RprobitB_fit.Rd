@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{predict.RprobitB_fit}
 \alias{predict.RprobitB_fit}
-\title{Choice prediction}
+\title{Predict choices}
 \usage{
 \method{predict}{RprobitB_fit}(object, data = NULL, overview = TRUE, digits = 2, ...)
 }

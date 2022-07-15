@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_fitting.R
 \name{transform.RprobitB_fit}
 \alias{transform.RprobitB_fit}
-\title{Transform an \code{RprobitB_fit} object}
+\title{Transform fitted probit model}
 \usage{
 \method{transform}{RprobitB_fit}(
   `_data`,

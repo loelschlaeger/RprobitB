@@ -2,8 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{point_estimates}
 \alias{point_estimates}
-\title{Compute point estimates based on Gibbs samples of an \code{RprobitB_fit}
-object}
+\title{Compute point estimates}
 \usage{
 point_estimates(x, FUN = mean)
 }

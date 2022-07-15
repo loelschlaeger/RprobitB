@@ -1,4 +1,4 @@
-#' Check the model formula
+#' Check model formula
 #'
 #' @description
 #' This function checks the input \code{form}.
@@ -113,7 +113,7 @@ check_form <- function(form, re = NULL, ordered = FALSE) {
   return(out)
 }
 
-#' Effect overview
+#' Print effect overview
 #'
 #' @description
 #' This function gives an overview of the effect names, whether the covariate
@@ -349,7 +349,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
   return(choice_data)
 }
 
-#' Re-label alternative specific covariates in required format
+#' Re-label alternative specific covariates
 #'
 #' @description
 #' In {RprobitB}, alternative specific covariates must be named in the format
@@ -1304,7 +1304,7 @@ simulate_choices <- function(
 }
 
 
-#' Split choice data set in two parts
+#' Split choice data in train and test subset
 #'
 #' @description
 #' This function splits choice data into a train and a test part.
@@ -1690,7 +1690,7 @@ print.summary.RprobitB_data <- function(x, ...) {
   return(invisible(x))
 }
 
-#' Create object of class \code{RprobitB_parameter}
+#' Define probit model parameter
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_parameter}, which

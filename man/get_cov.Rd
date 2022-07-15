@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{get_cov}
 \alias{get_cov}
-\title{Get covariates of choice situation}
+\title{Extract covariates of choice occasion}
 \usage{
 get_cov(x, id, idc, idc_label)
 }

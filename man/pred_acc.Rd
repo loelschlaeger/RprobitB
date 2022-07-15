@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_selection.R
 \name{pred_acc}
 \alias{pred_acc}
-\title{Prediction accuracy}
+\title{Compute prediction accuracy}
 \usage{
 pred_acc(x, ...)
 }

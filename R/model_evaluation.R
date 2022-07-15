@@ -209,7 +209,7 @@ filter_gibbs_samples <- function(
 }
 
 
-#' Classify deciders based on their preferences
+#' Classify deciders preference-based
 #'
 #' @description
 #' This function classifies the deciders based on their allocation to the
@@ -293,7 +293,7 @@ classification <- function(x, add_true = FALSE) {
 }
 
 
-#' Choice prediction
+#' Predict choices
 #'
 #' @description
 #' This function predicts the discrete choice behavior
@@ -414,8 +414,7 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
 }
 
 
-#' Compute point estimates based on Gibbs samples of an \code{RprobitB_fit}
-#' object
+#' Compute point estimates
 #'
 #' @description
 #' This function computes the point estimates of an \code{\link{RprobitB_fit}}.
@@ -867,7 +866,7 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
   suppressWarnings(print(p))
 }
 
-#' Estimated covariance matrix of the mixing distribution
+#' Extract estimated covariance matrix of mixing distribution
 #'
 #' @description
 #' This convenience function returns the estimated covariance matrix of the
@@ -1187,7 +1186,7 @@ compute_choice_probabilities <- function(
   return(probabilities)
 }
 
-#' Get covariates of choice situation
+#' Extract covariates of choice occasion
 #'
 #' @description
 #' This convenience function returns the covariates and the choices of specific

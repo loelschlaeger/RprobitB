@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_selection.R
 \name{mml}
 \alias{mml}
-\title{Marginal model likelihood}
+\title{Approximate marginal model likelihood}
 \usage{
 mml(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE)
 }

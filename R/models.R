@@ -34,8 +34,7 @@
 #' model
 "model_train"
 
-#' Model for for binary choice between Train trip alternatives with the
-#' price as the only explanatory variable
+#' Sparse model for binary choice between Train trip alternatives
 #'
 #' @description
 #' This object is a fitted probit model to the Train data set of the {mlogit}

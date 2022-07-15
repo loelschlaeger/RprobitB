@@ -73,7 +73,7 @@ M <- function(ranking) {
   return(out)
 }
 
-#' Gelman-Rubin statistic
+#' Compute Gelman-Rubin statistic
 #'
 #' @description
 #' This function computes the Gelman-Rubin statistic \code{R_hat}.

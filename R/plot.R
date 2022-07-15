@@ -1,4 +1,4 @@
-#' Plot method for \code{RprobitB_data}
+#' Visualize choice data
 #'
 #' @description
 #' This function is the plot method for an object of class \code{RprobitB_data}.
@@ -90,7 +90,7 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 }
 
 
-#' Plot method for \code{RprobitB_fit}
+#' Visualize fitted probit model
 #'
 #' @description
 #' This function is the plot method for an object of class \code{RprobitB_fit}.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{classification}
 \alias{classification}
-\title{Classify deciders based on their preferences}
+\title{Classify deciders preference-based}
 \usage{
 classification(x, add_true = FALSE)
 }

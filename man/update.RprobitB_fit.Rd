@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_fitting.R
 \name{update.RprobitB_fit}
 \alias{update.RprobitB_fit}
-\title{Update and re-fit a probit model}
+\title{Update and re-fit probit model}
 \usage{
 \method{update}{RprobitB_fit}(
   object,

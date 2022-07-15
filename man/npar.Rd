@@ -3,7 +3,7 @@
 \name{npar}
 \alias{npar}
 \alias{npar.RprobitB_fit}
-\title{Number of model parameters}
+\title{Extract number of model parameters}
 \usage{
 npar(object, ...)
 

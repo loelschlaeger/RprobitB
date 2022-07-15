@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_evaluation.R
 \name{cov_mix}
 \alias{cov_mix}
-\title{Estimated covariance matrix of the mixing distribution}
+\title{Extract estimated covariance matrix of mixing distribution}
 \usage{
 cov_mix(x, cor = FALSE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_management.R
 \name{overview_effects}
 \alias{overview_effects}
-\title{Effect overview}
+\title{Print effect overview}
 \usage{
 overview_effects(
   form,

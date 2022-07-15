@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_management.R
 \name{RprobitB_parameter}
 \alias{RprobitB_parameter}
-\title{Create object of class \code{RprobitB_parameter}}
+\title{Define probit model parameter}
 \usage{
 RprobitB_parameter(
   P_f,

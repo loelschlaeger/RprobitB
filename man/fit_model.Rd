@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_fitting.R
 \name{fit_model}
 \alias{fit_model}
-\title{Fitting probit models via Markov chain Monte Carlo simulation}
+\title{Fit probit model to choice data}
 \usage{
 fit_model(
   data,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_management.R
 \name{as_cov_names}
 \alias{as_cov_names}
-\title{Re-label alternative specific covariates in required format}
+\title{Re-label alternative specific covariates}
 \usage{
 as_cov_names(choice_data, cov, alternatives)
 }
