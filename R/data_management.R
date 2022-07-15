@@ -874,11 +874,6 @@ missing_covariates <- function(
     if(impute == "complete_cases"){
       choice_data <- choice_data[-na_pos[,"row"], , drop = FALSE]
     } else {
-      if(any(sapply(unique(na_pos[,"col"]),
-                    function(x) !is.numeric(choice_data[, x])))) {
-        stop(paste0("Cannot apply 'impute = ", impute,
-                    "' to columns that are not numeric."), call. = FALSE)
-      }
       if(impute == "zero") {
         for(i in 1:nrow(na_pos)){
           choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- 0
