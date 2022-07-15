@@ -75,12 +75,12 @@
           
           <code><a href="check_form.html">check_form()</a></code> 
         </dt>
-        <dd>Check the model formula</dd>
+        <dd>Check model formula</dd>
       </dl><dl><dt>
           
           <code><a href="overview_effects.html">overview_effects()</a></code> 
         </dt>
-        <dd>Effect overview</dd>
+        <dd>Print effect overview</dd>
       </dl><dl><dt>
           
           <code><a href="create_lagged_cov.html">create_lagged_cov()</a></code> 
@@ -90,7 +90,7 @@
           
           <code><a href="as_cov_names.html">as_cov_names()</a></code> 
         </dt>
-        <dd>Re-label alternative specific covariates in required format</dd>
+        <dd>Re-label alternative specific covariates</dd>
       </dl><dl><dt>
           
           <code><a href="prepare_data.html">prepare_data()</a></code> 
@@ -100,7 +100,7 @@
           
           <code><a href="RprobitB_parameter.html">RprobitB_parameter()</a></code> 
         </dt>
-        <dd>Create object of class <code>RprobitB_parameter</code></dd>
+        <dd>Define probit model parameter</dd>
       </dl><dl><dt>
           
           <code><a href="simulate_choices.html">simulate_choices()</a></code> 
@@ -110,12 +110,12 @@
           
           <code><a href="train_test.html">train_test()</a></code> 
         </dt>
-        <dd>Split choice data set in two parts</dd>
+        <dd>Split choice data in train and test subset</dd>
       </dl><dl><dt>
           
           <code><a href="plot.RprobitB_data.html">plot(<i>&lt;RprobitB_data&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot method for <code>RprobitB_data</code></dd>
+        <dd>Visualize choice data</dd>
       </dl></div><div class="section level2">
       <h2 id="model-fitting">Model fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a></h2>
       
@@ -136,17 +136,17 @@
           
           <code><a href="fit_model.html">fit_model()</a></code> 
         </dt>
-        <dd>Fitting probit models via Markov chain Monte Carlo simulation</dd>
+        <dd>Fit probit model to choice data</dd>
       </dl><dl><dt>
           
           <code><a href="update.RprobitB_fit.html">update(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Update and re-fit a probit model</dd>
+        <dd>Update and re-fit probit model</dd>
       </dl><dl><dt>
           
           <code><a href="transform.html">transform(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Transform an <code>RprobitB_fit</code> object</dd>
+        <dd>Transform fitted probit model</dd>
       </dl></div><div class="section level2">
       <h2 id="model-evaluation">Model evaluation<a class="anchor" aria-label="anchor" href="#model-evaluation"></a></h2>
       
@@ -167,13 +167,12 @@
           
           <code><a href="cov_mix.html">cov_mix()</a></code> 
         </dt>
-        <dd>Estimated covariance matrix of the mixing distribution</dd>
+        <dd>Extract estimated covariance matrix of mixing distribution</dd>
       </dl><dl><dt>
           
           <code><a href="point_estimates.html">point_estimates()</a></code> 
         </dt>
-        <dd>Compute point estimates based on Gibbs samples of an <code>RprobitB_fit</code>
-object</dd>
+        <dd>Compute point estimates</dd>
       </dl><dl><dt>
           
           <code><a href="choice_probabilities.html">choice_probabilities()</a></code> 
@@ -183,22 +182,22 @@ object</dd>
           
           <code><a href="classification.html">classification()</a></code> 
         </dt>
-        <dd>Classify deciders based on their preferences</dd>
+        <dd>Classify deciders preference-based</dd>
       </dl><dl><dt>
           
           <code><a href="get_cov.html">get_cov()</a></code> 
         </dt>
-        <dd>Get covariates of choice situation</dd>
+        <dd>Extract covariates of choice occasion</dd>
       </dl><dl><dt>
           
           <code><a href="predict.RprobitB_fit.html">predict(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Choice prediction</dd>
+        <dd>Predict choices</dd>
       </dl><dl><dt>
           
           <code><a href="plot.RprobitB_fit.html">plot(<i>&lt;RprobitB_fit&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot method for <code>RprobitB_fit</code></dd>
+        <dd>Visualize fitted probit model</dd>
       </dl><dl><dt>
           
           <code><a href="plot_roc.html">plot_roc()</a></code> 
@@ -224,22 +223,22 @@ object</dd>
           
           <code><a href="npar.html">npar()</a></code> 
         </dt>
-        <dd>Number of model parameters</dd>
+        <dd>Extract number of model parameters</dd>
       </dl><dl><dt>
           
           <code><a href="mml.html">mml()</a></code> 
         </dt>
-        <dd>Marginal model likelihood</dd>
+        <dd>Approximate marginal model likelihood</dd>
       </dl><dl><dt>
           
           <code><a href="compute_p_si.html">compute_p_si()</a></code> 
         </dt>
-        <dd>Compute probability for each observed choice at posterior samples</dd>
+        <dd>Compute choice probabilities at posterior samples</dd>
       </dl><dl><dt>
           
           <code><a href="pred_acc.html">pred_acc()</a></code> 
         </dt>
-        <dd>Prediction accuracy</dd>
+        <dd>Compute prediction accuracy</dd>
       </dl></div><div class="section level2">
       <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
       
@@ -296,8 +295,7 @@ object</dd>
           
           <code><a href="model_train_sparse.html">model_train_sparse</a></code> 
         </dt>
-        <dd>Model for for binary choice between Train trip alternatives with the
-price as the only explanatory variable</dd>
+        <dd>Sparse model for binary choice between Train trip alternatives</dd>
       </dl></div><div class="section level2">
       <h2 id="distributions">Distributions<a class="anchor" aria-label="anchor" href="#distributions"></a></h2>
       
@@ -430,7 +428,7 @@ price as the only explanatory variable</dd>
           
           <code><a href="R_hat.html">R_hat()</a></code> 
         </dt>
-        <dd>Gelman-Rubin statistic</dd>
+        <dd>Compute Gelman-Rubin statistic</dd>
       </dl><dl><dt>
           
           <code><a href="delta.html">delta()</a></code> 
