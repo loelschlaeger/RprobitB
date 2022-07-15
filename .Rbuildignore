@@ -14,3 +14,5 @@ LICENSE
 jss/
 applications/
 TODO.md
+^CRAN-SUBMISSION$
+^cran-comments\.md$
