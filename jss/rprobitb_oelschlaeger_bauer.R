@@ -69,7 +69,7 @@ overview_effects(form = form, re = re, alternatives = alternatives)
 ### code chunk number 11: example 2 sim simulation
 ###################################################
 true_parameter <- list(
-  alpha = c(-2,0,1), C = 3, s = c(0.5,0.3,0.2), Sigma = 1,
+  alpha = c(-2,0,1), C = 3, s = c(0.6,0.3,0.1), Sigma = 1,
   b = matrix(c(-2,1,0,2,2,-1), ncol = 3),
   Omega = matrix(c(0.3,0.7,0.7,1.9,1.3,-0.2,-0.2,0.9,0.6,-0.9,-0.9,2.4),
                  ncol = 3)
