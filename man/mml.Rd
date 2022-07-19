@@ -28,30 +28,17 @@ This function approximates the model's marginal likelihood.
 }
 \details{
 The model's marginal likelihood \eqn{p(y\mid M)} for a model \eqn{M} and data
-\eqn{y} is required for the computation of Bayes factors. In general, the term
-has no closed form and must be approximated numerically.
+\eqn{y} is required for the computation of Bayes factors. In general, the
+term has no closed form and must be approximated numerically.
 
 This function uses the posterior Gibbs samples to approximate the model's
-marginal likelihood via the posterior harmonic mean estimator: Let \code{S}
-denote the numbers of posterior samples \eqn{\theta_1,\dots,\theta_S}. Then,
-\deqn{p(y\mid M) = \left(\mathbb{E}_\text{posterior} p(y\mid \theta,M)^{-1}
-\right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/p(y\mid \theta_s,M) \right) ^{-1}
-= \tilde{p}(y\mid M).}
-By the law of large numbers, \eqn{\tilde{p}(y\mid M) \to p(y\mid M)} almost
-surely as \eqn{S \to \infty}.
-
+marginal likelihood via the posterior harmonic mean estimator.
 To check the convergence, call \code{plot(x$mml)}, where \code{x} is the output
 of this function. If the estimation does not seem to have
 converged, you can improve the approximation by combining the value
-with the prior arithmetic mean estimator: For this approach, \code{S} samples
-\eqn{\theta_1,\dots,\theta_S} are drawn from the model's prior distribution. Then,
-\deqn{p(y\mid M) = \mathbb{E}_\text{prior} p(y\mid \theta,M) \approx \frac{1}{S}
-\sum_s p(y\mid \theta_s,M) = \tilde{p}(y\mid M).}
-Again, it hols by the law of large numbers, that
-\eqn{\tilde{p}(y\mid M) \to p(y\mid M)} almost surely as \eqn{S \to \infty}.
-
-The final approximation of the model's marginal likelihood than is a weighted
-sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate,
+with the prior arithmetic mean estimator. The final approximation of the
+model's marginal likelihood than is a weighted sum of the posterior harmonic
+mean estimate and the prior arithmetic mean estimate,
 where the weights are determined by the sample sizes.
 }
 \examples{

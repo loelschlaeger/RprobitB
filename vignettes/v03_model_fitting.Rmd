@@ -162,7 +162,7 @@ where `data` must be an `RprobitB_data` object (see the vignette about choice da
 
 ## Example
 
-In [the previous vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html), we introduced the [Train data set](https://cran.r-project.org/web/packages/mlogit/vignettes/c2.formula.data.html#wide-format) from the mlogit package [@Croissant:2020] that contains 2922 choices between two fictional train route alternatives. First, we transform the travel `time` from minutes to hours and the travel `price` from guilders to euros:
+In [the previous vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html), we introduced the Train data set from the {mlogit} package [@Croissant:2020] that contains 2922 choices between two fictional train route alternatives. First, we transform the travel `time` from minutes to hours and the travel `price` from guilders to euros:
 
 ```{r, transform-Train}
 data("Train", package = "mlogit")
