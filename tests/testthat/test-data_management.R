@@ -136,7 +136,7 @@ test_that("data preparation with non-standard base alternative works", {
 
 test_that("missing covariates replacement works", {
   choice_data <- data.frame(
-    "choice" = 1:3, "A" = c(1, NA, 3), "B" = c(1, 2, Inf)
+    "choice" = 1:3, "A" = c(1, NA, 3), "B" = c(1, 2, NA)
   )
   expect_equal(
     missing_covariates(choice_data, "complete_cases"),

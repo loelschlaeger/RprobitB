@@ -527,17 +527,6 @@ prepare_data <- function(
     }
   }
 
-  ### check if 'choice_data' contains choices
-  choice_available <- (choice %in% colnames(choice_data))
-  if (!choice_available) {
-    choice <- NA
-  }
-
-  ### handle missing covariates
-  choice_data <- missing_covariates(
-    choice_data = choice_data, impute = impute, choice = choice
-  )
-
   ### transform 'id' of 'choice_data' to factor
   choice_data[, id] <- as.factor(choice_data[, id])
 
@@ -547,8 +536,9 @@ prepare_data <- function(
   ### create choice occasion 'idc' (if not specified)
   if (is.null(idc)) {
     idc <- "idc"
-    choice_data[, idc] <- unlist(sapply(table(choice_data[, id]), seq_len,
-                                        simplify = FALSE))
+    choice_data[, idc] <- unlist(
+        sapply(table(choice_data[, id]), seq_len, simplify = FALSE)
+      )
   }
 
   ### transform 'idc' of 'choice_data' to factor
@@ -556,6 +546,18 @@ prepare_data <- function(
 
   ### sort 'choice_data' first by column 'id' and second by column 'idc'
   choice_data <- choice_data[order(choice_data[, id], choice_data[, idc]), ]
+
+  ### handle missing covariates
+  choice_data <- missing_covariates(
+    choice_data = choice_data, impute = impute,
+    col_ignore = c(id, idc, choice)
+  )
+
+  ### check if 'choice_data' contains choices
+  choice_available <- (choice %in% colnames(choice_data))
+  if (!choice_available) {
+    choice <- NA
+  }
 
   ### check alternative set
   if (ordered) {
@@ -815,25 +817,27 @@ prepare_data <- function(
 #'
 #' @inheritParams prepare_data
 #' @param impute
-#' A character that specifies how to handle missing entries in
+#' A character that specifies how to handle missing covariate entries in
 #' \code{choice_data}, one of:
 #' \itemize{
 #'   \item \code{"complete_cases"}, removes all rows containing missing
-#'   covariate entries entries (the default),
+#'   covariate entries (the default),
 #'   \item \code{"zero"}, replaces missing covariate entries by zero
 #'   (only for numeric columns),
 #'   \item \code{"mean"}, imputes missing covariate entries by the mean
 #'   (only for numeric columns).
 #' }
+#' @param col_ignore
+#' A character vector of columns that are ignored (none per default).
 #'
 #' @return
-#' The input \code{choice_data}, in which missing entries were addressed.
+#' The input \code{choice_data}, in which missing covariates are addressed.
 #'
 #' @keywords
 #' internal
 
 missing_covariates <- function(
-    choice_data, impute = "complete_cases", choice = "choice"
+    choice_data, impute = "complete_cases", col_ignore = character()
     ) {
 
   ### check input
@@ -848,50 +852,44 @@ missing_covariates <- function(
       call. = FALSE
     )
   }
-  if (!is.na(choice)) {
-    if (!(is.character(choice) && length(choice) == 1)) {
-      stop("'choice' must be a character of length 1.",
-           call. = FALSE)
-    }
-    if (!choice %in% colnames(choice_data)) {
-      stop("'choice' is not a column name of 'choice_data'.",
-           call. = FALSE)
-    }
+  if (!is.character(col_ignore)) {
+    stop(
+      "'col_ignore' must be a character vector.",
+      call. = FALSE
+    )
   }
 
-  ### find NA values
-  na_pos <- which(
-    sapply(choice_data, function(x) !is.finite(x)),
-    arr.ind = TRUE
-  )
-  if (!is.na(choice)) {
-    na_pos <- na_pos[na_pos[,"col"] != which(choice == colnames(choice_data)), ]
+  ### index vector of columns
+  ci <- which(!colnames(choice_data) %in% col_ignore)
+
+  ### imputation
+  RprobitB_pp("Checking for missing covariates")
+  if (impute == "complete_cases") {
+    choice_data <- choice_data[complete.cases(choice_data[,ci]), ]
   }
-
-  if(nrow(na_pos) > 0){
-
-    ### imputation
-    if(impute == "complete_cases"){
-      choice_data <- choice_data[-na_pos[,"row"], , drop = FALSE]
-    } else {
-      if(impute == "zero") {
-        for(i in 1:nrow(na_pos)){
-          choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- 0
-        }
+  if (impute == "zero") {
+    for(i in ci) {
+      if (!is.numeric(choice_data[,i])) {
+        warning(
+          paste0("Cannot impute column '", colnames(choice_data)[i],
+                 "' in 'choice_data' with zeros because it is not numeric."),
+          immediate. = TRUE, call. = FALSE
+        )
+      } else {
+        choice_data[is.na(choice_data[,i]),i] <- 0
       }
-      if(impute == "mean") {
-        for(i in 1:nrow(na_pos)){
-          com_ind <- na_pos[which(na_pos[,"col"] == na_pos[i,"col"]), "row"]
-          mean_data <- choice_data[, na_pos[i,"col"]][-com_ind]
-          if(length(mean_data) == 0){
-            stop(paste0("Cannot apply 'impute = mean' to column '",
-                        colnames(choice_data)[na_pos[i,"col"]]), "'.",
-                 call. = FALSE)
-          }
-
-          choice_data[na_pos[i,"row"],na_pos[i,"col"]] <- mean(mean_data,
-                                                               na.rm = TRUE)
-        }
+    }
+  }
+  if (impute == "mean") {
+    for(i in ci) {
+      if (!is.numeric(choice_data[,i])) {
+        warning(
+          paste0("Cannot impute column '", colnames(choice_data)[i],
+                 "' in 'choice_data' with mean because it is not numeric."),
+          immediate. = TRUE, call. = FALSE
+        )
+      } else {
+        choice_data[is.na(choice_data[,i]),i] <- mean(choice_data[,i], na.rm = TRUE)
       }
     }
   }

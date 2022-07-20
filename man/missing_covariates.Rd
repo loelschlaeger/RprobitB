@@ -4,25 +4,31 @@
 \alias{missing_covariates}
 \title{Handle missing covariates}
 \usage{
-missing_covariates(choice_data, impute = "complete_cases", choice = "choice")
+missing_covariates(
+  choice_data,
+  impute = "complete_cases",
+  col_ignore = character()
+)
 }
 \arguments{
 \item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
 one choice occasion.}
 
-\item{impute}{A character that specifies how to handle missing entries in
+\item{impute}{A character that specifies how to handle missing covariate entries in
 \code{choice_data}, one of:
 \itemize{
 \item \code{"complete_cases"}, removes all rows containing missing
-covariate entries entries (the default),
+covariate entries (the default),
 \item \code{"zero"}, replaces missing covariate entries by zero
 (only for numeric columns),
 \item \code{"mean"}, imputes missing covariate entries by the mean
 (only for numeric columns).
 }}
+
+\item{col_ignore}{A character vector of columns that are ignored (none per default).}
 }
 \value{
-The input \code{choice_data}, in which missing entries were addressed.
+The input \code{choice_data}, in which missing covariates are addressed.
 }
 \description{
 This function checks for and replaces missing covariate entries in
