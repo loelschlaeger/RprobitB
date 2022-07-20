@@ -188,7 +188,7 @@ check_prior <- function(
 #' @inheritParams RprobitB_data
 #' @param C
 #' The number (greater or equal 1) of latent classes.
-#' @param ss
+#' @param suff_stat
 #' Optionally the output of \code{\link{sufficient_statistics}}.
 #'
 #' @return
@@ -203,7 +203,7 @@ check_prior <- function(
 #' )
 
 set_initial_gibbs_values <- function(
-    N, T, J, P_f, P_r, C, ordered = FALSE, ranked = FALSE, ss = NULL
+    N, T, J, P_f, P_r, C, ordered = FALSE, ranked = FALSE, suff_stat = NULL
     ) {
 
   ### check inputs
@@ -231,25 +231,21 @@ set_initial_gibbs_values <- function(
     d0 <- rep(0,J-2)
     U0 <- matrix(0, nrow = 1, ncol = N * max(T))
     Sigma0 <- diag(1)
-    if (!is.null(ss)) {
+    if (!is.null(suff_stat)) {
       if (P_f > 0) {
-        W_mat <- Reduce(rbind, ss$W)
+        W_mat <- Reduce(rbind, suff_stat$W)
         alpha0 <- as.numeric(solve(t(W_mat) %*% W_mat) %*% t(W_mat) %*%
-                               na.omit(as.numeric(t(ss$y))))
+                               na.omit(as.numeric(t(suff_stat$y))))
       }
       if (P_r > 0) {
-        X_mat <- Reduce(rbind, ss$X)
+        X_mat <- Reduce(rbind, suff_stat$X)
         b0 <- as.numeric(solve(t(X_mat) %*% X_mat) %*% t(X_mat) %*%
-                               na.omit(as.numeric(t(ss$y))))
+                               na.omit(as.numeric(t(suff_stat$y))))
         b0 <- matrix(rep(b0, times = C), nrow = P_r, ncol = C)
       }
     }
   } else {
     d0 <- NA
-  }
-
-  if (ranked) {
-
   }
 
   ### define 'init'
@@ -834,13 +830,13 @@ fit_model <- function(
   )
 
   ### compute sufficient statistics
-  ss <- sufficient_statistics(data = data, normalization = normalization)
+  suff_stat <- sufficient_statistics(data = data, normalization = normalization)
 
   ### set initial values for the Gibbs sampler
   init <- set_initial_gibbs_values(
     N = data[["N"]], T = data[["T"]], J = data[["J"]], P_f = data[["P_f"]],
     P_r = data[["P_r"]], C = latent_classes[["C"]], ordered = data[["ordered"]],
-    ss = ss
+    suff_stat = suff_stat
   )
 
   ### Gibbs sampling
@@ -848,7 +844,7 @@ fit_model <- function(
     set.seed(seed)
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampling(
-    sufficient_statistics = ss, prior = prior,
+    sufficient_statistics = suff_stat, prior = prior,
     latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
     init = init, R = R, B = B, print_progress = print_progress,
     ordered = data[["ordered"]], ranked = data[["ranked"]]

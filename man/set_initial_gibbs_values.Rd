@@ -13,7 +13,7 @@ set_initial_gibbs_values(
   C,
   ordered = FALSE,
   ranked = FALSE,
-  ss = NULL
+  suff_stat = NULL
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ Per default, \code{T = 1}.}
 
 \item{ranked}{TBA}
 
-\item{ss}{Optionally the output of \code{\link{sufficient_statistics}}.}
+\item{suff_stat}{Optionally the output of \code{\link{sufficient_statistics}}.}
 }
 \value{
 A list of initial values for the Gibbs sampler.
