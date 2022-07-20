@@ -155,9 +155,9 @@ If <code>standardize = "all"</code>, all covariates get standardized.</p></dd>
 
 
 <dt>impute</dt>
-<dd><p>A character that specifies how to handle missing entries in
+<dd><p>A character that specifies how to handle missing covariate entries in
 <code>choice_data</code>, one of:</p><ul><li><p><code>"complete_cases"</code>, removes all rows containing missing
-covariate entries entries (the default),</p></li>
+covariate entries (the default),</p></li>
 <li><p><code>"zero"</code>, replaces missing covariate entries by zero
 (only for numeric columns),</p></li>
 <li><p><code>"mean"</code>, imputes missing covariate entries by the mean
@@ -217,6 +217,7 @@ for more details.</p>
 <span class="r-in"><span>  idc <span class="op">=</span> <span class="st">"choiceid"</span>,</span></span>
 <span class="r-in"><span>  standardize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>, <span class="st">"time"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Checking for missing covariates</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### ranked case</span></span></span>
 <span class="r-in"><span><span class="va">choice_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -227,6 +228,7 @@ for more details.</p>
 <span class="r-in"><span>  choice_data <span class="op">=</span> <span class="va">choice_data</span>,</span></span>
 <span class="r-in"><span>  ranked <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Checking for missing covariates</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
