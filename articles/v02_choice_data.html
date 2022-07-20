@@ -199,7 +199,8 @@
 </h3>
 <p>Let’s prepare the Train data set for estimation with our previous specification of <code>form</code> and <code>re</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"id"</span>, idc <span class="op">=</span> <span class="st">"choiceid"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"id"</span>, idc <span class="op">=</span> <span class="st">"choiceid"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Checking for missing covariates</span></span></code></pre></div>
 <p>The <code>summary</code> and <code>plot</code> methods provide a quick data overview:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>

@@ -134,24 +134,6 @@ effect or <code>Sigma_&lt;j&gt;,&lt;j&gt;</code> for the <code>&lt;j&gt;</code>t
 <code><a href="../articles/v03_model_fitting.html">vignette("v03_model_fitting", package = "RprobitB")</a></code>.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### change the length B of the burn-in period</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Probit model 'choice ~ price + time + change + comfort | 0'.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### change the thinning factor Q</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, Q <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Probit model 'choice ~ price + time + change + comfort | 0'.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">### change the scale</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, scale <span class="op">=</span> <span class="st">"Sigma_1,1 := 1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Probit model 'choice ~ price + time + change + comfort | 0'.</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -102,16 +102,6 @@ marginal model likelihood <code><a href="mml.html">mml</a></code>.</p>
 probabilities, observations in rows and posterior samples in columns.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co">### takes ~5 min computation time</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu">compute_p_si</span><span class="op">(</span><span class="va">model_train</span>, ncores <span class="op">=</span> <span class="fl">1</span>, recompute <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

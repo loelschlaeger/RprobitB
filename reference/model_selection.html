@@ -110,26 +110,6 @@ see <code><a href="WAIC.html">WAIC</a></code>),</p></li>
     <p>See the vignette on model selection for more details.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"model_train_sparse"</span>, package <span class="op">=</span> <span class="st">"RprobitB"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">criteria</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"npar"</span>, <span class="st">"LL"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"WAIC"</span>, <span class="st">"MMLL"</span>, <span class="st">"BF"</span>, <span class="st">"pred_acc"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">model_selection</span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="va">criteria</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          model_train model_train_sparse</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> npar                               4                  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LL                          -1727.70           -1865.86</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC                          3463.41            3733.73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC                          3487.34            3739.71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WAIC                         3463.74            3733.87</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> se(WAIC)                        0.19               0.07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> pWAIC                           4.37               1.13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MMLL                        -1731.13           -1867.26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BF(*,model_train)                  1             &lt; 0.01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BF(*,model_train_sparse)       &gt; 100                  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> pred_acc                      69.61%             63.40%</span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
