@@ -153,24 +153,29 @@ test_that("computation of sufficient statistics works", {
   expect_snapshot(ss)
 })
 
-test_that("transforming B in RprobitB_fit works", {
-  model <- RprobitB::model_train
+test_that("transforming RprobitB_fit works", {
+  set.seed(1)
+  data("Train", package = "mlogit")
+  Train$price_A <- Train$price_A / 100 * 2.20371
+  Train$price_B <- Train$price_B / 100 * 2.20371
+  Train$time_A <- Train$time_A / 60
+  Train$time_B <- Train$time_B / 60
+  form <- choice ~ price + time + change + comfort | 0
+  data <- prepare_data(form = form, choice_data = Train)
+  model <- fit_model(
+    data = data,
+    scale = "price := -1",
+    R = 100,
+    B = 90
+  )
   model_new_B <- transform(model, B = 2)
   expect_s3_class(model_new_B, "RprobitB_fit")
   expect_s3_class(model_new_B$gibbs_samples, "RprobitB_gibbs_samples")
   expect_equal(model_new_B$B, 2)
-})
-
-test_that("transforming Q in RprobitB_fit works", {
-  model <- RprobitB::model_train
   model_new_Q <- transform(model, Q = 1)
   expect_s3_class(model_new_Q, "RprobitB_fit")
   expect_s3_class(model_new_Q$gibbs_samples, "RprobitB_gibbs_samples")
   expect_equal(model_new_Q$Q, 1)
-})
-
-test_that("transforming scale in RprobitB_fit works", {
-  model <- RprobitB::model_train
   model_new_scale <- transform(
     model,
     scale = "Sigma_1,1 := 1", check_preference_flip = FALSE

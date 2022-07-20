@@ -1200,12 +1200,9 @@ compute_choice_probabilities <- function(
 #' A numeric (vector), that specifies the choice occasion(s).
 #' @param idc_label
 #' The name of the column that contains the choice occasion identifier.
+#'
 #' @return
 #' A subset of the `choice_data` data frame specified in `prepare_data()`.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' get_cov(model_train, id = 1:2, idc = 1:2, idc_label = "choiceid")
 #'
 #' @export
 

@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library("RprobitB")
 ```
 
-No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the Train data set from the {mlogit} package [@Croissant:2020] for illustration. 
+No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the Train data set from the {mlogit} package [@Croissant:2020] for illustration. 
 
 
 ## Requirements to choice data

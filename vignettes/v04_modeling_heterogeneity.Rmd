@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library("RprobitB")
 ```
 
-In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.].
+In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.].
 
 ## Estimating a joint normal mixing distribution
 
@@ -40,7 +40,7 @@ Additionally, we expect correlations between the random coefficients to certain 
 
 The following lines prepare the `Electricity` data set for estimation. We use the convenience function `as_cov_names()` that relabels the data columns for alternative specific covariates into the required format "`<covariate>_<alternative>`", compare to the vignette on choice data. Via the `re = c("cl","loc","wk","tod","seas")` argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to `-1` to interpret the other estimates as monetary values.
 
-```{r, eval = FALSE}
+```{r, message = FALSE}
 data("Electricity", package = "mlogit")
 Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
 data <- prepare_data(
@@ -48,13 +48,7 @@ data <- prepare_data(
   choice_data = Electricity,
   re = c("cl","loc","wk","tod","seas")
 )
-model_elec <- fit_model(data, R = 5000, scale = "price := -1")
-```
-
-The estimated model is saved in {RprobitB} and can be accessed via:
-
-```{r, load-model-elec}
-data(model_elec, package = "RprobitB")
+model_elec <- fit_model(data, R = 1000, scale = "pf := -1")
 ```
 
 Calling the `coef()` method on the estimated model also returns the estimated (marginal) variances of the mixing distribution besides the average mean effects:
@@ -63,7 +57,7 @@ Calling the `coef()` method on the estimated model also returns the estimated (m
 coef(model_elec)
 ```
 
-By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price `tod` in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large (`12.37`). The same holds for the contract length `cl`. In particular, the estimated share of the population that prefers to have a longer contract length equals:
+By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price `tod` in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large. The same holds for the contract length `cl`. In particular, the estimated share of the population that prefers to have a longer contract length equals:
 
 ```{r, compute-mixdistr-share}
 cl_mu <- coef(model_elec)["cl","mean"]

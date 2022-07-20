@@ -5,7 +5,7 @@
 \alias{choice_berserk}
 \title{Data of berserking choice}
 \format{
-A data frame containing berserking choices of 6174 chess players
+A \code{data.frame} containing berserking choices of 6174 chess players
 in 126902 online bullet (1+0) games.
 It consists of the following columns:
 \itemize{
@@ -28,7 +28,7 @@ with the tournament id 'RibHfoX6' on 2022-03-29.
 data(choice_berserk)
 }
 \description{
-This dataset includes the binary 'berserking' choice of participants in the
+This data set includes the binary 'berserking' choice of participants in the
 yearly bullet arena 2022 on the online chess platform \url{https://lichess.org}.
 Berserking is a choice each player has at the beginning of each game:
 When a player clicks the 'Berserk button', they lose half of their clock time,
@@ -42,7 +42,7 @@ point.
 
 The considered tournament had the following characteristics:
 \itemize{
-\item The tournament startet at 2022-01-10 17:00:25 and lasted 240 minutes.
+\item The tournament started at 2022-01-10 17:00:25 and lasted 240 minutes.
 \item The time control was 1 minute per player per game (bullet format).
 \item The players are automatically and immediately paired again after a game has finished,
 which is the so-called 'arena tournament' modus.

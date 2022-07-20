@@ -21,26 +21,41 @@ knitr::opts_chunk$set(
 library("RprobitB")
 ```
 
-The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
+The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
-```{r, load-model-train}
-data("model_train", package = "RprobitB")
-model_train
+```{r, echo = FALSE}
+set.seed(1)
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 * 2.20371
+Train$price_B <- Train$price_B / 100 * 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
 ```
 
-As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula `choice ~ price | 0`:^[This model is also saved in {RprobitB} and can be accessed via `data("model_train_sparse", package = "RprobitB")`.]
+```{r, message = FALSE}
+form <- choice ~ price + time + change + comfort | 0
+data <- prepare_data(form = form, choice_data = Train)
+model_train <- fit_model(
+  data = data,
+  scale = "price := -1"
+)
+```
 
-```{r, eval = FALSE}
+As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula `choice ~ price | 0`:
+
+```{r, message = FALSE}
 model_train_sparse <- update(model_train, form = choice ~ price | 0)
 ```
 
-```{r, echo = FALSE}
-data("model_train_sparse", package = "RprobitB")
-```
-
 The `update()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.  
+
+```{r, echo = FALSE, message = FALSE}
+set.seed(1)
+model_train <- compute_p_si(model_train)
+model_train_sparse <- compute_p_si(model_train_sparse)
+```
 
 ## The `model_selection()` function
 

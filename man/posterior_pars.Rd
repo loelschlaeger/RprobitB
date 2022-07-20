@@ -10,16 +10,10 @@ posterior_pars(x)
 \item{x}{An object of class \code{RprobitB_fit}.}
 }
 \value{
-A list of \code{RprobitB_parameter}-objects.
+A list of \code{RprobitB_parameter} objects.
 }
 \description{
 This function builds parameter sets from the normalized, burned and
 thinned posterior samples.
-}
-\examples{
-data("model_train", package = "RprobitB")
-pars <- RprobitB:::posterior_pars(model_train)
-pars[[1]]
-
 }
 \keyword{internal}

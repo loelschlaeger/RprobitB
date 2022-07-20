@@ -1,7 +1,18 @@
 options("RprobitB_progress" = FALSE)
 
 test_that("choice probabilities can be computed", {
-  data("model_train", package = "RprobitB")
+  set.seed(1)
+  data("Train", package = "mlogit")
+  Train$price_A <- Train$price_A / 100 * 2.20371
+  Train$price_B <- Train$price_B / 100 * 2.20371
+  Train$time_A <- Train$time_A / 60
+  Train$time_B <- Train$time_B / 60
+  form <- choice ~ price + time + change + comfort | 0
+  data <- prepare_data(form = form, choice_data = Train)
+  model_train <- fit_model(
+    data = data,
+    scale = "price := -1"
+  )
   expect_snapshot(choice_probabilities(model_train))
 })
 

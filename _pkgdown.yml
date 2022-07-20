@@ -69,16 +69,12 @@ reference:
   desc: The following datasets are included in the package.
   contents:
   - has_keyword("dataset")
-- title: Fitted model
-  desc: The package contains the following fitted models.
-  contents:
-  - has_keyword("model")
 - title: Distributions
   desc: Implementation of distributions and number generating functions.
   contents:
   - has_keyword("distribution")
 - title: Posterior samplers
-  desc: These functions draw from the conditional posterior distributions of the model parameters.
+  desc: These functions draw from conditional posterior distributions.
   contents:
   - has_keyword("posterior")
 - title: Utilities

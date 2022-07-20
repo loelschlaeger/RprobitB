@@ -1345,18 +1345,6 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 #' @return
 #' The transformed \code{RprobitB_fit} object.
 #'
-#' @examples
-#' data(model_train)
-#'
-#' ### change the length B of the burn-in period
-#' transform(model_train, B = 1)
-#'
-#' ### change the thinning factor Q
-#' transform(model_train, Q = 1)
-#'
-#' ### change the scale
-#' transform(model_train, scale = "Sigma_1,1 := 1")
-#'
 #' @export
 #'
 #' @rdname transform

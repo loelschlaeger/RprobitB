@@ -46,16 +46,3 @@ Given an object of class \code{RprobitB_fit}, this function can:
 See the vignette "Model fitting" for more details:
 \code{vignette("v03_model_fitting", package = "RprobitB")}.
 }
-\examples{
-data(model_train)
-
-### change the length B of the burn-in period
-transform(model_train, B = 1)
-
-### change the thinning factor Q
-transform(model_train, Q = 1)
-
-### change the scale
-transform(model_train, scale = "Sigma_1,1 := 1")
-
-}

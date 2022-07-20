@@ -29,12 +29,6 @@
 #' A data frame, criteria in columns, models in rows.
 #'
 #' @export
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' data("model_train_sparse", package = "RprobitB")
-#' criteria <- c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc")
-#' model_selection(model_train, model_train_sparse, criteria = criteria)
 
 model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
                             add_form = FALSE) {
@@ -229,16 +223,6 @@ BIC.RprobitB_fit <- function(object, ...) {
 #'   \item \code{p_si}, the output of \code{\link{compute_p_si}}.
 #' }
 #'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' x <- WAIC(model_train)
-#' print(x)
-#'
-#' \dontrun{
-#' ### plot convergence
-#' plot(x)
-#' }
-#'
 #' @keywords
 #' internal
 #'
@@ -376,10 +360,6 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
 #' @return
 #' Either a numeric value (if just one object is provided) or a numeric vector.
 #'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' npar(model_train)
-#'
 #' @export
 
 npar <- function(object, ...) {
@@ -423,13 +403,6 @@ npar.RprobitB_fit <- function(object, ...) {
 #' probabilities, observations in rows and posterior samples in columns.
 #'
 #' @export
-#'
-#' @examples
-#' \donttest{
-#' ### takes ~5 min computation time
-#' data("model_train", package = "RprobitB")
-#' model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)
-#' }
 #'
 #' @importFrom foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
@@ -535,12 +508,6 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 #' @return
 #' The object \code{x}, including the object \code{mml}, which is the model's
 #' approximated marginal likelihood value.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' model_train <- mml(model_train, recompute = TRUE)
-#' model_train$mml
-#' print(model_train$mml, log = TRUE)
 #'
 #' @export
 #'
@@ -707,12 +674,7 @@ plot.RprobitB_mml <- function(x, log = FALSE, ...) {
 #' An object of class \code{RprobitB_fit}.
 #'
 #' @return
-#' A list of \code{RprobitB_parameter}-objects.
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' pars <- RprobitB:::posterior_pars(model_train)
-#' pars[[1]]
+#' A list of \code{RprobitB_parameter} objects.
 #'
 #' @keywords
 #' internal
@@ -853,10 +815,6 @@ draw_from_prior <- function(prior, C = 1) {
 #' A numeric.
 #'
 #' @export
-#'
-#' @examples
-#' data("model_train", package = "RprobitB")
-#' pred_acc(model_train)
 
 pred_acc <- function(x, ...) {
   models <- list(...)

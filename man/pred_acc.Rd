@@ -20,7 +20,3 @@ object. Prediction accuracy means the share of choices that are correctly
 predicted by the model, where prediction is based on the maximum choice
 probability.
 }
-\examples{
-data("model_train", package = "RprobitB")
-pred_acc(model_train)
-}

@@ -22,8 +22,3 @@ A subset of the \code{choice_data} data frame specified in \code{prepare_data()}
 This convenience function returns the covariates and the choices of specific
 choice occasions.
 }
-\examples{
-data("model_train", package = "RprobitB")
-get_cov(model_train, id = 1:2, idc = 1:2, idc_label = "choiceid")
-
-}

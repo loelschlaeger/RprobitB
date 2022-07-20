@@ -21,8 +21,3 @@ Either a numeric value (if just one object is provided) or a numeric vector.
 This function extracts the number of model parameters of an
 \code{RprobitB_fit} object.
 }
-\examples{
-data("model_train", package = "RprobitB")
-npar(model_train)
-
-}

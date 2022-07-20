@@ -23,11 +23,3 @@ This function computes the probability for each observed choice at the
 probabilities are required to compute the \code{\link{WAIC}} and the
 marginal model likelihood \code{\link{mml}}.
 }
-\examples{
-\donttest{
-### takes ~5 min computation time
-data("model_train", package = "RprobitB")
-model_train <- compute_p_si(model_train, ncores = 1, recompute = TRUE)
-}
-
-}

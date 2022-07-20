@@ -5,7 +5,7 @@
 \alias{choice_chess_opening}
 \title{Data of chess opening choice}
 \format{
-A data frame with the following columns:
+A \code{data.frame} with the following columns:
 \itemize{
 \item \code{fideid_w}, FIDE identifier for the White player
 \item \code{fideid_b}, FIDE identifier for the Black player
@@ -33,6 +33,6 @@ Ambiguous matches were dropped. Chess games with blitz or rapid time control are
 data(choice_chess_opening)
 }
 \description{
-This dataset includes opening choices in 37229 chess games.
+This data set includes opening choices in 37229 chess games.
 }
 \keyword{dataset}

@@ -44,15 +44,4 @@ The \eqn{\text{WAIC}} has a standard error \eqn{\text{SE}} of
 \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]},}
 where \eqn{n} is the number of choices.
 }
-\examples{
-data("model_train", package = "RprobitB")
-x <- WAIC(model_train)
-print(x)
-
-\dontrun{
-### plot convergence
-plot(x)
-}
-
-}
 \keyword{internal}

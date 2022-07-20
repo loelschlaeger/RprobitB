@@ -41,10 +41,3 @@ model's marginal likelihood than is a weighted sum of the posterior harmonic
 mean estimate and the prior arithmetic mean estimate,
 where the weights are determined by the sample sizes.
 }
-\examples{
-data("model_train", package = "RprobitB")
-model_train <- mml(model_train, recompute = TRUE)
-model_train$mml
-print(model_train$mml, log = TRUE)
-
-}

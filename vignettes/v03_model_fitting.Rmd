@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library("RprobitB")
 ```
 
-This vignette^[This vignette is built using R `r paste(R.Version()[6:7], collapse = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.
+This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.
 
 ## Bayes estimation of the probit model
 
@@ -178,19 +178,13 @@ The following lines fit a probit model that explains the chosen trip alternative
 set.seed(1)
 ```
 
-```{r, eval = FALSE}
+```{r, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
 model_train <- fit_model(
   data = data,
-  scale = "price := -1")
+  scale = "price := -1"
 )
-```
-
-The estimated model is saved in {RprobitB} and can be accessed via
-
-```{r, load-model-train}
-data(model_train, package = "RprobitB")
 ```
 
 The estimated coefficients (using the mean of the Gibbs samples as a point estimate) can be printed via

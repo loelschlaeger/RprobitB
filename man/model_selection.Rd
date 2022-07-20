@@ -38,9 +38,3 @@ This function returns a table with several criteria for model comparison.
 \details{
 See the vignette on model selection for more details.
 }
-\examples{
-data("model_train", package = "RprobitB")
-data("model_train_sparse", package = "RprobitB")
-criteria <- c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc")
-model_selection(model_train, model_train_sparse, criteria = criteria)
-}
