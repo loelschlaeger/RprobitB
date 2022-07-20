@@ -991,6 +991,10 @@ simulate_choices <- function(
     ) {
 
   ### check 'form'
+  if (missing(form)) {
+    stop("Please specify the model formula 'form'.",
+         call. = FALSE)
+  }
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
   form <- check_form_out$form
   choice <- check_form_out$choice
@@ -999,6 +1003,10 @@ simulate_choices <- function(
   ASC <- check_form_out$ASC
 
   ### check other inputs
+  if (missing(N)) {
+    stop("Please specify 'N'.",
+         call. = FALSE)
+  }
   if (!is.numeric(N) || N %% 1 != 0) {
     stop("'N' must be a non-negative number.",
          call. = FALSE)
