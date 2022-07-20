@@ -347,13 +347,14 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   ### check if 'latent_classes' is 'NULL' or a list
   if (!is.null(latent_classes)) {
     if (!is.list(latent_classes)) {
-      stop("'latent_classes' must be either 'NULL' or a list.", call. = FALSE)
+      stop("'latent_classes' must be either a list or 'NULL'.",
+           call. = FALSE)
     }
   } else {
     latent_classes <- list()
   }
 
-  ### set default number of latent classes
+  ### set default number of latent classes to 1
   if (is.null(latent_classes[["C"]])) {
     latent_classes[["C"]] <- 1
   }
@@ -367,7 +368,7 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
   ### determine whether latent classes should be DP-based updated
   latent_classes[["dp_update"]] <-
-    ifelse(!isTRUE(latent_classes[["dp_update"]]) ||
+    ifelse(!isTRUE(latent_classes[["dp_update"]]) &&
              !isFALSE(latent_classes[["dp_update"]]),
            FALSE, latent_classes[["dp_update"]]
     )
@@ -404,19 +405,22 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   ### check 'latent_classes'
   if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 ||
       !latent_classes$C > 0) {
-    stop("'latent_classes$C' must be a positive integer.", call. = FALSE)
+    stop("'latent_classes$C' must be a positive integer.",
+         call. = FALSE)
   }
   if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 ||
         !latent_classes$Cmax > 0) {
-      stop("'latent_classes$Cmax' must be a positive integer.", call. = FALSE)
+      stop("'latent_classes$Cmax' must be a positive integer.",
+           call. = FALSE)
     }
   }
   if (latent_classes[["weight_update"]]) {
     if (!is.numeric(latent_classes$buffer) ||
         !latent_classes$buffer %% 1 == 0 ||
         !latent_classes$buffer > 0) {
-      stop("'latent_classes$buffer' must be a positive integer.", call. = FALSE)
+      stop("'latent_classes$buffer' must be a positive integer.",
+           call. = FALSE)
     }
     if (!is.numeric(latent_classes$epsmin) || !latent_classes$epsmin <= 1 ||
         !latent_classes$epsmin >= 0) {
@@ -428,7 +432,8 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
         !latent_classes$epsmin < latent_classes$epsmax) {
       stop(
         "'latent_classes$epsmax' must be a numeric between 0 and 1 and",
-        "greater than 'latent_classes$epsmin'.", call. = FALSE
+        "greater than 'latent_classes$epsmin'.",
+        call. = FALSE
       )
     }
     if (!is.numeric(latent_classes$distmin) || !0 <= latent_classes$distmin) {

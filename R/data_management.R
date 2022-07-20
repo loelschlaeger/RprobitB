@@ -1627,7 +1627,8 @@ summary.RprobitB_data <- function(object, ...) {
 
   ### check class of 'object'
   if (!inherits(object, "RprobitB_data")) {
-    stop("Not of class 'RprobitB_data'.", call. = FALSE)
+    stop("Not of class 'RprobitB_data'.",
+         call. = FALSE)
   }
 
   ### alternative frequency

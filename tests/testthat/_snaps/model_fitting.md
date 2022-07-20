@@ -105,7 +105,7 @@
       (out <- RprobitB_latent_classes(list(weight_update = TRUE, dp_update = TRUE)))
     Output
       Latent classes
-      DP-based update: FALSE 
+      DP-based update: TRUE 
       Weight-based update: TRUE 
       Initial classes: 1 
       Maximum classes: 10 
@@ -121,7 +121,7 @@
     Output
       List of 9
        $ weight_update: logi TRUE
-       $ dp_update    : logi FALSE
+       $ dp_update    : logi TRUE
        $ C            : num 1
        $ Cmax         : num 10
        $ buffer       : num 100
