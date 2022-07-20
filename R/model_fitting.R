@@ -1172,7 +1172,7 @@ update.RprobitB_fit <- function(
   return(model)
 }
 
-#' Create object of class \code{RprobitB_fit}.
+#' Create object of class \code{RprobitB_fit}
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_fit}.
@@ -1249,7 +1249,8 @@ summary.RprobitB_fit <- function(object, FUN = c(
 
   ### check class of 'object'
   if (!inherits(object, "RprobitB_fit")) {
-    stop("Not of class 'RprobitB_fit'.")
+    stop("Not of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
 
   ### compute statistics from 'gibbs_samples'
@@ -1366,7 +1367,8 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
   ### check inputs
   x <- `_data`
   if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be of class 'RprobitB_fit'.")
+    stop("'x' must be of class 'RprobitB_fit'.",
+         call. = FALSE)
   }
   if (is.null(B)) {
     B <- x[["B"]]
@@ -1382,10 +1384,12 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
   P_f <- x[["data"]][["P_f"]]
   J <- x[["data"]][["J"]]
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.")
+    stop("'B' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.")
+    stop("'Q' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (is.null(scale)) {
     normalization <- x[["normalization"]]
@@ -1461,16 +1465,20 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 
   ### check inputs
   if (!is.list(gibbs_samples)){
-    stop("'gibbs_samples' must be a list of Gibbs samples.", call. = FALSE)
+    stop("'gibbs_samples' must be a list of Gibbs samples.",
+         call. = FALSE)
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.", call. = FALSE)
+    stop("'R' must be a positive integer.",
+         call. = FALSE)
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'B' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.", call. = FALSE)
+    stop("'Q' must be a positive integer smaller than 'R'.",
+         call. = FALSE)
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
@@ -1638,14 +1646,16 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
 
   ### check inputs
   if (!inherits(parameter, "RprobitB_parameter")) {
-    stop("'parameter' must be of class 'RprobitB_parameter'.", stop = FALSE)
+    stop("'parameter' must be of class 'RprobitB_parameter'.",
+         stop = FALSE)
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
          stop = FALSE)
   }
   if (!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean.", stop = FALSE)
+    stop("'ordered' must be a boolean.",
+         stop = FALSE)
   }
 
   ### function to scale the parameters
@@ -1776,10 +1786,12 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
     ### check inputs
     Sigma <- as.matrix(Sigma)
     if (!is_covariance_matrix(Sigma)) {
-      stop("'Sigma' is no covariance matrix.", call. = FALSE)
+      stop("'Sigma' is no covariance matrix.",
+           all. = FALSE)
     }
     if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
-      stop("'i' must be an alternative number.", call. = FALSE)
+      stop("'i' must be an alternative number.",
+           call. = FALSE)
     }
   }
 
@@ -1801,13 +1813,15 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
   if (checks) {
     ### check if 'Sigma_full' is a covariance matrix
     if (!is_covariance_matrix(Sigma_full)) {
-      stop("Back-transformed matrix is no covariance matrix.", call. = FALSE)
+      stop("Back-transformed matrix is no covariance matrix.",
+           call. = FALSE)
     }
 
     ### check if back-differencing yields differenced matrix
     Sigma_back <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
     if (any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps))) {
-      stop("Back-differencing failed.", call. = FALSE)
+      stop("Back-differencing failed.",
+           call. = FALSE)
     }
   }
 

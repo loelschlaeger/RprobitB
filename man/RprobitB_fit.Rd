@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_fitting.R
 \name{RprobitB_fit}
 \alias{RprobitB_fit}
-\title{Create object of class \code{RprobitB_fit}.}
+\title{Create object of class \code{RprobitB_fit}}
 \usage{
 RprobitB_fit(
   data,
