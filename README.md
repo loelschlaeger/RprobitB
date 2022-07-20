@@ -81,7 +81,7 @@ values:
 ``` r
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form, Train)
-model <- fit_model(data, scale = list("parameter" = "a", index = 1, value = -1))
+model <- fit_model(data, scale = "price := -1")
 ```
 
 The estimated effects can be visualized via:
@@ -107,9 +107,9 @@ predict(
   data = data.frame("price_A" = c(100,110), 
                     "price_B" = c(100,100)),
   overview = FALSE)
-#>   id choiceid    A    B prediction
-#> 1  1        1 0.50 0.50          A
-#> 2  2        1 0.35 0.65          B
+#>   id idc    A    B prediction
+#> 1  1   1 0.50 0.50          A
+#> 2  2   1 0.35 0.65          B
 ```
 
 However, offering a better comfort class (`0` here is better than `1`)
@@ -124,9 +124,9 @@ predict(
                     "price_B"   = c(100,100),
                     "comfort_B" = c(1,1)),
   overview = FALSE)
-#>   id choiceid    A    B prediction
-#> 1  1        1 0.50 0.50          A
-#> 2  2        1 0.57 0.43          A
+#>   id idc    A    B prediction
+#> 1  1   1 0.50 0.50          A
+#> 2  2   1 0.57 0.43          A
 ```
 
 This is just the tip of the iceberg: {RprobitB} offers tools for

@@ -58,15 +58,10 @@ str(Train)
 
 The following lines fit a probit model that explains the chosen trip alternatives (`choice`) by their `price`, `time`, number of `change`s, and level of `comfort` (the lower this value the higher the comfort). For normalization, the first linear coefficient, the `price`, is fixed to `-1`, which allows to interpret the other coefficients as monetary values:
 
-```{r fit, eval = FALSE}
+```{r fit, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form, Train)
-model <- fit_model(data, scale = list("parameter" = "a", index = 1, value = -1))
-```
-
-```{r load, echo = FALSE}
-data("model_train", package = "RprobitB")
-model <- model_train
+model <- fit_model(data, scale = "price := -1")
 ```
 
 The estimated effects can be visualized via:
