@@ -835,6 +835,8 @@ prepare_data <- function(
 #'
 #' @keywords
 #' internal
+#'
+#' @importFrom stats complete.cases
 
 missing_covariates <- function(
     choice_data, impute = "complete_cases", col_ignore = character()
@@ -865,7 +867,7 @@ missing_covariates <- function(
   ### imputation
   RprobitB_pp("Checking for missing covariates")
   if (impute == "complete_cases") {
-    choice_data <- choice_data[complete.cases(choice_data[,ci]), ]
+    choice_data <- choice_data[stats::complete.cases(choice_data[,ci]), ]
   }
   if (impute == "zero") {
     for(i in ci) {

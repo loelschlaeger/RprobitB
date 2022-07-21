@@ -18,7 +18,3 @@ No return value. Draws a plot to the current device.
 \description{
 This function draws receiver operating characteristic (ROC) curves.
 }
-\examples{
-RprobitB:::plot_roc(RprobitB::model_train)
-
-}

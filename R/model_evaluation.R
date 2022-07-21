@@ -144,7 +144,7 @@ print.RprobitB_gibbs_samples_statistics <- function(
 
     ### ignore 's' if it is trivial
     if ("s" %in% names(x)) {
-      if ((is.null(true) || true$C == 1) && length(x[["s"]] == 1)) {
+      if ((is.null(true) || true$C == 1) && nrow(x[["s"]]) == 1) {
         x[["s"]] <- NULL
       }
     }

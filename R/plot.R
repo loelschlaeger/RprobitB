@@ -539,9 +539,6 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @return
 #' No return value. Draws a plot to the current device.
 #'
-#' @examples
-#' RprobitB:::plot_roc(RprobitB::model_train)
-#'
 #' @export
 #'
 #' @importFrom plotROC geom_roc style_roc

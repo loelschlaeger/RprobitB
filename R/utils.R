@@ -168,7 +168,8 @@ is_covariance_matrix <- function(x) {
 #' This function prints abbreviated matrices and vectors.
 #'
 #' @references
-#' This function is a modified version of \code{\link[ramify]{pprint}}.
+#' This function is a modified version of the \code{pprint()} function from the
+#' \code{ramify} R package.
 #'
 #' @param x
 #' A (numeric or character) matrix or a vector.

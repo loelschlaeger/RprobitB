@@ -1244,8 +1244,7 @@ print.RprobitB_fit <- function(x, ...) {
 
 summary.RprobitB_fit <- function(object, FUN = c(
   "mean" = mean, "sd" = stats::sd,
-  "R^" = R_hat
-), ...) {
+  "R^" = R_hat), ...) {
 
   ### check class of 'object'
   if (!inherits(object, "RprobitB_fit")) {
@@ -1296,8 +1295,6 @@ summary.RprobitB_fit <- function(object, FUN = c(
   return(out)
 }
 
-#' @param digits
-#' The number of printed decimal places.
 #' @noRd
 #' @export
 #' @importFrom crayon underline
