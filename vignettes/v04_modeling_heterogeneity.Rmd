@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   out.width = "75%"
 )
 library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.].

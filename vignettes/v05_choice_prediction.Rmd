@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   out.width = "75%"
 )
 library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] discusses in-sample and out-of-sample prediction within {RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes.

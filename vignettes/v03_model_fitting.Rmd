@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   out.width = "75%"
 )
 library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.

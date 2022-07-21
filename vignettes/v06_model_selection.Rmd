@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   out.width = "75%"
 )
 library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
