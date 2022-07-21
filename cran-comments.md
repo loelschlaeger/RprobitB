@@ -12,4 +12,4 @@
   
 * CRAN test NOTE: installed size is 63.9Mb 
   sub-directories of 1Mb or more.
-  Comment: The package contains fitted models for demonstration, using Gibbs samples, which take a lot of storage space.
+  Comment: We removed fitted models from the package to reduce the size.
