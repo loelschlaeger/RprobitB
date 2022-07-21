@@ -1,9 +1,5 @@
 ### R code from vignette source 'rprobitb_oelschlaeger_bauer.Rnw'
 
-### Set this flag to 'TRUE' to refit everything, or to 'FALSE' to re-use
-### already available results of long computations.
-refit <- FALSE
-
 
 ###################################################
 ### code chunk number 1: preliminaries
@@ -201,36 +197,29 @@ choice_berserk <- create_lagged_cov(
 ###################################################
 ### code chunk number 28: example 4 berserk prepare data
 ###################################################
-if(refit) {
-  ### ~ 3 minutes computation time
-  data <- prepare_data(
-    form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
-      berserk.1 + lost.1 + 1,
-    re = c("rating_diff","lost.1"), choice_data = choice_berserk,
-    id = "player_id", idc = "game_id",
-    standardize = c("rating","rating_diff","min_rem"), impute = "zero"
-  )
-}
-
+data <- prepare_data(
+  form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
+    berserk.1 + lost.1 + 1,
+  re = c("rating_diff","lost.1"), choice_data = choice_berserk,
+  id = "player_id", idc = "game_id",
+  standardize = c("rating","rating_diff","min_rem"), impute = "zero"
+)
 
 ###################################################
 ### code chunk number 29: example 4 berserk fit model
 ###################################################
-if(refit) {
-  ### ~ 4 hours computation time
+if(FALSE) {
+  ### very long computation time (~ 4 hours)
+  ### the model is precomputed, see below
   model_berserk <- fit_model(
     data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
   )
 }
 
+### 'model_berserk.rds' is contained in the replication materials of the submission
+model_berserk <- readRDS("model_berserk.rds")
 
-###################################################
-### code chunk number 30: example 4 berserk access pre-computed model
-###################################################
-if(!refit) {
-  data("model_berserk", package = "RprobitB")
-  coef(model_berserk)
-}
+coef(model_berserk)
 
 
 ###################################################
