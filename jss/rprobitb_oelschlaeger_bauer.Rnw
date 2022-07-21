@@ -249,7 +249,7 @@ The two choice alternatives from the train trip example are unordered. If we had
 Deciders obtaining separate utilities for each alternative is no longer a natural concept in this case \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only a single utility
 %
 \begin{align*}
-  U_{nt} = X_{nt}^\top \beta_n + \epsilon_{nt}
+  U_{nt} = X_{nt}^\top \tilde{\beta}_n + \epsilon_{nt}
 \end{align*}
 %
 per decider $n$ and choice occasion $t$. The value can be interpreted as the level of association that $n$ has with the choice question. It falls into discrete categories, which in turn are linked to the ordered alternatives $j=1,\dots,J$. Formally, we replace the link in Equation~\ref{eq:link} by
@@ -563,6 +563,8 @@ model_sim <- fit_model(
 )
 @
 
+\newpage
+
 The updating behavior can be visualized:
 
 <<model-sim-class-seq, fig=TRUE, height = 3>>=
@@ -617,9 +619,12 @@ We specify random effects for the rating difference and the result of the previo
 data <- prepare_data(
   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
     berserk.1 + lost.1 + 1,
-  re = c("rating_diff","lost.1"), choice_data = choice_berserk,
-  id = "player_id", idc = "game_id",
-  standardize = c("rating","rating_diff","min_rem"), impute = "zero"
+  re = c("rating_diff","lost.1"),
+  choice_data = choice_berserk,
+  id = "player_id",
+  idc = "game_id",
+  standardize = c("rating","rating_diff","min_rem"),
+  impute = "zero"
 )
 @
 
@@ -627,20 +632,19 @@ The Dirichlet process is applied for class updates:
 
 <<example 4 berserk fit model, eval = FALSE>>=
 model_berserk <- fit_model(
-  data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
+  data, R = 5000,
+  latent_classes = list("dp_update" = TRUE, "C" = 10)
 )
 @
 
-Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasions and $126902$ choices in total took about 4 hours computation time. For convenience, we pre-computed the model and saved the resulting \code{model\_berserk} object in the package:
-
-<<example 4 berserk access pre-computed model>>=
-data("model_berserk", package = "RprobitB")
-coef(model_berserk)
+<<load model, echo=FALSE, results=hide>>=
+model_berserk <- readRDS("model_berserk.rds")
 @
 
-The estimated class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
+Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasions and $126902$ choices in total takes about 4 hours computation time. The estimated effects and class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
 
-<<example 4 berserk estimated class sizes>>=
+<<example 4 berserk estimates>>=
+coef(model_berserk)
 est <- point_estimates(model_berserk)
 round(est[["s"]], 2)
 @

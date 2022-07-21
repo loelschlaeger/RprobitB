@@ -281,7 +281,7 @@ The two choice alternatives from the train trip example are unordered. If we had
 Deciders obtaining separate utilities for each alternative is no longer a natural concept in this case \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only a single utility
 %
 \begin{align*}
-  U_{nt} = X_{nt}^\top \beta_n + \epsilon_{nt}
+  U_{nt} = X_{nt}^\top \tilde{\beta}_n + \epsilon_{nt}
 \end{align*}
 %
 per decider $n$ and choice occasion $t$. The value can be interpreted as the level of association that $n$ has with the choice question. It falls into discrete categories, which in turn are linked to the ordered alternatives $j=1,\dots,J$. Formally, we replace the link in Equation~\ref{eq:link} by
@@ -520,7 +520,7 @@ The results indicate that the deciders value one hour travel time by about 26 eu
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ price + time + comfort + change | 0
+Formula: choice ~ price + time + comfort + change | 0 
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'B'.
 Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
@@ -528,14 +528,14 @@ Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 Gibbs sample statistics
           mean      sd      R^
  alpha
-
+                              
      1   -1.00    0.00    1.00
      2  -25.89    2.28    1.00
      3  -14.44    0.90    1.00
      4   -4.91    0.89    1.01
 
  Sigma
-
+                              
    1,1  656.92   63.81    1.04
 \end{Soutput}
 \end{Schunk}
@@ -656,30 +656,30 @@ We previously simulated the \class{RprobitB\_data} object \code{data\_sim} from 
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ var1 | var2 | var3
+Formula: choice ~ var1 | var2 | var3 
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'alt2'.
 Scale: Coefficient of the 1. error term variance fixed to 1.
 
 Latent classes
-C = 3
+C = 3 
 
 Gibbs sample statistics
           true    mean      sd      R^
  alpha
-
+                                      
      1   -2.00   -2.00    0.13    1.21
      2    0.00   -0.04    0.03    1.10
      3    1.00    0.99    0.08    1.18
 
  s
-
+                                      
      1    0.60    0.63    0.06    1.33
      2    0.30    0.27    0.06    1.10
      3    0.10    0.10    0.04    1.13
 
  b
-
+                                      
    1.1   -2.00   -1.90    0.13    1.05
    1.2    1.00    0.93    0.23    1.70
    2.1    0.00    0.01    0.31    1.43
@@ -688,7 +688,7 @@ Gibbs sample statistics
    3.2   -1.00   -0.84    0.83    1.06
 
  Omega
-
+                                      
  1.1,1    0.30    0.61    0.22    1.82
  1.1,2    0.70    0.72    0.27    1.85
  1.2,2    1.90    2.11    0.52    1.68
@@ -700,7 +700,7 @@ Gibbs sample statistics
  3.2,2    2.40    2.82    1.46    1.03
 
  Sigma
-
+                                      
    1,1    1.00    1.00    0.00    1.00
 \end{Soutput}
 \end{Schunk}
@@ -731,6 +731,8 @@ We apply the weight-based updating scheme to reproduce the true number $C = 3$ o
 +  )
 \end{Sinput}
 \end{Schunk}
+
+\newpage
 
 The updating behavior can be visualized:
 
@@ -792,9 +794,12 @@ We specify random effects for the rating difference and the result of the previo
 > data <- prepare_data(
 +    form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
 +      berserk.1 + lost.1 + 1,
-+    re = c("rating_diff","lost.1"), choice_data = choice_berserk,
-+    id = "player_id", idc = "game_id",
-+    standardize = c("rating","rating_diff","min_rem"), impute = "zero"
++    re = c("rating_diff","lost.1"),
++    choice_data = choice_berserk,
++    id = "player_id",
++    idc = "game_id",
++    standardize = c("rating","rating_diff","min_rem"),
++    impute = "zero"
 +  )
 \end{Sinput}
 \end{Schunk}
@@ -804,16 +809,17 @@ The Dirichlet process is applied for class updates:
 \begin{Schunk}
 \begin{Sinput}
 > model_berserk <- fit_model(
-+    data, latent_classes = list("dp_update" = TRUE, "C" = 10), R = 5000
++    data, R = 5000,
++    latent_classes = list("dp_update" = TRUE, "C" = 10)
 +  )
 \end{Sinput}
 \end{Schunk}
 
-Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasions and $126902$ choices in total took about 4 hours computation time. For convenience, we pre-computed the model and saved the resulting \code{model\_berserk} object in the package:
+
+Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasions and $126902$ choices in total takes about 4 hours computation time. The estimated effects and class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
 
 \begin{Schunk}
 \begin{Sinput}
-> data("model_berserk", package = "RprobitB")
 > coef(model_berserk)
 \end{Sinput}
 \begin{Soutput}
@@ -824,25 +830,20 @@ Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasion
 4          streak_0      0.27 (0.03)       NA   (NA)
 5       berserk.1_0     -1.21 (0.02)       NA   (NA)
 6             ASC_0      2.05 (0.03)       NA   (NA)
-7  rating_diff_0 [1]    -0.10 (0.02)     0.08 (0.01)
-8  rating_diff_0 [2]    -0.98 (0.06)     0.25 (0.05)
-9  rating_diff_0 [3]    -1.65 (0.21)     1.72 (0.32)
-10      lost.1_0 [1]     0.98 (0.09)     0.54 (0.10)
-11      lost.1_0 [2]    -0.03 (0.08)     0.28 (0.06)
-12      lost.1_0 [3]    -1.09 (0.18)     0.99 (0.21)
+7  rating_diff_0 [1]    -0.11 (0.03)     0.07 (0.01)
+8  rating_diff_0 [2]    -1.03 (0.05)     0.20 (0.06)
+9  rating_diff_0 [3]    -1.60 (0.17)     1.71 (0.27)
+10      lost.1_0 [1]     0.96 (0.14)     0.62 (0.14)
+11      lost.1_0 [2]    -0.04 (0.05)     0.25 (0.06)
+12      lost.1_0 [3]    -1.03 (0.20)     0.99 (0.23)
 \end{Soutput}
-\end{Schunk}
-
-The estimated class sizes are as follows:\footnote{Per default, point estimates are obtained as the posterior means. However, the \fct{point\_estimates} function has the additional \code{FUN} argument for computing custom point estimates.}
-
-\begin{Schunk}
 \begin{Sinput}
 > est <- point_estimates(model_berserk)
 > round(est[["s"]], 2)
 \end{Sinput}
 \begin{Soutput}
-   1    2    3
-0.54 0.36 0.10
+   1    2    3 
+0.57 0.33 0.11 
 \end{Soutput}
 \end{Schunk}
 
@@ -873,9 +874,9 @@ For each participant, we can compute probabilities for having followed each of t
 > classification(model_berserk)[player,]
 \end{Sinput}
 \begin{Soutput}
-                    1     2     3 est
-zhigalko_sergei 0.180 0.804 0.016   2
-serg_01         0.936 0.056 0.008   1
+                     1      2      3 est
+zhigalko_sergei 0.1844 0.7788 0.0368   2
+serg_01         0.9380 0.0540 0.0080   1
 \end{Soutput}
 \end{Schunk}
 
@@ -1035,7 +1036,7 @@ The inclusion of new package functionality is ongoing and can be followed on the
 \section*{Computational details}
 
 The results in this paper were obtained using
-\proglang{R}~4.2.1 with the
+\proglang{R}~.4 with the
 \pkg{RprobitB}~1.1.0 package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.
