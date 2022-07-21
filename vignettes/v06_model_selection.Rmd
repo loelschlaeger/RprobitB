@@ -54,8 +54,8 @@ The `update()` function helps to estimate a new version of `model_train` with ne
 
 ```{r, echo = FALSE, message = FALSE}
 set.seed(1)
-model_train <- compute_p_si(model_train)
-model_train_sparse <- compute_p_si(model_train_sparse)
+model_train <- compute_p_si(model_train, ncores = 1)
+model_train_sparse <- compute_p_si(model_train_sparse, ncores = 1)
 ```
 
 ## The `model_selection()` function
