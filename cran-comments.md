@@ -13,3 +13,6 @@
 * CRAN test NOTE: installed size is 63.9Mb 
   sub-directories of 1Mb or more.
   Comment: We removed fitted models from the package to reduce the size.
+  
+* CRAN NOTE: Please make sure the overall check time is < 10 min. 
+  Comment: We made sure that building the vignettes is much faster now.
