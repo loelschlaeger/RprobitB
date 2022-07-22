@@ -9,19 +9,6 @@ bibliography: ref.bib
 link-citations: yes
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "img/",
-  fig.align = "center",
-  fig.dim = c(8, 6), 
-  out.width = "75%"
-)
-library("RprobitB")
-options("RprobitB_progress" = FALSE)
-```
-
 ## Why should I use this package?
 
 1. With {RprobitB}^[The package name is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).], you can model the choices made by deciders among a discrete set of alternatives. For example, think of tourists that want to book a flight to their holiday destination. The knowledge why they prefer a certain route over another is of great value for airlines, especially the customer's willingness to pay for say a faster or more comfortable flight alternative.
@@ -46,4 +33,4 @@ A typical workflow is as follows:
    
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-![The flowchart of {RprobitB}.](img/flowchart.png){width=80%}
+![The flowchart of {RprobitB}.](flowchart.png){width=80%}
