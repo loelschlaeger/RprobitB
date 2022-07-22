@@ -127,30 +127,30 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span></span>
 <span><span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span></span>
-<span><span class="co">#&gt; 2   cl     -0.27 (0.04)     0.32 (0.04)</span></span>
-<span><span class="co">#&gt; 3  loc      2.86 (0.27)     7.32 (1.54)</span></span>
-<span><span class="co">#&gt; 4   wk      2.09 (0.20)     3.79 (0.73)</span></span>
-<span><span class="co">#&gt; 5  tod     -9.83 (0.26)    12.33 (2.27)</span></span>
-<span><span class="co">#&gt; 6 seas     -9.90 (0.21)     6.33 (0.96)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   cl     -0.26 (0.03)     0.33 (0.03)</span></span>
+<span><span class="co">#&gt; 3  loc      2.74 (0.24)     6.76 (1.24)</span></span>
+<span><span class="co">#&gt; 4   wk      2.00 (0.17)     3.51 (0.55)</span></span>
+<span><span class="co">#&gt; 5  tod     -9.71 (0.26)    10.58 (2.48)</span></span>
+<span><span class="co">#&gt; 6 seas     -9.91 (0.20)     6.13 (1.05)</span></span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price <code>tod</code> in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large. The same holds for the contract length <code>cl</code>. In particular, the estimated share of the population that prefers to have a longer contract length equals:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"mean"</span><span class="op">]</span></span>
 <span><span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"var"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.3177745</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3237853</span></span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;               cl        loc          wk         tod        seas</span></span>
-<span><span class="co">#&gt; cl    1.00000000 0.10510406  0.07959206 -0.07655277 -0.14341730</span></span>
-<span><span class="co">#&gt; loc   0.10510406 1.00000000  0.78053173  0.15072798  0.02345988</span></span>
-<span><span class="co">#&gt; wk    0.07959206 0.78053173  1.00000000  0.14499601 -0.01839460</span></span>
-<span><span class="co">#&gt; tod  -0.07655277 0.15072798  0.14499601  1.00000000  0.52393225</span></span>
-<span><span class="co">#&gt; seas -0.14341730 0.02345988 -0.01839460  0.52393225  1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt; cl    1.00000000 0.08469283  0.06171590 -0.04838408 -0.12723653</span></span>
+<span><span class="co">#&gt; loc   0.08469283 1.00000000  0.76913610  0.10041788  0.01862450</span></span>
+<span><span class="co">#&gt; wk    0.06171590 0.76913610  1.00000000  0.09504364 -0.01229194</span></span>
+<span><span class="co">#&gt; tod  -0.04838408 0.10041788  0.09504364  1.00000000  0.50649189</span></span>
+<span><span class="co">#&gt; seas -0.12723653 0.01862450 -0.01229194  0.50649189  1.00000000</span></span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plot-mixture-model-elec-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/plot-mixture-model-elec-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="estimating-latent-classes">Estimating latent classes<a class="anchor" aria-label="anchor" href="#estimating-latent-classes"></a>
@@ -245,7 +245,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span>
 <span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/plot_class_allocation.html">plot_class_allocation</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">z</span>, <span class="va">b</span>, <span class="va">Omega</span>, r <span class="op">=</span> <span class="fl">100</span>, perc <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></code></pre></div>
-<p><img src="dirichlet-example-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/dirichlet-example-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2 unnumbered">
