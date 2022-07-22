@@ -1,12 +1,11 @@
 ---
 title: "Application: Simulated choices"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
+output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r, include=FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   comment = "#>", 
   echo = TRUE, 
@@ -14,12 +13,13 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.align = "center"
 )
-library(RprobitB)
+library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 # Simulate data
 
-```{r, simulate data, cache = TRUE}
+```{r, simulate data}
 data <- simulate_choices(
   form = x ~ 0 | 1 | y,
   N = 200,
@@ -28,11 +28,13 @@ data <- simulate_choices(
   re = c("y"),
   alternatives = c("A", "B"),
   seed = 1,
-  s = c(0.7,0.3),
-  alpha = -0.5,
-  b = matrix(c(1,-1,2,-1), ncol = 2),
-  Sigma = 1,
-  C = 2
+  true_parameter = list(
+    "s" = c(0.7,0.3),
+    "alpha" = -0.5,
+    "b" = matrix(c(1,-1,2,-1), ncol = 2),
+    "Sigma" = 1,
+    "C" = 2
+  )
 )
 summary(data)
 ```
@@ -58,10 +60,13 @@ plot(data$train)
 # Estimate model
 
 ```{r, estimate models, cache = TRUE}
-mod0 <- fit_model(data$train, R = 1000, print_progress = FALSE)
-mod1 <- fit_model(data$train, R = 1000, latent_classes = list("C" = 2), print_progress = FALSE)
-mod2 <- fit_model(data$train, R = 1000, latent_classes = list("weight_update" = TRUE), print_progress = FALSE)
-mod3 <- fit_model(data$train, R = 1000, latent_classes = list("dp_update" = TRUE), prior = list("delta" = 1), print_progress = FALSE)
+mod0 <- fit_model(data$train, R = 1000)
+mod1 <- fit_model(data$train, R = 1000, 
+                  latent_classes = list("C" = 2))
+mod2 <- fit_model(data$train, R = 1000, 
+                  latent_classes = list("weight_update" = TRUE))
+mod3 <- fit_model(data$train, R = 1000, 
+                  latent_classes = list("dp_update" = TRUE))
 ```
 
 # Summarize models
@@ -75,16 +80,14 @@ summary(mod3)
 
 # Visualize classes
 
-```{r, visualize classes, fig.height=6}
+```{r, visualize classes}
 plot(mod2, "class_seq")
-plot(mod2, "class_allocation")
 plot(mod3, "class_seq")
-plot(mod3, "class_allocation")
 ```
 
 # Prediction
 
-```{r, predict, cache = TRUE}
+```{r, predict}
 predict(mod2)
 predict(mod2, data = data$test)
 head(predict(mod2, data = data$test, overview = FALSE))
@@ -94,32 +97,18 @@ predict(mod3)
 # Class allocation
 
 ```{r, class allocation}
-head(preference_classification(mod3))
+head(classification(mod3))
 ```
 
 # Model comparison
 
-```{r, model selection, cache = TRUE}
-model_selection(mod0, mod1, mod2, mod3, S = 10, ncores = 7)
+```{r, model selection}
+model_selection(mod0, mod1, mod2, mod3)
 ```
 
 # WAIC
 
-```{r, waic, cache = TRUE}
-RprobitB:::waic(mod3, S = 100, check_conv = TRUE, ncores = 7)
+```{r, waic, eval = FALSE}
+mod3 <- compute_p_si(mod3)
+WAIC(mod3)
 ```
-
-# Bayes factor
-
-Prior arithmetic mean estimator
-
-```{r, bayes factor pame, cache = TRUE}
-RprobitB:::mml(mod3, S = 100, method = "pame", check_conv = TRUE, ncores = 7)
-```
-
-Posterior harmonic mean estimator (`S` = 500)
-
-```{r, bayes factor phme, cache = TRUE}
-RprobitB:::mml(mod3, S = 500, method = "phme", check_conv = TRUE, ncores = 7)
-```
-

@@ -5,15 +5,21 @@ vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: ref.bib
+link-citations: yes
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "",
-  fig.align = "center"
+  fig.path = "img/",
+  fig.align = "center",
+  fig.dim = c(8, 6), 
+  out.width = "75%"
 )
+library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 ## Why should I use this package?
@@ -40,4 +46,4 @@ A typical workflow is as follows:
    
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-![The flowchart of {RprobitB}.](flowchart.png){width=80%}
+![The flowchart of {RprobitB}.](img/flowchart.png){width=80%}

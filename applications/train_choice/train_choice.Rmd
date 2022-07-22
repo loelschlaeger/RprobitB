@@ -1,13 +1,14 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Application: Train choice"
+output: html_document
 editor_options: 
   chunk_output_type: console
 ---
 
-```{r}
+```{r, include = FALSE}
 library("mlogit")
 library("RprobitB")
+options("RprobitB_progress" = FALSE)
 ```
 
 See https://cran.r-project.org/web/packages/mlogit/vignettes/c5.mxl.html.
@@ -33,7 +34,6 @@ coef(mod_mlogit) / coef(mod_mlogit)[1]
 ```{r}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = Train)
-mod_RprobitB <- fit_model(data = data,
-                     scale = list("parameter" = "a", index = 1, value = -1))
+mod_RprobitB <- fit_model(data = data, scale = "price := -1")
 coef(mod_RprobitB)
 ```
