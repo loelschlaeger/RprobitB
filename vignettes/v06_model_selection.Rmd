@@ -53,19 +53,12 @@ model_train_sparse <- update(model_train, form = choice ~ price | 0)
 
 The `update()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.  
 
-```{r, echo = FALSE, message = FALSE}
-set.seed(1)
-model_train <- compute_p_si(model_train, ncores = 1)
-model_train_sparse <- compute_p_si(model_train_sparse, ncores = 1)
-```
-
 ## The `model_selection()` function
 
 {RprobitB} provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
 
 ```{r, model-selection-example}
-model_selection(model_train, model_train_sparse, 
-                criteria = c("npar", "LL", "AIC", "BIC", "WAIC", "MMLL", "BF", "pred_acc"))
+model_selection(model_train, model_train_sparse)
 ```
 
 Specifying `criteria` is optional. Per default, `criteria = c("npar", "LL", "AIC", "BIC")`.^[To show the model formulas in the output of `model_selection()`, add the argument `add_form = TRUE`.] The available model selection criteria are explained in the following.
@@ -139,21 +132,12 @@ Before computing the WAIC of an \code{RprobitB_fit} object, the probabilities $p
 model_train <- compute_p_si(model_train)
 ```
 
-Afterwards, the WAIC can be accessed as follows, where the number in brackets is the standard error:
+Afterwards, the WAIC can be accessed as follows:
 
-```{r, waic-example}
+```{r, waic-example, eval = FALSE}
 WAIC(model_train)
 WAIC(model_train_sparse)
 ```
-
-You can visualize the convergence of the WAIC as follows:
-
-```{r, waictrace}
-plot(WAIC(model_train))
-plot(WAIC(model_train_sparse))
-```
-
-Here, both approximations look satisfactory. If the WAIC value does not seem to have converged, use more Gibbs samples by increasing `R` in `fit_model()` or decreasing `B` or `Q` via `transform()`, see the vignette on model fitting. 
 
 ### `MMLL` 
 
@@ -166,16 +150,10 @@ By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost sure
 
 As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`:^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
 
-```{r}
+```{r, eval = FALSE}
 model_train <- mml(model_train)
 model_train$mml
 attr(model_train$mml, "mmll")
-```
-
-Analogue to the WAIC value, the computation of the MMLL is an approximation that improves with rising (posterior) sample size. The convergence can again be verified visually via the `plot()` method:^[Set `log = FALSE` to plot the non-log-transformed likelihood instead.]
-
-```{r, mmltrace}
-plot(model_train$mml, log = TRUE)
 ```
 
 There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator [@Hammersley:1964]: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then, 
@@ -202,9 +180,9 @@ $$
 
 The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, {RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
 
-Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We see a decisive evidence [@Jeffreys:1998] in favor of `model_train`.
+Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys:1998] in favor of `model_train`.
 
-```{r, bayes-factor-example}
+```{r, bayes-factor-example, eval = FALSE}
 model_selection(model_train, model_train_sparse, criteria = c("BF"))
 ```
 
