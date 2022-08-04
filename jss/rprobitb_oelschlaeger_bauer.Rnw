@@ -775,7 +775,7 @@ The inclusion of new package functionality is ongoing and can be followed on the
 \section*{Computational details}
 
 The results in this paper were obtained using
-\proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the
+\proglang{R}~\Sexpr{paste(R.Version()[c("major","minor")], collapse = ".")} with the
 \pkg{RprobitB}~\Sexpr{packageVersion("RprobitB")} package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.

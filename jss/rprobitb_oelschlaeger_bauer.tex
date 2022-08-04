@@ -520,7 +520,7 @@ The results indicate that the deciders value one hour travel time by about 26 eu
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ price + time + comfort + change | 0 
+Formula: choice ~ price + time + comfort + change | 0
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'B'.
 Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
@@ -528,14 +528,14 @@ Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 Gibbs sample statistics
           mean      sd      R^
  alpha
-                              
+
      1   -1.00    0.00    1.00
      2  -25.89    2.28    1.00
      3  -14.44    0.90    1.00
      4   -4.91    0.89    1.01
 
  Sigma
-                              
+
    1,1  656.92   63.81    1.04
 \end{Soutput}
 \end{Schunk}
@@ -656,30 +656,30 @@ We previously simulated the \class{RprobitB\_data} object \code{data\_sim} from 
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ var1 | var2 | var3 
+Formula: choice ~ var1 | var2 | var3
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'alt2'.
 Scale: Coefficient of the 1. error term variance fixed to 1.
 
 Latent classes
-C = 3 
+C = 3
 
 Gibbs sample statistics
           true    mean      sd      R^
  alpha
-                                      
+
      1   -2.00   -2.00    0.13    1.21
      2    0.00   -0.04    0.03    1.10
      3    1.00    0.99    0.08    1.18
 
  s
-                                      
+
      1    0.60    0.63    0.06    1.33
      2    0.30    0.27    0.06    1.10
      3    0.10    0.10    0.04    1.13
 
  b
-                                      
+
    1.1   -2.00   -1.90    0.13    1.05
    1.2    1.00    0.93    0.23    1.70
    2.1    0.00    0.01    0.31    1.43
@@ -688,7 +688,7 @@ Gibbs sample statistics
    3.2   -1.00   -0.84    0.83    1.06
 
  Omega
-                                      
+
  1.1,1    0.30    0.61    0.22    1.82
  1.1,2    0.70    0.72    0.27    1.85
  1.2,2    1.90    2.11    0.52    1.68
@@ -700,7 +700,7 @@ Gibbs sample statistics
  3.2,2    2.40    2.82    1.46    1.03
 
  Sigma
-                                      
+
    1,1    1.00    1.00    0.00    1.00
 \end{Soutput}
 \end{Schunk}
@@ -842,8 +842,8 @@ Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasion
 > round(est[["s"]], 2)
 \end{Sinput}
 \begin{Soutput}
-   1    2    3 
-0.57 0.33 0.11 
+   1    2    3
+0.57 0.33 0.11
 \end{Soutput}
 \end{Schunk}
 
@@ -1036,7 +1036,7 @@ The inclusion of new package functionality is ongoing and can be followed on the
 \section*{Computational details}
 
 The results in this paper were obtained using
-\proglang{R}~.4 with the
+\proglang{R}~4.2.1 with the
 \pkg{RprobitB}~1.1.0 package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.
