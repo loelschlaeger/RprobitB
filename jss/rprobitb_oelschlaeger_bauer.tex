@@ -34,7 +34,7 @@
 
 %% - \Abstract{} almost as usual
 \Abstract{
-\pkg{RprobitB} is an \proglang{R} package for Bayes estimation of probit choice models, both in the cross-sectional and panel setting. The package can analyze binary, multivariate, ordered, and ranked choices, and places a special focus on modeling heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Markov chain Monte Carlo methods, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating scheme. This allows for flexible modeling of choice behavior without the need to impose structural constraints on the form of the heterogeneity. To demonstrate the application of the method, we reveal three different playing strategies of participants in an online chess tournament, where each chess player can be assigned a probability of following each of the strategies.
+\pkg{RprobitB} is an \proglang{R} package for Bayes estimation of probit choice models, both in the cross-sectional and panel setting. The package can analyze binary, multinomial, ordered, and ranked choices, and places a special focus on modeling heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Markov chain Monte Carlo methods, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating scheme. This allows for flexible modeling of choice behavior without the need to impose structural constraints on the form of the heterogeneity. To demonstrate the application of the method, we reveal three different playing strategies of participants in an online chess tournament, where each chess player can be assigned a probability of following each of the strategies.
 }
 
 %% - \Keywords{} with LaTeX markup, at least one required
@@ -80,7 +80,7 @@ Discrete choice models are commonly interpreted as random utility models. This m
 
 Constant coefficients across deciders result in substitution patterns that again are constant. This can be unreasonable in certain scenarios, including the car purchase example from above. In such cases, explicit modeling of the decider's preferences would be preferable but limited by data availability. In the panel data case with many observations for each decider, fixed effect models provide options. For short panels or in cross-sectional data sets, the random effect model is a remedy, where the coefficients are assumed to be stemming from a multivariate normal (mixing) distribution. This specification allows for decider-specific coefficients and characterizes the taste heterogeneity, cf., \cite{Train:2009} and \cite{Bhat:2011}. Some applications require even more flexibility: the empirical study \cite{Cirillo:2006} for example fits a bi-modal distribution to the values of travel time savings. For such cases, \pkg{RprobitB} provides the recently proposed approach of \cite{Oelschlaeger:2020} that approximates any underlying mixing distributions by a mixture of Gaussian densities, leading to the latent class mixed probit model.
 
-The latent class model extension also enables preference-based decider classification, i.e., identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, \pkg{RprobitB} offers two data-driven approaches that avoid the need to pre-specify the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
+The latent class model extension also enables preference-based decider classification, i.e., identifying groups of deciders with similar preferences. This requires a reasonable specification of the total class number. While a trial-and-error strategy in conjunction with likelihood-based model selection is theoretically possible, it is numerically demanding. \pkg{RprobitB} offers two data-driven approaches that avoid the need to pre-specify the class number: weight-based class updates within the estimation routine \citep{Oelschlaeger:2020} and class updates based on the Dirichlet process, similar to \cite{Burda:2008}.
 
 \pkg{RprobitB} implements Bayesian estimation via Markov chain Monte Carlo simulation, which has several benefits compared to the frequentist alternative for latent class mixed probit models: it does not need to compute the probit likelihood (which is not in closed form and hence would require approximation), it avoids numerical challenges associated with finding the likelihood optimum, it enables to impose prior believes on the model parameters, and it provides posterior parameter distributions instead of point estimates only. Additionally, the Bayesian approach was shown to be computationally faster with increasing number of random effects and normal mixing distributions than the maximum likelihood approach, cf., \cite{Train:2001} for a simulation study in the logit case.
 
@@ -120,12 +120,12 @@ Assume that we know the choices of $N$ deciders choosing between $J \geq 2$ alte
 %
 \begin{equation}
   \label{eq:utility}
-  U_{ntj} = X_{ntj}^\top \tilde{\beta}_n + \epsilon_{ntj}
+  U_{ntj} = X_{ntj}^\top \tilde{\beta}_n + \varepsilon_{ntj}
 \end{equation}
 %
-for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$. Here, $X_{ntj}$ is a (column) vector of $P$ characteristics specific to alternative $j$ as faced by decider $n$ at choice occasion $t$, $\tilde{\beta}_n \in \mathbb{R}^{P}$ is the coefficient vector encoding the preferences of $n$, and $(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})^\top \sim \text{MVN}_{J} (0,\Sigma)$ is the model's error term vector for $n$ at $t$.
+for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$. Here, $X_{ntj}$ is a (column) vector of $P$ characteristics specific to alternative $j$ as faced by decider $n$ at choice occasion $t$, $\tilde{\beta}_n \in \mathbb{R}^{P}$ is the coefficient vector encoding the preferences of $n$, and $(\varepsilon_{nt:}) = (\varepsilon_{nt1},\dots,\varepsilon_{ntJ})^\top \sim \text{MVN}_{J} (0,\Sigma)$ is the model's error term vector for $n$ at $t$.
 
-The value $U_{ntj}$ on the left-hand side of equation Equation~\ref{eq:utility} can be interpreted as the decider's utility. It is unobserved by the researcher, but we assume that the deciders know their utilities for each alternative and make a choice which is consistent with utility maximization.\footnote{Utility maximizing behavior is a common assumption in econometric models. However, studies have shown that humans do not always decide in this rational sense \citep{Tversky:1986, Hewig:2011}. See also \citep{Thaler:2015} for a survey of the history of the discipline of behavioral economics.} Therefore,
+The value $U_{ntj}$ on the left-hand side of Equation~\ref{eq:utility} can be interpreted as the decider's utility. It is unobserved by the researcher, but we assume that the deciders know their utilities for each alternative and make a choice which is consistent with utility maximization.\footnote{Utility maximizing behavior is a common assumption in econometric models. However, studies have shown that humans do not always decide in this rational sense \citep{Tversky:1986, Hewig:2011}. See also \citep{Thaler:2015} for a survey of the history of the discipline of behavioral economics.} Therefore,
 %
 \begin{equation}
    \label{eq:link}
@@ -134,7 +134,7 @@ The value $U_{ntj}$ on the left-hand side of equation Equation~\ref{eq:utility} 
 %
 where $y_{nt}=j$ denotes the event that decider $n$ chooses $j$ at her $t$-th choice occasion.
 
-Equation~\ref{eq:utility} has a decider-specific coefficient vector $\tilde{\beta}_n$. Some entries of $\tilde{\beta}_n$ can be fixed across deciders, in which case the coefficient vector is of the form $\tilde{\beta}_n^\top = (\alpha^\top, \beta_n^\top)^\top$, where $\alpha \in \mathbb{R}^{P_f}$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients, $P_f + P_r = P$. The decider-specific coefficients are assumed to be realizations of an underlying mixing distribution. This distribution characterizes heterogeneity among the deciders and allows for individual sensitivities as motivated in the introduction.
+Equation~\ref{eq:utility} has a decider-specific coefficient vector $\tilde{\beta}_n$. Some entries of $\tilde{\beta}_n$ can be fixed across deciders, in which case the coefficient vector is of the form $\tilde{\beta}_n^\top = (\alpha^\top, \beta_n^\top)^\top$, where $\alpha \in \mathbb{R}^{P_f}$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients, $P_f + P_r = P$. The decider-specific coefficients are assumed to be realizations of an underlying mixing distribution and to be independent of the characteristics $X_{ntj}$ and the errors $(\varepsilon_{nt:})$. This distribution characterizes heterogeneity among the deciders and allows for individual sensitivities as motivated in the introduction.
 
 Choosing an appropriate mixing distribution is a notoriously difficult task of the model specification. In many applications, different types of standard parametric distributions (including the normal, log-normal, uniform and tent distribution) are tried in conjunction with a likelihood value-based model selection \citep[pp.\ 136 ff.]{Train:2009}. Instead, \pkg{RprobitB} implements the approach of \cite{Oelschlaeger:2020} to approximate any underlying mixing distribution by a mixture of $P_r$-variate Gaussian densities $\phi_{P_r}$ with mean vectors $b=(b_c)_{c}$ and covariance matrices $\Omega=(\Omega_c)_{c}$ using $C$ components:
 %
@@ -148,16 +148,17 @@ Here, $(s_c)_{c}$ are weights satisfying $0 < s_c\leq 1$ for $c=1,\dots,C$ and $
 \text{Prob}(z_n=c)=s_c \land \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
 \end{align*}
 %
+\enlargethispage{\baselineskip}
 This interpretation allows for decider classifications, see Section \ref{subsec:dp_update} for an example.
 
 Finally, the probit model requires normalization, because any utility model is invariant towards the level and the scale of utility \citep[Ch.\ 2]{Train:2009}. We therefore normalize the model by taking differences in Equation~\ref{eq:utility} and fixing one error term variance:
 %
 \begin{equation}
 \label{eq:utility_diff}
-\tilde{U}_{ntj} = \tilde{X}_{ntj}^\top \tilde{\beta}_n + \tilde{\epsilon}_{ntj},
+\tilde{U}_{ntj} = \tilde{X}_{ntj}^\top \tilde{\beta}_n + \tilde{\varepsilon}_{ntj},
 \end{equation}
 %
-where (choosing some alternative $k \in \{1,\dots,J\}$ as the reference) $\tilde{U}_{ntj} = U_{ntj} - U_{ntk}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntk}$, and $\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntk}$ for $j\neq k$. The error term differences $(\tilde{\epsilon}_{nt:})$ again are multivariate normally distributed with mean 0 but transformed covariance matrix $\tilde{\Sigma}$, in which we fix one diagonal element to a positive number.\footnote{Fixing one element of $\tilde{\Sigma}$ determines the utility scale. Fixing one fixed effect (i.e., one entry of $\alpha$) serves the same purpose. Both alternatives are implemented, see Section \ref{subsec:estimation_routine}.}
+where (choosing some alternative $k \in \{1,\dots,J\}$ as the reference) $\tilde{U}_{ntj} = U_{ntj} - U_{ntk}$, $\tilde{X}_{ntj} = X_{ntj} - X_{ntk}$, and $\tilde{\varepsilon}_{ntj} = \varepsilon_{ntj} - \varepsilon_{ntk}$ for $j\neq k$. The error term differences $(\tilde{\varepsilon}_{nt:})$ again are multivariate normally distributed with mean 0 but transformed covariance matrix $\tilde{\Sigma}$, in which we fix one diagonal element to a positive number.\footnote{Fixing one element of $\tilde{\Sigma}$ determines the utility scale. Fixing one fixed effect (i.e., one entry of $\alpha$) serves the same purpose. Both alternatives are implemented, see Section \ref{subsec:estimation_routine}.}
 
 \section{Choice data} \label{sec:choice_data}
 
@@ -169,10 +170,10 @@ Different covariate types can be considered: covariates that are constant across
 %
 \begin{align}
   \label{eq:utility_gen}
-  U_{ntj} = \beta_{0j} + A_{ntj} \beta_1 + B_{nt} \beta_{2j} + C_{ntj} \beta_{3j} + \epsilon_{ntj}.
+  U_{ntj} = \beta_{0j} + A_{ntj} \beta_1 + B_{nt} \beta_{2j} + C_{ntj} \beta_{3j} + \varepsilon_{ntj}.
 \end{align}
 %
-Here, the covariates $A$ and $C$ depend on the alternative $j$, while $B$ is only decider and choice occasion specific. The coefficient $\beta_1$ for $A$ is constant (i.e., the same for each alternative), whereas $\beta_{2j}$ and $\beta_{3j}$ for $B$ and $C$ are alternative specific. The intercepts $\beta_0j$ are called alternative specific constants (ASCs). ASCs capture the average effect on the alternative's utility of all factors that are not included in the model.
+Here, the covariates $A$ and $C$ depend on the alternative $j$, while $B$ is only decider and choice occasion specific. The coefficient $\beta_1$ for $A$ is constant (i.e., the same for each alternative), whereas $\beta_{2j}$ and $\beta_{3j}$ for $B$ and $C$ are alternative specific. The intercepts $\beta_{0j}$ are called alternative specific constants (ASCs). ASCs capture the average effect on the alternative's utility of all factors that are not included in the model.
 
 Note that the full collections $(\beta_{0j})_{j=1,\dots,J}$ of ASCs and $(\beta_{2j})_{j=1,\dots,J}$ of coefficients for covariate type $B$ are not identified. This is because we took utility differences for model normalization (cf., Section \ref{sec:probit_model}), and hence one coefficient is a linear combination of the others, respectively. To achieve identifiability, we fix $\beta_{0k}$ and $\beta_{2k}$ to 0 for one base alternative $k$. The coefficients $(\beta_{0j})_{j\neq k}$ and $(\beta_{2j})_{j\neq k}$ then have to be interpreted with respect to $k$.
 
@@ -188,7 +189,7 @@ Before model estimation, any \code{choice\_data} set must pass the \fct{prepare\
 
 \begin{Schunk}
 \begin{Sinput}
-> prepare_data(form = form, choice_data = choice_data)
+> data <- prepare_data(form = form, choice_data = choice_data)
 \end{Sinput}
 \end{Schunk}
 
@@ -281,7 +282,7 @@ The two choice alternatives from the train trip example are unordered. If we had
 Deciders obtaining separate utilities for each alternative is no longer a natural concept in this case \citep[Ch.\ 7.4]{Train:2009}. Instead, we model only a single utility
 %
 \begin{align*}
-  U_{nt} = X_{nt}^\top \tilde{\beta}_n + \epsilon_{nt}
+  U_{nt} = X_{nt}^\top \tilde{\beta}_n + \varepsilon_{nt}
 \end{align*}
 %
 per decider $n$ and choice occasion $t$. The value can be interpreted as the level of association that $n$ has with the choice question. It falls into discrete categories, which in turn are linked to the ordered alternatives $j=1,\dots,J$. Formally, we replace the link in Equation~\ref{eq:link} by
@@ -304,7 +305,7 @@ Simulation typically serves to assess the properties of the estimation algorithm
 
 \begin{Schunk}
 \begin{Sinput}
-> simulate_choices(form = form, N = N, T = T, J = J)
+> data <- simulate_choices(form = form, N = N, T = T, J = J)
 \end{Sinput}
 \end{Schunk}
 
@@ -316,7 +317,7 @@ where \code{form} is a model formula (cf., Section \ref{subsec:formula}). The fo
   \item \code{seed}: Optionally set a seed for the simulation.
 \end{itemize}
 
-The model parameters are set at random by default. Alternatively, they can be specified via a named list for the function's \code{true\_parameter} argument. The list can contain
+By default, the model parameters are drawn randomly from the prior distributions specified in Section~\ref{subsec:prior_and_posterior}. Alternatively, they can be set via a named list for the function's \code{true\_parameter} argument. The list can contain
 \begin{itemize}
   \item a numeric vector \code{alpha} with fixed effects,
   \item the number \code{C} of latent classes (\code{C = 1} by default),
@@ -439,8 +440,8 @@ These priors imply the following conditional posteriors \citep{Oelschlaeger:2020
   \begin{align*}
   \tilde{U}_{ntj} \mid \tilde{U}_{nt(-j)},y_{nt},\tilde{\Sigma},\tilde{W},\alpha,\tilde{X},\beta
   \sim \mathcal{N}(\mu_{\tilde{U}_{ntj}},\Sigma_{\tilde{U}_{ntj}}) \cdot \begin{cases}
-  1(\tilde{U}_{ntj}>\max(\tilde{U}_{nt(-j)},0) ) & \text{if}~ y_{nt}=j\\
-  1(\tilde{U}_{ntj}<\max(\tilde{U}_{nt(-j)},0) ) & \text{if}~ y_{nt}\neq j
+  1(\tilde{U}_{ntj} \geq \max(\tilde{U}_{nt(-j)},0) ) & \text{if}~ y_{nt}=j\\
+  1(\tilde{U}_{ntj} < \max(\tilde{U}_{nt(-j)},0) ) & \text{if}~ y_{nt}\neq j
   \end{cases},
   \end{align*}
   %
@@ -473,7 +474,7 @@ These priors imply the following conditional posteriors \citep{Oelschlaeger:2020
   \tilde{\Sigma} \mid \kappa,\Lambda,\tilde{U},\tilde{W},\alpha,\tilde{X},\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S),
   \end{align*}
   %
-  where $S = \sum_{n=1,t=1}^{N,T} \tilde{\varepsilon}_{nt} \tilde{\varepsilon}_{nt}^\top$ and $\tilde{\varepsilon}_{nt} = (\tilde{U}_{nt:}) - \tilde{W}_{nt}^\top \alpha - \tilde{X}_{nt}^\top \beta_n$.
+  where $S = \sum_{n=1,t=1}^{N,T} \tilde{\varepsilon}_{nt:} \tilde{\varepsilon}_{nt:}^\top$ and $\tilde{\varepsilon}_{nt:} = (\tilde{U}_{nt:}) - \tilde{W}_{nt}^\top \alpha - \tilde{X}_{nt}^\top \beta_n$.
   \item The utility thresholds \code{d} are updated by means of a Metropolis–Hastings algorithm with a normal proposal density.
 \end{itemize}
 
@@ -781,7 +782,8 @@ We additionally consider the lagged covariates \code{berserk.1} (the berserking 
 \begin{Schunk}
 \begin{Sinput}
 > choice_berserk <- create_lagged_cov(
-+    choice_data = choice_berserk, column = c("berserk","lost"),
++    choice_data = choice_berserk,
++    column = c("berserk","lost"),
 +    id = "player_id"
 +  )
 \end{Sinput}
@@ -796,8 +798,7 @@ We specify random effects for the rating difference and the result of the previo
 +      berserk.1 + lost.1 + 1,
 +    re = c("rating_diff","lost.1"),
 +    choice_data = choice_berserk,
-+    id = "player_id",
-+    idc = "game_id",
++    id = "player_id", idc = "game_id",
 +    standardize = c("rating","rating_diff","min_rem"),
 +    impute = "zero"
 +  )
@@ -850,14 +851,14 @@ Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasion
 For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). This is as expected: starting the game with the white pieces and having the higher rating already gives an advantage which would be undermined by the berserking; berserking while being on a streak increases the risk of losing the streak benefits. In contrast, players more likely berserk towards the tournament end (which can be interpreted as the behavior to improve the standing as much as possible in the last minutes) and when they already berserked in the last round (continuity in behavior).
 
 In terms of taste heterogeneity, we can characterize three types of players:
-
+\enlargethispage{\baselineskip}
 \begin{itemize}
   \item Type one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}).
   \item Type two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance).
   \item Type three is willing to take risks: when they lost, they have an increased chance of berserking in the next round (\code{lost.1\_0 [3] = -1.09}), and they like to berserk against weaker opponents (\code{rating\_diff_0 [3] = -1.65}).
 \end{itemize}
 
-The different types can be visualized via the \fct{plot} method (the numbers mark the class means):
+The different types can be visualized as follows (the numbers mark the class means):
 
 \begin{Schunk}
 \begin{Sinput}
@@ -866,7 +867,7 @@ The different types can be visualized via the \fct{plot} method (the numbers mar
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-berserk-mixture}
 
-For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko, and the unknown runner-up clearly followed different strategies:
+For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko (who berserked in 4 of his 113 games), and the unknown runner-up (who did not berserk at all) clearly followed different strategies:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -880,7 +881,7 @@ serg_01         0.9380 0.0540 0.0080   1
 \end{Soutput}
 \end{Schunk}
 
-\newpage
+Overall, the average berserking frequencies of the players in classes 1 to 3 are 0.03, 0.28, and 0.51. The correlations between the observed berserking frequencies and the class probabilities over all players are -0.52, 0.34, and 0.52 for classes 1 to 3, respectively.
 
 \section{Choice prediction} \label{sec:choice_prediction}
 
@@ -1023,7 +1024,7 @@ The more complex model is clearly preferred.
 
 \section{Future developments} \label{sec:conclusion}
 
-\pkg{RprobitB} implements Bayesian analysis of binary, multivariate, ordered, and ranked choices via the latent class mixed probit model. Working with the package follows a user-friendly workflow, from data management over model fitting to different types of model evaluations (Figure \ref{fig:flowchart}). This paper serves as a manual for \proglang{R} users who want to analyze choice behavior heterogeneity in their applications.
+\pkg{RprobitB} implements Bayesian analysis of binary, multinomial, ordered, and ranked choices via the latent class mixed probit model. Working with the package follows a user-friendly workflow, from data management over model fitting to different types of model evaluations (Figure \ref{fig:flowchart}). This paper serves as a manual for \proglang{R} users who want to analyze choice behavior heterogeneity in their applications.
 
 The inclusion of new package functionality is ongoing and can be followed on the project web page www.github.com/loelschlaeger. The following enhancements are currently under development, and we invite the community to suggest further features that we can implement in future package versions:
 
