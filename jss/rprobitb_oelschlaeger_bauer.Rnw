@@ -303,9 +303,9 @@ For illustration, we simulate the choices of \code{N = 200} deciders at \code{T 
 <<example 2 sim meta>>=
 N <- 200
 T <- 30
-alternatives <- c("alt1","alt2")
+alternatives <- c("alt1", "alt2")
 form <- choice ~ var1 | var2 | var3
-re <- c("var2","ASC")
+re <- c("var2", "ASC")
 @
 
 The \fct{overview\_effects} function provides an overview of the effect names (\code{effect}), whether the covariate has alternative specific values (\code{as\_value}), whether the effect has alternative specific coefficients (\code{as\_coef}), and whether the effect is random (\code{random}):
@@ -457,7 +457,7 @@ We can visualize the estimated coefficients (the Gibbs sample means) as follows:
 plot(coef(model_train), sd = 3)
 @
 
-The results indicate that the deciders value one hour travel time by about \Sexpr{abs(round(coef(model_train)["time","mean"]))} euros, an additional change by \Sexpr{abs(round(coef(model_train)["change","mean"]))} euros, and a more comfortable class by \Sexpr{abs(round(coef(model_train)["comfort","mean"]))} euros.\footnote{We note that these results are consistent with the ones that are presented in a vignette of \pkg{mlogit} entitled "The random parameters (or mixed) logit model" on the same data set but using the logit model.} Calling the \fct{summary} method on the estimated \class{RprobitB\_fit} object yields additional information about the (transformed) Gibbs samples. The method receives a list \code{FUN} of arbitrary functions that can compute point estimates of the Gibbs samples, by default \fct{mean} for the arithmetic mean, \fct{stats::sd} for the standard deviation, and \fct{R\_hat} for the Gelman-Rubin statistic\footnote{A Gelman-Rubin statistic (a lot) greater than 1 indicates convergence issues of the Gibbs sampler.} \citep{Gelman:1992}:
+The results indicate that the deciders value one hour travel time by about \Sexpr{abs(round(coef(model_train)["time", "mean"]))} euros, an additional change by \Sexpr{abs(round(coef(model_train)["change", "mean"]))} euros, and a more comfortable class by \Sexpr{abs(round(coef(model_train)["comfort", "mean"]))} euros.\footnote{We note that these results are consistent with the ones that are presented in a vignette of \pkg{mlogit} entitled "The random parameters (or mixed) logit model" on the same data set but using the logit model.} Calling the \fct{summary} method on the estimated \class{RprobitB\_fit} object yields additional information about the (transformed) Gibbs samples. The method receives a list \code{FUN} of arbitrary functions that can compute point estimates of the Gibbs samples, by default \fct{mean} for the arithmetic mean, \fct{stats::sd} for the standard deviation, and \fct{R\_hat} for the Gelman-Rubin statistic\footnote{A Gelman-Rubin statistic (a lot) greater than 1 indicates convergence issues of the Gibbs sampler.} \citep{Gelman:1992}:
 
 <<example 1 train summary>>=
 summary(model_train, FUN = c("mean" = mean, "sd" = stats::sd, "R^" = R_hat))
@@ -488,22 +488,24 @@ model_train <- transform(model_train, Q = 5)
 The \code{Electricity} data set from \pkg{mlogit} contains choices of residential electricity customers that decide between four hypothetical electricity suppliers. We expect heterogeneity in choice behavior here, because customers might value certain contract characteristics differently based on their living conditions. In particular, the contracts differed in six characteristics: their fixed price \code{pf} per kilowatt hour, their contract length \code{cf}, whether the supplier is a local company (\code{loc}), whether the supplier is a well known company (\code{wk}), whether the supplier offers a time-of-day electricity price which is higher during the day and lower during the night (\code{tod}), and whether the supplier's price is seasonal dependent (\code{seas}).
 
 The following lines prepare the data set for estimation. We first use the convenience function \fct{as\_cov\_names} that relabels the data columns for alternative specific covariates into the required format \code{"<covariate>\_<alternative>"}:
+\enlargethispage{\baselineskip}
 
 <<example 3 elec relabel covariates>>=
 data("Electricity", package = "mlogit")
 Electricity <- as_cov_names(
-  choice_data = Electricity, cov = c("pf","cl","loc","wk","tod","seas"),
+  choice_data = Electricity,
+  cov = c("pf", "cl", "loc", "wk", "tod", "seas"),
   alternatives = 1:4
 )
 @
 
-Via the \code{re = c("cl","loc","wk","tod","seas")} argument, we specify random effects for all but the price coefficient, which we again fix to \code{-1} for monetary interpretation:
+Via the \code{re} argument, we specify random effects for all but the price coefficient, which we again fix to \code{-1} for monetary interpretation:
 
 <<example 3 elec estimation>>=
 data_elec <- prepare_data(
   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
   choice_data = Electricity,
-  re = c("cl","loc","wk","tod","seas")
+  re = c("cl", "loc", "wk", "tod", "seas")
 )
 model_elec <- fit_model(data_elec, scale = "pf := -1")
 @
@@ -514,15 +516,15 @@ The \fct{coef} method returns the average effects and the estimated (marginal) v
 coef(model_elec)
 @
 
-We deduce, for example, that a longer contract length has a negative effect on average (\Sexpr{round(coef(model_elec)["cl","mean"],2)}). However, our model shows that \Sexpr{round(pnorm(coef(model_elec)["cl","mean"] / sqrt(coef(model_elec)["cl","var"])) * 100)}\% of the customers still prefer to have a longer contract length. This share is estimated by computing the proportion under the mixing distribution that yields a positive coefficient for \code{cl}:
+We deduce, for example, that a longer contract length has a negative effect on average (\Sexpr{round(coef(model_elec)["cl", "mean"],2)}). However, our model shows that \Sexpr{round(pnorm(coef(model_elec)["cl", "mean"] / sqrt(coef(model_elec)["cl", "var"])) * 100)}\% of the customers still prefer to have a longer contract length. This share is estimated by computing the proportion under the mixing distribution that yields a positive coefficient for \code{cl}:
 
 <<example 3 elec share mixing distribution>>=
-cl_mu <- coef(model_elec)["cl","mean"]
-cl_sd <- sqrt(coef(model_elec)["cl","var"])
+cl_mu <- coef(model_elec)["cl", "mean"]
+cl_sd <- sqrt(coef(model_elec)["cl", "var"])
 pnorm(cl_mu / cl_sd)
 @
 
-The estimated joint mixing distribution additionally allows to infer correlation patterns between effects. For example, we find a correlation of \Sexpr{round(cov_mix(model_elec, cor = TRUE), 2)["loc","wk"]} between \code{loc} and \code{wk} (deciders that prefer local suppliers also prefer well known companies):
+The estimated joint mixing distribution additionally allows to infer correlation patterns between effects. For example, we find a correlation of \Sexpr{round(cov_mix(model_elec, cor = TRUE), 2)["loc", "wk"]} between \code{loc} and \code{wk} (deciders that prefer local suppliers also prefer well known companies):
 
 <<example 3 elec correlation>>=
 round(cov_mix(model_elec, cor = TRUE), 2)
@@ -599,9 +601,9 @@ The Dirichlet process directly integrates to the existing Gibbs sampler: given $
 
 \paragraph{Example 4: Online chess strategy.}
 
-\pkg{RprobitB} contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Both players start a game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs out looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
+The \pkg{RprobitB} package contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Players start each game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs out looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
 
-Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk?
+Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk? And if so, what are the class characteristics?
 
 The \code{choice\_berserk} data set provides the following information: whether a player berserked (\code{berserk = 1}, if yes), whether they had the \code{white} pieces (i.e., whether they made the first move, which is considered to be an advantage), their \code{rating} (a value provided by the platform, indicating the playing strength), the rating difference to the opponent (\code{rating\_diff}), whether they lost the game (\code{lost = 1}, if yes), the remaining tournament time in minutes (\code{min\_rem}), and whether they are currently on a winning \code{streak} (which gives extra points).
 
@@ -610,7 +612,7 @@ We additionally consider the lagged covariates \code{berserk.1} (the berserking 
 <<example 4 berserk create covariates, eval = FALSE>>=
 choice_berserk <- create_lagged_cov(
   choice_data = choice_berserk,
-  column = c("berserk","lost"),
+  column = c("berserk", "lost"),
   id = "player_id"
 )
 @
@@ -621,24 +623,28 @@ We specify random effects for the rating difference and the result of the previo
 data <- prepare_data(
   form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
     berserk.1 + lost.1 + 1,
-  re = c("rating_diff","lost.1"),
+  re = c("rating_diff", "lost.1"),
   choice_data = choice_berserk,
-  id = "player_id", idc = "game_id",
-  standardize = c("rating","rating_diff","min_rem"),
+  id = "player_id",
+  idc = "game_id",
+  standardize = c("rating", "rating_diff", "min_rem"),
   impute = "zero"
 )
 @
+
+\newpage
 
 The Dirichlet process is applied for class updates:
 
 <<example 4 berserk fit model, eval = FALSE>>=
 model_berserk <- fit_model(
-  data, R = 5000,
+  data,
+  R = 5000,
   latent_classes = list("dp_update" = TRUE, "C" = 10)
 )
 @
 
-<<load model, echo=FALSE, results=hide>>=
+<<load model, echo = FALSE, results = hide>>=
 model_berserk <- readRDS("model_berserk.rds")
 @
 
@@ -652,8 +658,10 @@ round(est[["s"]], 2)
 
 For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). This is as expected: starting the game with the white pieces and having the higher rating already gives an advantage which would be undermined by the berserking; berserking while being on a streak increases the risk of losing the streak benefits. In contrast, players more likely berserk towards the tournament end (which can be interpreted as the behavior to improve the standing as much as possible in the last minutes) and when they already berserked in the last round (continuity in behavior).
 
+\newpage
+
 In terms of taste heterogeneity, we can characterize three types of players:
-\enlargethispage{\baselineskip}
+
 \begin{itemize}
   \item Type one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}).
   \item Type two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance).
@@ -662,18 +670,41 @@ In terms of taste heterogeneity, we can characterize three types of players:
 
 The different types can be visualized as follows (the numbers mark the class means):
 
-<<model-berserk-mixture, fig=TRUE>>=
+<<model-berserk-mixture, fig = TRUE>>=
 plot(model_berserk, type = "mixture")
 @
+
+\newpage
 
 For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko (who berserked in 4 of his 113 games), and the unknown runner-up (who did not berserk at all) clearly followed different strategies:
 
 <<example 4 berserk classification>>=
-player <- c("zhigalko_sergei", "serg_01")
-classification(model_berserk)[player,]
+class <- classification(model_berserk)
+class[c("zhigalko_sergei", "serg_01"), ]
 @
 
-Overall, the average berserking frequencies of the players in classes 1 to 3 are 0.03, 0.28, and 0.51. The correlations between the observed berserking frequencies and the class probabilities over all players are -0.52, 0.34, and 0.52 for classes 1 to 3, respectively.
+Overall, the average berserking frequencies of the players in class 1 to 3 are 0.03, 0.28, and
+0.51, respectively. The following plot visualizes kernel density estimates of the individual berserking frequencies grouped by the estimated classes. We see a strong overlap between the densities, which signals that the berserking frequency alone is not a sufficient indicator for identifying gambling preferences.
+
+<<berserk-freq, echo = FALSE, results = hide, fig = TRUE>>=
+library("ggplot2")
+library("dplyr")
+fr <- summarize(group_by(model_berserk$data$choice_data, player_id),
+                freq = sum(berserk) / n())
+dat <- cbind(class, freq = fr$freq)
+dat$est <- factor(data$est)
+ggplot(dat, aes(x = freq, colour = est, fill = est)) +
+  geom_density(aes(y = ..density..), alpha = 0.2, bw = 0.05) +
+  geom_rug(aes(y = 0), length = unit(0.03, "npc"), show.legend = FALSE,
+           position = position_jitter(width = 0.001, height=0)) +
+  coord_cartesian(xlim = c(0,1)) +
+  scale_x_continuous(name = "Berserking frequency") +
+  scale_y_continuous(name = "Density") +
+  labs(fill = "estimated class", colour = "estimated class") +
+  theme(legend.position = "top")
+@
+
+\newpage
 
 \section{Choice prediction} \label{sec:choice_prediction}
 
@@ -776,7 +807,7 @@ The inclusion of new package functionality is ongoing and can be followed on the
 \section*{Computational details}
 
 The results in this paper were obtained using
-\proglang{R}~\Sexpr{paste(R.Version()[c("major","minor")], collapse = ".")} with the
+\proglang{R}~\Sexpr{paste(R.Version()[c("major", "minor")], collapse = ".")} with the
 \pkg{RprobitB}~\Sexpr{packageVersion("RprobitB")} package. \proglang{R} itself
 and all packages used are available from the Comprehensive
 \proglang{R} Archive Network (CRAN) at \url{https://CRAN.R-project.org/}.

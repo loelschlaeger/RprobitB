@@ -338,9 +338,9 @@ For illustration, we simulate the choices of \code{N = 200} deciders at \code{T 
 \begin{Sinput}
 > N <- 200
 > T <- 30
-> alternatives <- c("alt1","alt2")
+> alternatives <- c("alt1", "alt2")
 > form <- choice ~ var1 | var2 | var3
-> re <- c("var2","ASC")
+> re <- c("var2", "ASC")
 \end{Sinput}
 \end{Schunk}
 
@@ -521,7 +521,7 @@ The results indicate that the deciders value one hour travel time by about 26 eu
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ price + time + comfort + change | 0
+Formula: choice ~ price + time + comfort + change | 0 
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'B'.
 Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
@@ -529,14 +529,14 @@ Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
 Gibbs sample statistics
           mean      sd      R^
  alpha
-
+                              
      1   -1.00    0.00    1.00
      2  -25.89    2.28    1.00
      3  -14.44    0.90    1.00
      4   -4.91    0.89    1.01
 
  Sigma
-
+                              
    1,1  656.92   63.81    1.04
 \end{Soutput}
 \end{Schunk}
@@ -574,25 +574,27 @@ The \fct{transform} method can be used to reduce the autocorrelation in a subsam
 The \code{Electricity} data set from \pkg{mlogit} contains choices of residential electricity customers that decide between four hypothetical electricity suppliers. We expect heterogeneity in choice behavior here, because customers might value certain contract characteristics differently based on their living conditions. In particular, the contracts differed in six characteristics: their fixed price \code{pf} per kilowatt hour, their contract length \code{cf}, whether the supplier is a local company (\code{loc}), whether the supplier is a well known company (\code{wk}), whether the supplier offers a time-of-day electricity price which is higher during the day and lower during the night (\code{tod}), and whether the supplier's price is seasonal dependent (\code{seas}).
 
 The following lines prepare the data set for estimation. We first use the convenience function \fct{as\_cov\_names} that relabels the data columns for alternative specific covariates into the required format \code{"<covariate>\_<alternative>"}:
+\enlargethispage{\baselineskip}
 
 \begin{Schunk}
 \begin{Sinput}
 > data("Electricity", package = "mlogit")
 > Electricity <- as_cov_names(
-+    choice_data = Electricity, cov = c("pf","cl","loc","wk","tod","seas"),
++    choice_data = Electricity,
++    cov = c("pf", "cl", "loc", "wk", "tod", "seas"),
 +    alternatives = 1:4
 +  )
 \end{Sinput}
 \end{Schunk}
 
-Via the \code{re = c("cl","loc","wk","tod","seas")} argument, we specify random effects for all but the price coefficient, which we again fix to \code{-1} for monetary interpretation:
+Via the \code{re} argument, we specify random effects for all but the price coefficient, which we again fix to \code{-1} for monetary interpretation:
 
 \begin{Schunk}
 \begin{Sinput}
 > data_elec <- prepare_data(
 +    form = choice ~ pf + cl + loc + wk + tod + seas | 0,
 +    choice_data = Electricity,
-+    re = c("cl","loc","wk","tod","seas")
++    re = c("cl", "loc", "wk", "tod", "seas")
 +  )
 > model_elec <- fit_model(data_elec, scale = "pf := -1")
 \end{Sinput}
@@ -619,8 +621,8 @@ We deduce, for example, that a longer contract length has a negative effect on a
 
 \begin{Schunk}
 \begin{Sinput}
-> cl_mu <- coef(model_elec)["cl","mean"]
-> cl_sd <- sqrt(coef(model_elec)["cl","var"])
+> cl_mu <- coef(model_elec)["cl", "mean"]
+> cl_sd <- sqrt(coef(model_elec)["cl", "var"])
 > pnorm(cl_mu / cl_sd)
 \end{Sinput}
 \begin{Soutput}
@@ -657,30 +659,30 @@ We previously simulated the \class{RprobitB\_data} object \code{data\_sim} from 
 \end{Sinput}
 \begin{Soutput}
 Probit model
-Formula: choice ~ var1 | var2 | var3
+Formula: choice ~ var1 | var2 | var3 
 R: 1000, B: 500, Q: 1
 Level: Utility differences with respect to alternative 'alt2'.
 Scale: Coefficient of the 1. error term variance fixed to 1.
 
 Latent classes
-C = 3
+C = 3 
 
 Gibbs sample statistics
           true    mean      sd      R^
  alpha
-
+                                      
      1   -2.00   -2.00    0.13    1.21
      2    0.00   -0.04    0.03    1.10
      3    1.00    0.99    0.08    1.18
 
  s
-
+                                      
      1    0.60    0.63    0.06    1.33
      2    0.30    0.27    0.06    1.10
      3    0.10    0.10    0.04    1.13
 
  b
-
+                                      
    1.1   -2.00   -1.90    0.13    1.05
    1.2    1.00    0.93    0.23    1.70
    2.1    0.00    0.01    0.31    1.43
@@ -689,7 +691,7 @@ Gibbs sample statistics
    3.2   -1.00   -0.84    0.83    1.06
 
  Omega
-
+                                      
  1.1,1    0.30    0.61    0.22    1.82
  1.1,2    0.70    0.72    0.27    1.85
  1.2,2    1.90    2.11    0.52    1.68
@@ -701,7 +703,7 @@ Gibbs sample statistics
  3.2,2    2.40    2.82    1.46    1.03
 
  Sigma
-
+                                      
    1,1    1.00    1.00    0.00    1.00
 \end{Soutput}
 \end{Schunk}
@@ -771,9 +773,9 @@ The Dirichlet process directly integrates to the existing Gibbs sampler: given $
 
 \paragraph{Example 4: Online chess strategy.}
 
-\pkg{RprobitB} contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Both players start a game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs out looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
+The \pkg{RprobitB} package contains revealed gambling preference data of chess players who participated in the "Yearly Bullet Arena 2022" on the platform www.lichess.org. The tournament had a special format: at the beginning of each game, both players can choose to trade half of their clock time\footnote{Players start each game with a time credit of one minute, which is consumend when it's their turn to make a move. A player whos time runs out looses the game automatically.} against the option to win an extra tournament point in case they win the game. The tournament lasted 4 hours, participants were paired again immediately after they finished a game, and the player with the most tournament points in the end won the event.
 
-Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk?
+Several questions regarding the trade "clock time against a potential extra tournament point" (which the platform calls "berserking") arise: Do higher-rated chess players prefer to gamble? Does the remaining tournament time have an influence on the berserking choice? Can players be classified based on their revealed preferences to berserk? And if so, what are the class characteristics?
 
 The \code{choice\_berserk} data set provides the following information: whether a player berserked (\code{berserk = 1}, if yes), whether they had the \code{white} pieces (i.e., whether they made the first move, which is considered to be an advantage), their \code{rating} (a value provided by the platform, indicating the playing strength), the rating difference to the opponent (\code{rating\_diff}), whether they lost the game (\code{lost = 1}, if yes), the remaining tournament time in minutes (\code{min\_rem}), and whether they are currently on a winning \code{streak} (which gives extra points).
 
@@ -783,7 +785,7 @@ We additionally consider the lagged covariates \code{berserk.1} (the berserking 
 \begin{Sinput}
 > choice_berserk <- create_lagged_cov(
 +    choice_data = choice_berserk,
-+    column = c("berserk","lost"),
++    column = c("berserk", "lost"),
 +    id = "player_id"
 +  )
 \end{Sinput}
@@ -796,21 +798,25 @@ We specify random effects for the rating difference and the result of the previo
 > data <- prepare_data(
 +    form = berserk ~ 0 | white + rating + rating_diff + min_rem + streak +
 +      berserk.1 + lost.1 + 1,
-+    re = c("rating_diff","lost.1"),
++    re = c("rating_diff", "lost.1"),
 +    choice_data = choice_berserk,
-+    id = "player_id", idc = "game_id",
-+    standardize = c("rating","rating_diff","min_rem"),
++    id = "player_id",
++    idc = "game_id",
++    standardize = c("rating", "rating_diff", "min_rem"),
 +    impute = "zero"
 +  )
 \end{Sinput}
 \end{Schunk}
+
+\newpage
 
 The Dirichlet process is applied for class updates:
 
 \begin{Schunk}
 \begin{Sinput}
 > model_berserk <- fit_model(
-+    data, R = 5000,
++    data,
++    R = 5000,
 +    latent_classes = list("dp_update" = TRUE, "C" = 10)
 +  )
 \end{Sinput}
@@ -843,15 +849,17 @@ Estimating this model with $N = 6174$ deciders, $T = 1$ to $177$ choice occasion
 > round(est[["s"]], 2)
 \end{Sinput}
 \begin{Soutput}
-   1    2    3
-0.57 0.33 0.11
+   1    2    3 
+0.57 0.33 0.11 
 \end{Soutput}
 \end{Schunk}
 
 For interpretation of the model coefficients, remember that alternative \code{0} means denying the gambling opportunity. Overall, having the white pieces (i.e., starting the game), having a higher rating, and being on a streak discourages berserking (because the corresponding coefficients for "not berserking" are positive). This is as expected: starting the game with the white pieces and having the higher rating already gives an advantage which would be undermined by the berserking; berserking while being on a streak increases the risk of losing the streak benefits. In contrast, players more likely berserk towards the tournament end (which can be interpreted as the behavior to improve the standing as much as possible in the last minutes) and when they already berserked in the last round (continuity in behavior).
 
+\newpage
+
 In terms of taste heterogeneity, we can characterize three types of players:
-\enlargethispage{\baselineskip}
+
 \begin{itemize}
   \item Type one is rather risk averse: members don't often berserk against weaker opponents (\code{rating\_diff_0 [1] = -0.1}) and most likely not when having lost in the previous round (\code{lost.1\_0 [1] = 0.98}).
   \item Type two seems to make the decision independent from the result of the previous game (\code{lost.1\_0 [2] = -0.03} with a notably small variance).
@@ -867,12 +875,14 @@ The different types can be visualized as follows (the numbers mark the class mea
 \end{Schunk}
 \includegraphics{rprobitb_oelschlaeger_bauer-model-berserk-mixture}
 
+\newpage
+
 For each participant, we can compute probabilities for having followed each of the three strategies via the \fct{classification} function. The probabilities are computed as relative frequencies of the Gibbs samples for the class allocation variables \code{z}. We deduce that the winner of the tournament, Grandmaster Sergei Zhigalko (who berserked in 4 of his 113 games), and the unknown runner-up (who did not berserk at all) clearly followed different strategies:
 
 \begin{Schunk}
 \begin{Sinput}
-> player <- c("zhigalko_sergei", "serg_01")
-> classification(model_berserk)[player,]
+> class <- classification(model_berserk)
+> class[c("zhigalko_sergei", "serg_01"), ]
 \end{Sinput}
 \begin{Soutput}
                      1      2      3 est
@@ -881,7 +891,12 @@ serg_01         0.9380 0.0540 0.0080   1
 \end{Soutput}
 \end{Schunk}
 
-Overall, the average berserking frequencies of the players in classes 1 to 3 are 0.03, 0.28, and 0.51. The correlations between the observed berserking frequencies and the class probabilities over all players are -0.52, 0.34, and 0.52 for classes 1 to 3, respectively.
+Overall, the average berserking frequencies of the players in class 1 to 3 are 0.03, 0.28, and
+0.51, respectively. The following plot visualizes kernel density estimates of the individual berserking frequencies grouped by the estimated classes. We see a strong overlap between the densities, which signals that the berserking frequency alone is not a sufficient indicator for identifying gambling preferences.
+
+\includegraphics{rprobitb_oelschlaeger_bauer-berserk-freq}
+
+\newpage
 
 \section{Choice prediction} \label{sec:choice_prediction}
 
@@ -1008,12 +1023,12 @@ As a competing model to \code{model\_train}, we consider explaining the choices 
                          model_train model_train_sparse
 npar                               4                  1
 LL                          -1727.70           -1865.86
-AIC                          3463.41            3733.72
-BIC                          3487.34            3739.70
-WAIC                         3464.17            3733.43
-se(WAIC)                        0.19               0.06
-pWAIC                           4.56               0.89
-MMLL                        -1731.97           -1866.47
+AIC                          3463.41            3733.73
+BIC                          3487.34            3739.71
+WAIC                         3464.17            3734.50
+se(WAIC)                        0.19               0.09
+pWAIC                           4.56               1.45
+MMLL                        -1731.97           -1867.36
 BF(*,model_train)                  1             < 0.01
 BF(*,model_train_sparse)       > 100                  1
 pred_acc                      69.61%             63.40%
