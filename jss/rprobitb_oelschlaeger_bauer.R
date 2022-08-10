@@ -4,7 +4,6 @@
 ###################################################
 ### code chunk number 1: preliminaries
 ###################################################
-options(prompt = "> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 library("RprobitB")
 
 

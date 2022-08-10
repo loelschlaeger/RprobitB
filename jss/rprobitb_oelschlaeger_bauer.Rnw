@@ -683,8 +683,9 @@ class <- classification(model_berserk)
 class[c("zhigalko_sergei", "serg_01"), ]
 @
 
-Overall, the average berserking frequencies of the players in class 1 to 3 are 0.03, 0.28, and
-0.51, respectively. The following plot visualizes kernel density estimates of the individual berserking frequencies grouped by the estimated classes. We see a strong overlap between the densities, which signals that the berserking frequency alone is not a sufficient indicator for identifying gambling preferences.
+Overall, the estimated (using the probabilities for following the three strategies as described above) average berserking frequencies of the players in class 1 to 3 are 0.03, 0.28, and
+0.51, respectively. The following plot visualizes kernel density estimates of the individual
+berserking frequencies as well as the split using the estimated probabilities of following the three strategies. We see a strong overlap between the densities, which signals that the berserking frequency alone is not a sufficient indicator for identifying gambling preference. The latent class approach thus provides additional information that is not accessible otherwise.
 
 <<berserk-freq, echo = FALSE, results = hide, fig = TRUE>>=
 library("ggplot2")
@@ -692,7 +693,7 @@ library("dplyr")
 fr <- summarize(group_by(model_berserk$data$choice_data, player_id),
                 freq = sum(berserk) / n())
 dat <- cbind(class, freq = fr$freq)
-dat$est <- factor(data$est)
+dat$est <- factor(dat$est)
 ggplot(dat, aes(x = freq, colour = est, fill = est)) +
   geom_density(aes(y = ..density..), alpha = 0.2, bw = 0.05) +
   geom_rug(aes(y = 0), length = unit(0.03, "npc"), show.legend = FALSE,
