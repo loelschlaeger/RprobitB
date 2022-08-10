@@ -4,6 +4,7 @@
 ###################################################
 ### code chunk number 1: preliminaries
 ###################################################
+# install.packages("RprobitB")
 library("RprobitB")
 
 
@@ -215,7 +216,7 @@ if(FALSE) {
   )
 }
 
-### 'model_berserk.rds' is contained in the replication materials of the submission
+### 'model_berserk.rds' is contained in the submission's replication materials
 model_berserk <- readRDS("model_berserk.rds")
 
 coef(model_berserk)
@@ -257,6 +258,7 @@ head(pred, n = 5)
 ###################################################
 ### code chunk number 36: roc-example
 ###################################################
+# install.packages("mlogit")
 library("mlogit")
 Train$choiceid <- 1:nrow(Train)
 Tr <- dfidx(
