@@ -1,3 +1,6 @@
+* CRAN test ERROR:  LaTeX errors found: ! Undefined control sequence.
+  Comment: We removed elements in Rd that need amsmath support.
+
 * CRAN test NOTE: Uses the superseded package: 'doSNOW'.   
   Comment: We use 'doSNOW' because we want to print computation progress via the 'progress' package in a parallelized for-loop and there seems to be no alternative at the moment.
 
@@ -9,10 +12,3 @@
   - URL: https://doi.org/10.2307/1390653
   - URL: https://doi.org/10.2307/1390653
   Comment: We have no problems to access these URLs.
-  
-* CRAN test NOTE: installed size is 63.9Mb 
-  sub-directories of 1Mb or more.
-  Comment: We removed fitted models from the package to reduce the size.
-  
-* CRAN NOTE: Please make sure the overall check time is < 10 min. 
-  Comment: We made sure that building the vignettes is much faster now.

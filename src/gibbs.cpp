@@ -258,14 +258,14 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 //' coefficient vector \eqn{\alpha} or the decider-specific coefficient vector \eqn{\beta_n}),
 //' and \eqn{\epsilon_n} is the error term assumed to be normally distributed with mean \eqn{0}
 //' and (known) covariance matrix \eqn{\Sigma}.
-//' A priori we assume the (conjugate) normal prior distribution \deqn{\beta \sim N(\mu_0,\Tau_0)}
-//' with mean vector \eqn{\mu_0} and precision matrix (i.e. inverted covariance matrix) \eqn{\Tau_0}.
+//' A priori we assume the (conjugate) normal prior distribution \deqn{\beta \sim N(\mu_0,T_0)}
+//' with mean vector \eqn{\mu_0} and precision matrix (i.e. inverted covariance matrix) \eqn{T_0}.
 //' The posterior distribution for \eqn{\beta} is normal with
-//' covariance matrix \deqn{\Sigma_1 = (\Tau_0 + \sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1}} and mean vector
-//' \deqn{\mu_1 = \Sigma_1(\Tau_0\mu_0 + \sum_{n=1}^N X_n'\Sigma^{-1}U_n)}.
+//' covariance matrix \deqn{\Sigma_1 = (T_0 + \sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1}} and mean vector
+//' \deqn{\mu_1 = \Sigma_1(T_0\mu_0 + \sum_{n=1}^N X_n'\Sigma^{-1}U_n)}.
 //' Note the analogy of \eqn{\mu_1} to the generalized least squares estimator
-//' \deqn{\hat{\beta}_\text{GLS} = (\sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1} \sum_{n=1}^N X_n'\Sigma^{-1}U_n} which
-//' becomes weighted by the prior parameters \eqn{\mu_0} and \eqn{\Tau_0}.
+//' \deqn{\hat{\beta}_{GLS} = (\sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1} \sum_{n=1}^N X_n'\Sigma^{-1}U_n} which
+//' becomes weighted by the prior parameters \eqn{\mu_0} and \eqn{T_0}.
 //' @return
 //' A vector, a draw from the normal posterior distribution of the coefficient
 //' vector in a multiple linear regression.

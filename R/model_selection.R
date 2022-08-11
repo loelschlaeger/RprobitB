@@ -192,22 +192,22 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
 #' Criterion. As for AIC and BIC, the smaller the WAIC value the better the
 #' model. Its definition is
-#' \deqn{\text{WAIC} = -2 \cdot \text{lppd} + 2 \cdot  p_\text{WAIC},}
-#' where \eqn{\text{lppd}} stands for log pointwise predictive density and
-#' \eqn{p_\text{WAIC}} is a penalty term proportional to the variance in the
+#' \deqn{WAIC = -2 \cdot lppd + 2 \cdot  p_{WAIC},}
+#' where \eqn{lppd} stands for log pointwise predictive density and
+#' \eqn{p_{WAIC}} is a penalty term proportional to the variance in the
 #' posterior distribution that is sometimes called effective number of
 #' parameters.
-#' The \eqn{\text{lppd}} is approximated as follows. Let
+#' The \eqn{lppd} is approximated as follows. Let
 #' \deqn{p_{is} = \Pr(y_i\mid \theta_s)} be the probability of observation
 #' \eqn{y_i} given the \eqn{s}th set \eqn{\theta_s} of parameter samples from
 #' the posterior. Then
-#' \deqn{\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.}
+#' \deqn{lppd = \sum_i \log S^{-1} \sum_s p_{si}.}
 #' The penalty term is computed as the sum over the variances in log-probability
 #' for each observation:
-#' \deqn{p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right].}
-#' The \eqn{\text{WAIC}} has a standard error \eqn{\text{SE}} of
-#' \deqn{\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} -
-#' \mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]},}
+#' \deqn{p_{WAIC} = \sum_i V_{\theta} \left[ \log p_{si} \right].}
+#' The \eqn{WAIC} has a standard error \eqn{SE} of
+#' \deqn{SE = \sqrt{n \cdot V_i \left[-2 \left(lppd -
+#' V_{\theta} \left[ \log p_{si} \right] \right)\right]},}
 #' where \eqn{n} is the number of choices.
 #'
 #' @param x

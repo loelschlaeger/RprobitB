@@ -41,29 +41,33 @@ double euc_dist (arma::vec a, arma::vec b){
 //' @param epsmax
 //' The threshold weight (between 0 and 1) for splitting a class.
 //' @param distmin
-//' The (non-negative) threshold difference in class means for joining two classes.
+//' The (non-negative) threshold difference in class means for joining two
+//' classes.
 //' @inheritParams RprobitB_parameter
 //' @details
 //' The updating scheme bases on the following rules:
-//' \itemize{
-//'   \item We remove class \eqn{c}, if \eqn{s_c<\epsilon_{\text{min}}}, i.e. if the
-//'         class weight \eqn{s_c} drops below some threshold \eqn{\epsilon_{\text{min}}}.
-//'         This case indicates that class \eqn{c} has a negligible impact on the mixing distribution.
-//'   \item We split class \eqn{c} into two classes \eqn{c_1} and \eqn{c_2}, if \eqn{s_c>\epsilon_\text{max}}.
-//'         This case indicates that class \eqn{c} has a high influence on the mixing
-//'         distribution whose approximation can potentially be improved by
-//'         increasing the resolution in directions of high variance.
-//'         Therefore, the class means \eqn{b_{c_1}} and \eqn{b_{c_2}} of the new classes
-//'         \eqn{c_1} and \eqn{c_2} are shifted in opposite directions from the class mean
-//'         \eqn{b_c} of the old class \eqn{c} in the direction of the highest variance.
-//'   \item We join two classes \eqn{c_1} and \eqn{c_2} to one class \eqn{c}, if
-//'         \eqn{\lVert b_{c_1} - b_{c_2} \rVert<\epsilon_{\text{distmin}}}, i.e. if
-//'         the euclidean distance between the class means \eqn{b_{c_1}} and \eqn{b_{c_2}}
-//'         drops below some threshold \eqn{\epsilon_{\text{distmin}}}. This case indicates
-//'         location redundancy which should be repealed. The parameters of \eqn{c}
-//'         are assigned by adding the values of \eqn{s} from \eqn{c_1} and \eqn{c_2} and
-//'         averaging the values for \eqn{b} and \eqn{\Omega}.
-//' }
+//' * We remove class \eqn{c}, if \eqn{s_c<\epsilon_{min}}, i.e. if the
+//'   class weight \eqn{s_c} drops below some threshold
+//'   \eqn{\epsilon_{min}}.
+//'   This case indicates that class \eqn{c} has a negligible impact on the
+//'   mixing distribution.
+//' * We split class \eqn{c} into two classes \eqn{c_1} and \eqn{c_2}, if
+//'   \eqn{s_c>\epsilon_{max}}.
+//'   This case indicates that class \eqn{c} has a high influence on the mixing
+//'   distribution whose approximation can potentially be improved by
+//'   increasing the resolution in directions of high variance.
+//'   Therefore, the class means \eqn{b_{c_1}} and \eqn{b_{c_2}} of the new
+//'   classes \eqn{c_1} and \eqn{c_2} are shifted in opposite directions from
+//'   the class mean \eqn{b_c} of the old class \eqn{c} in the direction of the
+//'   highest variance.
+//' * We join two classes \eqn{c_1} and \eqn{c_2} to one class \eqn{c}, if
+//'   \eqn{||b_{c_1} - b_{c_2}||<\epsilon_{distmin}}, i.e. if
+//'   the euclidean distance between the class means \eqn{b_{c_1}} and
+//'   \eqn{b_{c_2}} drops below some threshold \eqn{\epsilon_{distmin}}.
+//'   This case indicates location redundancy which should be repealed. The
+//'   parameters of \eqn{c} are assigned by adding the values of \eqn{s} from
+//'   \eqn{c_1} and \eqn{c_2} and averaging the values for \eqn{b} and
+//'   \eqn{\Omega}.
 //' The rules are executed in the above order, but only one rule per iteration
 //' and only if \code{Cmax} is not exceeded.
 //' @examples

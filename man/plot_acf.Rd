@@ -22,7 +22,7 @@ include the total Gibbs sample size \code{TSS} and the effective sample size
 }
 \details{
 The effective sample size is the value
-\deqn{\text{TSS} / \sqrt{1 + 2\sum_{k\geq 1} \rho_k}},
+\deqn{TSS / \sqrt{1 + 2\sum_{k\geq 1} \rho_k}},
 where \eqn{\rho_k} is the auto correlation between the chain offset by
 \eqn{k} positions. The auto correlations are estimated via
 \code{\link[stats]{spec.ar}}.
