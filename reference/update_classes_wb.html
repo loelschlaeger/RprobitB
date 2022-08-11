@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,8 @@
 
 
 <dt>distmin</dt>
-<dd><p>The (non-negative) threshold difference in class means for joining two classes.</p></dd>
+<dd><p>The (non-negative) threshold difference in class means for joining two
+classes.</p></dd>
 
 
 <dt>s</dt>
@@ -114,26 +115,31 @@ Set to <code>NA</code> if <code>P_r = 0</code>.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The updating scheme bases on the following rules:</p><ul><li><p>We remove class \(c\), if \(s_c&lt;\epsilon_{\text{min}}\), i.e. if the
-class weight \(s_c\) drops below some threshold \(\epsilon_{\text{min}}\).
-This case indicates that class \(c\) has a negligible impact on the mixing distribution.</p></li>
-<li><p>We split class \(c\) into two classes \(c_1\) and \(c_2\), if \(s_c&gt;\epsilon_\text{max}\).
+    <p>The updating scheme bases on the following rules:</p><ul><li><p>We remove class \(c\), if \(s_c&lt;\epsilon_{min}\), i.e. if the
+class weight \(s_c\) drops below some threshold
+\(\epsilon_{min}\).
+This case indicates that class \(c\) has a negligible impact on the
+mixing distribution.</p></li>
+<li><p>We split class \(c\) into two classes \(c_1\) and \(c_2\), if
+\(s_c&gt;\epsilon_{max}\).
 This case indicates that class \(c\) has a high influence on the mixing
 distribution whose approximation can potentially be improved by
 increasing the resolution in directions of high variance.
-Therefore, the class means \(b_{c_1}\) and \(b_{c_2}\) of the new classes
-\(c_1\) and \(c_2\) are shifted in opposite directions from the class mean
-\(b_c\) of the old class \(c\) in the direction of the highest variance.</p></li>
+Therefore, the class means \(b_{c_1}\) and \(b_{c_2}\) of the new
+classes \(c_1\) and \(c_2\) are shifted in opposite directions from
+the class mean \(b_c\) of the old class \(c\) in the direction of the
+highest variance.</p></li>
 <li><p>We join two classes \(c_1\) and \(c_2\) to one class \(c\), if
-\(\lVert b_{c_1} - b_{c_2} \rVert&lt;\epsilon_{\text{distmin}}\), i.e. if
-the euclidean distance between the class means \(b_{c_1}\) and \(b_{c_2}\)
-drops below some threshold \(\epsilon_{\text{distmin}}\). This case indicates
-location redundancy which should be repealed. The parameters of \(c\)
-are assigned by adding the values of \(s\) from \(c_1\) and \(c_2\) and
-averaging the values for \(b\) and \(\Omega\).</p></li>
-</ul><p>The rules are executed in the above order, but only one rule per iteration
-and only if <code>Cmax</code> is not exceeded.</p>
-    </div>
+\(||b_{c_1} - b_{c_2}||&lt;\epsilon_{distmin}\), i.e. if
+the euclidean distance between the class means \(b_{c_1}\) and
+\(b_{c_2}\) drops below some threshold \(\epsilon_{distmin}\).
+This case indicates location redundancy which should be repealed. The
+parameters of \(c\) are assigned by adding the values of \(s\) from
+\(c_1\) and \(c_2\) and averaging the values for \(b\) and
+\(\Omega\).
+The rules are executed in the above order, but only one rule per iteration
+and only if <code>Cmax</code> is not exceeded.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
