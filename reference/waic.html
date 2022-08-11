@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,22 +92,22 @@
     <p>WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
 Criterion. As for AIC and BIC, the smaller the WAIC value the better the
 model. Its definition is
-$$\text{WAIC} = -2 \cdot \text{lppd} + 2 \cdot  p_\text{WAIC},$$
-where \(\text{lppd}\) stands for log pointwise predictive density and
-\(p_\text{WAIC}\) is a penalty term proportional to the variance in the
+$$WAIC = -2 \cdot lppd + 2 \cdot  p_{WAIC},$$
+where \(lppd\) stands for log pointwise predictive density and
+\(p_{WAIC}\) is a penalty term proportional to the variance in the
 posterior distribution that is sometimes called effective number of
 parameters.
-The \(\text{lppd}\) is approximated as follows. Let
+The \(lppd\) is approximated as follows. Let
 $$p_{is} = \Pr(y_i\mid \theta_s)$$ be the probability of observation
 \(y_i\) given the \(s\)th set \(\theta_s\) of parameter samples from
 the posterior. Then
-$$\text{lppd} = \sum_i \log S^{-1} \sum_s p_{si}.$$
+$$lppd = \sum_i \log S^{-1} \sum_s p_{si}.$$
 The penalty term is computed as the sum over the variances in log-probability
 for each observation:
-$$p_\text{WAIC} = \sum_i \mathbb{V}_{\theta} \left[ \log p_{si} \right].$$
-The \(\text{WAIC}\) has a standard error \(\text{SE}\) of
-$$\text{SE} = \sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} -
-\mathbb{V}_{\theta} \left[ \log p_{si} \right] \right)\right]},$$
+$$p_{WAIC} = \sum_i V_{\theta} \left[ \log p_{si} \right].$$
+The \(WAIC\) has a standard error \(SE\) of
+$$SE = \sqrt{n \cdot V_i \left[-2 \left(lppd -
+V_{\theta} \left[ \log p_{si} \right] \right)\right]},$$
 where \(n\) is the number of choices.</p>
     </div>
 

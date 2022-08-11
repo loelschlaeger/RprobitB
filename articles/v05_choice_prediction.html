@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@
 
     
     
-<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.0 package.&lt;/p&gt;"><sup>1</sup></a> discusses in-sample and out-of-sample prediction within {RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes.</p>
+<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.1 package.&lt;/p&gt;"><sup>1</sup></a> discusses in-sample and out-of-sample prediction within {RprobitB}. The former case refers to reproducing the observed choices on the basis of the covariates and the fitted model and subsequently using the deviations between prediction and reality as an indicator for the model performance. The latter means forecasting choice behavior for changes in the choice attributes.</p>
 <p>For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from <a href="https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html">the vignette on model fitting</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span></span>
