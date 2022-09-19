@@ -150,39 +150,6 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
   print(x)
 }
 
-#' @exportS3Method
-#' @importFrom stats AIC
-
-AIC.RprobitB_fit <- function(object, ..., k = 2) {
-  models <- list(...)
-  if(length(models) == 0){
-    models <- list(object)
-  } else {
-    models <- c(list(object), models)
-  }
-  ll <- sapply(models, logLik.RprobitB_fit)
-  npar <- sapply(models, npar)
-  aic <- mapply(function(ll, npar) -2 * ll + 2 * npar, ll, npar)
-  return(aic)
-}
-
-#' @exportS3Method
-#' @importFrom stats BIC
-
-BIC.RprobitB_fit <- function(object, ...) {
-  models <- list(...)
-  if(length(models) == 0){
-    models <- list(object)
-  } else {
-    models <- c(list(object), models)
-  }
-  ll <- sapply(models, logLik)
-  npar <- sapply(models, npar)
-  nobs <- sapply(models, nobs)
-  bic <- mapply(function(ll, npar, nobs) -2 * ll + npar * log(nobs), ll, npar, nobs)
-  return(bic)
-}
-
 #' Compute WAIC value
 #'
 #' @description
@@ -316,7 +283,7 @@ plot.RprobitB_waic <- function(x, ...) {
 #' @importFrom stats nobs
 
 nobs.RprobitB_fit <- function(object, ...) {
-  return(sum(object$data$T))
+  sum(object$data$T)
 }
 
 #' @exportS3Method
@@ -338,7 +305,12 @@ logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) 
       }
     }
   }
-  return(as.numeric(ll))
+  structure(
+    as.numeric(ll),
+    class = "logLik",
+    df = npar(object),
+    nobs = nobs(object)
+  )
 }
 
 #' Extract number of model parameters

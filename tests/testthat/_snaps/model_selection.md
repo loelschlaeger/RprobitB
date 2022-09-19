@@ -47,7 +47,7 @@
     Code
       logLik(model_train, recompute = TRUE)
     Output
-      [1] -1728.588
+      'log Lik.' -1728.588 (df=4)
 
 ---
 
