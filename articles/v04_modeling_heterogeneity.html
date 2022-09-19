@@ -121,26 +121,26 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span></span>
 <span><span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span></span>
-<span><span class="co">#&gt; 2   cl     -0.25 (0.03)     0.26 (0.04)</span></span>
-<span><span class="co">#&gt; 3  loc      2.71 (0.28)     6.64 (1.43)</span></span>
-<span><span class="co">#&gt; 4   wk      1.99 (0.22)     3.33 (0.75)</span></span>
-<span><span class="co">#&gt; 5  tod     -9.72 (0.21)    10.16 (2.08)</span></span>
-<span><span class="co">#&gt; 6 seas     -9.89 (0.19)     5.93 (1.00)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   cl     -0.25 (0.03)     0.25 (0.04)</span></span>
+<span><span class="co">#&gt; 3  loc      2.62 (0.19)     5.55 (0.86)</span></span>
+<span><span class="co">#&gt; 4   wk      1.88 (0.16)     2.95 (0.53)</span></span>
+<span><span class="co">#&gt; 5  tod     -9.57 (0.21)     9.31 (1.63)</span></span>
+<span><span class="co">#&gt; 6 seas     -9.73 (0.14)     5.22 (0.68)</span></span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price <code>tod</code> in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large. The same holds for the contract length <code>cl</code>. In particular, the estimated share of the population that prefers to have a longer contract length equals:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"mean"</span><span class="op">]</span></span>
 <span><span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"var"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.3142693</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3103299</span></span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               cl        loc          wk         tod        seas</span></span>
-<span><span class="co">#&gt; cl    1.00000000 0.10539427  0.06034964 -0.04743461 -0.10122580</span></span>
-<span><span class="co">#&gt; loc   0.10539427 1.00000000  0.79502187  0.09503710  0.01156326</span></span>
-<span><span class="co">#&gt; wk    0.06034964 0.79502187  1.00000000  0.07593904 -0.04550841</span></span>
-<span><span class="co">#&gt; tod  -0.04743461 0.09503710  0.07593904  1.00000000  0.52226400</span></span>
-<span><span class="co">#&gt; seas -0.10122580 0.01156326 -0.04550841  0.52226400  1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt;               cl          loc          wk         tod         seas</span></span>
+<span><span class="co">#&gt; cl    1.00000000  0.109364154  0.08559157 -0.05854089 -0.120948358</span></span>
+<span><span class="co">#&gt; loc   0.10936415  1.000000000  0.78370103  0.09848322 -0.002712586</span></span>
+<span><span class="co">#&gt; wk    0.08559157  0.783701027  1.00000000  0.11511208 -0.037823972</span></span>
+<span><span class="co">#&gt; tod  -0.05854089  0.098483222  0.11511208  1.00000000  0.553269270</span></span>
+<span><span class="co">#&gt; seas -0.12094836 -0.002712586 -0.03782397  0.55326927  1.000000000</span></span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
