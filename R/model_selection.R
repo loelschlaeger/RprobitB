@@ -446,21 +446,21 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
   s <- NULL
   p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB",
                            .combine = "cbind", .options.snow = opts) %dopar% {
-    out <- c()
-    for(n in 1:x$data$N){
-      X_n = x$data$data[[n]]$X
-      y_n = x$data$data[[n]]$y
-      for(t in 1:x$data$T[n]) {
-        X_nt = X_n[[t]]
-        y_nt = y_n[t]
-        alt_index <- which(x$data$alternatives == y_nt)
-        out <- c(out, compute_choice_probabilities(
-          X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index]
-        )
-      }
-    }
-    out
-  }
+                             out <- c()
+                             for(n in 1:x$data$N){
+                               X_n = x$data$data[[n]]$X
+                               y_n = x$data$data[[n]]$y
+                               for(t in 1:x$data$T[n]) {
+                                 X_nt = X_n[[t]]
+                                 y_nt = y_n[t]
+                                 alt_index <- which(x$data$alternatives == y_nt)
+                                 out <- c(out, compute_choice_probabilities(
+                                   X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index]
+                                 )
+                               }
+                             }
+                             out
+                           }
 
   ### stop parallel backend
   parallel::stopCluster(cluster)
