@@ -39,9 +39,5 @@ the posterior. Then
 The penalty term is computed as the sum over the variances in log-probability
 for each observation:
 \deqn{p_{WAIC} = \sum_i V_{\theta} \left[ \log p_{si} \right].}
-The \eqn{WAIC} has a standard error \eqn{SE} of
-\deqn{SE = \sqrt{n \cdot V_i \left[-2 \left(lppd -
-V_{\theta} \left[ \log p_{si} \right] \right)\right]},}
-where \eqn{n} is the number of choices.
 }
 \keyword{internal}

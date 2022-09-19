@@ -188,6 +188,9 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' @description
 #' This function computes the WAIC value of an \code{RprobitB_fit} object.
 #'
+#' @param x
+#' An object of class \code{RprobitB_fit}.
+#'
 #' @details
 #' WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
 #' Criterion. As for AIC and BIC, the smaller the WAIC value the better the
@@ -205,13 +208,6 @@ BIC.RprobitB_fit <- function(object, ...) {
 #' The penalty term is computed as the sum over the variances in log-probability
 #' for each observation:
 #' \deqn{p_{WAIC} = \sum_i V_{\theta} \left[ \log p_{si} \right].}
-#' The \eqn{WAIC} has a standard error \eqn{SE} of
-#' \deqn{SE = \sqrt{n \cdot V_i \left[-2 \left(lppd -
-#' V_{\theta} \left[ \log p_{si} \right] \right)\right]},}
-#' where \eqn{n} is the number of choices.
-#'
-#' @param x
-#' An object of class \code{RprobitB_fit}.
 #'
 #' @return
 #' A numeric, the WAIC value, with the following attributes:
