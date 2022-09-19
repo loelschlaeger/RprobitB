@@ -18,12 +18,8 @@ template:
 
 navbar:
   structure:
-    left: [intro, reference, articles, news, plans]
+    left: [intro, reference, articles]
     right: [search, github]
-  components:
-    plans:
-      text: Plans
-      href: https://github.com/loelschlaeger/RprobitB/blob/main/TODO.md
 
 reference:
 - title: Data management
