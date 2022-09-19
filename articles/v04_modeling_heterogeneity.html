@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,12 +58,6 @@
     <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
     <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
   </div>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/blob/main/TODO.md">Plans</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -97,7 +91,7 @@
 
     
     
-<p>In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.1 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
+<p>In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.1 with the {RprobitB} 1.1.1.9000 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
 </h2>
@@ -127,26 +121,26 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span></span>
 <span><span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span></span>
-<span><span class="co">#&gt; 2   cl     -0.26 (0.03)     0.28 (0.04)</span></span>
-<span><span class="co">#&gt; 3  loc      2.74 (0.22)     6.62 (0.90)</span></span>
-<span><span class="co">#&gt; 4   wk      1.98 (0.16)     3.40 (0.55)</span></span>
-<span><span class="co">#&gt; 5  tod     -9.67 (0.18)     9.86 (1.32)</span></span>
-<span><span class="co">#&gt; 6 seas     -9.81 (0.17)     5.54 (0.89)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   cl     -0.28 (0.04)     0.37 (0.05)</span></span>
+<span><span class="co">#&gt; 3  loc      2.92 (0.29)     7.81 (1.54)</span></span>
+<span><span class="co">#&gt; 4   wk      2.12 (0.22)     4.12 (0.75)</span></span>
+<span><span class="co">#&gt; 5  tod     -9.91 (0.26)    12.80 (2.53)</span></span>
+<span><span class="co">#&gt; 6 seas     -9.99 (0.21)     6.78 (1.20)</span></span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price <code>tod</code> in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large. The same holds for the contract length <code>cl</code>. In particular, the estimated share of the population that prefers to have a longer contract length equals:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"mean"</span><span class="op">]</span></span>
 <span><span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>,<span class="st">"var"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.3157631</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3238015</span></span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;               cl         loc          wk         tod        seas</span></span>
-<span><span class="co">#&gt; cl    1.00000000  0.07449146  0.05176181 -0.05672475 -0.12402995</span></span>
-<span><span class="co">#&gt; loc   0.07449146  1.00000000  0.78534320  0.09641884 -0.02905722</span></span>
-<span><span class="co">#&gt; wk    0.05176181  0.78534320  1.00000000  0.10108281 -0.04560511</span></span>
-<span><span class="co">#&gt; tod  -0.05672475  0.09641884  0.10108281  1.00000000  0.52879233</span></span>
-<span><span class="co">#&gt; seas -0.12402995 -0.02905722 -0.04560511  0.52879233  1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt; cl    1.00000000  0.07020938  0.04178953 -0.03101481 -0.09858470</span></span>
+<span><span class="co">#&gt; loc   0.07020938  1.00000000  0.78060535  0.11057454 -0.01400876</span></span>
+<span><span class="co">#&gt; wk    0.04178953  0.78060535  1.00000000  0.10889408 -0.04515809</span></span>
+<span><span class="co">#&gt; tod  -0.03101481  0.11057454  0.10889408  1.00000000  0.50169683</span></span>
+<span><span class="co">#&gt; seas -0.09858470 -0.01400876 -0.04515809  0.50169683  1.00000000</span></span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high correlation between <code>loc</code> and <code>wk</code>. The pairwise mixing distributions can be visualized via calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method with the additional argument <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
