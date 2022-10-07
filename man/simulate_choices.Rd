@@ -8,15 +8,16 @@ simulate_choices(
   form,
   N,
   T = 1,
-  J,
+  J = 3,
+  alternatives = LETTERS[1:J],
   re = NULL,
-  alternatives = NULL,
   ordered = FALSE,
   ranked = FALSE,
-  base = NULL,
-  covariates = NULL,
+  covariates = function(n, t) matrix(rnorm(P(form, re) * J), nrow = P(form, re), ncol =
+    J),
   seed = NULL,
-  true_parameter = list()
+  true_parameter = RprobitB_parameter(form = form, N = N, J = J, ordered = ordered, seed
+    = seed)
 )
 }
 \arguments{
@@ -34,7 +35,7 @@ covariates with alternative specific coefficients.
 
 Multiple covariates (of one type) are separated by a \code{+} sign.
 By default, alternative specific constants (ASCs) are added to the model.
-They can be removed by adding \code{+0} in the second spot.
+They can be removed by adding \code{+ 0} in the second spot.
 
 In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
 object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
@@ -47,25 +48,19 @@ Per default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
-If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
-
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.
 If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
 the alternatives ordered from worst to best.}
 
+\item{re}{A character (vector) of covariates of \code{form} with random effects.
+If \code{re = NULL} (the default), there are no random effects.
+To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
+
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{ranked}{TBA}
-
-\item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
-\code{NULL} if the model has no alternative specific covariates (e.g. in the
-ordered probit model).
-Per default, \code{base} is the last element of \code{alternatives}.}
 
 \item{covariates}{A named list of covariate values. Each element must be a vector of length
 equal to the number of choice occasions and named according to a covariate.

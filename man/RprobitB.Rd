@@ -3,8 +3,32 @@
 \docType{package}
 \name{RprobitB}
 \alias{RprobitB}
+\alias{RprobitB-package}
 \title{RprobitB: A package for Bayes estimation of probit models}
 \description{
 This package provides tools for Bayes estimation of probit models.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://loelschlaeger.de/RprobitB/}
+  \item Report bugs at \url{https://github.com/loelschlaeger/RprobitB/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
+
+Authors:
+\itemize{
+  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Sebastian Büscher \email{sebastian.buescher@uni-bielefeld.de} [contributor]
+  \item Manuel Batram \email{manuel.batram@uni-bielefeld.de} [contributor]
+}
+
 }
 \keyword{internal}

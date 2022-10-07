@@ -33,7 +33,7 @@ covariates with alternative specific coefficients.
 
 Multiple covariates (of one type) are separated by a \code{+} sign.
 By default, alternative specific constants (ASCs) are added to the model.
-They can be removed by adding \code{+0} in the second spot.
+They can be removed by adding \code{+ 0} in the second spot.
 
 In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
 object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
