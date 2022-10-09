@@ -31,10 +31,10 @@ prior = function(param){
   a = param[1]
   b = param[2]
   sd = param[3]
-  aprior = dunif(a, min=0, max=10, log = T)
+  aprior = dunif(a, min=0, max=4, log = T)
   bprior = dnorm(b, sd = 5, log = T)
   sdprior = dunif(sd, min=0, max=30, log = T)
-  return(aprior+bprior+sdprior)
+  return(aprior + bprior + sdprior)
 }
 
 posterior = function(param){
@@ -55,9 +55,11 @@ run_metropolis_MCMC = function(startvalue, iterations){
     proposal = proposalfunction(chain[i,])
 
     probab = exp(posterior(proposal) - posterior(chain[i,]))
+    if(is.nan(probab)) probab <- 0
+
     if (runif(1) < probab){
       chain[i+1,] = proposal
-    }else{
+    } else{
       chain[i+1,] = chain[i,]
     }
   }
@@ -70,7 +72,7 @@ chain = run_metropolis_MCMC(startvalue, 10000)
 colMeans(chain)
 
 burnIn = 5000
-acceptance = 1-mean(duplicated(chain[-(1:burnIn),]))
+(acceptance = 1-mean(duplicated(chain[-(1:burnIn),])))
 
 
 

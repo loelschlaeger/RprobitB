@@ -57,12 +57,12 @@ RprobitB_pb_tick <- function(pb) {
 
 #' @noRd
 #' @importFrom utils packageVersion
+#' @importFrom cli style_hyperlink
 
 .onAttach <- function(lib, pkg) {
   msg <- paste0(
-    "This is {RprobitB} ", utils::packageVersion("RprobitB"),
-    ", happy choice modeling!\n",
-    "See https://loelschlaeger.de/RprobitB for help."
+    "This is {RprobitB} ", utils::packageVersion("RprobitB"), ", happy choice modeling!\n",
+    "See ", cli::style_hyperlink("https://loelschlaeger.de/RprobitB", "https://loelschlaeger.de/RprobitB") ," for help."
   )
   packageStartupMessage(msg)
   invisible()
