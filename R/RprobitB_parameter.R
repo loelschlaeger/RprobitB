@@ -46,6 +46,7 @@
 #' in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.
 #' @param sample
 #' A boolean, if \code{TRUE} (default) missing parameters get sampled.
+#' TODO How?
 #' @param seed
 #' Set a seed for the sampling of missing parameters.
 #'
@@ -54,23 +55,49 @@
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
 #'
-#' @importFrom stats runif rnorm
+#' @details
+#' # Parameters of the probit model
+#' TODO
 #'
-#' @export
+#' @importFrom stats runif rnorm
 #'
 #' @examples
 #' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
+#'
+#' @export
 
 RprobitB_parameter <- function(
-    P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
-    Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
-    d = NULL, seed = NULL, sample = TRUE
+    formula, re = NULL, N, J, C = 1, ordered = FALSE,
+    alpha = NULL, s = NULL, b = NULL, Omega = NULL, Sigma = NULL,
+    Sigma_full = NULL, beta = NULL, z = NULL, d = NULL,
+    seed = NULL, sample = TRUE
 ) {
+  if (!is.null(seed)) set.seed(seed)
+  P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
+  P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
+  if (sample) {
+    if (is.null(alpha) && P_f > 0) {
+      alpha <- RprobitB_prior("alpha", P_f = P_f)
+    }
 
-  ### seed for sampling missing parameters
-  if (!is.null(seed)) {
-    set.seed(seed)
+  } else {
+
   }
+
+
+
+
+
+  if(P_f == 0 || (is.null(alpha) && !sample)) alpha <- NA
+
+
+
+
+
+
+
+
+
 
   ### alpha
   if (P_f == 0) {
@@ -286,13 +313,17 @@ RprobitB_parameter <- function(
   return(out)
 }
 
-#' @noRd
+validate_RprobitB_parameter <- function() {
+
+}
+
+#' @rdname RprobitB_parameter
 #' @param ...
 #' Names of parameters to be printed. If not specified, all parameters are
 #' printed.
 #' @param digits
 #' The number of printed decimal places.
-#' @export
+#' @exportS3Method
 
 print.RprobitB_parameter <- function(x, ..., digits = 4) {
   pars <- list(...)

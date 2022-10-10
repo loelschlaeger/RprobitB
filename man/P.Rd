@@ -6,11 +6,11 @@
 \alias{P_r}
 \title{Compute number of (fixed and random) model effects}
 \usage{
-P(formula, re, ordered = FALSE)
+P(formula, re, J, ordered = FALSE)
 
-P_f(formula, re, ordered = FALSE)
+P_f(formula, re, J, ordered = FALSE)
 
-P_r(formula, re, ordered = FALSE)
+P_r(formula, re, J, ordered = FALSE)
 }
 \arguments{
 \item{formula}{An object of class \code{\link[stats]{formula}}:
@@ -21,6 +21,8 @@ The details of model specification are given under \sQuote{Details}.}
 have a random effect.
 Set \code{re = NULL} (default) for no random effects.
 The details of random effects are given under \sQuote{Details}.}
+
+\item{J}{An integer, the number of choice alternatives.}
 
 \item{ordered}{A boolean: \code{TRUE} for if the alternatives are ordered and \code{FALSE}
 (default) else.}
@@ -79,8 +81,9 @@ To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 \examples{
 formula <- choice ~ A | B + 0 | C + D
 re <- c("A", "D+")
-P(formula, re)
-P_f(formula, re)
-P_r(formula, re)
+J <- 3
+P(formula, re, J)
+P_f(formula, re, J)
+P_r(formula, re, J)
 
 }

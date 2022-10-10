@@ -19,7 +19,7 @@
 #' * and booleans whether the random effect is log-normal \code{"ln"}.
 #'
 #' @examples
-#' overview_effects(
+#' RprobitB_effects(
 #'   formula = choice ~ price | income | comfort,
 #'   re = c("price+", "income"),
 #'   alternatives = c("A", "B"),
@@ -41,45 +41,54 @@ RprobitB_effects <- function(
   RprobitB_alternatives <- new_RprobitB_alternatives(
     alternatives = alternatives, base = base, ordered = ordered
   )
+  alternatives <- RprobitB_alternatives$alternatives
+  base <- RprobitB_alternatives$base
   RprobitB_formula <- new_RprobitB_formula(
     formula = formula, re = re, ordered = ordered
   )
+  vars <- RprobitB_formula$vars
+  md_n <- RprobitB_formula$md_n
+  md_ln <- RprobitB_formula$md_ln
+  re <- c(md_n, md_ln)
   overview <- data.frame(matrix(ncol = 5, nrow = 0))
   if(ordered){
     for (var in vars[[2]]) {
       overview <- rbind(
         overview,
-        c(var, FALSE, FALSE, var %in% RprobitB_formula$re, var %in% RprobitB_formula$md_ln)
+        c(var, FALSE, FALSE, var %in% re, var %in% md_ln)
       )
     }
   } else {
     J <- length(alternatives)
-    for (var in RprobitB_formula$vars[[1]]) {
+    for (var in vars[[1]]) {
       overview <- rbind(
         overview,
-        c(var, TRUE, FALSE, var %in% RprobitB_formula$re, var %in% RprobitB_formula$md_ln)
+        c(var, TRUE, FALSE, var %in% re, var %in% md_ln)
       )
     }
-    for (var in c(RprobitB_formula$vars[[2]], if (RprobitB_formula$ASC) "ASC")) {
-      for (j in (1:J)[-which(RprobitB_alternatives$alternatives == RprobitB_alternatives$base)]) {
+    for (var in c(vars[[2]], if (RprobitB_formula$ASC) "ASC")) {
+      for (j in (1:J)[-which(alternatives == base)]) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% RprobitB_formula$re, var %in% RprobitB_formula$md_ln)
+          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re, var %in% md_ln)
         )
       }
     }
-    for (var in RprobitB_formula$vars[[3]]) {
+    for (var in vars[[3]]) {
       for (j in 1:J) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% RprobitB_formula$re, var %in% RprobitB_formula$md_ln)
+          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re, var %in% md_ln)
         )
       }
     }
   }
   colnames(overview) <- c("name", "as_cov", "as_coef", "random", "log_norm")
+  overview$as_cov <- as.logical(overview$as_cov)
+  overview$as_coef <- as.logical(overview$as_coef)
   overview$random <- as.logical(overview$random)
-  effect_order <- order(overview$random, as.numeric(rownames(overview)))
+  overview$log_norm <- as.logical(overview$log_norm)
+  effect_order <- order(overview$random, overview$log_norm, as.numeric(rownames(overview)))
   overview <- overview[effect_order, ]
   rownames(overview) <- NULL
   return(overview)
@@ -95,6 +104,8 @@ RprobitB_effects <- function(
 #' \code{P_r()} computes the number \code{P_r} of random model effects.
 #'
 #' @inheritParams new_RprobitB_formula
+#' @param J
+#' An integer, the number of choice alternatives.
 #'
 #' @inheritSection new_RprobitB_formula Details of model specification
 #' @inheritSection new_RprobitB_formula Details of random effects
@@ -105,30 +116,34 @@ RprobitB_effects <- function(
 #' @examples
 #' formula <- choice ~ A | B + 0 | C + D
 #' re <- c("A", "D+")
-#' P(formula, re)
-#' P_f(formula, re)
-#' P_r(formula, re)
+#' J <- 3
+#' P(formula, re, J)
+#' P_f(formula, re, J)
+#' P_r(formula, re, J)
 #'
 #' @export
 
-P <- function(formula, re, ordered = FALSE) {
-  P_f(formula = formula, re = re, ordered = ordered) + P_r(formula = formula, re = re, ordered = ordered)
+P <- function(formula, re, J, ordered = FALSE) {
+  P_f(formula = formula, re = re, J = J, ordered = ordered) +
+    P_r(formula = formula, re = re, J = J, ordered = ordered)
 }
 
 #' @rdname P
 #' @export
 
-P_f <- function(formula, re, ordered = FALSE) {
-  RprobitB_formula <- new_RprobitB_formula(formula = formula, re = re, ordered = ordered)
-  P_f <- ...
-  return(as.integer(P_f))
+P_f <- function(formula, re, J, ordered = FALSE) {
+  RprobitB_effects <- RprobitB_effects(
+    formula, re = re, alternatives = LETTERS[1:J], ordered = ordered
+  )
+  as.integer(sum(!RprobitB_effects$random))
 }
 
 #' @rdname P
 #' @export
 
-P_r <- function(formula, re, ordered = FALSE) {
-  RprobitB_formula <- new_RprobitB_formula(formula = formula, re = re, ordered = ordered)
-  P_r <- ...
-  return(as.integer(P_r))
+P_r <- function(formula, re, J, ordered = FALSE) {
+  RprobitB_effects <- RprobitB_effects(
+    formula, re = re, alternatives = LETTERS[1:J], ordered = ordered
+  )
+  as.integer(sum(RprobitB_effects$random))
 }

@@ -70,7 +70,7 @@ validate_RprobitB_alternatives <- function(x) {
       "Input 'alternatives' must have at least two elements."
     )
   }
-  if (!identical(alternatives, unique(alternatives))) {
+  if (!identical(x$alternatives, unique(x$alternatives))) {
     RprobitB_stop(
       "Alternatives must be unqiue.",
       "Input 'alternatives' does not have unique elements."

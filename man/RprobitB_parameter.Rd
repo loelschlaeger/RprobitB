@@ -2,16 +2,17 @@
 % Please edit documentation in R/RprobitB_parameter.R
 \name{RprobitB_parameter}
 \alias{RprobitB_parameter}
+\alias{print.RprobitB_parameter}
 \title{Define probit model parameter}
 \usage{
 RprobitB_parameter(
-  P_f,
-  P_r,
-  J,
+  formula,
+  re = NULL,
   N,
+  J,
+  C = 1,
   ordered = FALSE,
   alpha = NULL,
-  C = NULL,
   s = NULL,
   b = NULL,
   Omega = NULL,
@@ -23,24 +24,26 @@ RprobitB_parameter(
   seed = NULL,
   sample = TRUE
 )
+
+\method{print}{RprobitB_parameter}(x, ..., digits = 4)
 }
 \arguments{
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
+\item{re}{A character (vector) of covariates of \code{form} with random effects.
+If \code{re = NULL} (the default), there are no random effects.
+To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+\item{N}{The number (greater or equal 1) of decision makers.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
-\item{N}{The number (greater or equal 1) of decision makers.}
+\item{C}{The number (greater or equal 1) of latent classes of decision makers.
+Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{alpha}{The fixed coefficient vector of length \code{P_f}.
 Set to \code{NA} if \code{P_f = 0}.}
-
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
 
 \item{s}{The vector of class weights of length \code{C}.
 Set to \code{NA} if \code{P_r = 0}.
@@ -75,7 +78,13 @@ in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.}
 
 \item{seed}{Set a seed for the sampling of missing parameters.}
 
-\item{sample}{A boolean, if \code{TRUE} (default) missing parameters get sampled.}
+\item{sample}{A boolean, if \code{TRUE} (default) missing parameters get sampled.
+TODO How?}
+
+\item{...}{Names of parameters to be printed. If not specified, all parameters are
+printed.}
+
+\item{digits}{The number of printed decimal places.}
 }
 \value{
 An object of class \code{RprobitB_parameter}, i.e. a named list with the
@@ -88,6 +97,11 @@ contains the parameters of a probit model.
 If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 }
+\section{Parameters of the probit model}{
+TODO
+}
+
 \examples{
 RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
+
 }

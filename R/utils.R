@@ -1,3 +1,110 @@
+#' Extract function body as character
+#'
+#' @description
+#' This function extracts the body of a function as a character.
+#'
+#' @param fun
+#' An object of class \code{function}.
+#' @param braces
+#' A boolean, if \code{FALSE} (default) removes \code{"{"} and \code{"}"} at
+#' start and end (if any).
+#' @param nchar
+#' An integer, the maximum number of characters before abbreviation.
+#'
+#' @return
+#' A character.
+#'
+#' @keywords utils
+#'
+#' @examples
+#' add1 <- function(x) {
+#'   stopifnot(is.numeric(x))
+#'   x + 1
+#' }
+#' RprobitB:::function_body(add1)
+#' RprobitB:::function_body(add1, braces = TRUE)
+#' RprobitB:::function_body(add1, nchar = 20)
+
+function_body <- function(fun, braces = FALSE, nchar = 100) {
+  stopifnot(is.function(fun))
+  out <- deparse1(body(fun))
+  if (!braces) out <- gsub("^[{]|[}]$","", out)
+  out <- trimws(gsub("\\s+", " ", out))
+  if (nchar(out) > nchar) out <- paste0(strtrim(out, nchar - 3), '...')
+  out
+}
+
+#' check for boolean
+#' @param i any element
+#' @return `TRUE` if `i` is either `TRUE` or `FALSE`, `FALSE` else
+is_bool <- function(i) {
+  length(i) == 1 && isTRUE(i) || isFALSE(i)
+}
+
+#' Check for single numeric
+#'
+#' @description
+#' This function checks whether the input is a single numeric value.
+#'
+#' @param x
+#' Any element.
+#'
+#' @return
+#' \code{TRUE} if \code{x} is a single numeric, \code{FALSE} else.
+#'
+#' @keywords utils
+#'
+#' @examples
+#' is_sn(1)
+#' is_sn("1")
+#' is_sn(NA_real_)
+
+is_sn <- function(i) {
+  is.numeric(i) && length(i) == 1 && !is.na(i)
+}
+
+#' check for positive integer
+#' @param i any element
+#' @return `TRUE` if `i` is an integer, `FALSE` else
+is_int <- function(i) {
+  is_sn(i) && i %% 1 == 0 && i > 0
+}
+
+#' check for covariance matrix
+#' @param M any element
+#' @return `TRUE` if `M` is a covariance matrix, `FALSE` else
+is_cov <- function(M) {
+  is.matrix(M) && is.numeric(M) && ncol(M) == nrow(M) &&
+    all(abs(M - t(M)) < sqrt(.Machine$double.eps)) &&
+    all(eigen(M)$value > -sqrt(.Machine$double.eps))
+}
+
+#' build difference operator
+#' @param diff_alt alternative index for differencing
+#' @param J number of alternatives
+#' @return matrix of dimension (`J`-1) x `J`
+delta <- function(diff_alt, J){
+  stopifnot(is_int(diff_alt), is_int(J), diff_alt <= J)
+  D <- diag(J)
+  D[,diff_alt] <- -1
+  D[-diff_alt, , drop = FALSE]
+}
+
+#' undifference covariance matrix Sigma
+#' @param Sigma_d covariance matrix
+#' @param diff_alt alternative index for differencing
+#' @return undifferenced covariance matrix
+undiff_Sigma <- function(Sigma_d, diff_alt) {
+  stopifnot(is_cov(Sigma_d))
+  J <- nrow(Sigma_d) + 1
+  stopifnot(is_int(diff_alt), diff_alt <= J)
+  Sigma <- matrix(0, J, J)
+  Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_d
+  Sigma <- Sigma + 1
+  stopifnot(is_cov(Sigma))
+  Sigma
+}
+
 #' Matrix difference operator
 #'
 #' @description
@@ -162,152 +269,6 @@ is_covariance_matrix <- function(x) {
     all(eigen(x)$value > -sqrt(.Machine$double.eps))
 }
 
-#' Print abbreviated matrices and vectors
-#'
-#' @description
-#' This function prints abbreviated matrices and vectors.
-#'
-#' @references
-#' This function is a modified version of the \code{pprint()} function from the
-#' \code{ramify} R package.
-#'
-#' @param x
-#' A (numeric or character) matrix or a vector.
-#' @param rowdots
-#' The row number which is replaced by dots.
-#' @param coldots
-#' The column number which is replaced by dots.
-#' @param digits
-#' If \code{x} is numeric, sets the number of decimal places.
-#' @param name
-#' Either \code{NULL} or a label for \code{x}. Only printed if
-#' \code{desc = TRUE}.
-#' @param desc
-#' Set to \code{TRUE} to print the name and the dimension of \code{x}.
-#'
-#' @return
-#' Invisibly returns \code{x}.
-#'
-#' @examples
-#' RprobitB:::pprint(x = 1, name = "single integer")
-#' RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
-#' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1),
-#'                   name = "single column matrix")
-#' RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
-#' RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
-#'
-#' @keywords
-#' internal utils
-
-pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
-                   desc = TRUE) {
-
-  ### helper function
-  add_dots <- function(x, pos = 3) {
-    if (length(x) > pos) {
-      c(x[seq_len(pos-1)], "...", x[length(x)])
-    } else {
-      x
-    }
-  }
-
-  ### distinguish between single numbers, vectors and matrices
-  if(length(x) == 1){
-    if(desc) if(!is.null(name)) cat(name, ": ")
-    cat(x)
-  } else if(!is.matrix(x)) {
-    if(desc) if(!is.null(name))
-      cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
-    res <- if(is.numeric(x)) round(x,digits) else x
-    cat(noquote(add_dots(res, coldots)))
-  } else {
-
-    ### row labels
-    row_labels <- if (is.null(rownames(x))) {
-      paste0("[", seq_len(nrow(x)), ",]")
-    } else {
-      rownames(x)
-    }
-
-    ### columns labels
-    col_labels <- if (is.null(colnames(x))) {
-      paste0("[,", seq_len(ncol(x)), "]")
-    } else {
-      colnames(x)
-    }
-
-    ### adjust values for 'coldots' and 'rowdots'
-    coldots <- max(1,min(ncol(x)-1, coldots))
-    rowdots <- max(1,min(nrow(x)-1, rowdots))
-
-    ### omit all values that will not be printed
-    x2 <- if(nrow(x) == 1) {
-      cbind(x[1, 1:coldots, drop = FALSE], x[1, ncol(x), drop = FALSE])
-    } else if(ncol(x) == 1) {
-      rbind(x[1:rowdots, 1, drop = FALSE], x[nrow(x), 1, drop = FALSE])
-    } else {
-      rbind(cbind(x[1:rowdots, 1:coldots, drop = FALSE],
-                  x[1:rowdots, ncol(x), drop = FALSE]),
-            cbind(x[nrow(x), 1:coldots, drop = FALSE],
-                  x[nrow(x), ncol(x), drop = FALSE]))
-    }
-
-    ### convert to character matrix
-    charx <- if (typeof(x2) == "character") {
-      x2
-    } else if (typeof(x2) %in% c("integer", "logical")) {
-      as.character(x2)
-    } else {
-      sprintf(paste0("%.", digits, "f"), x2)
-    }
-    dim(charx) <- dim(x2)
-
-    ### Case 1: rows and columns do not have dots
-    if (nrow(x) <= rowdots + 1 && ncol(x) <= coldots + 1) {
-      res <- x
-    }
-
-    ### Case 2: rows have dots, columns do not
-    if (nrow(x) > rowdots + 1 && ncol(x) <= coldots + 1) {
-      res <- rbind(as.matrix(charx[seq_len(rowdots - 1), ]),
-                   rep("...", ncol(charx)),
-                   charx[nrow(charx), ])
-      row_labels <- add_dots(row_labels, pos = rowdots)
-    }
-
-    ### Case 3: rows do not have dots, columns have dots
-    if (nrow(x) <= rowdots + 1 && ncol(x) > coldots + 1) {
-      res <- t(apply(charx, 1, add_dots, pos = coldots))
-      col_labels <- add_dots(col_labels, pos = coldots)
-    }
-
-    ### Case 4: rows and columns have dots
-    if (nrow(x) > rowdots + 1 && ncol(x) > coldots + 1) {
-      smallx <- t(apply(charx[seq_len(rowdots - 1), ], 1, add_dots,
-                        pos = coldots))
-      res <- rbind(smallx,
-                   rep("...", ncol(smallx)),
-                   add_dots(charx[nrow(charx), ], pos = coldots))
-      row_labels <- add_dots(row_labels, pos = rowdots)
-      col_labels <- add_dots(col_labels, pos = coldots)
-    }
-
-    ### print matrix
-    if(desc){
-      if(!is.null(name)){
-        cat(name,": ")
-      }
-      cat(paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"),
-          "\n\n")
-    }
-    prmatrix(res, rowlab = row_labels, collab = col_labels, quote = FALSE,
-             right = TRUE)
-  }
-
-  ### return 'x' invisibly
-  return(invisible(x))
-}
-
 #' Permutations of a vector
 #'
 #' @description
@@ -350,3 +311,4 @@ permutations <- function(x){
   }
   return(out)
 }
+

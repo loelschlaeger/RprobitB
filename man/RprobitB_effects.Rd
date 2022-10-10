@@ -98,7 +98,7 @@ coefficients then have to be interpreted with respect to \code{base}.
 }
 
 \examples{
-overview_effects(
+RprobitB_effects(
   formula = choice ~ price | income | comfort,
   re = c("price+", "income"),
   alternatives = c("A", "B"),

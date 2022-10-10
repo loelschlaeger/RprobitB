@@ -1,20 +1,48 @@
 test_that("RprobitB_effects can be created", {
-  # TODO
   expect_equal(
     RprobitB_effects(
        formula = choice ~ cov,
-       re = "cov+",
-       alternatives = c("A", "B")
+       re = c("cov+", "ASC+"),
+       alternatives = c("C", "B", "A"),
+       base = "B"
     ),
-    data.frame(matrix(c("cov", FALSE, FALSE, TRUE, TRUE), nrow = 1))
+    structure(
+      list(
+        name = c("cov", "ASC_A", "ASC_C"),
+        as_cov = c(TRUE, FALSE, FALSE),
+        as_coef = c(FALSE, TRUE, TRUE),
+        random = c(TRUE, TRUE, TRUE),
+        log_norm = c(TRUE, TRUE, TRUE)
+      ),
+      row.names = 1:3,
+      class = "data.frame"
+    )
   )
   expect_equal(
     RprobitB_effects(
-      formula = choice ~ price + time + comfort + change | 1,
-      re = c("price+", "time"),
-      alternatives = c("A", "B"),
-      base = "A"
+      formula = choice ~ A | B + 0 | C,
+      re = NULL,
+      alternatives = c("A", "B")
     ),
-    data.frame()
+    structure(
+      list(
+        name = c("A", "B_A", "C_A", "C_B"),
+        as_cov = c(TRUE, FALSE, TRUE, TRUE),
+        as_coef = c(FALSE, TRUE, TRUE, TRUE),
+        random = c(FALSE, FALSE, FALSE, FALSE),
+        log_norm = c(FALSE, FALSE, FALSE, FALSE)
+      ),
+      row.names = 1:4,
+      class = "data.frame"
+    )
   )
+})
+
+test_that("Number of effects can be computed", {
+  formula <- choice ~ A | B + 0 | C + D
+  re <- c("A", "D+")
+  J <- 3
+  expect_equal(P(formula, re, J), 9)
+  expect_equal(P_f(formula, re, J), 5)
+  expect_equal(P_r(formula, re, J), 4)
 })

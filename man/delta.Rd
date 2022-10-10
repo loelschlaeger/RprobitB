@@ -2,16 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{delta}
 \alias{delta}
-\title{Matrix difference operator}
+\title{build difference operator}
 \usage{
+delta(J, i)
+
 delta(J, i)
 }
 \arguments{
 \item{J}{The number of matrix rows.}
 
 \item{i}{The row number to which respect differences are computed.}
+
+\item{diff_alt}{alternative index for differencing}
 }
 \value{
+matrix of dimension (\code{J}-1) x \code{J}
+
 A matrix with \code{J-1} rows.
 }
 \description{
