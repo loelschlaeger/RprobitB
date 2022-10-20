@@ -7,16 +7,17 @@
 update_b(beta, Omega, z, m, xi, Dinv)
 }
 \arguments{
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
+\item{beta}{The matrix of the decider-specific coefficient vectors of dimension
 \code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+The coefficient vector for decider \code{n} is stored in column \code{n}.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{The matrix of class covariance matrices of dimension \code{P_r^2} x \code{C}.
+The covariance matrix for class \code{c} is stored as a vector in column
+\code{c}.}
 
 \item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
+denotes the allocated class for decider \code{n}.}
 
 \item{m}{The vector of class sizes of length \code{C}.}
 

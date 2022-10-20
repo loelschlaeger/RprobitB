@@ -70,114 +70,61 @@ is_int <- function(i) {
   is_sn(i) && i %% 1 == 0 && i > 0
 }
 
-#' check for covariance matrix
-#' @param M any element
-#' @return `TRUE` if `M` is a covariance matrix, `FALSE` else
-is_cov <- function(M) {
-  is.matrix(M) && is.numeric(M) && ncol(M) == nrow(M) &&
-    all(abs(M - t(M)) < sqrt(.Machine$double.eps)) &&
-    all(eigen(M)$value > -sqrt(.Machine$double.eps))
-}
-
-#' build difference operator
-#' @param diff_alt alternative index for differencing
-#' @param J number of alternatives
-#' @return matrix of dimension (`J`-1) x `J`
-delta <- function(diff_alt, J){
-  stopifnot(is_int(diff_alt), is_int(J), diff_alt <= J)
-  D <- diag(J)
-  D[,diff_alt] <- -1
-  D[-diff_alt, , drop = FALSE]
-}
-
-#' undifference covariance matrix Sigma
-#' @param Sigma_d covariance matrix
-#' @param diff_alt alternative index for differencing
-#' @return undifferenced covariance matrix
-undiff_Sigma <- function(Sigma_d, diff_alt) {
-  stopifnot(is_cov(Sigma_d))
-  J <- nrow(Sigma_d) + 1
-  stopifnot(is_int(diff_alt), diff_alt <= J)
-  Sigma <- matrix(0, J, J)
-  Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_d
-  Sigma <- Sigma + 1
-  stopifnot(is_cov(Sigma))
-  Sigma
-}
-
-#' Matrix difference operator
+#' Check covariance matrix
 #'
 #' @description
-#' This function creates the difference operator matrix \code{delta} for
-#' subtracting a matrix row from the other matrix rows.
+#' This function checks if the input is a proper covariance matrix, i.e., a
+#' symmetric, numeric matrix with non-negative eigenvalues.
 #'
-#' @details
-#' Given a matrix \code{x} with \code{J} rows, then \code{delta(i,J) %*% x}
-#' computes differences with respect to row \code{i}.
-#'
-#' @param J
-#' The number of matrix rows.
-#' @param i
-#' The row number to which respect differences are computed.
+#' @param x
+#' A \code{matrix}.
+#' @param tol
+#' A \code{numeric}, a numeric tolerance value.
+#' Per default, \code{tol = sqrt(.Machine$double.eps)}.
 #'
 #' @return
-#' A matrix with \code{J-1} rows.
+#' A \code{logical}, \code{TRUE} if \code{x} is a proper covariance matrix,
+#' \code{FALSE} else.
 #'
 #' @examples
-#' J <- 2
-#' x <- matrix(1, nrow = J, ncol = 2)
-#' RprobitB:::delta(J, 1) %*% x
+#' TODO
+#' x <- sample_cov_matrix()
+#' RprobitB:::is_cov_matrix(x)
 #'
-#' @export
-#'
-#' @keywords
-#' internal utils
+#' @keywords internal utils
 
-delta <- function(J, i) {
-  stopifnot(is.numeric(J), J %% 1 == 0, J >= 2)
-  stopifnot(is.numeric(i), i %% 1 == 0, i >= 1)
-  stopifnot(J >= 2)
-  stopifnot(J >= i)
-  if (i == 1) {
-    Delta <- cbind(-1, diag(J - 1))
-  } else if (i == J) {
-    Delta <- cbind(diag(J - 1), -1)
-  } else {
-    Delta <- cbind(diag(J - 1)[, 1:(i - 1)], -1, diag(J - 1)[, i:(J - 1)])
-  }
-  return(Delta)
+is_cov_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
+  is.matrix(x) && is.numeric(x) && ncol(x) == nrow(x) &&
+    all(abs(x - t(x)) < tol) && all(eigen(x)$value > -tol)
 }
 
-#' Matrix difference operator for ranked vectors
+#' Sample covariance matrix
 #'
 #' @description
-#' This function creates the difference operator matrix for differencing ranked
-#' vector elements such that the resulting vector is negative.
+#' This function samples a covariance matrix from a Wishart distribution.
 #'
-#' @param ranking
-#' A numeric vector of the ranking in decreasing order.
+#' @param dim
+#' An \code{integer}, the matrix dimension.
+#' @param df
+#' An \code{integer}, the degrees of freedom.
+#' Must be at least \code{dim}.
+#' Per default, \code{df = dim}.
+#' @param scale
+#' A \code{matrix}, the scale matrix.
+#' Must be a covariance matrix.
+#' Per default, \code{scale = diag(dim)}.
 #'
 #' @return
-#' A matrix of dimension \code{length(rank)-1} x \code{length(rank)}.
+#' A \code{matrix}, a covariance matrix.
 #'
 #' @examples
-#' x <- c(-1,5,10,2)
-#' ranking <- order(x, decreasing = TRUE)
-#' M(ranking) %*% x
+#' sample_cov_matrix(dim = 3)
 #'
-#' @export
-#'
-#' @keywords
-#' internal utils
+#' @keywords internal utils
 
-M <- function(ranking) {
-  J <- length(ranking)
-  out <- matrix(0, nrow = J-1, ncol = J)
-  for(i in 1:(J-1)) {
-    out[i,ranking[i]] <- -1
-    out[i,ranking[i+1]] <- 1
-  }
-  return(out)
+sample_cov_matrix <- function(dim, df = dim, scale = diag(dim)) {
+  stopifnot(is_int(dim), is_int(df), is_cov_matrix(scale))
+  rwishart(nu = df, V = scale)$W # TODO: rename args nu and V in rwishart
 }
 
 #' Compute Gelman-Rubin statistic
@@ -241,32 +188,6 @@ R_hat <- function(samples, parts = 2) {
   W <- sum(chain_variances) / parts
   R_hat <- ((L - 1) / L * W + B) / W
   return(R_hat)
-}
-
-#' Check covariance matrix properties
-#'
-#' @description
-#' This function checks if the input is a proper covariance matrix, i.e. a
-#' symmetric, numeric matrix with non-negative eigenvalues.
-#'
-#' @param x
-#' A matrix.
-#'
-#' @return
-#' A boolean, \code{TRUE} if \code{x} is a proper covariance matrix.
-#'
-#' @examples
-#' x <- diag(2)
-#' RprobitB:::is_covariance_matrix(x)
-#' @keywords
-#' internal utils
-
-is_covariance_matrix <- function(x) {
-  is.matrix(x) &&
-    is.numeric(x) &&
-    ncol(x) == nrow(x) &&
-    all(abs(x - t(x)) < sqrt(.Machine$double.eps)) &&
-    all(eigen(x)$value > -sqrt(.Machine$double.eps))
 }
 
 #' Permutations of a vector

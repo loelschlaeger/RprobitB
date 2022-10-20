@@ -1,78 +1,52 @@
-trueA = 5
-trueB = 0
-trueSd = 10
-sampleSize = 31
+# binary probit: U = b1 + b2*X + eps, eps ~ N(0,sigma)
+b <- c(1, -1)
+sigma <- 1
+X <- rnorm(100)
+U <- sapply(X, function(x) b[1] + x*b[2] + rnorm(1, sd = sigma))
 
-# create independent x-values
-x = (-(sampleSize-1)/2):((sampleSize-1)/2)
-# create dependent values according to ax + b + N(0,sd)
-y = trueA * x + trueB + rnorm(n=sampleSize,mean=0,sd=trueSd)
-
-plot(x,y, main="Test Data")
-
-likelihood = function(param){
-  a = param[1]
-  b = param[2]
-  sd = param[3]
-
-  pred = a*x + b
-  singlelikelihoods = dnorm(y, mean = pred, sd = sd, log = T)
-  sumll = sum(singlelikelihoods)
-  return(sumll)
+ll <- function(theta, sigma, X, U){
+  sys <- sapply(X, function(x) theta[1] + x*theta[2])
+  suppressWarnings(sum(dnorm(U, mean = sys, sd = sigma, log = TRUE)))
 }
 
-# Example: plot the likelihood profile of the slope a
-slopevalues = function(x){return(likelihood(c(x, trueB, trueSd)))}
-slopelikelihoods = lapply(seq(3, 7, by=.05), slopevalues )
-plot (seq(3, 7, by=.05), slopelikelihoods , type="l", xlab = "values of slope parameter a", ylab = "Log likelihood")
-
-# Prior distribution
-prior = function(param){
-  a = param[1]
-  b = param[2]
-  sd = param[3]
-  aprior = dunif(a, min=0, max=4, log = T)
-  bprior = dnorm(b, sd = 5, log = T)
-  sdprior = dunif(sd, min=0, max=30, log = T)
-  return(aprior + bprior + sdprior)
+log_prior <- function(theta){
+  if (sum(theta) > 0) return(-Inf)
+  b1_prior <- dunif(theta[1], min = -2, max = 2, log = TRUE)
+  b2_prior <- dnorm(theta[2], mean = 0, sd = 2, log = TRUE)
+  b1_prior + b2_prior
 }
 
-posterior = function(param){
-  return (likelihood(param) + prior(param))
+log_posterior <- function(theta, sigma, X, U) {
+  ll(theta, sigma, X, U) + log_prior(theta)
 }
 
-
-######## Metropolis algorithm ################
-
-proposalfunction = function(param){
-  return(rnorm(3,mean = param, sd= c(0.1,0.5,0.3)))
+proposal <- function(theta) {
+  rnorm(2, mean = theta, sd = 2)
 }
 
-run_metropolis_MCMC = function(startvalue, iterations){
-  chain = array(dim = c(iterations+1,3))
-  chain[1,] = startvalue
-  for (i in 1:iterations){
-    proposal = proposalfunction(chain[i,])
-
-    probab = exp(posterior(proposal) - posterior(chain[i,]))
-    if(is.nan(probab)) probab <- 0
-
-    if (runif(1) < probab){
-      chain[i+1,] = proposal
-    } else{
-      chain[i+1,] = chain[i,]
+metropolis <- function(init, R, B = R/2, sigma, X, U) {
+  chain <- array(dim = c(R-B, 2))
+  theta <- init
+  acceptance <- numeric(R)
+  for (r in 1:R) {
+    p <- proposal(theta)
+    prob_ratio <- exp(log_posterior(p, sigma, X, U) - log_posterior(theta, sigma, X, U))
+    if (is.nan(prob_ratio)) prob_ratio <- 0
+    if (runif(1) < prob_ratio) {
+      theta <- p
+      acceptance[r] <- 1
+    }
+    if (r > B) {
+      chain[r - B,] <- theta
     }
   }
-  return(chain)
+  structure(chain, "arate" = sum(acceptance[-(1:B)])/(R-B))
 }
 
-startvalue = c(4,0,10)
-chain = run_metropolis_MCMC(startvalue, 10000)
-
+chain <- metropolis(init = c(0,0), R = 5000, sigma = sigma, X = X, U = U)
 colMeans(chain)
-
-burnIn = 5000
-(acceptance = 1-mean(duplicated(chain[-(1:burnIn),])))
+attr(chain, "arate")
+plot(chain[,1], type = "l")
 
 
 

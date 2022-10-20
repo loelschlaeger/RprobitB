@@ -1,77 +1,199 @@
-#' Define probit model parameter
+#' Define probit model parameters
 #'
 #' @description
 #' This function creates an object of class \code{RprobitB_parameter}, which
-#' contains the parameters of a probit model.
-#' If \code{sample = TRUE}, missing parameters are sampled. All parameters are
-#' checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
+#' contains the parameters of a probit model, see details.
 #'
-#' @inheritParams RprobitB_data
 #' @param C
-#' The number (greater or equal 1) of latent classes of decision makers.
-#' Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.
-#' @param alpha
-#' The fixed coefficient vector of length \code{P_f}.
-#' Set to \code{NA} if \code{P_f = 0}.
+#' An \code{integer}, the number (greater or equal 1) of latent classes of
+#' decision makers.
+#' Per default, \code{C = 1}.
 #' @param s
-#' The vector of class weights of length \code{C}.
-#' Set to \code{NA} if \code{P_r = 0}.
-#' For identifiability, the vector must be non-ascending.
+#' A \code{numeric} of length \code{C}, the vector of class weights.
+#' For identifiability, the vector must be descending.
+#' Per default, \code{s = rep(1,C)/C}.
+#' @param alpha
+#' A \code{matrix} of dimension \code{P_f} x \code{C}, the matrix of fixed
+#' coefficients.
+#' The coefficients for class \code{c} are stored in column \code{c}.
 #' @param b
-#' The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-#' Set to \code{NA} if \code{P_r = 0}.
+#' A \code{matrix} of dimension \code{P_r} x \code{C}, the matrix of class
+#' means.
+#' The mean vector for class \code{c} is stored in column \code{c}.
 #' @param Omega
-#' The matrix of class covariance matrices as columns of dimension
-#' \code{P_r*P_r} x \code{C}.
-#' Set to \code{NA} if \code{P_r = 0}.
+#' A \code{matrix} of dimension \code{P_r^2} x \code{C}, the matrix of class
+#' covariance matrices.
+#' The covariance matrix for class \code{c} is stored as a vector in column
+#' \code{c}.
 #' @param Sigma
-#' The differenced error term covariance matrix of dimension
-#' \code{J-1} x \code{J-1} with respect to alternative \code{J}.
-#' In case of \code{ordered = TRUE}, a numeric, the single error term variance.
-#' @param Sigma_full
-#' The error term covariance matrix of dimension \code{J} x \code{J}.
-#' Internally, \code{Sigma_full} gets differenced with respect to alternative
-#' \code{J}, so it becomes an identified covariance matrix of dimension
-#' \code{J-1} x \code{J-1}. \code{Sigma_full} is ignored if \code{Sigma} is
-#' specified or \code{ordered = TRUE}.
+#' A \code{matrix} of dimension \code{J} x \code{J}, the error term covariance
+#' matrix.
+#' In the ordered probit model (see details), \code{Sigma} can be a
+#' \code{matrix} of dimension \code{1} x \code{1} or a single \code{numeric}.
+#' @param Sigma_diff
+#' A \code{matrix} of dimension \code{J-1} x \code{J-1}, the differenced error
+#' term covariance matrix
+#' \code{Sigma_diff} is assumed to be differenced with respect to alternative
+#' \code{diff_alt}, see details.
+#' \code{Sigma_diff} is ignored in case of the ordered probit model
+#' (see details) or if \code{Sigma} is specified.
+#' @param diff_alt
+#' An \code{integer} from \code{1} to \code{J}, the reference alternative for
+#' utility differencing that maps \code{Sigma} to \code{Sigma_diff}, see
+#' details.
+#' Per default, \code{diff_alt = 1}.
 #' @param beta
-#' The matrix of the decision-maker specific coefficient vectors of dimension
-#' \code{P_r} x \code{N}.
-#' Set to \code{NA} if \code{P_r = 0}.
+#' A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
+#' decider-specific coefficient vectors.
+#' The coefficient vector for decider \code{n} is stored in column \code{n}.
 #' @param z
-#' The vector of the allocation variables of length \code{N}.
-#' Set to \code{NA} if \code{P_r = 0}.
+#' A \code{numeric} of length \code{N}, the vector of the allocation variables.
+#' Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
+#' denotes the allocated class for decider \code{n}.
 #' @param d
-#' The numeric vector of the logarithmic increases of the utility thresholds
-#' in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.
-#' @param sample
-#' A boolean, if \code{TRUE} (default) missing parameters get sampled.
-#' TODO How?
-#' @param seed
-#' Set a seed for the sampling of missing parameters.
+#' A \code{numeric} of length \code{J-2}, the vector of logarithmic increases of
+#' the utility thresholds.
+#' Only relevant in the ordered probit model case (see details).
 #'
 #' @return
-#' An object of class \code{RprobitB_parameter}, i.e. a named list with the
-#' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-#' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
+#' A \code{RprobitB_parameter} object.
 #'
 #' @details
-#' # Parameters of the probit model
-#' TODO
+#' # The probit model
+#' Assume that we know the choices of \eqn{N} deciders choosing between
+#' \eqn{J \geq 2} alternatives at each of \eqn{T} choice occasions.
+#' Specific to each decider, alternative and choice occasion, we observe \eqn{P}
+#' covariates, a linear combination of which eventually explains the latent
+#' random utility:
+#' \deqn{U_{ntj} = X_{ntj}' \tilde{\beta}_n + \epsilon_{ntj},}
+#' \eqn{n=1,\dots,N}, \eqn{t=1,\dots,T}, and \eqn{j=1,\dots,J}.
+#' Here, \eqn{X_{ntj}} is a (column) vector of \eqn{P} characteristics specific
+#' to alternative \eqn{j} as faced by decider \eqn{n} at choice occasion
+#' \eqn{t}, \eqn{\tilde{\beta}_n \in \mathbb{R}^{P}} is the coefficient vector
+#' encoding the preferences of \eqn{n}, and
+#' \eqn{(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})' \sim
+#' \text{MVN}_{J} (0,\Sigma)} is the model's error term vector for \eqn{n} at
+#' \eqn{t}.
+#'
+#' The value \eqn{U_{ntj}} can be interpreted as the decider's utility.
+#' It is unobserved by the researcher, but we assume that the deciders know
+#' their utilities for each alternative and make a choice which is consistent
+#' with utility maximization. Therefore,
+#' \deqn{y_{nt} = \operatorname*{argmax}_{j = 1,\dots,J} U_{ntj},}
+#' where \eqn{y_{nt}=j} denotes the event that decider \eqn{n} chooses \eqn{j}
+#' at her \eqn{t}-th choice occasion.
+#'
+#' Entries of the decider-specific coefficient vector \eqn{\tilde{\beta}_n} can
+#' be fixed across deciders, in which case the coefficient vector is of the form
+#' \eqn{\tilde{\beta}_n' = (\alpha', \beta_n')'}, where
+#' \eqn{\alpha \in \mathbb{R}^{P_f}} are \eqn{P_f} coefficients that are
+#' constant across deciders and \eqn{\beta_n} are \eqn{P_r} decider-specific
+#' coefficients, \eqn{P_f + P_r = P}.
+#'
+#' The decider-specific coefficients are assumed to be realizations of an
+#' underlying mixing distribution and to be independent of the characteristics
+#' \eqn{X_{ntj}} and the errors \eqn{(\epsilon_{nt:})}.
+#' This distribution characterizes heterogeneity among the deciders and allows
+#' for individual sensitivities. As mixing distribution, we assume a mixture of
+#' \eqn{P_r}-variate Gaussian densities \eqn{\phi_{P_r}} with mean vectors
+#' \eqn{b = (b_c)_{c}} and covariance matrices \eqn{\Omega = (\Omega_c)_{c}}
+#' using \eqn{C} components:
+#' \deqn{\beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid
+#' b_c,\Omega_c).}
+#' Here, \eqn{(s_c)_{c}} are weights satisfying \eqn{0 < s_c\leq 1} for
+#' \eqn{c=1,\dots,C} and \eqn{\sum_c s_c=1}.
+#'
+#' One interpretation of the latent class model is obtained by introducing
+#' variables \eqn{z=(z_n)_n}, allocating each decision maker \eqn{n} to class
+#' \eqn{c} with probability \eqn{s_c}, i.e.,
+#' \deqn{\text{Prob}(z_n=c)=s_c \land \beta_n \mid z,b,\Omega \sim
+#' \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).}
+#'
+#' # Ordered probit model
+#' When the set of choice alternatives is ordered, the probit model has only a
+#' single utility
+#' \deqn{U_{nt} = X_{nt}' \tilde{\beta}_n + \epsilon_{nt},}
+#' \eqn{\epsilon_{nt} \sim \text{MVN}_{1} (0,\Sigma)},
+#' per decider \eqn{n} and choice occasion \eqn{t}. The utility can be
+#' interpreted as the level of association that \eqn{n} has with the choice
+#' question. It falls into discrete categories, which in turn are linked to the
+#' ordered alternatives \eqn{j=1,\dots,J}. Formally,
+#' \deqn{y_{nt} = \sum_{j = 1,\dots,J} j \cdot I(\gamma_{j-1} < U_{nt} \leq
+#' \gamma_{j}),}
+#' where \eqn{\gamma_0 = -\infty} and \eqn{\gamma_J = +\infty}. This implies
+#' that alternative \eqn{j} is chosen, if the utility falls into the interval
+#' \eqn{(\gamma_{j-1}, \gamma_j]}.
+#' Monotonicity of the thresholds \eqn{(\gamma_j)_{j=1,\dots,J-1}} is ensured
+#' by estimating logarithmic increments \eqn{d_j} with
+#' \eqn{\gamma_j = \sum_{i\leq j} \exp{(d_i)}}, \eqn{j=1,\dots,J-1}.
+#' For level normalization, we fix \eqn{\gamma_1 = 0}.
+#'
+#' # Level and scale normalization
+#' The probit model is invariant towards the level and scale of utility, hence
+#' a transformation is required for identifiability.
+#'
+#' For level normalization, we take utility differences:
+#' \deqn{\tilde{U}_{ntj} = \tilde{X}_{ntj}' \tilde{\beta}_n +
+#' \tilde{\epsilon}_{ntj},}
+#' where (choosing some alternative \eqn{k \in \{1,\dots,J\}} as the reference,
+#' also denoted by \code{diff_alt})
+#' \eqn{\tilde{U}_{ntj} = U_{ntj} - U_{ntk}},
+#' \eqn{\tilde{X}_{ntj} = X_{ntj} - X_{ntk}}, and
+#' \eqn{\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntk}} for
+#' \eqn{j\neq k}.
+#' The error term differences \eqn{(\tilde{\epsilon}_{nt:})} again are
+#' multivariate normally distributed with mean \eqn{0} but transformed
+#' covariance matrix \eqn{\tilde{\Sigma}}, also denoted by \code{Sigma_diff}.
+#' See \code{\link{diff_Sigma}} for computing \code{Sigma_diff} from
+#' \code{Sigma}, and \code{\link{undiff_Sigma}} for the other way around.
+#'
+#' For level normalization in the ordered probit model, we fix
+#' \eqn{\gamma_1 = 0}.
+#'
+#' For scale normalization, we fix the top left element of \code{Sigma_diff} to
+#' \eqn{1}. Other options exist, see \code{\link{transform}}.
 #'
 #' @importFrom stats runif rnorm
 #'
 #' @examples
-#' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
+#' RprobitB_parameter()
 #'
 #' @export
 
 RprobitB_parameter <- function(
-    formula, re = NULL, N, J, C = 1, ordered = FALSE,
-    alpha = NULL, s = NULL, b = NULL, Omega = NULL, Sigma = NULL,
-    Sigma_full = NULL, beta = NULL, z = NULL, d = NULL,
-    seed = NULL, sample = TRUE
+    C = 1, s = rep(1,C)/C, alpha = NA, b = NA, Omega = NA, Sigma = NA,
+    Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
 ) {
+  stopifnot(is.null(C) || is.numeric(C))
+  stopifnot(is.null(s) || is.numeric(s))
+  stopifnot(is.null(alpha) || is.numeric(alpha))
+  stopifnot(is.null(b) || is.numeric(b))
+  stopifnot(is.null(Omega) || is.numeric(Omega))
+  stopifnot(is.null(Sigma) || is.numeric(Sigma))
+  stopifnot(is.null(Sigma_diff) || is.numeric(Sigma_diff))
+  stopifnot(is.null(diff_alt) || is.numeric(diff_alt))
+  stopifnot(is.null(beta) || is.numeric(beta))
+  stopifnot(is.null(z) || is.numeric(z))
+  stopifnot(is.null(d) || is.numeric(d))
+  structure(
+    list(
+      "C" = C,
+      "s" = s,
+      "alpha" = alpha,
+      "b" = b,
+      "Omega" = Omega,
+      "Sigma" = Sigma,
+      "Sigma_diff" = Sigma_diff,
+      "diff_alt" = diff_alt,
+      "beta" = beta,
+      "z" = z,
+      "d" = d
+    ),
+    class = c("RprobitB_parameter", "list")
+  )
+}
+
+simulate_RprobitB_parameter <- function() {
   if (!is.null(seed)) set.seed(seed)
   P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
@@ -83,21 +205,20 @@ RprobitB_parameter <- function(
   } else {
 
   }
+}
 
+validate_RprobitB_parameter <- function() {
 
+  P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
+  P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
+  if (sample) {
+    if (is.null(alpha) && P_f > 0) {
+      alpha <- RprobitB_prior("alpha", P_f = P_f)
+    }
 
+  } else {
 
-
-  if(P_f == 0 || (is.null(alpha) && !sample)) alpha <- NA
-
-
-
-
-
-
-
-
-
+  }
 
   ### alpha
   if (P_f == 0) {
@@ -313,16 +434,13 @@ RprobitB_parameter <- function(
   return(out)
 }
 
-validate_RprobitB_parameter <- function() {
-
-}
-
 #' @rdname RprobitB_parameter
 #' @param ...
-#' Names of parameters to be printed. If not specified, all parameters are
-#' printed.
+#' Names of parameters to be printed. If not specified, all available parameters
+#' are printed.
 #' @param digits
-#' The number of printed decimal places.
+#' The number of decimal places of the parameters to be printed.
+#' Per default, \code{digits = 4}.
 #' @exportS3Method
 
 print.RprobitB_parameter <- function(x, ..., digits = 4) {

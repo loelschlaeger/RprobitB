@@ -19,8 +19,7 @@ simulate_choices(
     = 0, sd = 9), nrow = P, ncol = J)
  },
   seed = NULL,
-  true_parameter = RprobitB_parameter(formula = formula, re = re, N = N, J = J, C = 1,
-    ordered = ordered, seed = seed)
+  true_parameter = RprobitB_parameter()
 )
 
 simulate_choices(
@@ -38,8 +37,7 @@ simulate_choices(
     = 0, sd = 9), nrow = P, ncol = J)
  },
   seed = NULL,
-  true_parameter = RprobitB_parameter(formula = formula, re = re, N = N, J = J, C = 1,
-    ordered = ordered, seed = seed)
+  true_parameter = RprobitB_parameter()
 )
 }
 \arguments{

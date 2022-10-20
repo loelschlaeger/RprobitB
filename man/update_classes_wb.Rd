@@ -17,15 +17,15 @@ update_classes_wb(Cmax, epsmin, epsmax, distmin, s, b, Omega)
 classes.}
 
 \item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
-For identifiability, the vector must be non-ascending.}
+For identifiability, the vector must be descending.
+Per default, \code{s = rep(1,C)/C}.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{The matrix of class means of dimension \code{P_r} x \code{C}.
+The mean vector for class \code{c} is stored in column \code{c}.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{The matrix of class covariance matrices of dimension \code{P_r^2} x \code{C}.
+The covariance matrix for class \code{c} is stored as a vector in column
+\code{c}.}
 }
 \value{
 A list of updated values for \code{s}, \code{b}, and \code{Omega}.

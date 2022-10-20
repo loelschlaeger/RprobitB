@@ -8,10 +8,11 @@ update_m(C, z, nozero)
 }
 \arguments{
 \item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
+Per default, \code{C = 1}.}
 
 \item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
+denotes the allocated class for decider \code{n}.}
 
 \item{nozero}{If \code{TRUE}, each element in the output vector \code{m} is at least one
 (for numerical stability).}
