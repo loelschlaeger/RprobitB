@@ -2,40 +2,49 @@
 % Please edit documentation in R/RprobitB_prior.R
 \name{RprobitB_prior_alpha}
 \alias{RprobitB_prior_alpha}
+\alias{is.RprobitB_prior_alpha}
 \alias{print.RprobitB_prior_alpha}
-\title{Prior for \code{alpha}}
+\title{Define \code{alpha} prior}
 \usage{
 RprobitB_prior_alpha(
   P_f,
   alpha_prior_mean = numeric(P_f),
   alpha_prior_Sigma = 10 * diag(P_f),
-  alpha_prior_custom = NULL,
+  alpha_prior_custom = NA,
   alpha_prior_custom_test_par = numeric(P_f)
 )
+
+is.RprobitB_prior_alpha(x)
 
 \method{print}{RprobitB_prior_alpha}(x, ...)
 }
 \arguments{
-\item{P_f}{An integer, the number of fixed model effects.}
+\item{P_f}{An \code{integer}, the number of fixed model effects.
+Can be computed via the function \code{\link{P_f}}.}
 
-\item{alpha_prior_mean}{A numeric vector of length \code{P_f}, the mean vector for the conjugate
-normal prior distribution of \code{alpha}.}
+\item{alpha_prior_mean}{A \code{numeric} of length \code{P_f}, the mean vector for the conjugate
+normal prior distribution of \code{alpha}.
+By default, \code{alpha_prior_mean = numeric(P_f)}.}
 
-\item{alpha_prior_Sigma}{A covariance matrix of dimension \code{P_f} x \code{P_f}, the covariance
-matrix for the conjugate normal prior distribution of \code{alpha}.}
+\item{alpha_prior_Sigma}{A \code{matrix} of dimension \code{P_f} x \code{P_f}, the covariance
+matrix for the conjugate normal prior distribution of \code{alpha}.
+By default, \code{alpha_prior_Sigma = 10 * diag(P_f)}.}
 
-\item{alpha_prior_custom}{A function, a custom prior density function for \code{alpha}.
-The details of specifying a custom prior are given under \sQuote{Details}.}
+\item{alpha_prior_custom}{A \code{function}, a custom prior density function for \code{alpha},
+see details.
+By default, \code{alpha_prior_custom = NULL}, i.e., no custom prior.}
 
-\item{alpha_prior_custom_test_par}{A numeric vector of length \code{P_f}, a test input for the custom prior
-density function for \code{alpha}.}
+\item{alpha_prior_custom_test_par}{A \code{numeric} of length \code{P_f}, a test input for the custom prior
+density function \code{alpha_prior_custom}.
+By default, \code{alpha_prior_custom_test_par = numeric(P_f)}.
+Ignored if \code{alpha_prior_custom = NULL}.}
 
-\item{x}{An object of class \code{RprobitB_prior_alpha}.}
+\item{x}{An \code{RprobitB_prior_alpha} object.}
 
-\item{...}{Ignored.}
+\item{...}{Not used.}
 }
 \value{
-An object of class \code{RprobitB_prior_alpha}.
+An \code{RprobitB_prior_alpha} object or \code{NA} if \code{P_f = 0}.
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -59,7 +68,7 @@ are assumed for the model parameters:
 
 \subsection{Default parameters for the conjugate priors}{
 
-Per default, the following parameters are set for the conjugate priors:
+By default, the following parameters are set for the conjugate priors:
 \itemize{
 \item \code{alpha}
 \itemize{
@@ -96,10 +105,10 @@ These parameters can be overwritten by submitting eponymous inputs.
 
 \subsection{Custom priors}{
 
-Per default, conjugate priors are used, but custom priors can be
+By default, conjugate priors are used, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
-of the prior at any point, see \sQuote{Examples}.
+of the prior (or a value that is proportional), see \sQuote{Examples}.
 }
 }
 

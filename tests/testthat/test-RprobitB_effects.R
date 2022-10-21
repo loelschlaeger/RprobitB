@@ -22,11 +22,11 @@ test_that("RprobitB_effects can be created", {
     RprobitB_effects(
       formula = choice ~ A | B + 0 | C,
       re = NULL,
-      alternatives = c("A", "B")
+      alternatives = c("A", "B"),
     ),
     structure(
       list(
-        name = c("A", "B_A", "C_A", "C_B"),
+        name = c("A", "B_B", "C_A", "C_B"),
         as_cov = c(TRUE, FALSE, TRUE, TRUE),
         as_coef = c(FALSE, TRUE, TRUE, TRUE),
         random = c(FALSE, FALSE, FALSE, FALSE),

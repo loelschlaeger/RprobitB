@@ -1,27 +1,26 @@
-#' Constructor for \code{RprobitB_alternatives} object
+#' Define choice alternatives
 #'
-#' @description
-#' This function constructs an S3 object of class \code{RprobitB_alternatives}.
+#' This function constructs an object of class \code{RprobitB_alternatives},
+#' which contains the choice alternatives.
 #'
 #' @param alternatives
-#' A character vector: the names of the choice alternatives. Must be at least of
-#' length two.
+#' A \code{character}, the vector of names of the choice alternatives.
+#' Must be at least of length two.
 #' @param base
-#' A character: the name of the base alternative for covariates that are not
-#' alternative specific.
+#' A \code{character}, the name of the base alternative for covariates that are
+#' not alternative specific, see details.
 #' Ignored if the model has no alternative specific covariates (e.g., in the
 #' ordered probit case).
-#' Per default, \code{base} is the last element of \code{alternatives}.
-#' The details of the base alternative are given under \sQuote{Details}.
+#' By default, \code{base} is the first element of \code{alternatives}.
 #' @param ordered
-#' A boolean: \code{TRUE} for if the alternatives are ordered and \code{FALSE}
-#' (default) else.
+#' A \code{logical}, \code{TRUE} if the alternatives are ordered and
+#' \code{FALSE} (default) else.
 #'
 #' @return
-#' An object of class \code{RprobitB_alternatives}.
+#' An \code{RprobitB_alternatives} object.
 #'
 #' @details
-#' # Details of the base alternative
+#' # Base alternative
 #' The full collection of coefficients for covariates that are constant across
 #' alternatives (including ASCs) is not identified, one coefficient is a linear
 #' coefficient of the others, respectively. To achieve identifiability, the
@@ -29,13 +28,16 @@
 #' coefficients then have to be interpreted with respect to \code{base}.
 #'
 #' @examples
-#' new_RprobitB_alternatives(LETTERS[1:3])
+#' RprobitB_alternatives(LETTERS[1:3])
 #'
 #' @keywords internal
 
-new_RprobitB_alternatives <- function(
-    alternatives = character(), base = tail(alternatives, 1), ordered = FALSE
+RprobitB_alternatives <- function(
+    alternatives, base = alternatives[1], ordered = FALSE
   ) {
+  if (missing(alternatives)) {
+    RprobitB_stop("Please specify the input 'alternatives'.")
+  }
   stopifnot(is.character(alternatives))
   stopifnot(is.character(base), length(base) == 1)
   stopifnot(isTRUE(ordered) || isFALSE(ordered))
@@ -52,16 +54,15 @@ new_RprobitB_alternatives <- function(
   )
 }
 
-#' Validator for \code{RprobitB_alternatives} object
-#'
-#' @description
-#' This function validates an \code{RprobitB_alternatives} object.
-#'
+#' @rdname RprobitB_alternatives
+
+is.RprobitB_alternatives <- function(x) {
+  inherits(x, "RprobitB_alternatives")
+}
+
+#' @rdname RprobitB_alternatives
 #' @param x
-#' An object of class \code{RprobitB_alternatives}.
-#'
-#' @return
-#' The input \code{x}.
+#' An \code{RprobitB_alternatives} object.
 
 validate_RprobitB_alternatives <- function(x) {
   if (length(x$alternatives) < 2) {
@@ -88,12 +89,12 @@ validate_RprobitB_alternatives <- function(x) {
   return(x)
 }
 
-#' @noRd
+#' @rdname RprobitB_alternatives
 #' @exportS3Method
 #' @importFrom cli style_underline
 
 print.RprobitB_alternatives <- function(x, ...) {
-  stopifnot(inherits(x, "RprobitB_alternatives"))
+  stopifnot(is.RprobitB_alternatives(x))
   alt <- x$alternatives
   alt[alt == x$base] <- paste0(alt[alt == x$base], "*")
   cat(cli::style_underline("Alternatives:"), alt, if (x$ordered) "(ordered)")

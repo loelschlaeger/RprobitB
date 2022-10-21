@@ -4,29 +4,29 @@
 \alias{function_body}
 \title{Extract function body as character}
 \usage{
-function_body(fun, braces = FALSE, nchar = 100)
+function_body(fun, braces = FALSE, nchar = getOption("width") - 4)
 }
 \arguments{
-\item{fun}{An object of class \code{function}.}
+\item{fun}{A \code{function}.}
 
-\item{braces}{A boolean, if \code{FALSE} (default) removes \code{"{"} and \code{"}"} at
-start and end (if any).}
+\item{braces}{A \code{logical}, if \code{FALSE} (default) removes \code{"{"} and \code{"}"}
+at start and end (if any).}
 
-\item{nchar}{An integer, the maximum number of characters before abbreviation.}
+\item{nchar}{An \code{integer}, the maximum number of characters before abbreviation.
+Must be at least \code{3}.
+By default, \code{nchar = getOption("width")}.}
 }
 \value{
-A character.
+A \code{character}, the body of \code{f}.
 }
 \description{
 This function extracts the body of a function as a character.
 }
 \examples{
-add1 <- function(x) {
-  stopifnot(is.numeric(x))
-  x + 1
-}
-RprobitB:::function_body(add1)
-RprobitB:::function_body(add1, braces = TRUE)
-RprobitB:::function_body(add1, nchar = 20)
+fun <- RprobitB:::is_cov_matrix
+RprobitB:::function_body(fun)
+RprobitB:::function_body(fun, braces = TRUE)
+RprobitB:::function_body(fun, nchar = 30)
+
 }
 \keyword{utils}

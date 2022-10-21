@@ -7,14 +7,15 @@
 update_Omega(beta, b, z, m, nu, Theta)
 }
 \arguments{
-\item{beta}{The matrix of the decider-specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
+\item{beta}{A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
+decider-specific coefficient vectors.
 The coefficient vector for decider \code{n} is stored in column \code{n}.}
 
-\item{b}{The matrix of class means of dimension \code{P_r} x \code{C}.
+\item{b}{A \code{matrix} of dimension \code{P_r} x \code{C}, the matrix of class
+means.
 The mean vector for class \code{c} is stored in column \code{c}.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
+\item{z}{A \code{numeric} of length \code{N}, the vector of the allocation variables.
 Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
 denotes the allocated class for decider \code{n}.}
 

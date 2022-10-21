@@ -1,22 +1,21 @@
-#' Overview of model effects
+#' Overview model effects
 #'
-#' @description
 #' This function provides an overview of the model effects.
 #'
-#' @inheritParams new_RprobitB_formula
-#' @inheritParams new_RprobitB_alternatives
+#' @inheritParams RprobitB_formula
+#' @inheritParams RprobitB_alternatives
 #'
-#' @inheritSection new_RprobitB_formula Details of model specification
-#' @inheritSection new_RprobitB_formula Details of random effects
-#' @inheritSection new_RprobitB_alternatives Details of the base alternative
+#' @inheritSection RprobitB_formula Model formula
+#' @inheritSection RprobitB_formula Random effects
+#' @inheritSection RprobitB_alternatives Base alternative
 #'
 #' @return
-#' A \code{data frame}, each row is an effect, columns are
-#' * the effect names \code{"name"},
-#' * booleans whether the covariate is alternative-specific \code{"as_cov"},
-#' * booleans whether the coefficient is alternative-specific \code{"as_coef"},
-#' * booleans whether the effect is a random effect \code{"random"},
-#' * and booleans whether the random effect is log-normal \code{"ln"}.
+#' A \code{data.frame}, each row is an effect, columns are
+#' 1. the effect names \code{"name"},
+#' 2. booleans whether the covariate is alternative-specific \code{"as_cov"},
+#' 3. booleans whether the coefficient is alternative-specific \code{"as_coef"},
+#' 4. booleans whether the effect is a random effect \code{"random"},
+#' 5. and booleans whether the random effect is log-normal \code{"ln"}.
 #'
 #' @examples
 #' RprobitB_effects(
@@ -29,8 +28,7 @@
 #' @export
 
 RprobitB_effects <- function(
-    formula, re = NULL, alternatives, base = tail(alternatives, 1),
-    ordered = FALSE
+    formula, re = NULL, alternatives, base = alternatives[1], ordered = FALSE
   ) {
   if (missing(formula)) {
     RprobitB_stop("Please specify the input 'formula'.")
@@ -38,12 +36,12 @@ RprobitB_effects <- function(
   if (missing(alternatives)) {
     RprobitB_stop("Please specify the input 'alternatives'.")
   }
-  RprobitB_alternatives <- new_RprobitB_alternatives(
+  RprobitB_alternatives <- RprobitB_alternatives(
     alternatives = alternatives, base = base, ordered = ordered
   )
   alternatives <- RprobitB_alternatives$alternatives
   base <- RprobitB_alternatives$base
-  RprobitB_formula <- new_RprobitB_formula(
+  RprobitB_formula <- RprobitB_formula(
     formula = formula, re = re, ordered = ordered
   )
   vars <- RprobitB_formula$vars
@@ -70,7 +68,8 @@ RprobitB_effects <- function(
       for (j in (1:J)[-which(alternatives == base)]) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re, var %in% md_ln)
+          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re,
+            var %in% md_ln)
         )
       }
     }
@@ -78,7 +77,8 @@ RprobitB_effects <- function(
       for (j in 1:J) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re, var %in% md_ln)
+          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re,
+            var %in% md_ln)
         )
       }
     }
@@ -88,7 +88,8 @@ RprobitB_effects <- function(
   overview$as_coef <- as.logical(overview$as_coef)
   overview$random <- as.logical(overview$random)
   overview$log_norm <- as.logical(overview$log_norm)
-  effect_order <- order(overview$random, overview$log_norm, as.numeric(rownames(overview)))
+  effect_order <- order(overview$random, overview$log_norm,
+                        as.numeric(rownames(overview)))
   overview <- overview[effect_order, ]
   rownames(overview) <- NULL
   return(overview)
@@ -96,22 +97,18 @@ RprobitB_effects <- function(
 
 #' Compute number of (fixed and random) model effects
 #'
-#' @description
 #' \code{P()} computes the total number \code{P} of model effects.
-#'
 #' \code{P_f()} computes the number \code{P_f} of fixed model effects.
-#'
 #' \code{P_r()} computes the number \code{P_r} of random model effects.
 #'
-#' @inheritParams new_RprobitB_formula
-#' @param J
-#' An integer, the number of choice alternatives.
+#' @inheritParams RprobitB_formula
+#' @inheritParams RprobitB_parameter
 #'
-#' @inheritSection new_RprobitB_formula Details of model specification
-#' @inheritSection new_RprobitB_formula Details of random effects
+#' @inheritSection RprobitB_formula Model formula
+#' @inheritSection RprobitB_formula Random effects
 #'
 #' @return
-#' An integer
+#' An \code{integer}.
 #'
 #' @examples
 #' formula <- choice ~ A | B + 0 | C + D

@@ -1,19 +1,15 @@
-#' Define model prior
+#' Define probit model prior
 #'
-#' @description
-#' This function defines the prior distributions for a probit model.
+#' This function defines an object of class \code{RprobitB_prior}, which
+#' contains the prior specification for a probit model.
 #'
-#' @inheritParams new_RprobitB_formula
-#' @param J
-#' An integer, the number of choice alternatives.
-#' @param C
-#' An integer, the number of latent classes.
+#' @inheritParams RprobitB_formula
 #' @inheritDotParams RprobitB_prior_alpha
-# #' @inheritDotParams RprobitB_prior_s
-# #' @inheritDotParams RprobitB_prior_b
-# #' @inheritDotParams RprobitB_prior_Omega
-# #' @inheritDotParams RprobitB_prior_Sigma
-# #' @inheritDotParams RprobitB_prior_d
+# TODO #' @inheritDotParams RprobitB_prior_s
+# TODO #' @inheritDotParams RprobitB_prior_b
+# TODO #' @inheritDotParams RprobitB_prior_Omega
+# TODO #' @inheritDotParams RprobitB_prior_Sigma
+# TODO #' @inheritDotParams RprobitB_prior_d
 #'
 #' @details
 #' # Model priors
@@ -30,7 +26,7 @@
 #' * \code{d ~ Normal(mean = d_prior_mean, Sigma = d_prior_Sigma)}
 #'
 #' ## Default parameters for the conjugate priors
-#' Per default, the following parameters are set for the conjugate priors:
+#' By default, the following parameters are set for the conjugate priors:
 #' * \code{alpha}
 #'   - \code{alpha_prior_mean = numeric(P_f)}
 #'   - \code{alpha_prior_Sigma = 10*diag(P_f)}
@@ -51,16 +47,16 @@
 #' These parameters can be overwritten by submitting eponymous inputs.
 #'
 #' ## Custom priors
-#' Per default, conjugate priors are used, but custom priors can be
+#' By default, conjugate priors are used, but custom priors can be
 #' specified as well. To specify a custom prior for parameter \code{<par>},
 #' use the input \code{<par>_prior_custom}, which should compute the density
-#' of the prior at any point, see \sQuote{Examples}.
+#' of the prior (or a value that is proportional), see \sQuote{Examples}.
 #'
-#' @inheritSection new_RprobitB_formula Details of model specification
-#' @inheritSection new_RprobitB_formula Details of random effects
+#' @inheritSection RprobitB_formula Model formula
+#' @inheritSection RprobitB_formula Random effects
 #'
 #' @return
-#' An object of class \code{RprobitB_prior}.
+#' An \code{RprobitB_prior} object.
 #'
 #' @examples
 #' ### default conjugate prior distributions
@@ -68,9 +64,9 @@
 #'
 #' ### conjugate prior distributions with custom parameters
 #' RprobitB_prior(
-#'   formula = choice ~ A | B | C, re = "C", J = 3, C = 2,
-#'   alpha_prior_mean = numeric(5),
-#'   s_prior_concentration = c(1,2)
+#'   formula = choice ~ A | B + 0, re = "A", J = 4, C = 2,
+#'   alpha_prior_mean = c(-10, 0, 10),
+#'   s_prior_concentration = c(1, 2)
 #' )
 #'
 #' ### custom prior distributions
@@ -81,28 +77,41 @@
 #'   }
 #' )
 #'
-#' @keywords
-#' specification
+#' @keywords specification
 #'
 #' @export
 
 RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
+  if (missing(formula)) {
+    RprobitB_stop("Please specify the input 'formula'.")
+  }
+  if (missing(J)) {
+    RprobitB_stop("Please specify the input 'J'.")
+  }
   P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
   structure(
     list(
-      "alpha" = RprobitB_prior_alpha(P_f = P_f, ...)
-      #"s" = RprobitB_prior_s(C = C, ...),
-      #"b" = RprobitB_prior_b(P_r = P_r, ...),
-      #"Omega" = RprobitB_prior_Omega(P_r = P_r, ...),
-      #"Sigma" = RprobitB_prior_Sigma(J = J, ordered = ordered, ...),
-      #"d" = RprobitB_prior_d(J = J, ordered = ordered, ...)
+      "alpha" = RprobitB_prior_alpha(P_f = P_f, ...),
+      "s" = RprobitB_prior_s(C = C, ...),
+      "b" = RprobitB_prior_b(P_r = P_r, ...),
+      "Omega" = RprobitB_prior_Omega(P_r = P_r, ...),
+      "Sigma" = RprobitB_prior_Sigma(J = J, ordered = ordered, ...),
+      "d" = RprobitB_prior_d(J = J, ordered = ordered, ...)
     ),
     class = c("RprobitB_prior", "list")
   )
 }
 
-#' @noRd
+#' @rdname RprobitB_prior
+#' @param x
+#' An \code{RprobitB_prior} object.
+
+is.RprobitB_prior <- function(x) {
+  inherits(x, "RprobitB_prior")
+}
+
+#' @rdname RprobitB_prior
 #' @exportS3Method
 #' @importFrom cli style_underline
 
@@ -112,31 +121,36 @@ print.RprobitB_prior <- function(x, ...) {
   lapply(x, print)
 }
 
-#' Prior for \code{alpha}
+#' Define \code{alpha} prior
 #'
-#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{alpha}.
 #'
 #' @param P_f
-#' An integer, the number of fixed model effects.
+#' An \code{integer}, the number of fixed model effects.
+#' Can be computed via the function \code{\link{P_f}}.
 #' @param alpha_prior_mean
-#' A numeric vector of length \code{P_f}, the mean vector for the conjugate
+#' A \code{numeric} of length \code{P_f}, the mean vector for the conjugate
 #' normal prior distribution of \code{alpha}.
+#' By default, \code{alpha_prior_mean = numeric(P_f)}.
 #' @param alpha_prior_Sigma
-#' A covariance matrix of dimension \code{P_f} x \code{P_f}, the covariance
+#' A \code{matrix} of dimension \code{P_f} x \code{P_f}, the covariance
 #' matrix for the conjugate normal prior distribution of \code{alpha}.
+#' By default, \code{alpha_prior_Sigma = 10 * diag(P_f)}.
 #' @param alpha_prior_custom
-#' A function, a custom prior density function for \code{alpha}.
-#' The details of specifying a custom prior are given under \sQuote{Details}.
+#' A \code{function}, a custom prior density function for \code{alpha},
+#' see details.
+#' By default, \code{alpha_prior_custom = NULL}, i.e., no custom prior.
 #' @param alpha_prior_custom_test_par
-#' A numeric vector of length \code{P_f}, a test input for the custom prior
-#' density function for \code{alpha}.
+#' A \code{numeric} of length \code{P_f}, a test input for the custom prior
+#' density function \code{alpha_prior_custom}.
+#' By default, \code{alpha_prior_custom_test_par = numeric(P_f)}.
+#' Ignored if \code{alpha_prior_custom = NULL}.
 #'
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An object of class \code{RprobitB_prior_alpha}.
+#' An \code{RprobitB_prior_alpha} object or \code{NA} if \code{P_f = 0}.
 #'
 #' @examples
 #' ### conjugate prior: alpha ~ Normal(0, 10*I)
@@ -161,14 +175,14 @@ print.RprobitB_prior <- function(x, ...) {
 
 RprobitB_prior_alpha <- function(
     P_f, alpha_prior_mean = numeric(P_f), alpha_prior_Sigma = 10 * diag(P_f),
-    alpha_prior_custom = NULL, alpha_prior_custom_test_par = numeric(P_f)
+    alpha_prior_custom = NA, alpha_prior_custom_test_par = numeric(P_f)
   ) {
   if (P_f == 0) {
-    return (NULL)
-  } else if (!is.null(alpha_prior_custom)) {
+    return (NA)
+  } else if (!is.na(alpha_prior_custom)) {
     conjugate <- FALSE
-    alpha_prior_mean <- NULL
-    alpha_prior_Sigma <- NULL
+    alpha_prior_mean <- NA
+    alpha_prior_Sigma <- NA
     if (!is.function(alpha_prior_custom)) {
       RprobitB_stop(
         "Custom prior for alpha is misspecified.",
@@ -179,10 +193,12 @@ RprobitB_prior_alpha <- function(
     alpha_prior_custom_test <- try(
       alpha_prior_custom(alpha_prior_custom_test_par), silent = TRUE
     )
-    if (!is_sn(alpha_prior_custom_test)) {
+    if (!(is_single_numeric(alpha_prior_custom_test) &&
+          alpha_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for alpha is misspecified.",
-        glue::glue("'alpha_prior_custom(alpha_prior_custom_test_par)' should return density value."),
+        glue::glue("'alpha_prior_custom(alpha_prior_custom_test_par)'",
+                   "should return density value."),
         glue::glue("Instead, it returned {alpha_prior_custom_test}.")
       )
     }
@@ -202,9 +218,18 @@ RprobitB_prior_alpha <- function(
         glue::glue("Instead, it has length {length(alpha_prior_mean)}.")
       )
     }
-    if (!is_cov(alpha_prior_Sigma) || any(dim(alpha_prior_Sigma) != P_f)) {
+    if (!is_cov_matrix(alpha_prior_Sigma)) {
       RprobitB_stop(
-        "alpha_prior_Sigma has wrong dimension" # TODO
+        "Input 'alpha_prior_Sigma' for conjugate alpha prior is misspecified.",
+        "It is not a proper covariance matrix.",
+        "Check it with 'is_cov_matrix()'."
+      )
+    }
+    if (any(dim(alpha_prior_Sigma) != P_f)) {
+      RprobitB_stop(
+        "Covariance matrix for conjugate alpha prior is misspecified.",
+        glue::glue("'alpha_prior_Sigma' should have dimension {P_f}."),
+        glue::glue("Instead, it has dimension {dim(alpha_prior_Sigma)[1]}.")
       )
     }
   }
@@ -220,13 +245,24 @@ RprobitB_prior_alpha <- function(
 }
 
 #' @rdname RprobitB_prior_alpha
-#' @param x An object of class \code{RprobitB_prior_alpha}.
-#' @param ... Ignored.
+#' @param x
+#' An \code{RprobitB_prior_alpha} object.
+
+is.RprobitB_prior_alpha <- function(x) {
+  inherits(x, "RprobitB_prior_alpha")
+}
+
+#' @rdname RprobitB_prior_alpha
+#' @param ...
+#' Not used.
 #' @exportS3Method
 
 print.RprobitB_prior_alpha <- function (x, ...) {
+  stopifnot(is.RprobitB_prior_alpha(x))
   if (x$conjugate) {
-    cat("alpha ~ Normal( mean =", x$alpha_prior_mean, ", Sigma =" , x$alpha_prior_Sigma, ")")
+    # TODO use print_matrix
+    cat("alpha ~ Normal( mean =", x$alpha_prior_mean, ", Sigma =" ,
+        x$alpha_prior_Sigma, ")")
   } else {
     cat("alpha ~", function_body(x$alpha_prior_custom))
   }

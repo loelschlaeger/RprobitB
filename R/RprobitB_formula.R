@@ -1,24 +1,22 @@
-#' Constructor for \code{RprobitB_formula} object
+#' Define probit model formula
 #'
-#' @description
-#' This function constructs an S3 object of class \code{RprobitB_formula}.
+#' This function constructs an object of class \code{RprobitB_formula}, which
+#' contains the formula for a probit model.
 #'
 #' @param formula
-#' An object of class \code{\link[stats]{formula}}:
-#' a symbolic description of the model to be fitted.
-#' The details of model specification are given under \sQuote{Details}.
+#' A \code{\link[stats]{formula}}, a symbolic description of the model to be
+#' fitted, see details.
 #' @param re
-#' A character (vector): the names of covariates in \code{formula} that should
-#' have a random effect.
-#' Set \code{re = NULL} (default) for no random effects.
-#' The details of random effects are given under \sQuote{Details}.
-#' @inheritParams new_RprobitB_alternatives
+#' A \code{character}, the vector of names of covariates in \code{formula} that
+#' should have a random effect, see details.
+#' By default, \code{re = NULL}, i.e., no random effects.
+#' @inheritParams RprobitB_alternatives
 #'
 #' @return
-#' An object of class \code{RprobitB_formula}.
+#' An \code{RprobitB_formula} object.
 #'
 #' @details
-#' # Details of model specification
+#' # Model formula
 #' The structure of \code{formula} should be
 #' \code{choice ~ A | B | C}, where
 #' \itemize{
@@ -49,10 +47,10 @@
 #' \code{choice ~ A + B + C}.
 #' ASCs cannot be estimated in the ordered case.
 #'
-#' # Details of random effects
+#' # Random effects
 #' Covariates can have random effects, i.e., their coefficients can follow a
 #' random distribution. Per default, the distribution is normal. The log-normal
-#' distribution (for sign-restriction) can be specified via appending a \code{+}
+#' distribution (for sign-restriction) can be specified via appending \code{+}
 #' to the corresponding name in \code{re}.
 #' To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 #' \code{re}.
@@ -60,9 +58,11 @@
 #' @examples
 #' formula <- choice ~ A | B + 0 | C + D
 #' re <- c("A", "D+")
-#' new_RprobitB_formula(formula, re, ordered = FALSE)
+#' RprobitB_formula(formula, re, ordered = FALSE)
+#'
+#' @keywords internal object
 
-new_RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
+RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
   if (missing(formula)) {
     RprobitB_stop("Please specify the input 'formula'.")
   }
@@ -95,17 +95,15 @@ new_RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
   )
 }
 
-#' Validator for \code{RprobitB_formula} object
-#'
-#' @description
-#' This function validates an \code{RprobitB_formula} object.
-#'
+#' @rdname RprobitB_formula
+
+is.RprobitB_formula <- function(x) {
+  inherits(x, "RprobitB_formula")
+}
+
+#' @rdname RprobitB_formula
 #' @param x
-#' An object of class \code{RprobitB_formula}.
-#'
-#' @return
-#' The input \code{x}.
-#'
+#' An \code{RprobitB_formula} object.
 #' @importFrom glue glue
 
 validate_RprobitB_formula <- function(x) {
@@ -144,12 +142,12 @@ validate_RprobitB_formula <- function(x) {
   return(x)
 }
 
-#' @noRd
+#' @rdname RprobitB_formula
 #' @exportS3Method
 #' @importFrom cli style_underline
 
 print.RprobitB_formula <- function(x, ...) {
-  stopifnot(inherits(x, "RprobitB_formula"))
+  stopifnot(is.RprobitB_formula(x))
   cat(cli::style_underline("Formula:"), deparse1(x$formula))
   if (length(x$re) > 0) {
     cat("\n")

@@ -7,10 +7,11 @@
 update_m(C, z, nozero)
 }
 \arguments{
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Per default, \code{C = 1}.}
+\item{C}{An \code{integer}, the number (greater or equal 1) of latent classes of
+decision makers.
+By default, \code{C = 1}.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
+\item{z}{A \code{numeric} of length \code{N}, the vector of the allocation variables.
 Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
 denotes the allocated class for decider \code{n}.}
 

@@ -2,42 +2,39 @@
 % Please edit documentation in R/RprobitB_effects.R
 \name{RprobitB_effects}
 \alias{RprobitB_effects}
-\title{Overview of model effects}
+\title{Overview model effects}
 \usage{
 RprobitB_effects(
   formula,
   re = NULL,
   alternatives,
-  base = tail(alternatives, 1),
+  base = alternatives[1],
   ordered = FALSE
 )
 }
 \arguments{
-\item{formula}{An object of class \code{\link[stats]{formula}}:
-a symbolic description of the model to be fitted.
-The details of model specification are given under \sQuote{Details}.}
+\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
+fitted, see details.}
 
-\item{re}{A character (vector): the names of covariates in \code{formula} that should
-have a random effect.
-Set \code{re = NULL} (default) for no random effects.
-The details of random effects are given under \sQuote{Details}.}
+\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
+should have a random effect, see details.
+By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{alternatives}{A character vector: the names of the choice alternatives. Must be at least of
-length two.}
+\item{alternatives}{A \code{character}, the vector of names of the choice alternatives.
+Must be at least of length two.}
 
-\item{base}{A character: the name of the base alternative for covariates that are not
-alternative specific.
+\item{base}{A \code{character}, the name of the base alternative for covariates that are
+not alternative specific, see details.
 Ignored if the model has no alternative specific covariates (e.g., in the
 ordered probit case).
-Per default, \code{base} is the last element of \code{alternatives}.
-The details of the base alternative are given under \sQuote{Details}.}
+By default, \code{base} is the first element of \code{alternatives}.}
 
-\item{ordered}{A boolean: \code{TRUE} for if the alternatives are ordered and \code{FALSE}
-(default) else.}
+\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\code{FALSE} (default) else.}
 }
 \value{
-A \code{data frame}, each row is an effect, columns are
-\itemize{
+A \code{data.frame}, each row is an effect, columns are
+\enumerate{
 \item the effect names \code{"name"},
 \item booleans whether the covariate is alternative-specific \code{"as_cov"},
 \item booleans whether the coefficient is alternative-specific \code{"as_coef"},
@@ -48,7 +45,7 @@ A \code{data frame}, each row is an effect, columns are
 \description{
 This function provides an overview of the model effects.
 }
-\section{Details of model specification}{
+\section{Model formula}{
 The structure of \code{formula} should be
 \code{choice ~ A | B | C}, where
 \itemize{
@@ -80,16 +77,16 @@ separation via \code{|}, and hence has the simple structure
 ASCs cannot be estimated in the ordered case.
 }
 
-\section{Details of random effects}{
+\section{Random effects}{
 Covariates can have random effects, i.e., their coefficients can follow a
 random distribution. Per default, the distribution is normal. The log-normal
-distribution (for sign-restriction) can be specified via appending a \code{+}
+distribution (for sign-restriction) can be specified via appending \code{+}
 to the corresponding name in \code{re}.
 To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 \code{re}.
 }
 
-\section{Details of the base alternative}{
+\section{Base alternative}{
 The full collection of coefficients for covariates that are constant across
 alternatives (including ASCs) is not identified, one coefficient is a linear
 coefficient of the others, respectively. To achieve identifiability, the

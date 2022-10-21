@@ -1,80 +1,74 @@
-#' Extract function body as character
+#' Check boolean
 #'
-#' @description
-#' This function extracts the body of a function as a character.
+#' This function checks whether the input is a single boolean.
 #'
-#' @param fun
-#' An object of class \code{function}.
-#' @param braces
-#' A boolean, if \code{FALSE} (default) removes \code{"{"} and \code{"}"} at
-#' start and end (if any).
-#' @param nchar
-#' An integer, the maximum number of characters before abbreviation.
+#' @param x
+#' Any element.
 #'
 #' @return
-#' A character.
-#'
-#' @keywords utils
+#' A \code{logical}, \code{TRUE} if \code{x} is either \code{TRUE} or
+#' \code{FALSE}, \code{FALSE} else.
 #'
 #' @examples
-#' add1 <- function(x) {
-#'   stopifnot(is.numeric(x))
-#'   x + 1
-#' }
-#' RprobitB:::function_body(add1)
-#' RprobitB:::function_body(add1, braces = TRUE)
-#' RprobitB:::function_body(add1, nchar = 20)
-
-function_body <- function(fun, braces = FALSE, nchar = 100) {
-  stopifnot(is.function(fun))
-  out <- deparse1(body(fun))
-  if (!braces) out <- gsub("^[{]|[}]$","", out)
-  out <- trimws(gsub("\\s+", " ", out))
-  if (nchar(out) > nchar) out <- paste0(strtrim(out, nchar - 3), '...')
-  out
-}
-
-#' check for boolean
-#' @param i any element
-#' @return `TRUE` if `i` is either `TRUE` or `FALSE`, `FALSE` else
-is_bool <- function(i) {
-  length(i) == 1 && isTRUE(i) || isFALSE(i)
-}
-
-#' Check for single numeric
+#' RprobitB:::is_bool("TRUE")
+#' RprobitB:::is_bool(FALSE)
 #'
-#' @description
+#' @keywords internal utils
+
+is_bool <- function(x) {
+  length(x) == 1 && (isTRUE(x) || isFALSE(x))
+}
+
+#' Check single numeric
+#'
 #' This function checks whether the input is a single numeric value.
 #'
 #' @param x
 #' Any element.
 #'
 #' @return
-#' \code{TRUE} if \code{x} is a single numeric, \code{FALSE} else.
-#'
-#' @keywords utils
+#' A \code{logical}, \code{TRUE} if \code{x} is a single numeric, \code{FALSE}
+#' else.
 #'
 #' @examples
-#' is_sn(1)
-#' is_sn("1")
-#' is_sn(NA_real_)
+#' RprobitB:::is_single_numeric(1)
+#' RprobitB:::is_single_numeric("1")
+#' RprobitB:::is_single_numeric(NA_real_)
+#'
+#' @keywords internal utils
 
-is_sn <- function(i) {
+is_single_numeric <- function(i) {
   is.numeric(i) && length(i) == 1 && !is.na(i)
 }
 
-#' check for positive integer
-#' @param i any element
-#' @return `TRUE` if `i` is an integer, `FALSE` else
-is_int <- function(i) {
-  is_sn(i) && i %% 1 == 0 && i > 0
+#' Check positive integer
+#'
+#' This function checks whether the input is a single positive integer.
+#'
+#' @param x
+#' Any element.
+#'
+#' @return
+#' A \code{logical}, \code{TRUE} if \code{i} is a single positive integer,
+#' \code{FALSE} else.
+#'
+#' @examples
+#' RprobitB:::is_pos_int(-1.5)
+#' RprobitB:::is_pos_int(1)
+#'
+#' @keywords internal utils
+
+is_pos_int <- function(i) {
+  is_single_numeric(i) && i %% 1 == 0 && i > 0
 }
 
 #' Check covariance matrix
 #'
-#' @description
-#' This function checks if the input is a proper covariance matrix, i.e., a
-#' symmetric, numeric matrix with non-negative eigenvalues.
+#' This function checks whether the input is a proper covariance matrix.
+#'
+#' @details
+#' A proper covariance matrix is a square, symmetric, numeric matrix with
+#' non-negative eigenvalues.
 #'
 #' @param x
 #' A \code{matrix}.
@@ -87,8 +81,7 @@ is_int <- function(i) {
 #' \code{FALSE} else.
 #'
 #' @examples
-#' TODO
-#' x <- sample_cov_matrix()
+#' x <- RprobitB:::sample_cov_matrix(dim = 3)
 #' RprobitB:::is_cov_matrix(x)
 #'
 #' @keywords internal utils
@@ -100,7 +93,6 @@ is_cov_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
 
 #' Sample covariance matrix
 #'
-#' @description
 #' This function samples a covariance matrix from a Wishart distribution.
 #'
 #' @param dim
@@ -118,77 +110,56 @@ is_cov_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
 #' A \code{matrix}, a covariance matrix.
 #'
 #' @examples
-#' sample_cov_matrix(dim = 3)
+#' RprobitB:::sample_cov_matrix(dim = 3)
 #'
 #' @keywords internal utils
 
 sample_cov_matrix <- function(dim, df = dim, scale = diag(dim)) {
-  stopifnot(is_int(dim), is_int(df), is_cov_matrix(scale))
+  stopifnot(is_pos_int(dim), is_pos_int(df), is_cov_matrix(scale))
   rwishart(nu = df, V = scale)$W # TODO: rename args nu and V in rwishart
 }
 
-#' Compute Gelman-Rubin statistic
+#' Extract function body as character
 #'
-#' @description
-#' This function computes the Gelman-Rubin statistic \code{R_hat}.
+#' This function extracts the body of a function as a character.
 #'
-#' @references
-#' <https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html>
-#'
-#' @param samples
-#' A vector or a matrix of samples from a Markov chain, e.g. Gibbs samples.
-#' If \code{samples} is a matrix, each column gives the samples for a separate
-#' run.
-#' @param parts
-#' The number of parts to divide each chain into sub-chains.
+#' @param fun
+#' A \code{function}.
+#' @param braces
+#' A \code{logical}, if \code{FALSE} (default) removes \code{"{"} and \code{"}"}
+#' at start and end (if any).
+#' @param nchar
+#' An \code{integer}, the maximum number of characters before abbreviation.
+#' Must be at least \code{3}.
+#' By default, \code{nchar = getOption("width")}.
 #'
 #' @return
-#' A numeric value, the Gelman-Rubin statistic.
+#' A \code{character}, the body of \code{f}.
 #'
 #' @examples
-#' no_chains <- 2
-#' length_chains <- 1e3
-#' samples <- matrix(NA_real_, length_chains, no_chains)
-#' samples[1, ] <- 1
-#' Gamma <- matrix(c(0.8, 0.1, 0.2, 0.9), 2, 2)
-#' for (c in 1:no_chains) {
-#'   for (t in 2:length_chains) {
-#'     samples[t, c] <- sample(1:2, 1, prob = Gamma[samples[t - 1, c], ])
-#'   }
-#' }
-#' R_hat(samples)
+#' fun <- RprobitB:::is_cov_matrix
+#' RprobitB:::function_body(fun)
+#' RprobitB:::function_body(fun, braces = TRUE)
+#' RprobitB:::function_body(fun, nchar = 30)
 #'
-#' @keywords
-#' utils
-#'
-#' @export
-#'
-#' @importFrom stats var
+#' @keywords utils
 
-R_hat <- function(samples, parts = 2) {
-
-  ### divide chains into parts
-  samples <- as.matrix(samples)
-  no_chains <- ncol(samples)
-  length_chains <- nrow(samples)
-  sub_chains <- list()
-  for (c in 1:no_chains) {
-    sub_chains <- c(
-      sub_chains,
-      split(samples[, c], cut(1:length_chains, parts))
-    )
-  }
-
-  ### compute and return the Gelman-Rubin statistic
-  L <- length_chains / parts
-  chain_means <- sapply(sub_chains, mean)
-  grand_mean <- mean(chain_means)
-  B <- 1 / (parts - 1) * sum((chain_means - grand_mean)^2)
-  chain_variances <- sapply(sub_chains, stats::var)
-  W <- sum(chain_variances) / parts
-  R_hat <- ((L - 1) / L * W + B) / W
-  return(R_hat)
+function_body <- function(
+    fun, braces = FALSE, nchar = getOption("width") - 4
+  ) {
+  stopifnot(is.function(fun), is_bool(braces))
+  nchar <- as.integer(nchar)
+  stopifnot(nchar >= 3)
+  out <- deparse1(body(fun))
+  if (!braces) out <- gsub("^[{]|[}]$","", out)
+  out <- trimws(gsub("\\s+", " ", out))
+  if (nchar(out) > nchar) out <- paste0(strtrim(out, nchar - 3), '...')
+  out
 }
+
+
+### TODO Not touched from here
+
 
 #' Permutations of a vector
 #'
@@ -232,4 +203,5 @@ permutations <- function(x){
   }
   return(out)
 }
+
 

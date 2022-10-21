@@ -1,16 +1,47 @@
+test_that("checking booleans works", {
+  expect_false(is_bool("TRUE"))
+  expect_true(is_bool(FALSE))
+})
+
+test_that("checking single numeric works", {
+  expect_true(is_single_numeric(1))
+  expect_false(is_single_numeric("1"))
+  expect_false(is_single_numeric(NA_real_))
+})
+
+test_that("checking positive integer works", {
+  expect_false(is_pos_int(-1))
+  expect_true(is_pos_int(1))
+  expect_false(is_pos_int(NA_real_))
+  expect_false(is_pos_int(1.1))
+})
+
+test_that("sampling and checking covariance matrix works", {
+  expect_true(is_cov_matrix(diag(10)))
+  x <- sample_cov_matrix(dim = 3)
+  expect_true(is_cov_matrix(x))
+})
+
 test_that("Extraction of function body as character works", {
   test_fun <- function(x) {
     stopifnot(is.numeric(x))
     {x + 1}
   }
-  expect_equal(function_body(test_fun), "stopifnot(is.numeric(x)) { x + 1 }")
-  expect_equal(function_body(test_fun, braces = TRUE), "{ stopifnot(is.numeric(x)) { x + 1 } }")
-  expect_equal(function_body(test_fun, nchar = 20), "stopifnot(is.nume...")
+  expect_equal(
+    function_body(test_fun),
+    "stopifnot(is.numeric(x)) { x + 1 }")
+  expect_equal(
+    function_body(test_fun, braces = TRUE),
+    "{ stopifnot(is.numeric(x)) { x + 1 } }")
+  expect_equal(
+    function_body(test_fun, nchar = 20),
+    "stopifnot(is.nume..."
+  )
 })
 
-test_that("building delta matrix works", {
-  expect_snapshot(RprobitB:::delta(3, 1))
-})
+
+
+### TODO Not revised from here
 
 test_that("Gelman-Rubin statistic can be computed", {
   set.seed(1)
@@ -25,11 +56,6 @@ test_that("Gelman-Rubin statistic can be computed", {
     }
   }
   expect_snapshot(R_hat(samples))
-})
-
-test_that("check for covariance matrix works", {
-  expect_true(is_covariance_matrix(diag(3)))
-  expect_false(is_covariance_matrix(matrix(-1, 3, 3)))
 })
 
 test_that("printing abbreviated matrices and vectors works", {

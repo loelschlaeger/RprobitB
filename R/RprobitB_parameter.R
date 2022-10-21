@@ -1,17 +1,18 @@
 #' Define probit model parameters
 #'
-#' @description
 #' This function creates an object of class \code{RprobitB_parameter}, which
 #' contains the parameters of a probit model, see details.
+#' \code{simulate_RprobitB_parameters()} simulates missing parameters.
+#' \code{validate_RprobitB_parameters()} checks the parameters.
 #'
 #' @param C
 #' An \code{integer}, the number (greater or equal 1) of latent classes of
 #' decision makers.
-#' Per default, \code{C = 1}.
+#' By default, \code{C = 1}.
 #' @param s
 #' A \code{numeric} of length \code{C}, the vector of class weights.
 #' For identifiability, the vector must be descending.
-#' Per default, \code{s = rep(1,C)/C}.
+#' By default, \code{s = rep(1,C)/C}.
 #' @param alpha
 #' A \code{matrix} of dimension \code{P_f} x \code{C}, the matrix of fixed
 #' coefficients.
@@ -41,7 +42,7 @@
 #' An \code{integer} from \code{1} to \code{J}, the reference alternative for
 #' utility differencing that maps \code{Sigma} to \code{Sigma_diff}, see
 #' details.
-#' Per default, \code{diff_alt = 1}.
+#' By default, \code{diff_alt = 1}.
 #' @param beta
 #' A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
 #' decider-specific coefficient vectors.
@@ -56,7 +57,7 @@
 #' Only relevant in the ordered probit model case (see details).
 #'
 #' @return
-#' A \code{RprobitB_parameter} object.
+#' An \code{RprobitB_parameter} object.
 #'
 #' @details
 #' # The probit model
@@ -153,10 +154,8 @@
 #' For scale normalization, we fix the top left element of \code{Sigma_diff} to
 #' \eqn{1}. Other options exist, see \code{\link{transform}}.
 #'
-#' @importFrom stats runif rnorm
-#'
 #' @examples
-#' RprobitB_parameter()
+#' TODO
 #'
 #' @export
 
@@ -164,17 +163,17 @@ RprobitB_parameter <- function(
     C = 1, s = rep(1,C)/C, alpha = NA, b = NA, Omega = NA, Sigma = NA,
     Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
 ) {
-  stopifnot(is.null(C) || is.numeric(C))
-  stopifnot(is.null(s) || is.numeric(s))
-  stopifnot(is.null(alpha) || is.numeric(alpha))
-  stopifnot(is.null(b) || is.numeric(b))
-  stopifnot(is.null(Omega) || is.numeric(Omega))
-  stopifnot(is.null(Sigma) || is.numeric(Sigma))
-  stopifnot(is.null(Sigma_diff) || is.numeric(Sigma_diff))
-  stopifnot(is.null(diff_alt) || is.numeric(diff_alt))
-  stopifnot(is.null(beta) || is.numeric(beta))
-  stopifnot(is.null(z) || is.numeric(z))
-  stopifnot(is.null(d) || is.numeric(d))
+  stopifnot(is.na(C) || is.numeric(C))
+  stopifnot(is.na(s) || is.numeric(s))
+  stopifnot(is.na(alpha) || is.numeric(alpha))
+  stopifnot(is.na(b) || is.numeric(b))
+  stopifnot(is.na(Omega) || is.numeric(Omega))
+  stopifnot(is.na(Sigma) || is.numeric(Sigma))
+  stopifnot(is.na(Sigma_diff) || is.numeric(Sigma_diff))
+  stopifnot(is.na(diff_alt) || is.numeric(diff_alt))
+  stopifnot(is.na(beta) || is.numeric(beta))
+  stopifnot(is.na(z) || is.numeric(z))
+  stopifnot(is.na(d) || is.numeric(d))
   structure(
     list(
       "C" = C,
@@ -193,19 +192,46 @@ RprobitB_parameter <- function(
   )
 }
 
-simulate_RprobitB_parameter <- function() {
-  if (!is.null(seed)) set.seed(seed)
+#' @rdname RprobitB_parameter
+
+is.RprobitB_parameter <- function(x) {
+  inherits(x, "RprobitB_parameter")
+}
+
+#' @rdname RprobitB_parameter
+#' @param x
+#' An \code{RprobitB_parameter} object.
+#' @inheritParams RprobitB_formula
+#' @param J
+#' An \code{integer}, the number of choice alternatives.
+#' @param N
+#' An \code{integer}, the number of deciders.
+#' @param seed
+#' An \code{integer}, passed to \code{set.seed()} to make the random part
+#' reproducible.
+#' By default, \code{seed = NULL}, i.e., no seed is set.
+#' @inheritSection RprobitB_formula Model formula
+#' @inheritSection RprobitB_formula Random effects
+
+simulate_RprobitB_parameter <- function(
+    x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N,
+    seed = NULL
+  ) {
+  stopifnot(is.RprobitB_parameter(x))
+  if (missing(formula)) {
+    RprobitB_stop("Please specify the input 'formula'.")
+  }
   P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
-  if (sample) {
-    if (is.null(alpha) && P_f > 0) {
-      alpha <- RprobitB_prior("alpha", P_f = P_f)
-    }
-
-  } else {
-
+  if (!is.null(seed)) set.seed(seed)
+  if (is.na(x$alpha) && P_f > 0) {
+    x$alpha <- RprobitB_prior("alpha", P_f = P_f)
   }
+
+
 }
+
+#' @rdname RprobitB_parameter
 
 validate_RprobitB_parameter <- function() {
 
@@ -436,11 +462,11 @@ validate_RprobitB_parameter <- function() {
 
 #' @rdname RprobitB_parameter
 #' @param ...
-#' Names of parameters to be printed. If not specified, all available parameters
-#' are printed.
+#' A \code{character} (vector), the names of parameters to be printed.
+#' By default, all available parameters are printed.
 #' @param digits
-#' The number of decimal places of the parameters to be printed.
-#' Per default, \code{digits = 4}.
+#' An \code{integer}, the number of decimal places to be printed.
+#' By default, \code{digits = 2}.
 #' @exportS3Method
 
 print.RprobitB_parameter <- function(x, ..., digits = 4) {

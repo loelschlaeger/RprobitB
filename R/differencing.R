@@ -1,7 +1,7 @@
 #' Difference and undifference error term covariance matrix
 #'
 #' These functions difference and undifference the error term covariance matrix
-#' \eqn{Sigma} with respect to a reference alternative \code{diff_alt}.
+#' \eqn{\Sigma} with respect to a reference alternative \code{diff_alt}.
 #'
 #' @param Sigma
 #' A \code{matrix} of dimension \code{J} x \code{J}, the error term covariance
@@ -10,99 +10,93 @@
 #' An \code{integer} from \code{1} to \code{J}, the reference alternative for
 #' utility differencing that maps \code{Sigma} to \code{Sigma_diff}, see
 #' details.
-#' Per default, \code{diff_alt = 1}.
+#' Bydefault, \code{diff_alt = 1}.
 #'
 #' @return
 #' A \code{matrix}, the differenced (undifferenced) error term covariance
 #' matrix.
 #'
+#' @details
+#' # Difference and undifference error term covariance matrix
+#' The probit model equation
+#' \deqn{U_{ntj} = X_{ntj}' \tilde{\beta}_n + \epsilon_{ntj},}
+#' with \eqn{(\epsilon_{nt:}) \sim \text{MVN}_{J} (0,\Sigma)}
+#' is invariant towards the level of utility, hence we take
+#' utility differences with respect to some reference alternative \eqn{k}
+#' (also denoted by \code{diff_alt}). The resulting error term differences again
+#' are multivariate normally distributed with mean \eqn{0} and transformed
+#' covariance matrix \eqn{\tilde{\Sigma}}, also denoted by \code{Sigma_diff}.
+#'
+#' For differencing:
+#' \deqn{\tilde{\Sigma} = \Delta_k \Sigma \Delta_k',}
+#' where \eqn{\Delta_k} is a difference operator that depends on the reference
+#' alternative \eqn{k}, see below.
+#'
+#' The "undifferenced" covariance matrix \eqn{\Sigma} cannot be uniquely
+#' computed from \eqn{\tilde{\Sigma}}.
+#' For one solution, we add a column and a row of zeros
+#' at column and row number \eqn{k} to \eqn{\tilde{\Sigma}}, respectively, and
+#' add \eqn{1} to each matrix entry to make the result a proper covariance
+#' matrix.
+#'
+#' # Difference operator
+#' The matrix \eqn{\Delta_k} in equation
+#' \deqn{\tilde{\Sigma} = \Delta_k \Sigma \Delta_k'}
+#' is a matrix of dimension \eqn{(J-1)\times J}.
+#' It is the unit matrix of dimension \eqn{J} without row \eqn{k} and with
+#' \eqn{-1}s in column \eqn{k}.
+#' It can be computed with \code{delta(diff_alt, J)}, where \code{diff_alt}
+#' denotes \eqn{k}.
+#'
 #' @examples
-#' TODO
-#' Sigma <- RprobitB:::sample_cov_matrix()
-#' RprobitB:::diff_Sigma(Sigma, diff_alt = 1)
+#' J <- 3
+#' diff_alt <- 2
+#' delta(diff_alt, J)
+#' (Sigma0 <- RprobitB:::sample_cov_matrix(dim = J))
+#' (Sigma_diff0 <- RprobitB:::diff_Sigma(Sigma0, diff_alt = diff_alt))
+#' (Sigma1 <- RprobitB:::undiff_Sigma(Sigma_diff0, diff_alt = diff_alt))
+#' (Sigma_diff1 <- RprobitB:::diff_Sigma(Sigma1, diff_alt = diff_alt))
+#' all.equal(Sigma_diff0, Sigma_diff1)
 #'
 #' @seealso [is_cov_matrix()] to check whether a matrix is a covariance matrix
-#' TODO
 
 diff_Sigma <- function(Sigma, diff_alt = 1) {
   stopifnot(is_cov_matrix(Sigma))
-  J <- nrow(Sigma_d) + 1
-  stopifnot(is_int(diff_alt), diff_alt <= J)
-  Sigma <- matrix(0, J, J)
-  Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_d
-  Sigma <- Sigma + 1
-  stopifnot(is_cov(Sigma))
-  Sigma
+  J <- nrow(Sigma)
+  stopifnot(is_pos_int(diff_alt), diff_alt <= J)
+  D <- delta(diff_alt = diff_alt, J = J)
+  D %*% Sigma %*% t(D)
 }
 
-#' undifference covariance matrix Sigma
-#' @param Sigma_d covariance matrix
-#' @param diff_alt alternative index for differencing
-#' @return undifferenced covariance matrix
-undiff_Sigma <- function(Sigma_d, diff_alt) {
-  stopifnot(is_cov(Sigma_d))
-  J <- nrow(Sigma_d) + 1
-  stopifnot(is_int(diff_alt), diff_alt <= J)
+#' @rdname diff_Sigma
+#' @param Sigma_diff
+#' A \code{matrix} of dimension \code{J-1} x \code{J-1}, the differenced error
+#' term covariance matrix.
+
+undiff_Sigma <- function(Sigma_diff, diff_alt = 1) {
+  stopifnot(is_cov_matrix(Sigma_diff))
+  J <- nrow(Sigma_diff) + 1
+  stopifnot(is_pos_int(diff_alt), diff_alt <= J)
   Sigma <- matrix(0, J, J)
-  Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_d
-  Sigma <- Sigma + 1
-  stopifnot(is_cov(Sigma))
-  Sigma
+  Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_diff
+  Sigma + 1
 }
 
-#' build difference operator
-#' @param diff_alt alternative index for differencing
-#' @param J number of alternatives
-#' @return matrix of dimension (`J`-1) x `J`
+#' @rdname diff_Sigma
+#' @param J
+#' An \code{integer}, number of alternatives.
+#' @keywords internal
+
 delta <- function(diff_alt, J){
-  stopifnot(is_int(diff_alt), is_int(J), diff_alt <= J)
+  stopifnot(is_pos_int(diff_alt), is_pos_int(J), diff_alt <= J)
   D <- diag(J)
   D[,diff_alt] <- -1
   D[-diff_alt, , drop = FALSE]
 }
 
-#' Matrix difference operator
-#'
-#' @description
-#' This function creates the difference operator matrix \code{delta} for
-#' subtracting a matrix row from the other matrix rows.
-#'
-#' @details
-#' Given a matrix \code{x} with \code{J} rows, then \code{delta(i,J) %*% x}
-#' computes differences with respect to row \code{i}.
-#'
-#' @param J
-#' The number of matrix rows.
-#' @param i
-#' The row number to which respect differences are computed.
-#'
-#' @return
-#' A matrix with \code{J-1} rows.
-#'
-#' @examples
-#' J <- 2
-#' x <- matrix(1, nrow = J, ncol = 2)
-#' RprobitB:::delta(J, 1) %*% x
-#'
-#' @export
-#'
-#' @keywords
-#' internal utils
 
-delta <- function(J, i) {
-  stopifnot(is.numeric(J), J %% 1 == 0, J >= 2)
-  stopifnot(is.numeric(i), i %% 1 == 0, i >= 1)
-  stopifnot(J >= 2)
-  stopifnot(J >= i)
-  if (i == 1) {
-    Delta <- cbind(-1, diag(J - 1))
-  } else if (i == J) {
-    Delta <- cbind(diag(J - 1), -1)
-  } else {
-    Delta <- cbind(diag(J - 1)[, 1:(i - 1)], -1, diag(J - 1)[, i:(J - 1)])
-  }
-  return(Delta)
-}
+### TODO Not touched from here
+
 
 #' Matrix difference operator for ranked vectors
 #'

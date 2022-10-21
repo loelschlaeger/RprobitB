@@ -2,46 +2,55 @@
 % Please edit documentation in R/RprobitB_prior.R
 \name{RprobitB_prior}
 \alias{RprobitB_prior}
-\title{Define model prior}
+\alias{is.RprobitB_prior}
+\alias{print.RprobitB_prior}
+\title{Define probit model prior}
 \usage{
 RprobitB_prior(formula, re = NULL, J, C = 1, ordered = FALSE, ...)
+
+is.RprobitB_prior(x)
+
+\method{print}{RprobitB_prior}(x, ...)
 }
 \arguments{
-\item{formula}{An object of class \code{\link[stats]{formula}}:
-a symbolic description of the model to be fitted.
-The details of model specification are given under \sQuote{Details}.}
+\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
+fitted, see details.}
 
-\item{re}{A character (vector): the names of covariates in \code{formula} that should
-have a random effect.
-Set \code{re = NULL} (default) for no random effects.
-The details of random effects are given under \sQuote{Details}.}
+\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
+should have a random effect, see details.
+By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{J}{An integer, the number of choice alternatives.}
-
-\item{C}{An integer, the number of latent classes.}
-
-\item{ordered}{A boolean: \code{TRUE} for if the alternatives are ordered and \code{FALSE}
-(default) else.}
+\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\code{FALSE} (default) else.}
 
 \item{...}{
   Arguments passed on to \code{\link[=RprobitB_prior_alpha]{RprobitB_prior_alpha}}
   \describe{
-    \item{\code{P_f}}{An integer, the number of fixed model effects.}
-    \item{\code{alpha_prior_mean}}{A numeric vector of length \code{P_f}, the mean vector for the conjugate
-normal prior distribution of \code{alpha}.}
-    \item{\code{alpha_prior_Sigma}}{A covariance matrix of dimension \code{P_f} x \code{P_f}, the covariance
-matrix for the conjugate normal prior distribution of \code{alpha}.}
-    \item{\code{alpha_prior_custom}}{A function, a custom prior density function for \code{alpha}.
-The details of specifying a custom prior are given under \sQuote{Details}.}
-    \item{\code{alpha_prior_custom_test_par}}{A numeric vector of length \code{P_f}, a test input for the custom prior
-density function for \code{alpha}.}
+    \item{\code{P_f}}{An \code{integer}, the number of fixed model effects.
+Can be computed via the function \code{\link{P_f}}.}
+    \item{\code{alpha_prior_mean}}{A \code{numeric} of length \code{P_f}, the mean vector for the conjugate
+normal prior distribution of \code{alpha}.
+By default, \code{alpha_prior_mean = numeric(P_f)}.}
+    \item{\code{alpha_prior_Sigma}}{A \code{matrix} of dimension \code{P_f} x \code{P_f}, the covariance
+matrix for the conjugate normal prior distribution of \code{alpha}.
+By default, \code{alpha_prior_Sigma = 10 * diag(P_f)}.}
+    \item{\code{alpha_prior_custom}}{A \code{function}, a custom prior density function for \code{alpha},
+see details.
+By default, \code{alpha_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{alpha_prior_custom_test_par}}{A \code{numeric} of length \code{P_f}, a test input for the custom prior
+density function \code{alpha_prior_custom}.
+By default, \code{alpha_prior_custom_test_par = numeric(P_f)}.
+Ignored if \code{alpha_prior_custom = NULL}.}
   }}
+
+\item{x}{An \code{RprobitB_prior} object.}
 }
 \value{
-An object of class \code{RprobitB_prior}.
+An \code{RprobitB_prior} object.
 }
 \description{
-This function defines the prior distributions for a probit model.
+This function defines an object of class \code{RprobitB_prior}, which
+contains the prior specification for a probit model.
 }
 \section{Model priors}{
 \subsection{Conjugate priors}{
@@ -61,7 +70,7 @@ are assumed for the model parameters:
 
 \subsection{Default parameters for the conjugate priors}{
 
-Per default, the following parameters are set for the conjugate priors:
+By default, the following parameters are set for the conjugate priors:
 \itemize{
 \item \code{alpha}
 \itemize{
@@ -98,14 +107,14 @@ These parameters can be overwritten by submitting eponymous inputs.
 
 \subsection{Custom priors}{
 
-Per default, conjugate priors are used, but custom priors can be
+By default, conjugate priors are used, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
-of the prior at any point, see \sQuote{Examples}.
+of the prior (or a value that is proportional), see \sQuote{Examples}.
 }
 }
 
-\section{Details of model specification}{
+\section{Model formula}{
 The structure of \code{formula} should be
 \code{choice ~ A | B | C}, where
 \itemize{
@@ -137,10 +146,10 @@ separation via \code{|}, and hence has the simple structure
 ASCs cannot be estimated in the ordered case.
 }
 
-\section{Details of random effects}{
+\section{Random effects}{
 Covariates can have random effects, i.e., their coefficients can follow a
 random distribution. Per default, the distribution is normal. The log-normal
-distribution (for sign-restriction) can be specified via appending a \code{+}
+distribution (for sign-restriction) can be specified via appending \code{+}
 to the corresponding name in \code{re}.
 To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 \code{re}.
@@ -152,9 +161,9 @@ RprobitB_prior(formula = choice ~ A, J = 2)
 
 ### conjugate prior distributions with custom parameters
 RprobitB_prior(
-  formula = choice ~ A | B | C, re = "C", J = 3, C = 2,
-  alpha_prior_mean = numeric(5),
-  s_prior_concentration = c(1,2)
+  formula = choice ~ A | B + 0, re = "A", J = 4, C = 2,
+  alpha_prior_mean = c(-10, 0, 10),
+  s_prior_concentration = c(1, 2)
 )
 
 ### custom prior distributions

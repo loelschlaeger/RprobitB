@@ -7,18 +7,20 @@
 update_z(s, beta, b, Omega)
 }
 \arguments{
-\item{s}{The vector of class weights of length \code{C}.
+\item{s}{A \code{numeric} of length \code{C}, the vector of class weights.
 For identifiability, the vector must be descending.
-Per default, \code{s = rep(1,C)/C}.}
+By default, \code{s = rep(1,C)/C}.}
 
-\item{beta}{The matrix of the decider-specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
+\item{beta}{A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
+decider-specific coefficient vectors.
 The coefficient vector for decider \code{n} is stored in column \code{n}.}
 
-\item{b}{The matrix of class means of dimension \code{P_r} x \code{C}.
+\item{b}{A \code{matrix} of dimension \code{P_r} x \code{C}, the matrix of class
+means.
 The mean vector for class \code{c} is stored in column \code{c}.}
 
-\item{Omega}{The matrix of class covariance matrices of dimension \code{P_r^2} x \code{C}.
+\item{Omega}{A \code{matrix} of dimension \code{P_r^2} x \code{C}, the matrix of class
+covariance matrices.
 The covariance matrix for class \code{c} is stored as a vector in column
 \code{c}.}
 }

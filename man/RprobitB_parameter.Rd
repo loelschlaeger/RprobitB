@@ -2,6 +2,9 @@
 % Please edit documentation in R/RprobitB_parameter.R
 \name{RprobitB_parameter}
 \alias{RprobitB_parameter}
+\alias{is.RprobitB_parameter}
+\alias{simulate_RprobitB_parameter}
+\alias{validate_RprobitB_parameter}
 \alias{print.RprobitB_parameter}
 \title{Define probit model parameters}
 \usage{
@@ -19,64 +22,107 @@ RprobitB_parameter(
   d = NA
 )
 
+is.RprobitB_parameter(x)
+
+simulate_RprobitB_parameter(
+  x = RprobitB_parameter(),
+  formula,
+  re = NULL,
+  ordered = FALSE,
+  J,
+  N,
+  seed = NULL
+)
+
+validate_RprobitB_parameter()
+
 \method{print}{RprobitB_parameter}(x, ..., digits = 4)
 }
 \arguments{
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Per default, \code{C = 1}.}
+\item{C}{An \code{integer}, the number (greater or equal 1) of latent classes of
+decision makers.
+By default, \code{C = 1}.}
 
-\item{s}{The vector of class weights of length \code{C}.
+\item{s}{A \code{numeric} of length \code{C}, the vector of class weights.
 For identifiability, the vector must be descending.
-Per default, \code{s = rep(1,C)/C}.}
+By default, \code{s = rep(1,C)/C}.}
 
-\item{alpha}{The matrix of fixed coefficients of dimension \code{P_f} x \code{C}.
+\item{alpha}{A \code{matrix} of dimension \code{P_f} x \code{C}, the matrix of fixed
+coefficients.
 The coefficients for class \code{c} are stored in column \code{c}.}
 
-\item{b}{The matrix of class means of dimension \code{P_r} x \code{C}.
+\item{b}{A \code{matrix} of dimension \code{P_r} x \code{C}, the matrix of class
+means.
 The mean vector for class \code{c} is stored in column \code{c}.}
 
-\item{Omega}{The matrix of class covariance matrices of dimension \code{P_r^2} x \code{C}.
+\item{Omega}{A \code{matrix} of dimension \code{P_r^2} x \code{C}, the matrix of class
+covariance matrices.
 The covariance matrix for class \code{c} is stored as a vector in column
 \code{c}.}
 
-\item{Sigma}{The error term covariance matrix of dimension \code{J} x \code{J}.
-In the ordered probit model (see details), \code{Sigma} is a single numeric.}
+\item{Sigma}{A \code{matrix} of dimension \code{J} x \code{J}, the error term covariance
+matrix.
+In the ordered probit model (see details), \code{Sigma} can be a
+\code{matrix} of dimension \code{1} x \code{1} or a single \code{numeric}.}
 
-\item{Sigma_diff}{The differenced error term covariance matrix of dimension
-\code{J-1} x \code{J-1}.
+\item{Sigma_diff}{A \code{matrix} of dimension \code{J-1} x \code{J-1}, the differenced error
+term covariance matrix
 \code{Sigma_diff} is assumed to be differenced with respect to alternative
 \code{diff_alt}, see details.
 \code{Sigma_diff} is ignored in case of the ordered probit model
 (see details) or if \code{Sigma} is specified.}
 
-\item{diff_alt}{An integer from \code{1} to \code{J}, the reference alternative for utility
-differencing that maps \code{Sigma} to \code{Sigma_diff}, see details.
-Per default, \code{diff_alt = 1}.}
+\item{diff_alt}{An \code{integer} from \code{1} to \code{J}, the reference alternative for
+utility differencing that maps \code{Sigma} to \code{Sigma_diff}, see
+details.
+By default, \code{diff_alt = 1}.}
 
-\item{beta}{The matrix of the decider-specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
+\item{beta}{A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
+decider-specific coefficient vectors.
 The coefficient vector for decider \code{n} is stored in column \code{n}.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
+\item{z}{A \code{numeric} of length \code{N}, the vector of the allocation variables.
 Entry \code{n} of \code{z} is an integer from \code{1} to \code{C} and
 denotes the allocated class for decider \code{n}.}
 
-\item{d}{The numeric vector of logarithmic increases of the utility thresholds of
-length \code{J-2}, only relevant in the ordered probit model case
-(see details) and ignored otherwise.}
+\item{d}{A \code{numeric} of length \code{J-2}, the vector of logarithmic increases of
+the utility thresholds.
+Only relevant in the ordered probit model case (see details).}
 
-\item{...}{Names of parameters to be printed. If not specified, all available parameters
-are printed.}
+\item{x}{An \code{RprobitB_parameter} object.}
 
-\item{digits}{The number of decimal places of the parameters to be printed.
-Per default, \code{digits = 4}.}
+\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
+fitted, see details.}
+
+\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
+should have a random effect, see details.
+By default, \code{re = NULL}, i.e., no random effects.}
+
+\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\code{FALSE} (default) else.}
+
+\item{J}{An \code{integer}, the number of choice alternatives.}
+
+\item{N}{An \code{integer}, the number of deciders.}
+
+\item{seed}{An \code{integer}, passed to \code{set.seed()} to make the random part
+reproducible.
+By default, \code{seed = NULL}, i.e., no seed is set.}
+
+\item{...}{A \code{character} (vector), the names of parameters to be printed.
+By default, all available parameters are printed.}
+
+\item{digits}{An \code{integer}, the number of decimal places to be printed.
+By default, \code{digits = 2}.}
 }
 \value{
-An object of class \code{RprobitB_parameter}.
+An \code{RprobitB_parameter} object.
 }
 \description{
 This function creates an object of class \code{RprobitB_parameter}, which
 contains the parameters of a probit model, see details.
+\code{simulate_RprobitB_parameters()} simulates missing parameters.
+\code{validate_RprobitB_parameters()} checks the parameters.
 }
 \section{The probit model}{
 Assume that we know the choices of \eqn{N} deciders choosing between
@@ -165,8 +211,8 @@ also denoted by \code{diff_alt})
 The error term differences \eqn{(\tilde{\epsilon}_{nt:})} again are
 multivariate normally distributed with mean \eqn{0} but transformed
 covariance matrix \eqn{\tilde{\Sigma}}, also denoted by \code{Sigma_diff}.
-See \code{\link{Sigma_diff}} for computing \code{Sigma_diff} from
-\code{Sigma}.
+See \code{\link{diff_Sigma}} for computing \code{Sigma_diff} from
+\code{Sigma}, and \code{\link{undiff_Sigma}} for the other way around.
 
 For level normalization in the ordered probit model, we fix
 \eqn{\gamma_1 = 0}.
@@ -175,7 +221,48 @@ For scale normalization, we fix the top left element of \code{Sigma_diff} to
 \eqn{1}. Other options exist, see \code{\link{transform}}.
 }
 
+\section{Model formula}{
+The structure of \code{formula} should be
+\code{choice ~ A | B | C}, where
+\itemize{
+\item \code{choice} is the name of the dependent variable (the choices),
+\item \code{A} are names of \strong{alternative specific covariates} with
+\strong{a coefficient that is constant across alternatives},
+\item \code{B} are names of \strong{covariates that are constant across
+alternatives},
+\item and \code{C} are names of \strong{alternative specific covariates}
+with \strong{alternative specific coefficients}.
+}
+
+Multiple covariates of one type are separated by a \code{+} sign, i.e.,
+\code{choice ~ A1 + A2}.
+
+By default, alternative specific constants (ASCs) are added to the model.
+They can be removed by adding \code{+ 0} in the second spot, i.e.,
+\code{choice ~ A | B + 0 | C}. To not include any covariates of
+the second category but to estimate ASCs, add \code{1} in the second
+spot, e.g., \code{choice ~ A | 1 | C}. The expression
+\code{choice ~ A | 0 | C} is interpreted as no covariates of the second
+category and no ASCs.
+
+In the ordered probit model (\code{ordered = TRUE}), covariates are not
+alternative specific, i.e., there exists only one type of covariate.
+Therefore, the \code{formula} object does not need any
+separation via \code{|}, and hence has the simple structure
+\code{choice ~ A + B + C}.
+ASCs cannot be estimated in the ordered case.
+}
+
+\section{Random effects}{
+Covariates can have random effects, i.e., their coefficients can follow a
+random distribution. Per default, the distribution is normal. The log-normal
+distribution (for sign-restriction) can be specified via appending \code{+}
+to the corresponding name in \code{re}.
+To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
+\code{re}.
+}
+
 \examples{
-RprobitB_parameter()
+TODO
 
 }

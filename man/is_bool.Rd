@@ -2,16 +2,24 @@
 % Please edit documentation in R/utils.R
 \name{is_bool}
 \alias{is_bool}
-\title{check for boolean}
+\title{Check boolean}
 \usage{
-is_bool(i)
+is_bool(x)
 }
 \arguments{
-\item{i}{any element}
+\item{x}{Any element.}
 }
 \value{
-\code{TRUE} if \code{i} is either \code{TRUE} or \code{FALSE}, \code{FALSE} else
+A \code{logical}, \code{TRUE} if \code{x} is either \code{TRUE} or
+\code{FALSE}, \code{FALSE} else.
 }
 \description{
-check for boolean
+This function checks whether the input is a single boolean.
 }
+\examples{
+RprobitB:::is_bool("TRUE")
+RprobitB:::is_bool(FALSE)
+
+}
+\keyword{internal}
+\keyword{utils}

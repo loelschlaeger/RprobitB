@@ -13,31 +13,27 @@ P_f(formula, re, J, ordered = FALSE)
 P_r(formula, re, J, ordered = FALSE)
 }
 \arguments{
-\item{formula}{An object of class \code{\link[stats]{formula}}:
-a symbolic description of the model to be fitted.
-The details of model specification are given under \sQuote{Details}.}
+\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
+fitted, see details.}
 
-\item{re}{A character (vector): the names of covariates in \code{formula} that should
-have a random effect.
-Set \code{re = NULL} (default) for no random effects.
-The details of random effects are given under \sQuote{Details}.}
+\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
+should have a random effect, see details.
+By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{J}{An integer, the number of choice alternatives.}
+\item{J}{An \code{integer}, the number of choice alternatives.}
 
-\item{ordered}{A boolean: \code{TRUE} for if the alternatives are ordered and \code{FALSE}
-(default) else.}
+\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\code{FALSE} (default) else.}
 }
 \value{
-An integer
+An \code{integer}.
 }
 \description{
 \code{P()} computes the total number \code{P} of model effects.
-
 \code{P_f()} computes the number \code{P_f} of fixed model effects.
-
 \code{P_r()} computes the number \code{P_r} of random model effects.
 }
-\section{Details of model specification}{
+\section{Model formula}{
 The structure of \code{formula} should be
 \code{choice ~ A | B | C}, where
 \itemize{
@@ -69,10 +65,10 @@ separation via \code{|}, and hence has the simple structure
 ASCs cannot be estimated in the ordered case.
 }
 
-\section{Details of random effects}{
+\section{Random effects}{
 Covariates can have random effects, i.e., their coefficients can follow a
 random distribution. Per default, the distribution is normal. The log-normal
-distribution (for sign-restriction) can be specified via appending a \code{+}
+distribution (for sign-restriction) can be specified via appending \code{+}
 to the corresponding name in \code{re}.
 To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 \code{re}.

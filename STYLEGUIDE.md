@@ -2,6 +2,7 @@
 
 - error term
 - positive definite
+- by default
 
 # Variables
 
@@ -17,11 +18,11 @@
 #' @param C
 #' An \code{integer}, the number (greater or equal 1) of latent classes of 
 #' decision makers.
-#' Per default, \code{C = 1}.
+#' By default, \code{C = 1}.
 #' @param s
 #' A \code{numeric} of length \code{C}, the vector of class weights.
 #' For identifiability, the vector must be descending.
-#' Per default, \code{s = rep(1,C)/C}.
+#' By default, \code{s = rep(1,C)/C}.
 #' 
 #' @return
 #' A \code{matrix}, the ... .
@@ -31,7 +32,7 @@
 #' 
 #' (@importFrom ... ...)
 #' (@export)
-#' @keywords internal utils
+#' @keywords internal object specification utils
 #' @seealso [fun()] to ...
 
 fun_name <- function(...) {...}

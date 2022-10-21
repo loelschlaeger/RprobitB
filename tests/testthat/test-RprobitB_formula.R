@@ -40,74 +40,74 @@ test_that("RprobitB_formula can be specified and validated", {
   re6 <- c("B", "ASC+")
   re7 <- c("A", "A+")
   expect_error(
-    new_RprobitB_formula(formula = "not_a_correct_formula", re = re1, ordered = FALSE)
+    RprobitB_formula(formula = "not_a_correct_formula", re = re1, ordered = FALSE)
   )
   expect_error(
-    new_RprobitB_formula(formula = f1, re = 1, ordered = FALSE)
+    RprobitB_formula(formula = f1, re = 1, ordered = FALSE)
   )
   expect_error(
-    new_RprobitB_formula(formula = f1, re = re1, ordered = "not_a_boolean")
+    RprobitB_formula(formula = f1, re = re1, ordered = "not_a_boolean")
   )
   expect_error(
-    new_RprobitB_formula(formula = f1, re = "this_covariate_does_not_exist", ordered = FALSE)
+    RprobitB_formula(formula = f1, re = "this_covariate_does_not_exist", ordered = FALSE)
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f1, re = re1, ordered = FALSE),
+    RprobitB_formula(formula = f1, re = re1, ordered = FALSE),
     vars = list("A", character(), character()), ASC = TRUE,
     md_n = character(), md_ln = character()
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f2, re = re2, ordered = FALSE),
+    RprobitB_formula(formula = f2, re = re2, ordered = FALSE),
     vars = list("A", "B", character()), ASC = TRUE,
     md_n = "A", md_ln = character()
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f2, re = re3, ordered = FALSE),
+    RprobitB_formula(formula = f2, re = re3, ordered = FALSE),
     vars = list("A", "B", character()), ASC = TRUE,
     md_n = character(), md_ln = "A"
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f2, re = re4, ordered = FALSE),
+    RprobitB_formula(formula = f2, re = re4, ordered = FALSE),
     vars = list("A", "B", character()), ASC = TRUE,
     md_n = "B", md_ln = "A"
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f6, re = character(), ordered = FALSE),
+    RprobitB_formula(formula = f6, re = character(), ordered = FALSE),
     vars = list(character(), character(), "C"), ASC = FALSE,
     md_n = character(), md_ln = character()
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f7, re = character(), ordered = FALSE),
+    RprobitB_formula(formula = f7, re = character(), ordered = FALSE),
     vars = list(character(), character(), "C"), ASC = TRUE,
     md_n = character(), md_ln = character()
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f8, re = character(), ordered = FALSE),
+    RprobitB_formula(formula = f8, re = character(), ordered = FALSE),
     vars = list(c("A", "B"), character(), character()), ASC = TRUE,
     md_n = character(), md_ln = character()
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f9, re = re4, ordered = TRUE),
+    RprobitB_formula(formula = f9, re = re4, ordered = TRUE),
     vars = list(character(), c("A", "B"), character()), ASC = FALSE,
     md_n = "B", md_ln = "A"
   )
   expect_error(
-    new_RprobitB_formula(formula = f3, re = character(), ordered = TRUE)
+    RprobitB_formula(formula = f3, re = character(), ordered = TRUE)
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f8, re = re5, ordered = FALSE),
+    RprobitB_formula(formula = f8, re = re5, ordered = FALSE),
     vars = list(c("A", "B"), character(), character()), ASC = TRUE,
     md_n = c("B", "ASC"), md_ln = character()
   )
   expect_error(
-    new_RprobitB_formula(formula = f5, re = re5, ordered = FALSE)
+    RprobitB_formula(formula = f5, re = re5, ordered = FALSE)
   )
   expect_RprobitB_formula(
-    new_RprobitB_formula(formula = f8, re = re6, ordered = FALSE),
+    RprobitB_formula(formula = f8, re = re6, ordered = FALSE),
     vars = list(c("A", "B"), character(), character()), ASC = TRUE,
     md_n = "B", md_ln = "ASC"
   )
   expect_error(
-    new_RprobitB_formula(formula = f2, re = re7, ordered = FALSE)
+    RprobitB_formula(formula = f2, re = re7, ordered = FALSE)
   )
 })
