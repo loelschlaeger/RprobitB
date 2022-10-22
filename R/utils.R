@@ -157,6 +157,164 @@ function_body <- function(
   out
 }
 
+#' Print (abbreviated) matrices
+#'
+#' This function prints (abbreviated) matrices.
+#'
+#' @references
+#' This function is a modified version of \code{\link[ramify]{pprint}}.
+#'
+#' @param x
+#' A \code{numeric} or \code{character} (vector or matrix).
+#' @param rowdots
+#' An \code{integer}, the row number which is replaced by \code{...}.
+#' By default, \code{rowdots = 4}.
+#' @param coldots
+#' An \code{integer}, the column number which is replaced by \code{...}.
+#' By default, \code{coldots = 4}.
+#' @param digits
+#' An \code{integer}, the number of printed decimal places.
+#' Only relevant if input \code{x} is numeric.
+#' By default, \code{digits = 2}.
+#' @param label
+#' A \code{character}, a label for \code{x}.
+#' Only printed if \code{simplify = FALSE}.
+#' By default, \code{label = NULL}, i.e., no label.
+#' @param simplify
+#' A \code{logical}, set to \code{TRUE} to simplify the output.
+#' By default, \code{simplify = FALSE}.
+#' @param details
+#' A \code{logical}, set to \code{TRUE} to print the type and
+#' dimension of \code{x}.
+#' By default, \code{details = !simplify}.
+#'
+#' @return
+#' Invisibly returns \code{x}.
+#'
+#' @examples
+#' print_matrix(x = 1, label = "single numeric")
+#' print_matrix(x = LETTERS[1:26], label = "letters")
+#' print_matrix(x = 1:3, coldots = 2)
+#' print_matrix(x = matrix(rnorm(99), ncol = 1), label = "single column matrix")
+#' print_matrix(x = matrix(1:100, nrow = 1), label = "single row matrix")
+#' print_matrix(x = matrix(LETTERS[1:24], ncol = 6), label = "big matrix")
+#' print_matrix(x = diag(5), coldots = 2, rowdots = 2, simplify = TRUE)
+#'
+#' @export
+#' @importFrom crayon italic bold
+#' @keywords internal utils
+
+print_matrix <- function(
+    x, rowdots = 4, coldots = 4, digits = 2, label = NULL, simplify = FALSE,
+    details = !simplify
+) {
+  stopifnot(is.numeric(x) || is.character(x))
+  stopifnot(is_pos_int(rowdots), is_pos_int(coldots), is_single_numeric(digits))
+  stopifnot(is_bool(details), is_bool(simplify))
+  if (!is.null(label)) {
+    label <- as.character(label)
+    stopifnot(length(label) == 1)
+  }
+  add_dots <- function(x, pos) {
+    if (length(x) > pos) c(x[seq_len(pos-1)], "...", x[length(x)]) else x
+  }
+  if (!is.null(label)) cat(crayon::italic(label), ": ")
+  if (length(x) == 1){
+    cat(x)
+  } else if (!is.matrix(x)) {
+    if(details) {
+      cat(typeof(x), "vector of length", crayon::bold(length(x)), "\n")
+    }
+    res <- if(is.numeric(x)) round(x, digits) else x
+    cat(noquote(add_dots(res, coldots)))
+  } else {
+    row_labs <- if (is.null(rownames(x))) {
+      paste0("[", seq_len(nrow(x)), ",]")
+    } else {
+      rownames(x)
+    }
+    col_labs <- if (is.null(colnames(x))) {
+      paste0("[,", seq_len(ncol(x)), "]")
+    } else {
+      colnames(x)
+    }
+    coldots <- max(1, min(ncol(x) - 1, coldots))
+    rowdots <- max(1, min(nrow(x) - 1, rowdots))
+    if (coldots == 1 && rowdots == 1) {
+      if (nrow(x) == 1 && ncol(x) == 1) {
+        res <- x
+      } else {
+        if (nrow(x) == 1) {
+          res <- matrix(c("...", x[1, ncol(x)]), 1, 2)
+        } else if (ncol(x) == 1) {
+          res <- matrix(c("...", x[nrow(x), 1]), 2, 1)
+        } else {
+          res <- matrix(c("...", "...", "...", x[nrow(x), ncol(x)]), 2, 2)
+        }
+        row_labs <- add_dots(row_labs, 1)
+        col_labs <- add_dots(col_labs, 1)
+      }
+    } else {
+      x2 <- if(nrow(x) == 1) {
+        cbind(x[1, 1:coldots, drop = FALSE], x[1, ncol(x), drop = FALSE])
+      } else if(ncol(x) == 1) {
+        rbind(x[1:rowdots, 1, drop = FALSE], x[nrow(x), 1, drop = FALSE])
+      } else {
+        rbind(cbind(x[1:rowdots, 1:coldots, drop = FALSE],
+                    x[1:rowdots, ncol(x), drop = FALSE]),
+              cbind(x[nrow(x), 1:coldots, drop = FALSE],
+                    x[nrow(x), ncol(x), drop = FALSE]))
+      }
+      charx <- if (typeof(x2) == "character") {
+        x2
+      } else if (typeof(x2) %in% c("integer", "logical")) {
+        as.character(x2)
+      } else {
+        sprintf(paste0("%.", digits, "f"), x2)
+      }
+      dim(charx) <- dim(x2)
+      if (nrow(x) <= rowdots + 1 && ncol(x) <= coldots + 1) {
+        res <- x
+      } else if (nrow(x) > rowdots + 1 && ncol(x) <= coldots + 1) {
+        res <- rbind(
+          as.matrix(charx[seq_len(rowdots - 1), ]),
+          rep("...", ncol(charx)),
+          charx[nrow(charx), ]
+        )
+        row_labs <- add_dots(row_labs, pos = rowdots)
+      } else if (nrow(x) <= rowdots + 1 && ncol(x) > coldots + 1) {
+        res <- t(apply(charx, 1, add_dots, pos = coldots))
+        col_labs <- add_dots(col_labs, pos = coldots)
+      } else if (nrow(x) > rowdots + 1 && ncol(x) > coldots + 1) {
+        smallx <- t(apply(charx[seq_len(rowdots - 1), , drop = FALSE], 1,
+                          add_dots, pos = coldots))
+        res <- rbind(
+          smallx,
+          rep("...", ncol(smallx)),
+          add_dots(charx[nrow(charx), ], pos = coldots)
+        )
+        row_labs <- add_dots(row_labs, pos = rowdots)
+        col_labs <- add_dots(col_labs, pos = coldots)
+      }
+    }
+    if (details) {
+      cat(crayon::bold(paste(dim(x), collapse = " x ")), "matrix of",
+          paste0(typeof(x), "s"), "\n")
+    }
+    if (simplify) {
+      cat(paste("[", paste(apply(res, 1, paste, collapse = " "),
+                           collapse = "; "), "]"))
+    } else {
+      prmatrix(res, rowlab = row_labs, collab = col_labs, quote = FALSE,
+               right = TRUE)
+    }
+  }
+  return(invisible(x))
+}
+
+
+
+
 
 ### TODO Not touched from here
 
