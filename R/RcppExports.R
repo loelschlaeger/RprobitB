@@ -119,6 +119,40 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, 
     .Call(`_RprobitB_update_classes_dp`, Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc)
 }
 
+#' Compute density of Dirichlet distribution
+#'
+#' This function computes the density of a Dirichlet distribution.
+#'
+#' @details
+#' This function performs no input checks. See \code{\link{ddirichlet}}
+#' for the version with input checks.
+#'
+#' @param x
+#' A \code{numeric}, a weight vector of length \code{n}.
+#' Each vector element must be between \code{0} and \code{1}.
+#' The sum of the vector elements must be \code{1}.
+#' @param concentration
+#' A \code{numeric}, the concentration vector of length \code{n}.
+#' @param log
+#' A \code{logical}, if \code{TRUE} the logarithm of the density value is
+#' returned.
+#' By default, \code{log = FALSE}.
+#'
+#' @return
+#' A \code{numeric}, the density value.
+#'
+#' @examples
+#' x <- c(0.5,0.3,0.2)
+#' concentration <- 1:3
+#' RprobitB:::ddirichlet_cpp(x = x, concentration = concentration)
+#' RprobitB:::ddirichlet_cpp(x = x, concentration = concentration, log = TRUE)
+#'
+#' @keywords internal cpp
+#'
+ddirichlet_cpp <- function(x, concentration, log = FALSE) {
+    .Call(`_RprobitB_ddirichlet_cpp`, x, concentration, log)
+}
+
 #' Compute density of multivariate normal distribution
 #'
 #' This function computes the density of a multivariate normal distribution.
@@ -132,6 +166,7 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, 
 #' @param log
 #' A \code{logical}, if \code{TRUE} the logarithm of the density value is
 #' returned.
+#' By default, \code{log = FALSE}.
 #'
 #' @return
 #' A \code{numeric}, the density value.
@@ -140,14 +175,52 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, 
 #' x <- c(0,0)
 #' mean <- c(0,0)
 #' Sigma <- diag(2)
-#' dmvnorm(x = x, mean = mean, Sigma = Sigma)
-#' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
+#' RprobitB:::dmvnorm_cpp(x = x, mean = mean, Sigma = Sigma)
+#' RprobitB:::dmvnorm_cpp(x = x, mean = mean, Sigma = Sigma, log = TRUE)
+#'
+#' @keywords internal cpp
+#'
+dmvnorm_cpp <- function(x, mean, Sigma, log = FALSE) {
+    .Call(`_RprobitB_dmvnorm_cpp`, x, mean, Sigma, log)
+}
+
+#' Compute density of (Inverse-) Wishart distribution
+#'
+#' This function computes the density of the (Inverse-) Wishart distribution.
+#'
+#' @param x
+#' A \code{matrix}, a covariance matrix of dimension \code{n} x \code{n}.
+#' @param df
+#' An \code{integer}, the degrees of freedom.
+#' Must be greater or equal \code{n}.
+#' @param scale
+#' A \code{matrix}, the scale matrix of dimension \code{n} x \code{n}.
+#' Must be a covariance matrix.
+#' @param log
+#' A \code{logical}, if \code{TRUE} the logarithm of the density value is
+#' returned.
+#' By default, \code{log = FALSE}.
+#' @param inv
+#' A \code{logical}, if \code{TRUE} the density of the Inverse-Wishart
+#' distribution is returned.
+#' By default, \code{inv = FALSE}.
+#'
+#' @return
+#' A \code{numeric}, the density value.
+#'
+#' @examples
+#' x <- diag(2)
+#' df <- 4
+#' scale <- diag(2)
+#' RprobitB:::dwishart_cpp(x = x, df = df, scale = scale)
+#' RprobitB:::dwishart_cpp(x = x, df = df, scale = scale, log = TRUE)
+#' RprobitB:::dwishart_cpp(x = x, df = df, scale = scale, inv = TRUE)
 #'
 #' @export
-#' @keywords internal utils
+#' @keywords internal cpp
 #'
-dmvnorm <- function(x, mean, Sigma, log = FALSE) {
-    .Call(`_RprobitB_dmvnorm`, x, mean, Sigma, log)
+dwishart_cpp <- function(x, df, scale, log = FALSE, inv = FALSE) {
+    .Call(`_RprobitB_dwishart_cpp`, x, df, scale, log, inv)
 }
 
 #' Update class weight vector

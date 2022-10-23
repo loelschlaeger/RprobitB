@@ -24,10 +24,10 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \code{FALSE} (default) else.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=RprobitB_prior_alpha]{RprobitB_prior_alpha}}
+  Arguments passed on to \code{\link[=RprobitB_prior_alpha]{RprobitB_prior_alpha}}, \code{\link[=RprobitB_prior_s]{RprobitB_prior_s}}, \code{\link[=RprobitB_prior_b]{RprobitB_prior_b}}, \code{\link[=RprobitB_prior_Omega]{RprobitB_prior_Omega}}
   \describe{
     \item{\code{P_f}}{An \code{integer}, the number of fixed model effects.
-Can be computed via the function \code{\link{P_f}}.}
+Can be computed via the function \code{\link{compute_P_f}}.}
     \item{\code{alpha_prior_mean}}{A \code{numeric} of length \code{P_f}, the mean vector for the conjugate
 normal prior distribution of \code{alpha}.
 By default, \code{alpha_prior_mean = numeric(P_f)}.}
@@ -41,6 +41,48 @@ By default, \code{alpha_prior_custom = NULL}, i.e., no custom prior.}
 density function \code{alpha_prior_custom}.
 By default, \code{alpha_prior_custom_test_par = numeric(P_f)}.
 Ignored if \code{alpha_prior_custom = NULL}.}
+    \item{\code{s_prior_concentration}}{A \code{numeric} of length \code{C}, the concentration vector for the
+conjugate Dirichlet prior distribution of \code{s}.
+By default, \code{s_prior_concentration = rep(1, C)}.}
+    \item{\code{s_prior_custom}}{A \code{function}, a custom prior density function for \code{s},
+see details.
+By default, \code{s_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{s_prior_custom_test_par}}{A \code{numeric} of length \code{C}, a test input for the custom prior
+density function \code{s_prior_custom}.
+By default, \code{s_prior_custom_test_par = numeric(C)}.
+Ignored if \code{s_prior_custom = NULL}.}
+    \item{\code{C}}{An \code{integer}, the number (greater or equal 1) of latent classes of
+decision makers.
+By default, \code{C = 1}.}
+    \item{\code{P_r}}{An \code{integer}, the number of random model effects.
+Can be computed via the function \code{\link{compute_P_r}}.}
+    \item{\code{b_prior_mean}}{A \code{numeric} of length \code{P_r}, the mean vector for the conjugate
+normal prior distribution of \code{b}.
+By default, \code{b_prior_mean = numeric(P_r)}.}
+    \item{\code{b_prior_Sigma}}{A \code{matrix} of dimension \code{P_r} x \code{P_r}, the covariance
+matrix for the conjugate normal prior distribution of \code{b}.
+By default, \code{b_prior_Sigma = 10 * diag(P_r)}.}
+    \item{\code{b_prior_custom}}{A \code{function}, a custom prior density function for \code{b},
+see details.
+By default, \code{b_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{b_prior_custom_test_par}}{A \code{numeric} of length \code{P_r}, a test input for the custom prior
+density function \code{b_prior_custom}.
+By default, \code{b_prior_custom_test_par = numeric(P_r)}.
+Ignored if \code{b_prior_custom = NULL}.}
+    \item{\code{Omega_prior_df}}{An \code{integer}, the degrees of freedom for the conjugate
+Inverse-Wishart prior distribution of \code{Omega}.
+It must be greater or equal than \code{P_r + 2} (to ensure a proper prior).
+By default, \code{Omega_prior_df = P_r + 2}.}
+    \item{\code{Omega_prior_scale}}{A \code{matrix} of dimension \code{P_r} x \code{P_r}, the scale
+matrix for the conjugate Inverse-Wishart prior distribution of \code{Omega}.
+By default, \code{Omega_prior_scale = diag(P_r)}.}
+    \item{\code{Omega_prior_custom}}{A \code{function}, a custom prior density function for \code{Omega},
+see details.
+By default, \code{Omega_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{Omega_prior_custom_test_par}}{A \code{matrix} of dimension \code{P_r} x \code{P_r}, a test input for the
+custom prior density function \code{Omega_prior_custom}.
+By default, \code{Omega_prior_custom_test_par = diag(P_r)}.
+Ignored if \code{Omega_prior_custom = NULL}.}
   }}
 
 \item{x}{An \code{RprobitB_prior} object.}
@@ -111,6 +153,12 @@ By default, conjugate priors are used, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
+The following density functions (implemented in {RprobitB}) could be helpful:
+\itemize{
+\item \code{\link{ddirichlet}}
+\item \code{\link{dmvnorm}}
+\item \code{\link{dwishart}}
+}
 }
 }
 
@@ -170,7 +218,7 @@ RprobitB_prior(
 RprobitB_prior(
   formula = choice ~ A | B | C, re = "C", J = 3,
   alpha_prior_custom = function(x) {
-    dnorm(x[1], mean = 0, sd = 1) * dunif(x[2], min = 0, max = 1)
+    stats::dnorm(x[1], mean = 0, sd = 1) * dunif(x[2], min = 0, max = 1)
   }
 )
 

@@ -83,7 +83,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
   arma::vec prob_z = zeros<vec>(C);
   for(int n = 0; n<N; n++){
     for(int c = 0; c<C; c++){
-      prob_z[c] = s[c]*dmvnorm(beta(span::all,n),b(span::all,c),reshape(Omega(span::all,c),P_r,P_r));
+      prob_z[c] = s[c]*dmvnorm_cpp(beta(span::all,n),b(span::all,c),reshape(Omega(span::all,c),P_r,P_r));
     }
     z[n] = as<int>(sample(seq(1,C),1,false,prob_z));
   }
@@ -560,8 +560,8 @@ List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
   int length_d = d.size();
   arma::vec d_cand = d + 0.1 * as<vec>(Rcpp::rnorm(length_d,0.0,1.0));
   double ll_cand = ll_ordered(d_cand, y, mu, Tvec);
-  double post_cand = ll_cand + dmvnorm(d_cand, zeta, Z, true);
-  double ll_diff = post_cand - ll - dmvnorm(d, zeta, Z, true);
+  double post_cand = ll_cand + dmvnorm_cpp(d_cand, zeta, Z, true);
+  double ll_diff = post_cand - ll - dmvnorm_cpp(d, zeta, Z, true);
   double alpha = std::exp(ll_diff);
   double unif = 0.0;
   if (alpha < 1) unif = R::runif(0.0,1.0);

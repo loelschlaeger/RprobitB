@@ -3,6 +3,7 @@
 - error term
 - positive definite
 - by default
+- Inverse-Wishart
 
 # Variables
 
@@ -34,7 +35,7 @@
 #' 
 #' (@importFrom ... ...)
 #' (@export)
-#' @keywords internal object utils
+#' @keywords internal object utils cpp
 #' @seealso [fun()] to ...
 
 fun_name <- function(...) {...}

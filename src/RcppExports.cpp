@@ -61,9 +61,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// dmvnorm
-double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
-RcppExport SEXP _RprobitB_dmvnorm(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
+// ddirichlet_cpp
+double ddirichlet_cpp(arma::vec const& x, arma::vec const& concentration, bool log);
+RcppExport SEXP _RprobitB_ddirichlet_cpp(SEXP xSEXP, SEXP concentrationSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type concentration(concentrationSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(ddirichlet_cpp(x, concentration, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dmvnorm_cpp
+double dmvnorm_cpp(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
+RcppExport SEXP _RprobitB_dmvnorm_cpp(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -71,7 +84,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec const& >::type mean(meanSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
     Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnorm(x, mean, Sigma, log));
+    rcpp_result_gen = Rcpp::wrap(dmvnorm_cpp(x, mean, Sigma, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dwishart_cpp
+double dwishart_cpp(arma::mat const& x, int const& df, arma::mat const& scale, bool log, bool inv);
+RcppExport SEXP _RprobitB_dwishart_cpp(SEXP xSEXP, SEXP dfSEXP, SEXP scaleSEXP, SEXP logSEXP, SEXP invSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int const& >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    Rcpp::traits::input_parameter< bool >::type inv(invSEXP);
+    rcpp_result_gen = Rcpp::wrap(dwishart_cpp(x, df, scale, log, inv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -333,7 +361,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
     {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
-    {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
+    {"_RprobitB_ddirichlet_cpp", (DL_FUNC) &_RprobitB_ddirichlet_cpp, 3},
+    {"_RprobitB_dmvnorm_cpp", (DL_FUNC) &_RprobitB_dmvnorm_cpp, 4},
+    {"_RprobitB_dwishart_cpp", (DL_FUNC) &_RprobitB_dwishart_cpp, 5},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_m", (DL_FUNC) &_RprobitB_update_m, 3},

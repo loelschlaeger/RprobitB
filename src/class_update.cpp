@@ -263,7 +263,7 @@ Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b
       arma::vec mu_b = sig_b * (arma::inv(Omega_c) * arma::sum(beta_c, 1) + arma::inv(D) * xi);
 
       // compute class assignment log-probabilities for existing classes from PPD
-      logp[c] = log(m_full[c]) + dmvnorm(beta(span::all,n), mu_b, sig_b + Omega_c, true);
+      logp[c] = log(m_full[c]) + dmvnorm_cpp(beta(span::all,n), mu_b, sig_b + Omega_c, true);
 
       // save updates
       b_full(span::all,c) = mu_b;
@@ -273,7 +273,7 @@ Rcpp::List update_classes_dp (int Cmax, arma::mat beta, arma::vec z, arma::mat b
     // compute log-probability for new class
     arma::vec b_new = xi;
     arma::mat Omega_new = reshape(Omega_full(span::all,span(0,C-1)) * (m_full(span(0,C-1))/sum(m_full(span(0,C-1)))), P_r, P_r);
-    logp[C] = log(delta) + dmvnorm(beta(span::all,n), b_new, D + Omega_new, true);
+    logp[C] = log(delta) + dmvnorm_cpp(beta(span::all,n), b_new, D + Omega_new, true);
 
     // transform log-probabilities to probabilities
     arma::vec loc_probs = exp(logp - max(logp));
