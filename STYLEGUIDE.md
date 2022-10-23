@@ -23,6 +23,8 @@
 #' A \code{numeric} of length \code{C}, the vector of class weights.
 #' For identifiability, the vector must be descending.
 #' By default, \code{s = rep(1,C)/C}.
+#' @param ...
+#' Not used.
 #' 
 #' @return
 #' A \code{matrix}, the ... .
@@ -32,7 +34,7 @@
 #' 
 #' (@importFrom ... ...)
 #' (@export)
-#' @keywords internal object specification utils
+#' @keywords internal object utils
 #' @seealso [fun()] to ...
 
 fun_name <- function(...) {...}
