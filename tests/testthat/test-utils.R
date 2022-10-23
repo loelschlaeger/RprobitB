@@ -141,6 +141,12 @@ test_that("print_matrix works", {
   expect_snapshot(
     print_matrix(x = matrix(1:100, ncol = 1), simplify = TRUE, coldots = 5)
   )
+  expect_snapshot(
+    print_matrix(x = diag(2), simplify = TRUE)
+  )
+  expect_snapshot(
+    print_matrix(x = diag(2), simplify = FALSE)
+  )
 })
 
 

@@ -241,7 +241,7 @@ print_matrix <- function(
     coldots <- max(1, min(ncol(x) - 1, coldots))
     rowdots <- max(1, min(nrow(x) - 1, rowdots))
     if (coldots == 1 && rowdots == 1) {
-      if (nrow(x) == 1 && ncol(x) == 1) {
+      if (nrow(x) <= 2 && ncol(x) <= 2) {
         res <- x
       } else {
         if (nrow(x) == 1) {
