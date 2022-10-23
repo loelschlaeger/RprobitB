@@ -119,103 +119,35 @@ update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, 
     .Call(`_RprobitB_update_classes_dp`, Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc)
 }
 
-#' Density of multivariate normal distribution
-#' @description
+#' Compute density of multivariate normal distribution
+#'
 #' This function computes the density of a multivariate normal distribution.
+#'
 #' @param x
-#' A quantile vector of length \code{n}.
+#' A \code{numeric}, a quantile vector of length \code{n}.
 #' @param mean
-#' The mean vector of length \code{n}.
+#' A \code{numeric}, the mean vector of length \code{n}.
 #' @param Sigma
-#' The covariance matrix of dimension \code{n} x \code{n}.
+#' A \code{matrix}, the covariance matrix of dimension \code{n} x \code{n}.
 #' @param log
-#' A boolean, if \code{TRUE} the logarithm of the density value is returned.
+#' A \code{logical}, if \code{TRUE} the logarithm of the density value is
+#' returned.
+#'
 #' @return
-#' The density value.
-#' @export
+#' A \code{numeric}, the density value.
+#'
 #' @examples
-#' x = c(0,0)
-#' mean = c(0,0)
-#' Sigma = diag(2)
+#' x <- c(0,0)
+#' mean <- c(0,0)
+#' Sigma <- diag(2)
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma)
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
-#' @keywords
-#' internal distribution
+#'
+#' @export
+#' @keywords internal utils
 #'
 dmvnorm <- function(x, mean, Sigma, log = FALSE) {
     .Call(`_RprobitB_dmvnorm`, x, mean, Sigma, log)
-}
-
-#' Draw from multivariate normal distribution
-#' @description
-#' This function draws from a multivariate normal distribution.
-#' @details
-#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
-#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
-#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
-#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
-#' Choleski decomposition of \eqn{\Sigma}.
-#' @param mu
-#' The mean vector of length \code{n}.
-#' @param Sigma
-#' The covariance matrix of dimension \code{n} x \code{n}.
-#' @return
-#' A numeric vector of length \code{n}.
-#' @export
-#' @examples
-#' mu <- c(0,0)
-#' Sigma <- diag(2)
-#' rmvnorm(mu = mu, Sigma = Sigma)
-#' @keywords
-#' internal distribution
-#'
-rmvnorm <- function(mu, Sigma) {
-    .Call(`_RprobitB_rmvnorm`, mu, Sigma)
-}
-
-#' Draw from Dirichlet distribution
-#' @description
-#' Function to draw from a Dirichlet distribution.
-#' @param delta
-#' A vector, the concentration parameter.
-#' @return
-#' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
-#' @export
-#' @examples
-#' rdirichlet(delta = 1:3)
-#' @keywords
-#' internal distribution
-#'
-rdirichlet <- function(delta) {
-    .Call(`_RprobitB_rdirichlet`, delta)
-}
-
-#' Draw from Wishart distribution
-#' @description
-#' This function draws from a Wishart and inverted Wishart distribution.
-#' @details
-#' The Wishart distribution is a generalization to multiple dimensions of the
-#' gamma distributions and draws from the space of covariance matrices.
-#' Its expectation is \code{nu*V} and its variance increases both in \code{nu}
-#' and in the values of \code{V}.
-#' The Wishart distribution is the conjugate prior to the precision matrix of
-#' a multivariate normal distribution and proper if \code{nu} is greater than
-#' the number of dimensions.
-#' @param nu
-#' A numeric, the degrees of freedom. Must be at least the number of dimensions.
-#' @param V
-#' A matrix, the scale matrix.
-#' @return
-#' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
-#' corresponding Choleski decomposition (\code{C} and \code{CI}).
-#' @export
-#' @examples
-#' rwishart(nu = 2, V = diag(2))
-#' @keywords
-#' internal distribution
-#'
-rwishart <- function(nu, V) {
-    .Call(`_RprobitB_rwishart`, nu, V)
 }
 
 #' Update class weight vector
@@ -722,5 +654,77 @@ rtnorm <- function(mu, sig, trunpt, above) {
 #'
 rttnorm <- function(mu, sig, lower_bound, upper_bound) {
     .Call(`_RprobitB_rttnorm`, mu, sig, lower_bound, upper_bound)
+}
+
+#' Draw from multivariate normal distribution
+#' @description
+#' This function draws from a multivariate normal distribution.
+#' @details
+#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
+#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
+#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
+#' Choleski decomposition of \eqn{\Sigma}.
+#' @param mu
+#' The mean vector of length \code{n}.
+#' @param Sigma
+#' The covariance matrix of dimension \code{n} x \code{n}.
+#' @return
+#' A numeric vector of length \code{n}.
+#' @export
+#' @examples
+#' mu <- c(0,0)
+#' Sigma <- diag(2)
+#' rmvnorm(mu = mu, Sigma = Sigma)
+#' @keywords
+#' internal distribution
+#'
+rmvnorm <- function(mu, Sigma) {
+    .Call(`_RprobitB_rmvnorm`, mu, Sigma)
+}
+
+#' Draw from Dirichlet distribution
+#' @description
+#' Function to draw from a Dirichlet distribution.
+#' @param delta
+#' A vector, the concentration parameter.
+#' @return
+#' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
+#' @export
+#' @examples
+#' rdirichlet(delta = 1:3)
+#' @keywords
+#' internal distribution
+#'
+rdirichlet <- function(delta) {
+    .Call(`_RprobitB_rdirichlet`, delta)
+}
+
+#' Draw from Wishart distribution
+#' @description
+#' This function draws from a Wishart and inverted Wishart distribution.
+#' @details
+#' The Wishart distribution is a generalization to multiple dimensions of the
+#' gamma distributions and draws from the space of covariance matrices.
+#' Its expectation is \code{nu*V} and its variance increases both in \code{nu}
+#' and in the values of \code{V}.
+#' The Wishart distribution is the conjugate prior to the precision matrix of
+#' a multivariate normal distribution and proper if \code{nu} is greater than
+#' the number of dimensions.
+#' @param nu
+#' A numeric, the degrees of freedom. Must be at least the number of dimensions.
+#' @param V
+#' A matrix, the scale matrix.
+#' @return
+#' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
+#' corresponding Choleski decomposition (\code{C} and \code{CI}).
+#' @export
+#' @examples
+#' rwishart(nu = 2, V = diag(2))
+#' @keywords
+#' internal distribution
+#'
+rwishart <- function(nu, V) {
+    .Call(`_RprobitB_rwishart`, nu, V)
 }
 

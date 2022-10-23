@@ -75,41 +75,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rmvnorm
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
-RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rdirichlet
-arma::vec rdirichlet(arma::vec delta);
-RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rwishart
-List rwishart(double nu, arma::mat const& V);
-RcppExport SEXP _RprobitB_rwishart(SEXP nuSEXP, SEXP VSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
-    rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
-    return rcpp_result_gen;
-END_RCPP
-}
 // update_s
 arma::vec update_s(int delta, arma::vec m);
 RcppExport SEXP _RprobitB_update_s(SEXP deltaSEXP, SEXP mSEXP) {
@@ -326,15 +291,49 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rmvnorm
+arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
+RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rdirichlet
+arma::vec rdirichlet(arma::vec delta);
+RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rwishart
+List rwishart(double nu, arma::mat const& V);
+RcppExport SEXP _RprobitB_rwishart(SEXP nuSEXP, SEXP VSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
+    rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
+    return rcpp_result_gen;
+END_RCPP
+}
+
+RcppExport SEXP run_testthat_tests(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
     {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
     {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
-    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
-    {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
-    {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_m", (DL_FUNC) &_RprobitB_update_m, 3},
@@ -350,6 +349,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 10},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {"_RprobitB_rttnorm", (DL_FUNC) &_RprobitB_rttnorm, 4},
+    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
+    {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
+    {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

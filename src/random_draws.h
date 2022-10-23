@@ -1,8 +1,7 @@
-#ifndef DISTRIBUTIONS_H
-#define DISTRIBUTIONS_H
+#ifndef RANDOMDRAWS_H
+#define RANDOMDRAWS_H
 
 // [[Rcpp::depends("RcppArmadillo")]]
-#include <Rcpp.h>
 #include <RcppArmadillo.h>
 #include <stdio.h>
 #include <float.h>
@@ -11,8 +10,17 @@
 using namespace arma;
 using namespace Rcpp;
 
-double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma,
-               bool log = false);
+double dexpr(double const& a);
+
+double invCdfNorm(double const& a);
+
+double dnr(double const& a);
+
+double trunNormBelow(double const& a);
+
+double rtnorm(double mu, double sig, double trunpt, bool above);
+
+double rttnorm(double mu, double sig, double lower_bound, double upper_bound);
 
 arma::vec rdirichlet(arma::vec delta);
 

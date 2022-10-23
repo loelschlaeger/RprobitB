@@ -4,9 +4,9 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
-#include "distributions.h"
-#include "truncated_normal.h"
 #include "class_update.h"
+#include "densities.h"
+#include "random_draws.h"
 using namespace arma;
 using namespace Rcpp;
 

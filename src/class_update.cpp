@@ -4,7 +4,7 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
-#include "gibbs.h"
+#include "gibbs_sampler.h"
 using namespace arma;
 using namespace Rcpp;
 
