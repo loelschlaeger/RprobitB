@@ -97,9 +97,9 @@ RprobitB_effects <- function(
 
 #' Compute number of (fixed and random) model effects
 #'
-#' \code{P()} computes the total number \code{P} of model effects.
-#' \code{P_f()} computes the number \code{P_f} of fixed model effects.
-#' \code{P_r()} computes the number \code{P_r} of random model effects.
+#' \code{coompute_P()} computes the total number \code{P} of model effects.
+#' \code{compute_P_f()} computes the number \code{P_f} of fixed model effects.
+#' \code{compute_P_r()} computes the number \code{P_r} of random model effects.
 #'
 #' @inheritParams RprobitB_formula
 #' @inheritParams RprobitB_parameter
@@ -114,31 +114,31 @@ RprobitB_effects <- function(
 #' formula <- choice ~ A | B + 0 | C + D
 #' re <- c("A", "D+")
 #' J <- 3
-#' P(formula, re, J)
-#' P_f(formula, re, J)
-#' P_r(formula, re, J)
+#' compute_P(formula, re, J)
+#' cmopute_P_f(formula, re, J)
+#' compute_P_r(formula, re, J)
 #'
 #' @export
 
-P <- function(formula, re, J, ordered = FALSE) {
-  P_f(formula = formula, re = re, J = J, ordered = ordered) +
-    P_r(formula = formula, re = re, J = J, ordered = ordered)
+compute_P <- function(formula, re, J, ordered = FALSE) {
+  compute_P_f(formula = formula, re = re, J = J, ordered = ordered) +
+    compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
 }
 
-#' @rdname P
+#' @rdname compute_P
 #' @export
 
-P_f <- function(formula, re, J, ordered = FALSE) {
+compute_P_f <- function(formula, re, J, ordered = FALSE) {
   RprobitB_effects <- RprobitB_effects(
     formula, re = re, alternatives = LETTERS[1:J], ordered = ordered
   )
   as.integer(sum(!RprobitB_effects$random))
 }
 
-#' @rdname P
+#' @rdname compute_P
 #' @export
 
-P_r <- function(formula, re, J, ordered = FALSE) {
+compute_P_r <- function(formula, re, J, ordered = FALSE) {
   RprobitB_effects <- RprobitB_effects(
     formula, re = re, alternatives = LETTERS[1:J], ordered = ordered
   )

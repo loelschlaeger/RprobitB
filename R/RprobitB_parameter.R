@@ -221,8 +221,8 @@ simulate_RprobitB_parameter <- function(
   if (missing(formula)) {
     RprobitB_stop("Please specify the input 'formula'.")
   }
-  P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
-  P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
+  P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
+  P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
   if (!is.null(seed)) set.seed(seed)
   if (is.na(x$alpha) && P_f > 0) {
     x$alpha <- RprobitB_prior("alpha", P_f = P_f)
