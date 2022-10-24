@@ -73,7 +73,7 @@ An \code{RprobitB_prior_alpha} object or \code{NA} if \code{P_f = 0}.
 }
 \description{
 This function defines the prior distributions for the probit model parameter
-\code{alpha}.
+\code{alpha}. Only relevant if \code{P_f > 0}.
 }
 \section{Model priors}{
 \subsection{Conjugate priors}{
@@ -82,12 +82,20 @@ A priori, the following
 \href{https://en.wikipedia.org/wiki/Conjugate_prior}{conjugate prior distributions}
 are assumed for the model parameters:
 \itemize{
-\item \code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
-\item \code{s ~ Dirichlet(concentration = s_prior_concentration)}
-\item \code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
-\item \code{Omega ~ Inverse-Wishart(df = Omega_prior_df, scale = Omega_prior_scale)}
-\item \code{Sigma ~ Inverse-Wishart(df = Sigma_prior_df, scale = Sigma_prior_scale)}
-\item \code{d ~ Normal(mean = d_prior_mean, Sigma = d_prior_Sigma)}
+\item Only if \code{P_f > 0}:
+\code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
+\item Only if \code{C > 1}:
+\code{s ~ Dirichlet(concentration = s_prior_concentration)}
+\item Only if \code{P_r > 0}:
+\code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
+\item Only if \code{P_r > 0}:
+\code{Omega ~ Inverse-Wishart(df = Omega_prior_df, scale = Omega_prior_scale)}
+\item Only in the ordered case (\code{ordered = TRUE}):
+\code{Sigma ~ Inverse-Wishart(df = Sigma_prior_df, scale = Sigma_prior_scale)}
+\item Only in the unordered case (\code{ordered = FALSE}):
+\code{Sigma_diff ~ Inverse-Wishart(df = Sigma_diff_prior_df, scale = Sigma_diff_prior_scale)}
+\item Only in the ordered case (\code{ordered = TRUE}):
+\code{d ~ Normal(mean = d_prior_mean, Sigma = d_prior_Sigma)}
 }
 }
 
@@ -95,31 +103,36 @@ are assumed for the model parameters:
 
 By default, the following parameters are set for the conjugate priors:
 \itemize{
-\item \code{alpha}
+\item \code{alpha} (only if \code{P_f > 0})
 \itemize{
 \item \code{alpha_prior_mean = numeric(P_f)}
 \item \code{alpha_prior_Sigma = 10*diag(P_f)}
 }
-\item \code{s}
+\item \code{s} (only if \code{C > 1})
 \itemize{
 \item \code{s_prior_concentration = rep(1, C)}
 }
-\item \code{b}
+\item \code{b} (only if \code{P_r > 0})
 \itemize{
 \item \code{b_prior_mean = numeric(P_r)}
 \item \code{b_prior_Sigma = 10*diag(P_r)}
 }
-\item \code{Omega}
+\item \code{Omega} (only if \code{P_r > 0})
 \itemize{
 \item \code{Omega_prior_df = P_r + 2}
 \item \code{Omega_prior_scale = diag(P_r)}
 }
-\item \code{Sigma}
+\item \code{Sigma} (only if \code{ordered = TRUE})
 \itemize{
-\item \code{Sigma_prior_df = if (ordered) 4 else J + 1}
-\item \code{Sigma_prior_scale = if (ordered) diag(1) else diag(J-1)}
+\item \code{Sigma_prior_df = 3}
+\item \code{Sigma_prior_scale = 1}
 }
-\item \code{d}
+\item \code{Sigma_diff} (only if \code{ordered = FALSE})
+\itemize{
+\item \code{Sigma_diff_prior_df = J + 1}
+\item \code{Sigma_diff_prior_scale = diag(J-1)}
+}
+\item \code{d} (only if \code{ordered = TRUE})
 \itemize{
 \item \code{d_prior_mean = numeric(J - 2)}
 \item \code{d_prior_Sigma = diag(J - 2)}
@@ -130,11 +143,11 @@ These parameters can be overwritten by submitting eponymous inputs.
 
 \subsection{Custom priors}{
 
-By default, conjugate priors are used, but custom priors can be
+By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) could be helpful:
+The following density functions (implemented in {RprobitB}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}

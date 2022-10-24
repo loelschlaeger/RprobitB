@@ -22,7 +22,7 @@ By default, \code{re = NULL}, i.e., no random effects.}
 
 \item{J}{An \code{integer}, the number of choice alternatives.}
 
-\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 }
 \value{

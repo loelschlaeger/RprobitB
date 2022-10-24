@@ -20,11 +20,11 @@ fitted, see details.}
 should have a random effect, see details.
 By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=RprobitB_prior_alpha]{RprobitB_prior_alpha}}, \code{\link[=RprobitB_prior_s]{RprobitB_prior_s}}, \code{\link[=RprobitB_prior_b]{RprobitB_prior_b}}, \code{\link[=RprobitB_prior_Omega]{RprobitB_prior_Omega}}
+  Arguments passed on to \code{\link[=RprobitB_prior_alpha]{RprobitB_prior_alpha}}, \code{\link[=RprobitB_prior_s]{RprobitB_prior_s}}, \code{\link[=RprobitB_prior_b]{RprobitB_prior_b}}, \code{\link[=RprobitB_prior_Omega]{RprobitB_prior_Omega}}, \code{\link[=RprobitB_prior_Sigma]{RprobitB_prior_Sigma}}, \code{\link[=RprobitB_prior_Sigma_diff]{RprobitB_prior_Sigma_diff}}, \code{\link[=RprobitB_prior_d]{RprobitB_prior_d}}
   \describe{
     \item{\code{P_f}}{An \code{integer}, the number of fixed model effects.
 Can be computed via the function \code{\link{compute_P_f}}.}
@@ -83,6 +83,52 @@ By default, \code{Omega_prior_custom = NULL}, i.e., no custom prior.}
 custom prior density function \code{Omega_prior_custom}.
 By default, \code{Omega_prior_custom_test_par = diag(P_r)}.
 Ignored if \code{Omega_prior_custom = NULL}.}
+    \item{\code{Sigma_prior_df}}{An \code{integer}, the degrees of freedom for the conjugate
+Inverse-Wishart prior distribution of \code{Sigma}.
+It must be greater or equal than \code{3} (to ensure a proper prior).
+By default, \code{Sigma_prior_df = 3}.}
+    \item{\code{Sigma_prior_scale}}{A \code{matrix} of dimension \code{1} x \code{1}, the scale
+matrix for the conjugate Inverse-Wishart prior distribution of
+\code{Sigma}.
+Can also be a single \code{numeric}.
+By default, \code{Sigma_prior_scale = 1}.}
+    \item{\code{Sigma_prior_custom}}{A \code{function}, a custom prior density function for \code{Sigma},
+see details.
+By default, \code{Sigma_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{Sigma_prior_custom_test_par}}{A \code{matrix} of dimension \code{1} x \code{1}, a test input for
+the custom prior density function \code{Sigma_prior_custom}.
+Can also be a single \code{numeric}.
+By default, \code{Sigma_prior_custom_test_par = 1}.
+Ignored if \code{Sigma_prior_custom = NULL}.}
+    \item{\code{J}}{An \code{integer}, the number of choice alternatives.}
+    \item{\code{Sigma_diff_prior_df}}{An \code{integer}, the degrees of freedom for the conjugate
+Inverse-Wishart prior distribution of \code{Sigma_diff}.
+It must be greater or equal than \code{J + 1} (to ensure a proper prior).
+By default, \code{Sigma_diff_prior_df = J + 1}.}
+    \item{\code{Sigma_diff_prior_scale}}{A \code{matrix} of dimension \code{(J-1)} x \code{(J-1)}, the scale
+matrix for the conjugate Inverse-Wishart prior distribution of
+\code{Sigma_diff}.
+By default, \code{Sigma_diff_prior_scale = diag(J-1)}.}
+    \item{\code{Sigma_diff_prior_custom}}{A \code{function}, a custom prior density function for \code{Sigma_diff},
+see details.
+By default, \code{Sigma_diff_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{Sigma_diff_prior_custom_test_par}}{A \code{matrix} of dimension \code{(J-1)} x \code{(J-1)}, a test input for
+the custom prior density function \code{Sigma_diff_prior_custom}.
+By default, \code{Sigma_diff_prior_custom_test_par = diag(J-1)}.
+Ignored if \code{Sigma_diff_prior_custom = NULL}.}
+    \item{\code{d_prior_mean}}{A \code{numeric} of length \code{J-2}, the mean vector for the conjugate
+normal prior distribution of \code{d}.
+By default, \code{d_prior_mean = numeric(J-2)}.}
+    \item{\code{d_prior_Sigma}}{A \code{matrix} of dimension \code{(J-2)} x \code{(J-2)}, the covariance
+matrix for the conjugate normal prior distribution of \code{d}.
+By default, \code{d_prior_Sigma = 10 * diag(J-2)}.}
+    \item{\code{d_prior_custom}}{A \code{function}, a custom prior density function for \code{d},
+see details.
+By default, \code{d_prior_custom = NULL}, i.e., no custom prior.}
+    \item{\code{d_prior_custom_test_par}}{A \code{numeric} of length \code{J-2}, a test input for the custom prior
+density function \code{d_prior_custom}.
+By default, \code{d_prior_custom_test_par = numeric(J-2)}.
+Ignored if \code{d_prior_custom = NULL}.}
   }}
 
 \item{x}{An \code{RprobitB_prior} object.}
@@ -101,12 +147,20 @@ A priori, the following
 \href{https://en.wikipedia.org/wiki/Conjugate_prior}{conjugate prior distributions}
 are assumed for the model parameters:
 \itemize{
-\item \code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
-\item \code{s ~ Dirichlet(concentration = s_prior_concentration)}
-\item \code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
-\item \code{Omega ~ Inverse-Wishart(df = Omega_prior_df, scale = Omega_prior_scale)}
-\item \code{Sigma ~ Inverse-Wishart(df = Sigma_prior_df, scale = Sigma_prior_scale)}
-\item \code{d ~ Normal(mean = d_prior_mean, Sigma = d_prior_Sigma)}
+\item Only if \code{P_f > 0}:
+\code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
+\item Only if \code{C > 1}:
+\code{s ~ Dirichlet(concentration = s_prior_concentration)}
+\item Only if \code{P_r > 0}:
+\code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
+\item Only if \code{P_r > 0}:
+\code{Omega ~ Inverse-Wishart(df = Omega_prior_df, scale = Omega_prior_scale)}
+\item Only in the ordered case (\code{ordered = TRUE}):
+\code{Sigma ~ Inverse-Wishart(df = Sigma_prior_df, scale = Sigma_prior_scale)}
+\item Only in the unordered case (\code{ordered = FALSE}):
+\code{Sigma_diff ~ Inverse-Wishart(df = Sigma_diff_prior_df, scale = Sigma_diff_prior_scale)}
+\item Only in the ordered case (\code{ordered = TRUE}):
+\code{d ~ Normal(mean = d_prior_mean, Sigma = d_prior_Sigma)}
 }
 }
 
@@ -114,31 +168,36 @@ are assumed for the model parameters:
 
 By default, the following parameters are set for the conjugate priors:
 \itemize{
-\item \code{alpha}
+\item \code{alpha} (only if \code{P_f > 0})
 \itemize{
 \item \code{alpha_prior_mean = numeric(P_f)}
 \item \code{alpha_prior_Sigma = 10*diag(P_f)}
 }
-\item \code{s}
+\item \code{s} (only if \code{C > 1})
 \itemize{
 \item \code{s_prior_concentration = rep(1, C)}
 }
-\item \code{b}
+\item \code{b} (only if \code{P_r > 0})
 \itemize{
 \item \code{b_prior_mean = numeric(P_r)}
 \item \code{b_prior_Sigma = 10*diag(P_r)}
 }
-\item \code{Omega}
+\item \code{Omega} (only if \code{P_r > 0})
 \itemize{
 \item \code{Omega_prior_df = P_r + 2}
 \item \code{Omega_prior_scale = diag(P_r)}
 }
-\item \code{Sigma}
+\item \code{Sigma} (only if \code{ordered = TRUE})
 \itemize{
-\item \code{Sigma_prior_df = if (ordered) 4 else J + 1}
-\item \code{Sigma_prior_scale = if (ordered) diag(1) else diag(J-1)}
+\item \code{Sigma_prior_df = 3}
+\item \code{Sigma_prior_scale = 1}
 }
-\item \code{d}
+\item \code{Sigma_diff} (only if \code{ordered = FALSE})
+\itemize{
+\item \code{Sigma_diff_prior_df = J + 1}
+\item \code{Sigma_diff_prior_scale = diag(J-1)}
+}
+\item \code{d} (only if \code{ordered = TRUE})
 \itemize{
 \item \code{d_prior_mean = numeric(J - 2)}
 \item \code{d_prior_Sigma = diag(J - 2)}
@@ -149,11 +208,11 @@ These parameters can be overwritten by submitting eponymous inputs.
 
 \subsection{Custom priors}{
 
-By default, conjugate priors are used, but custom priors can be
+By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) could be helpful:
+The following density functions (implemented in {RprobitB}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -211,7 +270,8 @@ RprobitB_prior(formula = choice ~ A, J = 2)
 RprobitB_prior(
   formula = choice ~ A | B + 0, re = "A", J = 4, C = 2,
   alpha_prior_mean = c(-10, 0, 10),
-  s_prior_concentration = c(1, 2)
+  s_prior_concentration = c(1, 2),
+  b_prior_Sigma = matrix(2)
 )
 
 ### custom prior distributions

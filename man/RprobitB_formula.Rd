@@ -23,7 +23,7 @@ fitted, see details.}
 should have a random effect, see details.
 By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
 \item{x}{An \code{RprobitB_formula} object.}

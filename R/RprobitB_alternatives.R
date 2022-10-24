@@ -13,7 +13,7 @@
 #' ordered probit case).
 #' By default, \code{base} is the first element of \code{alternatives}.
 #' @param ordered
-#' A \code{logical}, \code{TRUE} if the alternatives are ordered and
+#' A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 #' \code{FALSE} (default) else.
 #'
 #' @return

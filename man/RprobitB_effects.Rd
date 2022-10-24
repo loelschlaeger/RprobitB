@@ -29,7 +29,7 @@ Ignored if the model has no alternative specific covariates (e.g., in the
 ordered probit case).
 By default, \code{base} is the first element of \code{alternatives}.}
 
-\item{ordered}{A \code{logical}, \code{TRUE} if the alternatives are ordered and
+\item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 }
 \value{
