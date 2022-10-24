@@ -34,7 +34,7 @@
 #' ...
 #' 
 #' (@importFrom ... ...)
-#' (@export)
+#' (@export) (@exportS3method)
 #' @keywords internal object utils cpp
 #' @seealso [fun()] to ...
 
