@@ -283,4 +283,4 @@ RprobitB_prior(
 )
 
 }
-\keyword{specification}
+\keyword{object}

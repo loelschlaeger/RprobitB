@@ -1,8 +1,10 @@
 #' Define probit model parameters
 #'
-#' This function creates an object of class \code{RprobitB_parameter}, which
-#' contains the parameters of a probit model, see details.
-#' \code{simulate_RprobitB_parameters()} simulates missing parameters.
+#' These functions create and validate an object of class
+#' \code{RprobitB_parameter}, which contains the parameters of a probit model,
+#' see details.
+#' \code{simulate_RprobitB_parameters()} simulates missing parameters from the
+#' default prior distributions, see \code{\link{RprobitB_prior}}.
 #' \code{validate_RprobitB_parameters()} checks the parameters.
 #'
 #' @param C
@@ -152,28 +154,27 @@
 #' \eqn{\gamma_1 = 0}.
 #'
 #' For scale normalization, we fix the top left element of \code{Sigma_diff} to
-#' \eqn{1}. Other options exist, see \code{\link{transform}}.
-#'
-#' @examples
-#' TODO
+#' \eqn{1} (or \code{Sigma = 1} in the ordered probit case).
+#' Other options exist, see \code{\link{transform}}.
 #'
 #' @export
+#' @keywords object
 
 RprobitB_parameter <- function(
     C = 1, s = rep(1,C)/C, alpha = NA, b = NA, Omega = NA, Sigma = NA,
     Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
 ) {
-  stopifnot(is.na(C) || is.numeric(C))
-  stopifnot(is.na(s) || is.numeric(s))
-  stopifnot(is.na(alpha) || is.numeric(alpha))
-  stopifnot(is.na(b) || is.numeric(b))
-  stopifnot(is.na(Omega) || is.numeric(Omega))
-  stopifnot(is.na(Sigma) || is.numeric(Sigma))
-  stopifnot(is.na(Sigma_diff) || is.numeric(Sigma_diff))
-  stopifnot(is.na(diff_alt) || is.numeric(diff_alt))
-  stopifnot(is.na(beta) || is.numeric(beta))
-  stopifnot(is.na(z) || is.numeric(z))
-  stopifnot(is.na(d) || is.numeric(d))
+  stopifnot(identical(C, NA) || is.numeric(C))
+  stopifnot(identical(s, NA) || is.numeric(s))
+  stopifnot(identical(alpha, NA) || is.numeric(alpha))
+  stopifnot(identical(b, NA) || is.numeric(b))
+  stopifnot(identical(Omega, NA) || is.numeric(Omega))
+  stopifnot(identical(Sigma, NA) || is.numeric(Sigma))
+  stopifnot(identical(Sigma_diff, NA) || is.numeric(Sigma_diff))
+  stopifnot(identical(diff_alt, NA) || is.numeric(diff_alt))
+  stopifnot(identical(beta, NA) || is.numeric(beta))
+  stopifnot(identical(z, NA) || is.numeric(z))
+  stopifnot(identical(d, NA) || is.numeric(d))
   structure(
     list(
       "C" = C,
@@ -193,14 +194,14 @@ RprobitB_parameter <- function(
 }
 
 #' @rdname RprobitB_parameter
+#' @param x
+#' An \code{RprobitB_parameter} object.
 
 is.RprobitB_parameter <- function(x) {
   inherits(x, "RprobitB_parameter")
 }
 
 #' @rdname RprobitB_parameter
-#' @param x
-#' An \code{RprobitB_parameter} object.
 #' @inheritParams RprobitB_formula
 #' @param J
 #' An \code{integer}, the number of choice alternatives.
@@ -212,20 +213,29 @@ is.RprobitB_parameter <- function(x) {
 #' By default, \code{seed = NULL}, i.e., no seed is set.
 #' @inheritSection RprobitB_formula Model formula
 #' @inheritSection RprobitB_formula Random effects
+#' @examples
+#' (x <- RprobitB_parameter(C = 2))
+#' formula <- choice ~ A | B
+#' re <- "A"
+#' J <- 3
+#' N <- 100
+#' (x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N, seed = 1))
+#' (x <- validate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
 
 simulate_RprobitB_parameter <- function(
     x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N,
     seed = NULL
   ) {
-  stopifnot(is.RprobitB_parameter(x))
+  stopifnot(is.RprobitB_parameter(x), is_pos_int(J), is_pos_int(N))
   if (missing(formula)) {
     RprobitB_stop("Please specify the input 'formula'.")
   }
   P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
   if (!is.null(seed)) set.seed(seed)
-  if (is.na(x$alpha) && P_f > 0) {
-    x$alpha <- RprobitB_prior("alpha", P_f = P_f)
+  if (identical(x$alpha, NA) && P_f > 0) {
+    alpha_prior <- RprobitB_prior_alpha(P_f)
+    alpha #<- rmvnorm(mean = alpha_prior$mean, Sigma = alpha_prior$Sigma)
   }
 
 
@@ -233,7 +243,9 @@ simulate_RprobitB_parameter <- function(
 
 #' @rdname RprobitB_parameter
 
-validate_RprobitB_parameter <- function() {
+validate_RprobitB_parameter <- function(
+    x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N
+) {
 
   P_f <- P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- P_r(formula = formula, re = re, J = J, ordered = ordered)
@@ -462,23 +474,31 @@ validate_RprobitB_parameter <- function() {
 
 #' @rdname RprobitB_parameter
 #' @param ...
-#' A \code{character} (vector), the names of parameters to be printed.
+#' A \code{character} (vector), the names of model parameters to be printed.
 #' By default, all available parameters are printed.
-#' @param digits
-#' An \code{integer}, the number of decimal places to be printed.
-#' By default, \code{digits = 2}.
+#' @inheritParams print_matrix
 #' @exportS3Method
 
-print.RprobitB_parameter <- function(x, ..., digits = 4) {
+print.RprobitB_parameter <- function(
+    x, ..., rowdots = 4, coldots = 4, digits = 2, simplify = FALSE,
+    details = !simplify
+  ) {
+  stopifnot(inherits(x, "RprobitB_parameter"))
   pars <- list(...)
   ind <- if (length(pars) != 0) {
     sapply(pars, function(par) which(names(x) == par))
   } else {
     seq_along(x)
   }
+  cat(cli::style_underline("Parameter:\n"))
   for (i in ind) {
-    pprint(x[[i]], name = names(x)[i], desc = TRUE)
-    cat("\n\n")
+    if(!identical(x[[i]], NA)) {
+      print_matrix(
+        x[[i]], rowdots = rowdots, coldots = coldots, digits = digits,
+        label = names(x)[i], simplify = simplify, details = details
+      )
+      cat("\n")
+    }
   }
   return(invisible(x))
 }

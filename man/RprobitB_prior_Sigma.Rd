@@ -62,7 +62,8 @@ By default, \code{rowdots = 4}.}
 \item{coldots}{An \code{integer}, the column number which is replaced by \code{...}.
 By default, \code{coldots = 4}.}
 
-\item{digits}{An \code{integer}, the number of decimal places to be printed.
+\item{digits}{An \code{integer}, the number of printed decimal places.
+Only relevant if input \code{x} is numeric.
 By default, \code{digits = 2}.}
 
 \item{simplify}{A \code{logical}, set to \code{TRUE} to simplify the output.

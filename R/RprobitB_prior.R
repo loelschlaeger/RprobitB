@@ -94,7 +94,7 @@
 #'   }
 #' )
 #'
-#' @keywords specification
+#' @keywords object
 #' @export
 
 RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {

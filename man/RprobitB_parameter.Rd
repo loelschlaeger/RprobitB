@@ -34,9 +34,24 @@ simulate_RprobitB_parameter(
   seed = NULL
 )
 
-validate_RprobitB_parameter()
+validate_RprobitB_parameter(
+  x = RprobitB_parameter(),
+  formula,
+  re = NULL,
+  ordered = FALSE,
+  J,
+  N
+)
 
-\method{print}{RprobitB_parameter}(x, ..., digits = 4)
+\method{print}{RprobitB_parameter}(
+  x,
+  ...,
+  rowdots = 4,
+  coldots = 4,
+  digits = 2,
+  simplify = FALSE,
+  details = !simplify
+)
 }
 \arguments{
 \item{C}{An \code{integer}, the number (greater or equal 1) of latent classes of
@@ -109,19 +124,35 @@ By default, \code{re = NULL}, i.e., no random effects.}
 reproducible.
 By default, \code{seed = NULL}, i.e., no seed is set.}
 
-\item{...}{A \code{character} (vector), the names of parameters to be printed.
+\item{...}{A \code{character} (vector), the names of model parameters to be printed.
 By default, all available parameters are printed.}
 
-\item{digits}{An \code{integer}, the number of decimal places to be printed.
+\item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
+By default, \code{rowdots = 4}.}
+
+\item{coldots}{An \code{integer}, the column number which is replaced by \code{...}.
+By default, \code{coldots = 4}.}
+
+\item{digits}{An \code{integer}, the number of printed decimal places.
+Only relevant if input \code{x} is numeric.
 By default, \code{digits = 2}.}
+
+\item{simplify}{A \code{logical}, set to \code{TRUE} to simplify the output.
+By default, \code{simplify = FALSE}.}
+
+\item{details}{A \code{logical}, set to \code{TRUE} to print the type and
+dimension of \code{x}.
+By default, \code{details = !simplify}.}
 }
 \value{
 An \code{RprobitB_parameter} object.
 }
 \description{
-This function creates an object of class \code{RprobitB_parameter}, which
-contains the parameters of a probit model, see details.
-\code{simulate_RprobitB_parameters()} simulates missing parameters.
+These functions create and validate an object of class
+\code{RprobitB_parameter}, which contains the parameters of a probit model,
+see details.
+\code{simulate_RprobitB_parameters()} simulates missing parameters from the
+default prior distributions, see \code{\link{RprobitB_prior}}.
 \code{validate_RprobitB_parameters()} checks the parameters.
 }
 \section{The probit model}{
@@ -218,7 +249,8 @@ For level normalization in the ordered probit model, we fix
 \eqn{\gamma_1 = 0}.
 
 For scale normalization, we fix the top left element of \code{Sigma_diff} to
-\eqn{1}. Other options exist, see \code{\link{transform}}.
+\eqn{1} (or \code{Sigma = 1} in the ordered probit case).
+Other options exist, see \code{\link{transform}}.
 }
 
 \section{Model formula}{
@@ -263,6 +295,12 @@ To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 }
 
 \examples{
-TODO
-
+(x <- RprobitB_parameter(C = 2))
+formula <- choice ~ A | B
+re <- "A"
+J <- 3
+N <- 100
+(x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N, seed = 1))
+(x <- validate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
 }
+\keyword{object}
