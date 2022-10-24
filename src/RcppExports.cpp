@@ -291,66 +291,70 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rtnorm
-double rtnorm(double mu, double sig, double trunpt, bool above);
-RcppExport SEXP _RprobitB_rtnorm(SEXP muSEXP, SEXP sigSEXP, SEXP trunptSEXP, SEXP aboveSEXP) {
+// rdirichlet_cpp
+arma::vec rdirichlet_cpp(arma::vec concentration);
+RcppExport SEXP _RprobitB_rdirichlet_cpp(SEXP concentrationSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sig(sigSEXP);
-    Rcpp::traits::input_parameter< double >::type trunpt(trunptSEXP);
-    Rcpp::traits::input_parameter< bool >::type above(aboveSEXP);
-    rcpp_result_gen = Rcpp::wrap(rtnorm(mu, sig, trunpt, above));
+    Rcpp::traits::input_parameter< arma::vec >::type concentration(concentrationSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdirichlet_cpp(concentration));
     return rcpp_result_gen;
 END_RCPP
 }
-// rttnorm
-double rttnorm(double mu, double sig, double lower_bound, double upper_bound);
-RcppExport SEXP _RprobitB_rttnorm(SEXP muSEXP, SEXP sigSEXP, SEXP lower_boundSEXP, SEXP upper_boundSEXP) {
+// rmvnorm_cpp
+arma::vec rmvnorm_cpp(arma::vec mean, arma::mat const& Sigma, bool log);
+RcppExport SEXP _RprobitB_rmvnorm_cpp(SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sig(sigSEXP);
-    Rcpp::traits::input_parameter< double >::type lower_bound(lower_boundSEXP);
-    Rcpp::traits::input_parameter< double >::type upper_bound(upper_boundSEXP);
-    rcpp_result_gen = Rcpp::wrap(rttnorm(mu, sig, lower_bound, upper_bound));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rmvnorm
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
-RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mean(meanSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmvnorm_cpp(mean, Sigma, log));
     return rcpp_result_gen;
 END_RCPP
 }
-// rdirichlet
-arma::vec rdirichlet(arma::vec delta);
-RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
+// rtnorm_cpp
+double rtnorm_cpp(double mean, double sd, double point, bool above, bool log);
+RcppExport SEXP _RprobitB_rtnorm_cpp(SEXP meanSEXP, SEXP sdSEXP, SEXP pointSEXP, SEXP aboveSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
+    Rcpp::traits::input_parameter< double >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< double >::type sd(sdSEXP);
+    Rcpp::traits::input_parameter< double >::type point(pointSEXP);
+    Rcpp::traits::input_parameter< bool >::type above(aboveSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(rtnorm_cpp(mean, sd, point, above, log));
     return rcpp_result_gen;
 END_RCPP
 }
-// rwishart
-List rwishart(double nu, arma::mat const& V);
-RcppExport SEXP _RprobitB_rwishart(SEXP nuSEXP, SEXP VSEXP) {
+// rttnorm_cpp
+double rttnorm_cpp(double mean, double sd, double lower, double upper, bool log);
+RcppExport SEXP _RprobitB_rttnorm_cpp(SEXP meanSEXP, SEXP sdSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
-    rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
+    Rcpp::traits::input_parameter< double >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< double >::type sd(sdSEXP);
+    Rcpp::traits::input_parameter< double >::type lower(lowerSEXP);
+    Rcpp::traits::input_parameter< double >::type upper(upperSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(rttnorm_cpp(mean, sd, lower, upper, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rwishart_cpp
+arma::mat rwishart_cpp(double df, arma::mat const& scale, bool inv);
+RcppExport SEXP _RprobitB_rwishart_cpp(SEXP dfSEXP, SEXP scaleSEXP, SEXP invSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< bool >::type inv(invSEXP);
+    rcpp_result_gen = Rcpp::wrap(rwishart_cpp(df, scale, inv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -377,11 +381,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 10},
-    {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
-    {"_RprobitB_rttnorm", (DL_FUNC) &_RprobitB_rttnorm, 4},
-    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
-    {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
-    {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
+    {"_RprobitB_rdirichlet_cpp", (DL_FUNC) &_RprobitB_rdirichlet_cpp, 1},
+    {"_RprobitB_rmvnorm_cpp", (DL_FUNC) &_RprobitB_rmvnorm_cpp, 3},
+    {"_RprobitB_rtnorm_cpp", (DL_FUNC) &_RprobitB_rtnorm_cpp, 5},
+    {"_RprobitB_rttnorm_cpp", (DL_FUNC) &_RprobitB_rttnorm_cpp, 5},
+    {"_RprobitB_rwishart_cpp", (DL_FUNC) &_RprobitB_rwishart_cpp, 3},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };

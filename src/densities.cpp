@@ -46,13 +46,17 @@ double ddirichlet_cpp(
   }
   norm = norm / std::tgamma(sum(concentration));
   double density = P / norm;
-  if(log) return std::log(density);
+  if (log) return std::log(density);
   return density;
 }
 
 //' Compute density of multivariate normal distribution
 //'
 //' This function computes the density of a multivariate normal distribution.
+//'
+//' @details
+//' This function performs no input checks. See \code{\link{dmvnorm}}
+//' for the version with input checks.
 //'
 //' @param x
 //' A \code{numeric}, a quantile vector of length \code{n}.
@@ -84,16 +88,20 @@ double dmvnorm_cpp(
   ) {
   int n = x.size();
   double sqrt2pi = std::sqrt(2.0 * M_PI);
-  arma::mat quadform  = trans(x-mean) * solve(Sigma,arma::eye(n,n)) * (x-mean);
+  arma::mat quadform  = trans(x-mean) * solve(Sigma, arma::eye(n,n)) * (x-mean);
   double norm = pow(sqrt2pi,-n) * pow(arma::det(Sigma),-0.5);
   double density = norm * exp(-0.5 * quadform(0,0));
-  if(log) return std::log(density);
+  if (log) return std::log(density);
   return density;
 }
 
 //' Compute density of (Inverse-) Wishart distribution
 //'
 //' This function computes the density of the (Inverse-) Wishart distribution.
+//'
+//' @details
+//' This function performs no input checks. See \code{\link{dwishart}}
+//' for the version with input checks.
 //'
 //' @param x
 //' A \code{matrix}, a covariance matrix of dimension \code{n} x \code{n}.
@@ -150,7 +158,7 @@ double dwishart_cpp(
     norm = pow(2.0, (dfh * n)) * pow(arma::det(scale), dfh) * gamma;
   }
   double density = P / norm;
-  if(log) return std::log(density);
+  if (log) return std::log(density);
   return density;
 }
 

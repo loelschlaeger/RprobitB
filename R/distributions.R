@@ -19,6 +19,20 @@ ddirichlet <- function(x, concentration, log = FALSE) {
   ddirichlet_cpp(x, concentration, log)
 }
 
+#' @inherit rdirichlet_cpp title description return
+#' @inheritParams rdirichlet_cpp
+#'
+#' @examples
+#' rdirichlet(concentration = 1:3)
+#'
+#' @export
+#' @keywords internal utils
+
+rdirichlet <- function(concentration) {
+  stopifnot(is.numeric(concentration), is.vector(concentration))
+  as.vector(rdirichlet_cpp(concentration))
+}
+
 #' @inherit dmvnorm_cpp title description return
 #' @inheritParams dmvnorm_cpp
 #'
@@ -39,6 +53,27 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
     length(mean) == dim(Sigma)[1], is_bool(log)
   )
   dmvnorm_cpp(x, mean, Sigma, log)
+}
+
+#' @inherit rmvnorm_cpp title description return
+#' @inheritParams rmvnorm_cpp
+#'
+#' @examples
+#' mean <- c(0,0)
+#' Sigma <- diag(2)
+#' rmvnorm(mean = mean, Sigma = Sigma)
+#' rmvnorm(mean = mean, Sigma = Sigma, log = TRUE)
+#'
+#' @export
+#' @keywords internal utils
+
+rmvnorm <- function(mean, Sigma, log = FALSE) {
+  stopifnot(
+    is.numeric(mean), is.vector(mean),
+    is.matrix(Sigma), is_cov_matrix(Sigma),
+    length(mean) == dim(Sigma)[1], is_bool(log)
+  )
+  as.vector(rmvnorm_cpp(mean, Sigma, log))
 }
 
 #' @inherit dwishart_cpp title description return
@@ -63,3 +98,23 @@ dwishart <- function(x, df, scale, log = FALSE, inv = FALSE) {
   )
   dwishart_cpp(x, df, scale, log, inv)
 }
+
+#' @inherit rwishart_cpp title description return
+#' @inheritParams rwishart_cpp
+#'
+#' @examples
+#' df <- 4
+#' scale <- diag(2)
+#' rwishart(df = df, scale = scale)
+#' rwishart(df = df, scale = scale, inv = TRUE)
+#'
+#' @export
+#' @keywords internal utils
+
+rwishart <- function(df, scale, inv = FALSE) {
+  stopifnot(
+    is_pos_int(df), is.matrix(scale), is_cov_matrix(scale), is_bool(inv)
+  )
+  rwishart_cpp(df, scale, inv)
+}
+

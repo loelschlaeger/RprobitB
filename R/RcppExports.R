@@ -157,6 +157,10 @@ ddirichlet_cpp <- function(x, concentration, log = FALSE) {
 #'
 #' This function computes the density of a multivariate normal distribution.
 #'
+#' @details
+#' This function performs no input checks. See \code{\link{dmvnorm}}
+#' for the version with input checks.
+#'
 #' @param x
 #' A \code{numeric}, a quantile vector of length \code{n}.
 #' @param mean
@@ -187,6 +191,10 @@ dmvnorm_cpp <- function(x, mean, Sigma, log = FALSE) {
 #' Compute density of (Inverse-) Wishart distribution
 #'
 #' This function computes the density of the (Inverse-) Wishart distribution.
+#'
+#' @details
+#' This function performs no input checks. See \code{\link{dwishart}}
+#' for the version with input checks.
 #'
 #' @param x
 #' A \code{matrix}, a covariance matrix of dimension \code{n} x \code{n}.
@@ -675,129 +683,138 @@ gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_p
     .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
 }
 
-#' Draw from one-sided truncated normal
-#' @description
-#' This function draws from a one-sided truncated univariate normal
-#' distribution.
-#' @param mu
-#' The mean.
-#' @param sig
-#' The standard deviation.
-#' @param trunpt
-#' The truncation point.
-#' @param above
-#' A boolean, if \code{TRUE} truncate from above, otherwise from below.
-#' @return
-#' A numeric value.
-#' @export
-#' @examples
-#' ### samples from a standard normal truncated at 1 from above
-#' R <- 1e4
-#' draws <- replicate(R, rtnorm(0,1,1,TRUE))
-#' plot(density(draws))
-#' @keywords
-#' internal distribution
+#' Draw from Dirichlet distribution
 #'
-rtnorm <- function(mu, sig, trunpt, above) {
-    .Call(`_RprobitB_rtnorm`, mu, sig, trunpt, above)
-}
-
-#' Draw from two-sided truncated normal
-#' @description
-#' This function draws from a two-sided truncated univariate normal
-#' distribution.
-#' @param mu
-#' The mean.
-#' @param sig
-#' The standard deviation.
-#' @param lower_bound
-#' The lower truncation point.
-#' @param upper_bound
-#' The upper truncation point.
-#' @return
-#' A numeric value.
-#' @export
-#' @examples
-#' ### samples from a standard normal truncated at -2 and 2
-#' R <- 1e4
-#' draws <- replicate(R, rttnorm(0,1,-2,2))
-#' plot(density(draws))
-#' @keywords
-#' internal distribution
+#' Function to draw from a Dirichlet distribution.
 #'
-rttnorm <- function(mu, sig, lower_bound, upper_bound) {
-    .Call(`_RprobitB_rttnorm`, mu, sig, lower_bound, upper_bound)
+#' @details
+#' This function performs no input checks. See \code{\link{rdirichlet}}
+#' for the version with input checks.
+#'
+#' @param concentration
+#' A \code{numeric}, the concentration vector of length \code{n}.
+#'
+#' @return
+#' A \code{numeric} of length \code{n}, the random draw.
+#'
+#' @examples
+#' RprobitB:::rdirichlet(concentration = 1:3)
+#'
+#' @keywords internal cpp
+#'
+rdirichlet_cpp <- function(concentration) {
+    .Call(`_RprobitB_rdirichlet_cpp`, concentration)
 }
 
 #' Draw from multivariate normal distribution
-#' @description
-#' This function draws from a multivariate normal distribution.
-#' @details
-#' The function builds upon the following fact: If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
-#' where each \eqn{\epsilon_i} is drawn independently from a standard normal distribution,
-#' then \eqn{\mu+L\epsilon} is a draw from the multivariate normal distribution
-#' \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower triangular factor of the
-#' Choleski decomposition of \eqn{\Sigma}.
-#' @param mu
-#' The mean vector of length \code{n}.
-#' @param Sigma
-#' The covariance matrix of dimension \code{n} x \code{n}.
-#' @return
-#' A numeric vector of length \code{n}.
-#' @export
-#' @examples
-#' mu <- c(0,0)
-#' Sigma <- diag(2)
-#' rmvnorm(mu = mu, Sigma = Sigma)
-#' @keywords
-#' internal distribution
 #'
-rmvnorm <- function(mu, Sigma) {
-    .Call(`_RprobitB_rmvnorm`, mu, Sigma)
+#' This function draws from a multivariate normal distribution.
+#'
+#' @details
+#' The function builds upon the following fact:
+#' If \eqn{\epsilon = (\epsilon_1,\dots,\epsilon_n)},
+#' where each \eqn{\epsilon_i} is drawn independently from a standard normal
+#' distribution, then \eqn{\mu+L\epsilon} is a draw from the multivariate
+#' normal distribution \eqn{N(\mu,\Sigma)}, where \eqn{L} is the lower
+#' triangular factor of the Choleski decomposition of \eqn{\Sigma}.
+#'
+#' This function performs no input checks. See \code{\link{rmvnorm}}
+#' for the version with input checks.
+#'
+#' @inheritParams dmvnorm_cpp
+#' @param log
+#' A \code{logical}, if \code{TRUE} the draw is taken from the log-normal
+#' distribution.
+#' By default, \code{log = FALSE}.
+#'
+#' @return
+#' A \code{numeric} of length \code{n}, the random draw.
+#'
+#' @examples
+#' RprobitB:::rmvnorm_cpp(mean = c(0,0), Sigma = diag(2))
+#' RprobitB:::rmvnorm_cpp(mean = c(0,0), Sigma = diag(2), log = TRUE)
+#'
+#' @keywords internal cpp
+#'
+rmvnorm_cpp <- function(mean, Sigma, log = FALSE) {
+    .Call(`_RprobitB_rmvnorm_cpp`, mean, Sigma, log)
 }
 
-#' Draw from Dirichlet distribution
-#' @description
-#' Function to draw from a Dirichlet distribution.
-#' @param delta
-#' A vector, the concentration parameter.
-#' @return
-#' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
-#' @export
-#' @examples
-#' rdirichlet(delta = 1:3)
-#' @keywords
-#' internal distribution
+#' Draw from univariate truncated normal
 #'
-rdirichlet <- function(delta) {
-    .Call(`_RprobitB_rdirichlet`, delta)
+#' \code{rtnorm_cpp} draws from a one-sided truncated univariate normal
+#' distribution.
+#' \code{rttnorm_cpp} draws from a two-sided truncated univariate normal
+#' distribution.
+#'
+#' @details
+#' These function performs no input checks. See \code{\link{rtnorm}}
+#' for the version with input checks.
+#'
+#' @param mean
+#' A \code{numeric}, the mean.
+#' @param sd
+#' A \code{numeric}, the standard deviation.
+#' @param point
+#' A \code{numeric}, the truncation point.
+#' @param above
+#' A \code{logical}, if \code{TRUE} truncation from above and if \code{FALSE}
+#' truncation from below.
+#' @param log
+#' A \code{logical}, if \code{TRUE} the draw is taken from the log-normal
+#' distribution.
+#' By default, \code{log = FALSE}.
+#'
+#' @examples
+#' RprobitB:::rtnorm_cpp(mean = 0, sd = 1, point = 2, above = TRUE)
+#' RprobitB:::rtnorm_cpp(mean = 0, sd = 1, point = 2, above = FALSE)
+#' RprobitB:::rttnorm_cpp(mean = 0, sd = 1, lower = -1, upper = 1)
+#' RprobitB:::rttnorm_cpp(mean = 0, sd = 1, lower = -1, upper = 1, log = TRUE)
+#'
+#' @return
+#' A \code{numeric}, the random draw.
+#'
+#' @keywords internal cpp
+#'
+rtnorm_cpp <- function(mean, sd, point, above, log = FALSE) {
+    .Call(`_RprobitB_rtnorm_cpp`, mean, sd, point, above, log)
+}
+
+#' @rdname rtnorm_cpp
+#' @param lower
+#' A \code{numeric}, the lower truncation point.
+#' @param upper
+#' A \code{numeric}, the upper truncation point.
+#'
+rttnorm_cpp <- function(mean, sd, lower, upper, log = FALSE) {
+    .Call(`_RprobitB_rttnorm_cpp`, mean, sd, lower, upper, log)
 }
 
 #' Draw from Wishart distribution
-#' @description
-#' This function draws from a Wishart and inverted Wishart distribution.
+#'
+#' This function draws from a Wishart and Inverse-Wishart distribution.
+#'
 #' @details
 #' The Wishart distribution is a generalization to multiple dimensions of the
 #' gamma distributions and draws from the space of covariance matrices.
-#' Its expectation is \code{nu*V} and its variance increases both in \code{nu}
-#' and in the values of \code{V}.
-#' The Wishart distribution is the conjugate prior to the precision matrix of
-#' a multivariate normal distribution and proper if \code{nu} is greater than
-#' the number of dimensions.
-#' @param nu
-#' A numeric, the degrees of freedom. Must be at least the number of dimensions.
-#' @param V
-#' A matrix, the scale matrix.
-#' @return
-#' A list, the draws from the Wishart (\code{W}), inverted Wishart (\code{IW}), and
-#' corresponding Choleski decomposition (\code{C} and \code{CI}).
-#' @export
-#' @examples
-#' rwishart(nu = 2, V = diag(2))
-#' @keywords
-#' internal distribution
+#' Its expectation is \code{df * scale}, and its variance increases both in
+#' \code{df} and in the values of \code{scale}.
 #'
-rwishart <- function(nu, V) {
-    .Call(`_RprobitB_rwishart`, nu, V)
+#' This function performs no input checks. See \code{\link{rwishart}}
+#' for the version with input checks.
+#'
+#' @inheritParams dwishart_cpp
+#'
+#' @return
+#' A \code{matrix}, the random draw.
+#'
+#' @examples
+#' RprobitB:::rwishart_cpp(df = 2, scale = diag(2))
+#' RprobitB:::rwishart_cpp(df = 2, scale = diag(2), inv = TRUE)
+#'
+#' @keywords internal cpp
+#'
+rwishart_cpp <- function(df, scale, inv = FALSE) {
+    .Call(`_RprobitB_rwishart_cpp`, df, scale, inv)
 }
 

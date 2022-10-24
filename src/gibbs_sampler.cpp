@@ -44,7 +44,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 arma::vec update_s (int delta, arma::vec m) {
   int C = m.size();
-  return(rdirichlet(delta*ones(C)+m));
+  return rdirichlet_cpp(delta*ones(C) + m);
 }
 
 //' Update class allocation vector
@@ -178,7 +178,7 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
   }
   for(int c = 0; c<C; c++){
     arma::mat Omega_c_inv = arma::inv(reshape(Omega(span::all,c),P_r,P_r));
-    b_draw(span::all,c) = rmvnorm(arma::inv(Dinv+m[c]*Omega_c_inv) * (Dinv*xi+m[c]*Omega_c_inv*b_bar(span::all,c)), arma::inv(Dinv+m[c]*Omega_c_inv));
+    b_draw(span::all,c) = rmvnorm_cpp(arma::inv(Dinv+m[c]*Omega_c_inv) * (Dinv*xi+m[c]*Omega_c_inv*b_bar(span::all,c)), arma::inv(Dinv+m[c]*Omega_c_inv));
   }
   return(b_draw);
 }
@@ -232,7 +232,7 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
         sum_sp += (beta(span::all,n)-b(span::all,c)) * trans(beta(span::all,n)-b(span::all,c));
       }
     }
-    arma::mat Omega_draw = as<mat>(rwishart(nu+m[c],arma::inv(Theta+sum_sp))["IW"]);
+    arma::mat Omega_draw = rwishart_cpp(nu+m[c], arma::inv(Theta+sum_sp), true);
     Omega(span::all,c) = reshape(Omega_draw,P_r*P_r,1);
   }
   return(Omega);
@@ -296,7 +296,7 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU) {
   arma::mat Sigma1 = arma::inv(Tau0 + XSigX);
   arma::mat mu1 = Sigma1 * (Tau0 * mu0 + XSigU);
-  return(rmvnorm(mu1, Sigma1));
+  return(rmvnorm_cpp(mu1, Sigma1));
 }
 
 //' Update error term covariance matrix of multiple linear regression
@@ -347,7 +347,7 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 //'
 // [[Rcpp::export]]
 arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
-  return(as<mat>(rwishart(kappa+N,arma::inv(E+S))["IW"]));
+  return rwishart_cpp(kappa+N, arma::inv(E+S), true);
 }
 
 //' Update latent utility vector
@@ -414,7 +414,7 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
         m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
       }
     }
-    U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), bound, above);
+    U_update[i] = rtnorm_cpp(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), bound, above);
   }
   return (U_update);
 }
@@ -456,7 +456,7 @@ arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
         m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
       }
     }
-    U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), 0.0, true);
+    U_update[i] = rtnorm_cpp(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), 0.0, true);
   }
   return (U_update);
 }
@@ -946,7 +946,7 @@ List gibbs_sampling (
           if(P_f==0 && P_r==0) {
             mu_mat_tmp = zeros<mat>(1,1);
           }
-          U(span::all,ind) = rttnorm(mu_mat_tmp(0,0), 1.0, gamma[y(n,t)], gamma[y(n,t)-1]);
+          U(span::all,ind) = rttnorm_cpp(mu_mat_tmp(0,0), 1.0, gamma[y(n,t)], gamma[y(n,t)-1]);
         }
       }
     } else if (ranked) {

@@ -29,6 +29,10 @@ A \code{numeric}, the density value.
 \description{
 This function computes the density of the (Inverse-) Wishart distribution.
 }
+\details{
+This function performs no input checks. See \code{\link{dwishart}}
+for the version with input checks.
+}
 \examples{
 x <- diag(2)
 df <- 4

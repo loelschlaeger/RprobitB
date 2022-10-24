@@ -23,6 +23,10 @@ A \code{numeric}, the density value.
 \description{
 This function computes the density of a multivariate normal distribution.
 }
+\details{
+This function performs no input checks. See \code{\link{dmvnorm}}
+for the version with input checks.
+}
 \examples{
 x <- c(0,0)
 mean <- c(0,0)

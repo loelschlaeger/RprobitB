@@ -15,6 +15,13 @@ test_that("Dirichlet density can be computed", {
   )
 })
 
+test_that("Dirichlet can be drawn", {
+  concentration <- 1:3
+  factor <- 1000
+  expect_length(rdirichlet(concentration = concentration), 3)
+  expect_error(ddirichlet(concentration = diag(3)))
+})
+
 test_that("Multivariate normal density can be computed", {
   x <- c(0,0)
   mean <- c(0,0)
@@ -31,6 +38,14 @@ test_that("Multivariate normal density can be computed", {
   expect_error(
     dmvnorm(x = 1:2, mean = 1:3, Sigma = diag(4))
   )
+})
+
+test_that("Multivariate normal can be drawn", {
+  mean <- c(0,0)
+  Sigma <- diag(2)
+  expect_length(rmvnorm(mean = mean, Sigma = Sigma, log = FALSE), 2)
+  expect_length(rmvnorm(mean = mean, Sigma = Sigma, log = TRUE), 2)
+  expect_error(rmvnorm(mean = 1:3, Sigma = diag(4)))
 })
 
 test_that("(Inverse-) Wishart density can be computed", {
@@ -57,4 +72,12 @@ test_that("(Inverse-) Wishart density can be computed", {
   expect_error(
     dmvnorm(dwishart(x = x, df = 1, scale = scale))
   )
+})
+
+test_that("(Inverse-) Wishart can be drawn", {
+  df <- 4
+  scale <- matrix(c(1,0.2,0.2,2), 2, 2)
+  expect_equal(dim(rwishart(df = df, scale = scale, inv = FALSE)), c(2,2))
+  expect_equal(dim(rwishart(df = df, scale = scale, inv = TRUE)), c(2,2))
+  expect_error(dmvnorm(rwishart(df = 1, scale = numeric(3))))
 })

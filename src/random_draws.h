@@ -3,29 +3,15 @@
 
 // [[Rcpp::depends("RcppArmadillo")]]
 #include <RcppArmadillo.h>
-#include <stdio.h>
-#include <float.h>
-#include <Rmath.h>
-#include <math.h>
-using namespace arma;
-using namespace Rcpp;
 
-double dexpr(double const& a);
+arma::vec rdirichlet_cpp(arma::vec concentration);
 
-double invCdfNorm(double const& a);
+arma::vec rmvnorm_cpp(arma::vec mean, arma::mat const& Sigma, bool log = false);
 
-double dnr(double const& a);
+double rtnorm_cpp(double mean, double sig, double point, bool above, bool log = false);
 
-double trunNormBelow(double const& a);
+double rttnorm_cpp(double mean, double sig, double lower, double upper, bool log = false);
 
-double rtnorm(double mu, double sig, double trunpt, bool above);
-
-double rttnorm(double mu, double sig, double lower_bound, double upper_bound);
-
-arma::vec rdirichlet(arma::vec delta);
-
-List rwishart(double nu, arma::mat const& V);
-
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
+arma::mat rwishart_cpp(double df, arma::mat const& scale, bool inv = false);
 
 #endif
