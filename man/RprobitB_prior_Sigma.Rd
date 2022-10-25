@@ -91,8 +91,7 @@ are assumed for the model parameters:
 \itemize{
 \item Only if \code{P_f > 0}:
 \code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
-\item Only if \code{C > 1}:
-\code{s ~ Dirichlet(concentration = s_prior_concentration)}
+\item \code{s ~ Dirichlet(concentration = s_prior_concentration)}
 \item Only if \code{P_r > 0}:
 \code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
 \item Only if \code{P_r > 0}:
@@ -115,7 +114,7 @@ By default, the following parameters are set for the conjugate priors:
 \item \code{alpha_prior_mean = numeric(P_f)}
 \item \code{alpha_prior_Sigma = 10*diag(P_f)}
 }
-\item \code{s} (only if \code{C > 1})
+\item \code{s}
 \itemize{
 \item \code{s_prior_concentration = rep(1, C)}
 }

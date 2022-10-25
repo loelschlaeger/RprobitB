@@ -37,8 +37,7 @@ distribution.
 distribution.
 }
 \details{
-These function performs no input checks. See \code{\link{rtnorm}}
-for the version with input checks.
+These function performs no input checks.
 }
 \examples{
 RprobitB:::rtnorm_cpp(mean = 0, sd = 1, point = 2, above = TRUE)

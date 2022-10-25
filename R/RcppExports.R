@@ -748,8 +748,7 @@ rmvnorm_cpp <- function(mean, Sigma, log = FALSE) {
 #' distribution.
 #'
 #' @details
-#' These function performs no input checks. See \code{\link{rtnorm}}
-#' for the version with input checks.
+#' These function performs no input checks.
 #'
 #' @param mean
 #' A \code{numeric}, the mean.

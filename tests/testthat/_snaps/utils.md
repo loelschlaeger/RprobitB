@@ -1,93 +1,306 @@
-# building delta matrix works
+# print_matrix works
 
     Code
-      RprobitB:::delta(3, 1)
+      print_matrix(x = 1)
     Output
-           [,1] [,2] [,3]
-      [1,]   -1    1    0
-      [2,]   -1    0    1
-
-# Gelman-Rubin statistic can be computed
-
-    Code
-      R_hat(samples)
-    Output
-      [1] 1.009085
-
-# printing abbreviated matrices and vectors works
-
-    Code
-      RprobitB:::pprint(x = 1, name = "single integer")
-    Output
-      single integer : 1
+      1
 
 ---
 
     Code
-      RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
+      print_matrix(x = 1.5, label = "single numeric")
     Output
-      letters : character vector of length 26 
-      
+      single numeric : 1.5
+
+---
+
+    Code
+      print_matrix(x = 1.5, label = "single numeric", simplify = TRUE)
+    Output
+      single numeric : 1.5
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26])
+    Output
+      character vector of length 26 
       A B C ... Z
 
 ---
 
     Code
-      RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1), name = "single column matrix")
+      print_matrix(x = LETTERS[1:26], label = "letters")
     Output
-      single column matrix : 100 x 1 matrix of doubles 
-      
-                [,1]
-      [1,]   -0.6973
-      [2,]    1.1350
-      [3,]    1.1119
-      ...        ...
-      [100,] -0.7666
+      letters : character vector of length 26 
+      A B C ... Z
 
 ---
 
     Code
-      RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
+      print_matrix(x = LETTERS[1:26], label = "letters", details = FALSE)
     Output
-      single row matrix : 1 x 100 matrix of integers 
-      
-           [,1] [,2] [,3] ... [,100]
-      [1,]    1    2    3 ...    100
+      letters : A B C ... Z
 
 ---
 
     Code
-      RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
+      print_matrix(x = LETTERS[1:26], label = "letters", simplify = TRUE)
     Output
-      big matrix : 4 x 6 matrix of characters 
-      
+      letters : A B C ... Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], rowdots = 1)
+    Output
+      character vector of length 26 
+      A B C ... Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], rowdots = 26)
+    Output
+      character vector of length 26 
+      A B C ... Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], coldots = 1)
+    Output
+      character vector of length 26 
+      ... Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], coldots = 25)
+    Output
+      character vector of length 26 
+      A B C D E F G H I J K L M N O P Q R S T U V W X ... Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], coldots = 26)
+    Output
+      character vector of length 26 
+      A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+
+---
+
+    Code
+      print_matrix(x = LETTERS[1:26], coldots = 10)
+    Output
+      character vector of length 26 
+      A B C D E F G H I ... Z
+
+---
+
+    Code
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6))
+    Output
+      4 x 6 matrix of characters 
            [,1] [,2] [,3] ... [,6]
       [1,]    A    E    I ...    U
       [2,]    B    F    J ...    V
       [3,]    C    G    K ...    W
       [4,]    D    H    L ...    X
 
-# computation of permutations works
+---
 
     Code
-      RprobitB:::permutations(x = c("a", "b", "c"))
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6), label = "big matrix")
     Output
-      [[1]]
-      [1] "a" "b" "c"
-      
-      [[2]]
-      [1] "a" "c" "b"
-      
-      [[3]]
-      [1] "b" "a" "c"
-      
-      [[4]]
-      [1] "b" "c" "a"
-      
-      [[5]]
-      [1] "c" "a" "b"
-      
-      [[6]]
-      [1] "c" "b" "a"
-      
+      big matrix : 4 x 6 matrix of characters 
+           [,1] [,2] [,3] ... [,6]
+      [1,]    A    E    I ...    U
+      [2,]    B    F    J ...    V
+      [3,]    C    G    K ...    W
+      [4,]    D    H    L ...    X
+
+---
+
+    Code
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6), rowdots = 2)
+    Output
+      4 x 6 matrix of characters 
+           [,1] [,2] [,3] ... [,6]
+      [1,]    A    E    I ...    U
+      ...   ...  ...  ... ...  ...
+      [4,]    D    H    L ...    X
+
+---
+
+    Code
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6), details = FALSE)
+    Output
+           [,1] [,2] [,3] ... [,6]
+      [1,]    A    E    I ...    U
+      [2,]    B    F    J ...    V
+      [3,]    C    G    K ...    W
+      [4,]    D    H    L ...    X
+
+---
+
+    Code
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6), coldots = 1, rowdots = 1)
+    Output
+      4 x 6 matrix of characters 
+           ... [,6]
+      ...  ...  ...
+      [4,] ...    X
+
+---
+
+    Code
+      print_matrix(x = matrix(LETTERS[1:24], ncol = 6), simplify = TRUE, coldots = 2,
+      rowdots = 2)
+    Output
+      [ A ... U; ... ... ...; D ... X ]
+
+---
+
+    Code
+      print_matrix(x = diag(5), coldots = 2, rowdots = 3, simplify = TRUE, digits = 0)
+    Output
+      [ 1 ... 0; 0 ... 0; ... ... ...; 0 ... 1 ]
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1))
+    Output
+      1 x 100 matrix of doubles 
+           [,1] [,2] [,3] ... [,100]
+      [1,]    1    2    3 ...    100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1), label = "single row matrix")
+    Output
+      single row matrix : 1 x 100 matrix of doubles 
+           [,1] [,2] [,3] ... [,100]
+      [1,]    1    2    3 ...    100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1), details = FALSE)
+    Output
+           [,1] [,2] [,3] ... [,100]
+      [1,]    1    2    3 ...    100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1), coldots = 1)
+    Output
+      1 x 100 matrix of doubles 
+           ... [,100]
+      [1,] ...    100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1), rowdots = 1)
+    Output
+      1 x 100 matrix of doubles 
+           [,1] [,2] [,3] ... [,100]
+      [1,]    1    2    3 ...    100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, nrow = 1), simplify = TRUE, coldots = 5)
+    Output
+      [ 1 2 3 4 ... 100 ]
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1))
+    Output
+      100 x 1 matrix of doubles 
+             [,1]
+      [1,]      1
+      [2,]      2
+      [3,]      3
+      ...     ...
+      [100,]  100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1), label = "single column matrix")
+    Output
+      single column matrix : 100 x 1 matrix of doubles 
+             [,1]
+      [1,]      1
+      [2,]      2
+      [3,]      3
+      ...     ...
+      [100,]  100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1), details = FALSE)
+    Output
+             [,1]
+      [1,]      1
+      [2,]      2
+      [3,]      3
+      ...     ...
+      [100,]  100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1), coldots = 1)
+    Output
+      100 x 1 matrix of doubles 
+             [,1]
+      [1,]      1
+      [2,]      2
+      [3,]      3
+      ...     ...
+      [100,]  100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1), rowdots = 1)
+    Output
+      100 x 1 matrix of doubles 
+             [,1]
+      ...     ...
+      [100,]  100
+
+---
+
+    Code
+      print_matrix(x = matrix(1:100, ncol = 1), simplify = TRUE, coldots = 5)
+    Output
+      [ 1; 2; 3; ...; 100 ]
+
+---
+
+    Code
+      print_matrix(x = diag(2), simplify = TRUE)
+    Output
+      [ 1 0; 0 1 ]
+
+---
+
+    Code
+      print_matrix(x = diag(2), simplify = FALSE)
+    Output
+      2 x 2 matrix of doubles 
+           [,1] [,2]
+      [1,]    1    0
+      [2,]    0    1
 

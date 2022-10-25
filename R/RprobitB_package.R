@@ -73,7 +73,7 @@ RprobitB_pb_tick <- function(pb) {
 
 RprobitB_stop <- function(...) {
   msg <- list(...)
-  names(msg) <- c("x", rep(">", length(msg)))[1:length(msg)]
+  names(msg)[1] <- c("x")
   cli::cli_abort(unlist(msg), call = NULL)
 }
 
@@ -82,7 +82,7 @@ RprobitB_stop <- function(...) {
 
 RprobitB_warn <- function(...) {
   msg <- list(...)
-  names(msg) <- c("!", rep(">", length(msg)))[1:length(msg)]
+  names(msg)[1] <- c("!")
   cli::cli_warn(unlist(msg), call = NULL)
 }
 

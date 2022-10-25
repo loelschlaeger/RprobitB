@@ -17,8 +17,7 @@ update_classes_wb(Cmax, epsmin, epsmax, distmin, s, b, Omega)
 classes.}
 
 \item{s}{A \code{numeric} of length \code{C}, the vector of class weights.
-For identifiability, the vector must be descending.
-By default, \code{s = rep(1,C)/C}.}
+For identifiability, the vector must be decreasing.}
 
 \item{b}{A \code{matrix} of dimension \code{P_r} x \code{C}, the matrix of class
 means.

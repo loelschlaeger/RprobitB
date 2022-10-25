@@ -21,8 +21,7 @@
 #' are assumed for the model parameters:
 #' * Only if \code{P_f > 0}:
 #'   \code{alpha ~ Normal(mean = alpha_prior_mean, Sigma = alpha_prior_Sigma)}
-#' * Only if \code{C > 1}:
-#'   \code{s ~ Dirichlet(concentration = s_prior_concentration)}
+#' * \code{s ~ Dirichlet(concentration = s_prior_concentration)}
 #' * Only if \code{P_r > 0}:
 #'   \code{b ~ Normal(mean = b_prior_mean, Sigma = b_prior_Sigma)}
 #' * Only if \code{P_r > 0}:
@@ -39,7 +38,7 @@
 #' * \code{alpha} (only if \code{P_f > 0})
 #'   - \code{alpha_prior_mean = numeric(P_f)}
 #'   - \code{alpha_prior_Sigma = 10*diag(P_f)}
-#' * \code{s} (only if \code{C > 1})
+#' * \code{s}
 #'   - \code{s_prior_concentration = rep(1, C)}
 #' * \code{b} (only if \code{P_r > 0})
 #'   - \code{b_prior_mean = numeric(P_r)}
@@ -216,7 +215,7 @@ print.RprobitB_prior <- function(x, ...) {
 #'   }
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_alpha <- function(
@@ -245,12 +244,11 @@ RprobitB_prior_alpha <- function(
         "Custom prior for alpha is misspecified.",
         glue::glue("'alpha_prior_custom(alpha_prior_custom_test_par)' ",
                    "should return density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{alpha_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{alpha_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -373,16 +371,14 @@ print.RprobitB_prior_alpha <- function (
 #'   s_prior_custom_test_par = c(0.6, 0.4)
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_s <- function(
     C = 1, s_prior_concentration = rep(1, C),
     s_prior_custom = NA, s_prior_custom_test_par = numeric(C)
 ) {
-  if (C <= 1) {
-    return(NA)
-  } else if (!identical(s_prior_custom, NA)) {
+  if (!identical(s_prior_custom, NA)) {
     conjugate <- FALSE
     s_prior_concentration <- NA
     if (!is.function(s_prior_custom)) {
@@ -400,12 +396,11 @@ RprobitB_prior_s <- function(
         "Custom prior for s is misspecified.",
         glue::glue("'s_prior_custom(s_prior_custom_test_par)' ",
                    "should return density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{s_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{s_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -513,7 +508,7 @@ print.RprobitB_prior_s <- function (
 #'   }
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_b <- function(
@@ -542,12 +537,11 @@ RprobitB_prior_b <- function(
         "Custom prior for b is misspecified.",
         glue::glue("'b_prior_custom(b_prior_custom_test_par)' ",
                    "should return density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{b_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{b_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -674,7 +668,7 @@ print.RprobitB_prior_b <- function (
 #'   }
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_Omega <- function(
@@ -703,12 +697,11 @@ RprobitB_prior_Omega <- function(
         "Custom prior for Omega is misspecified.",
         glue::glue("'Omega_prior_custom(Omega_prior_custom_test_par)' ",
                    "should return single density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{Omega_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{Omega_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -838,7 +831,7 @@ print.RprobitB_prior_Omega <- function (
 #'   Sigma_prior_custom = function(x) dunif(x)
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_Sigma <- function(
@@ -868,12 +861,11 @@ RprobitB_prior_Sigma <- function(
         "Custom prior for Sigma is misspecified.",
         glue::glue("'Sigma_prior_custom(Sigma_prior_custom_test_par)' ",
                    "should return single density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{Sigma_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{Sigma_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -1004,7 +996,7 @@ print.RprobitB_prior_Sigma <- function (
 #'   }
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_Sigma_diff <- function(
@@ -1033,12 +1025,11 @@ RprobitB_prior_Sigma_diff <- function(
         "Custom prior for Sigma_diff is misspecified.",
         glue::glue("'Sigma_diff_prior_custom(Sigma_diff_prior_custom_test_par)' ",
                    "should return single density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{Sigma_diff_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{Sigma_diff_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }
@@ -1166,7 +1157,7 @@ print.RprobitB_prior_Sigma_diff <- function (
 #'   }
 #' )
 #'
-#' @importFrom glue glue
+#' @importFrom glue glue glue_collapse
 #' @keywords internal
 
 RprobitB_prior_d <- function(
@@ -1195,12 +1186,11 @@ RprobitB_prior_d <- function(
         "Custom prior for d is misspecified.",
         glue::glue("'d_prior_custom(d_prior_custom_test_par)' ",
                    "should return density value."),
-        paste(
-          "Instead, it returned (collapsed):",
-          glue::glue_collapse(
-            glue::glue("'{d_prior_custom_test}'"),
-            sep = " "
-          )
+        "Instead, it returned (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{d_prior_custom_test}'"),
+          sep = " ",
+          width = getOption("width") - 3
         )
       )
     }

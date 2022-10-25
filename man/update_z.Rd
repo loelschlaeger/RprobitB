@@ -8,8 +8,7 @@ update_z(s, beta, b, Omega)
 }
 \arguments{
 \item{s}{A \code{numeric} of length \code{C}, the vector of class weights.
-For identifiability, the vector must be descending.
-By default, \code{s = rep(1,C)/C}.}
+For identifiability, the vector must be decreasing.}
 
 \item{beta}{A \code{matrix} of dimension \code{P_r} x \code{N}, the matrix of the
 decider-specific coefficient vectors.

@@ -10,7 +10,7 @@
 \usage{
 RprobitB_parameter(
   C = 1,
-  s = rep(1, C)/C,
+  s = NA,
   alpha = NA,
   b = NA,
   Omega = NA,
@@ -59,8 +59,7 @@ decision makers.
 By default, \code{C = 1}.}
 
 \item{s}{A \code{numeric} of length \code{C}, the vector of class weights.
-For identifiability, the vector must be descending.
-By default, \code{s = rep(1,C)/C}.}
+For identifiability, the vector must be decreasing.}
 
 \item{alpha}{A \code{matrix} of dimension \code{P_f} x \code{C}, the matrix of fixed
 coefficients.
@@ -77,8 +76,9 @@ The covariance matrix for class \code{c} is stored as a vector in column
 
 \item{Sigma}{A \code{matrix} of dimension \code{J} x \code{J}, the error term covariance
 matrix.
-In the ordered probit model (see details), \code{Sigma} can be a
-\code{matrix} of dimension \code{1} x \code{1} or a single \code{numeric}.}
+In the ordered probit model (see details), \code{Sigma} is a
+\code{matrix} of dimension \code{1} x \code{1} (or simply a single
+\code{numeric}).}
 
 \item{Sigma_diff}{A \code{matrix} of dimension \code{J-1} x \code{J-1}, the differenced error
 term covariance matrix
@@ -300,7 +300,7 @@ formula <- choice ~ A | B
 re <- "A"
 J <- 3
 N <- 100
-(x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N, seed = 1))
+(x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
 (x <- validate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
 }
 \keyword{object}

@@ -116,7 +116,7 @@ is_cov_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
 
 sample_cov_matrix <- function(dim, df = dim, scale = diag(dim)) {
   stopifnot(is_pos_int(dim), is_pos_int(df), is_cov_matrix(scale))
-  rwishart(nu = df, V = scale)$W # TODO: rename args nu and V in rwishart
+  rwishart(df = df, scale = scale, inv = FALSE)
 }
 
 #' Extract function body as character
@@ -218,15 +218,15 @@ print_matrix <- function(
   add_dots <- function(x, pos) {
     if (length(x) > pos) c(x[seq_len(pos-1)], "...", x[length(x)]) else x
   }
+  if (is.numeric(x)) x <- round(x, digits)
   if (!is.null(label)) cat(crayon::italic(label), ": ")
   if (length(x) == 1){
     cat(x)
   } else if (!is.matrix(x)) {
-    if(details) {
+    if (details) {
       cat(typeof(x), "vector of length", crayon::bold(length(x)), "\n")
     }
-    res <- if(is.numeric(x)) round(x, digits) else x
-    cat(noquote(add_dots(res, coldots)))
+    cat(noquote(add_dots(x, coldots)))
   } else {
     row_labs <- if (is.null(rownames(x))) {
       paste0("[", seq_len(nrow(x)), ",]")
@@ -244,12 +244,12 @@ print_matrix <- function(
       if (nrow(x) <= 2 && ncol(x) <= 2) {
         res <- x
       } else {
-        if (nrow(x) == 1) {
-          res <- matrix(c("...", x[1, ncol(x)]), 1, 2)
+        res <- if (nrow(x) == 1) {
+          matrix(c("...", x[1, ncol(x)]), 1, 2)
         } else if (ncol(x) == 1) {
-          res <- matrix(c("...", x[nrow(x), 1]), 2, 1)
+          matrix(c("...", x[nrow(x), 1]), 2, 1)
         } else {
-          res <- matrix(c("...", "...", "...", x[nrow(x), ncol(x)]), 2, 2)
+          matrix(c("...", "...", "...", x[nrow(x), ncol(x)]), 2, 2)
         }
         row_labs <- add_dots(row_labs, 1)
         col_labs <- add_dots(col_labs, 1)
@@ -265,16 +265,10 @@ print_matrix <- function(
               cbind(x[nrow(x), 1:coldots, drop = FALSE],
                     x[nrow(x), ncol(x), drop = FALSE]))
       }
-      charx <- if (typeof(x2) == "character") {
-        x2
-      } else if (typeof(x2) %in% c("integer", "logical")) {
-        as.character(x2)
-      } else {
-        sprintf(paste0("%.", digits, "f"), x2)
-      }
+      charx <- as.character(x2)
       dim(charx) <- dim(x2)
       if (nrow(x) <= rowdots + 1 && ncol(x) <= coldots + 1) {
-        res <- x
+        res <- charx
       } else if (nrow(x) > rowdots + 1 && ncol(x) <= coldots + 1) {
         res <- rbind(
           as.matrix(charx[seq_len(rowdots - 1), ]),
