@@ -1,16 +1,26 @@
 #' Simulate choice data
 #'
-#' @description
-#' This function simulates choice data from a probit model.
+#' This function simulates choice data from a probit model, see details.
 #'
-#'
+#' @inheritParams RprobitB_formula
+#' @param N
+#' An \code{integer}, the number of deciders.
+#' @param T
+#' An \code{integer} of length \code{N}, the number of choice occasions per
+#' decider.
+#' Can also be a single \code{integer} for a constant number of choice occasions
+#' per decider.
+#' By default, \code{T = 1}.
+#' @param covariates
 #'
 #' @details
 #' # Choice simulation
 #' TODO
+#' @inheritSection RprobitB_formula Model formula
+#' @inheritSection RprobitB_formula Random effects
 
 simulate_choices <- function(
-    formula, N, T = 1, J = 3, alternatives = LETTERS[1:J], re = NULL,
+    formula, N, T = 1, J, alternatives = LETTERS[1:J], re = NULL,
     ordered = FALSE, ranked = FALSE,
     covariates = function(n, t) {
       P <- P(formula, re, J)

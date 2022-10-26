@@ -203,12 +203,9 @@ is.RprobitB_parameter <- function(x) {
 
 #' @rdname RprobitB_parameter
 #' @inheritParams RprobitB_formula
-#' @param J
-#' An \code{integer}, the number of choice alternatives.
-#' @param N
-#' An \code{integer}, the number of deciders.
+#' @inheritParams simulate_choices
 #' @param seed
-#' An \code{integer}, passed to \code{set.seed()} to make the random part
+#' An \code{integer}, passed to \code{set.seed()} to make the randomness
 #' reproducible.
 #' By default, \code{seed = NULL}, i.e., no seed is set.
 #' @inheritSection RprobitB_formula Model formula

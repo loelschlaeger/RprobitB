@@ -8,7 +8,7 @@ simulate_choices(
   formula,
   N,
   T = 1,
-  J = 3,
+  J,
   alternatives = LETTERS[1:J],
   re = NULL,
   ordered = FALSE,
@@ -26,7 +26,7 @@ simulate_choices(
   formula,
   N,
   T = 1,
-  J = 3,
+  J,
   alternatives = LETTERS[1:J],
   re = NULL,
   ordered = FALSE,
@@ -41,11 +41,16 @@ simulate_choices(
 )
 }
 \arguments{
-\item{N}{The number (greater or equal 1) of decision makers.}
+\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
+fitted, see details.}
 
-\item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).
-Per default, \code{T = 1}.}
+\item{N}{An \code{integer}, the number of deciders.}
+
+\item{T}{An \code{integer} of length \code{N}, the number of choice occasions per
+decider.
+Can also be a single \code{integer} for a constant number of choice occasions
+per decider.
+By default, \code{T = 1}.}
 
 \item{J}{The number (greater or equal 2) of choice alternatives.}
 
@@ -63,10 +68,7 @@ To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
 \item{ranked}{TBA}
 
-\item{covariates}{A named list of covariate values. Each element must be a vector of length
-equal to the number of choice occasions and named according to a covariate.
-Covariates for which no values are supplied are drawn from a standard normal
-distribution.}
+\item{covariates}{}
 
 \item{seed}{Set a seed for the simulation.}
 
@@ -82,7 +84,7 @@ An object of class \code{RprobitB_data}.
 \description{
 This function simulates choice data from a probit model.
 
-This function simulates choice data from a probit model.
+This function simulates choice data from a probit model, see details.
 }
 \details{
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
@@ -90,6 +92,47 @@ for more details.
 }
 \section{Choice simulation}{
 TODO
+}
+
+\section{Model formula}{
+The structure of \code{formula} should be
+\code{choice ~ A | B | C}, where
+\itemize{
+\item \code{choice} is the name of the dependent variable (the choices),
+\item \code{A} are names of \strong{alternative specific covariates} with
+\strong{a coefficient that is constant across alternatives},
+\item \code{B} are names of \strong{covariates that are constant across
+alternatives},
+\item and \code{C} are names of \strong{alternative specific covariates}
+with \strong{alternative specific coefficients}.
+}
+
+Multiple covariates of one type are separated by a \code{+} sign, i.e.,
+\code{choice ~ A1 + A2}.
+
+By default, alternative specific constants (ASCs) are added to the model.
+They can be removed by adding \code{+ 0} in the second spot, i.e.,
+\code{choice ~ A | B + 0 | C}. To not include any covariates of
+the second category but to estimate ASCs, add \code{1} in the second
+spot, e.g., \code{choice ~ A | 1 | C}. The expression
+\code{choice ~ A | 0 | C} is interpreted as no covariates of the second
+category and no ASCs.
+
+In the ordered probit model (\code{ordered = TRUE}), covariates are not
+alternative specific, i.e., there exists only one type of covariate.
+Therefore, the \code{formula} object does not need any
+separation via \code{|}, and hence has the simple structure
+\code{choice ~ A + B + C}.
+ASCs cannot be estimated in the ordered case.
+}
+
+\section{Random effects}{
+Covariates can have random effects, i.e., their coefficients can follow a
+random distribution. Per default, the distribution is normal. The log-normal
+distribution (for sign-restriction) can be specified via appending \code{+}
+to the corresponding name in \code{re}.
+To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
+\code{re}.
 }
 
 \examples{

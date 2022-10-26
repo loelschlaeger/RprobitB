@@ -1,19 +1,58 @@
+#' Define choice data for probit model
+#'
+#' These functions create, validate, summarize and visualize an object of class
+#' \code{RprobitB_data}, which contains the choice data for a probit model,
+#' see details.
+#'
+#' @inheritSection simulate_choices Choice simulation
+#' @inheritSection prepare_data Choice data
+#'
+#' @return
+#' An \code{RprobitB_data} object.
+
 RprobitB_data <- function() {
 
+}
+
+#' @rdname RprobitB_data
+#' @param x
+#' An \code{RprobitB_data} object.
+
+is.RprobitB_data <- function(x) {
+  inherits(x, "RprobitB_data")
 }
 
 validate_RprobitB_data <- function(x, RprobitB_formula) {
 
 }
 
-summary.RprobitB_data <- function() {
+#' @rdname RprobitB_data
+#' @param object
+#' An \code{RprobitB_data} object.
+#' @param ...
+#' Not used.
+
+summary.RprobitB_data <- function(object, ...) {
 
 }
 
-print.RprobitB_data <- function() {
+#' @noRd
+#' @exportS3Method
+
+print.summary.RprobitB_date <- function(x, ...) {
 
 }
 
-plot.RprobitB_data <- function() {
+#' @rdname RprobitB_data
+#' @exportS3Method
+
+print.RprobitB_data <- function(x, ...) {
+
+}
+
+#' @rdname RprobitB_data
+#' @exportS3Method
+
+plot.RprobitB_data <- function(x, ...) {
 
 }
