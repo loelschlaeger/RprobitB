@@ -3,8 +3,11 @@ test_that("RprobitB_effects can be created", {
     RprobitB_effects(
        formula = choice ~ cov,
        re = c("cov+", "ASC+"),
-       alternatives = c("C", "B", "A"),
-       base = "B"
+       RprobitB_alternatives = RprobitB_alternatives(
+         J = 3,
+         alternatives = c("C", "B", "A"),
+         base = "B"
+       )
     ),
     structure(
       list(
@@ -22,7 +25,10 @@ test_that("RprobitB_effects can be created", {
     RprobitB_effects(
       formula = choice ~ A | B + 0 | C,
       re = NULL,
-      alternatives = c("A", "B"),
+      RprobitB_alternatives = RprobitB_alternatives(
+        J = 2,
+        alternatives = c("A", "B")
+      )
     ),
     structure(
       list(

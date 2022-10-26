@@ -31,7 +31,9 @@ is.RprobitB_prior_d(x)
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{J}{An \code{integer}, the number of choice alternatives.}
+\item{J}{An \code{integer}, the number of choice alternatives.
+Must be at least 2.
+If \code{ordered = TRUE}, must be at least 3.}
 
 \item{d_prior_mean}{A \code{numeric} of length \code{J-2}, the mean vector for the conjugate
 normal prior distribution of \code{d}.

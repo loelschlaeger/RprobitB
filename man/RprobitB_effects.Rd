@@ -4,13 +4,7 @@
 \alias{RprobitB_effects}
 \title{Overview model effects}
 \usage{
-RprobitB_effects(
-  formula,
-  re = NULL,
-  alternatives,
-  base = alternatives[1],
-  ordered = FALSE
-)
+RprobitB_effects(formula, re = NULL, RprobitB_alternatives)
 }
 \arguments{
 \item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
@@ -20,17 +14,7 @@ fitted, see details.}
 should have a random effect, see details.
 By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{alternatives}{A \code{character}, the vector of names of the choice alternatives.
-Must be at least of length two.}
-
-\item{base}{A \code{character}, the name of the base alternative for covariates that are
-not alternative specific, see details.
-Ignored if the model has no alternative specific covariates (e.g., in the
-ordered probit case).
-By default, \code{base} is the first element of \code{alternatives}.}
-
-\item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
-\code{FALSE} (default) else.}
+\item{RprobitB_alternatives}{An \code{\link{RprobitB_alternatives}} object.}
 }
 \value{
 A \code{data.frame}, each row is an effect, columns are
@@ -98,8 +82,7 @@ coefficients then have to be interpreted with respect to \code{base}.
 RprobitB_effects(
   formula = choice ~ price | income | comfort,
   re = c("price+", "income"),
-  alternatives = c("A", "B"),
-  base = "A"
+  RprobitB_alternatives = RprobitB_alternatives(J = 3)
 )
 
 }

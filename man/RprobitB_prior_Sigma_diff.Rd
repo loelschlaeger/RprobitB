@@ -31,7 +31,9 @@ is.RprobitB_prior_Sigma_diff(x)
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{J}{An \code{integer}, the number of choice alternatives.}
+\item{J}{An \code{integer}, the number of choice alternatives.
+Must be at least 2.
+If \code{ordered = TRUE}, must be at least 3.}
 
 \item{Sigma_diff_prior_df}{An \code{integer}, the degrees of freedom for the conjugate
 Inverse-Wishart prior distribution of \code{Sigma_diff}.

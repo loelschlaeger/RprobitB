@@ -7,7 +7,12 @@
 \alias{print.RprobitB_alternatives}
 \title{Define choice alternatives}
 \usage{
-RprobitB_alternatives(alternatives, base = alternatives[1], ordered = FALSE)
+RprobitB_alternatives(
+  J,
+  alternatives = LETTERS[1:J],
+  base = alternatives[1],
+  ordered = FALSE
+)
 
 is.RprobitB_alternatives(x)
 
@@ -16,11 +21,17 @@ validate_RprobitB_alternatives(x)
 \method{print}{RprobitB_alternatives}(x, ...)
 }
 \arguments{
+\item{J}{An \code{integer}, the number of choice alternatives.
+Must be at least 2.
+If \code{ordered = TRUE}, must be at least 3.}
+
 \item{alternatives}{A \code{character}, the vector of names of the choice alternatives.
-Must be at least of length two.}
+Its length must be \code{J}.
+By default, \code{alternatives = LETTERS[1:J]}.}
 
 \item{base}{A \code{character}, the name of the base alternative for covariates that are
 not alternative specific, see details.
+\code{base} must be contained in \code{alternatives}.
 Ignored if the model has no alternative specific covariates (e.g., in the
 ordered probit case).
 By default, \code{base} is the first element of \code{alternatives}.}
@@ -46,7 +57,7 @@ coefficients then have to be interpreted with respect to \code{base}.
 }
 
 \examples{
-RprobitB_alternatives(LETTERS[1:3])
+RprobitB_alternatives(3)
 
 }
 \keyword{internal}

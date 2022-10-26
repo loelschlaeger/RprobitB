@@ -100,7 +100,9 @@ the custom prior density function \code{Sigma_prior_custom}.
 Can also be a single \code{numeric}.
 By default, \code{Sigma_prior_custom_test_par = 1}.
 Ignored if \code{Sigma_prior_custom = NULL}.}
-    \item{\code{J}}{An \code{integer}, the number of choice alternatives.}
+    \item{\code{J}}{An \code{integer}, the number of choice alternatives.
+Must be at least 2.
+If \code{ordered = TRUE}, must be at least 3.}
     \item{\code{Sigma_diff_prior_df}}{An \code{integer}, the degrees of freedom for the conjugate
 Inverse-Wishart prior distribution of \code{Sigma_diff}.
 It must be greater or equal than \code{J + 1} (to ensure a proper prior).

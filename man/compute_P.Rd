@@ -20,7 +20,7 @@ fitted, see details.}
 should have a random effect, see details.
 By default, \code{re = NULL}, i.e., no random effects.}
 
-\item{J}{An \code{integer}, the number of choice alternatives.}
+\item{J}{The number (greater or equal 2) of choice alternatives.}
 
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
