@@ -1,13 +1,15 @@
 test_that("RprobitB_effects can be created", {
   expect_equal(
     RprobitB_effects(
-       formula = choice ~ cov,
-       re = c("cov+", "ASC+"),
-       RprobitB_alternatives = RprobitB_alternatives(
-         J = 3,
-         alternatives = c("C", "B", "A"),
-         base = "B"
-       )
+      RprobitB_formula = RprobitB_formula(
+        formula = choice ~ cov,
+        re = c("cov+", "ASC+")
+      ),
+      RprobitB_alternatives = RprobitB_alternatives(
+        J = 3,
+        alternatives = c("C", "B", "A"),
+        base = "B"
+      )
     ),
     structure(
       list(
@@ -23,8 +25,10 @@ test_that("RprobitB_effects can be created", {
   )
   expect_equal(
     RprobitB_effects(
-      formula = choice ~ A | B + 0 | C,
-      re = NULL,
+      RprobitB_formula = RprobitB_formula(
+        formula = choice ~ A | B + 0 | C,
+        re = NULL
+      ),
       RprobitB_alternatives = RprobitB_alternatives(
         J = 2,
         alternatives = c("A", "B")

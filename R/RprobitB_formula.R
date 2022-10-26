@@ -64,7 +64,10 @@
 
 RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
   if (missing(formula)) {
-    RprobitB_stop("Please specify the input 'formula'.")
+    RprobitB_stop(
+      "Please specify the input 'formula'.",
+      "See the function documentation for details."
+    )
   }
   stopifnot(inherits(formula, "formula"))
   if (is.null(re)) re <- character()

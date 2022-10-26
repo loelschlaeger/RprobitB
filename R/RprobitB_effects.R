@@ -2,8 +2,8 @@
 #'
 #' This function provides an overview of the model effects.
 #'
-#' @inheritParams RprobitB_formula
-#' @inheritParams RprobitB_alternatives
+#' @param RprobitB_formula
+#' An \code{\link{RprobitB_formula}} object.
 #' @param RprobitB_alternatives
 #' An \code{\link{RprobitB_alternatives}} object.
 #'
@@ -21,17 +21,19 @@
 #'
 #' @examples
 #' RprobitB_effects(
-#'   formula = choice ~ price | income | comfort,
-#'   re = c("price+", "income"),
+#'   RprobitB_formula = RprobitB_formula(
+#'     formula = choice ~ price | income | comfort,
+#'     re = c("price+", "income")
+#'   ),
 #'   RprobitB_alternatives = RprobitB_alternatives(J = 3)
 #' )
 #'
 #' @export
 
-RprobitB_effects <- function(formula, re = NULL, RprobitB_alternatives) {
-  if (missing(formula)) {
+RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
+  if (missing(RprobitB_formula)) {
     RprobitB_stop(
-      "Please specify the input 'formula'.",
+      "Please specify the input 'RprobitB_formula'.",
       "See the function documentation for details."
     )
   }
@@ -45,9 +47,6 @@ RprobitB_effects <- function(formula, re = NULL, RprobitB_alternatives) {
   alternatives <- RprobitB_alternatives$alternatives
   base <- RprobitB_alternatives$base
   ordered <- RprobitB_alternatives$ordered
-  RprobitB_formula <- RprobitB_formula(
-    formula = formula, re = re, ordered = ordered
-  )
   vars <- RprobitB_formula$vars
   md_n <- RprobitB_formula$md_n
   md_ln <- RprobitB_formula$md_ln
@@ -133,7 +132,7 @@ compute_P <- function(formula, re, J, ordered = FALSE) {
 
 compute_P_f <- function(formula, re, J, ordered = FALSE) {
   RprobitB_effects <- RprobitB_effects(
-    formula, re = re,
+    RprobitB_formula = RprobitB_formula(formula = formula, re = re, ordered = ordered),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(!RprobitB_effects$random))
@@ -144,7 +143,7 @@ compute_P_f <- function(formula, re, J, ordered = FALSE) {
 
 compute_P_r <- function(formula, re, J, ordered = FALSE) {
   RprobitB_effects <- RprobitB_effects(
-    formula, re = re,
+    RprobitB_formula = RprobitB_formula(formula = formula, re = re, ordered = ordered),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(RprobitB_effects$random))

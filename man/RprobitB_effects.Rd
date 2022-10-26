@@ -4,15 +4,10 @@
 \alias{RprobitB_effects}
 \title{Overview model effects}
 \usage{
-RprobitB_effects(formula, re = NULL, RprobitB_alternatives)
+RprobitB_effects(RprobitB_formula, RprobitB_alternatives)
 }
 \arguments{
-\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
-fitted, see details.}
-
-\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
-should have a random effect, see details.
-By default, \code{re = NULL}, i.e., no random effects.}
+\item{RprobitB_formula}{An \code{\link{RprobitB_formula}} object.}
 
 \item{RprobitB_alternatives}{An \code{\link{RprobitB_alternatives}} object.}
 }
@@ -80,8 +75,10 @@ coefficients then have to be interpreted with respect to \code{base}.
 
 \examples{
 RprobitB_effects(
-  formula = choice ~ price | income | comfort,
-  re = c("price+", "income"),
+  RprobitB_formula = RprobitB_formula(
+    formula = choice ~ price | income | comfort,
+    re = c("price+", "income")
+  ),
   RprobitB_alternatives = RprobitB_alternatives(J = 3)
 )
 
