@@ -4,6 +4,9 @@
 #' \code{RprobitB_data}, which contains the choice data for a probit model,
 #' see details.
 #'
+#' @param ranked
+#' TODO
+#'
 #' @inheritSection simulate_choices Choice simulation
 #' @inheritSection prepare_data Choice data
 #'
