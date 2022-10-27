@@ -149,26 +149,14 @@ test_that("print_matrix works", {
   )
 })
 
-
-
-
-### TODO Not revised from here
-
-# test_that("Gelman-Rubin statistic can be computed", {
-#   set.seed(1)
-#   no_chains <- 2
-#   length_chains <- 1e3
-#   samples <- matrix(NA_real_, length_chains, no_chains)
-#   samples[1, ] <- 1
-#   Gamma <- matrix(c(0.8, 0.1, 0.2, 0.9), 2, 2)
-#   for (c in 1:no_chains) {
-#     for (t in 2:length_chains) {
-#       samples[t, c] <- sample(1:2, 1, prob = Gamma[samples[t - 1, c], ])
-#     }
-#   }
-#   expect_snapshot(R_hat(samples))
-# })
-#
-# test_that("computation of permutations works", {
-#   expect_snapshot(RprobitB:::permutations(x = c("a", "b", "c")))
-# })
+test_that("computation of permutations works", {
+  expect_equal(
+    permutations(1:3),
+    list(1:3, c(1L, 3L, 2L), c(2L, 1L, 3L), c(2L, 3L, 1L), c(3L, 1L, 2L), 3:1)
+  )
+  expect_equal(
+    permutations(LETTERS[1:3]),
+    list(c("A", "B", "C"), c("A", "C", "B"), c("B", "A", "C"), c("B", "C", "A"),
+         c("C", "A", "B"), c("C", "B", "A"))
+  )
+})

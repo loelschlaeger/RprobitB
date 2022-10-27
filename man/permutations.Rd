@@ -2,26 +2,26 @@
 % Please edit documentation in R/utils.R
 \name{permutations}
 \alias{permutations}
-\title{Permutations of a vector}
+\title{Build permutations}
 \usage{
 permutations(x)
 }
 \arguments{
-\item{x}{A vector.}
+\item{x}{Any \code{vector}.}
 }
 \value{
-A list of all permutations of \code{x}.
+A \code{list} of all permutations of \code{x}.
 }
 \description{
-This function returns all permutations of a given vector.
+This function creates all permutations of a given vector.
 }
 \examples{
-RprobitB:::permutations(x = c("a","b","c"))
+RprobitB:::permutations(1:3)
+RprobitB:::permutations(LETTERS[1:3])
 
 }
 \references{
-This function is a modified version of
-\url{https://stackoverflow.com/a/20199902/15157768}.
+Modified version of \url{https://stackoverflow.com/a/20199902/15157768}.
 }
 \keyword{internal}
 \keyword{utils}

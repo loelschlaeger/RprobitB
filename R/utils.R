@@ -306,54 +306,42 @@ print_matrix <- function(
   return(invisible(x))
 }
 
-
-
-
-
-### TODO Not touched from here
-
-
-#' Permutations of a vector
+#' Build permutations
 #'
-#' @description
-#' This function returns all permutations of a given vector.
+#' This function creates all permutations of a given vector.
 #'
 #' @references
-#' This function is a modified version of
-#' <https://stackoverflow.com/a/20199902/15157768>.
+#' Modified version of <https://stackoverflow.com/a/20199902/15157768>.
 #'
 #' @param x
-#' A vector.
+#' Any \code{vector}.
 #'
 #' @return
-#' A list of all permutations of \code{x}.
+#' A \code{list} of all permutations of \code{x}.
 #'
 #' @examples
-#' RprobitB:::permutations(x = c("a","b","c"))
+#' RprobitB:::permutations(1:3)
+#' RprobitB:::permutations(LETTERS[1:3])
 #'
-#' @keywords
-#' internal utils
+#' @keywords internal utils
 
 permutations <- function(x){
+  stopifnot(is.vector(x))
   perm_index <- function(n){
-    if(n==1){
+    if (n == 1) {
       return(matrix(1))
     } else {
       sp <- perm_index(n-1)
       p <- nrow(sp)
-      A <- matrix(nrow=n*p,ncol=n)
-      for(i in 1:n){
-        A[(i-1)*p+1:p,] <- cbind(i,sp+(sp>=i))
+      A <- matrix(nrow = n*p, ncol = n)
+      for (i in 1:n) {
+        A[(i-1)*p+1:p,] <- cbind(i, sp + (sp >= i))
       }
       return(A)
     }
   }
   p <- perm_index(length(x))
-  out <- list()
-  for(i in 1:nrow(p)) {
-    out <- c(out, list(x[p[i,]]))
-  }
-  return(out)
+  apply(p, 1, function(p) x[p], simplify = FALSE)
 }
 
 
