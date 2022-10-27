@@ -271,14 +271,17 @@ simulate_RprobitB_parameter <- function(
     Omega_prior <- RprobitB_prior_Omega(P_r = P_r)
     x$Omega <- do.call(
       cbind,
-      replicate(
-        x$C,
-        rwishart(
-          df = Omega_prior$Omega_prior_df,
-          scale = Omega_prior$Omega_prior_scale,
-          inv = TRUE
+      lapply(
+        replicate(
+          x$C,
+          rwishart(
+            df = Omega_prior$Omega_prior_df,
+            scale = Omega_prior$Omega_prior_scale,
+            inv = TRUE
+          ),
+          simplify = FALSE
         ),
-        simplify = FALSE
+        as.vector
       )
     )
   }

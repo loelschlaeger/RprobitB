@@ -59,3 +59,13 @@ print.RprobitB_data <- function(x, ...) {
 plot.RprobitB_data <- function(x, ...) {
 
 }
+
+#' Build covariate matrix from covariate vector
+#'
+#' This helper function builds a covariate matrix from a covariate vector.
+
+cov_vec_to_mat <- function() {
+
+
+
+}

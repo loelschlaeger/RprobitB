@@ -75,11 +75,11 @@ To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 }
 
 \examples{
-formula <- choice ~ A | B + 0 | C + D
+formula <- choice ~ A | B | C + D
 re <- c("A", "D+")
 J <- 3
 compute_P(formula, re, J)
-cmopute_P_f(formula, re, J)
+compute_P_f(formula, re, J)
 compute_P_r(formula, re, J)
 
 }

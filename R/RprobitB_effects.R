@@ -105,6 +105,7 @@ RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
 #'
 #' @inheritParams RprobitB_formula
 #' @inheritParams RprobitB_parameter
+#' @inheritParams RprobitB_effects
 #'
 #' @inheritSection RprobitB_formula Model formula
 #' @inheritSection RprobitB_formula Random effects
@@ -113,11 +114,11 @@ RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
 #' An \code{integer}.
 #'
 #' @examples
-#' formula <- choice ~ A | B + 0 | C + D
+#' formula <- choice ~ A | B | C + D
 #' re <- c("A", "D+")
 #' J <- 3
 #' compute_P(formula, re, J)
-#' cmopute_P_f(formula, re, J)
+#' compute_P_f(formula, re, J)
 #' compute_P_r(formula, re, J)
 #'
 #' @export
@@ -147,4 +148,31 @@ compute_P_r <- function(formula, re, J, ordered = FALSE) {
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(RprobitB_effects$random))
+}
+
+#' Compute number of covariates
+#'
+#' This helper function computes the number of covariates per decider.
+#'
+#' @inheritParams RprobitB_formula
+#' @inheritParams RprobitB_alternatives
+#'
+#' @return
+#' An \code{integer}, the number of covariates per decider.
+#'
+#' @examples
+#' number_covariates(formula <- choice ~ cost | income | time, J = 3)
+#'
+#' @export
+
+number_covariates <- function(formula, J, ordered = FALSE) {
+  RprobitB_formula <- RprobitB_formula(formula = formula, ordered = ordered)
+  RprobitB_alternatives <- RprobitB_alternatives(J = J, ordered = ordered)
+
+}
+
+order_covariates <- function(
+    formula, J, alternatives = LETTERS[1:J], re = NULL, ordered = FALSE
+  ) {
+
 }

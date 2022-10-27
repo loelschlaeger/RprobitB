@@ -7,37 +7,35 @@
 simulate_choices(
   formula,
   N,
-  T = 1,
   J,
+  T = 1,
   alternatives = LETTERS[1:J],
   re = NULL,
   ordered = FALSE,
   ranked = FALSE,
   covariates = function(n, t) {
-     P <- P(formula, re, J)
-     matrix(rnorm(P * J, mean
-    = 0, sd = 9), nrow = P, ncol = J)
+     P <- ...
+     rnorm(P, mean = 0, sd = 9)
  },
-  seed = NULL,
-  true_parameter = RprobitB_parameter()
+  true_parameter = RprobitB_parameter(),
+  seed = NULL
 )
 
 simulate_choices(
   formula,
   N,
-  T = 1,
   J,
+  T = 1,
   alternatives = LETTERS[1:J],
   re = NULL,
   ordered = FALSE,
   ranked = FALSE,
   covariates = function(n, t) {
-     P <- P(formula, re, J)
-     matrix(rnorm(P * J, mean
-    = 0, sd = 9), nrow = P, ncol = J)
+     P <- ...
+     rnorm(P, mean = 0, sd = 9)
  },
-  seed = NULL,
-  true_parameter = RprobitB_parameter()
+  true_parameter = RprobitB_parameter(),
+  seed = NULL
 )
 }
 \arguments{
@@ -46,54 +44,55 @@ fitted, see details.}
 
 \item{N}{An \code{integer}, the number of deciders.}
 
+\item{J}{The number (greater or equal 2) of choice alternatives.}
+
 \item{T}{An \code{integer} of length \code{N}, the number of choice occasions per
 decider.
 Can also be a single \code{integer} for a constant number of choice occasions
 per decider.
 By default, \code{T = 1}.}
 
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
 \item{alternatives}{A character vector with the names of the choice alternatives.
 If not specified, the choice set is defined by the observed choices.
 If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
 the alternatives ordered from worst to best.}
 
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
-If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
+\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
+should have a random effect, see details.
+By default, \code{re = NULL}, i.e., no random effects.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{ranked}{TBA}
 
-\item{covariates}{}
+\item{covariates}{A \code{function} with two inputs, say \code{n} and \code{t}.
+It should return the \code{vector} of covariates of decider \code{n} at
+choice occasion \code{t}.
+The vector should have length...
+TODO}
+
+\item{true_parameter}{An \code{\link{RprobitB_parameter}} object, which contains the model
+parameters used for the choice data simulation.
+By default, \code{RprobitB_parameter = RprobitB_parameter()}, i.e. default
+parameters are used.}
 
 \item{seed}{Set a seed for the simulation.}
-
-\item{true_parameter}{Optionally specify a named list with true parameter values for \code{alpha},
-\code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, \code{z}, or \code{d} for the simulation.
-See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
-for definitions of these variables.}
 }
 \value{
 An object of class \code{RprobitB_data}.
+
+An \code{\link{RprobitB_data}} object.
 }
 \description{
 This function simulates choice data from a probit model.
 
-This function simulates choice data from a probit model, see details.
+This function simulates choice data from a probit model.
 }
 \details{
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
 for more details.
 }
-\section{Choice simulation}{
-TODO
-}
-
 \section{Model formula}{
 The structure of \code{formula} should be
 \code{choice ~ A | B | C}, where
@@ -177,6 +176,25 @@ data <- simulate_choices(
   seed = 1
 )
 
+### simulate data from a binary probit model with two latent classes
+data <- simulate_choices(
+  formula = choice ~ cost | income | time, N = 10, J = 2, T = 1:10,
+  alternatives = c("car", "bus"), re = c("cost", "time"),
+  true_parameter = RprobitB_parameter(C = 2)
+)
+
+### simulate data from an ordered probit model
+data <- simulate_choices(
+  formula = opinion ~ age + gender, N = 50, J = 5,
+  alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
+  ordered = TRUE
+)
+
+### simulate data from a ranked probit model
+data <- simulate_choices(
+  formula = product ~ price, N = 10, J = 3, T = 1:10, ranked = TRUE
+)
+
 }
 \seealso{
 \itemize{
@@ -187,4 +205,6 @@ data <- simulate_choices(
 \item \code{\link[=prepare_data]{prepare_data()}} for preparing empirical choice data
 \item \code{\link[=train_test]{train_test()}} for splitting choice data into a train and test subset
 }
+
+\code{\link[=compute_no_cov]{compute_no_cov()}} to compute the number of covariates per decider.
 }

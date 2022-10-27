@@ -104,29 +104,6 @@ alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
 ordered probit model).
 Per default, \code{base} is the last element of \code{alternatives}.}
 
-\item{form}{A \code{formula} object that is used to specify the model equation.
-The structure is \code{choice ~ A | B | C}, where
-\itemize{
-\item \code{choice} is the name of the dependent variable (the choices),
-\item \code{A} are names of alternative and choice situation specific
-covariates with a coefficient that is constant across alternatives,
-\item \code{B} are names of choice situation specific covariates with
-alternative specific coefficients,
-\item and \code{C} are names of alternative and choice situation specific
-covariates with alternative specific coefficients.
-}
-
-Multiple covariates (of one type) are separated by a \code{+} sign.
-By default, alternative specific constants (ASCs) are added to the model.
-They can be removed by adding \code{+ 0} in the second spot.
-
-In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
-object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
-
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
-If \code{re = NULL} (the default), there are no random effects.
-To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
-
 \item{ASC}{A boolean, determining whether the model has ASCs.}
 
 \item{effects}{A data frame with the effect names and booleans indicating whether
@@ -165,12 +142,4 @@ see details.
 
 This function constructs an object of class \code{RprobitB_data}.
 }
-\section{Choice simulation}{
-TODO
-}
-
-\section{Choice data}{
-TODO
-}
-
 \keyword{internal}
