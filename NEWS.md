@@ -1,4 +1,6 @@
-# RprobitB 1.1.1.9000 (developtment version)
+# RprobitB 1.1.2
+
+* `logLik()` method now returns a `logLik` object that can be passed to `AIC()` and `BIC()` methods from {stats}.
 
 # RprobitB 1.1.1
 

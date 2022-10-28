@@ -29,6 +29,7 @@
 #' A data frame, criteria in columns, models in rows.
 #'
 #' @export
+#' @importFrom stats AIC BIC
 
 model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
                             add_form = FALSE) {

@@ -1,7 +1,7 @@
 Package: RprobitB
 Type: Package
 Title: Bayesian Probit Choice Modeling
-Version: 1.1.1.9000
+Version: 1.1.2
 Date: 2022-08-11
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
@@ -49,7 +49,8 @@ Imports:
     gridExtra,
     crayon,
     plotROC,
-    MASS
+    MASS,
+    cli
 LinkingTo:
     Rcpp,
     RcppArmadillo
