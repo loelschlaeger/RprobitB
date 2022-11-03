@@ -1,6 +1,7 @@
 # RprobitB 1.1.2
 
 * `logLik()` method now returns a `logLik` object that can be passed to `AIC()` and `BIC()` methods from {stats}.
+* Small bug fixes for the ordered probit model case.
 
 # RprobitB 1.1.1
 
