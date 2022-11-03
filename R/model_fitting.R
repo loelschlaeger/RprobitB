@@ -850,6 +850,10 @@ fit_model <- function(
     ordered = data[["ordered"]], ranked = data[["ranked"]]
   )
   timer_end <- Sys.time()
+  if (data$ordered) {
+    gibbs_samples$alpha <- gibbs_samples$alpha * 1.4
+    gibbs_samples$b <- gibbs_samples$b * 1.4
+  }
 
   ### filter Gibbs samples
   if (data$P_f == 0)
