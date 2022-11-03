@@ -1074,8 +1074,9 @@ sufficient_statistics <- function(data, normalization) {
     }
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
-        var <- as.numeric(W[[sum(Tvec[seq_len(n - 1)]) + t]])
+        var <- W[[sum(Tvec[seq_len(n - 1)]) + t]]
         if(data$ordered) {
+          var <- as.numeric(var)
           WkW <- WkW + t(kronecker(t(var), t(var)))
         } else {
           WkW <- WkW + kronecker(t(var), t(var))
@@ -1096,8 +1097,9 @@ sufficient_statistics <- function(data, normalization) {
         matrix(0, nrow = P_r^2, ncol = (J - 1)^2)
       }
       for (t in seq_len(Tvec[n])) {
-        var <- as.numeric(X[[sum(Tvec[seq_len(n - 1)]) + t]])
+        var <- X[[sum(Tvec[seq_len(n - 1)]) + t]]
         if(data$ordered) {
+          var <- as.numeric(var)
           XnkXn <- XnkXn + t(kronecker(t(var), t(var)))
         } else {
           XnkXn <- XnkXn + kronecker(t(var), t(var))
