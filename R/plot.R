@@ -46,6 +46,14 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
     }
   }
 
+  ### keep order of alternatives in case of the ordered probit model
+  if (x$ordered) {
+    data_red[[x$res_var_names$choice]] <- factor(
+      data_red[[x$res_var_names$choice]],
+      levels = x$alternatives
+    )
+  }
+
   ### create basis of plot
   base_plot <- ggplot2::ggplot(data = data_red) +
     ggplot2::theme_bw() +
