@@ -192,7 +192,7 @@ model parameters <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</co
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">RprobitB_parameter</span><span class="op">(</span>P_f <span class="op">=</span> <span class="fl">1</span>, P_r <span class="op">=</span> <span class="fl">2</span>, J <span class="op">=</span> <span class="fl">3</span>, N <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha : 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha : 1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -201,39 +201,39 @@ model parameters <code>alpha</code>, <code>C</code>, <code>s</code>, <code>b</co
 <span class="r-out co"><span class="r-pr">#&gt;</span> b : 2 x 1 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -1.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  1.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Omega : 4 x 1 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.0504173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.5630061</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.5630061</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.9308994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  6.208611</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.915458</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -1.915458</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  2.003386</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sigma : 2 x 2 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 6.602786  5.760327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 5.760327 11.231224</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 6.6481743 0.3054396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.3054396 0.6209596</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sigma_full : 3 x 3 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]       [,2]      [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 4.6192542  0.2670809  1.008409</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.2670809  2.2282633 -2.501305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 1.0084092 -2.5013053  4.000350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]      [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.632802 -1.037510 -1.335791</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.037510  2.950433  2.336632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -1.335791  2.336632  2.343791</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> beta : 2 x 10 matrix of doubles </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]    [,2]    [,3] ...   [,10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3394 -1.0670 -1.9930 ... -1.4437</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.2960  2.4066  1.3858 ... -0.2540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]    [,2]    [,3] ...   [,10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  5.3454  2.6873  3.0071 ...  3.6870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.9929 -1.7132 -1.6349 ... -1.9312</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z : integer vector of length 10 </span>
