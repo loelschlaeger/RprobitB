@@ -2,7 +2,7 @@ Package: RprobitB
 Type: Package
 Title: Bayesian Probit Choice Modeling
 Version: 1.1.2
-Date: 2022-08-11
+Date: 2022-11-06
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
            email = "oelschlaeger.lennart@gmail.com", 
