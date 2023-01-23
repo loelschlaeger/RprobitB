@@ -13,9 +13,5 @@ LICENSE
 ^codecov\.yml$
 ^doc$
 ^Meta$
-jss/
-applications/
-TODO.md
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
-STYLEGUIDE.md
