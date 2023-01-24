@@ -1,7 +1,8 @@
 #' Define probit model formula
 #'
-#' This function constructs an object of class \code{RprobitB_formula}, which
-#' contains the formula for a probit model.
+#' @description
+#' This function constructs an object of class \code{\link{RprobitB_formula}},
+#' which contains the formula for a probit model.
 #'
 #' @param formula
 #' A \code{\link[stats]{formula}}, a symbolic description of the model to be
@@ -13,7 +14,19 @@
 #' @inheritParams RprobitB_alternatives
 #'
 #' @return
-#' An \code{RprobitB_formula} object.
+#' An \code{\link{RprobitB_formula}} object.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{formula}}{The model formula.}
+#'   \item{\code{re}}{The names of covariates with random effects.}
+#'   \item{\code{ordered}}{Are the choice alternatives ordered?}
+#'   \item{\code{choice}}{The name of the dependent variable.}
+#'   \item{\code{vars}}{The different types of covariates.}
+#'   \item{\code{ASC}}{Does the model have ASCs?}
+#'   \item{\code{md_n}}{The covariates with normal mixing distribution.}
+#'   \item{\code{md_ln}}{The covariates with log-normal mixing distribution.}
+#' }
 #'
 #' @details
 #' # Model formula
@@ -42,8 +55,8 @@
 #'
 #' In the ordered probit model (\code{ordered = TRUE}), covariates are not
 #' alternative specific, i.e., there exists only one type of covariate.
-#' Therefore, the \code{formula} object does not need any
-#' separation via \code{|}, and hence has the simple structure
+#' Therefore, the \code{formula} object does not need the special
+#' separation form via \code{|}, and hence has the simple structure
 #' \code{choice ~ A + B + C}.
 #' ASCs cannot be estimated in the ordered case.
 #'
@@ -56,9 +69,11 @@
 #' \code{re}.
 #'
 #' @examples
+#' \dontrun{
 #' formula <- choice ~ A | B + 0 | C + D
 #' re <- c("A", "D+")
 #' RprobitB_formula(formula, re, ordered = FALSE)
+#' }
 #'
 #' @keywords internal object
 
@@ -69,13 +84,37 @@ RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
       "See the function documentation for details."
     )
   }
-  stopifnot(inherits(formula, "formula"))
-  if (is.null(re)) re <- character()
-  stopifnot(is.character(re))
-  re <- unique(re)
-  stopifnot(isTRUE(ordered) || isFALSE(ordered))
+  if (!inherits(formula, "formula")) {
+    RprobitB_stop(
+      "Input 'formula' is misspecified.",
+      "It should be a `formula` object."
+    )
+  }
+  if (is.null(re)) {
+    re <- character()
+  } else {
+    if (!is.character(re)) {
+      RprobitB_stop(
+        "Input 're' is misspecified.",
+        "It should be a `character` vector."
+      )
+    } else {
+      re <- unique(re)
+    }
+  }
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
+    RprobitB_stop(
+      "Input 'ordered' must be `TRUE` or `FALSE`."
+    )
+  }
   formula_parts <- as.character(formula)
   vars <- trimws(strsplit(formula_parts[3], split = "|", fixed = TRUE)[[1]])
+  if (length(vars) > 3) {
+    RprobitB_stop(
+      "Input 'formula' is misspecified.",
+      "It should have no more than 2 of '|' separators."
+    )
+  }
   while (length(vars) < 3) vars <- c(vars, NA_character_)
   vars <- lapply(strsplit(vars, split = "+", fixed = TRUE), trimws)
   ASC <- if (ordered) FALSE else ifelse(0 %in% vars[[2]], FALSE, TRUE)
@@ -99,21 +138,21 @@ RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
 }
 
 #' @rdname RprobitB_formula
+#' @param x
+#' An \code{\link{RprobitB_formula}} object.
 
 is.RprobitB_formula <- function(x) {
   inherits(x, "RprobitB_formula")
 }
 
 #' @rdname RprobitB_formula
-#' @param x
-#' An \code{RprobitB_formula} object.
 #' @importFrom glue glue
 
 validate_RprobitB_formula <- function(x) {
   if (length(as.character(x$formula)) != 3) {
     RprobitB_stop(
       "Input 'formula' is misspecified.",
-      glue::glue("'{deparse1(x$formula)}' is not in form '<choice> ~ <covariates>'.")
+      "It should be in the form '<choice> ~ <covariates>'."
     )
   }
   if (x$ordered) {
@@ -148,9 +187,15 @@ validate_RprobitB_formula <- function(x) {
 #' @rdname RprobitB_formula
 #' @exportS3Method
 #' @importFrom cli style_underline
+#' @param ...
+#' Currently not used.
 
 print.RprobitB_formula <- function(x, ...) {
-  stopifnot(is.RprobitB_formula(x))
+  if (!is.RprobitB_formula(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_formula`."
+    )
+  }
   cat(cli::style_underline("Formula:"), deparse1(x$formula))
   if (length(x$re) > 0) {
     cat("\n")

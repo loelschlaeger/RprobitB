@@ -26,14 +26,28 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{x}{An \code{RprobitB_formula} object.}
+\item{x}{An \code{\link{RprobitB_formula}} object.}
+
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_formula} object.
+An \code{\link{RprobitB_formula}} object.
+
+It contains the elements:
+\describe{
+\item{\code{formula}}{The model formula.}
+\item{\code{re}}{The names of covariates with random effects.}
+\item{\code{ordered}}{Are the choice alternatives ordered?}
+\item{\code{choice}}{The name of the dependent variable.}
+\item{\code{vars}}{The different types of covariates.}
+\item{\code{ASC}}{Does the model have ASCs?}
+\item{\code{md_n}}{The covariates with normal mixing distribution.}
+\item{\code{md_ln}}{The covariates with log-normal mixing distribution.}
+}
 }
 \description{
-This function constructs an object of class \code{RprobitB_formula}, which
-contains the formula for a probit model.
+This function constructs an object of class \code{\link{RprobitB_formula}},
+which contains the formula for a probit model.
 }
 \section{Model formula}{
 The structure of \code{formula} should be
@@ -61,8 +75,8 @@ category and no ASCs.
 
 In the ordered probit model (\code{ordered = TRUE}), covariates are not
 alternative specific, i.e., there exists only one type of covariate.
-Therefore, the \code{formula} object does not need any
-separation via \code{|}, and hence has the simple structure
+Therefore, the \code{formula} object does not need the special
+separation form via \code{|}, and hence has the simple structure
 \code{choice ~ A + B + C}.
 ASCs cannot be estimated in the ordered case.
 }
@@ -77,9 +91,11 @@ To have random effects for the ASCs, add \code{ASC} (or \code{ASC+}) to
 }
 
 \examples{
+\dontrun{
 formula <- choice ~ A | B + 0 | C + D
 re <- c("A", "D+")
 RprobitB_formula(formula, re, ordered = FALSE)
+}
 
 }
 \keyword{internal}
