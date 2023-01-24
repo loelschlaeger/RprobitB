@@ -1,8 +1,8 @@
 #' Define choice alternatives
 #'
 #' @description
-#' This function constructs an object of class \code{RprobitB_alternatives},
-#' which contains the choice alternatives.
+#' This function constructs an object of class
+#' \code{\link{RprobitB_alternatives}}, which contains the choice alternatives.
 #'
 #' @param J
 #' An \code{integer}, the number of choice alternatives.
@@ -24,7 +24,15 @@
 #' \code{FALSE} (default) else.
 #'
 #' @return
-#' An \code{RprobitB_alternatives} object.
+#' An \code{\link{RprobitB_alternatives}} object.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{J}}{The number of choice alternatives.}
+#'   \item{\code{alternatives}}{The names of the choice alternatives}
+#'   \item{\code{base}}{The name of the base alternative.}
+#'   \item{\code{ordered}}{Are the choice alternatives are ordered?}
+#' }
 #'
 #' @details
 #' # Base alternative
@@ -80,7 +88,7 @@ RprobitB_alternatives <- function(
 
 #' @rdname RprobitB_alternatives
 #' @param x
-#' An \code{RprobitB_alternatives} object.
+#' An \code{\link{RprobitB_alternatives}} object.
 
 is.RprobitB_alternatives <- function(x) {
   inherits(x, "RprobitB_alternatives")

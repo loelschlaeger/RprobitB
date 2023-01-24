@@ -39,16 +39,24 @@ By default, \code{base} is the first element of \code{alternatives}.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{x}{An \code{RprobitB_alternatives} object.}
+\item{x}{An \code{\link{RprobitB_alternatives}} object.}
 
 \item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_alternatives} object.
+An \code{\link{RprobitB_alternatives}} object.
+
+It contains the elements:
+\describe{
+\item{\code{J}}{The number of choice alternatives.}
+\item{\code{alternatives}}{The names of the choice alternatives}
+\item{\code{base}}{The name of the base alternative.}
+\item{\code{ordered}}{Are the choice alternatives are ordered?}
+}
 }
 \description{
-This function constructs an object of class \code{RprobitB_alternatives},
-which contains the choice alternatives.
+This function constructs an object of class
+\code{\link{RprobitB_alternatives}}, which contains the choice alternatives.
 }
 \section{Base alternative}{
 The full collection of coefficients for covariates that are constant across
