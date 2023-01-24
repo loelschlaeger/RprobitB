@@ -1,5 +1,6 @@
 #' Define choice alternatives
 #'
+#' @description
 #' This function constructs an object of class \code{RprobitB_alternatives},
 #' which contains the choice alternatives.
 #'
@@ -34,7 +35,9 @@
 #' coefficients then have to be interpreted with respect to \code{base}.
 #'
 #' @examples
+#' \dontrun{
 #' RprobitB_alternatives(3)
+#' }
 #'
 #' @keywords internal
 
@@ -82,7 +85,7 @@ validate_RprobitB_alternatives <- function(x) {
   if (length(x$alternatives) != x$J) {
     RprobitB_stop(
       glue::glue("The input 'alternatives' must be of length {x$J}."),
-      glue::glue("Instead, it is of length {length(x$alternatives}.")
+      glue::glue("Instead, it is of length {length(x$alternatives)}.")
     )
   }
   if (!identical(x$alternatives, unique(x$alternatives))) {
@@ -120,3 +123,4 @@ print.RprobitB_alternatives <- function(x, ...) {
   if (!x$ordered) alt[alt == x$base] <- paste0(alt[alt == x$base], "*")
   cat(cli::style_underline("Alternatives:"), alt, if (x$ordered) "(ordered)")
 }
+

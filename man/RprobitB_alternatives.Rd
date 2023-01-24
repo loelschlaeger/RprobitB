@@ -57,7 +57,9 @@ coefficients then have to be interpreted with respect to \code{base}.
 }
 
 \examples{
+\dontrun{
 RprobitB_alternatives(3)
+}
 
 }
 \keyword{internal}

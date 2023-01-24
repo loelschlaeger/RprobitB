@@ -505,7 +505,6 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' `<parameter> := <value>`, where `<parameter>` is either the name of a fixed
 #' effect or `Sigma_<j>,<j>` for the `<j>`th diagonal element of `Sigma`, and
 #' `<value>` is the value of the fixed parameter.
-#' @inheritParams overview_effects
 #' @inheritParams RprobitB_data
 #'
 #' @return
