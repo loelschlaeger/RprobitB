@@ -35,7 +35,7 @@ density function \code{s_prior_custom}.
 By default, \code{s_prior_custom_test_par = numeric(C)}.
 Ignored if \code{s_prior_custom = NULL}.}
 
-\item{x}{An \code{RprobitB_prior_s} object.}
+\item{x}{An \code{\link{RprobitB_prior_s}} object.}
 
 \item{coldots}{An \code{integer}, the column number which is replaced by \code{...}.
 By default, \code{coldots = 4}.}
@@ -51,10 +51,17 @@ By default, \code{simplify = FALSE}.}
 dimension of \code{x}.
 By default, \code{details = !simplify}.}
 
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_prior_s} object.
+An \code{\link{RprobitB_prior_s}} object or \code{NA} if \code{C = 1}.
+
+It contains the elements:
+\describe{
+\item{\code{conjugate}}{Is the prior conjugated?}
+\item{\code{s_prior_concentration}}{The prior concentration vector.}
+\item{\code{c_prior_custom}}{The custom prior function.}
+}
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -131,7 +138,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -141,6 +148,7 @@ The following density functions (implemented in {RprobitB}) can be helpful:
 }
 
 \examples{
+\dontrun{
 ### conjugate prior: s ~ Dirichlet(rep(1, C))
 RprobitB_prior_s(C = 2)
 
@@ -152,6 +160,8 @@ RprobitB_prior_s(
   },
   s_prior_custom_test_par = c(0.6, 0.4)
 )
+}
 
 }
 \keyword{internal}
+\keyword{object}

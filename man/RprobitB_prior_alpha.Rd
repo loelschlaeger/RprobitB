@@ -47,7 +47,7 @@ density function \code{alpha_prior_custom}.
 By default, \code{alpha_prior_custom_test_par = numeric(P_f)}.
 Ignored if \code{alpha_prior_custom = NULL}.}
 
-\item{x}{An \code{RprobitB_prior_alpha} object.}
+\item{x}{An \code{\link{RprobitB_prior_alpha}} object.}
 
 \item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
 By default, \code{rowdots = 4}.}
@@ -66,10 +66,18 @@ By default, \code{simplify = FALSE}.}
 dimension of \code{x}.
 By default, \code{details = !simplify}.}
 
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_prior_alpha} object or \code{NA} if \code{P_f = 0}.
+An \code{\link{RprobitB_prior_alpha}} object or \code{NA} if \code{P_f = 0}.
+
+It contains the elements:
+\describe{
+\item{\code{conjugate}}{Is the prior conjugated?}
+\item{\code{alpha_prior_mean}}{The prior mean vector.}
+\item{\code{alpha_prior_Sigma}}{The prior covariance matrix.}
+\item{\code{alpha_prior_custom}}{The custom prior function.}
+}
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -146,7 +154,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -156,6 +164,7 @@ The following density functions (implemented in {RprobitB}) can be helpful:
 }
 
 \examples{
+\dontrun{
 ### conjugate prior: alpha ~ Normal(0, 10*I)
 RprobitB_prior_alpha(P_f = 2)
 
@@ -166,6 +175,8 @@ RprobitB_prior_alpha(
     stats::dnorm(x[1]) * stats::dunif(x[2])
   }
 )
+}
 
 }
 \keyword{internal}
+\keyword{object}

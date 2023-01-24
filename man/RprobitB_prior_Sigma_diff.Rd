@@ -32,8 +32,8 @@ is.RprobitB_prior_Sigma_diff(x)
 \code{FALSE} (default) else.}
 
 \item{J}{An \code{integer}, the number of choice alternatives.
-Must be at least 2.
-If \code{ordered = TRUE}, must be at least 3.}
+Must be at least \code{2}.
+If \code{ordered = TRUE}, must be at least \code{3}.}
 
 \item{Sigma_diff_prior_df}{An \code{integer}, the degrees of freedom for the conjugate
 Inverse-Wishart prior distribution of \code{Sigma_diff}.
@@ -54,7 +54,7 @@ the custom prior density function \code{Sigma_diff_prior_custom}.
 By default, \code{Sigma_diff_prior_custom_test_par = diag(J-1)}.
 Ignored if \code{Sigma_diff_prior_custom = NULL}.}
 
-\item{x}{An \code{RprobitB_prior_Sigma_diff} object.}
+\item{x}{An \code{\link{RprobitB_prior_Sigma_diff}} object.}
 
 \item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
 By default, \code{rowdots = 4}.}
@@ -73,10 +73,19 @@ By default, \code{simplify = FALSE}.}
 dimension of \code{x}.
 By default, \code{details = !simplify}.}
 
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_prior_Sigma_diff} object.
+An \code{\link{RprobitB_prior_Sigma_diff}} object or \code{NA} if
+\code{ordered = TRUE}.
+
+It contains the elements:
+\describe{
+\item{\code{conjugate}}{Is the prior conjugated?}
+\item{\code{Sigma_diff_prior_df}}{The prior degrees of freedom.}
+\item{\code{Sigma_diff_prior_scale}}{The prior scale matrix.}
+\item{\code{Sigma_diff_prior_custom}}{The custom prior function.}
+}
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -153,7 +162,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -163,6 +172,7 @@ The following density functions (implemented in {RprobitB}) can be helpful:
 }
 
 \examples{
+\dontrun{
 ### conjugate prior: Sigma_diff ~ Inverse-Wishart(J + 1, I)
 RprobitB_prior_Sigma_diff(J = 3)
 
@@ -174,6 +184,8 @@ RprobitB_prior_Sigma_diff(
     all(x[row(x) != col(x)] == 0)
   }
 )
+}
 
 }
 \keyword{internal}
+\keyword{object}
