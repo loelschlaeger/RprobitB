@@ -123,8 +123,8 @@ category and no ASCs.
 
 In the ordered probit model (\code{ordered = TRUE}), covariates are not
 alternative specific, i.e., there exists only one type of covariate.
-Therefore, the \code{formula} object does not need any
-separation via \code{|}, and hence has the simple structure
+Therefore, the \code{formula} object does not need the special
+separation form via \code{|}, and hence has the simple structure
 \code{choice ~ A + B + C}.
 ASCs cannot be estimated in the ordered case.
 }

@@ -82,7 +82,7 @@ simulate_choices <- function(
   RprobitB_alternatives <- RprobitB_alternatives(
     J = J, alternatives = alternatives, ordered = ordered
   )
-  RprobitB_effects <- RprobitB_effects(
+  effects <- overview_effects(
     RprobitB_formula = RprobitB_formula,
     RprobitB_alternatives = RprobitB_alternatives
   )
