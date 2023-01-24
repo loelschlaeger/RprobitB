@@ -6,8 +6,8 @@
 #'
 #' @param J
 #' An \code{integer}, the number of choice alternatives.
-#' Must be at least 2.
-#' If \code{ordered = TRUE}, must be at least 3.
+#' Must be at least \code{2}.
+#' If \code{ordered = TRUE}, must be at least \code{3}.
 #' @param alternatives
 #' A \code{character}, the vector of names of the choice alternatives.
 #' Its length must be \code{J}.
@@ -29,33 +29,46 @@
 #' @details
 #' # Base alternative
 #' The full collection of coefficients for covariates that are constant across
-#' alternatives (including ASCs) is not identified, one coefficient is a linear
-#' coefficient of the others, respectively. To achieve identifiability, the
-#' coefficient of one alternative \code{base} is fixed to zero. The other
-#' coefficients then have to be interpreted with respect to \code{base}.
+#' alternatives (including ASCs) is not identified.
+#' To achieve identifiability, the coefficient of one alternative \code{base}
+#' is fixed to \code{0}.
+#' The other coefficients then have to be interpreted with respect to
+#' \code{base}.
 #'
 #' @examples
 #' \dontrun{
 #' RprobitB_alternatives(3)
 #' }
 #'
-#' @keywords internal
+#' @keywords internal class
 
 RprobitB_alternatives <- function(
     J, alternatives = LETTERS[1:J], base = alternatives[1], ordered = FALSE
   ) {
   if (missing(J)) {
-    RprobitB_stop("Please specify the input 'J'.")
+    RprobitB_stop(
+      "Please specify the input 'J'.",
+      "It should be an `integer`, the number of choice alternatives."
+    )
   }
-  stopifnot(
-    is_pos_int(J), is.character(alternatives), is.character(base),
-    length(base) == 1, isTRUE(ordered) || isFALSE(ordered)
-  )
-  if (!ordered) alternatives <- sort(alternatives)
+  if (!is.vector(alternatives)) {
+    RprobitB_stop(
+      "Input 'alternatives' should be a `vector`.",
+      "It containes the names of the choice alternatives."
+    )
+  }
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
+    RprobitB_stop(
+      "Input 'ordered' must be `TRUE` or `FALSE`."
+    )
+  }
+  if (!ordered) {
+    alternatives <- sort(alternatives)
+  }
   validate_RprobitB_alternatives(
     structure(
       list(
-        J = length(alternatives),
+        J = J,
         alternatives = alternatives,
         base = base,
         ordered = ordered
@@ -66,25 +79,34 @@ RprobitB_alternatives <- function(
 }
 
 #' @rdname RprobitB_alternatives
+#' @param x
+#' An \code{RprobitB_alternatives} object.
 
 is.RprobitB_alternatives <- function(x) {
   inherits(x, "RprobitB_alternatives")
 }
 
 #' @rdname RprobitB_alternatives
-#' @param x
-#' An \code{RprobitB_alternatives} object.
+#' @importFrom glue glue
 
 validate_RprobitB_alternatives <- function(x) {
-  if (length(x$alternatives) < 2) {
+  if (!is_pos_int(x$J)) {
     RprobitB_stop(
-      "At least two alternatives are required.",
-      "Please make sure that input 'alternatives' has at least two elements."
+      "Input 'J' is misspecified.",
+      "It should be an `integer`, the number of choice alternatives."
+    )
+  } else {
+    x$J <- as.integer(x$J)
+  }
+  if (!is.character(x$alternatives)) {
+    RprobitB_stop(
+      "Input 'alternatives' is misspecified.",
+      "It should be a `character` vector, the names of the choice alternatives."
     )
   }
   if (length(x$alternatives) != x$J) {
     RprobitB_stop(
-      glue::glue("The input 'alternatives' must be of length {x$J}."),
+      glue::glue("Input 'alternatives' must be of length 'J = {x$J}'."),
       glue::glue("Instead, it is of length {length(x$alternatives)}.")
     )
   }
@@ -98,11 +120,23 @@ validate_RprobitB_alternatives <- function(x) {
     x$base <- NA
     if (length(x$alternatives) < 3) {
       RprobitB_stop(
-        "At least three alternatives are required in the ordered case.",
-        "Please make sure that input 'alternatives' has at least three elements."
+        "At least 3 alternatives are required in the ordered case.",
+        "Please make sure that input 'alternatives' has at least 3 elements."
       )
     }
   } else {
+    if (length(x$alternatives) < 2) {
+      RprobitB_stop(
+        "Input 'alternatives' is misspecified.",
+        "Please make sure that input 'alternatives' has at least 2 elements."
+      )
+    }
+    if (!(is.character(x$base) && length(x$base) == 1)) {
+      RprobitB_stop(
+        "Input 'base' is misspecified.",
+        "It should be a single `character` vector, the base alternative name."
+      )
+    }
     if (!x$base %in% x$alternatives) {
       RprobitB_stop(
         "Base alternative must be in alternative set.",
@@ -116,9 +150,15 @@ validate_RprobitB_alternatives <- function(x) {
 #' @rdname RprobitB_alternatives
 #' @exportS3Method
 #' @importFrom cli style_underline
+#' @param ...
+#' Currently not used.
 
 print.RprobitB_alternatives <- function(x, ...) {
-  stopifnot(is.RprobitB_alternatives(x))
+  if (!is.RprobitB_alternatives(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_alternatives`."
+    )
+  }
   alt <- x$alternatives
   if (!x$ordered) alt[alt == x$base] <- paste0(alt[alt == x$base], "*")
   cat(cli::style_underline("Alternatives:"), alt, if (x$ordered) "(ordered)")
