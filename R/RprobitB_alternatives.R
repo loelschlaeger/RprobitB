@@ -31,7 +31,7 @@
 #'   \item{\code{J}}{The number of choice alternatives.}
 #'   \item{\code{alternatives}}{The names of the choice alternatives}
 #'   \item{\code{base}}{The name of the base alternative.}
-#'   \item{\code{ordered}}{Are the choice alternatives are ordered?}
+#'   \item{\code{ordered}}{Are the choice alternatives ordered?}
 #' }
 #'
 #' @details
@@ -48,7 +48,7 @@
 #' RprobitB_alternatives(3)
 #' }
 #'
-#' @keywords internal class
+#' @keywords internal object
 
 RprobitB_alternatives <- function(
     J, alternatives = LETTERS[1:J], base = alternatives[1], ordered = FALSE

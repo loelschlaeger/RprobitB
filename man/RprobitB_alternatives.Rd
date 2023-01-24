@@ -51,7 +51,7 @@ It contains the elements:
 \item{\code{J}}{The number of choice alternatives.}
 \item{\code{alternatives}}{The names of the choice alternatives}
 \item{\code{base}}{The name of the base alternative.}
-\item{\code{ordered}}{Are the choice alternatives are ordered?}
+\item{\code{ordered}}{Are the choice alternatives ordered?}
 }
 }
 \description{
@@ -73,5 +73,5 @@ RprobitB_alternatives(3)
 }
 
 }
-\keyword{class}
 \keyword{internal}
+\keyword{object}
