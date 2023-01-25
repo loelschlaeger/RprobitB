@@ -70,7 +70,7 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
   re <- c(md_n, md_ln)
   overview <- data.frame(matrix(ncol = 5, nrow = 0))
   if(ordered){
-    for (var in vars[[1]]) {
+    for (var in vars[[2]]) {
       overview <- rbind(
         overview,
         c(var, FALSE, FALSE, var %in% re, var %in% md_ln)

@@ -119,7 +119,10 @@ RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
   vars <- lapply(strsplit(vars, split = "+", fixed = TRUE), trimws)
   ASC <- if (ordered) FALSE else ifelse(0 %in% vars[[2]], FALSE, TRUE)
   vars <- lapply(vars, function(x) x[!x %in% c(0, 1, NA)])
-  if (ordered) vars <- list(character(), unlist(vars[1:3]), character())
+  if (ordered) {
+    ### in the ordered case, 'vars' has only variables in second position
+    vars <- list(character(), unlist(vars[1:3]), character())
+  }
   validate_RprobitB_formula(
     structure(
       list(
@@ -177,7 +180,7 @@ validate_RprobitB_formula <- function(x) {
       RprobitB_stop(
         "Input 're' is misspecified.",
         glue::glue("'re' includes '{re}'."),
-        glue::glue("But '{re}' is not part of '{deparse1(x$formula)}'.")
+        glue::glue("But '{re}' is not on the right side of the model formula '{deparse1(x$formula)}'.")
       )
     }
   }

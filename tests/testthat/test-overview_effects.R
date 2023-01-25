@@ -69,11 +69,10 @@ test_that("effect overview can be created", {
     overview_effects(
       RprobitB_formula = RprobitB_formula(
         formula = choice ~ A + B + C,
-        re = "A+"
+        re = "A+", ordered = TRUE
       ),
       RprobitB_alternatives = RprobitB_alternatives(
-        J = 3,
-        ordered = TRUE
+        J = 3, ordered = TRUE
       )
     ),
     structure(
