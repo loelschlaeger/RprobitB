@@ -29,7 +29,9 @@ the form:
 #' # add example
 #' }
 #'
-#' @keywords internal object
+#' (@export)
+#'
+#' @keywords (internal) object
 
 RprobitB_... <- function() {}
 ```
