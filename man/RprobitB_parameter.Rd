@@ -104,7 +104,7 @@ denotes the allocated class for decider \code{n}.}
 the utility thresholds.
 Only relevant in the ordered probit model case (see details).}
 
-\item{x}{An \code{RprobitB_parameter} object.}
+\item{x}{An \code{\link{RprobitB_parameter}} object.}
 
 \item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
 fitted, see details.}
@@ -145,16 +145,43 @@ dimension of \code{x}.
 By default, \code{details = !simplify}.}
 }
 \value{
-An \code{RprobitB_parameter} object.
+An \code{\link{RprobitB_parameter}} object.
+
+It contains the elements:
+\describe{
+\item{\code{C}}{The number of latent classes.}
+\item{\code{s}}{The class weights.}
+\item{\code{alpha}}{The fixed coefficients.}
+\item{\code{b}}{The class means.}
+\item{\code{Omega}}{The class covariances.}
+\item{\code{Sigma}}{The error term covariance matrix.}
+\item{\code{Sigma_diff}}{The differenced error term covariance matrix.}
+\item{\code{diff_alt}}{The reference alternative for utility differencing.}
+\item{\code{beta}}{The decider-specific coefficient vectors.}
+\item{\code{z}}{The class allocation variables.}
+\item{\code{d}}{The logarithmic increases of the utility thresholds.}
+}
 }
 \description{
 These functions create and validate an object of class
-\code{RprobitB_parameter}, which contains the parameters of a probit model,
-see details.
+\code{\link{RprobitB_parameter}}, which contains the parameters of a probit
+model, see details.
 
-\code{simulate_RprobitB_parameters()} simulates (missing) parameters from the
-default prior distributions, see \code{\link{RprobitB_prior}}.
+\code{simulate_RprobitB_parameters()} simulates (missing) probit model
+parameters from their default prior distributions, see
+\code{\link{RprobitB_prior}}.
 }
+\section{Setting probit model parameters}{
+\enumerate{
+\item Use \code{RprobitB_parameter()} to construct an
+\code{\link{RprobitB_parameter}} object. You can specify any model
+parameter (see below).
+\item Next, call \code{simulate_RprobitB_parameter()} with the
+\code{\link{RprobitB_parameter}} object created in step 1. This will add
+unspecified parameters and validate all specified parameters.
+}
+}
+
 \section{The probit model}{
 Assume that we know the choices of \eqn{N} deciders choosing between
 \eqn{J \geq 2} alternatives at each of \eqn{T} choice occasions.
@@ -171,7 +198,8 @@ encoding the preferences of \eqn{n}, and
 \text{MVN}_{J} (0,\Sigma)} is the model's error term vector for \eqn{n} at
 \eqn{t}.
 
-The value \eqn{U_{ntj}} can be interpreted as the decider's utility.
+The value \eqn{U_{ntj}} can be interpreted as the decider's utility for
+alternative \code{j}.
 It is unobserved by the researcher, but we assume that the deciders know
 their utilities for each alternative and make a choice which is consistent
 with utility maximization. Therefore,
@@ -301,6 +329,5 @@ re <- "A"
 J <- 3
 N <- 100
 (x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
-(x <- validate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
 }
 \keyword{object}

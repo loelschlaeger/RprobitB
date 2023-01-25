@@ -2,11 +2,12 @@
 #'
 #' @description
 #' These functions create and validate an object of class
-#' \code{RprobitB_parameter}, which contains the parameters of a probit model,
-#' see details.
+#' \code{\link{RprobitB_parameter}}, which contains the parameters of a probit
+#' model, see details.
 #'
-#' \code{simulate_RprobitB_parameters()} simulates (missing) parameters from the
-#' default prior distributions, see \code{\link{RprobitB_prior}}.
+#' \code{simulate_RprobitB_parameters()} simulates (missing) probit model
+#' parameters from their default prior distributions, see
+#' \code{\link{RprobitB_prior}}.
 #'
 #' @param C
 #' An \code{integer}, the number (greater or equal 1) of latent classes of
@@ -60,9 +61,32 @@
 #' Only relevant in the ordered probit model case (see details).
 #'
 #' @return
-#' An \code{RprobitB_parameter} object.
+#' An \code{\link{RprobitB_parameter}} object.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{C}}{The number of latent classes.}
+#'   \item{\code{s}}{The class weights.}
+#'   \item{\code{alpha}}{The fixed coefficients.}
+#'   \item{\code{b}}{The class means.}
+#'   \item{\code{Omega}}{The class covariances.}
+#'   \item{\code{Sigma}}{The error term covariance matrix.}
+#'   \item{\code{Sigma_diff}}{The differenced error term covariance matrix.}
+#'   \item{\code{diff_alt}}{The reference alternative for utility differencing.}
+#'   \item{\code{beta}}{The decider-specific coefficient vectors.}
+#'   \item{\code{z}}{The class allocation variables.}
+#'   \item{\code{d}}{The logarithmic increases of the utility thresholds.}
+#' }
 #'
 #' @details
+#' # Setting probit model parameters
+#' 1. Use \code{RprobitB_parameter()} to construct an
+#'    \code{\link{RprobitB_parameter}} object. You can specify any model
+#'    parameter (see below).
+#' 2. Next, call \code{simulate_RprobitB_parameter()} with the
+#'    \code{\link{RprobitB_parameter}} object created in step 1. This will add
+#'    unspecified parameters and validate all specified parameters.
+#'
 #' # The probit model
 #' Assume that we know the choices of \eqn{N} deciders choosing between
 #' \eqn{J \geq 2} alternatives at each of \eqn{T} choice occasions.
@@ -79,7 +103,8 @@
 #' \text{MVN}_{J} (0,\Sigma)} is the model's error term vector for \eqn{n} at
 #' \eqn{t}.
 #'
-#' The value \eqn{U_{ntj}} can be interpreted as the decider's utility.
+#' The value \eqn{U_{ntj}} can be interpreted as the decider's utility for
+#' alternative \code{j}.
 #' It is unobserved by the researcher, but we assume that the deciders know
 #' their utilities for each alternative and make a choice which is consistent
 #' with utility maximization. Therefore,
@@ -159,23 +184,68 @@
 #' Other options exist, see \code{\link{transform}}.
 #'
 #' @export
+#'
 #' @keywords object
 
 RprobitB_parameter <- function(
     C = 1, s = NA, alpha = NA, b = NA, Omega = NA, Sigma = NA,
     Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
 ) {
-  stopifnot(identical(C, NA) || is_pos_int(C))
-  stopifnot(identical(s, NA) || is.numeric(s))
-  stopifnot(identical(alpha, NA) || is.numeric(alpha))
-  stopifnot(identical(b, NA) || is.numeric(b))
-  stopifnot(identical(Omega, NA) || is.numeric(Omega))
-  stopifnot(identical(Sigma, NA) || is.numeric(Sigma))
-  stopifnot(identical(Sigma_diff, NA) || is.numeric(Sigma_diff))
-  stopifnot(identical(diff_alt, NA) || is.numeric(diff_alt))
-  stopifnot(identical(beta, NA) || is.numeric(beta))
-  stopifnot(identical(z, NA) || is.numeric(z))
-  stopifnot(identical(d, NA) || is.numeric(d))
+  if (!is_pos_int(C)) {
+    RprobitB_stop(
+      "Input 'C' must be a positive `integer`."
+    )
+  }
+  if (!(identical(s, NA) || is.numeric(s))) {
+    RprobitB_stop(
+      "Input 's' must be `numeric`."
+    )
+  }
+  if (!(identical(alpha, NA) || is.numeric(alpha))) {
+    RprobitB_stop(
+      "Input 'alpha' must be `numeric`."
+    )
+  }
+  if (!(identical(b, NA) || is.numeric(b))) {
+    RprobitB_stop(
+      "Input 'b' must be `numeric`."
+    )
+  }
+  if (!(identical(Omega, NA) || is.numeric(Omega))) {
+    RprobitB_stop(
+      "Input 'Omega' must be `numeric`."
+    )
+  }
+  if (!(identical(Sigma, NA) || is.numeric(Sigma))) {
+    RprobitB_stop(
+      "Input 'Sigma' must be `numeric`."
+    )
+  }
+  if (!(identical(Sigma_diff, NA) || is.numeric(Sigma_diff))) {
+    RprobitB_stop(
+      "Input 'Sigma_diff' must be `numeric`."
+    )
+  }
+  if (!is_pos_int(diff_alt)) {
+    RprobitB_stop(
+      "Input 'diff_alt' must be a positive `integer`."
+    )
+  }
+  if (!(identical(beta, NA) || is.numeric(beta))) {
+    RprobitB_stop(
+      "Input 'beta' must be `numeric`."
+    )
+  }
+  if (!(identical(z, NA) || is.numeric(z))) {
+    RprobitB_stop(
+      "Input 'z' must be `numeric`."
+    )
+  }
+  if (!(identical(d, NA) || is.numeric(d))) {
+    RprobitB_stop(
+      "Input 'd' must be `numeric`."
+    )
+  }
   structure(
     list(
       "C" = C,
@@ -196,7 +266,7 @@ RprobitB_parameter <- function(
 
 #' @rdname RprobitB_parameter
 #' @param x
-#' An \code{RprobitB_parameter} object.
+#' An \code{\link{RprobitB_parameter}} object.
 
 is.RprobitB_parameter <- function(x) {
   inherits(x, "RprobitB_parameter")
@@ -218,20 +288,54 @@ is.RprobitB_parameter <- function(x) {
 #' J <- 3
 #' N <- 100
 #' (x <- simulate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
-#' (x <- validate_RprobitB_parameter(x, formula = formula, re = re, J = J, N = N))
+#' @export
 
 simulate_RprobitB_parameter <- function(
     x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N,
     seed = NULL
   ) {
-  stopifnot(is.RprobitB_parameter(x), is_pos_int(J), is_pos_int(N))
+  if (!is.RprobitB_parameter(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_parameter`.",
+      "Use `RprobitB_parameter()` to create such an object."
+    )
+  }
   if (missing(formula)) {
-    RprobitB_stop("Please specify the input 'formula'.")
+    RprobitB_stop(
+      "Please specify the input 'formula'.",
+      "See the documentation for details."
+    )
+  }
+  if (missing(J)) {
+    RprobitB_stop(
+      "Please specify input 'J'.",
+      "It should be the number of choice alternatives."
+    )
+  }
+  if (!is_pos_int(J)) {
+    RprobitB_stop(
+      "Input 'J' must be a positive `integer`.",
+      "It should be the number of choice alternatives."
+    )
+  }
+  if (missing(N)) {
+    RprobitB_stop(
+      "Please specify input 'N'.",
+      "It should be the number of deciders."
+    )
+  }
+  if (!is_pos_int(N)) {
+    RprobitB_stop(
+      "Input 'N' must be a positive `integer`.",
+      "It should be the number of deciders."
+    )
   }
   P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
-  if (!is.null(seed)) set.seed(seed)
-  if (identical(x$s, NA)) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  if (identical(x$s, NA) && x$C > 1) {
     s_prior <- RprobitB_prior_s(C = x$C)
     x$s <- sort(
       rdirichlet(
@@ -312,7 +416,11 @@ simulate_RprobitB_parameter <- function(
     }
   }
   if (identical(x$z, NA)) {
-    x$z <- sample.int(x$C, size = N, replace = TRUE, prob = x$s)
+    if (x$C == 1) {
+      x$z <- rep(1, N)
+    } else {
+      x$z <- sample.int(x$C, size = N, replace = TRUE, prob = x$s)
+    }
   }
   if (identical(x$beta, NA) && P_r > 0) {
     x$beta <- do.call(
@@ -345,115 +453,170 @@ simulate_RprobitB_parameter <- function(
 validate_RprobitB_parameter <- function(
     x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N
 ) {
-  stopifnot(is.RprobitB_parameter(x), is_pos_int(J), is_pos_int(N))
+  if (!is.RprobitB_parameter(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_parameter`.",
+      "Use `RprobitB_parameter()` to create such an object."
+    )
+  }
   if (missing(formula)) {
-    RprobitB_stop("Please specify the input 'formula'.")
+    RprobitB_stop(
+      "Please specify the input 'formula'.",
+      "See the documentation for details."
+    )
+  }
+  if (missing(J)) {
+    RprobitB_stop(
+      "Please specify input 'J'.",
+      "It should be the number of choice alternatives."
+    )
+  }
+  if (!is_pos_int(J)) {
+    RprobitB_stop(
+      "Input 'J' must be a positive `integer`.",
+      "It should be the number of choice alternatives."
+    )
+  }
+  if (missing(N)) {
+    RprobitB_stop(
+      "Please specify input 'N'.",
+      "It should be the number of deciders."
+    )
+  }
+  if (!is_pos_int(N)) {
+    RprobitB_stop(
+      "Input 'N' must be a positive `integer`.",
+      "It should be the number of deciders."
+    )
   }
   P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
   ### check C
   if (!is_pos_int(x$C)) {
     RprobitB_stop(
-      "C is expected to be a positive integer.",
+      "'C' is expected to be a positive `integer`.",
       "Instead, it is (collapsed):",
       glue::glue_collapse(
-        glue::glue("'{x$C}'"),
+        glue::glue("{x$C}"),
         sep = " ",
         width = getOption("width") - 3
       )
     )
   }
   ### check s
-  if (x$C == 1) x$s <- 1
+  if (x$C == 1) {
+    x$s <- 1
+  }
   if (length(x$s) != x$C || !is.numeric(x$s) ||
       abs(sum(x$s) - 1) > .Machine$double.eps || is.unsorted(rev(x$s))) {
     RprobitB_stop(
       glue::glue(
-        "s is expected to be a descending numeric vector of length {C} which sums up to 1."
+        "'s' is expected to be a descending `numeric` `vector` of length {x$C} which sums up to 1."
       ),
       "Instead, it is (collapsed):",
       glue::glue_collapse(
-        glue::glue("'{x$s}'"),
+        glue::glue("{x$s}"),
         sep = " ",
         width = getOption("width") - 3
       )
     )
   }
   ### check alpha
-  if (P_f == 1) x$alpha <- matrix(x$alpha, nrow = 1, ncol = x$C)
-  if (x$C == 1) x$alpha <- matrix(x$alpha, nrow = P_f, ncol = 1)
-  if (!is.numeric(x$s) || !is.matrix(x$alpha) || nrow(x$alpha) != P_f ||
-      ncol(x$alpha) != x$C) {
-    RprobitB_stop(
-      glue::glue(
-        "alpha is expected to be a numeric matrix of dimension {P_f} x {x$C}."
-      ),
-      "Instead, it is (collapsed):",
-      glue::glue_collapse(
-        glue::glue("'{x$alpha}'"),
-        sep = " ",
-        width = getOption("width") - 3
-      )
-    )
-  }
-  ### check b
-  if (P_r == 1) x$b <- matrix(x$b, nrow = 1, ncol = x$C)
-  if (x$C == 1) x$b <- matrix(x$b, nrow = P_r, ncol = 1)
-  if (!is.numeric(x$b) || !is.matrix(x$b) || nrow(x$b) != P_r || ncol(x$b) != x$C) {
-    RprobitB_stop(
-      glue::glue(
-        "b is expected to be a numeric matrix of dimension {P_r} x {x$C}."
-      ),
-      "Instead, it is (collapsed):",
-      glue::glue_collapse(
-        glue::glue("'{x$b}'"),
-        sep = " ",
-        width = getOption("width") - 3
-      )
-    )
-  }
-  ### check Omega
-  if (P_r == 1) x$Omega <- matrix(x$Omega, nrow = 1, ncol = x$C)
-  if (x$C == 1) x$Omega <- matrix(x$Omega, nrow = P_r^2, ncol = 1)
-  if (!is.numeric(x$Omega) || !is.matrix(x$Omega) || nrow(x$Omega) != P_r^2 ||
-      ncol(x$Omega) != x$C) {
-    RprobitB_stop(
-      glue::glue(
-        "Omega is expected to be a numeric matrix of dimension {P_r^2} x {x$C}."
-      ),
-      "Instead, it is (collapsed):",
-      glue::glue_collapse(
-        glue::glue("'{x$Omega}'"),
-        sep = " ",
-        width = getOption("width") - 3
-      )
-    )
-  }
-  for (c in 1:x$C) {
-    if (!is_cov_matrix(matrix(x$Omega[,c], nrow = P_r, ncol = P_r))) {
+  if (P_f > 0) {
+    if (P_f == 1 && is.vector(x$alpha) && length(x$alpha) == x$C) {
+      x$alpha <- matrix(x$alpha, nrow = 1, ncol = x$C)
+    }
+    if (x$C == 1 && is.vector(x$alpha) && length(x$alpha) == P_f) {
+      x$alpha <- matrix(x$alpha, nrow = P_f, ncol = 1)
+    }
+    if (!is.numeric(x$alpha) || !is.matrix(x$alpha) || nrow(x$alpha) != P_f ||
+        ncol(x$alpha) != x$C) {
       RprobitB_stop(
         glue::glue(
-          "Column {c} in Omega is expected to be a proper covariance matrix."
+          "'alpha' is expected to be a `numeric` `matrix` of dimension {P_f} x {x$C}."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Omega[,c]}'"),
+          glue::glue("{x$alpha}"),
           sep = " ",
           width = getOption("width") - 3
-        ),
-        "Check it with 'is_cov_matrix()'."
+        )
       )
     }
+  } else {
+    x$alpha <- NA
+  }
+  if (P_r > 0) {
+    ### check b
+    if (P_r == 1 && is.vector(x$b) && length(x$b) == x$C) {
+      x$b <- matrix(x$b, nrow = 1, ncol = x$C)
+    }
+    if (x$C == 1 && is.vector(x$b) && length(x$b) == P_r) {
+      x$b <- matrix(x$b, nrow = P_r, ncol = 1)
+    }
+    if (!is.numeric(x$b) || !is.matrix(x$b) || nrow(x$b) != P_r || ncol(x$b) != x$C) {
+      RprobitB_stop(
+        glue::glue(
+          "'b' is expected to be a `numeric` `matrix` of dimension {P_r} x {x$C}."
+        ),
+        "Instead, it is (collapsed):",
+        glue::glue_collapse(
+          glue::glue("'{x$b}'"),
+          sep = " ",
+          width = getOption("width") - 3
+        )
+      )
+    }
+    ### check Omega
+    if (P_r == 1 && is.vector(x$Omega) && length(x$Omega) == x$C) {
+      x$Omega <- matrix(x$Omega, nrow = 1, ncol = x$C)
+    }
+    if (x$C == 1 && is.vector(x$Omega) && length(x$Omega) == P_r^2) {
+      x$Omega <- matrix(x$Omega, nrow = P_r^2, ncol = 1)
+    }
+    if (!is.numeric(x$Omega) || !is.matrix(x$Omega) || nrow(x$Omega) != P_r^2 ||
+        ncol(x$Omega) != x$C) {
+      RprobitB_stop(
+        glue::glue(
+          "'Omega' is expected to be a `numeric` `matrix` of dimension {P_r^2} x {x$C}."
+        ),
+        "Instead, it is (collapsed):",
+        glue::glue_collapse(
+          glue::glue("{x$Omega}"),
+          sep = " ",
+          width = getOption("width") - 3
+        )
+      )
+    }
+    for (c in 1:x$C) {
+      if (!is_cov_matrix(matrix(x$Omega[,c], nrow = P_r, ncol = P_r))) {
+        RprobitB_stop(
+          glue::glue(
+            "Column {c} in 'Omega' is expected to be a proper covariance matrix."
+          ),
+          "Instead, it is (collapsed):",
+          glue::glue_collapse(
+            glue::glue("{x$Omega[,c]}"),
+            sep = " ",
+            width = getOption("width") - 3
+          ),
+          "Please check it with 'is_cov_matrix()'."
+        )
+      }
+    }
+  } else {
+    x$b <- NA
+    x$Omega <- NA
   }
   ### check diff_alt
   if (!is_pos_int(x$diff_alt) || x$diff_alt > J) {
     RprobitB_stop(
       glue::glue(
-        "diff_alt is expected to be a positive integer smaller or equal {J}."
+        "'diff_alt' is expected to be a positive `integer` smaller or equal {J}."
       ),
       "Instead, it is (collapsed):",
       glue::glue_collapse(
-        glue::glue("'{x$diff_alt}'"),
+        glue::glue("{x$diff_alt}"),
         sep = " ",
         width = getOption("width") - 3
       )
@@ -467,11 +630,11 @@ validate_RprobitB_parameter <- function(
         ncol(x$Sigma) != 1 || x$Sigma[1,1] <= 0) {
       RprobitB_stop(
         glue::glue(
-          "Sigma is expected to be a numeric 1 x 1 matrix with a positive entry."
+          "'Sigma' is expected to be a `numeric` 1 x 1 `matrix` with a positive entry."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Sigma}'"),
+          glue::glue("{x$Sigma}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -482,11 +645,11 @@ validate_RprobitB_parameter <- function(
         ncol(x$Sigma) != J) {
       RprobitB_stop(
         glue::glue(
-          "Sigma is expected to be a numeric matrix of dimension {J} x {J}."
+          "'Sigma' is expected to be a `numeric` `matrix` of dimension {J} x {J}."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Sigma}'"),
+          glue::glue("{x$Sigma}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -495,26 +658,26 @@ validate_RprobitB_parameter <- function(
     if (!is_cov_matrix(x$Sigma)) {
       RprobitB_stop(
         glue::glue(
-          "Sigma is expected to be a proper covariance matrix."
+          "'Sigma' is expected to be a proper covariance matrix."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Sigma}'"),
+          glue::glue("{x$Sigma}"),
           sep = " ",
           width = getOption("width") - 3
         ),
-        "Check it with 'is_cov_matrix()'."
+        "Please check it with 'is_cov_matrix()'."
       )
     }
     if (!is.numeric(x$Sigma_diff) || !is.matrix(x$Sigma_diff) ||
         nrow(x$Sigma_diff) != J-1 || ncol(x$Sigma_diff) != J-1) {
       RprobitB_stop(
         glue::glue(
-          "Sigma_diff is expected to be a numeric matrix of dimension {J-1} x {J-1}."
+          "'Sigma_diff' is expected to be a `numeric` `matrix` of dimension {J-1} x {J-1}."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Sigma_diff}'"),
+          glue::glue("{x$Sigma_diff}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -523,59 +686,67 @@ validate_RprobitB_parameter <- function(
     if (!is_cov_matrix(x$Sigma_diff)) {
       RprobitB_stop(
         glue::glue(
-          "Sigma_diff is expected to be a proper covariance matrix."
+          "'Sigma_diff' is expected to be a proper covariance matrix."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$Sigma_diff}'"),
+          glue::glue("{x$Sigma_diff}"),
           sep = " ",
           width = getOption("width") - 3
         ),
-        "Check it with 'is_cov_matrix()'."
+        "Please check it with 'is_cov_matrix()'."
       )
     }
-    if (!all.equal(diff_Sigma(x$Sigma, diff_alt = x$diff_alt), x$Sigma_diff)) {
+    if (!isTRUE(all.equal(diff_Sigma(x$Sigma, diff_alt = x$diff_alt), x$Sigma_diff))) {
       RprobitB_stop(
         glue::glue(
-          "Differencing Sigma with respect to alternative {x$diff_alt} is expected to yield Sigma_diff."
+          "Differencing 'Sigma' with respect to alternative {x$diff_alt} is expected to yield 'Sigma_diff'."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{diff_Sigma(x$Sigma, diff_alt = x$diff_alt)}'"),
+          glue::glue("{diff_Sigma(x$Sigma, diff_alt = x$diff_alt)}"),
           sep = " ",
           width = getOption("width") - 3
         ),
-        "Check it with 'diff_Sigma(Sigma, diff_alt = {x$diff_alt})'."
+        glue::glue("Please check it with 'diff_Sigma(Sigma, diff_alt = {x$diff_alt})'.")
       )
     }
   }
   ### check beta
-  if (P_r == 1) x$beta <- matrix(x$beta, nrow = 1, ncol = N)
-  if (N == 1) x$beta <- matrix(x$beta, nrow = P_r, ncol = 1)
-  if (!is.numeric(x$beta) || !is.matrix(x$beta) || nrow(x$beta) != P_r ||
-      ncol(x$beta) != N) {
-    RprobitB_stop(
-      glue::glue(
-        "beta is expected to be a numeric matrix of dimension {P_r} x {N}."
-      ),
-      "Instead, it is (collapsed):",
-      glue::glue_collapse(
-        glue::glue("'{x$beta}'"),
-        sep = " ",
-        width = getOption("width") - 3
+  if (P_r > 0) {
+    if (P_r == 1 && is.vector(x$beta) && length(x$beta) == N) {
+      x$beta <- matrix(x$beta, nrow = 1, ncol = N)
+    }
+    if (N == 1 && is.vector(x$beta) && length(x$beta) == P_r) {
+      x$beta <- matrix(x$beta, nrow = P_r, ncol = 1)
+    }
+    if (!is.numeric(x$beta) || !is.matrix(x$beta) || nrow(x$beta) != P_r ||
+        ncol(x$beta) != N) {
+      RprobitB_stop(
+        glue::glue(
+          "'beta' is expected to be a `numeric` `matrix` of dimension {P_r} x {N}."
+        ),
+        "Instead, it is (collapsed):",
+        glue::glue_collapse(
+          glue::glue("{x$beta}"),
+          sep = " ",
+          width = getOption("width") - 3
+        )
       )
-    )
+    }
+  } else {
+    x$beta <- NA
   }
   ### check z
   if (!is.vector(x$z) || length(x$z) != N || !is.numeric(x$z) ||
       !all(x$z %in% 1:x$C)) {
     RprobitB_stop(
       glue::glue(
-        "z is expected to be an integer vector with values {paste(seq.int(x$C), collapse = ", ")}."
+        "'z' is expected to be an `integer` `vector` with values {paste(seq.int(x$C), collapse = ", ")}."
       ),
       "Instead, it is (collapsed):",
       glue::glue_collapse(
-        glue::glue("'{x$z}'"),
+        glue::glue("{x$z}"),
         sep = " ",
         width = getOption("width") - 3
       )
@@ -586,11 +757,11 @@ validate_RprobitB_parameter <- function(
     if (!is.vector(x$d) || length(x$d) != J-2 || !is.numeric(x$d)) {
       RprobitB_stop(
         glue::glue(
-          "d is expected to be a numeric vector of length {J-2}."
+          "'d' is expected to be a `numeric` `vector` of length {J-2}."
         ),
         "Instead, it is (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{x$d}'"),
+          glue::glue("{x$d}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -613,7 +784,12 @@ print.RprobitB_parameter <- function(
     x, ..., rowdots = 4, coldots = 4, digits = 2, simplify = FALSE,
     details = !simplify
   ) {
-  stopifnot(inherits(x, "RprobitB_parameter"))
+  if (!is.RprobitB_parameter(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_parameter`.",
+      "Use `RprobitB_parameter()` to create such an object."
+    )
+  }
   pars <- list(...)
   ind <- if (length(pars) != 0) {
     sapply(pars, function(par) which(names(x) == par))
@@ -630,5 +806,5 @@ print.RprobitB_parameter <- function(
       cat("\n")
     }
   }
-  return(invisible(x))
+  invisible(x)
 }
