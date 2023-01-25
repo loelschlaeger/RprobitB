@@ -32,8 +32,8 @@ is.RprobitB_prior_d(x)
 \code{FALSE} (default) else.}
 
 \item{J}{An \code{integer}, the number of choice alternatives.
-Must be at least 2.
-If \code{ordered = TRUE}, must be at least 3.}
+Must be at least \code{2}.
+If \code{ordered = TRUE}, must be at least \code{3}.}
 
 \item{d_prior_mean}{A \code{numeric} of length \code{J-2}, the mean vector for the conjugate
 normal prior distribution of \code{d}.
@@ -52,7 +52,7 @@ density function \code{d_prior_custom}.
 By default, \code{d_prior_custom_test_par = numeric(J-2)}.
 Ignored if \code{d_prior_custom = NULL}.}
 
-\item{x}{An \code{RprobitB_prior_d} object.}
+\item{x}{An \code{\link{RprobitB_prior_d}} object.}
 
 \item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
 By default, \code{rowdots = 4}.}
@@ -71,10 +71,19 @@ By default, \code{simplify = FALSE}.}
 dimension of \code{x}.
 By default, \code{details = !simplify}.}
 
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_prior_d} object or \code{NA} if \code{ordered = FALSE}.
+An \code{\link{RprobitB_prior_d}} object or \code{NA} if
+\code{ordered = FALSE}.
+
+It contains the elements:
+\describe{
+\item{\code{conjugate}}{Is the prior conjugated?}
+\item{\code{d_prior_mean}}{The prior mean vector.}
+\item{\code{d_prior_Sigma}}{The prior covariance matrix.}
+\item{\code{d_prior_custom}}{The custom prior function.}
+}
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -151,7 +160,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -161,6 +170,7 @@ The following density functions (implemented in {RprobitB}) can be helpful:
 }
 
 \examples{
+\dontrun{
 ### conjugate prior: d ~ Normal(0, 10*I)
 RprobitB_prior_d(ordered = TRUE, J = 4)
 
@@ -172,6 +182,8 @@ RprobitB_prior_d(
     stats::dnorm(x[1]) * stats::dunif(x[2])
   }
 )
+}
 
 }
 \keyword{internal}
+\keyword{object}

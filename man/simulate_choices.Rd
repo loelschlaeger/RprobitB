@@ -93,6 +93,10 @@ This function simulates choice data from a probit model.
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
 for more details.
 }
+\section{Choice simulation}{
+TODO
+}
+
 \section{Model formula}{
 The structure of \code{formula} should be
 \code{choice ~ A | B | C}, where
@@ -119,8 +123,8 @@ category and no ASCs.
 
 In the ordered probit model (\code{ordered = TRUE}), covariates are not
 alternative specific, i.e., there exists only one type of covariate.
-Therefore, the \code{formula} object does not need any
-separation via \code{|}, and hence has the simple structure
+Therefore, the \code{formula} object does not need the special
+separation form via \code{|}, and hence has the simple structure
 \code{choice ~ A + B + C}.
 ASCs cannot be estimated in the ordered case.
 }
@@ -198,7 +202,7 @@ data <- simulate_choices(
 }
 \seealso{
 \itemize{
-\item \code{\link[=check_form]{check_form()}} for checking the model formula
+\item ... for checking the model formula TODO
 \item \code{\link[=overview_effects]{overview_effects()}} for an overview of the model effects
 \item \code{\link[=create_lagged_cov]{create_lagged_cov()}} for creating lagged covariates
 \item \code{\link[=as_cov_names]{as_cov_names()}} for re-labeling alternative-specific covariates

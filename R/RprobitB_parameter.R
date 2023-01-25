@@ -1,11 +1,12 @@
 #' Define probit model parameters
 #'
+#' @description
 #' These functions create and validate an object of class
 #' \code{RprobitB_parameter}, which contains the parameters of a probit model,
 #' see details.
-#' \code{simulate_RprobitB_parameters()} simulates missing parameters from the
+#'
+#' \code{simulate_RprobitB_parameters()} simulates (missing) parameters from the
 #' default prior distributions, see \code{\link{RprobitB_prior}}.
-#' \code{validate_RprobitB_parameters()} checks the parameters.
 #'
 #' @param C
 #' An \code{integer}, the number (greater or equal 1) of latent classes of

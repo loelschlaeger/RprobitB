@@ -4,9 +4,10 @@
 \name{RprobitB}
 \alias{RprobitB}
 \alias{RprobitB-package}
-\title{RprobitB: A package for Bayes estimation of probit models}
+\title{RprobitB: Bayes Estimation of Probit Models for Discrete Choice Analysis}
 \description{
-This package provides tools for Bayes estimation of probit models.
+This package provides tools for Bayes estimation of probit models for
+discrete choice analysis.
 }
 \seealso{
 Useful links:

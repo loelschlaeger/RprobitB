@@ -1,7 +1,8 @@
 #' Define probit model prior
 #'
-#' This function defines an object of class \code{RprobitB_prior}, which
-#' contains the prior specification for a probit model.
+#' @description
+#' This function constructs an object of class \code{\link{RprobitB_prior}},
+#' which contains the prior specification for a probit model.
 #'
 #' @inheritParams RprobitB_formula
 #' @inheritDotParams RprobitB_prior_alpha
@@ -62,7 +63,7 @@
 #' specified as well. To specify a custom prior for parameter \code{<par>},
 #' use the input \code{<par>_prior_custom}, which should compute the density
 #' of the prior (or a value that is proportional), see \sQuote{Examples}.
-#' The following density functions (implemented in {RprobitB}) can be helpful:
+#' The following density functions (implemented in \{RprobitB\}) can be helpful:
 #' * \code{\link{ddirichlet}}
 #' * \code{\link{dmvnorm}}
 #' * \code{\link{dwishart}}
@@ -71,7 +72,18 @@
 #' @inheritSection RprobitB_formula Random effects
 #'
 #' @return
-#' An \code{RprobitB_prior} object.
+#' An \code{\link{RprobitB_prior}} object.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{alpha}}{The \code{\link{RprobitB_prior_alpha}} object.}
+#'   \item{\code{s}}{The \code{\link{RprobitB_prior_s}} object.}
+#'   \item{\code{b}}{The \code{\link{RprobitB_prior_b}} object.}
+#'   \item{\code{Omega}}{The \code{\link{RprobitB_prior_Omega}} object.}
+#'   \item{\code{Sigma}}{The \code{\link{RprobitB_prior_Sigma}} object.}
+#'   \item{\code{Sigma_diff}}{The \code{\link{RprobitB_prior_Sigma_diff}} object.}
+#'   \item{\code{d}}{The \code{\link{RprobitB_prior_d}} object.}
+#' }
 #'
 #' @examples
 #' ### default conjugate prior distributions
@@ -94,14 +106,28 @@
 #' )
 #'
 #' @keywords object
+#'
 #' @export
 
 RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
   if (missing(formula)) {
-    RprobitB_stop("Please specify the input 'formula'.")
+    RprobitB_stop(
+      "Please specify the input 'formula'.",
+      "See the function documentation for details."
+    )
   }
   if (missing(J)) {
-    RprobitB_stop("Please specify the input 'J'.")
+    RprobitB_stop(
+      "Please specify the input 'J'.",
+      "It should be the number of alternatives."
+    )
+  }
+  if (!is_pos_int(C)) {
+    RprobitB_stop(
+      "Input 'C' is misspecified.",
+      "It should be the number (greater or equal 1) of latent classes.",
+      "Setting `C = 1` is equivalent to having no latent classes."
+    )
   }
   P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
@@ -113,7 +139,8 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
   )
   args_s <- Filter(
     Negate(is.null),
-    args[c("s_prior_concentration", "s_prior_custom", "s_prior_custom_test_par")]
+    args[c("s_prior_concentration", "s_prior_custom",
+           "s_prior_custom_test_par")]
   )
   args_b <- Filter(
     Negate(is.null),
@@ -132,8 +159,8 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
   )
   args_Sigma_diff <- Filter(
     Negate(is.null),
-    args[c("Sigma_diff_prior_df", "Sigma_diff_prior_scale", "Sigma_diff_prior_custom",
-           "Sigma_diff_prior_custom_test_par")]
+    args[c("Sigma_diff_prior_df", "Sigma_diff_prior_scale",
+           "Sigma_diff_prior_custom", "Sigma_diff_prior_custom_test_par")]
   )
   args_d <- Filter(
     Negate(is.null),
@@ -146,8 +173,10 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
       "s" = do.call(RprobitB_prior_s, c(list(C = C), args_s)),
       "b" = do.call(RprobitB_prior_b, c(list(P_r = P_r), args_b)),
       "Omega" = do.call(RprobitB_prior_Omega, c(list(P_r = P_r), args_Omega)),
-      "Sigma" = do.call(RprobitB_prior_Sigma, c(list(J = J, ordered = ordered), args_Sigma)),
-      "Sigma_diff" = do.call(RprobitB_prior_Sigma_diff, c(list(J = J, ordered = ordered), args_Sigma_diff)),
+      "Sigma" = do.call(RprobitB_prior_Sigma,
+                        c(list(J = J, ordered = ordered), args_Sigma)),
+      "Sigma_diff" = do.call(RprobitB_prior_Sigma_diff,
+                             c(list(J = J, ordered = ordered), args_Sigma_diff)),
       "d" = do.call(RprobitB_prior_d, c(list(J = J, ordered = ordered), args_d))
     ),
     class = c("RprobitB_prior", "list")
@@ -156,7 +185,7 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
 
 #' @rdname RprobitB_prior
 #' @param x
-#' An \code{RprobitB_prior} object.
+#' An \code{\link{RprobitB_prior}} object.
 
 is.RprobitB_prior <- function(x) {
   inherits(x, "RprobitB_prior")
@@ -165,15 +194,23 @@ is.RprobitB_prior <- function(x) {
 #' @rdname RprobitB_prior
 #' @exportS3Method
 #' @importFrom cli style_underline
+#' @param ...
+#' Currently not used.
 
 print.RprobitB_prior <- function(x, ...) {
-  stopifnot(inherits(x, "RprobitB_prior"))
+  if (!is.RprobitB_prior(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior`."
+    )
+  }
   cat(cli::style_underline("Priors:\n"))
   lapply(x, function(y) if(!identical(y, NA)) {print(y); cat("\n")})
+  invisible()
 }
 
 #' Define \code{alpha} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{alpha}. Only relevant if \code{P_f > 0}.
 #'
@@ -201,9 +238,18 @@ print.RprobitB_prior <- function(x, ...) {
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_alpha} object or \code{NA} if \code{P_f = 0}.
+#' An \code{\link{RprobitB_prior_alpha}} object or \code{NA} if \code{P_f = 0}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{alpha_prior_mean}}{The prior mean vector.}
+#'   \item{\code{alpha_prior_Sigma}}{The prior covariance matrix.}
+#'   \item{\code{alpha_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: alpha ~ Normal(0, 10*I)
 #' RprobitB_prior_alpha(P_f = 2)
 #'
@@ -214,9 +260,11 @@ print.RprobitB_prior <- function(x, ...) {
 #'     stats::dnorm(x[1]) * stats::dunif(x[2])
 #'   }
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_alpha <- function(
     P_f, alpha_prior_mean = numeric(P_f), alpha_prior_Sigma = 10 * diag(P_f),
@@ -230,9 +278,17 @@ RprobitB_prior_alpha <- function(
     alpha_prior_Sigma <- NA
     if (!is.function(alpha_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for alpha is misspecified.",
-        "'alpha_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class {class(alpha_prior_custom)[1]}.")
+        "Custom prior for 'alpha' is misspecified.",
+        "'alpha_prior_custom' should be a `function`."
+      )
+    }
+    if (!(is.numeric(alpha_prior_custom_test_par) &&
+          length(alpha_prior_custom_test_par) == P_f)) {
+      RprobitB_stop(
+        glue::glue(
+          "'alpha_prior_custom_test_par' should be a `numeric` vector ",
+          "of length {P_f}."
+        )
       )
     }
     alpha_prior_custom_test <- try(
@@ -241,12 +297,14 @@ RprobitB_prior_alpha <- function(
     if (!(is_single_numeric(alpha_prior_custom_test) &&
           alpha_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for alpha is misspecified.",
-        glue::glue("'alpha_prior_custom(alpha_prior_custom_test_par)' ",
-                   "should return density value."),
+        "Custom prior for 'alpha' is misspecified.",
+        glue::glue(
+          "The call 'alpha_prior_custom(c({paste(alpha_prior_custom_test_par, collapse = ', ')}))' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{alpha_prior_custom_test}'"),
+          glue::glue("{alpha_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -257,8 +315,7 @@ RprobitB_prior_alpha <- function(
     if (!is.numeric(alpha_prior_mean)) {
       RprobitB_stop(
         "Mean vector for conjugate alpha prior is misspecified.",
-        "'alpha_prior_mean' should be a numeric vector.",
-        glue::glue("Instead, it is of class '{class(alpha_prior_mean)[1]}'.")
+        "'alpha_prior_mean' should be a `numeric` vector."
       )
     }
     if (length(alpha_prior_mean) != P_f) {
@@ -272,7 +329,7 @@ RprobitB_prior_alpha <- function(
       RprobitB_stop(
         "Input 'alpha_prior_Sigma' for conjugate alpha prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_cov_matrix(alpha_prior_Sigma)'."
       )
     }
     if (any(dim(alpha_prior_Sigma) != P_f)) {
@@ -296,7 +353,7 @@ RprobitB_prior_alpha <- function(
 
 #' @rdname RprobitB_prior_alpha
 #' @param x
-#' An \code{RprobitB_prior_alpha} object.
+#' An \code{\link{RprobitB_prior_alpha}} object.
 
 is.RprobitB_prior_alpha <- function(x) {
   inherits(x, "RprobitB_prior_alpha")
@@ -305,7 +362,7 @@ is.RprobitB_prior_alpha <- function(x) {
 #' @rdname RprobitB_prior_alpha
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -313,7 +370,11 @@ print.RprobitB_prior_alpha <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
   ) {
-  stopifnot(is.RprobitB_prior_alpha(x))
+  if (!is.RprobitB_prior_alpha(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_alpha`."
+    )
+  }
   cat(crayon::underline("alpha prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -331,10 +392,12 @@ print.RprobitB_prior_alpha <- function (
     cat("custom\n")
     cat("alpha ~", function_body(x$alpha_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{s} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{s}. Only relevant if \code{C > 1}.
 #'
@@ -356,9 +419,17 @@ print.RprobitB_prior_alpha <- function (
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_s} object.
+#' An \code{\link{RprobitB_prior_s}} object or \code{NA} if \code{C = 1}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{s_prior_concentration}}{The prior concentration vector.}
+#'   \item{\code{c_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: s ~ Dirichlet(rep(1, C))
 #' RprobitB_prior_s(C = 2)
 #'
@@ -370,22 +441,34 @@ print.RprobitB_prior_alpha <- function (
 #'   },
 #'   s_prior_custom_test_par = c(0.6, 0.4)
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_s <- function(
     C = 1, s_prior_concentration = rep(1, C),
     s_prior_custom = NA, s_prior_custom_test_par = numeric(C)
 ) {
-  if (!identical(s_prior_custom, NA)) {
+  if (C == 1) {
+    return (NA)
+  } else if (!identical(s_prior_custom, NA)) {
     conjugate <- FALSE
     s_prior_concentration <- NA
     if (!is.function(s_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for s is misspecified.",
-        "'s_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class {class(s_prior_custom)[1]}.")
+        "Custom prior for 's' is misspecified.",
+        "'s_prior_custom' should be a `function`."
+      )
+    }
+    if (!(is.numeric(s_prior_custom_test_par) &&
+          length(s_prior_custom_test_par) == C)) {
+      RprobitB_stop(
+        glue::glue(
+          "'s_prior_custom_test_par' should be a `numeric` vector ",
+          "of length {C}."
+        )
       )
     }
     s_prior_custom_test <- try(
@@ -393,12 +476,14 @@ RprobitB_prior_s <- function(
     )
     if (!(is_single_numeric(s_prior_custom_test) && s_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for s is misspecified.",
-        glue::glue("'s_prior_custom(s_prior_custom_test_par)' ",
-                   "should return density value."),
+        "Custom prior for 's' is misspecified.",
+        glue::glue(
+          "The call 's_prior_custom(c({paste(s_prior_custom_test_par, collapse = ', ')}))' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{s_prior_custom_test}'"),
+          glue::glue("{s_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -409,9 +494,7 @@ RprobitB_prior_s <- function(
     if (!is.numeric(s_prior_concentration)) {
       RprobitB_stop(
         "Concentration vector for conjugate s prior is misspecified.",
-        "'s_prior_concentration' should be a numeric vector.",
-        glue::glue("Instead, it is of class ",
-                   "'{class(s_prior_concentration)[1]}'.")
+        "'s_prior_concentration' should be a `numeric` vector."
       )
     }
     if (length(s_prior_concentration) != C) {
@@ -434,7 +517,7 @@ RprobitB_prior_s <- function(
 
 #' @rdname RprobitB_prior_s
 #' @param x
-#' An \code{RprobitB_prior_s} object.
+#' An \code{\link{RprobitB_prior_s}} object.
 
 is.RprobitB_prior_s <- function(x) {
   inherits(x, "RprobitB_prior_s")
@@ -443,14 +526,18 @@ is.RprobitB_prior_s <- function(x) {
 #' @rdname RprobitB_prior_s
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
 print.RprobitB_prior_s <- function (
     x, coldots = 4, digits = 2, simplify = TRUE, details = FALSE, ...
 ) {
-  stopifnot(is.RprobitB_prior_s(x))
+  if (!is.RprobitB_prior_s(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_s`."
+    )
+  }
   cat(crayon::underline("s prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -463,10 +550,12 @@ print.RprobitB_prior_s <- function (
     cat("custom\n")
     cat("s ~", function_body(x$s_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{b} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{b}. Only relevant if \code{P_r > 0}.
 #'
@@ -494,9 +583,18 @@ print.RprobitB_prior_s <- function (
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_b} object or \code{NA} if \code{P_r = 0}.
+#' An \code{\link{RprobitB_prior_b}} object or \code{NA} if \code{P_r = 0}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{b_prior_mean}}{The prior mean vector.}
+#'   \item{\code{b_prior_Sigma}}{The prior covariance matrix.}
+#'   \item{\code{b_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: b ~ Normal(0, 10*I)
 #' RprobitB_prior_b(P_r = 2)
 #'
@@ -507,9 +605,11 @@ print.RprobitB_prior_s <- function (
 #'     stats::dnorm(x[1]) * stats::dunif(x[2])
 #'   }
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_b <- function(
     P_r, b_prior_mean = numeric(P_r), b_prior_Sigma = 10 * diag(P_r),
@@ -523,9 +623,17 @@ RprobitB_prior_b <- function(
     b_prior_Sigma <- NA
     if (!is.function(b_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for b is misspecified.",
-        "'b_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class {class(b_prior_custom)[1]}.")
+        "Custom prior for 'b' is misspecified.",
+        "'b_prior_custom' should be a `function`."
+      )
+    }
+    if (!(is.numeric(b_prior_custom_test_par) &&
+          length(b_prior_custom_test_par) == P_r)) {
+      RprobitB_stop(
+        glue::glue(
+          "'b_prior_custom_test_par' should be a `numeric` vector ",
+          "of length {P_r}."
+        )
       )
     }
     b_prior_custom_test <- try(
@@ -534,12 +642,14 @@ RprobitB_prior_b <- function(
     if (!(is_single_numeric(b_prior_custom_test) &&
           b_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for b is misspecified.",
-        glue::glue("'b_prior_custom(b_prior_custom_test_par)' ",
-                   "should return density value."),
+        "Custom prior for 'b' is misspecified.",
+        glue::glue(
+          "The call 'b_prior_custom(c({paste(b_prior_custom_test_par, collapse = ', ')}))' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{b_prior_custom_test}'"),
+          glue::glue("{b_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -550,8 +660,7 @@ RprobitB_prior_b <- function(
     if (!is.numeric(b_prior_mean)) {
       RprobitB_stop(
         "Mean vector for conjugate b prior is misspecified.",
-        "'b_prior_mean' should be a numeric vector.",
-        glue::glue("Instead, it is of class '{class(b_prior_mean)[1]}'.")
+        "'b_prior_mean' should be a `numeric` vector."
       )
     }
     if (length(b_prior_mean) != P_r) {
@@ -589,7 +698,7 @@ RprobitB_prior_b <- function(
 
 #' @rdname RprobitB_prior_b
 #' @param x
-#' An \code{RprobitB_prior_b} object.
+#' An \code{\link{RprobitB_prior_b}} object.
 
 is.RprobitB_prior_b <- function(x) {
   inherits(x, "RprobitB_prior_b")
@@ -598,7 +707,7 @@ is.RprobitB_prior_b <- function(x) {
 #' @rdname RprobitB_prior_b
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -606,7 +715,11 @@ print.RprobitB_prior_b <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
 ) {
-  stopifnot(is.RprobitB_prior_b(x))
+  if (!is.RprobitB_prior_b(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_b`."
+    )
+  }
   cat(crayon::underline("b prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -624,10 +737,12 @@ print.RprobitB_prior_b <- function (
     cat("custom\n")
     cat("b ~", function_body(x$b_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{Omega} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{Omega}. Only relevant if \code{P_r > 0}.
 #'
@@ -654,9 +769,18 @@ print.RprobitB_prior_b <- function (
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_Omega} object or \code{NA} if \code{P_r = 0}.
+#' An \code{\link{RprobitB_prior_Omega}} object or \code{NA} if \code{P_r = 0}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{Omega_prior_df}}{The prior degrees of freedom.}
+#'   \item{\code{Omega_prior_scale}}{The prior scale matrix.}
+#'   \item{\code{Omega_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: Omega ~ Inverse-Wishart(P_r + 2, I)
 #' RprobitB_prior_Omega(P_r = 2)
 #'
@@ -667,9 +791,11 @@ print.RprobitB_prior_b <- function (
 #'     dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1,1] == x[2,2])
 #'   }
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_Omega <- function(
     P_r, Omega_prior_df = P_r + 2, Omega_prior_scale = diag(P_r),
@@ -681,11 +807,20 @@ RprobitB_prior_Omega <- function(
     conjugate <- FALSE
     Omega_prior_df <- NA
     Omega_prior_scale <- NA
+    if (!(is.numeric(Omega_prior_custom_test_par) &&
+          is.matrix(Omega_prior_custom_test_par) &&
+          all(dim(Omega_prior_custom_test_par) == P_r))) {
+      RprobitB_stop(
+        glue::glue(
+          "'Omega_prior_custom_test_par' should be a `matrix` ",
+          "of dimension {P_r} x {P_r}."
+        )
+      )
+    }
     if (!is.function(Omega_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for Omega is misspecified.",
-        "'Omega_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class '{class(Omega_prior_custom)[1]}'.")
+        "Custom prior for 'Omega' is misspecified.",
+        "'Omega_prior_custom' should be a `function`."
       )
     }
     Omega_prior_custom_test <- try(
@@ -694,12 +829,14 @@ RprobitB_prior_Omega <- function(
     if (!(is_single_numeric(Omega_prior_custom_test) &&
           Omega_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for Omega is misspecified.",
-        glue::glue("'Omega_prior_custom(Omega_prior_custom_test_par)' ",
-                   "should return single density value."),
+        "Custom prior for 'Omega' is misspecified.",
+        glue::glue(
+          "The call 'Omega_prior_custom(<Omega_prior_custom_test_par>)' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{Omega_prior_custom_test}'"),
+          glue::glue("{Omega_prior_custom_test}S"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -710,8 +847,7 @@ RprobitB_prior_Omega <- function(
     if (!is_pos_int(Omega_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Omega prior is misspecified.",
-        "'Omega_prior_df' should be a positive integer.",
-        glue::glue("Instead, it is of class '{class(Omega_prior_df)[1]}'.")
+        "'Omega_prior_df' should be a positive `integer`."
       )
     }
     if (Omega_prior_df < P_r + 2) {
@@ -749,7 +885,7 @@ RprobitB_prior_Omega <- function(
 
 #' @rdname RprobitB_prior_Omega
 #' @param x
-#' An \code{RprobitB_prior_Omega} object.
+#' An \code{\link{RprobitB_prior_Omega}} object.
 
 is.RprobitB_prior_Omega <- function(x) {
   inherits(x, "RprobitB_prior_Omega")
@@ -758,7 +894,7 @@ is.RprobitB_prior_Omega <- function(x) {
 #' @rdname RprobitB_prior_Omega
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -766,7 +902,11 @@ print.RprobitB_prior_Omega <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
 ) {
-  stopifnot(is.RprobitB_prior_Omega(x))
+  if (!is.RprobitB_prior_Omega(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_Omega`."
+    )
+  }
   cat(crayon::underline("Omega prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -784,10 +924,12 @@ print.RprobitB_prior_Omega <- function (
     cat("custom\n")
     cat("Omega ~", function_body(x$Omega_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{Sigma} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{Sigma}. Only relevant if \code{ordered = TRUE}.
 #'
@@ -812,15 +954,25 @@ print.RprobitB_prior_Omega <- function (
 #' A \code{matrix} of dimension \code{1} x \code{1}, a test input for
 #' the custom prior density function \code{Sigma_prior_custom}.
 #' Can also be a single \code{numeric}.
-#' By default, \code{Sigma_prior_custom_test_par = 1}.
+#' By default, \code{Sigma_prior_custom_test_par = matrix(1)}.
 #' Ignored if \code{Sigma_prior_custom = NULL}.
 #'
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_Sigma} object.
+#' An \code{\link{RprobitB_prior_Sigma}} object or \code{NA} if
+#' \code{ordered = FALSE}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{Sigma_prior_df}}{The prior degrees of freedom.}
+#'   \item{\code{Sigma_prior_scale}}{The prior scale matrix.}
+#'   \item{\code{Sigma_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: Sigma ~ Inverse-Wishart(3, 1)
 #' RprobitB_prior_Sigma(ordered = TRUE, J = 4)
 #'
@@ -830,13 +982,15 @@ print.RprobitB_prior_Omega <- function (
 #'   J = 4,
 #'   Sigma_prior_custom = function(x) dunif(x)
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_Sigma <- function(
     ordered = FALSE, J, Sigma_prior_df = 3, Sigma_prior_scale = 1,
-    Sigma_prior_custom = NA, Sigma_prior_custom_test_par = 1
+    Sigma_prior_custom = NA, Sigma_prior_custom_test_par = matrix(1)
 ) {
   if (!ordered) {
     return(NA)
@@ -845,11 +999,20 @@ RprobitB_prior_Sigma <- function(
     Sigma_prior_df <- NA
     Sigma_prior_scale <- NA
     Sigma_prior_custom_test_par <- as.matrix(Sigma_prior_custom_test_par)
+    if (!(is.numeric(Sigma_prior_custom_test_par) &&
+          is.matrix(Sigma_prior_custom_test_par) &&
+          all(dim(Sigma_prior_custom_test_par) == 1))) {
+      RprobitB_stop(
+        glue::glue(
+          "'Sigma_prior_custom_test_par' should be a `matrix` ",
+          "of dimension 1 x 1."
+        )
+      )
+    }
     if (!is.function(Sigma_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for Sigma is misspecified.",
-        "'Sigma_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class '{class(Sigma_prior_custom)[1]}'.")
+        "Custom prior for 'Sigma' is misspecified.",
+        "'Sigma_prior_custom' should be a `function`."
       )
     }
     Sigma_prior_custom_test <- try(
@@ -858,12 +1021,14 @@ RprobitB_prior_Sigma <- function(
     if (!(is_single_numeric(Sigma_prior_custom_test) &&
           Sigma_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for Sigma is misspecified.",
-        glue::glue("'Sigma_prior_custom(Sigma_prior_custom_test_par)' ",
-                   "should return single density value."),
+        "Custom prior for 'Sigma' is misspecified.",
+        glue::glue(
+          "The call 'Sigma_prior_custom(<Sigma_prior_custom_test_par>)' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{Sigma_prior_custom_test}'"),
+          glue::glue("{Sigma_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -875,8 +1040,7 @@ RprobitB_prior_Sigma <- function(
     if (!is_pos_int(Sigma_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Sigma prior is misspecified.",
-        "'Sigma_prior_df' should be a positive integer.",
-        glue::glue("Instead, it is of class '{class(Sigma_prior_df)[1]}'.")
+        "'Sigma_prior_df' should be a positive `integer`."
       )
     }
     if (Sigma_prior_df < 3) {
@@ -914,7 +1078,7 @@ RprobitB_prior_Sigma <- function(
 
 #' @rdname RprobitB_prior_Sigma
 #' @param x
-#' An \code{RprobitB_prior_Sigma} object.
+#' An \code{\link{RprobitB_prior_Sigma}} object.
 
 is.RprobitB_prior_Sigma <- function(x) {
   inherits(x, "RprobitB_prior_Sigma")
@@ -923,7 +1087,7 @@ is.RprobitB_prior_Sigma <- function(x) {
 #' @rdname RprobitB_prior_Sigma
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -931,7 +1095,11 @@ print.RprobitB_prior_Sigma <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
 ) {
-  stopifnot(is.RprobitB_prior_Sigma(x))
+  if (!is.RprobitB_prior_Sigma(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_Sigma`."
+    )
+  }
   cat(crayon::underline("Sigma prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -949,10 +1117,12 @@ print.RprobitB_prior_Sigma <- function (
     cat("custom\n")
     cat("Sigma ~", function_body(x$Sigma_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{Sigma_diff} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{Sigma_diff}. Only relevant if \code{ordered = FALSE}.
 #'
@@ -981,9 +1151,19 @@ print.RprobitB_prior_Sigma <- function (
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_Sigma_diff} object.
+#' An \code{\link{RprobitB_prior_Sigma_diff}} object or \code{NA} if
+#' \code{ordered = TRUE}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{Sigma_diff_prior_df}}{The prior degrees of freedom.}
+#'   \item{\code{Sigma_diff_prior_scale}}{The prior scale matrix.}
+#'   \item{\code{Sigma_diff_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: Sigma_diff ~ Inverse-Wishart(J + 1, I)
 #' RprobitB_prior_Sigma_diff(J = 3)
 #'
@@ -995,9 +1175,11 @@ print.RprobitB_prior_Sigma <- function (
 #'     all(x[row(x) != col(x)] == 0)
 #'   }
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_Sigma_diff <- function(
     ordered = FALSE, J, Sigma_diff_prior_df = J + 1, Sigma_diff_prior_scale = diag(J-1),
@@ -1009,11 +1191,20 @@ RprobitB_prior_Sigma_diff <- function(
     conjugate <- FALSE
     Sigma_diff_prior_df <- NA
     Sigma_diff_prior_scale <- NA
+    if (!(is.numeric(Sigma_diff_prior_custom_test_par) &&
+          is.matrix(Sigma_diff_prior_custom_test_par) &&
+          all(dim(Sigma_diff_prior_custom_test_par) == J - 1))) {
+      RprobitB_stop(
+        glue::glue(
+          "'Sigma_diff_prior_custom_test_par' should be a `matrix` ",
+          "of dimension {J-1} x {J-1}."
+        )
+      )
+    }
     if (!is.function(Sigma_diff_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for Sigma_diff is misspecified.",
-        "'Sigma_diff_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class '{class(Sigma_diff_prior_custom)[1]}'.")
+        "Custom prior for 'Sigma_diff' is misspecified.",
+        "'Sigma_diff_prior_custom' should be a `function`."
       )
     }
     Sigma_diff_prior_custom_test <- try(
@@ -1022,12 +1213,14 @@ RprobitB_prior_Sigma_diff <- function(
     if (!(is_single_numeric(Sigma_diff_prior_custom_test) &&
           Sigma_diff_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for Sigma_diff is misspecified.",
-        glue::glue("'Sigma_diff_prior_custom(Sigma_diff_prior_custom_test_par)' ",
-                   "should return single density value."),
+        "Custom prior for 'Sigma_diff' is misspecified.",
+        glue::glue(
+          "The call 'Sigma_diff_prior_custom(<Sigma_diff_prior_custom_test_par>)' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{Sigma_diff_prior_custom_test}'"),
+          glue::glue("{Sigma_diff_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -1038,8 +1231,7 @@ RprobitB_prior_Sigma_diff <- function(
     if (!is_pos_int(Sigma_diff_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Sigma_diff prior is misspecified.",
-        "'Sigma_diff_prior_df' should be a positive integer.",
-        glue::glue("Instead, it is of class '{class(Sigma_diff_prior_df)[1]}'.")
+        "'Sigma_diff_prior_df' should be a positive `integer`."
       )
     }
     if (Sigma_diff_prior_df < J + 1) {
@@ -1077,7 +1269,7 @@ RprobitB_prior_Sigma_diff <- function(
 
 #' @rdname RprobitB_prior_Sigma_diff
 #' @param x
-#' An \code{RprobitB_prior_Sigma_diff} object.
+#' An \code{\link{RprobitB_prior_Sigma_diff}} object.
 
 is.RprobitB_prior_Sigma_diff <- function(x) {
   inherits(x, "RprobitB_prior_Sigma_diff")
@@ -1086,7 +1278,7 @@ is.RprobitB_prior_Sigma_diff <- function(x) {
 #' @rdname RprobitB_prior_Sigma_diff
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -1094,7 +1286,11 @@ print.RprobitB_prior_Sigma_diff <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
 ) {
-  stopifnot(is.RprobitB_prior_Sigma_diff(x))
+  if (!is.RprobitB_prior_Sigma_diff(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_Sigma_diff`."
+    )
+  }
   cat(crayon::underline("Sigma_diff prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -1112,10 +1308,12 @@ print.RprobitB_prior_Sigma_diff <- function (
     cat("custom\n")
     cat("Sigma_diff ~", function_body(x$Sigma_diff_prior_custom))
   }
+  invisible()
 }
 
 #' Define \code{d} prior
 #'
+#' @description
 #' This function defines the prior distributions for the probit model parameter
 #' \code{d}. Only relevant if \code{ordered = TRUE}.
 #'
@@ -1142,9 +1340,19 @@ print.RprobitB_prior_Sigma_diff <- function (
 #' @inheritSection RprobitB_prior Model priors
 #'
 #' @return
-#' An \code{RprobitB_prior_d} object or \code{NA} if \code{ordered = FALSE}.
+#' An \code{\link{RprobitB_prior_d}} object or \code{NA} if
+#' \code{ordered = FALSE}.
+#'
+#' It contains the elements:
+#' \describe{
+#'   \item{\code{conjugate}}{Is the prior conjugated?}
+#'   \item{\code{d_prior_mean}}{The prior mean vector.}
+#'   \item{\code{d_prior_Sigma}}{The prior covariance matrix.}
+#'   \item{\code{d_prior_custom}}{The custom prior function.}
+#' }
 #'
 #' @examples
+#' \dontrun{
 #' ### conjugate prior: d ~ Normal(0, 10*I)
 #' RprobitB_prior_d(ordered = TRUE, J = 4)
 #'
@@ -1156,9 +1364,11 @@ print.RprobitB_prior_Sigma_diff <- function (
 #'     stats::dnorm(x[1]) * stats::dunif(x[2])
 #'   }
 #' )
+#' }
 #'
 #' @importFrom glue glue glue_collapse
-#' @keywords internal
+#'
+#' @keywords internal object
 
 RprobitB_prior_d <- function(
     ordered = FALSE, J, d_prior_mean = numeric(J-2), d_prior_Sigma = 10 * diag(J-2),
@@ -1172,9 +1382,17 @@ RprobitB_prior_d <- function(
     d_prior_Sigma <- NA
     if (!is.function(d_prior_custom)) {
       RprobitB_stop(
-        "Custom prior for d is misspecified.",
-        "'d_prior_custom' should be a function.",
-        glue::glue("Instead, it is of class {class(d_prior_custom)[1]}.")
+        "Custom prior for 'd' is misspecified.",
+        "'d_prior_custom' should be a `function`."
+      )
+    }
+    if (!(is.numeric(d_prior_custom_test_par) &&
+          length(d_prior_custom_test_par) == J-2)) {
+      RprobitB_stop(
+        glue::glue(
+          "'d_prior_custom_test_par' should be a `numeric` vector ",
+          "of length {J-2}."
+        )
       )
     }
     d_prior_custom_test <- try(
@@ -1183,12 +1401,14 @@ RprobitB_prior_d <- function(
     if (!(is_single_numeric(d_prior_custom_test) &&
           d_prior_custom_test >= 0)) {
       RprobitB_stop(
-        "Custom prior for d is misspecified.",
-        glue::glue("'d_prior_custom(d_prior_custom_test_par)' ",
-                   "should return density value."),
+        "Custom prior for 'd' is misspecified.",
+        glue::glue(
+          "The call 'd_prior_custom(c({paste(d_prior_custom_test_par, collapse = ', ')}))' ",
+          "should return a single density value."
+        ),
         "Instead, it returned (collapsed):",
         glue::glue_collapse(
-          glue::glue("'{d_prior_custom_test}'"),
+          glue::glue("{d_prior_custom_test}"),
           sep = " ",
           width = getOption("width") - 3
         )
@@ -1199,8 +1419,7 @@ RprobitB_prior_d <- function(
     if (!is.numeric(d_prior_mean)) {
       RprobitB_stop(
         "Mean vector for conjugate d prior is misspecified.",
-        "'d_prior_mean' should be a numeric vector.",
-        glue::glue("Instead, it is of class '{class(d_prior_mean)[1]}'.")
+        "'d_prior_mean' should be a `numeric` vector."
       )
     }
     if (length(d_prior_mean) != (J-2)) {
@@ -1238,7 +1457,7 @@ RprobitB_prior_d <- function(
 
 #' @rdname RprobitB_prior_d
 #' @param x
-#' An \code{RprobitB_prior_d} object.
+#' An \code{\link{RprobitB_prior_d}} object.
 
 is.RprobitB_prior_d <- function(x) {
   inherits(x, "RprobitB_prior_d")
@@ -1247,7 +1466,7 @@ is.RprobitB_prior_d <- function(x) {
 #' @rdname RprobitB_prior_d
 #' @inheritParams print_matrix
 #' @param ...
-#' Not used.
+#' Currently not used.
 #' @exportS3Method
 #' @importFrom crayon underline
 
@@ -1255,7 +1474,11 @@ print.RprobitB_prior_d <- function (
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
     ...
 ) {
-  stopifnot(is.RprobitB_prior_d(x))
+  if (!is.RprobitB_prior_d(x)) {
+    RprobitB_stop(
+      "Input 'x' is not of class `RprobitB_prior_d`."
+    )
+  }
   cat(crayon::underline("d prior"))
   cat(" : ")
   if (x$conjugate) {
@@ -1273,4 +1496,5 @@ print.RprobitB_prior_d <- function (
     cat("custom\n")
     cat("d ~", function_body(x$d_prior_custom))
   }
+  invisible()
 }

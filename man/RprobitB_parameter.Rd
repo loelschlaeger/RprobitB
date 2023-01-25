@@ -151,9 +151,9 @@ An \code{RprobitB_parameter} object.
 These functions create and validate an object of class
 \code{RprobitB_parameter}, which contains the parameters of a probit model,
 see details.
-\code{simulate_RprobitB_parameters()} simulates missing parameters from the
+
+\code{simulate_RprobitB_parameters()} simulates (missing) parameters from the
 default prior distributions, see \code{\link{RprobitB_prior}}.
-\code{validate_RprobitB_parameters()} checks the parameters.
 }
 \section{The probit model}{
 Assume that we know the choices of \eqn{N} deciders choosing between
@@ -279,8 +279,8 @@ category and no ASCs.
 
 In the ordered probit model (\code{ordered = TRUE}), covariates are not
 alternative specific, i.e., there exists only one type of covariate.
-Therefore, the \code{formula} object does not need any
-separation via \code{|}, and hence has the simple structure
+Therefore, the \code{formula} object does not need the special
+separation form via \code{|}, and hence has the simple structure
 \code{choice ~ A + B + C}.
 ASCs cannot be estimated in the ordered case.
 }

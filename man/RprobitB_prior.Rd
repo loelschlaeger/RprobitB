@@ -98,11 +98,11 @@ By default, \code{Sigma_prior_custom = NULL}, i.e., no custom prior.}
     \item{\code{Sigma_prior_custom_test_par}}{A \code{matrix} of dimension \code{1} x \code{1}, a test input for
 the custom prior density function \code{Sigma_prior_custom}.
 Can also be a single \code{numeric}.
-By default, \code{Sigma_prior_custom_test_par = 1}.
+By default, \code{Sigma_prior_custom_test_par = matrix(1)}.
 Ignored if \code{Sigma_prior_custom = NULL}.}
     \item{\code{J}}{An \code{integer}, the number of choice alternatives.
-Must be at least 2.
-If \code{ordered = TRUE}, must be at least 3.}
+Must be at least \code{2}.
+If \code{ordered = TRUE}, must be at least \code{3}.}
     \item{\code{Sigma_diff_prior_df}}{An \code{integer}, the degrees of freedom for the conjugate
 Inverse-Wishart prior distribution of \code{Sigma_diff}.
 It must be greater or equal than \code{J + 1} (to ensure a proper prior).
@@ -133,14 +133,25 @@ By default, \code{d_prior_custom_test_par = numeric(J-2)}.
 Ignored if \code{d_prior_custom = NULL}.}
   }}
 
-\item{x}{An \code{RprobitB_prior} object.}
+\item{x}{An \code{\link{RprobitB_prior}} object.}
 }
 \value{
-An \code{RprobitB_prior} object.
+An \code{\link{RprobitB_prior}} object.
+
+It contains the elements:
+\describe{
+\item{\code{alpha}}{The \code{\link{RprobitB_prior_alpha}} object.}
+\item{\code{s}}{The \code{\link{RprobitB_prior_s}} object.}
+\item{\code{b}}{The \code{\link{RprobitB_prior_b}} object.}
+\item{\code{Omega}}{The \code{\link{RprobitB_prior_Omega}} object.}
+\item{\code{Sigma}}{The \code{\link{RprobitB_prior_Sigma}} object.}
+\item{\code{Sigma_diff}}{The \code{\link{RprobitB_prior_Sigma_diff}} object.}
+\item{\code{d}}{The \code{\link{RprobitB_prior_d}} object.}
+}
 }
 \description{
-This function defines an object of class \code{RprobitB_prior}, which
-contains the prior specification for a probit model.
+This function constructs an object of class \code{\link{RprobitB_prior}},
+which contains the prior specification for a probit model.
 }
 \section{Model priors}{
 \subsection{Conjugate priors}{
@@ -213,7 +224,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -248,8 +259,8 @@ category and no ASCs.
 
 In the ordered probit model (\code{ordered = TRUE}), covariates are not
 alternative specific, i.e., there exists only one type of covariate.
-Therefore, the \code{formula} object does not need any
-separation via \code{|}, and hence has the simple structure
+Therefore, the \code{formula} object does not need the special
+separation form via \code{|}, and hence has the simple structure
 \code{choice ~ A + B + C}.
 ASCs cannot be estimated in the ordered case.
 }

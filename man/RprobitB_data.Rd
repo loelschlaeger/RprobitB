@@ -142,4 +142,12 @@ see details.
 
 This function constructs an object of class \code{RprobitB_data}.
 }
+\section{Choice simulation}{
+TODO
+}
+
+\section{Choice data}{
+TODO
+}
+
 \keyword{internal}

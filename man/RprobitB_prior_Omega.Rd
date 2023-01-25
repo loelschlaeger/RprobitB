@@ -48,7 +48,7 @@ custom prior density function \code{Omega_prior_custom}.
 By default, \code{Omega_prior_custom_test_par = diag(P_r)}.
 Ignored if \code{Omega_prior_custom = NULL}.}
 
-\item{x}{An \code{RprobitB_prior_Omega} object.}
+\item{x}{An \code{\link{RprobitB_prior_Omega}} object.}
 
 \item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
 By default, \code{rowdots = 4}.}
@@ -67,10 +67,18 @@ By default, \code{simplify = FALSE}.}
 dimension of \code{x}.
 By default, \code{details = !simplify}.}
 
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_prior_Omega} object or \code{NA} if \code{P_r = 0}.
+An \code{\link{RprobitB_prior_Omega}} object or \code{NA} if \code{P_r = 0}.
+
+It contains the elements:
+\describe{
+\item{\code{conjugate}}{Is the prior conjugated?}
+\item{\code{Omega_prior_df}}{The prior degrees of freedom.}
+\item{\code{Omega_prior_scale}}{The prior scale matrix.}
+\item{\code{Omega_prior_custom}}{The custom prior function.}
+}
 }
 \description{
 This function defines the prior distributions for the probit model parameter
@@ -147,7 +155,7 @@ By default, conjugate priors are applied, but custom priors can be
 specified as well. To specify a custom prior for parameter \code{<par>},
 use the input \code{<par>_prior_custom}, which should compute the density
 of the prior (or a value that is proportional), see \sQuote{Examples}.
-The following density functions (implemented in {RprobitB}) can be helpful:
+The following density functions (implemented in \{RprobitB\}) can be helpful:
 \itemize{
 \item \code{\link{ddirichlet}}
 \item \code{\link{dmvnorm}}
@@ -157,6 +165,7 @@ The following density functions (implemented in {RprobitB}) can be helpful:
 }
 
 \examples{
+\dontrun{
 ### conjugate prior: Omega ~ Inverse-Wishart(P_r + 2, I)
 RprobitB_prior_Omega(P_r = 2)
 
@@ -167,6 +176,8 @@ RprobitB_prior_Omega(
     dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1,1] == x[2,2])
   }
 )
+}
 
 }
 \keyword{internal}
+\keyword{object}

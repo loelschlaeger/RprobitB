@@ -1,5 +1,6 @@
 #' Overview model effects
 #'
+#' @description
 #' This function provides an overview of the model effects.
 #'
 #' @param RprobitB_formula
@@ -13,14 +14,15 @@
 #'
 #' @return
 #' A \code{data.frame}, each row is an effect, columns are
-#' 1. the effect names \code{"name"},
-#' 2. booleans whether the covariate is alternative-specific \code{"as_cov"},
-#' 3. booleans whether the coefficient is alternative-specific \code{"as_coef"},
-#' 4. booleans whether the effect is a random effect \code{"random"},
-#' 5. and booleans whether the random effect is log-normal \code{"ln"}.
+#' 1. \code{"name"}, the effect names,
+#' 2. \code{"as_cov"}, indicators whether the covariate is alternative-specific,
+#' 3. \code{"as_coef"}, indicators whether the coefficient is
+#'    alternative-specific,
+#' 4. \code{"random"}, indicators whether the effect is a random effect,
+#' 5. and \code{"ln"}, indicators whether the random effect is log-normal.
 #'
 #' @examples
-#' RprobitB_effects(
+#' overview_effects(
 #'   RprobitB_formula = RprobitB_formula(
 #'     formula = choice ~ price | income | comfort,
 #'     re = c("price+", "income")
@@ -30,16 +32,31 @@
 #'
 #' @export
 
-RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
+overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
   if (missing(RprobitB_formula)) {
     RprobitB_stop(
       "Please specify the input 'RprobitB_formula'.",
+      "It should be an `RprobitB_formula` object.",
+      "See the function documentation for details."
+    )
+  }
+  if (!is.RprobitB_formula(RprobitB_formula)) {
+    RprobitB_stop(
+      "Input 'RprobitB_formula' is misspecified.",
+      "It should be an `RprobitB_formula` object.",
       "See the function documentation for details."
     )
   }
   if (missing(RprobitB_alternatives)) {
     RprobitB_stop(
       "Please specify the input 'RprobitB_alternatives'.",
+      "See the function documentation for details."
+    )
+  }
+  if (!is.RprobitB_alternatives(RprobitB_alternatives)) {
+    RprobitB_stop(
+      "Input 'RprobitB_alternatives' is misspecified.",
+      "It should be an `RprobitB_alternatives` object.",
       "See the function documentation for details."
     )
   }
@@ -53,7 +70,7 @@ RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
   re <- c(md_n, md_ln)
   overview <- data.frame(matrix(ncol = 5, nrow = 0))
   if(ordered){
-    for (var in vars[[2]]) {
+    for (var in vars[[1]]) {
       overview <- rbind(
         overview,
         c(var, FALSE, FALSE, var %in% re, var %in% md_ln)
@@ -99,19 +116,22 @@ RprobitB_effects <- function(RprobitB_formula, RprobitB_alternatives) {
 
 #' Compute number of (fixed and random) model effects
 #'
+#' @description
+#' These functions compute the number of fixed and random model effects.
+#'
 #' \code{coompute_P()} computes the total number \code{P} of model effects.
 #' \code{compute_P_f()} computes the number \code{P_f} of fixed model effects.
 #' \code{compute_P_r()} computes the number \code{P_r} of random model effects.
 #'
 #' @inheritParams RprobitB_formula
 #' @inheritParams RprobitB_parameter
-#' @inheritParams RprobitB_effects
+#' @inheritParams overview_effects
 #'
 #' @inheritSection RprobitB_formula Model formula
 #' @inheritSection RprobitB_formula Random effects
 #'
 #' @return
-#' An \code{integer}.
+#' An \code{integer}, the number of model effects.
 #'
 #' @examples
 #' formula <- choice ~ A | B | C + D
@@ -132,27 +152,30 @@ compute_P <- function(formula, re, J, ordered = FALSE) {
 #' @export
 
 compute_P_f <- function(formula, re, J, ordered = FALSE) {
-  RprobitB_effects <- RprobitB_effects(
-    RprobitB_formula = RprobitB_formula(formula = formula, re = re, ordered = ordered),
+  effects <- overview_effects(
+    RprobitB_formula = RprobitB_formula(formula = formula, re = re,
+                                        ordered = ordered),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
-  as.integer(sum(!RprobitB_effects$random))
+  as.integer(sum(!effects$random))
 }
 
 #' @rdname compute_P
 #' @export
 
 compute_P_r <- function(formula, re, J, ordered = FALSE) {
-  RprobitB_effects <- RprobitB_effects(
-    RprobitB_formula = RprobitB_formula(formula = formula, re = re, ordered = ordered),
+  effects <- overview_effects(
+    RprobitB_formula = RprobitB_formula(formula = formula, re = re,
+                                        ordered = ordered),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
-  as.integer(sum(RprobitB_effects$random))
+  as.integer(sum(effects$random))
 }
 
 #' Compute number of covariates
 #'
-#' This helper function computes the number of covariates per decider.
+#' @description
+#' This function computes the number of covariates per decider.
 #'
 #' @inheritParams RprobitB_formula
 #' @inheritParams RprobitB_alternatives
@@ -168,11 +191,7 @@ compute_P_r <- function(formula, re, J, ordered = FALSE) {
 number_covariates <- function(formula, J, ordered = FALSE) {
   RprobitB_formula <- RprobitB_formula(formula = formula, ordered = ordered)
   RprobitB_alternatives <- RprobitB_alternatives(J = J, ordered = ordered)
-
+  effects <- overview_effects(RprobitB_formula, RprobitB_alternatives)
+  nrow(effects)
 }
 
-order_covariates <- function(
-    formula, J, alternatives = LETTERS[1:J], re = NULL, ordered = FALSE
-  ) {
-
-}

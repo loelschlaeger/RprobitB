@@ -6,6 +6,10 @@ test_that("RprobitB_formula can be specified and validated", {
       glue::glue("{act$lab} is not of class 'RprobitB_formula'.")
     )
     expect(
+      is.RprobitB_formula(object),
+      glue::glue("{act$lab} is not of class 'RprobitB_formula'.")
+    )
+    expect(
       identical(object$vars, vars),
       glue::glue("{act$lab}: vars is is not as expected.")
     )
@@ -32,7 +36,7 @@ test_that("RprobitB_formula can be specified and validated", {
   f7 <- choice ~ 0 | 1 | C
   f8 <- choice ~ A + B
   f9 <- choice ~ A + B + 1
-  re1 <- character()
+  re1 <- NULL
   re2 <- "A"
   re3 <- "A+"
   re4 <- c("A+", "B")
@@ -40,16 +44,24 @@ test_that("RprobitB_formula can be specified and validated", {
   re6 <- c("B", "ASC+")
   re7 <- c("A", "A+")
   expect_error(
-    RprobitB_formula(formula = "not_a_correct_formula", re = re1, ordered = FALSE)
+    RprobitB_formula(),
+    "Please specify the input 'formula'."
   )
   expect_error(
-    RprobitB_formula(formula = f1, re = 1, ordered = FALSE)
+    RprobitB_formula(formula = "not_a_formula", re = re1, ordered = FALSE),
+    "Input 'formula' is misspecified."
   )
   expect_error(
-    RprobitB_formula(formula = f1, re = re1, ordered = "not_a_boolean")
+    RprobitB_formula(formula = f1, re = 1, ordered = FALSE),
+    "Input 're' is misspecified."
   )
   expect_error(
-    RprobitB_formula(formula = f1, re = "this_covariate_does_not_exist", ordered = FALSE)
+    RprobitB_formula(formula = f1, re = re1, ordered = "not_a_boolean"),
+    "Input 'ordered' must be `TRUE` or `FALSE`."
+  )
+  expect_error(
+    RprobitB_formula(formula = f1, re = "bad_covariate", ordered = FALSE),
+    "Input 're' is misspecified."
   )
   expect_RprobitB_formula(
     RprobitB_formula(formula = f1, re = re1, ordered = FALSE),
@@ -92,7 +104,8 @@ test_that("RprobitB_formula can be specified and validated", {
     md_n = "B", md_ln = "A"
   )
   expect_error(
-    RprobitB_formula(formula = f3, re = character(), ordered = TRUE)
+    RprobitB_formula(formula = f3, re = character(), ordered = TRUE),
+    "Input 'formula' is misspecified."
   )
   expect_RprobitB_formula(
     RprobitB_formula(formula = f8, re = re5, ordered = FALSE),
@@ -100,7 +113,8 @@ test_that("RprobitB_formula can be specified and validated", {
     md_n = c("B", "ASC"), md_ln = character()
   )
   expect_error(
-    RprobitB_formula(formula = f5, re = re5, ordered = FALSE)
+    RprobitB_formula(formula = f5, re = re5, ordered = FALSE),
+    "Input 're' is misspecified."
   )
   expect_RprobitB_formula(
     RprobitB_formula(formula = f8, re = re6, ordered = FALSE),
@@ -108,6 +122,28 @@ test_that("RprobitB_formula can be specified and validated", {
     md_n = "B", md_ln = "ASC"
   )
   expect_error(
-    RprobitB_formula(formula = f2, re = re7, ordered = FALSE)
+    RprobitB_formula(formula = f2, re = re7, ordered = FALSE),
+    "Input 're' is misspecified."
+  )
+  expect_error(
+    RprobitB_formula(formula = ~ bad),
+    "It should be in the form '<choice> ~ <covariates>'."
+  )
+  expect_error(
+    RprobitB_formula(formula = A ~ B | C | D | too_much),
+    "It should have no more than 2 of '|' separators."
+  )
+})
+
+test_that("RprobitB_formula can be printed", {
+  expect_error(
+    print.RprobitB_formula(1),
+    "Input 'x' is not of class `RprobitB_formula`."
+  )
+  expect_snapshot(
+    RprobitB_formula(formula = choice ~ A | B, re = NULL, ordered = FALSE)
+  )
+  expect_snapshot(
+    RprobitB_formula(formula = choice ~ A + B, re = c("A+", "B"), ordered = TRUE)
   )
 })

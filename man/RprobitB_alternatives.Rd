@@ -22,8 +22,8 @@ validate_RprobitB_alternatives(x)
 }
 \arguments{
 \item{J}{An \code{integer}, the number of choice alternatives.
-Must be at least 2.
-If \code{ordered = TRUE}, must be at least 3.}
+Must be at least \code{2}.
+If \code{ordered = TRUE}, must be at least \code{3}.}
 
 \item{alternatives}{A \code{character}, the vector of names of the choice alternatives.
 Its length must be \code{J}.
@@ -39,25 +39,39 @@ By default, \code{base} is the first element of \code{alternatives}.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{x}{An \code{RprobitB_alternatives} object.}
+\item{x}{An \code{\link{RprobitB_alternatives}} object.}
+
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_alternatives} object.
+An \code{\link{RprobitB_alternatives}} object.
+
+It contains the elements:
+\describe{
+\item{\code{J}}{The number of choice alternatives.}
+\item{\code{alternatives}}{The names of the choice alternatives}
+\item{\code{base}}{The name of the base alternative.}
+\item{\code{ordered}}{Are the choice alternatives ordered?}
+}
 }
 \description{
-This function constructs an object of class \code{RprobitB_alternatives},
-which contains the choice alternatives.
+This function constructs an object of class
+\code{\link{RprobitB_alternatives}}, which contains the choice alternatives.
 }
 \section{Base alternative}{
 The full collection of coefficients for covariates that are constant across
-alternatives (including ASCs) is not identified, one coefficient is a linear
-coefficient of the others, respectively. To achieve identifiability, the
-coefficient of one alternative \code{base} is fixed to zero. The other
-coefficients then have to be interpreted with respect to \code{base}.
+alternatives (including ASCs) is not identified.
+To achieve identifiability, the coefficient of one alternative \code{base}
+is fixed to \code{0}.
+The other coefficients then have to be interpreted with respect to
+\code{base}.
 }
 
 \examples{
+\dontrun{
 RprobitB_alternatives(3)
+}
 
 }
 \keyword{internal}
+\keyword{object}
