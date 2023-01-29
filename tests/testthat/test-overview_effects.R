@@ -98,9 +98,3 @@ test_that("number of effects can be computed", {
   expect_equal(compute_P_r(formula, re, J), 4)
 })
 
-test_that("number of covariates per decider can be computed", {
-  expect_equal(
-    number_covariates(formula <- choice ~ cost | income | time, J = 3),
-    8
-  )
-})

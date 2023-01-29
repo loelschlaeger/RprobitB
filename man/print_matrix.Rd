@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{print_matrix}
 \alias{print_matrix}
-\title{Print (abbreviated) matrices}
+\title{Print (abbreviated) \code{matrix}}
 \usage{
 print_matrix(
   x,
@@ -15,7 +15,7 @@ print_matrix(
 )
 }
 \arguments{
-\item{x}{A \code{numeric} or \code{character} (vector or matrix).}
+\item{x}{A \code{numeric} or \code{character} (\code{vector} or \code{matrix}).}
 
 \item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
 By default, \code{rowdots = 4}.}
@@ -42,9 +42,10 @@ By default, \code{details = !simplify}.}
 Invisibly returns \code{x}.
 }
 \description{
-This function prints (abbreviated) matrices.
+This function prints a (possibly abbreviated) \code{matrix}.
 }
 \examples{
+\dontrun{
 print_matrix(x = 1, label = "single numeric")
 print_matrix(x = LETTERS[1:26], label = "letters")
 print_matrix(x = 1:3, coldots = 2)
@@ -52,6 +53,7 @@ print_matrix(x = matrix(rnorm(99), ncol = 1), label = "single column matrix")
 print_matrix(x = matrix(1:100, nrow = 1), label = "single row matrix")
 print_matrix(x = matrix(LETTERS[1:24], ncol = 6), label = "big matrix")
 print_matrix(x = diag(5), coldots = 2, rowdots = 2, simplify = TRUE)
+}
 
 }
 \references{

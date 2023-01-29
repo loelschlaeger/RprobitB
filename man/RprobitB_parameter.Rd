@@ -116,10 +116,6 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{N}{An \code{integer}, the number of deciders.}
-
 \item{seed}{An \code{integer}, passed to \code{set.seed()} to make the randomness
 reproducible.
 By default, \code{seed = NULL}, i.e., no seed is set.}

@@ -191,7 +191,7 @@ RprobitB_parameter <- function(
     C = 1, s = NA, alpha = NA, b = NA, Omega = NA, Sigma = NA,
     Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
 ) {
-  if (!is_pos_int(C)) {
+  if (!is_positive_integer(C)) {
     RprobitB_stop(
       "Input 'C' must be a positive `integer`."
     )
@@ -226,7 +226,7 @@ RprobitB_parameter <- function(
       "Input 'Sigma_diff' must be `numeric`."
     )
   }
-  if (!is_pos_int(diff_alt)) {
+  if (!is_positive_integer(diff_alt)) {
     RprobitB_stop(
       "Input 'diff_alt' must be a positive `integer`."
     )
@@ -312,7 +312,7 @@ simulate_RprobitB_parameter <- function(
       "It should be the number of choice alternatives."
     )
   }
-  if (!is_pos_int(J)) {
+  if (!is_positive_integer(J)) {
     RprobitB_stop(
       "Input 'J' must be a positive `integer`.",
       "It should be the number of choice alternatives."
@@ -324,7 +324,7 @@ simulate_RprobitB_parameter <- function(
       "It should be the number of deciders."
     )
   }
-  if (!is_pos_int(N)) {
+  if (!is_positive_integer(N)) {
     RprobitB_stop(
       "Input 'N' must be a positive `integer`.",
       "It should be the number of deciders."
@@ -471,7 +471,7 @@ validate_RprobitB_parameter <- function(
       "It should be the number of choice alternatives."
     )
   }
-  if (!is_pos_int(J)) {
+  if (!is_positive_integer(J)) {
     RprobitB_stop(
       "Input 'J' must be a positive `integer`.",
       "It should be the number of choice alternatives."
@@ -483,7 +483,7 @@ validate_RprobitB_parameter <- function(
       "It should be the number of deciders."
     )
   }
-  if (!is_pos_int(N)) {
+  if (!is_positive_integer(N)) {
     RprobitB_stop(
       "Input 'N' must be a positive `integer`.",
       "It should be the number of deciders."
@@ -492,7 +492,7 @@ validate_RprobitB_parameter <- function(
   P_f <- compute_P_f(formula = formula, re = re, J = J, ordered = ordered)
   P_r <- compute_P_r(formula = formula, re = re, J = J, ordered = ordered)
   ### check C
-  if (!is_pos_int(x$C)) {
+  if (!is_positive_integer(x$C)) {
     RprobitB_stop(
       "'C' is expected to be a positive `integer`.",
       "Instead, it is (collapsed):",
@@ -589,7 +589,7 @@ validate_RprobitB_parameter <- function(
       )
     }
     for (c in 1:x$C) {
-      if (!is_cov_matrix(matrix(x$Omega[,c], nrow = P_r, ncol = P_r))) {
+      if (!is_covariance_matrix(matrix(x$Omega[,c], nrow = P_r, ncol = P_r))) {
         RprobitB_stop(
           glue::glue(
             "Column {c} in 'Omega' is expected to be a proper covariance matrix."
@@ -600,7 +600,7 @@ validate_RprobitB_parameter <- function(
             sep = " ",
             width = getOption("width") - 3
           ),
-          "Please check it with 'is_cov_matrix()'."
+          "Please check it with 'is_covariance_matrix()'."
         )
       }
     }
@@ -609,7 +609,7 @@ validate_RprobitB_parameter <- function(
     x$Omega <- NA
   }
   ### check diff_alt
-  if (!is_pos_int(x$diff_alt) || x$diff_alt > J) {
+  if (!is_positive_integer(x$diff_alt) || x$diff_alt > J) {
     RprobitB_stop(
       glue::glue(
         "'diff_alt' is expected to be a positive `integer` smaller or equal {J}."
@@ -655,7 +655,7 @@ validate_RprobitB_parameter <- function(
         )
       )
     }
-    if (!is_cov_matrix(x$Sigma)) {
+    if (!is_covariance_matrix(x$Sigma)) {
       RprobitB_stop(
         glue::glue(
           "'Sigma' is expected to be a proper covariance matrix."
@@ -666,7 +666,7 @@ validate_RprobitB_parameter <- function(
           sep = " ",
           width = getOption("width") - 3
         ),
-        "Please check it with 'is_cov_matrix()'."
+        "Please check it with 'is_covariance_matrix()'."
       )
     }
     if (!is.numeric(x$Sigma_diff) || !is.matrix(x$Sigma_diff) ||
@@ -683,7 +683,7 @@ validate_RprobitB_parameter <- function(
         )
       )
     }
-    if (!is_cov_matrix(x$Sigma_diff)) {
+    if (!is_covariance_matrix(x$Sigma_diff)) {
       RprobitB_stop(
         glue::glue(
           "'Sigma_diff' is expected to be a proper covariance matrix."
@@ -694,7 +694,7 @@ validate_RprobitB_parameter <- function(
           sep = " ",
           width = getOption("width") - 3
         ),
-        "Please check it with 'is_cov_matrix()'."
+        "Please check it with 'is_covariance_matrix()'."
       )
     }
     if (!isTRUE(all.equal(diff_Sigma(x$Sigma, diff_alt = x$diff_alt), x$Sigma_diff))) {

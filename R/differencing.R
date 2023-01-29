@@ -52,18 +52,18 @@
 #' J <- 3
 #' diff_alt <- 2
 #' delta(diff_alt, J)
-#' (Sigma0 <- RprobitB:::sample_cov_matrix(dim = J))
+#' (Sigma0 <- RprobitB:::sample_covariance_matrix(dim = J))
 #' (Sigma_diff0 <- RprobitB:::diff_Sigma(Sigma0, diff_alt = diff_alt))
 #' (Sigma1 <- RprobitB:::undiff_Sigma(Sigma_diff0, diff_alt = diff_alt))
 #' (Sigma_diff1 <- RprobitB:::diff_Sigma(Sigma1, diff_alt = diff_alt))
 #' all.equal(Sigma_diff0, Sigma_diff1)
 #'
-#' @seealso [is_cov_matrix()] to check whether a matrix is a covariance matrix
+#' @seealso [is_covariance_matrix()] to check whether a matrix is a covariance matrix
 
 diff_Sigma <- function(Sigma, diff_alt = 1) {
-  stopifnot(is_cov_matrix(Sigma))
+  stopifnot(is_covariance_matrix(Sigma))
   J <- nrow(Sigma)
-  stopifnot(is_pos_int(diff_alt), diff_alt <= J)
+  stopifnot(is_positive_integer(diff_alt), diff_alt <= J)
   D <- delta(diff_alt = diff_alt, J = J)
   D %*% Sigma %*% t(D)
 }
@@ -74,9 +74,9 @@ diff_Sigma <- function(Sigma, diff_alt = 1) {
 #' term covariance matrix.
 
 undiff_Sigma <- function(Sigma_diff, diff_alt = 1) {
-  stopifnot(is_cov_matrix(Sigma_diff))
+  stopifnot(is_covariance_matrix(Sigma_diff))
   J <- nrow(Sigma_diff) + 1
-  stopifnot(is_pos_int(diff_alt), diff_alt <= J)
+  stopifnot(is_positive_integer(diff_alt), diff_alt <= J)
   Sigma <- matrix(0, J, J)
   Sigma[row(Sigma) != diff_alt & col(Sigma) != diff_alt] <- Sigma_diff
   Sigma + 1
@@ -88,7 +88,7 @@ undiff_Sigma <- function(Sigma_diff, diff_alt = 1) {
 #' @keywords internal
 
 delta <- function(diff_alt, J){
-  stopifnot(is_pos_int(diff_alt), is_pos_int(J), diff_alt <= J)
+  stopifnot(is_positive_integer(diff_alt), is_positive_integer(J), diff_alt <= J)
   D <- diag(J)
   D[,diff_alt] <- -1
   D[-diff_alt, , drop = FALSE]

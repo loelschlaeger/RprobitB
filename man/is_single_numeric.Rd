@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_single_numeric}
 \alias{is_single_numeric}
-\title{Check single numeric}
+\title{Check for single \code{numeric}}
 \usage{
 is_single_numeric(i)
 }
@@ -10,16 +10,19 @@ is_single_numeric(i)
 \item{x}{Any element.}
 }
 \value{
-A \code{logical}, \code{TRUE} if \code{x} is a single numeric, \code{FALSE}
-else.
+A \code{logical}, \code{TRUE} if \code{x} is a single \code{numeric},
+\code{FALSE} else.
 }
 \description{
-This function checks whether the input is a single numeric value.
+This function checks whether the input is a single \code{numeric} value.
 }
 \examples{
-RprobitB:::is_single_numeric(1)
-RprobitB:::is_single_numeric("1")
-RprobitB:::is_single_numeric(NA_real_)
+\dontrun{
+is_single_numeric(1)
+is_single_numeric("1")
+is_single_numeric(NA_real_)
+is_single_numeric(1:2)
+}
 
 }
 \keyword{internal}

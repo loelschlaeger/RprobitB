@@ -21,6 +21,10 @@
 #' 4. \code{"random"}, indicators whether the effect is a random effect,
 #' 5. and \code{"ln"}, indicators whether the random effect is log-normal.
 #'
+#' The order of effects is important: Fixed effects come before random effects,
+#' and log-normal random effects are last random effects. Otherwise, the order
+#' is by occurrence in \code{formula}.
+#'
 #' @examples
 #' overview_effects(
 #'   RprobitB_formula = RprobitB_formula(
@@ -33,6 +37,8 @@
 #' @export
 
 overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
+
+  ### input checks
   if (missing(RprobitB_formula)) {
     RprobitB_stop(
       "Please specify the input 'RprobitB_formula'.",
@@ -60,6 +66,8 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
       "See the function documentation for details."
     )
   }
+
+  ### build effect overview
   J <- RprobitB_alternatives$J
   alternatives <- RprobitB_alternatives$alternatives
   base <- RprobitB_alternatives$base
@@ -107,10 +115,18 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
   overview$as_coef <- as.logical(overview$as_coef)
   overview$random <- as.logical(overview$random)
   overview$log_norm <- as.logical(overview$log_norm)
-  effect_order <- order(overview$random, overview$log_norm,
-                        as.numeric(rownames(overview)))
+
+  ### sort effects
+  effect_order <- order(
+    as.numeric(overview$random),    ### put random effects last
+    as.numeric(overview$log_norm),  ### log-normal effects are last random
+    as.numeric(rownames(overview)), ### otherwise sort by occurrence in formula
+    decreasing = FALSE
+  )
   overview <- overview[effect_order, ]
   rownames(overview) <- NULL
+
+  ### return effects
   return(overview)
 }
 
@@ -170,28 +186,5 @@ compute_P_r <- function(formula, re, J, ordered = FALSE) {
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(effects$random))
-}
-
-#' Compute number of covariates
-#'
-#' @description
-#' This function computes the number of covariates per decider.
-#'
-#' @inheritParams RprobitB_formula
-#' @inheritParams RprobitB_alternatives
-#'
-#' @return
-#' An \code{integer}, the number of covariates per decider.
-#'
-#' @examples
-#' number_covariates(formula <- choice ~ cost | income | time, J = 3)
-#'
-#' @export
-
-number_covariates <- function(formula, J, ordered = FALSE) {
-  RprobitB_formula <- RprobitB_formula(formula = formula, ordered = ordered)
-  RprobitB_alternatives <- RprobitB_alternatives(J = J, ordered = ordered)
-  effects <- overview_effects(RprobitB_formula, RprobitB_alternatives)
-  nrow(effects)
 }
 

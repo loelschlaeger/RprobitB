@@ -1,25 +1,28 @@
 test_that("checking booleans works", {
-  expect_false(is_bool("TRUE"))
-  expect_true(is_bool(FALSE))
+  expect_false(is_true_false("TRUE"))
+  expect_true(is_true_false(FALSE))
+  expect_false(is_true_false(c(TRUE, FALSE)))
 })
 
 test_that("checking single numeric works", {
   expect_true(is_single_numeric(1))
   expect_false(is_single_numeric("1"))
   expect_false(is_single_numeric(NA_real_))
+  expect_false(is_single_numeric(1:2))
 })
 
 test_that("checking positive integer works", {
-  expect_false(is_pos_int(-1))
-  expect_true(is_pos_int(1))
-  expect_false(is_pos_int(NA_real_))
-  expect_false(is_pos_int(1.1))
+  expect_false(is_positive_integer(-1))
+  expect_true(is_positive_integer(1))
+  expect_false(is_positive_integer(NA_real_))
+  expect_false(is_positive_integer(1.1))
+  expect_false(is_positive_integer(1:2))
 })
 
 test_that("sampling and checking covariance matrix works", {
-  expect_true(is_cov_matrix(diag(10)))
-  x <- sample_cov_matrix(dim = 3)
-  expect_true(is_cov_matrix(x))
+  expect_true(is_covariance_matrix(diag(10)))
+  x <- sample_covariance_matrix(dim = 3)
+  expect_true(is_covariance_matrix(x))
 })
 
 test_that("Extraction of function body as character works", {
@@ -147,6 +150,12 @@ test_that("print_matrix works", {
   expect_snapshot(
     print_matrix(x = diag(2), simplify = FALSE)
   )
+  expect_snapshot({
+    x <- diag(3)
+    rownames(x) <- c("la", "le", "lu")
+    colnames(x) <- c("x", "y", "z")
+    print_matrix(x)
+  })
 })
 
 test_that("computation of permutations works", {

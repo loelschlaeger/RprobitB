@@ -13,7 +13,7 @@
 ddirichlet <- function(x, concentration, log = FALSE) {
   stopifnot(
     is.numeric(x), is.vector(x), sum(x) == 1, all(x >= 0), all(x <= 1),
-    is.numeric(concentration), is.vector(concentration), is_bool(log),
+    is.numeric(concentration), is.vector(concentration), is_true_false(log),
     length(x) == length(concentration)
   )
   ddirichlet_cpp(x, concentration, log)
@@ -49,8 +49,8 @@ rdirichlet <- function(concentration) {
 dmvnorm <- function(x, mean, Sigma, log = FALSE) {
   stopifnot(
     is.numeric(x), is.vector(x), is.numeric(mean), is.vector(mean),
-    is.matrix(Sigma), is_cov_matrix(Sigma), length(x) == length(mean),
-    length(mean) == dim(Sigma)[1], is_bool(log)
+    is.matrix(Sigma), is_covariance_matrix(Sigma), length(x) == length(mean),
+    length(mean) == dim(Sigma)[1], is_true_false(log)
   )
   dmvnorm_cpp(x, mean, Sigma, log)
 }
@@ -70,8 +70,8 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
 rmvnorm <- function(mean, Sigma, log = FALSE) {
   stopifnot(
     is.numeric(mean), is.vector(mean),
-    is.matrix(Sigma), is_cov_matrix(Sigma),
-    length(mean) == dim(Sigma)[1], is_bool(log)
+    is.matrix(Sigma), is_covariance_matrix(Sigma),
+    length(mean) == dim(Sigma)[1], is_true_false(log)
   )
   as.vector(rmvnorm_cpp(mean, Sigma, log))
 }
@@ -92,9 +92,9 @@ rmvnorm <- function(mean, Sigma, log = FALSE) {
 
 dwishart <- function(x, df, scale, log = FALSE, inv = FALSE) {
   stopifnot(
-    is.numeric(x), is.matrix(x), is_cov_matrix(x),
-    is_pos_int(df), df >= dim(x)[1], is.matrix(scale), is_cov_matrix(scale),
-    dim(x)[1] == dim(scale)[1], is_bool(log), is_bool(inv)
+    is.numeric(x), is.matrix(x), is_covariance_matrix(x),
+    is_positive_integer(df), df >= dim(x)[1], is.matrix(scale), is_covariance_matrix(scale),
+    dim(x)[1] == dim(scale)[1], is_true_false(log), is_true_false(inv)
   )
   dwishart_cpp(x, df, scale, log, inv)
 }
@@ -113,7 +113,7 @@ dwishart <- function(x, df, scale, log = FALSE, inv = FALSE) {
 
 rwishart <- function(df, scale, inv = FALSE) {
   stopifnot(
-    is_pos_int(df), is.matrix(scale), is_cov_matrix(scale), is_bool(inv)
+    is_positive_integer(df), is.matrix(scale), is_covariance_matrix(scale), is_true_false(inv)
   )
   rwishart_cpp(df, scale, inv)
 }

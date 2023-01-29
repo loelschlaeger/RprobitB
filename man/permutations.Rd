@@ -13,11 +13,13 @@ permutations(x)
 A \code{list} of all permutations of \code{x}.
 }
 \description{
-This function creates all permutations of a given vector.
+This function creates all permutations of a given \code{vector}.
 }
 \examples{
-RprobitB:::permutations(1:3)
-RprobitB:::permutations(LETTERS[1:3])
+\dontrun{
+permutations(1:3)
+permutations(LETTERS[1:3])
+}
 
 }
 \references{

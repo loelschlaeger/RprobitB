@@ -71,7 +71,7 @@ denotes \eqn{k}.
 J <- 3
 diff_alt <- 2
 delta(diff_alt, J)
-(Sigma0 <- RprobitB:::sample_cov_matrix(dim = J))
+(Sigma0 <- RprobitB:::sample_covariance_matrix(dim = J))
 (Sigma_diff0 <- RprobitB:::diff_Sigma(Sigma0, diff_alt = diff_alt))
 (Sigma1 <- RprobitB:::undiff_Sigma(Sigma_diff0, diff_alt = diff_alt))
 (Sigma_diff1 <- RprobitB:::diff_Sigma(Sigma1, diff_alt = diff_alt))
@@ -79,6 +79,6 @@ all.equal(Sigma_diff0, Sigma_diff1)
 
 }
 \seealso{
-\code{\link[=is_cov_matrix]{is_cov_matrix()}} to check whether a matrix is a covariance matrix
+\code{\link[=is_covariance_matrix]{is_covariance_matrix()}} to check whether a matrix is a covariance matrix
 }
 \keyword{internal}

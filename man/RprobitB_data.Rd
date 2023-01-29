@@ -123,22 +123,25 @@ If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{res_var_names}{A names list of reserved variable names in \code{choice_data}.}
 
-\item{x}{An \code{RprobitB_data} object.}
+\item{x, object}{An \code{\link{RprobitB_data}} object.}
 
-\item{object}{An \code{RprobitB_data} object.}
-
-\item{...}{Not used.}
+\item{...}{Currently not used.}
 }
 \value{
-An \code{RprobitB_data} object.
+An \code{\link{RprobitB_data}} object.
+
+It contains the elements: TODO
+\describe{
+\item{\code{}}{}
+}
 
 An object of class \code{RprobitB_data} with the arguments of this function
 as elements.
 }
 \description{
 These functions create, validate, summarize and visualize an object of class
-\code{RprobitB_data}, which contains the choice data for a probit model,
-see details.
+\code{\link{RprobitB_data}}, which contains the choice data for a probit
+model, see details.
 
 This function constructs an object of class \code{RprobitB_data}.
 }
@@ -151,3 +154,4 @@ TODO
 }
 
 \keyword{internal}
+\keyword{object}

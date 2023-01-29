@@ -1,30 +1,19 @@
 #' Simulate choice data
 #'
-#' This function simulates choice data from a probit model.
+#' @description
+#' This function simulates choice data from a probit model. It helps to create
+#' an \code{\link{RprobitB_data}} object.
 #'
-#' @inheritParams RprobitB_formula
-#' @param N
-#' An \code{integer}, the number of deciders.
-#' @param T
-#' An \code{integer} of length \code{N}, the number of choice occasions per
-#' decider.
-#' Can also be a single \code{integer} for a constant number of choice occasions
-#' per decider.
-#' By default, \code{T = 1}.
-#' @inheritParams RprobitB_alternatives
-#' @inheritParams RprobitB_data
-#' @param covariates
-#' A \code{function} with two inputs, say \code{n} and \code{t}.
-#' It should return the \code{vector} of covariates of decider \code{n} at
-#' choice occasion \code{t}.
-#' The vector should have length...
-#' TODO
+#' @param RprobitB_covariates
+#' An \code{\link{RprobitB_covariates}} object, which contains the covariate
+#' matrices used for the choice data simulation.
 #' @param true_parameter
 #' An \code{\link{RprobitB_parameter}} object, which contains the model
 #' parameters used for the choice data simulation.
 #' By default, \code{RprobitB_parameter = RprobitB_parameter()}, i.e. default
 #' parameters are used.
-#' @inheritParams RprobitB_parameter
+#' @param ranked
+#' TODO
 #'
 #' @return
 #' An \code{\link{RprobitB_data}} object.
@@ -53,25 +42,24 @@
 #' )
 #'
 #' @export
+#'
 #' @importFrom glue glue glue_collapse
-#' @seealso [compute_no_cov()] to compute the number of covariates per decider.
+#'
+#' @seealso
+#' \itemize{
+#'   \item TODO
+#' }
 
 simulate_choices <- function(
+  RprobitB_covariates = simulate_RprobitB_covariates(
     formula, N, J, T = 1, alternatives = LETTERS[1:J], re = NULL,
-    ordered = FALSE, ranked = FALSE,
-    covariates = function(n, t) {
-      P <- ... # TODO
-      rnorm(P, mean = 0, sd = 9)
-    },
-    true_parameter = RprobitB_parameter(), seed = NULL
+    ordered = FALSE
+  ), true_parameter = RprobitB_parameter(), ranked = FALSE, seed = NULL,
+  column_choice = "choice", column_decider = "id", column_occasion = "idc"
   ) {
-  # TODO check 'ranked', maybe 'RprobitB_choice_set()'?
-  stopifnot(is_pos_int(N))
-  if (is.numeric(T) && length(T) == 1) T <- rep(T, N)
-  stopifnot(
-    is_pos_int(J), is.numeric(T), length(T) == N, sapply(T, is_pos_int),
-    is.function(covariates), is.RprobitB_parameter(true_parameter)
-  )
+
+  ### construct objects
+  T <- expand_T(N = N, T = T)
   RprobitB_formula <- RprobitB_formula(
     formula = formula, re = re, ordered = ordered
   )
@@ -86,21 +74,14 @@ simulate_choices <- function(
     RprobitB_formula = RprobitB_formula,
     RprobitB_alternatives = RprobitB_alternatives
   )
-  no_cov <- ... # TODO
-  n_test <- sample.int(N, size = 1)
-  t_test <- sample.int(T[n_test], size = 1)
-  test_cov <- try(covariates(n_test, t_test), silent = TRUE)
-  if (inherits(test_cov, "try-error") || !is.vector(test_cov) ||
-      !is.numeric(test_cov) || length(test_cov) != P_without_ASCs) {
-    RprobitB_stop(
-      "There is an issue with the input 'covariates'.",
-      glue::glue("I called 'covariates({n_test}, {t_test})', i.e. I tried to ",
-      "compute the covariates for decider {n_test} at choice occasion {t_test}. ",
-      "However, the output is not the expected numeric vector of length {P_without_ASCs}."),
-      "Please check."
-    )
+
+
+  # TODO check 'ranked', maybe 'RprobitB_choice_set()'?
+
+
+  if (!is.null(seed)) {
+    set.seed(seed)
   }
-  if (!is.null(seed)) set.seed(seed)
   data_list <- lapply(1:N, function(n) {
     z_n <- RprobitB_parameter$z[n]
     coef <- c(RprobitB_parameter$alpha[,z_n], RprobitB_parameter$beta[,z_n])

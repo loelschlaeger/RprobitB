@@ -65,7 +65,7 @@ RprobitB_alternatives <- function(
       "It containes the names of the choice alternatives."
     )
   }
-  if (!isTRUE(ordered) && !isFALSE(ordered)) {
+  if (!is_true_false(ordered)) {
     RprobitB_stop(
       "Input 'ordered' must be `TRUE` or `FALSE`."
     )
@@ -98,7 +98,7 @@ is.RprobitB_alternatives <- function(x) {
 #' @importFrom glue glue
 
 validate_RprobitB_alternatives <- function(x) {
-  if (!is_pos_int(x$J)) {
+  if (!is_positive_integer(x$J)) {
     RprobitB_stop(
       "Input 'J' is misspecified.",
       "It should be an `integer`, the number of choice alternatives."

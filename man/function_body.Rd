@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{function_body}
 \alias{function_body}
-\title{Extract function body as character}
+\title{Extract function body as \code{character}}
 \usage{
 function_body(fun, braces = FALSE, nchar = getOption("width") - 4)
 }
@@ -20,13 +20,16 @@ By default, \code{nchar = getOption("width")}.}
 A \code{character}, the body of \code{f}.
 }
 \description{
-This function extracts the body of a function as a character.
+This function extracts the body of a function as a \code{character}.
 }
 \examples{
-fun <- RprobitB:::is_cov_matrix
-RprobitB:::function_body(fun)
-RprobitB:::function_body(fun, braces = TRUE)
-RprobitB:::function_body(fun, nchar = 30)
+\donttest{
+fun <- is_covariance_matrix
+function_body(fun)
+function_body(fun, braces = TRUE)
+function_body(fun, nchar = 30)
+}
 
 }
+\keyword{internal}
 \keyword{utils}

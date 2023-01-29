@@ -5,79 +5,44 @@
 \title{Simulate choice data}
 \usage{
 simulate_choices(
-  formula,
-  N,
-  J,
-  T = 1,
-  alternatives = LETTERS[1:J],
-  re = NULL,
-  ordered = FALSE,
-  ranked = FALSE,
-  covariates = function(n, t) {
-     P <- ...
-     rnorm(P, mean = 0, sd = 9)
- },
+  RprobitB_covariates = simulate_RprobitB_covariates(formula, N, J, T = 1, alternatives =
+    LETTERS[1:J], re = NULL, ordered = FALSE),
   true_parameter = RprobitB_parameter(),
-  seed = NULL
+  ranked = FALSE,
+  seed = NULL,
+  column_choice = "choice",
+  column_decider = "id",
+  column_occasion = "idc"
 )
 
 simulate_choices(
-  formula,
-  N,
-  J,
-  T = 1,
-  alternatives = LETTERS[1:J],
-  re = NULL,
-  ordered = FALSE,
-  ranked = FALSE,
-  covariates = function(n, t) {
-     P <- ...
-     rnorm(P, mean = 0, sd = 9)
- },
+  RprobitB_covariates = simulate_RprobitB_covariates(formula, N, J, T = 1, alternatives =
+    LETTERS[1:J], re = NULL, ordered = FALSE),
   true_parameter = RprobitB_parameter(),
-  seed = NULL
+  ranked = FALSE,
+  seed = NULL,
+  column_choice = "choice",
+  column_decider = "id",
+  column_occasion = "idc"
 )
 }
 \arguments{
-\item{formula}{A \code{\link[stats]{formula}}, a symbolic description of the model to be
-fitted, see details.}
-
-\item{N}{An \code{integer}, the number of deciders.}
-
-\item{J}{The number (greater or equal 2) of choice alternatives.}
-
-\item{T}{An \code{integer} of length \code{N}, the number of choice occasions per
-decider.
-Can also be a single \code{integer} for a constant number of choice occasions
-per decider.
-By default, \code{T = 1}.}
-
-\item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.
-If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
-the alternatives ordered from worst to best.}
-
-\item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
-should have a random effect, see details.
-By default, \code{re = NULL}, i.e., no random effects.}
-
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
-
-\item{ranked}{TBA}
-
-\item{covariates}{A \code{function} with two inputs, say \code{n} and \code{t}.
-It should return the \code{vector} of covariates of decider \code{n} at
-choice occasion \code{t}.
-The vector should have length...
-TODO}
+\item{RprobitB_covariates}{An \code{\link{RprobitB_covariates}} object, which contains the covariate
+matrices used for the choice data simulation.}
 
 \item{true_parameter}{An \code{\link{RprobitB_parameter}} object, which contains the model
 parameters used for the choice data simulation.
 By default, \code{RprobitB_parameter = RprobitB_parameter()}, i.e. default
 parameters are used.}
 
+\item{ranked}{TODO}
+
 \item{seed}{Set a seed for the simulation.}
+
+\item{covariates}{A named list of covariate values. Each element must be a vector of length
+equal to the number of choice occasions and named according to a covariate.
+Covariates for which no values are supplied are drawn from a standard normal
+distribution.}
 }
 \value{
 An object of class \code{RprobitB_data}.
@@ -87,7 +52,8 @@ An \code{\link{RprobitB_data}} object.
 \description{
 This function simulates choice data from a probit model.
 
-This function simulates choice data from a probit model.
+This function simulates choice data from a probit model. It helps to create
+an \code{\link{RprobitB_data}} object.
 }
 \details{
 See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
@@ -210,5 +176,7 @@ data <- simulate_choices(
 \item \code{\link[=train_test]{train_test()}} for splitting choice data into a train and test subset
 }
 
-\code{\link[=compute_no_cov]{compute_no_cov()}} to compute the number of covariates per decider.
+\itemize{
+\item TODO
+}
 }

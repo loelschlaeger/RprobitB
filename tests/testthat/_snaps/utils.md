@@ -304,3 +304,17 @@
       [1,]    1    0
       [2,]    0    1
 
+---
+
+    Code
+      x <- diag(3)
+      rownames(x) <- c("la", "le", "lu")
+      colnames(x) <- c("x", "y", "z")
+      print_matrix(x)
+    Output
+      3 x 3 matrix of doubles 
+         x y z
+      la 1 0 0
+      le 0 1 0
+      lu 0 0 1
+

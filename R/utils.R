@@ -1,6 +1,7 @@
-#' Check boolean
+#' Check for \code{TRUE} or \code{FALSE}
 #'
-#' This function checks whether the input is a single boolean.
+#' @description
+#' This function checks whether the input is \code{TRUE} or \code{FALSE}.
 #'
 #' @param x
 #' Any element.
@@ -10,30 +11,37 @@
 #' \code{FALSE}, \code{FALSE} else.
 #'
 #' @examples
-#' RprobitB:::is_bool("TRUE")
-#' RprobitB:::is_bool(FALSE)
+#' \dontrun{
+#' is_true_false("TRUE")
+#' is_true_false(FALSE)
+#' is_true_false(c(TRUE, FALSE))
+#' }
 #'
 #' @keywords internal utils
 
-is_bool <- function(x) {
+is_true_false <- function(x) {
   length(x) == 1 && (isTRUE(x) || isFALSE(x))
 }
 
-#' Check single numeric
+#' Check for single \code{numeric}
 #'
-#' This function checks whether the input is a single numeric value.
+#' @description
+#' This function checks whether the input is a single \code{numeric} value.
 #'
 #' @param x
 #' Any element.
 #'
 #' @return
-#' A \code{logical}, \code{TRUE} if \code{x} is a single numeric, \code{FALSE}
-#' else.
+#' A \code{logical}, \code{TRUE} if \code{x} is a single \code{numeric},
+#' \code{FALSE} else.
 #'
 #' @examples
-#' RprobitB:::is_single_numeric(1)
-#' RprobitB:::is_single_numeric("1")
-#' RprobitB:::is_single_numeric(NA_real_)
+#' \dontrun{
+#' is_single_numeric(1)
+#' is_single_numeric("1")
+#' is_single_numeric(NA_real_)
+#' is_single_numeric(1:2)
+#' }
 #'
 #' @keywords internal utils
 
@@ -41,9 +49,10 @@ is_single_numeric <- function(i) {
   is.numeric(i) && length(i) == 1 && !is.na(i)
 }
 
-#' Check positive integer
+#' Check for positive \code{integer}
 #'
-#' This function checks whether the input is a single positive integer.
+#' @description
+#' This function checks whether the input is a single positive \code{integer}.
 #'
 #' @param x
 #' Any element.
@@ -53,75 +62,86 @@ is_single_numeric <- function(i) {
 #' \code{FALSE} else.
 #'
 #' @examples
-#' RprobitB:::is_pos_int(-1.5)
-#' RprobitB:::is_pos_int(1)
+#' \dontrun{
+#' is_positive_integer(-1.5)
+#' is_positive_integer(1)
+#' is_positive_integer(1:2)
+#' }
 #'
 #' @keywords internal utils
 
-is_pos_int <- function(i) {
+is_positive_integer <- function(i) {
   is_single_numeric(i) && i %% 1 == 0 && i > 0
 }
 
-#' Check covariance matrix
+#' Check for covariance \code{matrix}
 #'
-#' This function checks whether the input is a proper covariance matrix.
+#' @description
+#' This function checks whether the input is a proper covariance \code{matrix}.
 #'
 #' @details
-#' A proper covariance matrix is a square, symmetric, numeric matrix with
-#' non-negative eigenvalues.
+#' A proper covariance \code{matrix} is a square, symmetric, \code{numeric}
+#' \code{matrix} with non-negative eigenvalues.
 #'
 #' @param x
 #' A \code{matrix}.
 #' @param tol
-#' A \code{numeric}, a numeric tolerance value.
-#' Per default, \code{tol = sqrt(.Machine$double.eps)}.
+#' A \code{numeric}, a tolerance value.
+#' By default, \code{tol = sqrt(.Machine$double.eps)}.
 #'
 #' @return
-#' A \code{logical}, \code{TRUE} if \code{x} is a proper covariance matrix,
-#' \code{FALSE} else.
+#' A \code{logical}, \code{TRUE} if \code{x} is a proper covariance
+#' \code{matrix}, \code{FALSE} else.
 #'
 #' @examples
-#' x <- RprobitB:::sample_cov_matrix(dim = 3)
-#' RprobitB:::is_cov_matrix(x)
+#' \dontrun{
+#' x <- sample_covariance_matrix(dim = 3)
+#' is_covariance_matrix(x)
+#' }
 #'
 #' @keywords internal utils
 
-is_cov_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
+is_covariance_matrix <- function(x, tol = sqrt(.Machine$double.eps)) {
   is.matrix(x) && is.numeric(x) && ncol(x) == nrow(x) &&
     all(abs(x - t(x)) < tol) && all(eigen(x)$value > -tol)
 }
 
-#' Sample covariance matrix
+#' Sample covariance \code{matrix}
 #'
-#' This function samples a covariance matrix from a Wishart distribution.
+#' @description
+#' This function samples a covariance \code{matrix} from a Wishart distribution.
 #'
 #' @param dim
 #' An \code{integer}, the matrix dimension.
 #' @param df
-#' An \code{integer}, the degrees of freedom.
+#' An \code{integer}, the degrees of freedom for the Wishart distribution.
 #' Must be at least \code{dim}.
-#' Per default, \code{df = dim}.
+#' By default, \code{df = dim}.
 #' @param scale
-#' A \code{matrix}, the scale matrix.
-#' Must be a covariance matrix.
-#' Per default, \code{scale = diag(dim)}.
+#' A \code{matrix}, the scale matrix for the Wishart distribution.
+#' Must be a covariance \code{matrix}.
+#' By default, \code{scale = diag(dim)}.
 #'
 #' @return
-#' A \code{matrix}, a covariance matrix.
+#' A covariance \code{matrix}.
 #'
 #' @examples
-#' RprobitB:::sample_cov_matrix(dim = 3)
+#' \dontrun{
+#' sample_covariance_matrix(dim = 3)
+#' }
 #'
 #' @keywords internal utils
 
-sample_cov_matrix <- function(dim, df = dim, scale = diag(dim)) {
-  stopifnot(is_pos_int(dim), is_pos_int(df), is_cov_matrix(scale))
+sample_covariance_matrix <- function(dim, df = dim, scale = diag(dim)) {
+  stopifnot(is_positive_integer(dim), is_positive_integer(df),
+            is_covariance_matrix(scale))
   rwishart(df = df, scale = scale, inv = FALSE)
 }
 
-#' Extract function body as character
+#' Extract function body as \code{character}
 #'
-#' This function extracts the body of a function as a character.
+#' @description
+#' This function extracts the body of a function as a \code{character}.
 #'
 #' @param fun
 #' A \code{function}.
@@ -137,17 +157,19 @@ sample_cov_matrix <- function(dim, df = dim, scale = diag(dim)) {
 #' A \code{character}, the body of \code{f}.
 #'
 #' @examples
-#' fun <- RprobitB:::is_cov_matrix
-#' RprobitB:::function_body(fun)
-#' RprobitB:::function_body(fun, braces = TRUE)
-#' RprobitB:::function_body(fun, nchar = 30)
+#' \donttest{
+#' fun <- is_covariance_matrix
+#' function_body(fun)
+#' function_body(fun, braces = TRUE)
+#' function_body(fun, nchar = 30)
+#' }
 #'
-#' @keywords utils
+#' @keywords internal utils
 
 function_body <- function(
     fun, braces = FALSE, nchar = getOption("width") - 4
   ) {
-  stopifnot(is.function(fun), is_bool(braces))
+  stopifnot(is.function(fun), is_true_false(braces))
   nchar <- as.integer(nchar)
   stopifnot(nchar >= 3)
   out <- deparse1(body(fun))
@@ -157,15 +179,16 @@ function_body <- function(
   out
 }
 
-#' Print (abbreviated) matrices
+#' Print (abbreviated) \code{matrix}
 #'
-#' This function prints (abbreviated) matrices.
+#' @description
+#' This function prints a (possibly abbreviated) \code{matrix}.
 #'
 #' @references
 #' This function is a modified version of \code{\link[ramify]{pprint}}.
 #'
 #' @param x
-#' A \code{numeric} or \code{character} (vector or matrix).
+#' A \code{numeric} or \code{character} (\code{vector} or \code{matrix}).
 #' @param rowdots
 #' An \code{integer}, the row number which is replaced by \code{...}.
 #' By default, \code{rowdots = 4}.
@@ -192,6 +215,7 @@ function_body <- function(
 #' Invisibly returns \code{x}.
 #'
 #' @examples
+#' \dontrun{
 #' print_matrix(x = 1, label = "single numeric")
 #' print_matrix(x = LETTERS[1:26], label = "letters")
 #' print_matrix(x = 1:3, coldots = 2)
@@ -199,8 +223,8 @@ function_body <- function(
 #' print_matrix(x = matrix(1:100, nrow = 1), label = "single row matrix")
 #' print_matrix(x = matrix(LETTERS[1:24], ncol = 6), label = "big matrix")
 #' print_matrix(x = diag(5), coldots = 2, rowdots = 2, simplify = TRUE)
+#' }
 #'
-#' @export
 #' @importFrom crayon italic bold
 #' @keywords internal utils
 
@@ -208,9 +232,11 @@ print_matrix <- function(
     x, rowdots = 4, coldots = 4, digits = 2, label = NULL, simplify = FALSE,
     details = !simplify
 ) {
-  stopifnot(is.numeric(x) || is.character(x))
-  stopifnot(is_pos_int(rowdots), is_pos_int(coldots), is_single_numeric(digits))
-  stopifnot(is_bool(details), is_bool(simplify))
+  stopifnot(
+    is.numeric(x) || is.character(x), is_positive_integer(rowdots),
+    is_positive_integer(coldots), is_single_numeric(digits),
+    is_true_false(details), is_true_false(simplify)
+  )
   if (!is.null(label)) {
     label <- as.character(label)
     stopifnot(length(label) == 1)
@@ -308,7 +334,8 @@ print_matrix <- function(
 
 #' Build permutations
 #'
-#' This function creates all permutations of a given vector.
+#' @description
+#' This function creates all permutations of a given \code{vector}.
 #'
 #' @references
 #' Modified version of <https://stackoverflow.com/a/20199902/15157768>.
@@ -320,18 +347,20 @@ print_matrix <- function(
 #' A \code{list} of all permutations of \code{x}.
 #'
 #' @examples
-#' RprobitB:::permutations(1:3)
-#' RprobitB:::permutations(LETTERS[1:3])
+#' \dontrun{
+#' permutations(1:3)
+#' permutations(LETTERS[1:3])
+#' }
 #'
 #' @keywords internal utils
 
-permutations <- function(x){
+permutations <- function(x) {
   stopifnot(is.vector(x))
-  perm_index <- function(n){
+  permutation_index <- function(n) {
     if (n == 1) {
       return(matrix(1))
     } else {
-      sp <- perm_index(n-1)
+      sp <- permutation_index(n-1)
       p <- nrow(sp)
       A <- matrix(nrow = n*p, ncol = n)
       for (i in 1:n) {
@@ -340,8 +369,6 @@ permutations <- function(x){
       return(A)
     }
   }
-  p <- perm_index(length(x))
+  p <- permutation_index(length(x))
   apply(p, 1, function(p) x[p], simplify = FALSE)
 }
-
-

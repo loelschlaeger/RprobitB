@@ -122,7 +122,7 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
       "It should be the number of alternatives."
     )
   }
-  if (!is_pos_int(C)) {
+  if (!is_positive_integer(C)) {
     RprobitB_stop(
       "Input 'C' is misspecified.",
       "It should be the number (greater or equal 1) of latent classes.",
@@ -325,11 +325,11 @@ RprobitB_prior_alpha <- function(
         glue::glue("Instead, it has length {length(alpha_prior_mean)}.")
       )
     }
-    if (!is_cov_matrix(alpha_prior_Sigma)) {
+    if (!is_covariance_matrix(alpha_prior_Sigma)) {
       RprobitB_stop(
         "Input 'alpha_prior_Sigma' for conjugate alpha prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix(alpha_prior_Sigma)'."
+        "Check it with 'is_covariance_matrix(alpha_prior_Sigma)'."
       )
     }
     if (any(dim(alpha_prior_Sigma) != P_f)) {
@@ -670,11 +670,11 @@ RprobitB_prior_b <- function(
         glue::glue("Instead, it has length {length(b_prior_mean)}.")
       )
     }
-    if (!is_cov_matrix(b_prior_Sigma)) {
+    if (!is_covariance_matrix(b_prior_Sigma)) {
       RprobitB_stop(
         "Input 'b_prior_Sigma' for conjugate b prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_covariance_matrix()'."
       )
     }
     if (any(dim(b_prior_Sigma) != P_r)) {
@@ -844,7 +844,7 @@ RprobitB_prior_Omega <- function(
     }
   } else {
     conjugate <- TRUE
-    if (!is_pos_int(Omega_prior_df)) {
+    if (!is_positive_integer(Omega_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Omega prior is misspecified.",
         "'Omega_prior_df' should be a positive `integer`."
@@ -857,11 +857,11 @@ RprobitB_prior_Omega <- function(
         glue::glue("Instead, it is {Omega_prior_df}.")
       )
     }
-    if (!is_cov_matrix(Omega_prior_scale)) {
+    if (!is_covariance_matrix(Omega_prior_scale)) {
       RprobitB_stop(
         "Input 'Omega_prior_scale' for conjugate Omega prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_covariance_matrix()'."
       )
     }
     if (any(dim(Omega_prior_scale) != P_r)) {
@@ -1037,7 +1037,7 @@ RprobitB_prior_Sigma <- function(
   } else {
     conjugate <- TRUE
     Sigma_prior_scale <- as.matrix(Sigma_prior_scale)
-    if (!is_pos_int(Sigma_prior_df)) {
+    if (!is_positive_integer(Sigma_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Sigma prior is misspecified.",
         "'Sigma_prior_df' should be a positive `integer`."
@@ -1050,11 +1050,11 @@ RprobitB_prior_Sigma <- function(
         glue::glue("Instead, it is {Sigma_prior_df}.")
       )
     }
-    if (!is_cov_matrix(Sigma_prior_scale)) {
+    if (!is_covariance_matrix(Sigma_prior_scale)) {
       RprobitB_stop(
         "Input 'Sigma_prior_scale' for conjugate Sigma prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_covariance_matrix()'."
       )
     }
     if (any(dim(Sigma_prior_scale) != 1)) {
@@ -1228,7 +1228,7 @@ RprobitB_prior_Sigma_diff <- function(
     }
   } else {
     conjugate <- TRUE
-    if (!is_pos_int(Sigma_diff_prior_df)) {
+    if (!is_positive_integer(Sigma_diff_prior_df)) {
       RprobitB_stop(
         "Degrees of freedom for conjugate Sigma_diff prior is misspecified.",
         "'Sigma_diff_prior_df' should be a positive `integer`."
@@ -1241,11 +1241,11 @@ RprobitB_prior_Sigma_diff <- function(
         glue::glue("Instead, it is {Sigma_diff_prior_df}.")
       )
     }
-    if (!is_cov_matrix(Sigma_diff_prior_scale)) {
+    if (!is_covariance_matrix(Sigma_diff_prior_scale)) {
       RprobitB_stop(
         "Input 'Sigma_diff_prior_scale' for conjugate Sigma_diff prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_covariance_matrix()'."
       )
     }
     if (any(dim(Sigma_diff_prior_scale) != (J-1))) {
@@ -1429,11 +1429,11 @@ RprobitB_prior_d <- function(
         glue::glue("Instead, it has length {length(d_prior_mean)}.")
       )
     }
-    if (!is_cov_matrix(d_prior_Sigma)) {
+    if (!is_covariance_matrix(d_prior_Sigma)) {
       RprobitB_stop(
         "Input 'd_prior_Sigma' for conjugate d prior is misspecified.",
         "It is not a proper covariance matrix.",
-        "Check it with 'is_cov_matrix()'."
+        "Check it with 'is_covariance_matrix()'."
       )
     }
     if (any(dim(d_prior_Sigma) != (J-2))) {

@@ -21,6 +21,10 @@ alternative-specific,
 \item \code{"random"}, indicators whether the effect is a random effect,
 \item and \code{"ln"}, indicators whether the random effect is log-normal.
 }
+
+The order of effects is important: Fixed effects come before random effects,
+and log-normal random effects are last random effects. Otherwise, the order
+is by occurrence in \code{formula}.
 }
 \description{
 This function provides an overview of the model effects.
