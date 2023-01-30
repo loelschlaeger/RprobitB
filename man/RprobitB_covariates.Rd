@@ -18,22 +18,23 @@ simulate_RprobitB_covariates(
   J,
   T = 1,
   alternatives = LETTERS[1:J],
+  base = alternatives[1],
   re = NULL,
   ordered = FALSE,
   seed = NULL,
-  covariates = list(.default = function() stats::rnorm(n = 1, mean = 0, sd = 9))
+  values = list(.default = function() stats::rnorm(n = 1, mean = 0, sd = 9))
 )
 
 validate_RprobitB_covariates(
-  x = RprobitB_covariates(),
+  x = list(),
   formula,
   N,
   J,
   T = 1,
   alternatives = LETTERS[1:J],
+  base = alternatives[1],
   re = NULL,
-  ordered = FALSE,
-  base = alternatives[1]
+  ordered = FALSE
 )
 
 \method{print}{RprobitB_covariates}(x, ...)
@@ -65,6 +66,13 @@ By default, \code{T = 1}.}
 Its length must be \code{J}.
 By default, \code{alternatives = LETTERS[1:J]}.}
 
+\item{base}{A \code{character}, the name of the base alternative for covariates that are
+not alternative specific, see details.
+\code{base} must be contained in \code{alternatives}.
+Ignored if the model has no alternative specific covariates (e.g., in the
+ordered probit case).
+By default, \code{base} is the first element of \code{alternatives}.}
+
 \item{re}{A \code{character}, the vector of names of covariates in \code{formula} that
 should have a random effect, see details.
 By default, \code{re = NULL}, i.e., no random effects.}
@@ -72,18 +80,11 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{covariates}{A named \code{list}, each element is a \code{function} that draws covariates,
+\item{values}{A named \code{list}, each element is a \code{function} that draws covariates,
 see the details.
 By default, \code{sampler = list()}.
 Covariates that are not specified in \code{sampler} are drawn
 via \code{"default" = function() stats::rnorm(n = 1, mean = 0, sd = 9)}.}
-
-\item{base}{A \code{character}, the name of the base alternative for covariates that are
-not alternative specific, see details.
-\code{base} must be contained in \code{alternatives}.
-Ignored if the model has no alternative specific covariates (e.g., in the
-ordered probit case).
-By default, \code{base} is the first element of \code{alternatives}.}
 
 \item{...}{Currently not used.}
 }
