@@ -7,6 +7,10 @@
 #' An \code{\link{RprobitB_formula}} object.
 #' @param RprobitB_alternatives
 #' An \code{\link{RprobitB_alternatives}} object.
+#' @param delimiter
+#' A \code{character}, the delimiter between covariate and alternative name
+#' to build the effect name.
+#' By default, \code{delimiter = "_"}.
 #'
 #' @inheritSection RprobitB_formula Model formula
 #' @inheritSection RprobitB_formula Random effects
@@ -14,16 +18,21 @@
 #'
 #' @return
 #' A \code{data.frame}, each row is an effect, columns are
-#' 1. \code{"name"}, the effect names,
-#' 2. \code{"as_cov"}, indicators whether the covariate is alternative-specific,
-#' 3. \code{"as_coef"}, indicators whether the coefficient is
+#' 1. \code{"name"}, the effect name (composed of covariate and alternative
+#'    name),
+#' 2. \code{"covariate"}, the covariate name,
+#' 3. \code{"alternative"}, the alternative name (only if the effect is
+#'    alternative-specific, i.e., varies across alternatives),
+#' 4. \code{"as_covariate"}, indicator whether the covariate is
 #'    alternative-specific,
-#' 4. \code{"random"}, indicators whether the effect is a random effect,
-#' 5. and \code{"ln"}, indicators whether the random effect is log-normal.
+#' 5. \code{"as_effect"}, indicator whether the effect is alternative-specific,
+#' 6. \code{"random"}, indicator whether the effect is a random effect,
+#' 7. and \code{"log_normal"}, indicator whether the random effect is
+#'    log-normal.
 #'
-#' The order of effects is important: Fixed effects come before random effects,
+#' The effects are ordered as follows: Fixed effects come before random effects,
 #' and log-normal random effects are last random effects. Otherwise, the order
-#' is by occurrence in \code{formula}.
+#' is determined by occurrence in \code{formula}.
 #'
 #' @examples
 #' overview_effects(
@@ -36,7 +45,9 @@
 #'
 #' @export
 
-overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
+overview_effects <- function(
+    RprobitB_formula, RprobitB_alternatives, delimiter = "_"
+  ) {
 
   ### input checks
   if (missing(RprobitB_formula)) {
@@ -66,6 +77,12 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
       "See the function documentation for details."
     )
   }
+  if (!(is.character(delimiter) && length(delimiter) == 1)) {
+    RprobitB_stop(
+      "Input 'delimiter' is misspecified.",
+      "It should be a single `character`."
+    )
+  }
 
   ### build effect overview
   J <- RprobitB_alternatives$J
@@ -77,26 +94,27 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
   md_ln <- RprobitB_formula$md_ln
   re <- c(md_n, md_ln)
   overview <- data.frame(matrix(ncol = 5, nrow = 0))
-  if(ordered){
+  if (ordered){
     for (var in vars[[2]]) {
       overview <- rbind(
         overview,
-        c(var, FALSE, FALSE, var %in% re, var %in% md_ln)
+        c(var, var, NA_character_, FALSE, FALSE, var %in% re, var %in% md_ln)
       )
     }
   } else {
     for (var in vars[[1]]) {
       overview <- rbind(
         overview,
-        c(var, TRUE, FALSE, var %in% re, var %in% md_ln)
+        c(var, var, NA_character_, TRUE, FALSE, var %in% re, var %in% md_ln)
       )
     }
     for (var in c(vars[[2]], if (RprobitB_formula$ASC) "ASC")) {
       for (j in (1:J)[-which(alternatives == base)]) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), FALSE, TRUE, var %in% re,
-            var %in% md_ln)
+          c(paste0(var, delimiter, alternatives[j]),
+            if (var == "ASC") NA_character_ else var,
+            alternatives[j], FALSE, TRUE, var %in% re, var %in% md_ln)
         )
       }
     }
@@ -104,23 +122,24 @@ overview_effects <- function(RprobitB_formula, RprobitB_alternatives) {
       for (j in 1:J) {
         overview <- rbind(
           overview,
-          c(paste0(var, "_", alternatives[j]), TRUE, TRUE, var %in% re,
-            var %in% md_ln)
+          c(paste0(var, delimiter, alternatives[j]), var, alternatives[j],
+            TRUE, TRUE, var %in% re, var %in% md_ln)
         )
       }
     }
   }
-  colnames(overview) <- c("name", "as_cov", "as_coef", "random", "log_norm")
-  overview$as_cov <- as.logical(overview$as_cov)
-  overview$as_coef <- as.logical(overview$as_coef)
+  colnames(overview) <- c("name", "covariate", "alternative", "as_covariate",
+                          "as_effect", "random", "log_normal")
+  overview$as_covariate <- as.logical(overview$as_covariate)
+  overview$as_effect <- as.logical(overview$as_effect)
   overview$random <- as.logical(overview$random)
-  overview$log_norm <- as.logical(overview$log_norm)
+  overview$log_normal <- as.logical(overview$log_normal)
 
   ### sort effects
   effect_order <- order(
-    as.numeric(overview$random),    ### put random effects last
-    as.numeric(overview$log_norm),  ### log-normal effects are last random
-    as.numeric(rownames(overview)), ### otherwise sort by occurrence in formula
+    as.numeric(overview$random),     ### put random effects last
+    as.numeric(overview$log_normal), ### log-normal effects are last random
+    as.numeric(rownames(overview)),  ### otherwise sort by occurrence in formula
     decreasing = FALSE
   )
   overview <- overview[effect_order, ]

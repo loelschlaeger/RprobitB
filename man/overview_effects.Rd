@@ -4,27 +4,36 @@
 \alias{overview_effects}
 \title{Overview model effects}
 \usage{
-overview_effects(RprobitB_formula, RprobitB_alternatives)
+overview_effects(RprobitB_formula, RprobitB_alternatives, delimiter = "_")
 }
 \arguments{
 \item{RprobitB_formula}{An \code{\link{RprobitB_formula}} object.}
 
 \item{RprobitB_alternatives}{An \code{\link{RprobitB_alternatives}} object.}
+
+\item{delimiter}{A \code{character}, the delimiter between covariate and alternative name
+to build the effect name.
+By default, \code{delimiter = "_"}.}
 }
 \value{
 A \code{data.frame}, each row is an effect, columns are
 \enumerate{
-\item \code{"name"}, the effect names,
-\item \code{"as_cov"}, indicators whether the covariate is alternative-specific,
-\item \code{"as_coef"}, indicators whether the coefficient is
+\item \code{"name"}, the effect name (composed of covariate and alternative
+name),
+\item \code{"covariate"}, the covariate name,
+\item \code{"alternative"}, the alternative name (only if the effect is
+alternative-specific, i.e., varies across alternatives),
+\item \code{"as_covariate"}, indicator whether the covariate is
 alternative-specific,
-\item \code{"random"}, indicators whether the effect is a random effect,
-\item and \code{"ln"}, indicators whether the random effect is log-normal.
+\item \code{"as_effect"}, indicator whether the effect is alternative-specific,
+\item \code{"random"}, indicator whether the effect is a random effect,
+\item and \code{"log_normal"}, indicator whether the random effect is
+log-normal.
 }
 
-The order of effects is important: Fixed effects come before random effects,
+The effects are ordered as follows: Fixed effects come before random effects,
 and log-normal random effects are last random effects. Otherwise, the order
-is by occurrence in \code{formula}.
+is determined by occurrence in \code{formula}.
 }
 \description{
 This function provides an overview of the model effects.
