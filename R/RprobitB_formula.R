@@ -78,6 +78,8 @@
 #' @keywords internal object
 
 RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
+
+  ### input checks
   if (missing(formula)) {
     RprobitB_stop(
       "Please specify the input 'formula'.",
@@ -107,6 +109,8 @@ RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
       "Input 'ordered' must be `TRUE` or `FALSE`."
     )
   }
+
+  ### read formula
   formula_parts <- as.character(formula)
   vars <- trimws(strsplit(formula_parts[3], split = "|", fixed = TRUE)[[1]])
   if (length(vars) > 3) {
@@ -123,6 +127,8 @@ RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
     ### in the ordered case, 'vars' has only variables in second position
     vars <- list(character(), unlist(vars[1:3]), character())
   }
+
+  ### validate formula
   validate_RprobitB_formula(
     structure(
       list(
@@ -156,6 +162,20 @@ validate_RprobitB_formula <- function(x) {
     RprobitB_stop(
       "Input 'formula' is misspecified.",
       "It should be in the form '<choice> ~ <covariates>'."
+    )
+  }
+  if (x$choice %in% unlist(x$vars)) {
+    RprobitB_stop(
+      glue::glue("Variable '{x$choice}' occurs on both sides of 'formula'."),
+      "This is not allowed, please fix."
+    )
+  }
+  if (any(duplicated(unlist(x$vars)))) {
+    dup_ind <- which(duplicated(unlist(x$vars)))[1]
+    cov_dup <- unlist(x$vars)[dup_ind]
+    RprobitB_stop(
+      glue::glue("Input 'formula' contains covariate '{cov_dup}' multiple times."),
+      "This is not allowed, please fix."
     )
   }
   if (x$ordered) {

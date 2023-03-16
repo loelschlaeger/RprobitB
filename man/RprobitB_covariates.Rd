@@ -5,7 +5,6 @@
 \alias{is.RprobitB_covariates}
 \alias{sample_RprobitB_covariates}
 \alias{validate_RprobitB_covariates}
-\alias{print.RprobitB_covariates}
 \title{Define choice covariates}
 \usage{
 RprobitB_covariates(RprobitB_data, RprobitB_formula, RprobitB_alternatives)
@@ -22,7 +21,8 @@ sample_RprobitB_covariates(
   re = NULL,
   ordered = FALSE,
   seed = NULL,
-  sampler = list(.default = function() stats::rnorm(n = 1, mean = 0, sd = 9))
+  sampler = function(n, t) rnorm(n = 1, mean = 0, sd = 9),
+  ...
 )
 
 validate_RprobitB_covariates(
@@ -36,8 +36,6 @@ validate_RprobitB_covariates(
   re = NULL,
   ordered = FALSE
 )
-
-\method{print}{RprobitB_covariates}(x, ...)
 }
 \arguments{
 \item{RprobitB_data}{An \code{\link{RprobitB_data}} object.}
@@ -80,20 +78,36 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{sampler}{A named \code{list}, each element is a \code{function} that draws covariates,
-see the details.
-Covariates that are not specified in \code{sampler} are drawn from
-\code{sampler[[".default"]]}.
-By default, \code{".default" = function() stats::rnorm(n = 1, mean = 0, sd = 9)}.}
+\item{sampler}{A \code{function} that returns a single \code{numeric}, a random number.
+It must have two arguments, \code{n} and \code{t}, so that the call
+\code{sampler(n, t)} returns the covariate value for decider \code{n} at
+choice occastion \code{t}.
+By default, \code{sampler = function(n, t) rnorm(n = 1, mean = 0, sd = 9)}.}
 
-\item{...}{Currently not used.}
+\item{...}{Optionally custom sampling \code{function}s for specific covariates.,
+see the details for an example.
+Each \code{function} must
+\enumerate{
+\item be named according to a covariate,
+\item have two arguments, \code{n} and \code{t} (see the documentation for
+argument \code{sampler}),
+\item return either a single \code{numeric}, if the covariate is not
+alternative-specific, or a \code{numeric} \code{vector} of length
+\code{J}, if the covariate is alternative-specific.
+}}
 }
 \value{
-An \code{\link{RprobitB_covariates}} object.
+An \code{\link{RprobitB_covariates}} object. It is a \code{list} of
+\code{list} of \code{matrix} elements.
 
-It contains the elements:
-\describe{
-\item{\code{}}{}
+More precise: Let the return value be \code{out}, then
+\itemize{
+\item \code{out} contains the covariate matrices of all deciders at all choice
+occasions,
+\item \code{out[[n]]} is a \code{list} of the covariate matrices of decider
+\code{n} at all of her choice occasions,
+\item \code{out[[n]][[t]]} is the covariate \code{matrix} of decider \code{n} at
+her \code{t}-th choice occasion.
 }
 }
 \description{
@@ -104,11 +118,48 @@ see the details.
 \code{\link{sample_RprobitB_covariates}} samples covariates.
 }
 \section{Covariate matrices}{
-TODO
-}
+A covariate matrix contains the choice covariates of a decider at some choice
+occasion. It is of dimension \code{J} x \code{P}, where \code{J} is the
+number of alternatives and \code{P} the number of effects.
 
-\section{Sample covariates}{
-TODO
+By default, covariates are sampled according to the \code{function} specified
+as the \code{sampler} argument. However, it is possible to define custom
+sampling \code{function}s for each covariate.
+
+For example, consider the model formula
+\code{formula <- choice ~ cost | age | time}, which includes two
+alternative-specific covariates, \code{cost} and \code{time}, and one
+alternative-constant covariate, \code{age}, see
+\code{\link{RprobitB_formula}}. For \code{cost} and \code{time}, we could
+specify a \code{function} that returns a \code{numeric} \code{vector} of
+length \code{J}, where entry \code{j} corresponds to the covariate for
+alternative \code{alternatives[j]}. For \code{age}, we could specify a
+\code{function} that returns a single \code{numeric}, the decider's age.
+Each of these \code{function}s must have two arguments, \code{n} and
+\code{t}, so that the \code{function} call returns the covariates for
+decider \code{n} at choice occastion \code{t}.
+
+An example call to \code{sample_RprobitB_covariates()} looks as follows:
+\preformatted{
+sample_RprobitB_covariates(
+  formula = choice ~ cost | age | time, N = 3, J = 3, T = 1:3,
+  cost = function(n, t) {
+    runif(J, 1:3, 2:4)
+  },
+  age = function(n, t) {
+    set.seed(t)
+    sample(30:80, 1)
+  }
+)
+}
+Note that
+\enumerate{
+\item the cost covariate is drawn from distinct uniform distributions,
+\item we use \code{set.seed(t)} in the sampler for \code{age} (so that the value
+does not vary over choice occasions),
+\item and that \code{time} will be sampled according to the \code{function}
+specified as the \code{sampler} argument.
+}
 }
 
 \keyword{object}

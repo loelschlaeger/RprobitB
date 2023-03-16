@@ -147,3 +147,14 @@ test_that("RprobitB_formula can be printed", {
     RprobitB_formula(formula = choice ~ A + B, re = c("A+", "B"), ordered = TRUE)
   )
 })
+
+test_that("RprobitB_formula has no duplicates", {
+  expect_error(
+    RprobitB_formula(formula = A ~ A),
+    "Variable 'A' occurs on both sides of 'formula'."
+  )
+  expect_error(
+    RprobitB_formula(formula = A ~ B | B),
+    "Input 'formula' contains covariate 'B' multiple times."
+  )
+})
