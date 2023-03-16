@@ -3,7 +3,7 @@
 \name{RprobitB_covariates}
 \alias{RprobitB_covariates}
 \alias{is.RprobitB_covariates}
-\alias{simulate_RprobitB_covariates}
+\alias{sample_RprobitB_covariates}
 \alias{validate_RprobitB_covariates}
 \alias{print.RprobitB_covariates}
 \title{Define choice covariates}
@@ -12,7 +12,7 @@ RprobitB_covariates(RprobitB_data, RprobitB_formula, RprobitB_alternatives)
 
 is.RprobitB_covariates(x)
 
-simulate_RprobitB_covariates(
+sample_RprobitB_covariates(
   formula,
   N,
   J,
@@ -22,7 +22,7 @@ simulate_RprobitB_covariates(
   re = NULL,
   ordered = FALSE,
   seed = NULL,
-  values = list(.default = function() stats::rnorm(n = 1, mean = 0, sd = 9))
+  sampler = list(.default = function() stats::rnorm(n = 1, mean = 0, sd = 9))
 )
 
 validate_RprobitB_covariates(
@@ -80,11 +80,11 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{ordered}{A \code{logical}, \code{TRUE} if the choice alternatives are ordered and
 \code{FALSE} (default) else.}
 
-\item{values}{A named \code{list}, each element is a \code{function} that draws covariates,
+\item{sampler}{A named \code{list}, each element is a \code{function} that draws covariates,
 see the details.
-By default, \code{sampler = list()}.
-Covariates that are not specified in \code{sampler} are drawn
-via \code{"default" = function() stats::rnorm(n = 1, mean = 0, sd = 9)}.}
+Covariates that are not specified in \code{sampler} are drawn from
+\code{sampler[[".default"]]}.
+By default, \code{".default" = function() stats::rnorm(n = 1, mean = 0, sd = 9)}.}
 
 \item{...}{Currently not used.}
 }
@@ -101,7 +101,7 @@ These functions create and validate an object of class
 \code{\link{RprobitB_covariates}}, which contains the covariate matrices,
 see the details.
 
-\code{\link{simulate_RprobitB_covariates}} simulates covariates.
+\code{\link{sample_RprobitB_covariates}} samples covariates.
 }
 \section{Covariate matrices}{
 TODO

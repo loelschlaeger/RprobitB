@@ -60,7 +60,10 @@ Suggests:
     mlogit,
     testthat (>= 3.0.0),
     covr,
-    xml2
+    xml2,
+    devtools,
+    renv,
+    DT
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
