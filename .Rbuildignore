@@ -2,7 +2,6 @@
 ^renv\.lock$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-make_sticker.R
 README.html
 LICENSE
 ^\.github$
@@ -15,3 +14,4 @@ LICENSE
 ^Meta$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^sticker$
