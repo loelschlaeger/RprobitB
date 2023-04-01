@@ -25,6 +25,7 @@ plot(0, xlim = c(min(x),max(x)), ylim = c(0,ymax),
 col <- rep(mixtures_color,4)
 for(c in 1:C) lines(x,est_mixture[,c],col=col[c],lty=1,lwd=1.5)
 lines(x,rowSums(est_mixture),lty=5,lwd=2,col=total_mixture_color)
+library("ggplot2")
 p <- ggplot2::ggplot() +
   ggplot2::theme_minimal()
 
