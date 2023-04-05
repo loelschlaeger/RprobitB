@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# {RprobitB}: Bayesian Probit Choice Modeling <img src="man/figures/logo.png" align="right" alt="" width="120" />
+# RprobitB <a href="https://loelschlaeger.de/RprobitB/"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -104,9 +104,10 @@ customers to the competitor who does not increase their prices:
 ``` r
 predict(
   model, 
-  data = data.frame("price_A" = c(100,110), 
-                    "price_B" = c(100,100)),
+  data = data.frame("price_A" = c(100, 110), 
+                    "price_B" = c(100, 100)),
   overview = FALSE)
+#> Checking for missing covariates
 #>   id idc    A    B prediction
 #> 1  1   1 0.50 0.50          A
 #> 2  2   1 0.35 0.65          B
@@ -119,11 +120,12 @@ share:
 ``` r
 predict(
   model, 
-  data = data.frame("price_A"   = c(100,110), 
-                    "comfort_A" = c(1,0),
-                    "price_B"   = c(100,100),
-                    "comfort_B" = c(1,1)),
+  data = data.frame("price_A"   = c(100, 110), 
+                    "comfort_A" = c(1, 0),
+                    "price_B"   = c(100, 100),
+                    "comfort_B" = c(1, 1)),
   overview = FALSE)
+#> Checking for missing covariates
 #>   id idc    A    B prediction
 #> 1  1   1 0.50 0.50          A
 #> 2  2   1 0.57 0.43          A

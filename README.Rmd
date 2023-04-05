@@ -10,10 +10,10 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-"
 )
-library(RprobitB)
+library("RprobitB")
 ```
 
-# {RprobitB}: Bayesian Probit Choice Modeling <img src="man/figures/logo.png" align="right" alt="" width="120" />
+# RprobitB <a href="https://loelschlaeger.de/RprobitB/"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version-last-release/RprobitB)](https://www.r-pkg.org/badges/version-last-release/RprobitB)
@@ -77,8 +77,8 @@ Now assume that a train company wants to anticipate the effect of a price increa
 ```{r predict1}
 predict(
   model, 
-  data = data.frame("price_A" = c(100,110), 
-                    "price_B" = c(100,100)),
+  data = data.frame("price_A" = c(100, 110), 
+                    "price_B" = c(100, 100)),
   overview = FALSE)
 ```
 
@@ -87,10 +87,10 @@ However, offering a better comfort class (`0` here is better than `1`) compensat
 ```{r predict2}
 predict(
   model, 
-  data = data.frame("price_A"   = c(100,110), 
-                    "comfort_A" = c(1,0),
-                    "price_B"   = c(100,100),
-                    "comfort_B" = c(1,1)),
+  data = data.frame("price_A"   = c(100, 110), 
+                    "comfort_A" = c(1, 0),
+                    "price_B"   = c(100, 100),
+                    "comfort_B" = c(1, 1)),
   overview = FALSE)
 ```
 
