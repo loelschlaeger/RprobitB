@@ -54,7 +54,7 @@ delta <- function(J, i) {
 #' A matrix of dimension \code{length(rank)-1} x \code{length(rank)}.
 #'
 #' @examples
-#' x <- c(-1,5,10,2)
+#' x <- c(-1, 5, 10, 2)
 #' ranking <- order(x, decreasing = TRUE)
 #' M(ranking) %*% x
 #'
@@ -65,10 +65,10 @@ delta <- function(J, i) {
 
 M <- function(ranking) {
   J <- length(ranking)
-  out <- matrix(0, nrow = J-1, ncol = J)
-  for(i in 1:(J-1)) {
-    out[i,ranking[i]] <- -1
-    out[i,ranking[i+1]] <- 1
+  out <- matrix(0, nrow = J - 1, ncol = J)
+  for (i in 1:(J - 1)) {
+    out[i, ranking[i]] <- -1
+    out[i, ranking[i + 1]] <- 1
   }
   return(out)
 }
@@ -112,7 +112,6 @@ M <- function(ranking) {
 #' @importFrom stats var
 
 R_hat <- function(samples, parts = 2) {
-
   ### divide chains into parts
   samples <- as.matrix(samples)
   no_chains <- ncol(samples)
@@ -191,8 +190,10 @@ is_covariance_matrix <- function(x) {
 #' @examples
 #' RprobitB:::pprint(x = 1, name = "single integer")
 #' RprobitB:::pprint(x = LETTERS[1:26], name = "letters")
-#' RprobitB:::pprint(x = matrix(rnorm(100), ncol = 1),
-#'                   name = "single column matrix")
+#' RprobitB:::pprint(
+#'   x = matrix(rnorm(100), ncol = 1),
+#'   name = "single column matrix"
+#' )
 #' RprobitB:::pprint(x = matrix(1:100, nrow = 1), name = "single row matrix")
 #' RprobitB:::pprint(x = matrix(LETTERS[1:24], ncol = 6), name = "big matrix")
 #'
@@ -201,27 +202,28 @@ is_covariance_matrix <- function(x) {
 
 pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
                    desc = TRUE) {
-
   ### helper function
   add_dots <- function(x, pos = 3) {
     if (length(x) > pos) {
-      c(x[seq_len(pos-1)], "...", x[length(x)])
+      c(x[seq_len(pos - 1)], "...", x[length(x)])
     } else {
       x
     }
   }
 
   ### distinguish between single numbers, vectors and matrices
-  if(length(x) == 1){
-    if(desc) if(!is.null(name)) cat(name, ": ")
+  if (length(x) == 1) {
+    if (desc) if (!is.null(name)) cat(name, ": ")
     cat(x)
-  } else if(!is.matrix(x)) {
-    if(desc) if(!is.null(name))
-      cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
-    res <- if(is.numeric(x)) round(x,digits) else x
+  } else if (!is.matrix(x)) {
+    if (desc) {
+      if (!is.null(name)) {
+        cat(name, ":", typeof(x), "vector of length", length(x), "\n\n")
+      }
+    }
+    res <- if (is.numeric(x)) round(x, digits) else x
     cat(noquote(add_dots(res, coldots)))
   } else {
-
     ### row labels
     row_labels <- if (is.null(rownames(x))) {
       paste0("[", seq_len(nrow(x)), ",]")
@@ -237,19 +239,25 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
     }
 
     ### adjust values for 'coldots' and 'rowdots'
-    coldots <- max(1,min(ncol(x)-1, coldots))
-    rowdots <- max(1,min(nrow(x)-1, rowdots))
+    coldots <- max(1, min(ncol(x) - 1, coldots))
+    rowdots <- max(1, min(nrow(x) - 1, rowdots))
 
     ### omit all values that will not be printed
-    x2 <- if(nrow(x) == 1) {
+    x2 <- if (nrow(x) == 1) {
       cbind(x[1, 1:coldots, drop = FALSE], x[1, ncol(x), drop = FALSE])
-    } else if(ncol(x) == 1) {
+    } else if (ncol(x) == 1) {
       rbind(x[1:rowdots, 1, drop = FALSE], x[nrow(x), 1, drop = FALSE])
     } else {
-      rbind(cbind(x[1:rowdots, 1:coldots, drop = FALSE],
-                  x[1:rowdots, ncol(x), drop = FALSE]),
-            cbind(x[nrow(x), 1:coldots, drop = FALSE],
-                  x[nrow(x), ncol(x), drop = FALSE]))
+      rbind(
+        cbind(
+          x[1:rowdots, 1:coldots, drop = FALSE],
+          x[1:rowdots, ncol(x), drop = FALSE]
+        ),
+        cbind(
+          x[nrow(x), 1:coldots, drop = FALSE],
+          x[nrow(x), ncol(x), drop = FALSE]
+        )
+      )
     }
 
     ### convert to character matrix
@@ -269,9 +277,11 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
 
     ### Case 2: rows have dots, columns do not
     if (nrow(x) > rowdots + 1 && ncol(x) <= coldots + 1) {
-      res <- rbind(as.matrix(charx[seq_len(rowdots - 1), ]),
-                   rep("...", ncol(charx)),
-                   charx[nrow(charx), ])
+      res <- rbind(
+        as.matrix(charx[seq_len(rowdots - 1), ]),
+        rep("...", ncol(charx)),
+        charx[nrow(charx), ]
+      )
       row_labels <- add_dots(row_labels, pos = rowdots)
     }
 
@@ -284,24 +294,31 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
     ### Case 4: rows and columns have dots
     if (nrow(x) > rowdots + 1 && ncol(x) > coldots + 1) {
       smallx <- t(apply(charx[seq_len(rowdots - 1), ], 1, add_dots,
-                        pos = coldots))
-      res <- rbind(smallx,
-                   rep("...", ncol(smallx)),
-                   add_dots(charx[nrow(charx), ], pos = coldots))
+        pos = coldots
+      ))
+      res <- rbind(
+        smallx,
+        rep("...", ncol(smallx)),
+        add_dots(charx[nrow(charx), ], pos = coldots)
+      )
       row_labels <- add_dots(row_labels, pos = rowdots)
       col_labels <- add_dots(col_labels, pos = coldots)
     }
 
     ### print matrix
-    if(desc){
-      if(!is.null(name)){
-        cat(name,": ")
+    if (desc) {
+      if (!is.null(name)) {
+        cat(name, ": ")
       }
-      cat(paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"),
-          "\n\n")
+      cat(
+        paste(dim(x), collapse = " x "), "matrix of", paste0(typeof(x), "s"),
+        "\n\n"
+      )
     }
-    prmatrix(res, rowlab = row_labels, collab = col_labels, quote = FALSE,
-             right = TRUE)
+    prmatrix(res,
+      rowlab = row_labels, collab = col_labels, quote = FALSE,
+      right = TRUE
+    )
   }
 
   ### return 'x' invisibly
@@ -324,29 +341,29 @@ pprint <- function(x, rowdots = 4, coldots = 4, digits = 4, name = NULL,
 #' A list of all permutations of \code{x}.
 #'
 #' @examples
-#' RprobitB:::permutations(x = c("a","b","c"))
+#' RprobitB:::permutations(x = c("a", "b", "c"))
 #'
 #' @keywords
 #' internal utils
 
-permutations <- function(x){
-  perm_index <- function(n){
-    if(n==1){
+permutations <- function(x) {
+  perm_index <- function(n) {
+    if (n == 1) {
       return(matrix(1))
     } else {
-      sp <- perm_index(n-1)
+      sp <- perm_index(n - 1)
       p <- nrow(sp)
-      A <- matrix(nrow=n*p,ncol=n)
-      for(i in 1:n){
-        A[(i-1)*p+1:p,] <- cbind(i,sp+(sp>=i))
+      A <- matrix(nrow = n * p, ncol = n)
+      for (i in 1:n) {
+        A[(i - 1) * p + 1:p, ] <- cbind(i, sp + (sp >= i))
       }
       return(A)
     }
   }
   p <- perm_index(length(x))
   out <- list()
-  for(i in 1:nrow(p)) {
-    out <- c(out, list(x[p[i,]]))
+  for (i in 1:nrow(p)) {
+    out <- c(out, list(x[p[i, ]]))
   }
   return(out)
 }

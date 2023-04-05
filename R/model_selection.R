@@ -33,28 +33,33 @@
 
 model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
                             add_form = FALSE) {
-
   ### check inputs
   models <- as.list(list(...))
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
   for (i in seq_len(length(models))) {
     if (!inherits(models[[i]], "RprobitB_fit")) {
-      stop(paste0("Input '", model_names[i],
-                  "' is not of class 'RprobitB_fit'."),
-           call. = FALSE)
+      stop(
+        paste0(
+          "Input '", model_names[i],
+          "' is not of class 'RprobitB_fit'."
+        ),
+        call. = FALSE
+      )
     }
   }
   if (!is.character(criteria)) {
     stop("'criteria' must be a character vector.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### create output matrix
   output <- matrix(NA_real_, nrow = 0, ncol = length(models))
   colnames(output) <- model_names
-  if(add_form){
+  if (add_form) {
     output <- rbind(output,
-                    "form" = sapply(models, function(x) deparse1(x$data$form)))
+      "form" = sapply(models, function(x) deparse1(x$data$form))
+    )
   }
 
   ### fill output
@@ -77,7 +82,7 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
       output <- rbind(output, "se(WAIC)" = sapply(waic_out, function(x) attr(x, "se_waic")))
       output <- rbind(output, "pWAIC" = sapply(waic_out, function(x) attr(x, "p_waic")))
     }
-    if (crit == "MMLL"){
+    if (crit == "MMLL") {
       models <- lapply(models, mml)
       output <- rbind(output, "MMLL" = sapply(models, function(x) attr(x[["mml"]], "mmll")))
     }
@@ -87,7 +92,7 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
       for (nmod in seq_len(length(models))) {
         rownames_old <- rownames(output)
         output <- rbind(output, exp(mmll_out - mmll_out[nmod]))
-        rownames(output) <- c(rownames_old, paste0("BF(*,", model_names[nmod],")"))
+        rownames(output) <- c(rownames_old, paste0("BF(*,", model_names[nmod], ")"))
       }
     }
     if (crit == "pred_acc") {
@@ -108,31 +113,31 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
 print.RprobitB_model_selection <- function(x, digits = 2, ...) {
   for (row in rownames(x)) {
     if (row == "form") {
-      x["form",] <- sprintf("%s", x["form",])
+      x["form", ] <- sprintf("%s", x["form", ])
     }
     if (row == "LL") {
-      x["LL",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["LL",]))
+      x["LL", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["LL", ]))
     }
     if (row == "AIC") {
-      x["AIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["AIC",]))
+      x["AIC", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["AIC", ]))
     }
     if (row == "BIC") {
-      x["BIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["BIC",]))
+      x["BIC", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["BIC", ]))
     }
     if (row == "WAIC") {
-      x["WAIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["WAIC",]))
+      x["WAIC", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["WAIC", ]))
     }
     if (row == "se(WAIC)") {
-      x["se(WAIC)",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["se(WAIC)",]))
+      x["se(WAIC)", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["se(WAIC)", ]))
     }
     if (row == "pWAIC") {
-      x["pWAIC",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["pWAIC",]))
+      x["pWAIC", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["pWAIC", ]))
     }
     if (row == "MMLL") {
-      x["MMLL",] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["MMLL",]))
+      x["MMLL", ] <- sprintf(paste0("%.", digits, "f"), as.numeric(x["MMLL", ]))
     }
     if (startsWith(row, "BF(")) {
-      x[row,] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[row,])))
+      x[row, ] <- as.numeric(sprintf(paste0("%.", digits, "f"), as.numeric(x[row, ])))
       for (col in 1:ncol(x)) {
         if (is.na(x[row, col])) {
           x[row, col] <- "NA"
@@ -144,7 +149,7 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
       }
     }
     if (row == "pred_acc") {
-      x["pred_acc",] <- sprintf(paste0("%.", digits, "f%%"), as.numeric(x["pred_acc",]) * 100)
+      x["pred_acc", ] <- sprintf(paste0("%.", digits, "f%%"), as.numeric(x["pred_acc", ]) * 100)
     }
   }
   class(x) <- "data.frame"
@@ -193,19 +198,20 @@ print.RprobitB_model_selection <- function(x, digits = 2, ...) {
 #' @export
 
 WAIC <- function(x) {
-
   ### check input
-  if(!inherits(x,"RprobitB_fit")){
+  if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be an object of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### check if 'x' contains 'p_si'
-  if(is.null(x[["p_si"]])){
+  if (is.null(x[["p_si"]])) {
     stop("Cannot compute WAIC.\n",
-         "Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si()'.",
-         call. = FALSE)
+      "Please compute the probability for each observed choice at posterior samples first.\n",
+      "For that, use the function 'compute_p_si()'.",
+      call. = FALSE
+    )
   }
 
   ### calculate p_si and log(p_si)
@@ -216,7 +222,7 @@ WAIC <- function(x) {
   lppd <- sum(log(rowSums(p_si)) - log(ncol(p_si)))
   p_waic_vec <- apply(log_p_si, 1, var)
   p_waic <- sum(p_waic_vec)
-  waic <- -2*(lppd - p_waic)
+  waic <- -2 * (lppd - p_waic)
   se_waic <- sqrt(nrow(p_si) * var(p_waic_vec))
 
   ### prepare and return output
@@ -234,8 +240,10 @@ WAIC <- function(x) {
 #' @export
 
 print.RprobitB_waic <- function(x, digits = 2, ...) {
-  cat(sprintf(paste0("%.", digits, "f", " (%.", digits, "f)"), x,
-              attr(x, "se_waic")))
+  cat(sprintf(
+    paste0("%.", digits, "f", " (%.", digits, "f)"), x,
+    attr(x, "se_waic")
+  ))
 }
 
 #' @noRd
@@ -243,25 +251,26 @@ print.RprobitB_waic <- function(x, digits = 2, ...) {
 #' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs theme_minimal
 
 plot.RprobitB_waic <- function(x, ...) {
-
   ### extract 'p_si' from 'x'
   p_si <- attr(x, "p_si")
   S <- ncol(p_si)
   log_p_si <- log(p_si)
 
   ### compute sequence of waic value for progressive sets of posterior samples
-  pb <- RprobitB_pb(title = "Preparing WAIC convergence plot",
-                    total = S,
-                    tail = "Gibbs samples")
+  pb <- RprobitB_pb(
+    title = "Preparing WAIC convergence plot",
+    total = S,
+    tail = "Gibbs samples"
+  )
   waic_seq <- numeric(S)
   se_waic_seq <- numeric(S)
   RprobitB_pb_tick(pb)
-  for(s in 2:S){
+  for (s in 2:S) {
     RprobitB_pb_tick(pb)
-    lppd_temp <- sum(log(rowSums(p_si[,1:s,drop=FALSE])) - log(s))
-    p_waic_i_temp <- apply(log_p_si[,1:s,drop=FALSE], 1, var)
+    lppd_temp <- sum(log(rowSums(p_si[, 1:s, drop = FALSE])) - log(s))
+    p_waic_i_temp <- apply(log_p_si[, 1:s, drop = FALSE], 1, var)
     p_waic_temp <- sum(p_waic_i_temp)
-    waic_seq[s] <- -2*(lppd_temp - p_waic_temp)
+    waic_seq[s] <- -2 * (lppd_temp - p_waic_temp)
     se_waic_seq[s] <- sqrt(nrow(p_si) * var(p_waic_i_temp))
   }
   seq <- data.frame(waic_seq = waic_seq[-1], se_waic_seq = se_waic_seq[-1])
@@ -270,12 +279,17 @@ plot.RprobitB_waic <- function(x, ...) {
   p <- ggplot2::ggplot(data = seq, ggplot2::aes(x = 1:nrow(seq), y = waic_seq)) +
     ggplot2::geom_line() +
     ggplot2::geom_ribbon(
-      ggplot2::aes(ymin = waic_seq - se_waic_seq,
-                   ymax = waic_seq + se_waic_seq), alpha = 0.2) +
+      ggplot2::aes(
+        ymin = waic_seq - se_waic_seq,
+        ymax = waic_seq + se_waic_seq
+      ),
+      alpha = 0.2
+    ) +
     ggplot2::labs(
       x = "Number of posterior samples",
       y = "WAIC",
-      title = "The WAIC value for different sizes of posterior samples") +
+      title = "The WAIC value for different sizes of posterior samples"
+    ) +
     ggplot2::theme_minimal()
   print(p)
 }
@@ -291,13 +305,13 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @importFrom stats logLik
 
 logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
-  if(!is.null(object[["ll"]]) && !recompute){
+  if (!is.null(object[["ll"]]) && !recompute) {
     ll <- object[["ll"]]
   } else {
     probs <- choice_probabilities(x = object, par_set = par_set)
     choices <- as.character(unlist(sapply(object$data$data, `[[`, "y")))
     ll <- 0
-    for (row in 1:nrow(probs)){
+    for (row in 1:nrow(probs)) {
       if (object$data$ranked) {
         y_seq <- strsplit(choices[row], ",")[[1]][1]
         ll <- ll + log(probs[row, y_seq])
@@ -340,7 +354,7 @@ npar <- function(object, ...) {
 
 npar.RprobitB_fit <- function(object, ...) {
   models <- list(...)
-  if(length(models) == 0){
+  if (length(models) == 0) {
     models <- list(object)
   } else {
     models <- c(list(object), models)
@@ -378,19 +392,20 @@ npar.RprobitB_fit <- function(object, ...) {
 #' @importFrom doSNOW registerDoSNOW
 
 compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FALSE) {
-
   ### check input
-  if(!inherits(x,"RprobitB_fit")){
+  if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be an object of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
+  if (!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores %% 1 == 0)) {
     stop("'ncores' must be a positive integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### check if 'p_si' in 'x' already exists if 'recompute = FALSE'
-  if(!recompute && !is.null(x$p_si)) {
+  if (!recompute && !is.null(x$p_si)) {
     return(x)
   }
 
@@ -402,10 +417,12 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
   doSNOW::registerDoSNOW(cluster)
 
   ### register progress bar
-  if(getOption("RprobitB_progress")){
-    pb <- RprobitB_pb(title = "Computing p_si",
-                      total = length(pars),
-                      tail = "parameter sets")
+  if (getOption("RprobitB_progress")) {
+    pb <- RprobitB_pb(
+      title = "Computing p_si",
+      total = length(pars),
+      tail = "parameter sets"
+    )
     opts <- list(progress = function(n) pb$tick())
   } else {
     opts <- list()
@@ -413,23 +430,25 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 
   ### compute probability for each observation i (rows) for each sample s (columns)
   s <- NULL
-  p_si <- foreach::foreach(s = 1:length(pars), .packages = "RprobitB",
-                           .combine = "cbind", .options.snow = opts) %dopar% {
-                             out <- c()
-                             for(n in 1:x$data$N){
-                               X_n = x$data$data[[n]]$X
-                               y_n = x$data$data[[n]]$y
-                               for(t in 1:x$data$T[n]) {
-                                 X_nt = X_n[[t]]
-                                 y_nt = y_n[t]
-                                 alt_index <- which(x$data$alternatives == y_nt)
-                                 out <- c(out, compute_choice_probabilities(
-                                   X = X_nt, alternatives = alt_index, parameter = pars[[s]])[alt_index]
-                                 )
-                               }
-                             }
-                             out
-                           }
+  p_si <- foreach::foreach(
+    s = 1:length(pars), .packages = "RprobitB",
+    .combine = "cbind", .options.snow = opts
+  ) %dopar% {
+    out <- c()
+    for (n in 1:x$data$N) {
+      X_n <- x$data$data[[n]]$X
+      y_n <- x$data$data[[n]]$y
+      for (t in 1:x$data$T[n]) {
+        X_nt <- X_n[[t]]
+        y_nt <- y_n[t]
+        alt_index <- which(x$data$alternatives == y_nt)
+        out <- c(out, compute_choice_probabilities(
+          X = X_nt, alternatives = alt_index, parameter = pars[[s]]
+        )[alt_index])
+      }
+    }
+    out
+  }
 
   ### stop parallel backend
   parallel::stopCluster(cluster)
@@ -486,34 +505,39 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 #' @importFrom doSNOW registerDoSNOW
 
 mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
-
   ### input checks
-  if(!inherits(x,"RprobitB_fit")) {
+  if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(is.null(x[["p_si"]])){
+  if (is.null(x[["p_si"]])) {
     stop("Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si()'.",
-         call. = FALSE)
+      "For that, use the function 'compute_p_si()'.",
+      call. = FALSE
+    )
   }
-  if(!(is.numeric(S) && length(S)==1 && S>=0 && S%%1==0)){
+  if (!(is.numeric(S) && length(S) == 1 && S >= 0 && S %% 1 == 0)) {
     stop("'S' must be an integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores%%1==0)){
+  if (!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores %% 1 == 0)) {
     stop("'ncores' must be a positive integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### check if 'mml' in 'x' already exists if 'recompute = FALSE'
-  if(!recompute && !is.null(x[["mml"]])) {
+  if (!recompute && !is.null(x[["mml"]])) {
     return(x)
   }
 
   ### helper variables
-  add_args <- list(P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
-                   N = x$data$N, C = x$latent_classes$C, sample = FALSE)
+  add_args <- list(
+    P_f = x$data$P_f, P_r = x$data$P_r, J = x$data$J,
+    N = x$data$N, C = x$latent_classes$C, sample = FALSE
+  )
 
   ### compute posterior harmonic mean estimate
   p_si <- x[["p_si"]]
@@ -521,22 +545,24 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
   S_post <- ncol(p_si)
   cont_post <- numeric(S_post)
   const <- round(0.5 * N)
-  for(s in 1:S_post) {
-    cont_post[s] <- 1/exp(sum(log(p_si[,s]) + const/N))
+  for (s in 1:S_post) {
+    cont_post[s] <- 1 / exp(sum(log(p_si[, s]) + const / N))
   }
-  mml_value <- S_post/sum(cont_post)
-  approx_seq <- seq_along(cont_post)/cumsum(cont_post)
+  mml_value <- S_post / sum(cont_post)
+  approx_seq <- seq_along(cont_post) / cumsum(cont_post)
 
-  if(S > 0){
+  if (S > 0) {
     ### register parallel backend
     cluster <- parallel::makeCluster(ncores)
     doSNOW::registerDoSNOW(cluster)
 
     ### register progress bar
-    if(getOption("RprobitB_progress")){
-      pb <- RprobitB_pb(title = "Computing prior arithmetic mean estimate",
-                        total = S,
-                        tail = "parameter sets")
+    if (getOption("RprobitB_progress")) {
+      pb <- RprobitB_pb(
+        title = "Computing prior arithmetic mean estimate",
+        total = S,
+        tail = "parameter sets"
+      )
       opts <- list(progress = function(n) pb$tick())
     } else {
       opts <- list()
@@ -550,8 +576,8 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
       probs <- choice_probabilities(x = x, par_set = par)
       choices <- as.character(unlist(sapply(x$data$data, `[[`, "y")))
       ll <- 0
-      for (row in 1:nrow(probs)){
-        ll <- ll + log(probs[row, choices[row]]) + const/N
+      for (row in 1:nrow(probs)) {
+        ll <- ll + log(probs[row, choices[row]]) + const / N
       }
       exp(ll)
     }
@@ -562,18 +588,20 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
     ### merge posterior harmonic mean estimate with prior arithmetic mean estimate
     cont_prior <- cont_prior[cont_prior != 0]
     S_new <- length(cont_prior)
-    if(S_new == 0){
+    if (S_new == 0) {
       warning("Could not use any prior sample.", call. = FALSE)
     } else {
-      if(S_new < S){
+      if (S_new < S) {
         warning("Could only use ", S_new, " of ", S,
-                " prior samples that led to a positive probability.", call. = FALSE)
+          " prior samples that led to a positive probability.",
+          call. = FALSE
+        )
       }
-      mml_value_prior <- sum(cont_prior)/S_new
+      mml_value_prior <- sum(cont_prior) / S_new
       S_total <- S_post + S_new
 
-      mml_value <- mml_value * S_post/S_total + mml_value_prior * S_new/S_total
-      approx_seq <- c(approx_seq, mml_value * S_post/(S_post + seq_along(cont_prior)) + mml_value_prior * seq_along(cont_prior)/(S_post + seq_along(cont_prior)))
+      mml_value <- mml_value * S_post / S_total + mml_value_prior * S_new / S_total
+      approx_seq <- c(approx_seq, mml_value * S_post / (S_post + seq_along(cont_prior)) + mml_value_prior * seq_along(cont_prior) / (S_post + seq_along(cont_prior)))
     }
   }
 
@@ -595,7 +623,7 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
 #' @export
 
 print.RprobitB_mml <- function(x, log = FALSE, ...) {
-  if(!log){
+  if (!log) {
     cat(sprintf(paste0("%.2e * exp(-%.f)"), x, attr(x, "factor")))
   } else {
     cat(attr(x, "mmll"))
@@ -608,26 +636,32 @@ print.RprobitB_mml <- function(x, log = FALSE, ...) {
 #' @importFrom rlang .data
 
 plot.RprobitB_mml <- function(x, log = FALSE, ...) {
-  if(log){
+  if (log) {
     mml_vec <- log(attr(x, "mml_vec")) - attr(x, "factor")
   } else {
     mml_vec <- attr(x, "mml_vec")
   }
-  p <- ggplot2::ggplot(data = data.frame("S" = seq_along(mml_vec),
-                                         "mml_vec" = mml_vec),
-                       ggplot2::aes(x = .data$S, y = .data$mml_vec)) +
+  p <- ggplot2::ggplot(
+    data = data.frame(
+      "S" = seq_along(mml_vec),
+      "mml_vec" = mml_vec
+    ),
+    ggplot2::aes(x = .data$S, y = .data$mml_vec)
+  ) +
     ggplot2::geom_line() +
     ggplot2::theme_minimal()
-  if(log){
+  if (log) {
     p <- p + ggplot2::labs(
       x = "Number of samples",
       y = "Marginal log-likelihood",
-      title = "The marginal log-likelihood value for different sample sizes")
+      title = "The marginal log-likelihood value for different sample sizes"
+    )
   } else {
     p <- p + ggplot2::labs(
       x = "Number of samples",
       y = paste("Marginal likelihood *", sprintf("exp(-%.f)", attr(x, "factor"))),
-      title = "The marginal likelihood value for different sample sizes") +
+      title = "The marginal likelihood value for different sample sizes"
+    ) +
       ggplot2::scale_y_log10()
   }
   print(p)
@@ -648,46 +682,47 @@ plot.RprobitB_mml <- function(x, log = FALSE, ...) {
 #' @keywords
 #' internal
 
-posterior_pars <- function(x){
-
+posterior_pars <- function(x) {
   ### check input
-  if(!inherits(x, "RprobitB_fit")){
+  if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be an object of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### extract meta parameters
-  N = x$data$N
-  T = x$data$T
-  J = x$data$J
-  P_f = x$data$P_f
-  P_r = x$data$P_r
-  C = x$latent_classes$C
+  N <- x$data$N
+  T <- x$data$T
+  J <- x$data$J
+  P_f <- x$data$P_f
+  P_r <- x$data$P_r
+  C <- x$latent_classes$C
 
   ### extract samples
   sample_size <- (x$R - x$B) / x$Q
-  gibbs_samples_nbt = x$gibbs_samples$gibbs_samples_nbt
-  Sigma_samples = gibbs_samples_nbt$Sigma
-  alpha_samples = gibbs_samples_nbt$alpha
-  s_samples = gibbs_samples_nbt$s
-  b_samples = gibbs_samples_nbt$b
-  Omega_samples = gibbs_samples_nbt$Omega
+  gibbs_samples_nbt <- x$gibbs_samples$gibbs_samples_nbt
+  Sigma_samples <- gibbs_samples_nbt$Sigma
+  alpha_samples <- gibbs_samples_nbt$alpha
+  s_samples <- gibbs_samples_nbt$s
+  b_samples <- gibbs_samples_nbt$b
+  Omega_samples <- gibbs_samples_nbt$Omega
 
   ### extract parameters of each sample
-  pars = list()
-  for(s in 1:sample_size){
-    pars[[s]] <-  RprobitB_parameter(
+  pars <- list()
+  for (s in 1:sample_size) {
+    pars[[s]] <- RprobitB_parameter(
       P_f = P_f,
       P_r = P_r,
       J = J,
       N = N,
-      alpha = as.numeric(alpha_samples[s,]),
+      alpha = as.numeric(alpha_samples[s, ]),
       C = C,
-      s = as.numeric(s_samples[s,]),
-      b = matrix(b_samples[s,], nrow = P_r, ncol = C),
-      Omega = matrix(Omega_samples[s,], nrow = P_r^2, ncol = C),
-      Sigma = matrix(Sigma_samples[s,], J-1, J-1),
-      sample = FALSE)
+      s = as.numeric(s_samples[s, ]),
+      b = matrix(b_samples[s, ], nrow = P_r, ncol = C),
+      Omega = matrix(Omega_samples[s, ], nrow = P_r^2, ncol = C),
+      Sigma = matrix(Sigma_samples[s, ], J - 1, J - 1),
+      sample = FALSE
+    )
   }
 
   ### return 'pars'
@@ -715,55 +750,55 @@ posterior_pars <- function(x){
 #' @examples
 #' prior <- check_prior(P_f = 1, P_r = 2, J = 3)
 #' RprobitB:::draw_from_prior(prior, C = 2)
-
 draw_from_prior <- function(prior, C = 1) {
-
   ### input checks
-  if(!inherits(prior,"RprobitB_prior")){
+  if (!inherits(prior, "RprobitB_prior")) {
     stop("'prior' must be of class 'RprobitB_prior.", call. = FALSE)
   }
 
   ### alpha ~ MVN(eta,Psi)
-  if(identical(prior$eta,NA) || identical(prior$Psi,NA)){
+  if (identical(prior$eta, NA) || identical(prior$Psi, NA)) {
     alpha <- NULL
   } else {
     alpha <- rmvnorm(mu = prior$eta, Sigma = prior$Psi)
   }
 
   ### s ~ D(delta)
-  if(identical(prior$delta,NA)){
+  if (identical(prior$delta, NA)) {
     s <- NULL
   } else {
-    s <- sort(rdirichlet(rep(prior$delta,C)), decreasing = TRUE)
+    s <- sort(rdirichlet(rep(prior$delta, C)), decreasing = TRUE)
   }
 
   ### b_c ~ MVN(xi,D) for all c
-  if(identical(prior$xi,NA) || identical(prior$D,NA)){
+  if (identical(prior$xi, NA) || identical(prior$D, NA)) {
     b <- NULL
   } else {
     b <- matrix(replicate(C, rmvnorm(mu = prior$xi, Sigma = prior$D)), ncol = C)
   }
 
   ### Omega_c ~ IW(nu,Theta) for all c
-  if(identical(prior$nu,NA) || identical(prior$Theta,NA)){
+  if (identical(prior$nu, NA) || identical(prior$Theta, NA)) {
     Omega <- NULL
   } else {
     Omega <- matrix(replicate(C, rwishart(nu = prior$nu, V = prior$Theta)$IW), ncol = C)
   }
 
   ### Sigma ~ IW(kappa,E)
-  if(identical(prior$kappa,NA) || identical(prior$E,NA)){
+  if (identical(prior$kappa, NA) || identical(prior$E, NA)) {
     Sigma <- NULL
   } else {
-    Sigma <-  rwishart(nu = prior$kappa, V = prior$E)$IW
+    Sigma <- rwishart(nu = prior$kappa, V = prior$E)$IW
   }
 
   ### return draws
-  draws <- list("alpha" = alpha,
-                "s" = s,
-                "b" = b,
-                "Omega" = Omega,
-                "Sigma" = Sigma)
+  draws <- list(
+    "alpha" = alpha,
+    "s" = s,
+    "b" = b,
+    "Omega" = Omega,
+    "Sigma" = Sigma
+  )
   return(draws)
 }
 
@@ -787,15 +822,14 @@ draw_from_prior <- function(prior, C = 1) {
 
 pred_acc <- function(x, ...) {
   models <- list(...)
-  if(length(models) == 0){
+  if (length(models) == 0) {
     models <- list(x)
   } else {
     models <- c(list(x), models)
   }
-  pa <- sapply(models, function(x){
+  pa <- sapply(models, function(x) {
     conf <- predict.RprobitB_fit(x, data = NULL, overview = TRUE)
     sum(diag(conf)) / sum(conf)
   })
   return(pa)
 }
-

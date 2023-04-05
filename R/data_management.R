@@ -48,7 +48,6 @@
 #' [overview_effects()] for an overview of the model effects
 
 check_form <- function(form, re = NULL, ordered = FALSE) {
-
   ### check inputs
   if (!inherits(form, "formula")) {
     stop("'form' must be of class 'formula'.", call. = FALSE)
@@ -66,8 +65,10 @@ check_form <- function(form, re = NULL, ordered = FALSE) {
   choice <- all.vars(form)[1]
 
   ### build 'vars'
-  vars <- trimws(strsplit(as.character(form)[3], split = "|",
-                          fixed = TRUE)[[1]])
+  vars <- trimws(strsplit(as.character(form)[3],
+    split = "|",
+    fixed = TRUE
+  )[[1]])
   while (length(vars) < 3) {
     vars <- c(vars, NA)
   }
@@ -95,7 +96,8 @@ check_form <- function(form, re = NULL, ordered = FALSE) {
         re <- setdiff(re, re_element)
         warning(
           "The covariate '", re_element,
-          "' in 're' is not part of 'form' and hence ignored.", call. = FALSE,
+          "' in 're' is not part of 'form' and hence ignored.",
+          call. = FALSE,
           immediate. = TRUE
         )
       }
@@ -143,37 +145,43 @@ check_form <- function(form, re = NULL, ordered = FALSE) {
 
 overview_effects <- function(form, re = NULL, alternatives,
                              base = tail(alternatives, 1), ordered = FALSE) {
-
   ### check input
-  if(missing(form)){
+  if (missing(form)) {
     stop("'Please specify 'form'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!inherits(form, "formula")) {
+  if (!inherits(form, "formula")) {
     stop("'form' must be of class 'formula'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!(is.null(re) || is.character(re))) {
+  if (!(is.null(re) || is.character(re))) {
     stop("'re' must be either 'NULL' or a character (vector).",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(missing(alternatives)){
+  if (missing(alternatives)) {
     stop("'Please specify 'alternatives'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!is.character(alternatives) || length(alternatives) < 2) {
+  if (!is.character(alternatives) || length(alternatives) < 2) {
     stop("'alternatives' must be a character vector of length >= 2.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!is.null(base)) {
-    if(!(length(base) == 1 && is.character(base) && base %in% alternatives)) {
+  if (!is.null(base)) {
+    if (!(length(base) == 1 && is.character(base) && base %in% alternatives)) {
       stop("'base' must be one element of 'alternatives'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
-  if(!(length(ordered) == 1 && is.logical(ordered))) {
+  if (!(length(ordered) == 1 && is.logical(ordered))) {
     stop("'ordered' must be a boolean.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### check 'form'
@@ -183,26 +191,30 @@ overview_effects <- function(form, re = NULL, alternatives,
   ASC <- check_form_out$ASC
 
   ### build overview
-  if(ordered){
+  if (ordered) {
     overview <- data.frame()
     for (var in vars[[2]]) {
       overview <- rbind(overview, c(var, FALSE, FALSE, var %in% re))
     }
   } else {
     ### sort and count 'alternatives'
-    if(!ordered) alternatives <- sort(alternatives)
+    if (!ordered) alternatives <- sort(alternatives)
     J <- length(alternatives)
 
     ### determine index of base alternative
-    if(is.null(base)){
+    if (is.null(base)) {
       base_index <- J
     } else if (any(alternatives == base)) {
       base_index <- which(alternatives == base)
     } else {
       base <- alternatives[J]
-      warning(paste0("'base' not contained in 'alternatives'. ",
-                     "Set 'base = ", alternatives[J], "' instead."),
-              immediate. = TRUE, call. = FALSE)
+      warning(
+        paste0(
+          "'base' not contained in 'alternatives'. ",
+          "Set 'base = ", alternatives[J], "' instead."
+        ),
+        immediate. = TRUE, call. = FALSE
+      )
       base_index <- J
     }
 
@@ -213,16 +225,24 @@ overview_effects <- function(form, re = NULL, alternatives,
     }
     for (var in c(vars[[2]], if (ASC) "ASC")) {
       for (j in (1:J)[-base_index]) {
-        overview <- rbind(overview,
-                          c(paste0(var, "_", alternatives[j]), FALSE, TRUE,
-                            var %in% re))
+        overview <- rbind(
+          overview,
+          c(
+            paste0(var, "_", alternatives[j]), FALSE, TRUE,
+            var %in% re
+          )
+        )
       }
     }
     for (var in vars[[3]]) {
       for (j in 1:J) {
-        overview <- rbind(overview,
-                          c(paste0(var, "_", alternatives[j]), TRUE, TRUE,
-                            var %in% re))
+        overview <- rbind(
+          overview,
+          c(
+            paste0(var, "_", alternatives[j]), TRUE, TRUE,
+            var %in% re
+          )
+        )
       }
     }
   }
@@ -282,66 +302,74 @@ overview_effects <- function(form, re = NULL, alternatives,
 #' @export
 
 create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
-
   ### check inputs
   if (!is.data.frame(choice_data)) {
     stop("'choice_data' must be a data frame.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.character(column)) {
     stop("'column' must be a character (vector).",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if (!all(is.numeric(k) && k%%1==0 && k>0)) {
+  if (!all(is.numeric(k) && k %% 1 == 0 && k > 0)) {
     stop("'k' must be a number or a vector of numbers.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.character(id) || length(id) != 1) {
     stop("'id' must be a character.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  for(col in c(column,id)) {
-    if(!col %in% colnames(choice_data)) {
+  for (col in c(column, id)) {
+    if (!col %in% colnames(choice_data)) {
       stop(paste0("Column '", col, "' not found in 'choice_data'."),
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
   ### loop over 'column' and 'k'
-  for(col in column) for(k_val in k) {
+  for (col in column) {
+    for (k_val in k) {
+      ### check if new columns already exist in 'choice_data'
+      col_new <- paste(col, k_val, sep = ".")
+      if (col_new %in% colnames(choice_data)) {
+        warning(
+          paste0("Column '", col_new, "' already exists in 'choice_data'."),
+          call. = FALSE, immediate. = TRUE
+        )
+        next()
+      }
 
-    ### check if new columns already exist in 'choice_data'
-    col_new <- paste(col,k_val,sep=".")
-    if(col_new %in% colnames(choice_data)) {
-      warning(
-        paste0("Column '", col_new, "' already exists in 'choice_data'."),
-        call. = FALSE, immediate. = TRUE
+      ### add column 'col.k'
+      cols_old <- colnames(choice_data)
+      choice_data <- cbind(choice_data, NA_real_)
+      colnames(choice_data) <- c(cols_old, col_new)
+
+      ### preserve factors
+      if (is.factor(choice_data[[col]])) {
+        choice_data[[col_new]] <- factor(choice_data[[col_new]],
+          levels = levels(choice_data[[col]])
+        )
+      }
+
+      ### build progress bar
+      pb <- RprobitB_pb(
+        title = paste("create", col_new),
+        total = length(unique(choice_data[[id]])),
+        tail = "deciders"
       )
-      next()
-    }
 
-    ### add column 'col.k'
-    cols_old <- colnames(choice_data)
-    choice_data <- cbind(choice_data, NA_real_)
-    colnames(choice_data) <- c(cols_old, col_new)
-
-    ### preserve factors
-    if(is.factor(choice_data[[col]])) {
-      choice_data[[col_new]] <- factor(choice_data[[col_new]],
-                                       levels = levels(choice_data[[col]]))
-    }
-
-    ### build progress bar
-    pb <- RprobitB_pb(title = paste("create",col_new),
-                      total = length(unique(choice_data[[id]])),
-                      tail = "deciders")
-
-    ### create lagged covariate 'col.k'
-    for(id_val in unique(choice_data[[id]])) {
-      RprobitB_pb_tick(pb)
-      id_rows <- which(choice_data[[id]] == id_val)
-      i <- seq_along(id_rows)[-(1:k_val)]
-      choice_data[id_rows[i], col_new] <- choice_data[id_rows[i - k_val], col]
+      ### create lagged covariate 'col.k'
+      for (id_val in unique(choice_data[[id]])) {
+        RprobitB_pb_tick(pb)
+        id_rows <- which(choice_data[[id]] == id_val)
+        i <- seq_along(id_rows)[-(1:k_val)]
+        choice_data[id_rows[i], col_new] <- choice_data[id_rows[i - k_val], col]
+      }
     }
   }
 
@@ -368,7 +396,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 #'
 #' @examples
 #' data("Electricity", package = "mlogit")
-#' cov <- c("pf","cl","loc","wk","tod","seas")
+#' cov <- c("pf", "cl", "loc", "wk", "tod", "seas")
 #' alternatives <- 1:4
 #' colnames(Electricity)
 #' Electricity <- as_cov_names(Electricity, cov, alternatives)
@@ -378,14 +406,14 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 
 as_cov_names <- function(choice_data, cov, alternatives) {
   x <- colnames(choice_data)
-  for(i in seq_len(length(x))){
+  for (i in seq_len(length(x))) {
     lab <- x[i]
     match_cov <- sapply(cov, function(x) grepl(x, lab))
     match_alt <- sapply(alternatives, function(x) grepl(x, lab))
-    if(sum(match_cov) > 1 || sum(match_alt) > 1){
+    if (sum(match_cov) > 1 || sum(match_alt) > 1) {
       stop("Failed due to ambiguity.", call. = FALSE)
-    } else if(sum(match_cov) == 1 && sum(match_alt) == 1){
-      x[i] <- paste0(cov[which(match_cov)],"_",alternatives[which(match_alt)])
+    } else if (sum(match_cov) == 1 && sum(match_alt) == 1) {
+      x[i] <- paste0(cov[which(match_cov)], "_", alternatives[which(match_alt)])
     }
   }
   colnames(choice_data) <- x
@@ -454,7 +482,7 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #'
 #' ### ranked case
 #' choice_data <- data.frame(
-#'   "id" = 1:3, "choice" = c("A,B,C","A,C,B","B,C,A"), "cov" = 1
+#'   "id" = 1:3, "choice" = c("A,B,C", "A,C,B", "B,C,A"), "cov" = 1
 #' )
 #' data <- prepare_data(
 #'   form = choice ~ 0 | cov + 0,
@@ -478,7 +506,6 @@ prepare_data <- function(
     form, choice_data, re = NULL, alternatives = NULL, ordered = FALSE,
     ranked = FALSE, base = NULL, id = "id", idc = NULL, standardize = NULL,
     impute = "complete_cases") {
-
   ### check 'form'
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
   form <- check_form_out$form
@@ -488,42 +515,56 @@ prepare_data <- function(
   ASC <- check_form_out$ASC
 
   ### check other inputs
-  if(!isTRUE(ordered) && !isFALSE(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!isTRUE(ranked) && !isFALSE(ranked)) {
+  if (!isTRUE(ranked) && !isFALSE(ranked)) {
     stop("'ranked' must be a boolean",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (ordered && ranked) {
     stop("'ordered' and 'ranked' cannot both be TRUE.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### check 'choice_data'
   if (!is.data.frame(choice_data)) {
     stop("'choice_data' must be a data frame.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!(is.character(id) && length(id) == 1)) {
     stop("'id' must be a character.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!id %in% colnames(choice_data)) {
-    stop(paste0("Decider identification column '", id,
-                "' not found in 'choice_data'."),
-         call. = FALSE)
+    stop(
+      paste0(
+        "Decider identification column '", id,
+        "' not found in 'choice_data'."
+      ),
+      call. = FALSE
+    )
   }
   if (!is.null(idc)) {
     if (!(is.character(idc) && length(idc) == 1)) {
       stop("'idc' must be a character.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!idc %in% colnames(choice_data)) {
-      stop(paste0("Choice occasion identification column '", idc,
-                  "' not found in 'choice_data'."),
-           call. = FALSE)
+      stop(
+        paste0(
+          "Choice occasion identification column '", idc,
+          "' not found in 'choice_data'."
+        ),
+        call. = FALSE
+      )
     }
   }
 
@@ -537,8 +578,8 @@ prepare_data <- function(
   if (is.null(idc)) {
     idc <- "idc"
     choice_data[, idc] <- unlist(
-        sapply(table(choice_data[, id]), seq_len, simplify = FALSE)
-      )
+      sapply(table(choice_data[, id]), seq_len, simplify = FALSE)
+    )
   }
 
   ### transform 'idc' of 'choice_data' to factor
@@ -563,33 +604,38 @@ prepare_data <- function(
   if (ordered) {
     if (is.null(alternatives)) {
       stop("Please specify 'alternatives', ordered from worst to best.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     if (is.null(alternatives)) {
       if (choice_available) {
         alternatives <- as.character(unique(choice_data[[choice]]))
-        if(ranked) {
+        if (ranked) {
           alternatives <- unique(unlist(strsplit(alternatives, ",")))
         }
       } else {
         stop("Please specify 'alternatives' if choices are not available.",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
     } else {
       if (!is.character(alternatives)) {
         stop("'alternatives' must be a character vector.",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       if (choice_available && !ranked) {
         choice_data <- choice_data[choice_data[[choice]] %in% alternatives, ]
-        choice_data[,id] <- droplevels(choice_data[,id])
-        choice_data[,idc] <- droplevels(choice_data[,idc])
+        choice_data[, id] <- droplevels(choice_data[, id])
+        choice_data[, idc] <- droplevels(choice_data[, idc])
         if (nrow(choice_data) == 0) {
-          stop(paste(
-            "No choices for", paste(alternatives, collapse = ", "), "found."
-          ),
-          call. = FALSE)
+          stop(
+            paste(
+              "No choices for", paste(alternatives, collapse = ", "), "found."
+            ),
+            call. = FALSE
+          )
         }
       }
     }
@@ -598,31 +644,38 @@ prepare_data <- function(
   J <- length(alternatives)
   if (J <= 1) {
     stop("At least two choice alternatives are required, only one provided.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(ordered == TRUE && J <= 2) {
+  if (ordered == TRUE && J <= 2) {
     stop("Please specify 3 or more alternatives for the ordered case.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(ranked == TRUE && J <= 2) {
+  if (ranked == TRUE && J <= 2) {
     stop("Please specify 3 or more alternatives for the ranked case.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### determine index of base alternative
   if (ordered || (!ASC && length(vars[[1]]) == 0 && length(vars[[2]]) == 0)) {
     base <- NULL
   } else {
-    if(is.null(base)){
+    if (is.null(base)) {
       base <- alternatives[J]
       base_index <- J
     } else if (any(alternatives == base)) {
       base_index <- which(alternatives == base)
     } else {
       base <- alternatives[J]
-      warning(paste0("'base' not contained in 'alternatives'. ",
-                     "Set 'base = ", alternatives[J], "' instead."),
-              immediate. = TRUE, call. = FALSE)
+      warning(
+        paste0(
+          "'base' not contained in 'alternatives'. ",
+          "Set 'base = ", alternatives[J], "' instead."
+        ),
+        immediate. = TRUE, call. = FALSE
+      )
       base_index <- J
     }
   }
@@ -631,28 +684,34 @@ prepare_data <- function(
   for (var in vars[[2]]) {
     if (!var %in% names(choice_data)) {
       stop(paste0("Column '", var, "' not found in 'choice_data'."),
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    if (!is.numeric(choice_data[,var])){
+    if (!is.numeric(choice_data[, var])) {
       stop(paste0("Column '", var, "' in 'choice_data' is not numeric."),
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
   for (var in c(vars[[1]], vars[[3]])) {
     for (j in alternatives) {
       if (!paste0(var, "_", j) %in% names(choice_data)) {
         stop(
-          paste0("Column '", paste0(var, "_", j),
-                 "' not found in 'choice_data'."),
+          paste0(
+            "Column '", paste0(var, "_", j),
+            "' not found in 'choice_data'."
+          ),
           call. = FALSE
-          )
+        )
       }
-      if (!is.numeric(choice_data[,paste0(var, "_", j)])){
+      if (!is.numeric(choice_data[, paste0(var, "_", j)])) {
         stop(
-          paste0("Column '", paste0(var, "_", j),
-                 "' in 'choice_data' is not numeric."),
+          paste0(
+            "Column '", paste0(var, "_", j),
+            "' in 'choice_data' is not numeric."
+          ),
           call. = FALSE
-          )
+        )
       }
     }
   }
@@ -669,7 +728,8 @@ prepare_data <- function(
   if (!is.null(standardize)) {
     if (!is.character(standardize)) {
       stop("'standardize' must be a character (vector).",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (identical(standardize, "all")) {
       standardize <- c(
@@ -680,7 +740,8 @@ prepare_data <- function(
     }
     if ("ASC" %in% standardize) {
       warning("Removed 'ASC' from 'standardize'.",
-              call. = FALSE, immediate. = TRUE)
+        call. = FALSE, immediate. = TRUE
+      )
       standardize <- standardize[-which(standardize == "ASC")]
     }
     for (var in vars[[2]]) {
@@ -713,10 +774,9 @@ prepare_data <- function(
     for (t in seq_len(T[n])) {
       data_nt <- data_n[t, ]
 
-      if(ordered) {
-        X_nt <- matrix(data_nt[,vars[[2]]], nrow = 1)
+      if (ordered) {
+        X_nt <- matrix(data_nt[, vars[[2]]], nrow = 1)
         colnames(X_nt) <- vars[[2]]
-
       } else {
         X_nt <- matrix(NA_real_, nrow = J, ncol = 0)
 
@@ -740,9 +800,13 @@ prepare_data <- function(
           }
           mat <- mat[, -base_index, drop = FALSE]
           X_nt <- cbind(X_nt, mat)
-          colnames(X_nt) <- c(old_names,
-                              paste0(var, "_",
-                                     alternatives[(1:J)[-base_index]]))
+          colnames(X_nt) <- c(
+            old_names,
+            paste0(
+              var, "_",
+              alternatives[(1:J)[-base_index]]
+            )
+          )
         }
 
         ### type-3 covariates
@@ -773,11 +837,13 @@ prepare_data <- function(
 
   ### save cov names
   cov_names <- c(
-    if(length(vars[[1]]) > 0)
-      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_"),
+    if (length(vars[[1]]) > 0) {
+      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_")
+    },
     vars[[2]],
-    if(length(vars[[3]]) > 0)
+    if (length(vars[[3]]) > 0) {
       paste(rep(vars[[3]], each = length(alternatives)), alternatives, sep = "_")
+    }
   )
 
   ### create output
@@ -801,8 +867,10 @@ prepare_data <- function(
     simulated = FALSE,
     choice_available = choice_available,
     true_parameter = NULL,
-    res_var_names = list("choice" = choice, "cov" = cov_names, "id" = id,
-                         "idc" = idc)
+    res_var_names = list(
+      "choice" = choice, "cov" = cov_names, "id" = id,
+      "idc" = idc
+    )
   )
 
   ### return 'RprobitB_data' object
@@ -839,16 +907,15 @@ prepare_data <- function(
 #' @importFrom stats complete.cases
 
 missing_covariates <- function(
-    choice_data, impute = "complete_cases", col_ignore = character()
-    ) {
-
+    choice_data, impute = "complete_cases", col_ignore = character()) {
   ### check input
   if (!is.data.frame(choice_data)) {
     stop("'choice_data' must be a data frame.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!(is.character(impute) && length(impute) == 1 &&
-       impute %in% c("complete_cases","zero","mean"))) {
+    impute %in% c("complete_cases", "zero", "mean"))) {
     stop(
       "'impute' must be either 'complete_cases', 'zero' or 'mean'.",
       call. = FALSE
@@ -867,31 +934,35 @@ missing_covariates <- function(
   ### imputation
   RprobitB_pp("Checking for missing covariates")
   if (impute == "complete_cases") {
-    choice_data <- choice_data[stats::complete.cases(choice_data[,ci]), ]
+    choice_data <- choice_data[stats::complete.cases(choice_data[, ci]), ]
   }
   if (impute == "zero") {
-    for(i in ci) {
-      if (!is.numeric(choice_data[,i])) {
+    for (i in ci) {
+      if (!is.numeric(choice_data[, i])) {
         warning(
-          paste0("Cannot impute column '", colnames(choice_data)[i],
-                 "' in 'choice_data' with zeros because it is not numeric."),
+          paste0(
+            "Cannot impute column '", colnames(choice_data)[i],
+            "' in 'choice_data' with zeros because it is not numeric."
+          ),
           immediate. = TRUE, call. = FALSE
         )
       } else {
-        choice_data[is.na(choice_data[,i]),i] <- 0
+        choice_data[is.na(choice_data[, i]), i] <- 0
       }
     }
   }
   if (impute == "mean") {
-    for(i in ci) {
-      if (!is.numeric(choice_data[,i])) {
+    for (i in ci) {
+      if (!is.numeric(choice_data[, i])) {
         warning(
-          paste0("Cannot impute column '", colnames(choice_data)[i],
-                 "' in 'choice_data' with mean because it is not numeric."),
+          paste0(
+            "Cannot impute column '", colnames(choice_data)[i],
+            "' in 'choice_data' with mean because it is not numeric."
+          ),
           immediate. = TRUE, call. = FALSE
         )
       } else {
-        choice_data[is.na(choice_data[,i]),i] <- mean(choice_data[,i], na.rm = TRUE)
+        choice_data[is.na(choice_data[, i]), i] <- mean(choice_data[, i], na.rm = TRUE)
       }
     }
   }
@@ -955,8 +1026,8 @@ missing_covariates <- function(
 #'   alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
 #'   ordered = TRUE,
 #'   covariates = list(
-#'     "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
-#'     ),
+#'     "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
+#'   ),
 #'   seed = 1
 #' )
 #'
@@ -989,13 +1060,12 @@ missing_covariates <- function(
 simulate_choices <- function(
     form, N, T = 1, J, re = NULL, alternatives = NULL, ordered = FALSE,
     ranked = FALSE, base = NULL, covariates = NULL, seed = NULL,
-    true_parameter = list()
-    ) {
-
+    true_parameter = list()) {
   ### check 'form'
   if (missing(form)) {
     stop("Please specify the model formula 'form'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
   form <- check_form_out$form
@@ -1007,61 +1077,76 @@ simulate_choices <- function(
   ### check other inputs
   if (missing(N)) {
     stop("Please specify 'N'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(N) || N %% 1 != 0) {
     stop("'N' must be a non-negative number.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (length(T) == 1) {
     T <- rep(T, N)
   }
   if (any(!is.numeric(T)) || any(T %% 1 != 0)) {
     stop("'T' must be non-negative or a vector of non-negative numbers.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(J) || J %% 1 != 0 || !J >= 2) {
     stop("'J' must be a number greater or equal 2.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (is.null(alternatives)) {
     if (J > 26) {
       stop("Please specify 'alternatives'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     } else {
       alternatives <- LETTERS[1:J]
     }
   }
   if (length(alternatives) != J || !is.character(alternatives)) {
     stop("'alternatives' must be a character (vector) of length 'J'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!isTRUE(ordered) && !isFALSE(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!isTRUE(ranked) && !isFALSE(ranked)) {
+  if (!isTRUE(ranked) && !isFALSE(ranked)) {
     stop("'ranked' must be a boolean",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(ordered == TRUE && ranked == TRUE) {
+  if (ordered == TRUE && ranked == TRUE) {
     stop("'ordered' and 'ranked' cannot both be TRUE.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(ordered == TRUE && J <= 2) {
+  if (ordered == TRUE && J <= 2) {
     stop("'J' must be greater or equal 3 in the ordered probit model.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(ranked == TRUE && J <= 2) {
+  if (ranked == TRUE && J <= 2) {
     stop("'J' must be greater or equal 3 in the ranked probit model.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.null(covariates)) {
     for (i in 1:length(covariates)) {
       if (length(covariates[[i]]) != sum(T)) {
-        stop(paste0("In 'covariates', there must be ", sum(T), " values for '",
-                    names(covariates)[i], "'."),
-             call. = FALSE)
+        stop(
+          paste0(
+            "In 'covariates', there must be ", sum(T), " values for '",
+            names(covariates)[i], "'."
+          ),
+          call. = FALSE
+        )
       }
     }
   }
@@ -1074,21 +1159,25 @@ simulate_choices <- function(
     "id" = rep(1:N, times = T),
     "idc" = unlist(sapply(T, seq_len, simplify = FALSE))
   )
-  if(!ordered) {
+  if (!ordered) {
     ### sort alternatives
     alternatives <- sort(alternatives)
 
     ### determine index of base alternative
-    if(is.null(base)){
+    if (is.null(base)) {
       base <- alternatives[J]
       base_index <- J
     } else if (any(alternatives == base)) {
       base_index <- which(alternatives == base)
     } else {
       base <- alternatives[J]
-      warning(paste0("'base' not contained in alternative set.\n",
-                     "Set 'base = ", alternatives[J], "' instead."),
-              immediate. = TRUE, call. = FALSE)
+      warning(
+        paste0(
+          "'base' not contained in alternative set.\n",
+          "Set 'base = ", alternatives[J], "' instead."
+        ),
+        immediate. = TRUE, call. = FALSE
+      )
       base_index <- J
     }
   }
@@ -1131,11 +1220,13 @@ simulate_choices <- function(
 
   ### report un-used elements in 'covariates'
   if (length(names(covariates)) > 0) {
-    warning(paste(
-      "The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
-      "in 'covariates' are ignored."),
+    warning(
+      paste(
+        "The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
+        "in 'covariates' are ignored."
+      ),
       call. = FALSE, immediate. = TRUE
-      )
+    )
   }
 
   ### artificially add ASCs
@@ -1150,8 +1241,10 @@ simulate_choices <- function(
   true_parameter <- do.call(
     what = RprobitB_parameter,
     args = c(
-      list("P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "seed" = seed,
-           "ordered" = ordered),
+      list(
+        "P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "seed" = seed,
+        "ordered" = ordered
+      ),
       true_parameter
     )
   )
@@ -1172,10 +1265,9 @@ simulate_choices <- function(
     for (t in seq_len(T[n])) {
       data_nt <- data_n[t, ]
 
-      if(ordered) {
-        X_nt <- as.matrix(data_nt[,vars[[2]]], nrow = 1)
+      if (ordered) {
+        X_nt <- as.matrix(data_nt[, vars[[2]]], nrow = 1)
         colnames(X_nt) <- vars[[2]]
-
       } else {
         X_nt <- matrix(NA_real_, nrow = J, ncol = 0)
 
@@ -1230,7 +1322,7 @@ simulate_choices <- function(
       }
 
       ### compute utility and choice decision
-      if(ordered) {
+      if (ordered) {
         eps <- rnorm(n = 1, mean = 0, sd = sqrt(true_parameter$Sigma))
         if (P_f == 0 & P_r == 0) {
           U_nt <- eps
@@ -1239,11 +1331,13 @@ simulate_choices <- function(
           U_nt <- V_nt + eps
         }
         gamma <- c(0, cumsum(exp(true_parameter[["d"]])))
-        y_nt_ind <- cut(U_nt, breaks = c(-Inf, gamma, Inf),
-                        right = TRUE, include.lowest = TRUE, labels = FALSE)
+        y_nt_ind <- cut(U_nt,
+          breaks = c(-Inf, gamma, Inf),
+          right = TRUE, include.lowest = TRUE, labels = FALSE
+        )
         y_n[t] <- alternatives[y_nt_ind]
       } else {
-        eps <- as.vector(rmvnorm(mu = rep(0,J), Sigma = true_parameter$Sigma_full))
+        eps <- as.vector(rmvnorm(mu = rep(0, J), Sigma = true_parameter$Sigma_full))
         if (P_f == 0 & P_r == 0) {
           U_nt <- eps
         } else {
@@ -1252,7 +1346,8 @@ simulate_choices <- function(
         }
         if (ranked) {
           y_n[t] <- paste(alternatives[order(as.vector(U_nt), decreasing = TRUE)],
-                          collapse = ",")
+            collapse = ","
+          )
         } else {
           y_n[t] <- alternatives[which.max(U_nt)]
         }
@@ -1270,11 +1365,13 @@ simulate_choices <- function(
 
   ### save cov names
   cov_names <- c(
-    if(length(vars[[1]]) > 0)
-      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_"),
+    if (length(vars[[1]]) > 0) {
+      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_")
+    },
     vars[[2]],
-    if(length(vars[[3]]) > 0)
+    if (length(vars[[3]]) > 0) {
       paste(rep(vars[[3]], each = length(alternatives)), alternatives, sep = "_")
+    }
   )
 
   ### create output
@@ -1298,8 +1395,10 @@ simulate_choices <- function(
     simulated = TRUE,
     choice_available = TRUE,
     true_parameter = true_parameter,
-    res_var_names = list("choice" = choice, "cov" = cov_names, "id" = "id",
-                         "idc" = "idc")
+    res_var_names = list(
+      "choice" = choice, "cov" = cov_names, "id" = "id",
+      "idc" = "idc"
+    )
   )
 
   ### return 'RprobitB_data' object
@@ -1353,29 +1452,31 @@ simulate_choices <- function(
 
 train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
                        random = FALSE, seed = NULL) {
-
   ### input checks
-  if (!inherits(x,"RprobitB_data")) {
+  if (!inherits(x, "RprobitB_data")) {
     stop("'x' must be of class 'RprobitB_data'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (is.null(test_proportion) && is.null(test_number)) {
     stop("Either 'test_proportion' or 'test_number' must be specified.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.null(test_proportion) && !is.null(test_number)) {
     stop("Only one of 'test_proportion' and 'test_number' can be specified.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.null(test_proportion)) {
     if (!(is.numeric(test_proportion) && length(test_proportion) == 1 &&
-          all(test_proportion >= 0) && all(test_proportion <= 1))) {
+      all(test_proportion >= 0) && all(test_proportion <= 1))) {
       stop("'test_proportion' must be a number between 0 and 1.", call. = FALSE)
     }
   }
   if (!is.null(test_number)) {
     if (!(is.numeric(test_number) && length(test_number) == 1 &&
-          all(test_number >= 0) && all(test_number %% 1 == 0))) {
+      all(test_number >= 0) && all(test_number %% 1 == 0))) {
       stop("'test_number' must be a positive integer.", call. = FALSE)
     }
   }
@@ -1415,7 +1516,8 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
     train$T <- train$T[ind_train]
     if (!identical(train$true_parameter$beta, NA)) {
       train$true_parameter$beta <- train$true_parameter$beta[, ind_train,
-                                                             drop = FALSE]
+        drop = FALSE
+      ]
     }
     if (!identical(train$true_parameter$z, NA)) {
       train$true_parameter$z <- train$true_parameter$z[ind_train]
@@ -1428,7 +1530,8 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
     test$T <- test$T[ind_test]
     if (!identical(test$true_parameter$beta, NA)) {
       test$true_parameter$beta <- test$true_parameter$beta[, ind_test,
-                                                           drop = FALSE]
+        drop = FALSE
+      ]
     }
     if (!identical(test$true_parameter$z, NA)) {
       test$true_parameter$z <- test$true_parameter$z[ind_test]
@@ -1447,7 +1550,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
         warning(
           "Only ", x$T[n], " observation(s) available for decider ", n, ".",
           call. = FALSE, immediate. = TRUE
-          )
+        )
         size_test <- x$T[n]
       }
 
@@ -1461,28 +1564,34 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
       ### check 'ind_test' and 'ind_train'
       if (sum(ind_test != 0) == 0) {
         warning("No observation(s) for decider ", n, " in test subsample.",
-                call. = FALSE, immediate. = TRUE)
+          call. = FALSE, immediate. = TRUE
+        )
       }
       if (sum(ind_train != 0) == 0) {
         warning("No observation(s) for decider ", n, " in train subsample.",
-                call. = FALSE, immediate. = TRUE)
+          call. = FALSE, immediate. = TRUE
+        )
       }
 
       ### remove elements from 'train'
-      train$data[[n]] <- list("X" = train$data[[n]]$X[ind_train],
-                              "y" = train$data[[n]]$y[ind_train])
-      train$choice_data[train$choice_data[[train$res_var_names$id]] == n
-                        & !train$choice_data[[train$res_var_names$idc]] %in%
-                          ind_train, ] <- NA
+      train$data[[n]] <- list(
+        "X" = train$data[[n]]$X[ind_train],
+        "y" = train$data[[n]]$y[ind_train]
+      )
+      train$choice_data[train$choice_data[[train$res_var_names$id]] == n &
+        !train$choice_data[[train$res_var_names$idc]] %in%
+          ind_train, ] <- NA
       train$choice_data <- stats::na.omit(train$choice_data)
       train$T[n] <- sum(ind_train != 0)
 
       ### remove elements from 'test'
-      test$data[[n]] <- list("X" = test$data[[n]]$X[ind_test],
-                             "y" = test$data[[n]]$y[ind_test])
+      test$data[[n]] <- list(
+        "X" = test$data[[n]]$X[ind_test],
+        "y" = test$data[[n]]$y[ind_test]
+      )
       test$choice_data[test$choice_data[[test$res_var_names$id]] == n &
-                         !test$choice_data[[test$res_var_names$idc]] %in%
-                         ind_test, ] <- NA
+        !test$choice_data[[test$res_var_names$idc]] %in%
+          ind_test, ] <- NA
       test$choice_data <- stats::na.omit(test$choice_data)
       test$T[n] <- sum(ind_test != 0)
     }
@@ -1567,9 +1676,7 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 RprobitB_data <- function(
     data, choice_data, N, T, J, P_f, P_r, alternatives, ordered, ranked, base,
     form, re, ASC, effects, standardize, simulated, choice_available,
-    true_parameter, res_var_names
-    ) {
-
+    true_parameter, res_var_names) {
   ### check inputs
   stopifnot(is.list(data))
   stopifnot(is.numeric(N), N %% 1 == 0)
@@ -1623,8 +1730,8 @@ print.RprobitB_data <- function(x, ...) {
   cat(
     ifelse(x$simulated, "Simulated", "Empirical"),
     "data of", sum(x$T),
-    if(x$ordered) "(ordered)",
-    if(x$ranked) "(ranked)",
+    if (x$ordered) "(ordered)",
+    if (x$ranked) "(ranked)",
     "choices.\n"
   )
   return(invisible(x))
@@ -1634,11 +1741,11 @@ print.RprobitB_data <- function(x, ...) {
 #' @export
 
 summary.RprobitB_data <- function(object, ...) {
-
   ### check class of 'object'
   if (!inherits(object, "RprobitB_data")) {
     stop("Not of class 'RprobitB_data'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### alternative frequency
@@ -1680,15 +1787,18 @@ summary.RprobitB_data <- function(object, ...) {
 
 print.summary.RprobitB_data <- function(x, ...) {
   overview <- data.frame(
-    c(x$N,
+    c(
+      x$N,
       ifelse(length(unique(x$T)) == 1, x$T[1], paste0(min(x$T), "-", max(x$T))),
       sum(x$T),
       nrow(x$alt_freq),
       x$alt_freq$frequency
-      )
+    )
   )
-  rownames(overview) <- c("deciders", "choice occasions", "total choices",
-                          "alternatives", paste0("- '", rownames(x$alt_freq), "'"))
+  rownames(overview) <- c(
+    "deciders", "choice occasions", "total choices",
+    "alternatives", paste0("- '", rownames(x$alt_freq), "'")
+  )
   colnames(overview) <- c("count")
   print(overview)
   return(invisible(x))
@@ -1756,13 +1866,10 @@ print.summary.RprobitB_data <- function(x, ...) {
 #'
 #' @examples
 #' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
-
 RprobitB_parameter <- function(
     P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
     Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
-    d = NULL, seed = NULL, sample = TRUE
-    ) {
-
+    d = NULL, seed = NULL, sample = TRUE) {
   ### seed for sampling missing parameters
   if (!is.null(seed)) {
     set.seed(seed)
@@ -1780,7 +1887,7 @@ RprobitB_parameter <- function(
       }
       if (length(alpha) != P_f || !is.numeric(alpha)) {
         stop("'alpha' must be a numeric vector of length ", P_f, ".",
-             call. = FALSE
+          call. = FALSE
         )
       }
       names(alpha) <- create_labels_alpha(P_f)
@@ -1796,7 +1903,6 @@ RprobitB_parameter <- function(
     z <- NA
     beta <- NA
   } else {
-
     ### C
     if (!is.null(C)) {
       if (!is.numeric(C) || !C %% 1 == 0 || !C > 0) {
@@ -1818,9 +1924,10 @@ RprobitB_parameter <- function(
           s[C] <- 1 - sum(s[-C])
         }
         if (length(s) != C || !is.numeric(s) ||
-            abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
+          abs(sum(s) - 1) > .Machine$double.eps || is.unsorted(rev(s))) {
           stop("'s' must be a non-ascending numeric vector of length ", C,
-               " which sums up to 1.", call. = FALSE
+            " which sums up to 1.",
+            call. = FALSE
           )
         }
         names(s) <- create_labels_s(P_r, C)
@@ -1838,7 +1945,7 @@ RprobitB_parameter <- function(
       b <- as.matrix(b)
       if (!is.numeric(b) || nrow(b) != P_r || ncol(b) != C) {
         stop("'b' must be a numeric matrix of dimension ", P_r, " x ", C, ".",
-             call. = FALSE
+          call. = FALSE
         )
       }
       names(b) <- create_labels_b(P_r, C)
@@ -1856,16 +1963,17 @@ RprobitB_parameter <- function(
       }
       Omega <- as.matrix(Omega)
       if (!is.numeric(Omega) || nrow(Omega) != P_r * P_r ||
-          ncol(Omega) != C) {
+        ncol(Omega) != C) {
         stop(
           "'Omega' must be a numeric matrix of dimension ", P_r * P_r, " x ",
-          C, ".", call. = FALSE
+          C, ".",
+          call. = FALSE
         )
       }
       for (c in 1:C) {
         if (!is_covariance_matrix(matrix(Omega[, c], nrow = P_r, ncol = P_r))) {
           stop(paste("Column", c, "in 'Omega' builds no covariance matrix."),
-               call. = FALSE
+            call. = FALSE
           )
         }
       }
@@ -1901,9 +2009,10 @@ RprobitB_parameter <- function(
         }
       }
       if (!is.numeric(beta) || nrow(beta) != P_r ||
-          ncol(beta) != N) {
+        ncol(beta) != N) {
         stop("'beta' must be a numeric matrix of dimension ", P_r, " x ", N,
-             ".", call. = FALSE
+          ".",
+          call. = FALSE
         )
       }
     }
@@ -1937,14 +2046,14 @@ RprobitB_parameter <- function(
       }
       if (!(is_covariance_matrix(Sigma) && nrow(Sigma) == J - 1)) {
         stop("'Sigma' is not a differenced covariance matrix of dimension ",
-             J - 1, " x ", J - 1, ".",
-             call. = FALSE
+          J - 1, " x ", J - 1, ".",
+          call. = FALSE
         )
       }
       if (!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full) == J)) {
         stop("'Sigma_full' is not a covariance matrix of dimension ", J,
-             " x ", J, ".",
-             call. = FALSE
+          " x ", J, ".",
+          call. = FALSE
         )
       }
       names(Sigma) <- create_labels_Sigma(J, cov_sym = TRUE)
@@ -1954,11 +2063,11 @@ RprobitB_parameter <- function(
 
   ### d
   if (ordered) {
-    if(is.null(d)) {
-      d <- round(runif(J-2),2)
+    if (is.null(d)) {
+      d <- round(runif(J - 2), 2)
     }
-    if(length(d) != J-2 || !is.numeric(d)) {
-      stop("'d' must be a numeric vector of length ", J-2, ".", call. = FALSE)
+    if (length(d) != J - 2 || !is.numeric(d)) {
+      stop("'d' must be a numeric vector of length ", J - 2, ".", call. = FALSE)
     }
     names(d) <- create_labels_d(J, ordered = TRUE)
   } else {
@@ -2003,4 +2112,3 @@ print.RprobitB_parameter <- function(x, ..., digits = 4) {
   }
   return(invisible(x))
 }
-

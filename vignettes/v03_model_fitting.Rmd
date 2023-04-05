@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "",
   fig.align = "center",
-  fig.dim = c(8, 6), 
+  fig.dim = c(8, 6),
   out.width = "75%"
 )
 library("RprobitB")
@@ -227,26 +227,27 @@ Calling the summary function on the estimated `RprobitB_fit` object yields addit
 - or custom statistics like the absolute difference between the median and the mean.
 
 ```{r, summary-model-train}
-summary(model_train, 
-        FUN = c("mean"        = mean, 
-                "sd"          = stats::sd, 
-                "R^"          = R_hat,
-                "custom_stat" = function(x) abs(mean(x) - median(x))
-                )
-       )
+summary(model_train,
+  FUN = c(
+    "mean" = mean,
+    "sd" = stats::sd,
+    "R^" = R_hat,
+    "custom_stat" = function(x) abs(mean(x) - median(x))
+  )
+)
 ```
 
 Calling the `plot` method with the additional argument `type = "trace"` plots the trace of the Gibbs samples `gibbs_samples_nbt`: 
 
 ```{r, plot-trace-model-train}
-par(mfrow = c(2,1))
+par(mfrow = c(2, 1))
 plot(model_train, type = "trace")
 ```
 
 Additionally, we can visualize the serial correlation of the Gibbs samples via the argument `type = "acf"`. The boxes in the top-right corner state the total sample size TSS (here `R` - `B` = 10000 - 5000 = 5000), the effective sample size ESS, and the factor by which TSS is larger than ESS.
 
 ```{r, plot-acf-model-train}
-par(mfrow = c(2,3))
+par(mfrow = c(2, 3))
 plot(model_train, type = "acf")
 ```
 

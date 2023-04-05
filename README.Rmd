@@ -76,22 +76,28 @@ Now assume that a train company wants to anticipate the effect of a price increa
 
 ```{r predict1}
 predict(
-  model, 
-  data = data.frame("price_A" = c(100, 110), 
-                    "price_B" = c(100, 100)),
-  overview = FALSE)
+  model,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "price_B" = c(100, 100)
+  ),
+  overview = FALSE
+)
 ```
 
 However, offering a better comfort class (`0` here is better than `1`) compensates for the higher price and even results in a gain of 7\% market share:
 
 ```{r predict2}
 predict(
-  model, 
-  data = data.frame("price_A"   = c(100, 110), 
-                    "comfort_A" = c(1, 0),
-                    "price_B"   = c(100, 100),
-                    "comfort_B" = c(1, 1)),
-  overview = FALSE)
+  model,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "comfort_A" = c(1, 0),
+    "price_B" = c(100, 100),
+    "comfort_B" = c(1, 1)
+  ),
+  overview = FALSE
+)
 ```
 
 This is just the tip of the iceberg: {RprobitB} offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more. 
