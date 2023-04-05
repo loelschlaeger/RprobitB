@@ -126,7 +126,7 @@ performance:</p>
 instead returns predictions on the level of individual choice
 occasions:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pred</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    id idc    A    B true predicted correct</span></span>
 <span><span class="co">#&gt; 1   1   1 0.91 0.09    A         A    TRUE</span></span>
@@ -181,8 +181,8 @@ at various cutoffs (here <code>n.cuts = 20</code>). The closer the curve
 is to the top-left corner, the better the binary classification.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pred</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">A</span>, d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">true</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotROC/man/geom_roc.html" class="external-link">geom_roc</a></span><span class="op">(</span>n.cuts <span class="op">=</span> <span class="fl">20</span>, labels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pred</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">A</span>, d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">true</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotROC/man/geom_roc.html" class="external-link">geom_roc</a></span><span class="op">(</span>n.cuts <span class="op">=</span> <span class="fl">20</span>, labels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/plotROC/man/style_roc.html" class="external-link">style_roc</a></span><span class="op">(</span>theme <span class="op">=</span> <span class="va">theme_grey</span><span class="op">)</span></span></code></pre></div>
 <p><img src="img/roc-example-1.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
@@ -206,10 +206,13 @@ market share. By our model, increasing the ticket price from 100€ to
 does not increase their prices.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
-<span>  <span class="va">model_train</span>, </span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, </span>
-<span>                    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">model_train</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    <span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>,</span>
+<span>    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id idc    A    B prediction</span></span>
 <span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
 <span><span class="co">#&gt; 2  2   1 0.35 0.65          B</span></span></code></pre></div>
@@ -217,12 +220,15 @@ does not increase their prices.</p>
 price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
-<span>  <span class="va">model_train</span>, </span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">110</span><span class="op">)</span>, </span>
-<span>                    <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>,</span>
-<span>                    <span class="st">"price_B"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span>,</span>
-<span>                    <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">model_train</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    <span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>,</span>
+<span>    <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id idc    A    B prediction</span></span>
 <span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
 <span><span class="co">#&gt; 2  2   1 0.57 0.43          A</span></span></code></pre></div>

@@ -407,13 +407,14 @@ chain of Gibbs samples converged to the stationary distribution.&lt;/p&gt;"><sup
 median and the mean.</p></li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>, </span>
-<span>        FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>        <span class="op">=</span> <span class="va">mean</span>, </span>
-<span>                <span class="st">"sd"</span>          <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>, </span>
-<span>                <span class="st">"R^"</span>          <span class="op">=</span> <span class="va">R_hat</span>,</span>
-<span>                <span class="st">"custom_stat"</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
-<span>                <span class="op">)</span></span>
-<span>       <span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>,</span>
+<span>  FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"mean"</span> <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>    <span class="st">"sd"</span> <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>,</span>
+<span>    <span class="st">"R^"</span> <span class="op">=</span> <span class="va">R_hat</span>,</span>
+<span>    <span class="st">"custom_stat"</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="text-decoration: underline;">Probit model</span></span></span>
 <span><span class="co"><span style="text-decoration: underline;">#&gt; </span>Formula: choice ~ price + time + change + comfort | 0 </span></span>
 <span><span class="co">#&gt; R: 1000, B: 500, Q: 1</span></span>
@@ -436,7 +437,7 @@ median and the mean.</p></li>
 <code>type = "trace"</code> plots the trace of the Gibbs samples
 <code>gibbs_samples_nbt</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot-trace-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Additionally, we can visualize the serial correlation of the Gibbs
@@ -445,7 +446,7 @@ top-right corner state the total sample size TSS (here <code>R</code> -
 <code>B</code> = 10000 - 5000 = 5000), the effective sample size ESS,
 and the factor by which TSS is larger than ESS.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="plot-acf-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, the effective sample size is the value <span class="math inline">\(\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)\)</span>,

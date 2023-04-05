@@ -252,7 +252,7 @@ type 1 for all covariates and remove ASCs:</p>
 <code>time</code> (because we would typically expect heterogeneity
 here):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>,<span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"price"</span>, <span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -435,16 +435,16 @@ default) <code>C = 1</code> and row 1 and 2 correspond to
 <code>var2_A</code> and <code>ASC_A</code>, respectively.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
-<span>  form <span class="op">=</span> <span class="va">form</span>, </span>
-<span>  N <span class="op">=</span> <span class="va">N</span>, </span>
-<span>  T <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>  J <span class="op">=</span> <span class="fl">2</span>, </span>
-<span>  re <span class="op">=</span> <span class="va">re</span>, </span>
-<span>  alternatives <span class="op">=</span> <span class="va">alternatives</span>, </span>
+<span>  form <span class="op">=</span> <span class="va">form</span>,</span>
+<span>  N <span class="op">=</span> <span class="va">N</span>,</span>
+<span>  T <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  J <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  re <span class="op">=</span> <span class="va">re</span>,</span>
+<span>  alternatives <span class="op">=</span> <span class="va">alternatives</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  true_parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,</span>
-<span>    b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>

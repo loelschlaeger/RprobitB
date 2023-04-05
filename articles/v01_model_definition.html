@@ -241,20 +241,20 @@ element of &lt;span class="math inline"&gt;\(\alpha\)&lt;/span&gt;.&lt;/p&gt;'><
 their definition in this vignette. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/RprobitB_parameter.html">RprobitB_parameter</a></span><span class="op">(</span></span>
-<span>  P_f   <span class="op">=</span> <span class="fl">1</span>,           </span>
-<span>  P_r   <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  J     <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  N     <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  C     <span class="op">=</span> <span class="fl">2</span>,          <span class="co"># the number of latent classes</span></span>
-<span>  alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,       <span class="co"># the fixed coefficient vector of length 'P_f'</span></span>
-<span>  s     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>,<span class="fl">0.4</span><span class="op">)</span>, <span class="co"># the vector of class weights of length 'C'</span></span>
-<span>  b     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,           </span>
-<span>                      <span class="co"># the matrix of class means as columns of dimension 'P_r' x 'C'</span></span>
-<span>  Omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,<span class="fl">0.1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,       </span>
-<span>                      <span class="co"># the matrix of class covariance matrices as columns of dimension 'P_r^2' x 'C'</span></span>
-<span>  Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,    <span class="co"># the differenced error term covariance matrix of dimension '(J-1)' x '(J-1)'</span></span>
-<span>                      <span class="co"># the undifferenced error term covariance matrix is labeled 'Sigma_full'</span></span>
-<span>  z     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="fl">5</span><span class="op">)</span>  <span class="co"># the vector of the allocation variables of length 'N'</span></span>
+<span>  P_f <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  P_r <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  J <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  N <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  C <span class="op">=</span> <span class="fl">2</span>, <span class="co"># the number of latent classes</span></span>
+<span>  alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, <span class="co"># the fixed coefficient vector of length 'P_f'</span></span>
+<span>  s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.4</span><span class="op">)</span>, <span class="co"># the vector of class weights of length 'C'</span></span>
+<span>  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="co"># the matrix of class means as columns of dimension 'P_r' x 'C'</span></span>
+<span>  Omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="fl">0.1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="co"># the matrix of class covariance matrices as columns of dimension 'P_r^2' x 'C'</span></span>
+<span>  Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="co"># the differenced error term covariance matrix of dimension '(J-1)' x '(J-1)'</span></span>
+<span>  <span class="co"># the undifferenced error term covariance matrix is labeled 'Sigma_full'</span></span>
+<span>  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># the vector of the allocation variables of length 'N'</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; alpha : 1</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -297,9 +297,9 @@ their definition in this vignette. For example:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; beta : 2 x 10 matrix of doubles </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;        [,1]   [,2]    [,3] ...  [,10]</span></span>
-<span><span class="co">#&gt; [1,] 1.1154 0.8843 -3.1179 ... 1.7556</span></span>
-<span><span class="co">#&gt; [2,] 1.0502 2.5020 -0.2802 ... 1.7874</span></span>
+<span><span class="co">#&gt;         [,1]   [,2]   [,3] ...  [,10]</span></span>
+<span><span class="co">#&gt; [1,] -1.0224 1.2862 0.7711 ... 0.3638</span></span>
+<span><span class="co">#&gt; [2,]  1.2020 1.8840 1.3292 ... 1.7643</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; z : integer vector of length 10 </span></span>
