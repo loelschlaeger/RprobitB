@@ -93,8 +93,9 @@ rmvnorm <- function(mean, Sigma, log = FALSE) {
 dwishart <- function(x, df, scale, log = FALSE, inv = FALSE) {
   stopifnot(
     is.numeric(x), is.matrix(x), is_covariance_matrix(x),
-    is_positive_integer(df), df >= dim(x)[1], is.matrix(scale), is_covariance_matrix(scale),
-    dim(x)[1] == dim(scale)[1], is_true_false(log), is_true_false(inv)
+    is_positive_integer(df), df >= dim(x)[1], is.matrix(scale),
+    is_covariance_matrix(scale), dim(x)[1] == dim(scale)[1], is_true_false(log),
+    is_true_false(inv)
   )
   dwishart_cpp(x, df, scale, log, inv)
 }

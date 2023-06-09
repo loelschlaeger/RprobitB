@@ -6,6 +6,7 @@
 #'
 #' @docType package
 #' @name RprobitB
+#' @author Lennart Oelschläger, \email{oelschlaeger.lennart@gmail.com}
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib RprobitB, .registration=TRUE
 #' @keywords internal
@@ -28,8 +29,8 @@
   msg <- glue::glue(
     "Thanks for using {{RprobitB}} {utils::packageVersion('RprobitB')}",
     ", happy choice modeling!\n",
-    "See ", cli::style_hyperlink("https://loelschlaeger.de/RprobitB", "https://loelschlaeger.de/RprobitB"),
-    " for help."
+    "Documentation: ",
+    cli::style_hyperlink("https://loelschlaeger.de/RprobitB", "https://loelschlaeger.de/RprobitB"),
   )
   packageStartupMessage(msg)
   invisible()
