@@ -9,12 +9,12 @@
 status](https://www.r-pkg.org/badges/version/RprobitB)](https://CRAN.R-project.org/package=RprobitB)
 [![CRAN
 downloads](https://cranlogs.r-pkg.org/badges/last-month/RprobitB)](https://CRAN.R-project.org/package=RprobitB)
-[![R-CMD-check](https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg)](https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main)
+[![R-CMD-check](https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of {RprobitB} is to explain choices made by deciders among a
+The goal of `{RprobitB}` is to explain choices made by deciders among a
 discrete set of alternatives. In a Bayesian way. For example, think of
 tourists that want to book a train trip to their holiday destination:
 The knowledge why they prefer a certain alternative over another is of
@@ -23,7 +23,7 @@ to pay for say a faster or more comfortable trip.
 
 ## Installation
 
-You can install the released version of {RprobitB} from
+You can install the released version of `{RprobitB}` from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
@@ -103,10 +103,13 @@ customers to the competitor who does not increase their prices:
 
 ``` r
 predict(
-  model, 
-  data = data.frame("price_A" = c(100, 110), 
-                    "price_B" = c(100, 100)),
-  overview = FALSE)
+  model,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "price_B" = c(100, 100)
+  ),
+  overview = FALSE
+)
 #> Checking for missing covariates
 #>   id idc    A    B prediction
 #> 1  1   1 0.50 0.50          A
@@ -119,18 +122,21 @@ share:
 
 ``` r
 predict(
-  model, 
-  data = data.frame("price_A"   = c(100, 110), 
-                    "comfort_A" = c(1, 0),
-                    "price_B"   = c(100, 100),
-                    "comfort_B" = c(1, 1)),
-  overview = FALSE)
+  model,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "comfort_A" = c(1, 0),
+    "price_B" = c(100, 100),
+    "comfort_B" = c(1, 1)
+  ),
+  overview = FALSE
+)
 #> Checking for missing covariates
 #>   id idc    A    B prediction
 #> 1  1   1 0.50 0.50          A
 #> 2  2   1 0.57 0.43          A
 ```
 
-This is just the tip of the iceberg: {RprobitB} offers tools for
+This is just the tip of the iceberg: `{RprobitB}` offers tools for
 modeling choice behavior heterogeneity, preference-based classification
 of deciders, model comparison and more.
