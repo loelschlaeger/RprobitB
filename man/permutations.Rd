@@ -16,7 +16,7 @@ A list of all permutations of \code{x}.
 This function returns all permutations of a given vector.
 }
 \examples{
-RprobitB:::permutations(x = c("a","b","c"))
+RprobitB:::permutations(x = c("a", "b", "c"))
 
 }
 \references{

@@ -21,6 +21,6 @@ The labels are of the form \code{"c.p"}, where \code{c} is the latent class
 number and \code{p} the index of the random coefficient.
 }
 \examples{
-RprobitB:::create_labels_b(2,3)
+RprobitB:::create_labels_b(2, 3)
 }
 \keyword{internal}

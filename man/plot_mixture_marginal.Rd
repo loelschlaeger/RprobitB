@@ -22,9 +22,9 @@ An object of class \code{ggplot}.
 This function plots an estimated marginal mixing distributions.
 }
 \examples{
-mean <- list(1,2)
-cov <- list(0.1,1)
-weights <- c(0.3,0.7)
+mean <- list(1, 2)
+cov <- list(0.1, 1)
+weights <- c(0.3, 0.7)
 name <- "test"
 RprobitB:::plot_mixture_marginal(mean, cov, weights, name)
 

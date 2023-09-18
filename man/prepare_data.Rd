@@ -130,7 +130,7 @@ data <- prepare_data(
 
 ### ranked case
 choice_data <- data.frame(
-  "id" = 1:3, "choice" = c("A,B,C","A,C,B","B,C,A"), "cov" = 1
+  "id" = 1:3, "choice" = c("A,B,C", "A,C,B", "B,C,A"), "cov" = 1
 )
 data <- prepare_data(
   form = choice ~ 0 | cov + 0,

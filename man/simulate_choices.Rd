@@ -116,8 +116,8 @@ data <- simulate_choices(
   alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
   ordered = TRUE,
   covariates = list(
-    "gender" = rep(sample(c(0,1), 10, replace = TRUE), times = 1:10)
-    ),
+    "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
+  ),
   seed = 1
 )
 

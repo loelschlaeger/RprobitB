@@ -17,6 +17,6 @@ A vector of labels for the model parameter \code{s} of length \code{C} if
 This function creates labels for the model parameter \code{s}.
 }
 \examples{
-RprobitB:::create_labels_s(1,3)
+RprobitB:::create_labels_s(1, 3)
 }
 \keyword{internal}

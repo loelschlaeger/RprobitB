@@ -17,7 +17,7 @@ This function creates the difference operator matrix for differencing ranked
 vector elements such that the resulting vector is negative.
 }
 \examples{
-x <- c(-1,5,10,2)
+x <- c(-1, 5, 10, 2)
 ranking <- order(x, decreasing = TRUE)
 M(ranking) \%*\% x
 

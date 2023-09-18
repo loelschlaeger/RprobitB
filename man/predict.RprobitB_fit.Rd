@@ -50,7 +50,7 @@ predict(model, overview = FALSE)
 predict(model, data = data$test)
 predict(
   model,
-  data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
+  data = data.frame("cov_A" = c(1, 1, NA, NA), "cov_B" = c(1, NA, 1, NA)),
   overview = FALSE
 )
 

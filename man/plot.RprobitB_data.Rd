@@ -23,12 +23,12 @@ This function is the plot method for an object of class \code{RprobitB_data}.
 }
 \examples{
 data <- simulate_choices(
- form = choice ~ cost | 0,
- N = 100,
- T = 10,
- J = 2,
- alternatives = c("bus", "car"),
- true_parameter = list("alpha" = -1)
+  form = choice ~ cost | 0,
+  N = 100,
+  T = 10,
+  J = 2,
+  alternatives = c("bus", "car"),
+  true_parameter = list("alpha" = -1)
 )
 plot(data, by_choice = TRUE)
 }

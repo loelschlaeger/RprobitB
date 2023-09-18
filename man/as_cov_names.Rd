@@ -25,7 +25,7 @@ the format for a given \code{choice_data} set.
 }
 \examples{
 data("Electricity", package = "mlogit")
-cov <- c("pf","cl","loc","wk","tod","seas")
+cov <- c("pf", "cl", "loc", "wk", "tod", "seas")
 alternatives <- 1:4
 colnames(Electricity)
 Electricity <- as_cov_names(Electricity, cov, alternatives)
