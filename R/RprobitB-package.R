@@ -1,14 +1,7 @@
-#' RprobitB: A package for Bayes estimation of probit models
-#'
-#' This package provides tools for Bayes estimation of probit models.
-#'
-#' @docType package
-#' @name RprobitB
+#' @keywords internal
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib RprobitB, .registration=TRUE
-#' @keywords
-#' internal
-NULL
+"_PACKAGE"
 
 #' @noRd
 
