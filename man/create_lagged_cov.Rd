@@ -41,14 +41,3 @@ occasions. If this data point is not available, it is set to
 \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 be \code{NA} (initial condition problem).
 }
-\examples{
-\donttest{
-choice_data <- create_lagged_cov(
-  choice_data = choice_berserk,
-  column = "lost",
-  k = 1,
-  id = "player_id"
-)
-}
-
-}

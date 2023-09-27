@@ -1,8 +1,7 @@
 Package: RprobitB
 Type: Package
 Title: Bayesian Probit Choice Modeling
-Version: 1.1.2
-Date: 2022-11-06
+Version: 1.1.3
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
            email = "oelschlaeger.lennart@gmail.com", 
@@ -56,10 +55,8 @@ LinkingTo:
     RcppArmadillo
 Suggests: 
     knitr,
-    rmarkdown,
     mlogit,
-    testthat (>= 3.0.0),
-    covr
+    testthat (>= 3.0.0)
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

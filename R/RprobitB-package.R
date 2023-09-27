@@ -5,12 +5,6 @@
 
 #' @noRd
 
-rpb <- function() {
-  .Defunct(msg = "This function was removed from {RprobitB}.")
-}
-
-#' @noRd
-
 RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
   if (identical(getOption("RprobitB_progress"), TRUE)) {
     if (is.null(i) || is.null(total)) {

@@ -289,16 +289,6 @@ overview_effects <- function(form, re = NULL, alternatives,
 #' \code{column.k} for each element \code{column} and each number \code{k}
 #' containing the lagged covariates.
 #'
-#' @examples
-#' \donttest{
-#' choice_data <- create_lagged_cov(
-#'   choice_data = choice_berserk,
-#'   column = "lost",
-#'   k = 1,
-#'   id = "player_id"
-#' )
-#' }
-#'
 #' @export
 
 create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {

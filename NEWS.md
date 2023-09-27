@@ -1,13 +1,17 @@
-# RprobitB 1.1.2
+# version 1.1.3
+
+* Small fixes.
+
+# version 1.1.2
 
 * `logLik()` method now returns a `logLik` object that can be passed to `AIC()` and `BIC()` methods from {stats}.
 * Small bug fixes for the ordered probit model case.
 
-# RprobitB 1.1.1
+# version 1.1.1
 
 * Small documentation fixes.
 
-# RprobitB 1.1.0
+# version 1.1.0
 
 ## New functionality
 
@@ -37,12 +41,12 @@
 
 * The function `choice_probs` is now called `choice_probabilities()`.
 
-# RprobitB 1.0.0
+# version 1.0.0
 
 * Integrated S3 classes and methods.
 
 * Several new functionalities.
 
-# RprobitB 0.1.0
+# version 0.1.0
 
 * Initial version.
