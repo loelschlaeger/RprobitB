@@ -81,7 +81,7 @@ By default, \code{re = NULL}, i.e., no random effects.}
 \item{sampler}{A \code{function} that returns a single \code{numeric}, a random number.
 It must have two arguments, \code{n} and \code{t}, so that the call
 \code{sampler(n, t)} returns the covariate value for decider \code{n} at
-choice occastion \code{t}.
+choice occasion \code{t}.
 By default, \code{sampler = function(n, t) rnorm(n = 1, mean = 0, sd = 9)}.}
 
 \item{...}{Optionally custom sampling \code{function}s for specific covariates.,
