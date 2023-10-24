@@ -49,23 +49,6 @@ Ignored if \code{alpha_prior_custom = NULL}.}
 
 \item{x}{An \code{\link{RprobitB_prior_alpha}} object.}
 
-\item{rowdots}{An \code{integer}, the row number which is replaced by \code{...}.
-By default, \code{rowdots = 4}.}
-
-\item{coldots}{An \code{integer}, the column number which is replaced by \code{...}.
-By default, \code{coldots = 4}.}
-
-\item{digits}{An \code{integer}, the number of printed decimal places.
-Only relevant if input \code{x} is numeric.
-By default, \code{digits = 2}.}
-
-\item{simplify}{A \code{logical}, set to \code{TRUE} to simplify the output.
-By default, \code{simplify = FALSE}.}
-
-\item{details}{A \code{logical}, set to \code{TRUE} to print the type and
-dimension of \code{x}.
-By default, \code{details = !simplify}.}
-
 \item{...}{Currently not used.}
 }
 \value{
