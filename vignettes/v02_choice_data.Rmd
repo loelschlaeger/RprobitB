@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "img/",
   fig.align = "center",
-  fig.dim = c(8, 6), 
+  fig.dim = c(8, 6),
   out.width = "75%"
 )
 library("RprobitB")
@@ -106,7 +106,7 @@ form <- choice ~ price + time + comfort + change | 0
 Additionally, we specify random effects for `price` and `time` (because we would typically expect heterogeneity here):
 
 ```{r, train-re}
-re <- c("price","time")
+re <- c("price", "time")
 ```
 
 ## The `prepare_data()` function
@@ -227,16 +227,16 @@ Hence, the coefficient vector `alpha` must be of length 3, where the elements 1 
 
 ```{r, data-sim}
 data <- simulate_choices(
-  form = form, 
-  N = N, 
-  T = T, 
-  J = 2, 
-  re = re, 
-  alternatives = alternatives, 
+  form = form,
+  N = N,
+  T = T,
+  J = 2,
+  re = re,
+  alternatives = alternatives,
   seed = 1,
   true_parameter = list(
-    alpha = c(-1,0,1),
-    b = matrix(c(2,-0.5), ncol = 1)
+    alpha = c(-1, 0, 1),
+    b = matrix(c(2, -0.5), ncol = 1)
   )
 )
 summary(data)

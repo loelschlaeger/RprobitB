@@ -126,7 +126,7 @@ test_that("RprobitB_formula can be specified and validated", {
     "Input 're' is misspecified."
   )
   expect_error(
-    RprobitB_formula(formula = ~ bad),
+    RprobitB_formula(formula = ~bad),
     "It should be in the form '<choice> ~ <covariates>'."
   )
   expect_error(

@@ -112,4 +112,3 @@ test_that("number of effects can be computed", {
   expect_equal(compute_P_f(formula, re, J), 5)
   expect_equal(compute_P_r(formula, re, J), 4)
 })
-

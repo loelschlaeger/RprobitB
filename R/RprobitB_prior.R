@@ -134,38 +134,52 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
   args <- list(...)
   args_alpha <- Filter(
     Negate(is.null),
-    args[c("alpha_prior_mean", "alpha_prior_Sigma", "alpha_prior_custom",
-           "alpha_prior_custom_test_par")]
+    args[c(
+      "alpha_prior_mean", "alpha_prior_Sigma", "alpha_prior_custom",
+      "alpha_prior_custom_test_par"
+    )]
   )
   args_s <- Filter(
     Negate(is.null),
-    args[c("s_prior_concentration", "s_prior_custom",
-           "s_prior_custom_test_par")]
+    args[c(
+      "s_prior_concentration", "s_prior_custom",
+      "s_prior_custom_test_par"
+    )]
   )
   args_b <- Filter(
     Negate(is.null),
-    args[c("b_prior_mean", "b_prior_Sigma", "b_prior_custom",
-           "b_prior_custom_test_par")]
+    args[c(
+      "b_prior_mean", "b_prior_Sigma", "b_prior_custom",
+      "b_prior_custom_test_par"
+    )]
   )
   args_Omega <- Filter(
     Negate(is.null),
-    args[c("Omega_prior_df", "Omega_prior_scale", "Omega_prior_custom",
-           "Omega_prior_custom_test_par")]
+    args[c(
+      "Omega_prior_df", "Omega_prior_scale", "Omega_prior_custom",
+      "Omega_prior_custom_test_par"
+    )]
   )
   args_Sigma <- Filter(
     Negate(is.null),
-    args[c("Sigma_prior_df", "Sigma_prior_scale", "Sigma_prior_custom",
-           "Sigma_prior_custom_test_par")]
+    args[c(
+      "Sigma_prior_df", "Sigma_prior_scale", "Sigma_prior_custom",
+      "Sigma_prior_custom_test_par"
+    )]
   )
   args_Sigma_diff <- Filter(
     Negate(is.null),
-    args[c("Sigma_diff_prior_df", "Sigma_diff_prior_scale",
-           "Sigma_diff_prior_custom", "Sigma_diff_prior_custom_test_par")]
+    args[c(
+      "Sigma_diff_prior_df", "Sigma_diff_prior_scale",
+      "Sigma_diff_prior_custom", "Sigma_diff_prior_custom_test_par"
+    )]
   )
   args_d <- Filter(
     Negate(is.null),
-    args[c("d_prior_mean", "d_prior_Sigma", "d_prior_custom",
-           "d_prior_custom_test_par")]
+    args[c(
+      "d_prior_mean", "d_prior_Sigma", "d_prior_custom",
+      "d_prior_custom_test_par"
+    )]
   )
   structure(
     list(
@@ -173,10 +187,14 @@ RprobitB_prior <- function(formula, re = NULL, J, C = 1, ordered = FALSE, ...) {
       "s" = do.call(RprobitB_prior_s, c(list(C = C), args_s)),
       "b" = do.call(RprobitB_prior_b, c(list(P_r = P_r), args_b)),
       "Omega" = do.call(RprobitB_prior_Omega, c(list(P_r = P_r), args_Omega)),
-      "Sigma" = do.call(RprobitB_prior_Sigma,
-                        c(list(J = J, ordered = ordered), args_Sigma)),
-      "Sigma_diff" = do.call(RprobitB_prior_Sigma_diff,
-                             c(list(J = J, ordered = ordered), args_Sigma_diff)),
+      "Sigma" = do.call(
+        RprobitB_prior_Sigma,
+        c(list(J = J, ordered = ordered), args_Sigma)
+      ),
+      "Sigma_diff" = do.call(
+        RprobitB_prior_Sigma_diff,
+        c(list(J = J, ordered = ordered), args_Sigma_diff)
+      ),
       "d" = do.call(RprobitB_prior_d, c(list(J = J, ordered = ordered), args_d))
     ),
     class = c("RprobitB_prior", "list")
@@ -204,7 +222,12 @@ print.RprobitB_prior <- function(x, ...) {
     )
   }
   cat(cli::style_underline("Priors:\n"))
-  lapply(x, function(y) if(!identical(y, NA)) {print(y); cat("\n")})
+  lapply(x, function(y) {
+    if (!identical(y, NA)) {
+      print(y)
+      cat("\n")
+    }
+  })
   invisible()
 }
 
@@ -268,10 +291,9 @@ print.RprobitB_prior <- function(x, ...) {
 
 RprobitB_prior_alpha <- function(
     P_f, alpha_prior_mean = numeric(P_f), alpha_prior_Sigma = 10 * diag(P_f),
-    alpha_prior_custom = NA, alpha_prior_custom_test_par = numeric(P_f)
-  ) {
+    alpha_prior_custom = NA, alpha_prior_custom_test_par = numeric(P_f)) {
   if (P_f == 0) {
-    return (NA)
+    return(NA)
   } else if (!identical(alpha_prior_custom, NA)) {
     conjugate <- FALSE
     alpha_prior_mean <- NA
@@ -283,7 +305,7 @@ RprobitB_prior_alpha <- function(
       )
     }
     if (!(is.numeric(alpha_prior_custom_test_par) &&
-          length(alpha_prior_custom_test_par) == P_f)) {
+      length(alpha_prior_custom_test_par) == P_f)) {
       RprobitB_stop(
         glue::glue(
           "'alpha_prior_custom_test_par' should be a `numeric` vector ",
@@ -292,10 +314,11 @@ RprobitB_prior_alpha <- function(
       )
     }
     alpha_prior_custom_test <- try(
-      alpha_prior_custom(alpha_prior_custom_test_par), silent = TRUE
+      alpha_prior_custom(alpha_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(alpha_prior_custom_test) &&
-          alpha_prior_custom_test >= 0)) {
+      alpha_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'alpha' is misspecified.",
         glue::glue(
@@ -366,10 +389,9 @@ is.RprobitB_prior_alpha <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_alpha <- function (
+print.RprobitB_prior_alpha <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-  ) {
+    ...) {
   if (!is.RprobitB_prior_alpha(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_alpha`."
@@ -380,12 +402,14 @@ print.RprobitB_prior_alpha <- function (
   if (x$conjugate) {
     cat("Normal (conjugate)\n")
     print_matrix(
-      x$alpha_prior_mean, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$alpha_prior_mean,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "mean", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$alpha_prior_Sigma, rowdots = rowdots, coldots = coldots,
+      x$alpha_prior_Sigma,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "Sigma", simplify = simplify, details = details
     )
   } else {
@@ -449,10 +473,9 @@ print.RprobitB_prior_alpha <- function (
 
 RprobitB_prior_s <- function(
     C = 1, s_prior_concentration = rep(1, C),
-    s_prior_custom = NA, s_prior_custom_test_par = numeric(C)
-) {
+    s_prior_custom = NA, s_prior_custom_test_par = numeric(C)) {
   if (C == 1) {
-    return (NA)
+    return(NA)
   } else if (!identical(s_prior_custom, NA)) {
     conjugate <- FALSE
     s_prior_concentration <- NA
@@ -463,7 +486,7 @@ RprobitB_prior_s <- function(
       )
     }
     if (!(is.numeric(s_prior_custom_test_par) &&
-          length(s_prior_custom_test_par) == C)) {
+      length(s_prior_custom_test_par) == C)) {
       RprobitB_stop(
         glue::glue(
           "'s_prior_custom_test_par' should be a `numeric` vector ",
@@ -472,7 +495,8 @@ RprobitB_prior_s <- function(
       )
     }
     s_prior_custom_test <- try(
-      s_prior_custom(s_prior_custom_test_par), silent = TRUE
+      s_prior_custom(s_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(s_prior_custom_test) && s_prior_custom_test >= 0)) {
       RprobitB_stop(
@@ -530,9 +554,8 @@ is.RprobitB_prior_s <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_s <- function (
-    x, coldots = 4, digits = 2, simplify = TRUE, details = FALSE, ...
-) {
+print.RprobitB_prior_s <- function(
+    x, coldots = 4, digits = 2, simplify = TRUE, details = FALSE, ...) {
   if (!is.RprobitB_prior_s(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_s`."
@@ -543,7 +566,8 @@ print.RprobitB_prior_s <- function (
   if (x$conjugate) {
     cat("Dirichlet (conjugate)\n")
     print_matrix(
-      x$s_prior_concentration, coldots = coldots, digits = digits,
+      x$s_prior_concentration,
+      coldots = coldots, digits = digits,
       label = "concentration", simplify = simplify, details = details
     )
   } else {
@@ -613,10 +637,9 @@ print.RprobitB_prior_s <- function (
 
 RprobitB_prior_b <- function(
     P_r, b_prior_mean = numeric(P_r), b_prior_Sigma = 10 * diag(P_r),
-    b_prior_custom = NA, b_prior_custom_test_par = numeric(P_r)
-) {
+    b_prior_custom = NA, b_prior_custom_test_par = numeric(P_r)) {
   if (P_r == 0) {
-    return (NA)
+    return(NA)
   } else if (!identical(b_prior_custom, NA)) {
     conjugate <- FALSE
     b_prior_mean <- NA
@@ -628,7 +651,7 @@ RprobitB_prior_b <- function(
       )
     }
     if (!(is.numeric(b_prior_custom_test_par) &&
-          length(b_prior_custom_test_par) == P_r)) {
+      length(b_prior_custom_test_par) == P_r)) {
       RprobitB_stop(
         glue::glue(
           "'b_prior_custom_test_par' should be a `numeric` vector ",
@@ -637,10 +660,11 @@ RprobitB_prior_b <- function(
       )
     }
     b_prior_custom_test <- try(
-      b_prior_custom(b_prior_custom_test_par), silent = TRUE
+      b_prior_custom(b_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(b_prior_custom_test) &&
-          b_prior_custom_test >= 0)) {
+      b_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'b' is misspecified.",
         glue::glue(
@@ -711,10 +735,9 @@ is.RprobitB_prior_b <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_b <- function (
+print.RprobitB_prior_b <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-) {
+    ...) {
   if (!is.RprobitB_prior_b(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_b`."
@@ -725,12 +748,14 @@ print.RprobitB_prior_b <- function (
   if (x$conjugate) {
     cat("Normal (conjugate)\n")
     print_matrix(
-      x$b_prior_mean, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$b_prior_mean,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "mean", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$b_prior_Sigma, rowdots = rowdots, coldots = coldots,
+      x$b_prior_Sigma,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "Sigma", simplify = simplify, details = details
     )
   } else {
@@ -788,7 +813,7 @@ print.RprobitB_prior_b <- function (
 #' RprobitB_prior_Omega(
 #'   P_r = 2,
 #'   Omega_prior_custom = function(x) {
-#'     dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1,1] == x[2,2])
+#'     dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1, 1] == x[2, 2])
 #'   }
 #' )
 #' }
@@ -799,17 +824,16 @@ print.RprobitB_prior_b <- function (
 
 RprobitB_prior_Omega <- function(
     P_r, Omega_prior_df = P_r + 2, Omega_prior_scale = diag(P_r),
-    Omega_prior_custom = NA, Omega_prior_custom_test_par = diag(P_r)
-) {
+    Omega_prior_custom = NA, Omega_prior_custom_test_par = diag(P_r)) {
   if (P_r == 0) {
-    return (NA)
+    return(NA)
   } else if (!identical(Omega_prior_custom, NA)) {
     conjugate <- FALSE
     Omega_prior_df <- NA
     Omega_prior_scale <- NA
     if (!(is.numeric(Omega_prior_custom_test_par) &&
-          is.matrix(Omega_prior_custom_test_par) &&
-          all(dim(Omega_prior_custom_test_par) == P_r))) {
+      is.matrix(Omega_prior_custom_test_par) &&
+      all(dim(Omega_prior_custom_test_par) == P_r))) {
       RprobitB_stop(
         glue::glue(
           "'Omega_prior_custom_test_par' should be a `matrix` ",
@@ -824,10 +848,11 @@ RprobitB_prior_Omega <- function(
       )
     }
     Omega_prior_custom_test <- try(
-      Omega_prior_custom(Omega_prior_custom_test_par), silent = TRUE
+      Omega_prior_custom(Omega_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(Omega_prior_custom_test) &&
-          Omega_prior_custom_test >= 0)) {
+      Omega_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'Omega' is misspecified.",
         glue::glue(
@@ -898,10 +923,9 @@ is.RprobitB_prior_Omega <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_Omega <- function (
+print.RprobitB_prior_Omega <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-) {
+    ...) {
   if (!is.RprobitB_prior_Omega(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_Omega`."
@@ -912,12 +936,14 @@ print.RprobitB_prior_Omega <- function (
   if (x$conjugate) {
     cat("Inverse-Wishart (conjugate)\n")
     print_matrix(
-      x$Omega_prior_df, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$Omega_prior_df,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "degrees of freedom", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$Omega_prior_scale, rowdots = rowdots, coldots = coldots,
+      x$Omega_prior_scale,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "scale", simplify = simplify, details = details
     )
   } else {
@@ -990,8 +1016,7 @@ print.RprobitB_prior_Omega <- function (
 
 RprobitB_prior_Sigma <- function(
     ordered = FALSE, J, Sigma_prior_df = 3, Sigma_prior_scale = 1,
-    Sigma_prior_custom = NA, Sigma_prior_custom_test_par = matrix(1)
-) {
+    Sigma_prior_custom = NA, Sigma_prior_custom_test_par = matrix(1)) {
   if (!ordered) {
     return(NA)
   } else if (!identical(Sigma_prior_custom, NA)) {
@@ -1000,8 +1025,8 @@ RprobitB_prior_Sigma <- function(
     Sigma_prior_scale <- NA
     Sigma_prior_custom_test_par <- as.matrix(Sigma_prior_custom_test_par)
     if (!(is.numeric(Sigma_prior_custom_test_par) &&
-          is.matrix(Sigma_prior_custom_test_par) &&
-          all(dim(Sigma_prior_custom_test_par) == 1))) {
+      is.matrix(Sigma_prior_custom_test_par) &&
+      all(dim(Sigma_prior_custom_test_par) == 1))) {
       RprobitB_stop(
         glue::glue(
           "'Sigma_prior_custom_test_par' should be a `matrix` ",
@@ -1016,10 +1041,11 @@ RprobitB_prior_Sigma <- function(
       )
     }
     Sigma_prior_custom_test <- try(
-      Sigma_prior_custom(Sigma_prior_custom_test_par), silent = TRUE
+      Sigma_prior_custom(Sigma_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(Sigma_prior_custom_test) &&
-          Sigma_prior_custom_test >= 0)) {
+      Sigma_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'Sigma' is misspecified.",
         glue::glue(
@@ -1091,10 +1117,9 @@ is.RprobitB_prior_Sigma <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_Sigma <- function (
+print.RprobitB_prior_Sigma <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-) {
+    ...) {
   if (!is.RprobitB_prior_Sigma(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_Sigma`."
@@ -1105,12 +1130,14 @@ print.RprobitB_prior_Sigma <- function (
   if (x$conjugate) {
     cat("Inverse-Wishart (conjugate)\n")
     print_matrix(
-      x$Sigma_prior_df, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$Sigma_prior_df,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "degrees of freedom", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$Sigma_prior_scale, rowdots = rowdots, coldots = coldots,
+      x$Sigma_prior_scale,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "scale", simplify = simplify, details = details
     )
   } else {
@@ -1172,7 +1199,7 @@ print.RprobitB_prior_Sigma <- function (
 #'   J = 3,
 #'   Sigma_diff_prior_custom = function(x) {
 #'     dwishart(x, df = 4, scale = diag(2), inv = TRUE) *
-#'     all(x[row(x) != col(x)] == 0)
+#'       all(x[row(x) != col(x)] == 0)
 #'   }
 #' )
 #' }
@@ -1182,9 +1209,8 @@ print.RprobitB_prior_Sigma <- function (
 #' @keywords internal object
 
 RprobitB_prior_Sigma_diff <- function(
-    ordered = FALSE, J, Sigma_diff_prior_df = J + 1, Sigma_diff_prior_scale = diag(J-1),
-    Sigma_diff_prior_custom = NA, Sigma_diff_prior_custom_test_par = diag(J-1)
-) {
+    ordered = FALSE, J, Sigma_diff_prior_df = J + 1, Sigma_diff_prior_scale = diag(J - 1),
+    Sigma_diff_prior_custom = NA, Sigma_diff_prior_custom_test_par = diag(J - 1)) {
   if (ordered) {
     return(NA)
   } else if (!identical(Sigma_diff_prior_custom, NA)) {
@@ -1192,8 +1218,8 @@ RprobitB_prior_Sigma_diff <- function(
     Sigma_diff_prior_df <- NA
     Sigma_diff_prior_scale <- NA
     if (!(is.numeric(Sigma_diff_prior_custom_test_par) &&
-          is.matrix(Sigma_diff_prior_custom_test_par) &&
-          all(dim(Sigma_diff_prior_custom_test_par) == J - 1))) {
+      is.matrix(Sigma_diff_prior_custom_test_par) &&
+      all(dim(Sigma_diff_prior_custom_test_par) == J - 1))) {
       RprobitB_stop(
         glue::glue(
           "'Sigma_diff_prior_custom_test_par' should be a `matrix` ",
@@ -1208,10 +1234,11 @@ RprobitB_prior_Sigma_diff <- function(
       )
     }
     Sigma_diff_prior_custom_test <- try(
-      Sigma_diff_prior_custom(Sigma_diff_prior_custom_test_par), silent = TRUE
+      Sigma_diff_prior_custom(Sigma_diff_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(Sigma_diff_prior_custom_test) &&
-          Sigma_diff_prior_custom_test >= 0)) {
+      Sigma_diff_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'Sigma_diff' is misspecified.",
         glue::glue(
@@ -1248,7 +1275,7 @@ RprobitB_prior_Sigma_diff <- function(
         "Check it with 'is_covariance_matrix()'."
       )
     }
-    if (any(dim(Sigma_diff_prior_scale) != (J-1))) {
+    if (any(dim(Sigma_diff_prior_scale) != (J - 1))) {
       RprobitB_stop(
         "Covariance matrix for conjugate Sigma_diff prior is misspecified.",
         glue::glue("'Sigma_diff_prior_scale' should have dimension {J-1}."),
@@ -1282,10 +1309,9 @@ is.RprobitB_prior_Sigma_diff <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_Sigma_diff <- function (
+print.RprobitB_prior_Sigma_diff <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-) {
+    ...) {
   if (!is.RprobitB_prior_Sigma_diff(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_Sigma_diff`."
@@ -1296,12 +1322,14 @@ print.RprobitB_prior_Sigma_diff <- function (
   if (x$conjugate) {
     cat("Inverse-Wishart (conjugate)\n")
     print_matrix(
-      x$Sigma_diff_prior_df, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$Sigma_diff_prior_df,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "degrees of freedom", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$Sigma_diff_prior_scale, rowdots = rowdots, coldots = coldots,
+      x$Sigma_diff_prior_scale,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "scale", simplify = simplify, details = details
     )
   } else {
@@ -1371,11 +1399,10 @@ print.RprobitB_prior_Sigma_diff <- function (
 #' @keywords internal object
 
 RprobitB_prior_d <- function(
-    ordered = FALSE, J, d_prior_mean = numeric(J-2), d_prior_Sigma = 10 * diag(J-2),
-    d_prior_custom = NA, d_prior_custom_test_par = numeric(J-2)
-) {
+    ordered = FALSE, J, d_prior_mean = numeric(J - 2), d_prior_Sigma = 10 * diag(J - 2),
+    d_prior_custom = NA, d_prior_custom_test_par = numeric(J - 2)) {
   if (!ordered) {
-    return (NA)
+    return(NA)
   } else if (!identical(d_prior_custom, NA)) {
     conjugate <- FALSE
     d_prior_mean <- NA
@@ -1387,7 +1414,7 @@ RprobitB_prior_d <- function(
       )
     }
     if (!(is.numeric(d_prior_custom_test_par) &&
-          length(d_prior_custom_test_par) == J-2)) {
+      length(d_prior_custom_test_par) == J - 2)) {
       RprobitB_stop(
         glue::glue(
           "'d_prior_custom_test_par' should be a `numeric` vector ",
@@ -1396,10 +1423,11 @@ RprobitB_prior_d <- function(
       )
     }
     d_prior_custom_test <- try(
-      d_prior_custom(d_prior_custom_test_par), silent = TRUE
+      d_prior_custom(d_prior_custom_test_par),
+      silent = TRUE
     )
     if (!(is_single_numeric(d_prior_custom_test) &&
-          d_prior_custom_test >= 0)) {
+      d_prior_custom_test >= 0)) {
       RprobitB_stop(
         "Custom prior for 'd' is misspecified.",
         glue::glue(
@@ -1422,7 +1450,7 @@ RprobitB_prior_d <- function(
         "'d_prior_mean' should be a `numeric` vector."
       )
     }
-    if (length(d_prior_mean) != (J-2)) {
+    if (length(d_prior_mean) != (J - 2)) {
       RprobitB_stop(
         "Mean vector for conjugate d prior is misspecified.",
         glue::glue("'d_prior_mean' should have length {J-2}."),
@@ -1436,7 +1464,7 @@ RprobitB_prior_d <- function(
         "Check it with 'is_covariance_matrix()'."
       )
     }
-    if (any(dim(d_prior_Sigma) != (J-2))) {
+    if (any(dim(d_prior_Sigma) != (J - 2))) {
       RprobitB_stop(
         "Covariance matrix for conjugate d prior is misspecified.",
         glue::glue("'d_prior_Sigma' should have dimension {J-2}."),
@@ -1470,10 +1498,9 @@ is.RprobitB_prior_d <- function(x) {
 #' @exportS3Method
 #' @importFrom crayon underline
 
-print.RprobitB_prior_d <- function (
+print.RprobitB_prior_d <- function(
     x, rowdots = 4, coldots = 4, digits = 2, simplify = TRUE, details = FALSE,
-    ...
-) {
+    ...) {
   if (!is.RprobitB_prior_d(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_prior_d`."
@@ -1484,12 +1511,14 @@ print.RprobitB_prior_d <- function (
   if (x$conjugate) {
     cat("Normal (conjugate)\n")
     print_matrix(
-      x$d_prior_mean, rowdots = rowdots, coldots = coldots, digits = digits,
+      x$d_prior_mean,
+      rowdots = rowdots, coldots = coldots, digits = digits,
       label = "mean", simplify = simplify, details = details
     )
     cat("\n")
     print_matrix(
-      x$d_prior_Sigma, rowdots = rowdots, coldots = coldots,
+      x$d_prior_Sigma,
+      rowdots = rowdots, coldots = coldots,
       digits = digits, label = "Sigma", simplify = simplify, details = details
     )
   } else {

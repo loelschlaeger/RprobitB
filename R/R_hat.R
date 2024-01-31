@@ -37,7 +37,6 @@
 #' @importFrom stats var
 
 R_hat <- function(samples, parts = 2) {
-
   ### divide chains into parts
   samples <- as.matrix(samples)
   no_chains <- ncol(samples)

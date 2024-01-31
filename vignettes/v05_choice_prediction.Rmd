@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "img/",
   fig.align = "center",
-  fig.dim = c(8, 6), 
+  fig.dim = c(8, 6),
   out.width = "75%"
 )
 library("RprobitB")
@@ -56,7 +56,7 @@ predict(model_train)
 By setting the argument `overview = FALSE`, the method instead returns predictions on the level of individual choice occasions:
 
 ```{r, predict-model-train-indlevel}
-pred <- predict(model_train, overview = FALSE) 
+pred <- predict(model_train, overview = FALSE)
 head(pred, n = 10)
 ```
 
@@ -82,8 +82,8 @@ Apart from the prediction accuracy, the model performance can be evaluated more 
 
 ```{r, roc-example, warning = FALSE, message = FALSE, out.width = "50%", fig.dim = c(6,6)}
 library(plotROC)
-ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) + 
-  geom_roc(n.cuts = 20, labels = FALSE) + 
+ggplot(data = pred, aes(m = A, d = ifelse(true == "A", 1, 0))) +
+  geom_roc(n.cuts = 20, labels = FALSE) +
   style_roc(theme = theme_grey)
 ```
 
@@ -100,22 +100,28 @@ We demonstrate the second case in the following. Assume that a train company wan
 
 ```{r, predict-model-train-given-covs-1}
 predict(
-  model_train, 
-  data = data.frame("price_A" = c(100,110), 
-                    "price_B" = c(100,100)),
-  overview = FALSE)
+  model_train,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "price_B" = c(100, 100)
+  ),
+  overview = FALSE
+)
 ```
 
 However, offering a better comfort class compensates for the higher price and even results in a gain of 7\% market share:
 
 ```{r, predict-model-train-given-covs-2}
 predict(
-  model_train, 
-  data = data.frame("price_A"   = c(100,110), 
-                    "comfort_A" = c(1,0),
-                    "price_B"   = c(100,100),
-                    "comfort_B" = c(1,1)),
-  overview = FALSE)
+  model_train,
+  data = data.frame(
+    "price_A" = c(100, 110),
+    "comfort_A" = c(1, 0),
+    "price_B" = c(100, 100),
+    "comfort_B" = c(1, 1)
+  ),
+  overview = FALSE
+)
 ```
 
 ## References

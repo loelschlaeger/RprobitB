@@ -46,9 +46,7 @@
 #' @export
 
 overview_effects <- function(
-    RprobitB_formula, RprobitB_alternatives, delimiter = "_"
-  ) {
-
+    RprobitB_formula, RprobitB_alternatives, delimiter = "_") {
   ### input checks
   if (missing(RprobitB_formula)) {
     RprobitB_stop(
@@ -94,7 +92,7 @@ overview_effects <- function(
   md_ln <- RprobitB_formula$md_ln
   re <- c(md_n, md_ln)
   overview <- data.frame(matrix(ncol = 5, nrow = 0))
-  if (ordered){
+  if (ordered) {
     for (var in vars[[2]]) {
       overview <- rbind(
         overview,
@@ -112,9 +110,11 @@ overview_effects <- function(
       for (j in (1:J)[-which(alternatives == base)]) {
         overview <- rbind(
           overview,
-          c(paste0(var, delimiter, alternatives[j]),
+          c(
+            paste0(var, delimiter, alternatives[j]),
             if (var == "ASC") NA_character_ else var,
-            alternatives[j], FALSE, TRUE, var %in% re, var %in% md_ln)
+            alternatives[j], FALSE, TRUE, var %in% re, var %in% md_ln
+          )
         )
       }
     }
@@ -122,14 +122,18 @@ overview_effects <- function(
       for (j in 1:J) {
         overview <- rbind(
           overview,
-          c(paste0(var, delimiter, alternatives[j]), var, alternatives[j],
-            TRUE, TRUE, var %in% re, var %in% md_ln)
+          c(
+            paste0(var, delimiter, alternatives[j]), var, alternatives[j],
+            TRUE, TRUE, var %in% re, var %in% md_ln
+          )
         )
       }
     }
   }
-  colnames(overview) <- c("name", "covariate", "alternative", "as_covariate",
-                          "as_effect", "random", "log_normal")
+  colnames(overview) <- c(
+    "name", "covariate", "alternative", "as_covariate",
+    "as_effect", "random", "log_normal"
+  )
   overview$as_covariate <- as.logical(overview$as_covariate)
   overview$as_effect <- as.logical(overview$as_effect)
   overview$random <- as.logical(overview$random)
@@ -137,9 +141,9 @@ overview_effects <- function(
 
   ### sort effects
   effect_order <- order(
-    as.numeric(overview$random),     ### put random effects last
+    as.numeric(overview$random), ### put random effects last
     as.numeric(overview$log_normal), ### log-normal effects are last random
-    as.numeric(rownames(overview)),  ### otherwise sort by occurrence in formula
+    as.numeric(rownames(overview)), ### otherwise sort by occurrence in formula
     decreasing = FALSE
   )
   overview <- overview[effect_order, ]
@@ -188,8 +192,10 @@ compute_P <- function(formula, re, J, ordered = FALSE) {
 
 compute_P_f <- function(formula, re, J, ordered = FALSE) {
   effects <- overview_effects(
-    RprobitB_formula = RprobitB_formula(formula = formula, re = re,
-                                        ordered = ordered),
+    RprobitB_formula = RprobitB_formula(
+      formula = formula, re = re,
+      ordered = ordered
+    ),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(!effects$random))
@@ -200,10 +206,11 @@ compute_P_f <- function(formula, re, J, ordered = FALSE) {
 
 compute_P_r <- function(formula, re, J, ordered = FALSE) {
   effects <- overview_effects(
-    RprobitB_formula = RprobitB_formula(formula = formula, re = re,
-                                        ordered = ordered),
+    RprobitB_formula = RprobitB_formula(
+      formula = formula, re = re,
+      ordered = ordered
+    ),
     RprobitB_alternatives = RprobitB_alternatives(J = J, ordered = ordered)
   )
   as.integer(sum(effects$random))
 }
-

@@ -72,9 +72,7 @@
 #' @keywords object
 
 RprobitB_covariates <- function(
-    RprobitB_data, RprobitB_formula, RprobitB_alternatives
-  ) {
-
+    RprobitB_data, RprobitB_formula, RprobitB_alternatives) {
   ### transform 'RprobitB_data' to 'RprobitB_covariates'
   # TODO
 
@@ -116,11 +114,9 @@ is.RprobitB_covariates <- function(x) {
 #' @importFrom stats rnorm
 
 sample_RprobitB_covariates <- function(
-  formula, N, J, T = 1, alternatives = LETTERS[1:J], base = alternatives[1],
-  re = NULL, ordered = FALSE, seed = NULL,
-  sampler = function(n, t) rnorm(n = 1, mean = 0, sd = 9), ...
-) {
-
+    formula, N, J, T = 1, alternatives = LETTERS[1:J], base = alternatives[1],
+    re = NULL, ordered = FALSE, seed = NULL,
+    sampler = function(n, t) rnorm(n = 1, mean = 0, sd = 9), ...) {
   ### input checks
   T <- expand_T(N = N, T = T)
   RprobitB_formula <- RprobitB_formula(
@@ -136,7 +132,6 @@ sample_RprobitB_covariates <- function(
 
   ### check sampler functions
   check_sampler <- function(FUN, name) {
-
     ### check if 'name' corresponds to 'sampler' or a covariate
     if (!name %in% c(na.omit(unique(effects$covariate)), "sampler")) {
       RprobitB_stop(
@@ -184,18 +179,19 @@ sample_RprobitB_covariates <- function(
         "Please check."
       )
     }
-
   }
   custom_sampler <- list(...)
-  if (length(custom_sampler) != sum(names(custom_sampler) != "", na.rm=TRUE)) {
+  if (length(custom_sampler) != sum(names(custom_sampler) != "", na.rm = TRUE)) {
     RprobitB_stop(
       "I found unnamed input(s).",
       "I suspect you want to define a custom sampler.",
       "Please make sure it is named according to a covariate."
     )
   }
-  mapply(check_sampler, c(list(sampler), custom_sampler),
-         c("sampler", names(custom_sampler)))
+  mapply(
+    check_sampler, c(list(sampler), custom_sampler),
+    c("sampler", names(custom_sampler))
+  )
 
   ### draw covariate values
   if (!is.null(seed)) {
@@ -203,7 +199,6 @@ sample_RprobitB_covariates <- function(
   }
   x <- lapply(1:N, function(n) {
     lapply(1:T[n], function(t) {
-
       ### build general matrix
       X_nt <- matrix(
         data = replicate(J * nrow(effects), sampler(n, t)),
@@ -254,10 +249,8 @@ sample_RprobitB_covariates <- function(
 #' @rdname RprobitB_covariates
 
 validate_RprobitB_covariates <- function(
-  x = list(), formula, N, J, T = 1, alternatives = LETTERS[1:J],
-  base = alternatives[1], re = NULL, ordered = FALSE
-) {
-
+    x = list(), formula, N, J, T = 1, alternatives = LETTERS[1:J],
+    base = alternatives[1], re = NULL, ordered = FALSE) {
   ### input checks
   if (!is.list(x)) {
     RprobitB_stop(

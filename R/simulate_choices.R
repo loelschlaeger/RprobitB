@@ -51,13 +51,12 @@
 #' }
 
 simulate_choices <- function(
-  RprobitB_covariates = simulate_RprobitB_covariates(
-    formula, N, J, T = 1, alternatives = LETTERS[1:J], re = NULL,
-    ordered = FALSE
-  ), true_parameter = RprobitB_parameter(), ranked = FALSE, seed = NULL,
-  column_choice = "choice", column_decider = "id", column_occasion = "idc"
-  ) {
-
+    RprobitB_covariates = simulate_RprobitB_covariates(
+      formula, N, J,
+      T = 1, alternatives = LETTERS[1:J], re = NULL,
+      ordered = FALSE
+    ), true_parameter = RprobitB_parameter(), ranked = FALSE, seed = NULL,
+    column_choice = "choice", column_decider = "id", column_occasion = "idc") {
   ### construct objects
   T <- expand_T(N = N, T = T)
   RprobitB_formula <- RprobitB_formula(
@@ -84,7 +83,7 @@ simulate_choices <- function(
   }
   data_list <- lapply(1:N, function(n) {
     z_n <- RprobitB_parameter$z[n]
-    coef <- c(RprobitB_parameter$alpha[,z_n], RprobitB_parameter$beta[,z_n])
+    coef <- c(RprobitB_parameter$alpha[, z_n], RprobitB_parameter$beta[, z_n])
     out <- lapply(1:T[n], function(t) {
       X_nt <- cov_vec_to_mat(
         cov_vec = covariates(n, t),
@@ -107,7 +106,7 @@ simulate_choices <- function(
         choice = RprobitB_alternatives$alternatives[unlist(lapply(data_list, `[[`, "y"))]
       ),
       data.frame(
-        matrix(unlist(lapply(data_list, `[[`, "X")), ncol = P*J, byrow = TRUE)
+        matrix(unlist(lapply(data_list, `[[`, "X")), ncol = P * J, byrow = TRUE)
       )
     )
   )
@@ -122,7 +121,4 @@ simulate_choices <- function(
     simulated = TRUE,
     true_parameter = RprobitB_parameter
   )
-
-
-
 }

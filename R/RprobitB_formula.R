@@ -78,7 +78,6 @@
 #' @keywords internal object
 
 RprobitB_formula <- function(formula, re = NULL, ordered = FALSE) {
-
   ### input checks
   if (missing(formula)) {
     RprobitB_stop(
@@ -195,8 +194,8 @@ validate_RprobitB_formula <- function(x) {
       glue::glue("Either a normal or a log-normal mixing distribution can be specified.")
     )
   }
-  for (re in unlist(x[c("md_n","md_ln")])) {
-    if (!re %in% c(unlist(x$vars), if(x$ASC) "ASC")) {
+  for (re in unlist(x[c("md_n", "md_ln")])) {
+    if (!re %in% c(unlist(x$vars), if (x$ASC) "ASC")) {
       RprobitB_stop(
         "Input 're' is misspecified.",
         glue::glue("'re' includes '{re}'."),

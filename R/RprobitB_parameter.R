@@ -189,8 +189,7 @@
 
 RprobitB_parameter <- function(
     C = 1, s = NA, alpha = NA, b = NA, Omega = NA, Sigma = NA,
-    Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA
-) {
+    Sigma_diff = NA, diff_alt = 1, beta = NA, z = NA, d = NA) {
   if (!is_positive_integer(C)) {
     RprobitB_stop(
       "Input 'C' must be a positive `integer`."
@@ -291,9 +290,8 @@ is.RprobitB_parameter <- function(x) {
 #' @export
 
 simulate_RprobitB_parameter <- function(
-    x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N,
-    seed = NULL
-  ) {
+    x = RprobitB_parameter(), formula, re = NULL, ordered = FALSE, J, N,
+    seed = NULL) {
   if (!is.RprobitB_parameter(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_parameter`.",
@@ -427,8 +425,8 @@ simulate_RprobitB_parameter <- function(
       cbind,
       lapply(x$z, function(c) {
         rmvnorm(
-          mean = x$b[,c],
-          Sigma = matrix(x$Omega[,c], nrow = P_r, ncol = P_r)
+          mean = x$b[, c],
+          Sigma = matrix(x$Omega[, c], nrow = P_r, ncol = P_r)
         )
       })
     )
@@ -451,8 +449,7 @@ simulate_RprobitB_parameter <- function(
 #' @importFrom glue glue glue_collapse
 
 validate_RprobitB_parameter <- function(
-    x = RprobitB_parameter(), formula, re  = NULL, ordered = FALSE, J, N
-) {
+    x = RprobitB_parameter(), formula, re = NULL, ordered = FALSE, J, N) {
   if (!is.RprobitB_parameter(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_parameter`.",
@@ -508,7 +505,7 @@ validate_RprobitB_parameter <- function(
     x$s <- 1
   }
   if (length(x$s) != x$C || !is.numeric(x$s) ||
-      abs(sum(x$s) - 1) > .Machine$double.eps || is.unsorted(rev(x$s))) {
+    abs(sum(x$s) - 1) > .Machine$double.eps || is.unsorted(rev(x$s))) {
     RprobitB_stop(
       glue::glue(
         "'s' is expected to be a descending `numeric` `vector` of length {x$C} which sums up to 1."
@@ -530,7 +527,7 @@ validate_RprobitB_parameter <- function(
       x$alpha <- matrix(x$alpha, nrow = P_f, ncol = 1)
     }
     if (!is.numeric(x$alpha) || !is.matrix(x$alpha) || nrow(x$alpha) != P_f ||
-        ncol(x$alpha) != x$C) {
+      ncol(x$alpha) != x$C) {
       RprobitB_stop(
         glue::glue(
           "'alpha' is expected to be a `numeric` `matrix` of dimension {P_f} x {x$C}."
@@ -575,7 +572,7 @@ validate_RprobitB_parameter <- function(
       x$Omega <- matrix(x$Omega, nrow = P_r^2, ncol = 1)
     }
     if (!is.numeric(x$Omega) || !is.matrix(x$Omega) || nrow(x$Omega) != P_r^2 ||
-        ncol(x$Omega) != x$C) {
+      ncol(x$Omega) != x$C) {
       RprobitB_stop(
         glue::glue(
           "'Omega' is expected to be a `numeric` `matrix` of dimension {P_r^2} x {x$C}."
@@ -589,7 +586,7 @@ validate_RprobitB_parameter <- function(
       )
     }
     for (c in 1:x$C) {
-      if (!is_covariance_matrix(matrix(x$Omega[,c], nrow = P_r, ncol = P_r))) {
+      if (!is_covariance_matrix(matrix(x$Omega[, c], nrow = P_r, ncol = P_r))) {
         RprobitB_stop(
           glue::glue(
             "Column {c} in 'Omega' is expected to be a proper covariance matrix."
@@ -627,7 +624,7 @@ validate_RprobitB_parameter <- function(
     x$Sigma_diff <- NA
     x$Sigma <- matrix(x$Sigma)
     if (!is.numeric(x$Sigma) || !is.matrix(x$Sigma) || nrow(x$Sigma) != 1 ||
-        ncol(x$Sigma) != 1 || x$Sigma[1,1] <= 0) {
+      ncol(x$Sigma) != 1 || x$Sigma[1, 1] <= 0) {
       RprobitB_stop(
         glue::glue(
           "'Sigma' is expected to be a `numeric` 1 x 1 `matrix` with a positive entry."
@@ -642,7 +639,7 @@ validate_RprobitB_parameter <- function(
     }
   } else {
     if (!is.numeric(x$Sigma) || !is.matrix(x$Sigma) || nrow(x$Sigma) != J ||
-        ncol(x$Sigma) != J) {
+      ncol(x$Sigma) != J) {
       RprobitB_stop(
         glue::glue(
           "'Sigma' is expected to be a `numeric` `matrix` of dimension {J} x {J}."
@@ -670,7 +667,7 @@ validate_RprobitB_parameter <- function(
       )
     }
     if (!is.numeric(x$Sigma_diff) || !is.matrix(x$Sigma_diff) ||
-        nrow(x$Sigma_diff) != J-1 || ncol(x$Sigma_diff) != J-1) {
+      nrow(x$Sigma_diff) != J - 1 || ncol(x$Sigma_diff) != J - 1) {
       RprobitB_stop(
         glue::glue(
           "'Sigma_diff' is expected to be a `numeric` `matrix` of dimension {J-1} x {J-1}."
@@ -721,7 +718,7 @@ validate_RprobitB_parameter <- function(
       x$beta <- matrix(x$beta, nrow = P_r, ncol = 1)
     }
     if (!is.numeric(x$beta) || !is.matrix(x$beta) || nrow(x$beta) != P_r ||
-        ncol(x$beta) != N) {
+      ncol(x$beta) != N) {
       RprobitB_stop(
         glue::glue(
           "'beta' is expected to be a `numeric` `matrix` of dimension {P_r} x {N}."
@@ -739,7 +736,7 @@ validate_RprobitB_parameter <- function(
   }
   ### check z
   if (!is.vector(x$z) || length(x$z) != N || !is.numeric(x$z) ||
-      !all(x$z %in% 1:x$C)) {
+    !all(x$z %in% 1:x$C)) {
     RprobitB_stop(
       glue::glue(
         "'z' is expected to be an `integer` `vector` with values {paste(seq.int(x$C), collapse = ", ")}."
@@ -754,7 +751,7 @@ validate_RprobitB_parameter <- function(
   }
   ### check d
   if (ordered) {
-    if (!is.vector(x$d) || length(x$d) != J-2 || !is.numeric(x$d)) {
+    if (!is.vector(x$d) || length(x$d) != J - 2 || !is.numeric(x$d)) {
       RprobitB_stop(
         glue::glue(
           "'d' is expected to be a `numeric` `vector` of length {J-2}."
@@ -782,8 +779,7 @@ validate_RprobitB_parameter <- function(
 
 print.RprobitB_parameter <- function(
     x, ..., rowdots = 4, coldots = 4, digits = 2, simplify = FALSE,
-    details = !simplify
-  ) {
+    details = !simplify) {
   if (!is.RprobitB_parameter(x)) {
     RprobitB_stop(
       "Input 'x' is not of class `RprobitB_parameter`.",
@@ -798,9 +794,10 @@ print.RprobitB_parameter <- function(
   }
   cat(cli::style_underline("Parameter:\n"))
   for (i in ind) {
-    if(!identical(x[[i]], NA)) {
+    if (!identical(x[[i]], NA)) {
       print_matrix(
-        x[[i]], rowdots = rowdots, coldots = coldots, digits = digits,
+        x[[i]],
+        rowdots = rowdots, coldots = coldots, digits = digits,
         label = names(x)[i], simplify = simplify, details = details
       )
       cat("\n")

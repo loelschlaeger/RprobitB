@@ -30,16 +30,17 @@
 
 RprobitB_gibbs_samples_statistics <- function(
     gibbs_samples, FUN = list("mean" = mean)) {
-
   ### check inputs
-  if (!inherits(gibbs_samples,"RprobitB_gibbs_samples")) {
+  if (!inherits(gibbs_samples, "RprobitB_gibbs_samples")) {
     stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   for (i in seq_len(length(FUN))) {
     if (!is.function(FUN[[i]])) {
       stop("Element ", i, " in 'FUN' is not of class 'function'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (is.null(names(FUN)[i]) || names(FUN)[i] == "") {
       names(FUN)[i] <- paste0("FUN", i)
@@ -47,7 +48,8 @@ RprobitB_gibbs_samples_statistics <- function(
   }
   if (any(sapply(FUN, class) != "function")) {
     stop("Not all elements of 'FUN' are functions.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### build 'RprobitB_gibbs_sample_statistics'
@@ -61,7 +63,7 @@ RprobitB_gibbs_samples_statistics <- function(
     for (i in seq_len(length(FUN))) {
       fun <- FUN[[i]]
       values <- apply(gibbs_samples[["gibbs_samples_nbt"]][[par]], 2, fun,
-                      simplify = FALSE
+        simplify = FALSE
       )
       nvalue <- length(values[[1]])
       labels <- colnames(gibbs_samples[["gibbs_samples_nbt"]][[par]])
@@ -71,8 +73,8 @@ RprobitB_gibbs_samples_statistics <- function(
         paste(names(FUN[i]), seq_len(nvalue), sep = "_", recycle0 = TRUE)
       }
       append <- matrix(NA_real_,
-                       nrow = length(values), ncol = nvalue,
-                       dimnames = list(labels, fun_name)
+        nrow = length(values), ncol = nvalue,
+        dimnames = list(labels, fun_name)
       )
       for (j in seq_len(length(values))) {
         append[j, ] <- values[[j]]
@@ -101,27 +103,28 @@ RprobitB_gibbs_samples_statistics <- function(
 
 print.RprobitB_gibbs_samples_statistics <- function(
     x, true = NULL, digits = 2, ...) {
-
   ### check inputs
-  if (!inherits(x,"RprobitB_gibbs_samples_statistics")) {
+  if (!inherits(x, "RprobitB_gibbs_samples_statistics")) {
     stop("'x' must be of class 'RprobitB_gibbs_samples_statistics'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.null(true)) {
-    if (!inherits(true,"RprobitB_parameter")) {
+    if (!inherits(true, "RprobitB_parameter")) {
       stop("'true' must be of class 'RprobitB_parameter'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
   if (!(is.numeric(digits) && digits >= 0)) {
     stop("'digits' must a non-negative number.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### print statistics
   cols <- colnames(x[[1]])
   if (length(cols) > 0) {
-
     ### determine cell width
     cw <- max(digits + 5, max(nchar(cols)) + 1)
 
@@ -164,8 +167,8 @@ print.RprobitB_gibbs_samples_statistics <- function(
       rownames(out) <- sprintf("%6s", rownames(out))
       writeLines(paste("\n", par_name))
       print(formatC(out,
-                    format = "f", digits = digits, width = cw,
-                    flag = ""
+        format = "f", digits = digits, width = cw,
+        flag = ""
       ), quote = FALSE)
     }
   }
@@ -189,11 +192,11 @@ print.RprobitB_gibbs_samples_statistics <- function(
 #' internal
 
 filter_gibbs_samples <- function(
-  x, P_f, P_r, J, C, cov_sym, ordered = FALSE,
-  keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"), drop_par = NULL
-  ) {
+    x, P_f, P_r, J, C, cov_sym, ordered = FALSE,
+    keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"), drop_par = NULL) {
   labels <- parameter_labels(
-    P_f, P_r, J, C, cov_sym, ordered, keep_par, drop_par)
+    P_f, P_r, J, C, cov_sym, ordered, keep_par, drop_par
+  )
   for (gs in names(x)) {
     for (par in names(x[[gs]])) {
       if (!par %in% names(labels)) {
@@ -252,19 +255,21 @@ filter_gibbs_samples <- function(
 #' @export
 
 classification <- function(x, add_true = FALSE) {
-
   ### check input
   if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!isTRUE(add_true) && !isFALSE(add_true)) {
     stop("'add_true' must be either TRUE or FALSE.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (x$data$P_r == 0) {
     stop("The model has no random coefficients.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### create allocation matrix
@@ -339,7 +344,7 @@ classification <- function(x, add_true = FALSE) {
 #' predict(model, data = data$test)
 #' predict(
 #'   model,
-#'   data = data.frame("cov_A" = c(1,1,NA,NA), "cov_B" = c(1,NA,1,NA)),
+#'   data = data.frame("cov_A" = c(1, 1, NA, NA), "cov_B" = c(1, NA, 1, NA)),
 #'   overview = FALSE
 #' )
 #'
@@ -347,7 +352,6 @@ classification <- function(x, add_true = FALSE) {
 
 predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
                                  digits = 2, ...) {
-
   ### choose data
   if (is.null(data)) {
     data <- object$data
@@ -355,10 +359,10 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
     cov <- object$data$res_var_names$cov
     data_build <- matrix(NA_real_, nrow = nrow(data), ncol = 1 + length(cov))
     colnames(data_build) <- c("id", cov)
-    data_build[,"id"] <- 1:nrow(data)
-    for(col in colnames(data)){
-      if(col %in% colnames(data_build)){
-        data_build[,col] <- data[,col]
+    data_build[, "id"] <- 1:nrow(data)
+    for (col in colnames(data)) {
+      if (col %in% colnames(data_build)) {
+        data_build[, col] <- data[, col]
       }
     }
     data <- prepare_data(
@@ -372,9 +376,10 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
       impute = "zero"
     )
   }
-  if (!inherits(data,"RprobitB_data")) {
+  if (!inherits(data, "RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### compute choice probabilities
@@ -382,7 +387,8 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
 
   ### round choice probabilities
   choice_probs[data$alternatives] <- round(choice_probs[data$alternatives],
-                                           digits = digits)
+    digits = digits
+  )
 
   ### check if true choices are available
   if (data$choice_available) {
@@ -403,8 +409,8 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
   } else {
     if (data$choice_available) {
       out <- cbind(choice_probs,
-                   "true" = true_choices, "predicted" = prediction,
-                   "correct" = (true_choices == prediction)
+        "true" = true_choices, "predicted" = prediction,
+        "correct" = (true_choices == prediction)
       )
     } else {
       out <- cbind(choice_probs, "prediction" = prediction)
@@ -440,18 +446,19 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
 #' @export
 
 point_estimates <- function(x, FUN = mean) {
-
   ### check input
   if (!inherits(x, "RprobitB_fit")) {
     stop("'x' is not of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.list(FUN)) {
     FUN <- list(FUN)
   }
   if (length(FUN) != 1 || !is.function(FUN[[1]])) {
     stop("'FUN' must be a function.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### extract meta parameters
@@ -522,7 +529,6 @@ point_estimates <- function(x, FUN = mean) {
 parameter_labels <- function(
     P_f, P_r, J, C, cov_sym, ordered = FALSE,
     keep_par = c("s", "alpha", "b", "Omega", "Sigma", "d"), drop_par = NULL) {
-
   ### check inputs
   if (P_r > 0) {
     if (!(is.numeric(C) && C %% 1 == 0 && C >= 1)) {
@@ -545,7 +551,7 @@ parameter_labels <- function(
 
   ### filter and return labels
   labels <- labels[lengths(labels) != 0 & names(labels) %in% keep_par &
-                     !names(labels) %in% drop_par]
+    !names(labels) %in% drop_par]
   return(labels)
 }
 
@@ -557,7 +563,7 @@ parameter_labels <- function(
 #' A vector of labels for the model parameter \code{s} of length \code{C} if
 #' \code{P_r > 0} and \code{NULL} otherwise.
 #' @examples
-#' RprobitB:::create_labels_s(1,3)
+#' RprobitB:::create_labels_s(1, 3)
 #' @keywords
 #' internal
 
@@ -600,7 +606,7 @@ create_labels_alpha <- function(P_f) {
 #' A vector of labels for the model parameter \code{b} of length \code{P_r * C}
 #' if \code{P_r > 0} and \code{NULL} otherwise.
 #' @examples
-#' RprobitB:::create_labels_b(2,3)
+#' RprobitB:::create_labels_b(2, 3)
 #' @keywords
 #' internal
 
@@ -681,7 +687,8 @@ create_labels_Sigma <- function(J, cov_sym, ordered = FALSE) {
       Sigma_id[-ids] <- FALSE
     }
     paste0(rep(1:(J - 1), each = J - 1), ",", rep(1:(J - 1),
-                                                  times = J - 1))[Sigma_id]
+      times = J - 1
+    ))[Sigma_id]
   }
 }
 
@@ -704,9 +711,10 @@ create_labels_d <- function(J, ordered) {
   if (ordered) {
     if (J < 3) {
       stop("'J' must be greater or equal 3 in the ordered probit model.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    as.character(seq_len(J-2))
+    as.character(seq_len(J - 2))
   } else {
     NULL
   }
@@ -729,7 +737,6 @@ create_labels_d <- function(J, ordered) {
 #' @importFrom stats sd
 
 coef.RprobitB_fit <- function(object, ...) {
-
   ### compute Gibbs samples statistics
   C <- object$latent_classes$C
   statistics <- RprobitB_gibbs_samples_statistics(
@@ -836,12 +843,13 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
       size = 2,
       position = ggplot2::position_dodge(width = -0.3)
     ) +
-    ggplot2::geom_errorbar(ggplot2::aes(
-      xmin = .data$mean - sd * .data[[if (het) "var" else "mean_sd"]],
-      xmax = .data$mean + sd * .data[[if (het) "var" else "mean_sd"]],
-      width = 0
-    ),
-    position = ggplot2::position_dodge(width = -0.3)
+    ggplot2::geom_errorbar(
+      ggplot2::aes(
+        xmin = .data$mean - sd * .data[[if (het) "var" else "mean_sd"]],
+        xmax = .data$mean + sd * .data[[if (het) "var" else "mean_sd"]],
+        width = 0
+      ),
+      position = ggplot2::position_dodge(width = -0.3)
     ) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
@@ -943,24 +951,26 @@ cov_mix <- function(x, cor = FALSE) {
 #' @export
 
 choice_probabilities <- function(x, data = NULL, par_set = mean) {
-
   ### specify parameter set
-  if (is.function(par_set)){
+  if (is.function(par_set)) {
     parameter <- point_estimates(x, FUN = par_set)
   } else if (identical(par_set, "true")) {
     parameter <- x$data$true_parameter
     if (is.null(parameter)) {
       stop("True parameters are not available.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-  } else if (inherits(par_set,"RprobitB_parameter")) {
+  } else if (inherits(par_set, "RprobitB_parameter")) {
     parameter <- par_set
   } else {
     stop(
-      paste("'par_set' must be either a function, 'true' or an",
-            "'RprobitB_parameter' object."),
+      paste(
+        "'par_set' must be either a function, 'true' or an",
+        "'RprobitB_parameter' object."
+      ),
       call. = FALSE
-      )
+    )
   }
 
   ### choose data
@@ -969,13 +979,16 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   }
   if (!inherits(data, "RprobitB_data")) {
     stop("'data' is not of class 'RprobitB_data'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### define progress bar
-  pb <- RprobitB_pb(title = "Computing choice probabilities",
-                    total = data$N,
-                    tail = "deciders")
+  pb <- RprobitB_pb(
+    title = "Computing choice probabilities",
+    total = data$N,
+    tail = "deciders"
+  )
 
   ### compute probabilities
   probabilities <- matrix(NA_real_, nrow = 0, ncol = data$J)
@@ -994,12 +1007,16 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
   probabilities <- as.data.frame(probabilities)
 
   ### add decision maker ids
-  probabilities <- cbind(data$choice_data[[data$res_var_names[["id"]]]],
-                         data$choice_data[[data$res_var_names[["idc"]]]],
-                         probabilities)
-  colnames(probabilities) <- c(x$data$res_var_names[["id"]],
-                               x$data$res_var_names[["idc"]],
-                               data$alternatives)
+  probabilities <- cbind(
+    data$choice_data[[data$res_var_names[["id"]]]],
+    data$choice_data[[data$res_var_names[["idc"]]]],
+    probabilities
+  )
+  colnames(probabilities) <- c(
+    x$data$res_var_names[["id"]],
+    x$data$res_var_names[["idc"]],
+    data$alternatives
+  )
   rownames(probabilities) <- NULL
 
   ### return probabilities
@@ -1034,13 +1051,12 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 #' @importFrom stats pnorm
 
 compute_choice_probabilities <- function(
-    X, alternatives, parameter, ordered = FALSE
-    ) {
-
+    X, alternatives, parameter, ordered = FALSE) {
   ### unpack and check inputs
   if (!inherits(parameter, "RprobitB_parameter")) {
     stop("'parameter' is not of class 'RprobitB_parameter.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   alpha <- parameter$alpha
   s <- ifelse(is.na(parameter$s), 1, parameter$s)
@@ -1060,23 +1076,27 @@ compute_choice_probabilities <- function(
 
   ### check inputs
   if (!(is.numeric(alternatives) &&
-        identical(alternatives, unique(alternatives)) &&
-        length(setdiff(alternatives, 1:J)) == 0)) {
+    identical(alternatives, unique(alternatives)) &&
+    length(setdiff(alternatives, 1:J)) == 0)) {
     stop("'alternatives' must be a vector with unique integers from 1 to 'J'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (P_f > 0 || P_r > 0) {
     if (!is.matrix(X)) {
       stop("'X' must be a matrix.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (ncol(X) != (P_f + P_r)) {
       stop("'X' must have 'P_f'+'P_r' columns.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!ordered && nrow(X) != J) {
       stop("'X' must have 'J' columns.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
@@ -1084,7 +1104,7 @@ compute_choice_probabilities <- function(
   probabilities <- rep(NA_real_, J)
   for (j in alternatives) {
     if (ordered) {
-      ub <- gamma[j+1]
+      ub <- gamma[j + 1]
       lb <- gamma[j]
       if (P_f > 0) {
         if (P_r > 0) {
@@ -1096,7 +1116,7 @@ compute_choice_probabilities <- function(
                 sd <- sqrt(X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
                   t(X[, -(1:P_f)]) + Sigma)
                 s[c] * (stats::pnorm(q = ub - mu, mean = 0, sd = sd) -
-                          stats::pnorm(q = lb - mu, mean = 0, sd = sd))
+                  stats::pnorm(q = lb - mu, mean = 0, sd = sd))
               }
             )
           )
@@ -1114,9 +1134,9 @@ compute_choice_probabilities <- function(
               FUN = function(c) {
                 mu <- X %*% b[, c]
                 sd <- sqrt(X %*% matrix(Omega[, c], P_r, P_r) %*%
-                             t(X) + Sigma)
+                  t(X) + Sigma)
                 s[c] * (pnorm(q = ub - mu, mean = 0, sd = sd) -
-                          pnorm(q = lb - mu, mean = 0, sd = sd))
+                  pnorm(q = lb - mu, mean = 0, sd = sd))
               }
             )
           )
@@ -1140,8 +1160,8 @@ compute_choice_probabilities <- function(
                   mean = rep(0, J - 1),
                   sigma = delta(J, j) %*%
                     (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
-                       t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta(J, j))
-                  )
+                      t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta(J, j))
+                )
               }
             )
           )
@@ -1166,7 +1186,7 @@ compute_choice_probabilities <- function(
                   sigma = delta(J, j) %*%
                     (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
                     t(delta(J, j))
-                  )
+                )
               }
             )
           )
@@ -1206,24 +1226,26 @@ compute_choice_probabilities <- function(
 #'
 #' @export
 
-get_cov <- function(x, id, idc, idc_label){
-  if(inherits(x, "RprobitB_fit")){
+get_cov <- function(x, id, idc, idc_label) {
+  if (inherits(x, "RprobitB_fit")) {
     x <- x$data
   }
-  if(inherits(x, "RprobitB_data")){
+  if (inherits(x, "RprobitB_data")) {
     id_label <- x$res_var_names$id
-    idc_label <- if(missing(idc_label)) x$res_var_names$idc else idc_label
-    if(missing(id)) id <- x$choice_data[[id_label]]
-    if(missing(idc)) idc <- x$choice_data[[idc_label]]
+    idc_label <- if (missing(idc_label)) x$res_var_names$idc else idc_label
+    if (missing(id)) id <- x$choice_data[[id_label]]
+    if (missing(idc)) idc <- x$choice_data[[idc_label]]
     ind <- x$choice_data[[id_label]] %in% id & x$choice_data[[idc_label]] %in% idc
-    out <- x$choice_data[ind,]
-    if(nrow(out) == 0){
+    out <- x$choice_data[ind, ]
+    if (nrow(out) == 0) {
       stop("Requested choice occasion not found.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     return(out)
   } else {
     stop("'x' must be either an 'RprobitB_fit' or 'RprobitB_data' object.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 }

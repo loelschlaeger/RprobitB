@@ -87,10 +87,10 @@ undiff_Sigma <- function(Sigma_diff, diff_alt = 1) {
 #' An \code{integer}, number of alternatives.
 #' @keywords internal
 
-delta <- function(diff_alt, J){
+delta <- function(diff_alt, J) {
   stopifnot(is_positive_integer(diff_alt), is_positive_integer(J), diff_alt <= J)
   D <- diag(J)
-  D[,diff_alt] <- -1
+  D[, diff_alt] <- -1
   D[-diff_alt, , drop = FALSE]
 }
 
@@ -111,7 +111,7 @@ delta <- function(diff_alt, J){
 #' A matrix of dimension \code{length(rank)-1} x \code{length(rank)}.
 #'
 #' @examples
-#' x <- c(-1,5,10,2)
+#' x <- c(-1, 5, 10, 2)
 #' ranking <- order(x, decreasing = TRUE)
 #' M(ranking) %*% x
 #'
@@ -122,10 +122,10 @@ delta <- function(diff_alt, J){
 
 M <- function(ranking) {
   J <- length(ranking)
-  out <- matrix(0, nrow = J-1, ncol = J)
-  for(i in 1:(J-1)) {
-    out[i,ranking[i]] <- -1
-    out[i,ranking[i+1]] <- 1
+  out <- matrix(0, nrow = J - 1, ncol = J)
+  for (i in 1:(J - 1)) {
+    out[i, ranking[i]] <- -1
+    out[i, ranking[i + 1]] <- 1
   }
   return(out)
 }

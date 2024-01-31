@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "img/",
   fig.align = "center",
-  fig.dim = c(8, 6), 
+  fig.dim = c(8, 6),
   out.width = "75%"
 )
 library("RprobitB")
@@ -43,11 +43,11 @@ The following lines prepare the `Electricity` data set for estimation. We use th
 
 ```{r, message = FALSE}
 data("Electricity", package = "mlogit")
-Electricity <- as_cov_names(Electricity, c("pf","cl","loc","wk","tod","seas"), 1:4)
+Electricity <- as_cov_names(Electricity, c("pf", "cl", "loc", "wk", "tod", "seas"), 1:4)
 data <- prepare_data(
   form = choice ~ pf + cl + loc + wk + tod + seas | 0,
   choice_data = Electricity,
-  re = c("cl","loc","wk","tod","seas")
+  re = c("cl", "loc", "wk", "tod", "seas")
 )
 model_elec <- fit_model(data, R = 1000, scale = "pf := -1")
 ```
@@ -61,8 +61,8 @@ coef(model_elec)
 By the sign of the estimates we can for example deduce, that the existence of the time-of-day electricity price `tod` in the contract has a negative effect. However, the deciders are very heterogeneous here, because the estimated variance of this coefficient is large. The same holds for the contract length `cl`. In particular, the estimated share of the population that prefers to have a longer contract length equals:
 
 ```{r, compute-mixdistr-share}
-cl_mu <- coef(model_elec)["cl","mean"]
-cl_sd <- sqrt(coef(model_elec)["cl","var"])
+cl_mu <- coef(model_elec)["cl", "mean"]
+cl_sd <- sqrt(coef(model_elec)["cl", "var"])
 pnorm(cl_mu / cl_sd)
 ```
 
@@ -149,13 +149,17 @@ The Dirichlet process directly integrates into our existing Gibbs sampler. Given
 set.seed(1)
 P_r <- 2
 C_true <- 3
-N <- c(100,70,30)
+N <- c(100, 70, 30)
 (b_true <- matrix(replicate(C_true, rnorm(P_r)), nrow = P_r, ncol = C_true))
-(Omega_true <- matrix(replicate(C_true, rwishart(P_r + 1, 0.1*diag(P_r))$W, simplify = TRUE), 
-                      nrow = P_r*P_r, ncol = C_true))
+(Omega_true <- matrix(replicate(C_true, rwishart(P_r + 1, 0.1 * diag(P_r))$W, simplify = TRUE),
+  nrow = P_r * P_r, ncol = C_true
+))
 beta <- c()
-for(c in 1:C_true) for(n in 1:N[c])
-  beta <- cbind(beta, rmvnorm(mu = b_true[,c,drop=F], Sigma = matrix(Omega_true[,c,drop=F], ncol = P_r)))
+for (c in 1:C_true) {
+  for (n in 1:N[c]) {
+    beta <- cbind(beta, rmvnorm(mu = b_true[, c, drop = F], Sigma = matrix(Omega_true[, c, drop = F], ncol = P_r)))
+  }
+}
 z_true <- rep(1:3, times = N)
 ```
 
@@ -175,16 +179,16 @@ Initially, we start with `C = 1` latent classes. The class mean `b` is set to ze
 z <- rep(1, ncol(beta))
 C <- 1
 b <- matrix(0, nrow = P_r, ncol = C)
-Omega <- matrix(rep(diag(P_r), C), nrow = P_r*P_r, ncol = C)
+Omega <- matrix(rep(diag(P_r), C), nrow = P_r * P_r, ncol = C)
 ```
 
 The following call to `update_classes_dp()` updates the latent classes in `100` iterations. Note that we specify the arguments `Cmax` and `s_desc`. The former denotes the maximum number of latent classes. This specification is not a requirement for the Dirichlet process per se, but rather for its implementation. Knowing the maximum possible class number, we can allocate the required memory space, which leads to a speed improvement. We later can verify that we won't exceed the number of `Cmax = 10` latent classes at any point of the Dirichlet process. Setting `s_desc = TRUE` ensures that the classes are ordered by their weights in a descending order to ensure identifiability.
 
 ```{r, dirichlet-process-app}
-for(r in 1:100){
+for (r in 1:100) {
   dp <- RprobitB:::update_classes_dp(
     Cmax = 10, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE
-    )
+  )
   z <- dp$z
   b <- dp$b
   Omega <- dp$Omega
@@ -194,7 +198,7 @@ for(r in 1:100){
 The Dirichlet process was able to infer the true number `C_true = 3` of latent classes:
 
 ```{r, dirichlet-example-plot, fig.dim = c(16,8)}
-par(mfrow = c(1,2))
+par(mfrow = c(1, 2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
 RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
 ```

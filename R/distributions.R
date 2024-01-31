@@ -2,7 +2,7 @@
 #' @inheritParams ddirichlet_cpp
 #'
 #' @examples
-#' x <- c(0.5,0.3,0.2)
+#' x <- c(0.5, 0.3, 0.2)
 #' concentration <- 1:3
 #' ddirichlet(x = x, concentration = concentration)
 #' ddirichlet(x = x, concentration = concentration, log = TRUE)
@@ -37,8 +37,8 @@ rdirichlet <- function(concentration) {
 #' @inheritParams dmvnorm_cpp
 #'
 #' @examples
-#' x <- c(0,0)
-#' mean <- c(0,0)
+#' x <- c(0, 0)
+#' mean <- c(0, 0)
 #' Sigma <- diag(2)
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma)
 #' dmvnorm(x = x, mean = mean, Sigma = Sigma, log = TRUE)
@@ -59,7 +59,7 @@ dmvnorm <- function(x, mean, Sigma, log = FALSE) {
 #' @inheritParams rmvnorm_cpp
 #'
 #' @examples
-#' mean <- c(0,0)
+#' mean <- c(0, 0)
 #' Sigma <- diag(2)
 #' rmvnorm(mean = mean, Sigma = Sigma)
 #' rmvnorm(mean = mean, Sigma = Sigma, log = TRUE)
@@ -118,4 +118,3 @@ rwishart <- function(df, scale, inv = FALSE) {
   )
   rwishart_cpp(df, scale, inv)
 }
-

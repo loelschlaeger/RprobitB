@@ -51,8 +51,7 @@
 #' @keywords internal object
 
 RprobitB_alternatives <- function(
-    J, alternatives = LETTERS[1:J], base = alternatives[1], ordered = FALSE
-  ) {
+    J, alternatives = LETTERS[1:J], base = alternatives[1], ordered = FALSE) {
   if (missing(J)) {
     RprobitB_stop(
       "Please specify the input 'J'.",
@@ -171,4 +170,3 @@ print.RprobitB_alternatives <- function(x, ...) {
   if (!x$ordered) alt[alt == x$base] <- paste0(alt[alt == x$base], "*")
   cat(cli::style_underline("Alternatives:"), alt, if (x$ordered) "(ordered)")
 }
-

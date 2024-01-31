@@ -56,7 +56,8 @@ test_that("RprobitB_parameter can be created", {
   J <- 3
   N <- 100
   x <- simulate_RprobitB_parameter(
-    x, formula = formula, re = re, J = J, N = N, seed = 1
+    x,
+    formula = formula, re = re, J = J, N = N, seed = 1
   )
   expect_snapshot(print(x))
   expect_snapshot(print(x, "beta"))
@@ -160,7 +161,8 @@ test_that("RprobitB_parameter can be validated", {
     ),
     "Input 'N' must be a positive `integer`."
   )
-  expect_error({
+  expect_error(
+    {
       x <- RprobitB_parameter()
       x$C <- 0
       validate_RprobitB_parameter(
@@ -222,7 +224,7 @@ test_that("RprobitB_parameter can be validated", {
   expect_error(
     validate_RprobitB_parameter(
       x = RprobitB_parameter(
-        C = 1, b = 1:2, Omega = c(1,0,0,1), Sigma = diag(3), Sigma_diff = diff_Sigma(diag(3), 1),
+        C = 1, b = 1:2, Omega = c(1, 0, 0, 1), Sigma = diag(3), Sigma_diff = diff_Sigma(diag(3), 1),
         beta = rep(1, 10), z = rep(1, 10), diff_alt = 4
       ), formula = A ~ 0 | B + 0, re = "B", J = 3, N = 10
     ),
@@ -249,7 +251,7 @@ test_that("RprobitB_parameter can be validated", {
   expect_error(
     validate_RprobitB_parameter(
       x = RprobitB_parameter(
-        b = 1, Omega = 1, Sigma = matrix(-1,3,3), Sigma_diff = diff_Sigma(diag(3), 1),
+        b = 1, Omega = 1, Sigma = matrix(-1, 3, 3), Sigma_diff = diff_Sigma(diag(3), 1),
         beta = rep(1, 10), z = rep(1, 10)
       ), formula = A ~ B | 0, re = "B", J = 3, N = 10, ordered = FALSE
     ),
@@ -258,7 +260,7 @@ test_that("RprobitB_parameter can be validated", {
   expect_error(
     validate_RprobitB_parameter(
       x = RprobitB_parameter(
-        b = 1, Omega = 1, Sigma = matrix(1,3,3), Sigma_diff = matrix(-1,2,2),
+        b = 1, Omega = 1, Sigma = matrix(1, 3, 3), Sigma_diff = matrix(-1, 2, 2),
         beta = rep(1, 10), z = rep(1, 10)
       ), formula = A ~ B | 0, re = "B", J = 3, N = 10, ordered = FALSE
     ),
@@ -267,7 +269,7 @@ test_that("RprobitB_parameter can be validated", {
   expect_error(
     validate_RprobitB_parameter(
       x = RprobitB_parameter(
-        b = 1, Omega = 1, Sigma = matrix(1,3,3), Sigma_diff = matrix(1,3,3),
+        b = 1, Omega = 1, Sigma = matrix(1, 3, 3), Sigma_diff = matrix(1, 3, 3),
         beta = rep(1, 10), z = rep(1, 10)
       ), formula = A ~ B | 0, re = "B", J = 3, N = 10, ordered = FALSE
     ),
@@ -276,7 +278,7 @@ test_that("RprobitB_parameter can be validated", {
   expect_error(
     validate_RprobitB_parameter(
       x = RprobitB_parameter(
-        b = 1, Omega = 1, Sigma = matrix(1,3,3), Sigma_diff = matrix(1,2,2),
+        b = 1, Omega = 1, Sigma = matrix(1, 3, 3), Sigma_diff = matrix(1, 2, 2),
         beta = rep(1, 10), z = rep(1, 10)
       ), formula = A ~ B | 0, re = "B", J = 3, N = 10, ordered = FALSE
     ),

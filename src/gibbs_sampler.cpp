@@ -351,45 +351,61 @@ arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
 }
 
 //' Update latent utility vector
+//'
 //' @description
-//' This function updates the latent utility vector, where (independent across deciders and choice occasions)
-//' the utility for each alternative is updated conditional on the other utilities.
+//' This function updates the latent utility vector, where (independent across
+//' deciders and choice occasions) the utility for each alternative is updated
+//' conditional on the other utilities.
+//'
 //' @param U
-//' The current utility vector of length \code{J-1}.
+//' The current utility vector of length \code{J - 1}.
+//'
 //' @param y
 //' An integer from \code{1} to \code{J}, the index of the chosen alternative.
+//'
 //' @param sys
-//' A vector of length \code{J-1}, the systematic utility part.
+//' A vector of length \code{J - 1}, the systematic utility part.
+//'
 //' @param Sigmainv
-//' The inverted error term covariance matrix of dimension \code{J-1} x \code{J-1}.
+//' The inverted error term covariance matrix of dimension
+//' \code{J - 1} x \code{J - 1}.
+//'
 //' @details
-//' The key ingredient to Gibbs sampling for probit models is considering the latent utilities
-//' as parameters themselves which can be updated (data augmentation).
-//' Independently for all deciders \eqn{n=1,\dots,N} and choice occasions \eqn{t=1,...,T_n},
-//' the utility vectors \eqn{(U_{nt})_{n,t}} in the linear utility equation \eqn{U_{nt} = X_{nt} \beta + \epsilon_{nt}}
-//' follow a \eqn{J-1}-dimensional truncated normal distribution, where \eqn{J} is the number of alternatives,
-//' \eqn{X_{nt} \beta} the systematic (i.e. non-random) part of the utility and \eqn{\epsilon_{nt} \sim N(0,\Sigma)} the error term.
-//' The truncation points are determined by the choices \eqn{y_{nt}}. To draw from a truncated multivariate
-//' normal distribution, this function implemented the approach of Geweke (1998) to conditionally draw each component
-//' separately from a univariate truncated normal distribution. See Oelschläger (2020) for the concrete formulas.
+//' The key ingredient to Gibbs sampling for probit models is considering the
+//' latent utilities as parameters themselves which can be updated
+//' (data augmentation). Independently for all deciders \eqn{n=1,\dots,N} and
+//' choice occasions \eqn{t=1,...,T_n}, the utility vectors \eqn{(U_{nt})_{n,t}}
+//' in the linear utility equation \eqn{U_{nt} = X_{nt} \beta + \epsilon_{nt}}
+//' follow a \eqn{J-1}-dimensional truncated normal distribution, where
+//' \eqn{J} is the number of alternatives, \eqn{X_{nt} \beta} the systematic
+//' (i.e. non-random) part of the utility and
+//' \eqn{\epsilon_{nt} \sim N(0,\Sigma)} the error term.
+//'
+//' The truncation points are determined by the choices \eqn{y_{nt}}. To draw
+//' from a truncated multivariate normal distribution, this function implements
+//' the approach of Geweke (1998) to conditionally draw each component
+//' separately from a univariate truncated normal distribution.
+//' See Oelschläger (2020) for the concrete formulas.
+//'
 //' @references
-//' See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal and Student-t Distributions Subject
-//' to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs sampling
-//' from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
-//' of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
+//' See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal
+//' and Student-t Distributions Subject to Linear Constraints and the Evaluation
+//' of Constraint Probabilities} for Gibbs sampling from a truncated
+//' multivariate normal distribution.
+//'
+//' See Oelschläger and Bauer (2020) \emph{Bayes Estimation of Latent Class
+//' Mixed Multinomial Probit Models} for its application to probit utilities.
+//'
 //' @return
-//' An updated utility vector of length \code{J-1}.
+//' An updated utility vector of length \code{J - 1}.
+//'
 //' @examples
-//' U <- c(0,0,0)
-//' y <- 3
-//' sys <- c(0,0,0)
-//' Sigmainv <- solve(diag(3))
-//' update_U(U, y, sys, Sigmainv)
-//' @export
-//' @keywords
-//' internal posterior
+//' update_U(U = c(0, 0, 0), y = 3, sys = c(0, 0, 0), Sigmainv = diag(3))
+//'
+//' @keywords internal posterior
 //'
 // [[Rcpp::export]]
+
 arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
   int Jm1 = U.size();
   bool above;

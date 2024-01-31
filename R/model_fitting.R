@@ -71,62 +71,64 @@
 #'
 #' @examples
 #' check_prior(P_f = 1, P_r = 2, J = 3, ordered = TRUE)
-
 check_prior <- function(
     P_f, P_r, J, ordered = FALSE, eta = numeric(P_f), Psi = diag(P_f),
     delta = 1, xi = numeric(P_r), D = diag(P_r), nu = P_r + 2,
-    Theta = diag(P_r), kappa = if(ordered) 4 else (J + 1),
-    E = if(ordered) diag(1) else diag(J - 1), zeta = numeric(J - 2),
-    Z = diag(J - 2)
-    ) {
-
+    Theta = diag(P_r), kappa = if (ordered) 4 else (J + 1),
+    E = if (ordered) diag(1) else diag(J - 1), zeta = numeric(J - 2),
+    Z = diag(J - 2)) {
   ### initialize prior list
   prior <- list()
 
   ### check supplied values and set missing prior parameters to default values
   if (P_f > 0) {
-
     ### alpha ~ MVN(eta,Psi)
     if (!is.numeric(eta) || length(eta) != P_f) {
       stop("'eta' must be a numeric vector of length 'P_f'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(Psi) || !is.matrix(Psi) || any(dim(Psi) != c(P_f, P_f))) {
       stop("'Psi' must be a numeric matrix of dimension 'P_f' x 'P_f'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     eta <- NA
     Psi <- NA
   }
   if (P_r > 0) {
-
     ### s ~ D(delta)
     if (!is.numeric(delta) || length(delta) != 1) {
       stop("'delta' must be a single numeric value.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
 
     ### b_c ~ MVN(xi,D)
     if (!is.numeric(xi) || length(xi) != P_r) {
       stop("'xi' must be a numeric vector of length 'P_r'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(D) || !is.matrix(D) ||
-        any(dim(D) != c(P_r, P_r))) {
+      any(dim(D) != c(P_r, P_r))) {
       stop("'D' must be a numeric matrix of dimension 'P_r' x 'P_r'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
 
     ### Omega_c ~ IW(nu,Theta)
     if (!is.numeric(nu) || length(nu) != 1 || nu <= P_r) {
       stop("'nu' must be a single numeric value greater or equal 'P_r'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(Theta) || !is.matrix(Theta) ||
-        any(dim(Theta) != c(P_r, P_r))) {
+      any(dim(Theta) != c(P_r, P_r))) {
       stop("'Theta' must be a numeric matrix of dimension 'P_r' x 'P_r'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     delta <- NA
@@ -140,32 +142,38 @@ check_prior <- function(
   if (ordered) {
     if (!is.numeric(kappa) || length(kappa) != 1 || kappa <= 3) {
       stop("'kappa' must be a single numeric value greater or equal '3'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
-    if (!is.numeric(E) || !is.matrix(E) || any(dim(E) != c(1,1))) {
+    if (!is.numeric(E) || !is.matrix(E) || any(dim(E) != c(1, 1))) {
       stop("'E' must be a numeric matrix of dimension '1' x '1'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     if (!is.numeric(kappa) || length(kappa) != 1 || kappa <= J - 1) {
       stop("'kappa' must be a single numeric value greater or equal 'J-1'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(E) || !is.matrix(E) || any(dim(E) != c(J - 1, J - 1))) {
       stop("'E' must be a numeric matrix of dimension 'J-1' x 'J-1'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
   ### d ~ N(zeta,Z)
   if (ordered) {
-    if (!is.numeric(zeta) || length(zeta) != J-2) {
+    if (!is.numeric(zeta) || length(zeta) != J - 2) {
       stop("'zeta' must be a numeric vector of length 'J - 2'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(Z) || !is.matrix(Z) || any(dim(Z) != c(J - 2, J - 2))) {
       stop("'Z' must be a numeric matrix of dimension 'J-2' x 'J-2'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     zeta <- NA
@@ -175,7 +183,8 @@ check_prior <- function(
   ### build and return prior parameters
   prior <- list(
     "eta" = eta, "Psi" = Psi, "delta" = delta, "xi" = xi, "D" = D, "nu" = nu,
-    "Theta" = Theta, "kappa" = kappa, "E" = E, "zeta" = zeta, "Z" = Z)
+    "Theta" = Theta, "kappa" = kappa, "E" = E, "zeta" = zeta, "Z" = Z
+  )
   class(prior) <- c("RprobitB_prior", "list")
   return(prior)
 }
@@ -201,11 +210,8 @@ check_prior <- function(
 #' RprobitB:::set_initial_gibbs_values(
 #'   N = 2, T = 3, J = 3, P_f = 1, P_r = 2, C = 2
 #' )
-
 set_initial_gibbs_values <- function(
-    N, T, J, P_f, P_r, C, ordered = FALSE, ranked = FALSE, suff_stat = NULL
-    ) {
-
+    N, T, J, P_f, P_r, C, ordered = FALSE, ranked = FALSE, suff_stat = NULL) {
   ### check inputs
   stopifnot(is.numeric(N), N %% 1 == 0, N > 0)
   stopifnot(is.numeric(T), T %% 1 == 0, T > 0)
@@ -220,27 +226,33 @@ set_initial_gibbs_values <- function(
   z0 <- if (P_r > 0) rep(1, N) else NA
   m0 <- if (P_r > 0) round(rep(N, C) * 2^(C:1 - 1) / sum(2^(C:1 - 1))) else NA
   b0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = C) else NA
-  Omega0 <- if (P_r > 0) matrix(rep(as.vector(diag(P_r)), C), nrow = P_r * P_r,
-                                ncol = C) else NA
+  Omega0 <- if (P_r > 0) {
+    matrix(rep(as.vector(diag(P_r)), C),
+      nrow = P_r * P_r,
+      ncol = C
+    )
+  } else {
+    NA
+  }
   beta0 <- if (P_r > 0) matrix(0, nrow = P_r, ncol = N) else NA
   U0 <- matrix(0, nrow = J - 1, ncol = N * max(T))
   Sigma0 <- diag(J - 1)
 
   ### special case of ordered probit
   if (ordered) {
-    d0 <- rep(0,J-2)
+    d0 <- rep(0, J - 2)
     U0 <- matrix(0, nrow = 1, ncol = N * max(T))
     Sigma0 <- diag(1)
     if (!is.null(suff_stat)) {
       if (P_f > 0) {
         W_mat <- Reduce(rbind, suff_stat$W)
         alpha0 <- as.numeric(solve(t(W_mat) %*% W_mat) %*% t(W_mat) %*%
-                               na.omit(as.numeric(t(suff_stat$y))))
+          na.omit(as.numeric(t(suff_stat$y))))
       }
       if (P_r > 0) {
         X_mat <- Reduce(rbind, suff_stat$X)
         b0 <- as.numeric(solve(t(X_mat) %*% X_mat) %*% t(X_mat) %*%
-                               na.omit(as.numeric(t(suff_stat$y))))
+          na.omit(as.numeric(t(suff_stat$y))))
         b0 <- matrix(rep(b0, times = C), nrow = P_r, ncol = C)
       }
     }
@@ -339,12 +351,12 @@ set_initial_gibbs_values <- function(
 #' internal
 
 RprobitB_latent_classes <- function(latent_classes = NULL) {
-
   ### check if 'latent_classes' is 'NULL' or a list
   if (!is.null(latent_classes)) {
     if (!is.list(latent_classes)) {
       stop("'latent_classes' must be either a list or 'NULL'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   } else {
     latent_classes <- list()
@@ -358,41 +370,47 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   ### determine whether latent classes should be weight-based updated
   latent_classes[["weight_update"]] <-
     ifelse(!isTRUE(latent_classes[["weight_update"]]) &&
-             !isFALSE(latent_classes[["weight_update"]]),
-           FALSE, latent_classes[["weight_update"]]
+      !isFALSE(latent_classes[["weight_update"]]),
+    FALSE, latent_classes[["weight_update"]]
     )
 
   ### determine whether latent classes should be DP-based updated
   latent_classes[["dp_update"]] <-
     ifelse(!isTRUE(latent_classes[["dp_update"]]) &&
-             !isFALSE(latent_classes[["dp_update"]]),
-           FALSE, latent_classes[["dp_update"]]
+      !isFALSE(latent_classes[["dp_update"]]),
+    FALSE, latent_classes[["dp_update"]]
     )
 
   if (!latent_classes[["weight_update"]] && !latent_classes[["dp_update"]]) {
     ### remove other parameters in case of no updates
-    latent_classes <- list("C" = latent_classes[["C"]],
-                           "weight_update" = FALSE,
-                           "dp_update" = FALSE)
+    latent_classes <- list(
+      "C" = latent_classes[["C"]],
+      "weight_update" = FALSE,
+      "dp_update" = FALSE
+    )
   } else {
     ### specify updating parameters
-    if (is.null(latent_classes[["Cmax"]])){
+    if (is.null(latent_classes[["Cmax"]])) {
       latent_classes[["Cmax"]] <- max(10, latent_classes[["C"]])
     }
 
     ### set missing parameters to default values
-    if (is.null(latent_classes[["buffer"]]))
+    if (is.null(latent_classes[["buffer"]])) {
       latent_classes[["buffer"]] <- 100
-    if (is.null(latent_classes[["epsmin"]]))
+    }
+    if (is.null(latent_classes[["epsmin"]])) {
       latent_classes[["epsmin"]] <- 0.01
-    if (is.null(latent_classes[["epsmax"]]))
+    }
+    if (is.null(latent_classes[["epsmax"]])) {
       latent_classes[["epsmax"]] <- 0.99
-    if (is.null(latent_classes[["distmin"]]))
+    }
+    if (is.null(latent_classes[["distmin"]])) {
       latent_classes[["distmin"]] <- 0.1
+    }
 
     ### remove redundant parameters
     req_names <- c("C", "weight_update", "dp_update", "Cmax")
-    if(latent_classes[["weight_update"]]){
+    if (latent_classes[["weight_update"]]) {
       req_names <- c(req_names, "buffer", "epsmin", "epsmax", "distmin")
     }
     latent_classes[!names(latent_classes) %in% req_names] <- NULL
@@ -400,32 +418,36 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
   ### check 'latent_classes'
   if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 ||
-      !latent_classes$C > 0) {
+    !latent_classes$C > 0) {
     stop("'latent_classes$C' must be a positive integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
     if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 ||
-        !latent_classes$Cmax > 0) {
+      !latent_classes$Cmax > 0) {
       stop("'latent_classes$Cmax' must be a positive integer.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
   if (latent_classes[["weight_update"]]) {
     if (!is.numeric(latent_classes$buffer) ||
-        !latent_classes$buffer %% 1 == 0 ||
-        !latent_classes$buffer > 0) {
+      !latent_classes$buffer %% 1 == 0 ||
+      !latent_classes$buffer > 0) {
       stop("'latent_classes$buffer' must be a positive integer.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(latent_classes$epsmin) || !latent_classes$epsmin <= 1 ||
-        !latent_classes$epsmin >= 0) {
+      !latent_classes$epsmin >= 0) {
       stop("'latent_classes$epsmin' must be a numeric between 0 and 1.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
     if (!is.numeric(latent_classes$epsmax) || !latent_classes$epsmax <= 1 ||
-        !latent_classes$epsmax >= 0 ||
-        !latent_classes$epsmin < latent_classes$epsmax) {
+      !latent_classes$epsmax >= 0 ||
+      !latent_classes$epsmin < latent_classes$epsmax) {
       stop(
         "'latent_classes$epsmax' must be a numeric between 0 and 1 and",
         "greater than 'latent_classes$epsmin'.",
@@ -434,7 +456,8 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
     }
     if (!is.numeric(latent_classes$distmin) || !0 <= latent_classes$distmin) {
       stop("'latent_classes$distmin' must be a non-negative numeric value.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
@@ -458,14 +481,14 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
 
 print.RprobitB_latent_classes <- function(x, ...) {
   cat(crayon::underline("Latent classes\n"))
-  if(!x[["class_update"]]){
+  if (!x[["class_update"]]) {
     cat("C =", x$C, "\n")
   } else {
     cat("DP-based update:", x[["dp_update"]], "\n")
     cat("Weight-based update:", x[["weight_update"]], "\n")
     cat("Initial classes:", x$C, "\n")
     cat("Maximum classes:", x$Cmax, "\n")
-    if(x[["weight_update"]]){
+    if (x[["weight_update"]]) {
       cat("Updating buffer:", x$buffer, "\n")
       cat("Minimum class weight:", x$epsmin, "\n")
       cat("Maximum class weight:", x$epsmax, "\n")
@@ -535,56 +558,66 @@ print.RprobitB_latent_classes <- function(x, ...) {
 
 RprobitB_normalization <- function(
     level, scale = "Sigma_1,1 := 1", form, re = NULL, alternatives, base,
-    ordered = FALSE
-    ) {
-
+    ordered = FALSE) {
   ### check inputs
-  if(missing(alternatives)){
+  if (missing(alternatives)) {
     stop("Please specify 'alternatives'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!is.character(alternatives)) {
+  if (!is.character(alternatives)) {
     stop("'alternatives' must be a character vector",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(missing(level) || is.null(level)){
+  if (missing(level) || is.null(level)) {
     level <- tail(alternatives, n = 1)
   }
-  if(level != tail(alternatives, n = 1)){
+  if (level != tail(alternatives, n = 1)) {
     level <- tail(alternatives, n = 1)
-    warning(paste0("Currently, only alternatives with respect to the last ",
-                   "alternative can be computed.\nTherefore, 'level' = ",
-                   tail(alternatives, n = 1), "' is set."),
-            immediate. = TRUE, call. = FALSE)
+    warning(
+      paste0(
+        "Currently, only alternatives with respect to the last ",
+        "alternative can be computed.\nTherefore, 'level' = ",
+        tail(alternatives, n = 1), "' is set."
+      ),
+      immediate. = TRUE, call. = FALSE
+    )
   }
-  if(missing(form)){
+  if (missing(form)) {
     stop("Please specify 'form'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!(is.character(level) && length(level) == 1 && level %in% alternatives)){
+  if (!(is.character(level) && length(level) == 1 && level %in% alternatives)) {
     stop("'level' must be one element of 'alternatives'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!(is.character(scale) && length(scale) == 1)){
+  if (!(is.character(scale) && length(scale) == 1)) {
     stop("'scale' must be a single character.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   scale <- gsub(" ", "", scale, fixed = TRUE)
-  if(!grepl(":=", scale, fixed = TRUE)) {
+  if (!grepl(":=", scale, fixed = TRUE)) {
     stop("'scale' is not in format '<parameter> := <value>'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(missing(base)){
+  if (missing(base)) {
     stop("Please specify 'base'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(!isTRUE(ordered) && !isFALSE(ordered)) {
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### set 'level'
-  if(ordered) {
+  if (ordered) {
     level <- NA
   } else {
     alt_name <- level
@@ -599,57 +632,78 @@ RprobitB_normalization <- function(
   )
   parameter <- strsplit(scale, ":=", fixed = TRUE)[[1]][1]
   par_name <- NA
-  if(parameter %in% effects[["effect"]]){
+  if (parameter %in% effects[["effect"]]) {
     index <- which(parameter == effects[["effect"]])
-    if(effects[index, "random"]){
-      stop(paste0("'", parameter, "' is a random effect and cannot be used ",
-                  "for scale normalization."),
-           call. = FALSE)
+    if (effects[index, "random"]) {
+      stop(
+        paste0(
+          "'", parameter, "' is a random effect and cannot be used ",
+          "for scale normalization."
+        ),
+        call. = FALSE
+      )
     }
     par_name <- parameter
     parameter <- "a"
   } else {
     parameter_split <- strsplit(parameter, split = "_")[[1]]
-    if(parameter_split[1] %in% c("Sigma","sigma")) {
+    if (parameter_split[1] %in% c("Sigma", "sigma")) {
       parameter <- "s"
       index <- suppressWarnings(
         as.numeric(strsplit(parameter_split[2], split = ",")[[1]][1])
       )
-      if(is.na(index) || index %% 1 != 0 || index <= 0){
-        stop(paste("'<parameter>' in 'scale = <parameter> := <value>' is not",
-                   "in the form 'Sigma_<j>,<j>' for an integer <j>."),
-             call. = FALSE)
+      if (is.na(index) || index %% 1 != 0 || index <= 0) {
+        stop(
+          paste(
+            "'<parameter>' in 'scale = <parameter> := <value>' is not",
+            "in the form 'Sigma_<j>,<j>' for an integer <j>."
+          ),
+          call. = FALSE
+        )
       }
-      if(index > length(alternatives)) {
-        stop(paste("'<j>' in 'Sigma_<j>,<j>' for '<parameter>' in",
-                   "'scale = <parameter> := <value>' must not be greater than",
-                   "the length of 'alternatives'."),
-             call. = FALSE)
+      if (index > length(alternatives)) {
+        stop(
+          paste(
+            "'<j>' in 'Sigma_<j>,<j>' for '<parameter>' in",
+            "'scale = <parameter> := <value>' must not be greater than",
+            "the length of 'alternatives'."
+          ),
+          call. = FALSE
+        )
       }
     } else {
       stop("Please check the specification of 'scale'.",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
   value <- suppressWarnings(
     as.numeric(strsplit(scale, ":=", fixed = TRUE)[[1]][2])
+  )
+  if (is.na(value)) {
+    stop(
+      paste(
+        "'<value>' in 'scale = <parameter> := <value>' is not",
+        "a numeric value."
+      ),
+      call. = FALSE
     )
-  if(is.na(value)) {
-    stop(paste("'<value>' in 'scale = <parameter> := <value>' is not",
-               "a numeric value."),
-         call. = FALSE)
   }
-  if(value == 0){
+  if (value == 0) {
     stop("'<value>' in 'scale = <parameter> := <value>' must be non-zero.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  if(value < 0 && parameter == "s"){
+  if (value < 0 && parameter == "s") {
     stop("'<value>' in 'scale = <parameter> := <value>' must be non-zero ",
-         "when fixing an error term variance.",
-         call. = FALSE)
+      "when fixing an error term variance.",
+      call. = FALSE
+    )
   }
-  scale <- list("parameter" = parameter, "index" = index, "value" = value,
-                "name" = par_name)
+  scale <- list(
+    "parameter" = parameter, "index" = index, "value" = value,
+    "name" = par_name
+  )
 
   ### create and return object of class 'RprobitB_normalization'
   out <- list("level" = level, "scale" = scale)
@@ -662,7 +716,7 @@ RprobitB_normalization <- function(
 #' @importFrom crayon underline
 
 print.RprobitB_normalization <- function(x, ...) {
-  if(identical(NA,x$level)) {
+  if (identical(NA, x$level)) {
     cat(paste0(
       "Level: Fixed first utility threshold to 0.\n"
     ))
@@ -756,9 +810,7 @@ print.RprobitB_normalization <- function(x, ...) {
 fit_model <- function(
     data, scale = "Sigma_1,1 := 1", R = 1000, B = R / 2, Q = 1,
     print_progress = getOption("RprobitB_progress"), prior = NULL,
-    latent_classes = NULL, seed = NULL, fixed_parameter = list()
-    ) {
-
+    latent_classes = NULL, seed = NULL, fixed_parameter = list()) {
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
     stop(
@@ -776,19 +828,23 @@ fit_model <- function(
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
     stop("'R' must be a positive integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
     stop("'B' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
     stop("'Q' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!isTRUE(print_progress) && !isFALSE(print_progress)) {
     stop("'print_progress' must be a boolean.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### set normalization
@@ -799,7 +855,7 @@ fit_model <- function(
 
   ### set latent classes
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
-  if(latent_classes$dp_update && is.null(prior[["delta"]])) {
+  if (latent_classes$dp_update && is.null(prior[["delta"]])) {
     prior[["delta"]] <- 0.1
   }
 
@@ -807,25 +863,31 @@ fit_model <- function(
   fixed_parameter <- unclass(do.call(
     what = RprobitB_parameter,
     args = c(
-      list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
-           "C" = latent_classes$C, "ordered" = data$ordered, sample = FALSE),
+      list(
+        "P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J, "N" = data$N,
+        "C" = latent_classes$C, "ordered" = data$ordered, sample = FALSE
+      ),
       fixed_parameter
     )
   ))[names(fixed_parameter)]
-  if(latent_classes[["class_update"]]) {
-    no_fix <- c("s","z","b","Omega")
-    if(any(names(fixed_parameter) %in% no_fix)) {
+  if (latent_classes[["class_update"]]) {
+    no_fix <- c("s", "z", "b", "Omega")
+    if (any(names(fixed_parameter) %in% no_fix)) {
       stop("You cannot fix parameter ",
-           paste(intersect(no_fix, names(fixed_parameter)), collapse = ", "),
-           " when updating C.", call. = FALSE)
+        paste(intersect(no_fix, names(fixed_parameter)), collapse = ", "),
+        " when updating C.",
+        call. = FALSE
+      )
     }
   }
 
   ### set prior parameters
   prior <- do.call(
     what = check_prior,
-    args = c(list("P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J,
-                  "ordered" = data$ordered), prior)
+    args = c(list(
+      "P_f" = data$P_f, "P_r" = data$P_r, "J" = data$J,
+      "ordered" = data$ordered
+    ), prior)
   )
 
   ### compute sufficient statistics
@@ -839,8 +901,9 @@ fit_model <- function(
   )
 
   ### Gibbs sampling
-  if (!is.null(seed))
+  if (!is.null(seed)) {
     set.seed(seed)
+  }
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampling(
     sufficient_statistics = suff_stat, prior = prior,
@@ -851,12 +914,15 @@ fit_model <- function(
   timer_end <- Sys.time()
 
   ### filter Gibbs samples
-  if (data$P_f == 0)
+  if (data$P_f == 0) {
     gibbs_samples["alpha"] <- NULL
-  if (data$P_r == 0)
-    gibbs_samples[c("s","z","b","Omega","class_sequence")] <- NULL
-  if (!data$ordered)
+  }
+  if (data$P_r == 0) {
+    gibbs_samples[c("s", "z", "b", "Omega", "class_sequence")] <- NULL
+  }
+  if (!data$ordered) {
     gibbs_samples["d"] <- NULL
+  }
 
   if (latent_classes[["class_update"]]) {
     ### update number of latent classes
@@ -864,11 +930,17 @@ fit_model <- function(
 
     ### remove zeros for unoccupied classes
     gibbs_samples[["s"]] <- gibbs_samples[["s"]][,
-                                          1:latent_classes[["C"]], drop = FALSE]
+      1:latent_classes[["C"]],
+      drop = FALSE
+    ]
     gibbs_samples[["b"]] <- gibbs_samples[["b"]][,
-                        1:(data[["P_r"]] * latent_classes[["C"]]), drop = FALSE]
+      1:(data[["P_r"]] * latent_classes[["C"]]),
+      drop = FALSE
+    ]
     gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][,
-                      1:(data[["P_r"]]^2 * latent_classes[["C"]]), drop = FALSE]
+      1:(data[["P_r"]]^2 * latent_classes[["C"]]),
+      drop = FALSE
+    ]
   }
 
   ### save class sequence
@@ -977,14 +1049,14 @@ fit_model <- function(
 #' internal
 
 sufficient_statistics <- function(data, normalization) {
-
   ### check input
   if (!inherits(data, "RprobitB_data")) {
     stop("'data' must be of class 'RprobitB_data'.", call. = FALSE)
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### make a copy of 'data'
@@ -1031,9 +1103,9 @@ sufficient_statistics <- function(data, normalization) {
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
         W[[sum(Tvec[seq_len(n - 1)]) + t]] <-
-          data_copy$data[[n]][[1]][[t]][,seq_len(P_f), drop = FALSE]
+          data_copy$data[[n]][[1]][[t]][, seq_len(P_f), drop = FALSE]
         X[[sum(Tvec[seq_len(n - 1)]) + t]] <-
-          data_copy$data[[n]][[1]][[t]][,-seq_len(P_f), drop = FALSE]
+          data_copy$data[[n]][[1]][[t]][, -seq_len(P_f), drop = FALSE]
       }
     }
   }
@@ -1058,15 +1130,17 @@ sufficient_statistics <- function(data, normalization) {
   RprobitB_pp("Computing sufficient statistics", 3, 4)
   WkW <- NA
   if (P_f > 0) {
-    WkW <- if(data$ordered) {
+    WkW <- if (data$ordered) {
       matrix(0, nrow = P_f^2, ncol = 1)
     } else {
       matrix(0, nrow = P_f^2, ncol = (J - 1)^2)
     }
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
-        WkW <- WkW + kronecker(t(W[[sum(Tvec[seq_len(n - 1)]) + t]]),
-                               t(W[[sum(Tvec[seq_len(n - 1)]) + t]]))
+        WkW <- WkW + kronecker(
+          t(W[[sum(Tvec[seq_len(n - 1)]) + t]]),
+          t(W[[sum(Tvec[seq_len(n - 1)]) + t]])
+        )
       }
     }
   }
@@ -1077,14 +1151,16 @@ sufficient_statistics <- function(data, normalization) {
   if (P_r > 0) {
     XkX <- list()
     for (n in seq_len(N)) {
-      XnkXn <- if(data$ordered) {
+      XnkXn <- if (data$ordered) {
         matrix(0, nrow = P_r^2, ncol = 1)
       } else {
         matrix(0, nrow = P_r^2, ncol = (J - 1)^2)
       }
       for (t in seq_len(Tvec[n])) {
-        XnkXn <- XnkXn + kronecker(t(X[[sum(Tvec[seq_len(n - 1)]) + t]]),
-                                   t(X[[sum(Tvec[seq_len(n - 1)]) + t]]))
+        XnkXn <- XnkXn + kronecker(
+          t(X[[sum(Tvec[seq_len(n - 1)]) + t]]),
+          t(X[[sum(Tvec[seq_len(n - 1)]) + t]])
+        )
       }
       XkX[[n]] <- XnkXn
     }
@@ -1095,7 +1171,7 @@ sufficient_statistics <- function(data, normalization) {
     rdiff <- list()
     perm <- permutations(data$alternatives)
     Dinv <- round(MASS::ginv(delta(J, normalization$level$level)))
-    for(p in 1:length(perm)) {
+    for (p in 1:length(perm)) {
       rdiff[[p]] <- M(ranking = match(perm[[p]], data$alternatives)) %*% Dinv
     }
   } else {
@@ -1145,29 +1221,28 @@ sufficient_statistics <- function(data, normalization) {
 
 update.RprobitB_fit <- function(
     object, form, re, alternatives, id, idc, standardize, impute, scale, R, B,
-    Q, print_progress, prior, latent_classes, seed, ...
-    ) {
+    Q, print_progress, prior, latent_classes, seed, ...) {
   data <- prepare_data(
-    form = if(missing(form)) object$data$form else form,
+    form = if (missing(form)) object$data$form else form,
     choice_data = object$data$choice_data,
-    re = if(missing(re)) object$data$re else re,
-    alternatives = if(missing(alternatives)) object$data$alternatives else alternatives,
-    id = if(missing(id)) object$data$res_var_names$id else id,
-    idc = if(missing(idc)) object$data$res_var_names$idc else idc,
-    standardize = if(missing(standardize)) object$data$standardize else standardize,
-    impute = if(missing(impute)) "complete_cases" else impute
-    )
+    re = if (missing(re)) object$data$re else re,
+    alternatives = if (missing(alternatives)) object$data$alternatives else alternatives,
+    id = if (missing(id)) object$data$res_var_names$id else id,
+    idc = if (missing(idc)) object$data$res_var_names$idc else idc,
+    standardize = if (missing(standardize)) object$data$standardize else standardize,
+    impute = if (missing(impute)) "complete_cases" else impute
+  )
   model <- fit_model(
     data = data,
-    scale = if(missing(scale)) object$scale else scale,
-    R = if(missing(R)) object$R else R,
-    B = if(missing(B)) object$B else B,
-    Q = if(missing(Q)) object$Q else Q,
-    print_progress = if(missing(print_progress)) getOption("RprobitB_progress") else print_progress,
-    prior = if(missing(prior)) NULL else prior,
-    latent_classes = if(missing(latent_classes)) object$latent_classes else latent_classes,
-    seed = if(missing(seed)) NULL else seed
-    )
+    scale = if (missing(scale)) object$scale else scale,
+    R = if (missing(R)) object$R else R,
+    B = if (missing(B)) object$B else B,
+    Q = if (missing(Q)) object$Q else Q,
+    print_progress = if (missing(print_progress)) getOption("RprobitB_progress") else print_progress,
+    prior = if (missing(prior)) NULL else prior,
+    latent_classes = if (missing(latent_classes)) object$latent_classes else latent_classes,
+    seed = if (missing(seed)) NULL else seed
+  )
   return(model)
 }
 
@@ -1194,9 +1269,7 @@ update.RprobitB_fit <- function(
 
 RprobitB_fit <- function(
     data, scale, level, normalization, R, B, Q, latent_classes, prior,
-    gibbs_samples, class_sequence, comp_time
-    ) {
-
+    gibbs_samples, class_sequence, comp_time) {
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
   stopifnot(is.character("scale"))
@@ -1242,13 +1315,14 @@ print.RprobitB_fit <- function(x, ...) {
 #' @export
 
 summary.RprobitB_fit <- function(object, FUN = c(
-  "mean" = mean, "sd" = stats::sd,
-  "R^" = R_hat), ...) {
-
+                                   "mean" = mean, "sd" = stats::sd,
+                                   "R^" = R_hat
+                                 ), ...) {
   ### check class of 'object'
   if (!inherits(object, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### compute statistics from 'gibbs_samples'
@@ -1347,12 +1421,12 @@ print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
 
 transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
                                    check_preference_flip = TRUE, ...) {
-
   ### check inputs
   x <- `_data`
   if (!inherits(x, "RprobitB_fit")) {
     stop("'x' must be of class 'RprobitB_fit'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (is.null(B)) {
     B <- x[["B"]]
@@ -1369,11 +1443,13 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
   J <- x[["data"]][["J"]]
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
     stop("'B' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
     stop("'Q' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (is.null(scale)) {
     normalization <- x[["normalization"]]
@@ -1383,8 +1459,10 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
       preference_flip(
         model_old = x,
         model_new = transform.RprobitB_fit(
-          x, scale = scale, check_preference_flip = FALSE)
+          x,
+          scale = scale, check_preference_flip = FALSE
         )
+      )
     }
     normalization <- RprobitB_normalization(
       level = x$level,
@@ -1392,7 +1470,8 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
       form = x$data$form,
       re = x$data$re,
       alternatives = x$data$alternatives,
-      base = x$data$base)
+      base = x$data$base
+    )
     x[["normalization"]] <- normalization
   }
 
@@ -1446,27 +1525,31 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 #' internal
 
 transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
-
   ### check inputs
-  if (!is.list(gibbs_samples)){
+  if (!is.list(gibbs_samples)) {
     stop("'gibbs_samples' must be a list of Gibbs samples.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
     stop("'R' must be a positive integer.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
     stop("'B' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
     stop("'Q' must be a positive integer smaller than 'R'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   ### function to scale the samples
@@ -1587,7 +1670,7 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   Omega_nbt <- thin(Omega_nb, R - B)
   Sigma_nbt <- thin(Sigma_nb, R - B)
   beta_nbt <- thin(beta_nb, R - B)
-  d_nbt = thin(d_nb, R - B)
+  d_nbt <- thin(d_nb, R - B)
   gibbs_samples_nbt <- list(
     "s" = s_nbt,
     "z" = z_nbt,
@@ -1627,19 +1710,21 @@ transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
 #' internal
 
 transform_parameter <- function(parameter, normalization, ordered = FALSE) {
-
   ### check inputs
   if (!inherits(parameter, "RprobitB_parameter")) {
     stop("'parameter' must be of class 'RprobitB_parameter'.",
-         stop = FALSE)
+      stop = FALSE
+    )
   }
   if (!inherits(normalization, "RprobitB_normalization")) {
     stop("'normalization' must be of class 'RprobitB_normalization'.",
-         stop = FALSE)
+      stop = FALSE
+    )
   }
   if (!isTRUE(ordered) && !isFALSE(ordered)) {
     stop("'ordered' must be a boolean.",
-         stop = FALSE)
+      stop = FALSE
+    )
   }
 
   ### function to scale the parameters
@@ -1665,7 +1750,7 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
     parameter[["beta"]] <- scaling(parameter[["beta"]], factor)
   }
   if (scale[["parameter"]] == "s") {
-    factor <- if(ordered) {
+    factor <- if (ordered) {
       scale[["value"]] / parameter[["Sigma"]]
     } else {
       scale[["value"]] / parameter[["Sigma"]][scale[["index"]], scale[["index"]]]
@@ -1677,7 +1762,8 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
     parameter[["beta"]] <- scaling(parameter[["beta"]], sqrt(factor))
     if (!ordered) {
       parameter[["Sigma_full"]] <- undiff_Sigma(
-        parameter[["Sigma"]], normalization[["level"]][["level"]])
+        parameter[["Sigma"]], normalization[["level"]][["level"]]
+      )
     }
   }
 
@@ -1725,9 +1811,8 @@ preference_flip <- function(model_old, model_new) {
   }
   if (flag) {
     stop("This transformation seems to flip the preferences. ",
-         "Set 'check_preference_flip = FALSE' to transform anyway.",
-         call. = FALSE)
+      "Set 'check_preference_flip = FALSE' to transform anyway.",
+      call. = FALSE
+    )
   }
 }
-
-

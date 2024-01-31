@@ -105,12 +105,12 @@ test_that("RprobitB_prior_s can be created and validated", {
   expect_equal(RprobitB_prior_s(C = 1), NA)
   expect_s3_class(RprobitB_prior_s(C = 2), "RprobitB_prior_s")
   expect_s3_class(RprobitB_prior_s(
-      C = 2,
-      s_prior_custom = function(x) {
-        stats::dunif(x[1], min = 0.5, max = 1) * (x[2] == 1 - x[1])
-      },
-      s_prior_custom_test_par = c(0.6, 0.4)
-    ), "RprobitB_prior_s")
+    C = 2,
+    s_prior_custom = function(x) {
+      stats::dunif(x[1], min = 0.5, max = 1) * (x[2] == 1 - x[1])
+    },
+    s_prior_custom_test_par = c(0.6, 0.4)
+  ), "RprobitB_prior_s")
   expect_error(
     RprobitB_prior_s(C = 3, s_prior_custom = "no_function"),
     "Custom prior for 's' is misspecified."
@@ -221,7 +221,7 @@ test_that("RprobitB_prior_Omega can be created and validated", {
   expect_s3_class(RprobitB_prior_Omega(
     P_r = 2,
     Omega_prior_custom = function(x) {
-      dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1,1] == x[2,2])
+      dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1, 1] == x[2, 2])
     }
   ), "RprobitB_prior_Omega")
   expect_error(
@@ -267,7 +267,7 @@ test_that("RprobitB_prior_Omega can be created and validated", {
     RprobitB_prior_Omega(
       P_r = 2,
       Omega_prior_custom = function(x) {
-        dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1,1] == x[2,2])
+        dwishart(x, df = 4, scale = diag(2), inv = TRUE) * (x[1, 1] == x[2, 2])
       }
     )
   )
@@ -336,7 +336,7 @@ test_that("RprobitB_prior_Sigma_diff can be created and validated", {
     J = 3,
     Sigma_diff_prior_custom = function(x) {
       dwishart(x, df = 4, scale = diag(2), inv = TRUE) *
-      all(x[row(x) != col(x)] == 0)
+        all(x[row(x) != col(x)] == 0)
     }
   ), "RprobitB_prior_Sigma_diff")
   expect_error(
@@ -383,7 +383,7 @@ test_that("RprobitB_prior_Sigma_diff can be created and validated", {
       J = 3,
       Sigma_diff_prior_custom = function(x) {
         dwishart(x, df = 4, scale = diag(2), inv = TRUE) *
-        all(x[row(x) != col(x)] == 0)
+          all(x[row(x) != col(x)] == 0)
       }
     )
   )
@@ -448,4 +448,3 @@ test_that("RprobitB_prior_d can be created and validated", {
     )
   )
 })
-

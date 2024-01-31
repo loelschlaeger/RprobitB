@@ -65,4 +65,3 @@ print.RprobitB_data <- function(x, ...) {
 plot.RprobitB_data <- function(x, ...) {
 
 }
-
