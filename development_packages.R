@@ -10,9 +10,6 @@ if (!require("DT", quietly = TRUE)) {
 if (!require("markdown", quietly = TRUE)) {
   renv::install("markdown", prompt = FALSE)
 }
-if (!require("mlogit", quietly = TRUE)) {
-  renv::install("mlogit", prompt = FALSE)
-}
 if (!require("R.utils", quietly = TRUE)) {
   renv::install("R.utils", prompt = FALSE)
 }
