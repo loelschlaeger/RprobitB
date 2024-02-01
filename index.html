@@ -27,8 +27,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Probit models for discrete choice data">
 <meta property="og:description" content="
@@ -59,7 +59,7 @@
     
     <a class="navbar-brand me-2" href="index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,11 +112,11 @@
 </div>
 <!-- badges: start -->
 
-<p>The goal of {RprobitB} is to explain choices made by deciders among a discrete set of alternatives. In a Bayesian way. For example, think of tourists that want to book a train trip to their holiday destination: The knowledge why they prefer a certain alternative over another is of great value for train companies, especially the customer’s willingness to pay for say a faster or more comfortable trip.</p>
+<p>The goal of <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> is to explain choices made by deciders among a discrete set of alternatives. In a Bayesian way. For example, think of tourists that want to book a train trip to their holiday destination: The knowledge why they prefer a certain alternative over another is of great value for train companies, especially the customer’s willingness to pay for say a faster or more comfortable trip.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the released version of {RprobitB} from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
+<p>You can install the released version of <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></span></code></pre></div>
 <p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
@@ -165,10 +165,13 @@
 <p>Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15% of the customers to the competitor who does not increase their prices:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
-<span>  <span class="va">model</span>, </span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>, </span>
-<span>                    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    <span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>,</span>
+<span>    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking for missing covariates</span></span>
 <span><span class="co">#&gt;   id idc    A    B prediction</span></span>
 <span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
@@ -176,17 +179,20 @@
 <p>However, offering a better comfort class (<code>0</code> here is better than <code>1</code>) compensates for the higher price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
-<span>  <span class="va">model</span>, </span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"price_A"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>, </span>
-<span>                    <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>                    <span class="st">"price_B"</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span>
-<span>                    <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    <span class="st">"price_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">110</span><span class="op">)</span>,</span>
+<span>    <span class="st">"comfort_A"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="st">"price_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    <span class="st">"comfort_B"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking for missing covariates</span></span>
 <span><span class="co">#&gt;   id idc    A    B prediction</span></span>
 <span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
 <span><span class="co">#&gt; 2  2   1 0.57 0.43          A</span></span></code></pre></div>
-<p>This is just the tip of the iceberg: {RprobitB} offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more.</p>
+<p>This is just the tip of the iceberg: <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -229,8 +235,8 @@
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=RprobitB" class="external-link"><img src="https://www.r-pkg.org/badges/version/RprobitB" alt="CRAN status"></a></li>
 <li><a href="https://CRAN.R-project.org/package=RprobitB" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/RprobitB" alt="CRAN downloads"></a></li>
-<li><a href="https://github.com/loelschlaeger/RprobitB/actions" class="external-link"><img src="https://github.com/loelschlaeger/RprobitB/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main" class="external-link"><img src="https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
