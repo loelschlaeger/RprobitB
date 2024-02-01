@@ -46,7 +46,7 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/R_hat.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/RprobitB.html</loc>
+    <loc>https://loelschlaeger.de/RprobitB/reference/RprobitB-package.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/RprobitB_data.html</loc>
@@ -77,9 +77,6 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/check_prior.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/choice_berserk.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/choice_probabilities.html</loc>

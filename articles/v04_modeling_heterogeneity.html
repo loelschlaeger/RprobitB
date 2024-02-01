@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modeling heterogeneity">
 <meta property="og:description" content="RprobitB">
@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,8 +95,8 @@
 <p>In the vignette on the model definition, we pointed out that the
 probit model can capture choice behavior heterogeneity by imposing a
 mixing distribution on the coefficient vector. The implementation in
-{RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.2.3 with the {RprobitB}
-1.1.2 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
+{RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.3.2 with the {RprobitB}
+1.1.3 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
 </h2>
@@ -164,11 +164,11 @@ besides the average mean effects:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span></span>
 <span><span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span></span>
-<span><span class="co">#&gt; 2   cl     -0.26 (0.03)     0.30 (0.03)</span></span>
-<span><span class="co">#&gt; 3  loc      2.82 (0.21)     7.12 (1.00)</span></span>
-<span><span class="co">#&gt; 4   wk      2.03 (0.16)     3.61 (0.50)</span></span>
-<span><span class="co">#&gt; 5  tod     -9.81 (0.25)    11.79 (2.02)</span></span>
-<span><span class="co">#&gt; 6 seas     -9.87 (0.15)     5.76 (0.70)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   cl     -0.26 (0.04)     0.33 (0.04)</span></span>
+<span><span class="co">#&gt; 3  loc      2.81 (0.24)     7.14 (1.31)</span></span>
+<span><span class="co">#&gt; 4   wk      2.05 (0.18)     3.67 (0.63)</span></span>
+<span><span class="co">#&gt; 5  tod     -9.70 (0.27)    10.93 (2.50)</span></span>
+<span><span class="co">#&gt; 6 seas     -9.90 (0.20)     6.33 (1.13)</span></span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the
 existence of the time-of-day electricity price <code>tod</code> in the
 contract has a negative effect. However, the deciders are very
@@ -180,17 +180,17 @@ longer contract length equals:</p>
 <code class="sourceCode R"><span><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>, <span class="st">"mean"</span><span class="op">]</span></span>
 <span><span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>, <span class="st">"var"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.3166391</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3223682</span></span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the
 estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               cl         loc          wk         tod         seas</span></span>
-<span><span class="co">#&gt; cl    1.00000000 0.095637125  0.06579148 -0.02872768 -0.122228671</span></span>
-<span><span class="co">#&gt; loc   0.09563712 1.000000000  0.78787236  0.10337631  0.009092397</span></span>
-<span><span class="co">#&gt; wk    0.06579148 0.787872357  1.00000000  0.12225433 -0.013172880</span></span>
-<span><span class="co">#&gt; tod  -0.02872768 0.103376310  0.12225433  1.00000000  0.512836902</span></span>
-<span><span class="co">#&gt; seas -0.12222867 0.009092397 -0.01317288  0.51283690  1.000000000</span></span></code></pre></div>
+<span><span class="co">#&gt;               cl        loc          wk         tod        seas</span></span>
+<span><span class="co">#&gt; cl    1.00000000 0.08129435  0.05023777 -0.07236352 -0.11399702</span></span>
+<span><span class="co">#&gt; loc   0.08129435 1.00000000  0.77566188  0.10213338  0.01452230</span></span>
+<span><span class="co">#&gt; wk    0.05023777 0.77566188  1.00000000  0.10375535 -0.02207735</span></span>
+<span><span class="co">#&gt; tod  -0.07236352 0.10213338  0.10375535  1.00000000  0.54190855</span></span>
+<span><span class="co">#&gt; seas -0.11399702 0.01452230 -0.02207735  0.54190855  1.00000000</span></span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high
 correlation between <code>loc</code> and <code>wk</code>. The pairwise
 mixing distributions can be visualized via calling the
