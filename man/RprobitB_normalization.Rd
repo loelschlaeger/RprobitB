@@ -2,6 +2,7 @@
 % Please edit documentation in R/model_fitting.R
 \name{RprobitB_normalization}
 \alias{RprobitB_normalization}
+\alias{print.RprobitB_normalization}
 \title{Create object of class \code{RprobitB_normalization}}
 \usage{
 RprobitB_normalization(
@@ -13,6 +14,8 @@ RprobitB_normalization(
   base,
   ordered = FALSE
 )
+
+\method{print}{RprobitB_normalization}(x, ...)
 }
 \arguments{
 \item{level}{The alternative name with respect to which utility differences are computed.
@@ -60,6 +63,10 @@ Per default, \code{base} is the last element of \code{alternatives}.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
+
+\item{x}{An object of class \code{RprobitB_normalization}.}
+
+\item{...}{Currently not used.}
 }
 \value{
 An object of class \code{RprobitB_normalization}, which is a list of
@@ -82,7 +89,7 @@ which determines the utility scale and level.
 Any choice model has to be normalized with respect to the utility level and
 scale.
 \itemize{
-\item For level normalization, {RprobitB} takes utility differences with
+\item For level normalization, \code{{RprobitB}} takes utility differences with
 respect to one alternative.
 For the ordered model where only one utility is modeled, {RprobitB}
 fixes the first utility threshold to 0.

@@ -99,7 +99,6 @@ RprobitB_gibbs_samples_statistics <- function(
 #' @noRd
 #'
 #' @export
-#' @importFrom crayon underline
 
 print.RprobitB_gibbs_samples_statistics <- function(
     x, true = NULL, digits = 2, ...) {
@@ -730,7 +729,6 @@ create_labels_d <- function(J, ordered) {
 #' Ignored.
 #'
 #' @export
-#' @importFrom stats sd
 
 coef.RprobitB_fit <- function(object, ...) {
   ### compute Gibbs samples statistics
@@ -810,16 +808,15 @@ print.RprobitB_coef <- function(x, ...) {
   print(out)
 }
 
+#' @noRd
+#'
 #' @param sd
 #' The number of standard deviations to display.
 #' @param het
 #' Set to \code{FALSE} to show the standard deviation of the estimate.
 #' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
-#' @noRd
-#' @export
-#' @importFrom ggplot2 aes ggplot geom_vline geom_point geom_errorbar
-#' position_dodge theme_minimal labs
-#' @importFrom rlang .data
+#'
+#' @exportS3Method
 
 plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
   s <- attr(x, "s")
@@ -887,8 +884,6 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
 #' multiple classes, a list of matrices for each class.
 #'
 #' @export
-#'
-#' @importFrom stats cov2cor
 
 cov_mix <- function(x, cor = FALSE) {
   if (x$data$P_r == 0) {
@@ -1043,8 +1038,6 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 #'
 #' @keywords
 #' internal
-#'
-#' @importFrom stats pnorm
 
 compute_choice_probabilities <- function(
     X, alternatives, parameter, ordered = FALSE) {

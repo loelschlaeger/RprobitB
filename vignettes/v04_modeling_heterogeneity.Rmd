@@ -22,7 +22,7 @@ library("RprobitB")
 options("RprobitB_progress" = FALSE)
 ```
 
-In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in {RprobitB} is explained in this vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.].
+In the vignette on the model definition, we pointed out that the probit model can capture choice behavior heterogeneity by imposing a mixing distribution on the coefficient vector. The implementation in `{RprobitB}` is explained in this vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the `{RprobitB}` `r utils::packageVersion("RprobitB")` package.].
 
 ## Estimating a joint normal mixing distribution
 
@@ -80,7 +80,7 @@ plot(model_elec, type = "mixture")
 
 ## Estimating latent classes
 
-More generally, {RprobitB} allows to specify a Gaussian mixture as the mixing distribution. In particular, 
+More generally, `{RprobitB}` allows to specify a Gaussian mixture as the mixing distribution. In particular, 
 
 $$ \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).$$
 This specification allows for a) a better approximation of the true underlying mixing distribution and b) a preference based classification of the deciders.
@@ -105,7 +105,7 @@ The following weight-based updating scheme is analogue to @Bauer2019 and execute
 
 - We join two classes $c_1$ and $c_2$ to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
 
-These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, {RprobitB} sets 
+These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, `{RprobitB}` sets 
 
 - `epsmin = 0.01`,
 

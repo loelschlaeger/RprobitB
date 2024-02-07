@@ -437,7 +437,6 @@ update_Omega <- function(beta, b, z, m, nu, Theta) {
 #' beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
 #' rowMeans(beta_draws)
 #' @export
-#' @importFrom stats sd
 #' @keywords
 #' internal posterior
 #'

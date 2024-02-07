@@ -35,25 +35,28 @@ URL: https://loelschlaeger.de/RprobitB/, https://github.com/loelschlaeger/Rprobi
 BugReports: https://github.com/loelschlaeger/RprobitB/issues
 License: GPL-3
 Encoding: UTF-8
-Imports:
-    Rcpp,
-    mvtnorm,
-    viridis,
-    ggplot2,
-    rlang,
-    mixtools,
+Imports: 
+    checkmate,
+    cli,
+    crayon,
     doSNOW,
     foreach,
-    progress,
+    ggplot2,
+    graphics,
     gridExtra,
-    crayon,
-    plotROC,
     MASS,
-    cli,
-    Rdpack,
+    mixtools,
+    mvtnorm,
     oeli,
+    parallel,
+    plotROC,
+    progress,
+    Rcpp,
+    Rdpack,
+    rlang,
     stats,
-    checkmate
+    utils,
+    viridis
 LinkingTo:
     Rcpp,
     RcppArmadillo

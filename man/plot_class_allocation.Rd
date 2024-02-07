@@ -41,14 +41,4 @@ and the class covariance matrices \code{Omega}.
 \details{
 Only applicable in the two-dimensional case, i.e. only if \code{P_r = 2}.
 }
-\examples{
-b <- matrix(c(-1, 1, 1, 1), ncol = 2)
-Omega <- matrix(c(0.8, 0.5, 0.5, 1, 0.5, -0.2, -0.2, 0.3), ncol = 2)
-z <- rep(1:2, each = 10)
-beta <- sapply(z, function(z) rmvnorm(mu = b[, z], Sigma = matrix(Omega[, z], ncol = 2)))
-RprobitB:::plot_class_allocation(
-  beta = beta, z = z, b = b, Omega = Omega,
-  colors = c("red", "blue"), perc = 0.5, r = 1
-)
-}
 \keyword{internal}

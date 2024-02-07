@@ -288,7 +288,6 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 //' beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
 //' rowMeans(beta_draws)
 //' @export
-//' @importFrom stats sd
 //' @keywords
 //' internal posterior
 //'

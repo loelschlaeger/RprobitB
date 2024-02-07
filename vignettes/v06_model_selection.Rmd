@@ -22,7 +22,7 @@ library("RprobitB")
 options("RprobitB_progress" = FALSE)
 ```
 
-The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in {RprobitB}.
+The task of model selection targets the question: If there are several competing models, how do I choose the most appropriate one? This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the `{RprobitB}` `r utils::packageVersion("RprobitB")` package.] outlines the model selection tools implemented in `{RprobitB}`.
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
@@ -46,7 +46,7 @@ The `update()` function helps to estimate a new version of `model_train` with ne
 
 ## The `model_selection()` function
 
-{RprobitB} provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
+`{RprobitB}` provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
 
 ```{r, model-selection-example}
 model_selection(model_train, model_train_sparse)
@@ -92,7 +92,7 @@ Similar to the AIC, `"BIC"` yields the Bayesian Information Criterion [@Schwarz1
 $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
 where $\text{LL}$ is the [model's log-likelihood value](#ll), $\text{nobs}$ is the number of data points (which can be accessed via the `nobs()` method), and $\text{npar}$ is the [number of parameters in the fitted model](#npar). The interpretation is analogue to AIC.
 
-{RprobitB} also provided a method for the `BIC` value:
+`{RprobitB}` also provided a method for the `BIC` value:
 
 ```{r, bic-example}
 BIC(model_train, model_train_sparse)
@@ -169,7 +169,7 @@ $$
 BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
 $$
 
-The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, {RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
+The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, `{RprobitB}` sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
 
 Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys1998] in favor of `model_train`.
 

@@ -29,7 +29,6 @@
 #' A data frame, criteria in columns, models in rows.
 #'
 #' @export
-#' @importFrom stats AIC BIC
 
 model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
                             add_form = FALSE) {
@@ -247,8 +246,7 @@ print.RprobitB_waic <- function(x, digits = 2, ...) {
 }
 
 #' @noRd
-#' @export
-#' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs theme_minimal
+#' @exportS3Method
 
 plot.RprobitB_waic <- function(x, ...) {
   ### extract 'p_si' from 'x'
@@ -295,14 +293,12 @@ plot.RprobitB_waic <- function(x, ...) {
 }
 
 #' @exportS3Method
-#' @importFrom stats nobs
 
 nobs.RprobitB_fit <- function(object, ...) {
   sum(object$data$T)
 }
 
 #' @exportS3Method
-#' @importFrom stats logLik
 
 logLik.RprobitB_fit <- function(object, par_set = mean, recompute = FALSE, ...) {
   if (!is.null(object[["ll"]]) && !recompute) {
@@ -386,10 +382,6 @@ npar.RprobitB_fit <- function(object, ...) {
 #' probabilities, observations in rows and posterior samples in columns.
 #'
 #' @export
-#'
-#' @importFrom foreach %dopar%
-#' @importFrom parallel makeCluster stopCluster
-#' @importFrom doSNOW registerDoSNOW
 
 compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FALSE) {
   ### check input
@@ -498,11 +490,6 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
 #' approximated marginal likelihood value.
 #'
 #' @export
-#'
-#' @importFrom rlang .data
-#' @importFrom foreach %dopar%
-#' @importFrom parallel makeCluster stopCluster detectCores
-#' @importFrom doSNOW registerDoSNOW
 
 mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
   ### input checks
@@ -632,8 +619,6 @@ print.RprobitB_mml <- function(x, log = FALSE, ...) {
 
 #' @noRd
 #' @export
-#' @importFrom ggplot2 ggplot
-#' @importFrom rlang .data
 
 plot.RprobitB_mml <- function(x, log = FALSE, ...) {
   if (log) {

@@ -19,7 +19,7 @@ one choice occasion.}
 The \code{choice_data} input with updated column names.
 }
 \description{
-In {RprobitB}, alternative specific covariates must be named in the format
+In \code{{RprobitB}}, alternative specific covariates must be named in the format
 \code{"<covariate>_<alternative>"}. This convenience function generates
 the format for a given \code{choice_data} set.
 }

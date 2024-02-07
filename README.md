@@ -39,8 +39,15 @@ The package is documented in several vignettes, see
 
 We analyze a data set of 2929 stated choices by 235 Dutch individuals
 deciding between two virtual train trip options based on the price, the
-travel time, the level of comfort, and the number of changes. The
-following lines fit a probit model that explains the chosen trip
+travel time, the level of comfort, and the number of changes.
+
+``` r
+library("RprobitB")
+#> Thanks for using {RprobitB} version 1.1.3, happy choice modeling!
+#> Documentation: https://loelschlaeger.de/RprobitB
+```
+
+The following lines fit a probit model that explains the chosen trip
 alternatives (`choice`) by their `price`, `time`, number of `change`s,
 and level of `comfort` (the lower this value the higher the comfort).
 For normalization, the first linear coefficient, the `price`, is fixed

@@ -11,17 +11,17 @@ link-citations: yes
 
 ## Why should I use this package?
 
-1. With {RprobitB}^[The package name is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).], you can model the choices made by deciders among a discrete set of alternatives. For example, think of tourists that want to book a flight to their holiday destination. The knowledge why they prefer a certain route over another is of great value for airlines, especially the customer's willingness to pay for say a faster or more comfortable flight alternative.
+1. With `{RprobitB}`^[The package name is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayes, the estimation method).], you can model the choices made by deciders among a discrete set of alternatives. For example, think of tourists that want to book a flight to their holiday destination. The knowledge why they prefer a certain route over another is of great value for airlines, especially the customer's willingness to pay for say a faster or more comfortable flight alternative.
 
-2. Different deciders value different choice attributes differently. For example, it is imaginable that business people place a higher value on flight time and are willing to pay more for a faster route alternative than vacationers. Such choice behavior heterogeneity can be addressed by {RprobitB}. Furthermore, the package enables to identify groups of deciders that share similar preferences.
+2. Different deciders value different choice attributes differently. For example, it is imaginable that business people place a higher value on flight time and are willing to pay more for a faster route alternative than vacationers. Such choice behavior heterogeneity can be addressed by `{RprobitB}`. Furthermore, the package enables to identify groups of deciders that share similar preferences.
 
 3. The package enables prediction of choice behavior when certain choice attributes change, for example the proportion of customers who will choose the competitor's product in the event of a price increase.
 
-4. {RprobitB} can analyze binary, multivariate, ordered, and ranked choices, both in the cross-sectional and panel setting.
+4. `{RprobitB}` can analyze binary, multivariate, ordered, and ranked choices, both in the cross-sectional and panel setting.
 
 ## How can I use this package?
 
-Working with {RprobitB} follows a clear workflow. The main functions can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion.
+Working with `{RprobitB}` follows a clear workflow. The main functions can be grouped into ones for data management, model fitting, and model evaluation, see the flowchart below. The package can be used for two different purposes: (a) estimation of a model for given data and (b) estimation of a model for simulated data. Simulation typically serves to assess the properties of estimation algorithms either for research or in a bootstrap like fashion.
 
 A typical workflow is as follows:
 
@@ -33,4 +33,4 @@ A typical workflow is as follows:
    
 4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
-![The flowchart of {RprobitB}.](flowchart.png){width=80%}
+![The flowchart of `{RprobitB}`.](img/flowchart.png){width=80%}

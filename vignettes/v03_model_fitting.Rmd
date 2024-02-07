@@ -13,7 +13,7 @@ link-citations: yes
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "",
+  fig.path = "img/",
   fig.align = "center",
   fig.dim = c(8, 6),
   out.width = "75%"
@@ -22,7 +22,7 @@ library("RprobitB")
 options("RprobitB_progress" = FALSE)
 ```
 
-This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in {RprobitB}.
+This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the `{RprobitB}` `r utils::packageVersion("RprobitB")` package.] is a documentation of the estimation procedure `fit_model()` in `{RprobitB}`.
 
 ## Bayes estimation of the probit model
 

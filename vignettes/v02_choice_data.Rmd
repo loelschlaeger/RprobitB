@@ -22,7 +22,7 @@ library("RprobitB")
 options("RprobitB_progress" = FALSE)
 ```
 
-No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the `train_choice` data set for illustration. 
+No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the `{RprobitB}` `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in `{RprobitB}`. We use the `train_choice` data set for illustration. 
 
 ## Requirements to choice data
 
@@ -42,11 +42,11 @@ Every decider may take one or repeated choices (called choice occasions). The da
 
 3. alternative and decider specific covariates. 
 
-Additionally, {RprobitB} asks the following formal requirements:
+Additionally, `{RprobitB}` asks the following formal requirements:
   
-1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The {tidyr} package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform a `data.frame` into this format.]
+1. The data set **must** be in "wide" format, that means each row provides the full information for one choice occasion.^[The` `{tidyr}` package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform a `data.frame` into this format.]
 
-2. It **must** contain a column with unique identifiers for each decision maker. Additionally, it **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because {RprobitB} does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
+2. It **must** contain a column with unique identifiers for each decision maker. Additionally, it **can** contain a column with identifier for each choice situation of each decider. If this information is missing, these identifier are generated automatically by the appearance of the choices in the data set.^[The choice situation identifier are irrelevant for model estimation because `{RprobitB}` does not model correlation over choice occasions. They are useful to identify specific choice occasions later on.] 
 
 3. It **can** contain a column with the observed choices. Such a column is required for model fitting but not for prediction.
 
@@ -63,12 +63,12 @@ str(train_choice)
 
 ## The model formula
 
-We have to inform {RprobitB} about the covariates we want to include in our model via specifying a `formula` object. Say we want to model the utility $U_{n,t,j}$ of decider $n$ at choice occasion $t$ for alternative $j$ via the linear equation
+We have to inform `{RprobitB}` about the covariates we want to include in our model via specifying a `formula` object. Say we want to model the utility $U_{n,t,j}$ of decider $n$ at choice occasion $t$ for alternative $j$ via the linear equation
 
 $$U_{n,t,j} = A_{n,t,j} \beta_1 + B_{n,t} \beta_{2,j} + C_{n,t,j} \beta_{3,j} + \epsilon_{n,tj}.$$
 Here, $A$ and $C$ are alternative and choice situation specific covariates, whereas $B$ is choice situation specific. The coefficient $\beta_1$ is generic (i.e. the same for each alternative), whereas $\beta_{2,j}$ and $\beta_{3,j}$ are alternative specific. 
 
-To represent this structure, the `formula` object is of the form (analogously to {mlogit}) `choice ~ A | B | C`, where
+To represent this structure, the `formula` object is of the form (analogously to `{mlogit}`) `choice ~ A | B | C`, where
 
 - `choice` is the dependent variable (the discrete choice we aim to explain),
 
@@ -79,7 +79,7 @@ To represent this structure, the `formula` object is of the form (analogously to
 - and `C` are alternative and choice situation specific covariates with
 alternative specific coefficients (we call them covariates of type 3).
 
-Specifying a `formula` object for {RprobitB} must be consistent with the following rules:
+Specifying a `formula` object for `{RprobitB}` must be consistent with the following rules:
 
 - By default, alternative specific constants (ASCs)^[ASCs capture the average effect on utility of all factors that are not included in the model. Due to identifiability, we cannot estimate ASCs for all the alternatives. Therefore, they are added for all except for the last alternative.] are added to the model. They can be removed by adding `+ 0` in the second spot, e.g. `choice ~ A | B + 0 | C`.
 
@@ -108,7 +108,7 @@ re <- c("price", "time")
 
 ## The `prepare_data()` function
 
-Before model estimation with {RprobitB}, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
+Before model estimation with `{RprobitB}`, any empirical choice data set `choice_data` must pass the `prepare_data()` function:
 
 ```{r, eval = FALSE}
 data <- prepare_data(form = form, choice_data = choice_data)
@@ -214,7 +214,7 @@ form <- choice ~ var1 | var2 | var3
 re <- c("ASC", "var2")
 ```
 
-{RprobitB} provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified:
+`{RprobitB}` provides the function `overview_effects()` which can be used to get an overview of the effects for which parameters can be specified:
 
 ```{r, data-sim-overview}
 overview_effects(form = form, re = re, alternatives = alternatives, base = base)

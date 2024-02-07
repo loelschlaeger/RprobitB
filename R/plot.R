@@ -17,10 +17,6 @@
 #'
 #' @export
 #'
-#' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot theme_bw theme geom_bar aes geom_histogram geom_density
-#' @importFrom gridExtra grid.arrange
-#'
 #' @examples
 #' data <- simulate_choices(
 #'   form = choice ~ cost | 0,
@@ -31,6 +27,7 @@
 #'   true_parameter = list("alpha" = -1)
 #' )
 #' plot(data, by_choice = TRUE)
+
 plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
                                position = "dodge", ...) {
   ### extract the data to be plotted
@@ -122,8 +119,6 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
-#'
-#' @importFrom graphics par
 
 plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### check inputs
@@ -246,13 +241,6 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @keywords
 #' internal
-#'
-#' @examples
-#' gibbs_samples <- matrix(arima.sim(list(order = c(1, 0, 0), ar = 0.5), n = 100))
-#' RprobitB:::plot_acf(gibbs_samples, par_labels = "simulated AR(1) process")
-#'
-#' @importFrom stats spec.ar
-#' @importFrom graphics title legend
 
 plot_acf <- function(gibbs_samples, par_labels) {
   for (c in 1:ncol(gibbs_samples)) {
@@ -287,16 +275,6 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #'
 #' @keywords
 #' internal
-#'
-#' @examples
-#' mean <- list(1, 2)
-#' cov <- list(0.1, 1)
-#' weights <- c(0.3, 0.7)
-#' name <- "test"
-#' RprobitB:::plot_mixture_marginal(mean, cov, weights, name)
-#'
-#' @importFrom ggplot2 ggplot aes geom_line labs geom_text
-#' @importFrom stats dnorm
 
 plot_mixture_marginal <- function(mean, cov, weights, name) {
   C <- length(weights)
@@ -347,16 +325,6 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #'
 #' @keywords
 #' internal
-#'
-#' @examples
-#' means <- list(c(0, 0), c(1, 1))
-#' covs <- list(diag(2), 0.5 * diag(2))
-#' weights <- c(0.3, 0.7)
-#' names <- c("A", "B")
-#' RprobitB:::plot_mixture_contour(means, covs, weights, names)
-#'
-#' @importFrom ggplot2 ggplot aes geom_contour labs geom_text
-#' @importFrom rlang .data
 
 plot_mixture_contour <- function(means, covs, weights, names) {
   C <- length(weights)
@@ -413,12 +381,6 @@ plot_mixture_contour <- function(means, covs, weights, names) {
 #'
 #' @keywords
 #' internal
-#'
-#' @noRd
-#'
-#' @importFrom graphics legend axis
-#' @importFrom stats plot.ts
-#' @importFrom viridis magma
 
 plot_trace <- function(gibbs_samples, par_labels) {
   ### define colors
@@ -455,11 +417,6 @@ plot_trace <- function(gibbs_samples, par_labels) {
 #'
 #' @keywords
 #' internal
-#'
-#' @noRd
-#'
-#' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot aes geom_point labs theme_minimal expand_limits
 
 plot_class_seq <- function(class_sequence, B) {
   data <- data.frame(i = 1:length(class_sequence), c = class_sequence)
@@ -513,18 +470,6 @@ plot_class_seq <- function(class_sequence, B) {
 #'
 #' @keywords
 #' internal
-#'
-#' @examples
-#' b <- matrix(c(-1, 1, 1, 1), ncol = 2)
-#' Omega <- matrix(c(0.8, 0.5, 0.5, 1, 0.5, -0.2, -0.2, 0.3), ncol = 2)
-#' z <- rep(1:2, each = 10)
-#' beta <- sapply(z, function(z) rmvnorm(mu = b[, z], Sigma = matrix(Omega[, z], ncol = 2)))
-#' RprobitB:::plot_class_allocation(
-#'   beta = beta, z = z, b = b, Omega = Omega,
-#'   colors = c("red", "blue"), perc = 0.5, r = 1
-#' )
-#' @importFrom mixtools ellipse
-#' @importFrom graphics legend points
 
 plot_class_allocation <- function(beta, z, b, Omega, ...) {
   m <- as.vector(table(z))
@@ -582,9 +527,6 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
-#'
-#' @importFrom plotROC geom_roc style_roc
-#' @importFrom ggplot2 element_blank
 
 plot_roc <- function(..., reference = NULL) {
   D <- name <- NULL

@@ -366,7 +366,7 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 #' Re-label alternative specific covariates
 #'
 #' @description
-#' In {RprobitB}, alternative specific covariates must be named in the format
+#' In \code{{RprobitB}}, alternative specific covariates must be named in the format
 #' \code{"<covariate>_<alternative>"}. This convenience function generates
 #' the format for a given \code{choice_data} set.
 #'
@@ -888,8 +888,6 @@ prepare_data <- function(
 #'
 #' @keywords
 #' internal
-#'
-#' @importFrom stats complete.cases
 
 missing_covariates <- function(
     choice_data, impute = "complete_cases", col_ignore = character()) {
@@ -1028,9 +1026,6 @@ missing_covariates <- function(
 #' )
 #'
 #' @export
-#'
-#' @importFrom stats rnorm
-#' @import Rcpp
 #'
 #' @seealso
 #' \itemize{
@@ -1431,9 +1426,6 @@ simulate_choices <- function(
 #' train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
 #'
 #' @export
-#'
-#' @importFrom stats na.omit
-#' @importFrom utils tail
 
 train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
                        random = FALSE, seed = NULL) {
@@ -1766,9 +1758,8 @@ summary.RprobitB_data <- function(object, ...) {
 }
 
 
-#' @export
-#' @importFrom crayon underline
 #' @noRd
+#' @exportS3Method
 
 print.summary.RprobitB_data <- function(x, ...) {
   overview <- data.frame(
@@ -1844,8 +1835,6 @@ print.summary.RprobitB_data <- function(x, ...) {
 #' An object of class \code{RprobitB_parameter}, i.e. a named list with the
 #' model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 #' \code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
-#'
-#' @importFrom stats runif rnorm
 #'
 #' @export
 #'

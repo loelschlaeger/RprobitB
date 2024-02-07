@@ -2,9 +2,12 @@
 % Please edit documentation in R/model_fitting.R
 \name{RprobitB_latent_classes}
 \alias{RprobitB_latent_classes}
+\alias{print.RprobitB_latent_classes}
 \title{Create object of class \code{RprobitB_latent_classes}}
 \usage{
 RprobitB_latent_classes(latent_classes = NULL)
+
+\method{print}{RprobitB_latent_classes}(x, ...)
 }
 \arguments{
 \item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying

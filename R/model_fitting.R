@@ -475,9 +475,8 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
   return(latent_classes)
 }
 
-#' @noRd
-#' @export
-#' @importFrom crayon underline
+#' @rdname RprobitB_latent_classes
+#' @exportS3Method
 
 print.RprobitB_latent_classes <- function(x, ...) {
   cat(crayon::underline("Latent classes\n"))
@@ -508,7 +507,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' Any choice model has to be normalized with respect to the utility level and
 #' scale.
 #' \itemize{
-#'   \item For level normalization, {RprobitB} takes utility differences with
+#'   \item For level normalization, \code{{RprobitB}} takes utility differences with
 #'         respect to one alternative.
 #'         For the ordered model where only one utility is modeled, {RprobitB}
 #'         fixes the first utility threshold to 0.
@@ -712,9 +711,12 @@ RprobitB_normalization <- function(
   return(out)
 }
 
-#' @noRd
-#' @export
-#' @importFrom crayon underline
+#' @rdname RprobitB_normalization
+#' @param x
+#' An object of class \code{RprobitB_normalization}.
+#' @param ...
+#' Currently not used.
+#' @exportS3Method
 
 print.RprobitB_normalization <- function(x, ...) {
   if (identical(NA, x$level)) {
@@ -796,9 +798,6 @@ print.RprobitB_normalization <- function(x, ...) {
 #' summary(model)
 #'
 #' @export
-#'
-#' @importFrom utils tail
-#' @import Rcpp
 #'
 #' @seealso
 #' \itemize{
@@ -1047,8 +1046,6 @@ fit_model <- function(
 #'         reverse the base differencing and instead difference in such a way
 #'         that the resulting utility vector is negative.
 #' }
-#'
-#' @importFrom MASS ginv
 #'
 #' @keywords
 #' internal
@@ -1337,9 +1334,10 @@ print.RprobitB_fit <- function(x, ...) {
   return(invisible(x))
 }
 
-#' @noRd
-#' @importFrom stats sd
-#' @export
+#' @rdname RprobitB_fit
+#' @param ...
+#' Currently not used.
+#' @exportS3Method
 
 summary.RprobitB_fit <- function(object, FUN = c(
                                    "mean" = mean, "sd" = stats::sd,
@@ -1396,8 +1394,7 @@ summary.RprobitB_fit <- function(object, FUN = c(
 }
 
 #' @noRd
-#' @export
-#' @importFrom crayon underline
+#' @exportS3Method
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {
   cat(crayon::underline("Probit model\n"))
@@ -1813,8 +1810,6 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
 #'
 #' @keywords
 #' internal
-#'
-#' @importFrom stats ecdf
 
 preference_flip <- function(model_old, model_new) {
   stopifnot(inherits(model_old, "RprobitB_fit"))
