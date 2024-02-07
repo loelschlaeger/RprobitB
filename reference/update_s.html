@@ -92,7 +92,7 @@ of \(m\) is multinomial and its likelihood is $$L(m\mid s) \propto \prod_{i=1}^C
 The conjugate prior \(p(s)\) for \(s\) is a Dirichlet distribution, which has a density function
 proportional to $$\prod_{i=1}^C s_i^{\delta_i-1},$$ where \(\delta = (\delta_1,\dots,\delta_C)\)
 is the concentration parameter vector.
-Note that in RprobitB, \(\delta_1=\dots=\delta_C\). This restriction is necessary because the class number \(C\) can change.
+Note that in <code>{RprobitB}</code>, \(\delta_1=\dots=\delta_C\). This restriction is necessary because the class number \(C\) can change.
 The posterior distribution of \(s\) is proportional to $$p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},$$
 which in turn is proportional to a Dirichlet distribution with parameters \(\delta+m\).</p>
     </div>
