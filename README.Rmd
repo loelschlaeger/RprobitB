@@ -10,7 +10,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-"
 )
-library("RprobitB")
 ```
 
 # RprobitB <a href="https://loelschlaeger.de/RprobitB/"><img src="man/figures/logo.png" align="right" height="139" /></a>
@@ -32,35 +31,23 @@ You can install the released version of `{RprobitB}` from [CRAN](https://CRAN.R-
 install.packages("RprobitB")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
-
-```{r, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("loelschlaeger/RprobitB")
-```
-
 ## Documentation
 
 The package is documented in several vignettes, see [here](https://loelschlaeger.de/RprobitB/articles/).
 
 ## Example
 
-We analyze a data set of 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. The data is saved in the {mlogit} package. We transform the travel time from minutes to hours and the travel price from guilders to euros:
+We analyze a data set of 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. 
 
-```{r data}
-data("Train", package = "mlogit")
-Train$price_A <- Train$price_A / 100 * 2.20371
-Train$price_B <- Train$price_B / 100 * 2.20371
-Train$time_A <- Train$time_A / 60
-Train$time_B <- Train$time_B / 60
-str(Train)
+```{r, load RprobitB}
+library("RprobitB")
 ```
 
 The following lines fit a probit model that explains the chosen trip alternatives (`choice`) by their `price`, `time`, number of `change`s, and level of `comfort` (the lower this value the higher the comfort). For normalization, the first linear coefficient, the `price`, is fixed to `-1`, which allows to interpret the other coefficients as monetary values:
 
 ```{r fit, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
-data <- prepare_data(form, Train)
+data <- prepare_data(form, train_choice, id = "deciderID", idc = "occasionID")
 model <- fit_model(data, scale = "price := -1")
 ```
 
@@ -99,5 +86,3 @@ predict(
   overview = FALSE
 )
 ```
-
-This is just the tip of the iceberg: `{RprobitB}` offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more. 

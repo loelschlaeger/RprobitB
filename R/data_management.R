@@ -39,15 +39,11 @@
 #'   \item A boolean \code{ASC}, determining whether the model has ASCs.
 #' }
 #'
-#' @examples
-#' form <- choice ~ price + time + comfort + change
-#' re <- c("price", "time")
-#' RprobitB:::check_form(form = form, re = re)
-#'
 #' @seealso
 #' [overview_effects()] for an overview of the model effects
 
 check_form <- function(form, re = NULL, ordered = FALSE) {
+
   ### check inputs
   if (!inherits(form, "formula")) {
     stop("'form' must be of class 'formula'.", call. = FALSE)
@@ -460,13 +456,12 @@ as_cov_names <- function(choice_data, cov, alternatives) {
 #' An object of class \code{RprobitB_data}.
 #'
 #' @examples
-#' data("Train", package = "mlogit")
 #' data <- prepare_data(
 #'   form = choice ~ price + time + comfort + change | 0,
-#'   choice_data = Train,
+#'   choice_data = train_choice,
 #'   re = c("price", "time"),
-#'   id = "id",
-#'   idc = "choiceid",
+#'   id = "deciderID",
+#'   idc = "occasionID",
 #'   standardize = c("price", "time")
 #' )
 #'
@@ -1742,7 +1737,7 @@ summary.RprobitB_data <- function(object, ...) {
   alt_freq <- data.frame(matrix(NA_integer_, nrow = 0, ncol = 1))
   colnames(alt_freq) <- "frequency"
   if (object$ranked) {
-    choice_set <- sapply(permutations(object$alternatives), paste, collapse = ",")
+    choice_set <- sapply(oeli::permutations(object$alternatives), paste, collapse = ",")
   } else {
     choice_set <- object$alternatives
   }
@@ -1856,6 +1851,7 @@ print.summary.RprobitB_data <- function(x, ...) {
 #'
 #' @examples
 #' RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
+
 RprobitB_parameter <- function(
     P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
     Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
@@ -1961,7 +1957,9 @@ RprobitB_parameter <- function(
         )
       }
       for (c in 1:C) {
-        if (!is_covariance_matrix(matrix(Omega[, c], nrow = P_r, ncol = P_r))) {
+        if (!oeli::test_covariance_matrix(
+          matrix(Omega[, c], nrow = P_r, ncol = P_r)
+        )) {
           stop(paste("Column", c, "in 'Omega' builds no covariance matrix."),
             call. = FALSE
           )
@@ -2029,18 +2027,19 @@ RprobitB_parameter <- function(
         } else {
           Sigma_full <- as.matrix(Sigma_full)
         }
-        Sigma <- delta(J, J) %*% Sigma_full %*% t(delta(J, J))
+        delta_J <- oeli::delta(ref = J, dim = J)
+        Sigma <- delta_J %*% Sigma_full %*% t(delta_J)
       } else {
         Sigma <- as.matrix(Sigma)
         Sigma_full <- undiff_Sigma(Sigma, i = J)
       }
-      if (!(is_covariance_matrix(Sigma) && nrow(Sigma) == J - 1)) {
+      if (!oeli::test_covariance_matrix(Sigma, dim = J - 1)) {
         stop("'Sigma' is not a differenced covariance matrix of dimension ",
           J - 1, " x ", J - 1, ".",
           call. = FALSE
         )
       }
-      if (!(is_covariance_matrix(Sigma_full) && nrow(Sigma_full) == J)) {
+      if (!oeli::test_covariance_matrix(Sigma_full, dim = J)) {
         stop("'Sigma_full' is not a covariance matrix of dimension ", J,
           " x ", J, ".",
           call. = FALSE
@@ -2065,20 +2064,21 @@ RprobitB_parameter <- function(
   }
 
   ### build and return 'RprobitB_parameter'-object
-  out <- list(
-    "alpha" = alpha,
-    "C" = C,
-    "s" = s,
-    "b" = b,
-    "Omega" = Omega,
-    "Sigma" = Sigma,
-    "Sigma_full" = Sigma_full,
-    "beta" = beta,
-    "z" = z,
-    "d" = d
+  structure(
+    list(
+      "alpha" = alpha,
+      "C" = C,
+      "s" = s,
+      "b" = b,
+      "Omega" = Omega,
+      "Sigma" = Sigma,
+      "Sigma_full" = Sigma_full,
+      "beta" = beta,
+      "z" = z,
+      "d" = d
+    ),
+    class = c("RprobitB_parameter", "list")
   )
-  class(out) <- c("RprobitB_parameter", "list")
-  return(out)
 }
 
 #' @noRd
@@ -2097,8 +2097,8 @@ print.RprobitB_parameter <- function(x, ..., digits = 4) {
     seq_along(x)
   }
   for (i in ind) {
-    pprint(x[[i]], name = names(x)[i], desc = TRUE)
+    oeli::print_matrix(x[[i]], label = names(x)[i])
     cat("\n\n")
   }
-  return(invisible(x))
+  invisible(x)
 }

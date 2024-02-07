@@ -5,11 +5,11 @@ vignette: >
   %\VignetteIndexEntry{Choice data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 ---
 
-```{r, include = FALSE}
+```{r, label = setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -22,12 +22,11 @@ library("RprobitB")
 options("RprobitB_progress" = FALSE)
 ```
 
-No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the Train data set from the {mlogit} package [@Croissant:2020] for illustration. 
-
+No choice model without choice data, so this vignette^[This vignette is build using R `r paste(R.Version()$major, R.Version()$minor, sep = ".")` with the {RprobitB} `r utils::packageVersion("RprobitB")` package.] provides a reference for data management in {RprobitB}. We use the `train_choice` data set for illustration. 
 
 ## Requirements to choice data
 
-{RprobitB} helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train:2009]: Choices need to be
+`{RprobitB}` helps in modeling the choice of individual deciders of one alternative from a finite set of choice alternatives. This choice set has to fulfill three properties [@Train2009]: Choices need to be
 
 1. mutually exclusive (one can choose one and only one alternative that are all different),
 
@@ -56,13 +55,11 @@ Additionally, {RprobitB} asks the following formal requirements:
 
 ### Example
 
-The Train data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative.^[For alternative specific variables, the alternative names must be added to the covariates via the `_` separator.]
+The `train_choice` data set contains 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. It fulfills the above requirements: Each row represents one choice occasion, the columns `id` and `choiceid` identify the deciders and the choice occasions, respectively. The column `choice` gives the observed choices. Four alternative-specific covariates are available, namely `price`, `time`, `change`, and `comfort`. There values are given for each alternative.^[For alternative specific variables, the alternative names must be added to the covariates via the `_` separator.]
 
-```{r, overview-Train-data}
-data("Train", package = "mlogit")
-str(Train)
+```{r, overview-train-choice-data}
+str(train_choice)
 ```
-
 
 ## The model formula
 
@@ -97,7 +94,7 @@ To impose random effects for specific variables, we need to define a character v
 
 ### Example
 
-We specify a model formula for the Train data set. Say we want to include all the covariates `price`, `time`, `comfort`, and `change`, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs: 
+We specify a model formula for the `train_choice` data set. Say we want to include all the covariates `price`, `time`, `comfort`, and `change`, which are all alternative specific (that is, they contain a potentially different value for each alternative, such as different prices for A and B), so either of type 1 or type 3. The difference between type 1 and type 3 is that in the former case, we would estimate a generic coefficient (i.e. a coefficient that is constant across alternatives), whereas in the latter case, we would estimate alternative specific coefficients. Deciding between type 1 and type 3 for these covariates belongs into the topic of model selection, for which we provide a separate vignette. For now, we go with type 1 for all covariates and remove ASCs: 
 
 ```{r, train-formula}
 form <- choice ~ price + time + comfort + change | 0
@@ -139,15 +136,15 @@ The function performs compatibility checks and data transformations and returns 
 
 ### Example
 
-Let's prepare the Train data set for estimation with our previous specification of `form` and `re`:
+Let's prepare the `train_choice` data set for estimation with our previous specification of `form` and `re`:
 
-```{r, prepare-Train}
-data <- prepare_data(form = form, choice_data = Train, re = re, id = "id", idc = "choiceid")
+```{r, prepare-train-choice-data}
+data <- prepare_data(form = form, choice_data = train_choice, re = re, id = "deciderID", idc = "occasionID")
 ```
 
 The `summary` and `plot` methods provide a quick data overview:
 
-```{r, summary-Train}
+```{r, summary-train-choice-data}
 summary(data)
 plot(data)
 ```

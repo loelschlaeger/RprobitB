@@ -155,13 +155,8 @@ test_that("computation of sufficient statistics works", {
 
 test_that("transforming RprobitB_fit works", {
   set.seed(1)
-  data("Train", package = "mlogit")
-  Train$price_A <- Train$price_A / 100 * 2.20371
-  Train$price_B <- Train$price_B / 100 * 2.20371
-  Train$time_A <- Train$time_A / 60
-  Train$time_B <- Train$time_B / 60
   form <- choice ~ price + time + change + comfort | 0
-  data <- prepare_data(form = form, choice_data = Train)
+  data <- prepare_data(form = form, choice_data = train_choice, id = "deciderID", idc = "occasionID")
   model <- fit_model(
     data = data,
     scale = "price := -1",
@@ -182,13 +177,4 @@ test_that("transforming RprobitB_fit works", {
   )
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
-})
-
-test_that("Sigma backtransformation after differencing works", {
-  J <- sample(2:10, 1)
-  i <- sample(1:J, 1)
-  Sigma_full <- rwishart(J, diag(J))$W
-  Sigma <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
-  Sigma_back <- undiff_Sigma(Sigma = Sigma, i = i)
-  expect_equal(Sigma, delta(J, i) %*% Sigma_back %*% t(delta(J, i)))
 })

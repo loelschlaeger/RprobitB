@@ -5,11 +5,11 @@ vignette: >
   %\VignetteIndexEntry{Modeling heterogeneity}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 ---
 
-```{r, include = FALSE}
+```{r, label = setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,7 +26,7 @@ In the vignette on the model definition, we pointed out that the probit model ca
 
 ## Estimating a joint normal mixing distribution
 
-The {mlogit} package [@Croissant:2020] contains the data set `Electricity`, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
+The `{mlogit}` package [@Croissant2020] contains the data set `Electricity`, in which residential electricity customers were asked to decide between four hypothetical electricity suppliers. The suppliers differed in 6 characteristics:
 
 1. their fixed price `pf` per kWh,
 2. their contract length `cf`,
@@ -97,7 +97,7 @@ To estimate a latent mixture, specify a named list `latent_classes` with the fol
 
 ### Weight-based update of the latent classes
 
-The following weight-based updating scheme is analogue to @Bauer:2019 and executed within the burn-in period: 
+The following weight-based updating scheme is analogue to @Bauer2019 and executed within the burn-in period: 
 
 - We remove class $c$, if $s_c<\varepsilon_{\text{min}}$, i.e. if the class weight $s_c$ drops below some threshold $\varepsilon_{\text{min}}$. This case indicates that class $c$ has a negligible impact on the mixing distribution.
 
@@ -117,14 +117,14 @@ These values can be adapted through the `latent_class` list.
 
 ### Dirichlet process-based update of the latent classes
 
-As an alternative to the weight-based updating scheme to determine the correct number $C$ of latent classes, {RprobitB} implemented the Dirichlet process.^[A similar approach in the context of discrete choice can be found in @Burda:2008, where the Dirichlet process is applied to estimate a mixed logit-probit model.] The Dirichlet Process is a Bayesian nonparametric method, where nonparametric means that the number of model parameters can theoretically grow to infinity. The method allows to add more mixture components to the mixing distribution if needed for a better approximation, see @Neal:2000 for a documentation of the general case. The literature offers many representations of the method, including the Chinese Restaurant Process [@Aldous:1985], the stick-braking methapor [@Sethuraman:1994], and the Polya Urn model [@Blackwell:1973]. 
+As an alternative to the weight-based updating scheme to determine the correct number $C$ of latent classes, `{RprobitB}` implements the Dirichlet process.^[A similar approach in the context of discrete choice can be found in @Burda2008, where the Dirichlet process is applied to estimate a mixed logit-probit model.] The Dirichlet Process is a Bayesian nonparametric method, where nonparametric means that the number of model parameters can theoretically grow to infinity. The method allows to add more mixture components to the mixing distribution if needed for a better approximation, see @Neal2000 for a documentation of the general case. The literature offers many representations of the method, including the Chinese Restaurant Process [@Aldous1985], the stick-braking metaphor [@Sethuraman1994], and the Polya Urn model [@Blackwell1973]. 
 
 In our case, we face the situation to find a distribution $g$ that explains the decider-specific coefficients $(\beta_n)_{n = 1,\dots,N}$, where $g$ is supposed to be a mixture of an unknown number $C$ of Gaussian densities, i.e. $g = \sum_{c = 1,\dots,C} s_c \text{MVN}(b_c, \Omega_c)$. 
 
-Let $z_n \in \{1,\dots,C\}$ denote the class membership of $\beta_n$.  A priori, the mixture weights $(s_c)_c$ are given a Dirichlet prior with concentration parameter $\delta/C$, i.e. $(s_c)_c \mid \delta \sim \text{D}_C(\delta/C,\dots,\delta/C)$. @Rasmussen:2000 shows that
+Let $z_n \in \{1,\dots,C\}$ denote the class membership of $\beta_n$. A priori, the mixture weights $(s_c)_c$ are given a Dirichlet prior with concentration parameter $\delta/C$, i.e. $(s_c)_c \mid \delta \sim \text{D}_C(\delta/C,\dots,\delta/C)$. @Rasmussen1999 shows that
 
 $$ \Pr((z_n)_n\mid \delta) = \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c + \delta/C)}{\Gamma(\delta/C)}, $$
-where $\Gamma(\cdot)$ denotes the gamma function and $m_c = \#\{n:z_n = c\}$ the number of elements that are currently allocated to class $c$. Crucially, the last equation is independent of the class weights $(s_c)_c$, yet it still depends on the finite number $C$ of latent classes. However, @Li:2019 shows that
+where $\Gamma(\cdot)$ denotes the gamma function and $m_c = \#\{n:z_n = c\}$ the number of elements that are currently allocated to class $c$. Crucially, the last equation is independent of the class weights $(s_c)_c$, yet it still depends on the finite number $C$ of latent classes. However, @Li2019 shows that
 
 $$ \Pr(z_n = c \mid z_{-n}, \delta) = \frac{m_{c,-n} + \delta/C}{N-1+\delta},$$
 where the notation $-n$ means excluding the $n$th element. We can let $C$ approach infinity to derive:
@@ -139,9 +139,9 @@ The difference to 1 equals
 
 $$ \Pr(z_n \neq z_m ~ \forall ~ m \neq n \mid z_{-n}, \delta) = \frac{\delta}{N-1+\delta} $$
 
-and constitutes the probability that a new cluster for observation $n$ is created. @Neal:2000 points out that this probability is proportional to the prior parameter $\delta$: A greater value for $\delta$ encourages the creation of new clusters, a smaller value for $\delta$ increases the probability of an allocation to an already existing class.
+and constitutes the probability that a new cluster for observation $n$ is created. @Neal2000 points out that this probability is proportional to the prior parameter $\delta$: A greater value for $\delta$ encourages the creation of new clusters, a smaller value for $\delta$ increases the probability of an allocation to an already existing class.
 
-In summary, the Dirichlet process updates the allocation of each $\beta$ coefficient vector one at a time, dependent on the other allocations. The number of clusters can theoretically rise to infinity, however, as we delete unoccupied clusters, $C$ is bounded by $N$. As a final step after the allocation update, we update the class means $b_c$ and covariance matrices $\Omega_c$ by means of their posterior predictive distribution. The mean and covariance matrix for a new generated cluster is drawn from the prior predictive distribution. The corresponding formulas are given in @Li:2019.
+In summary, the Dirichlet process updates the allocation of each $\beta$ coefficient vector one at a time, dependent on the other allocations. The number of clusters can theoretically rise to infinity, however, as we delete unoccupied clusters, $C$ is bounded by $N$. As a final step after the allocation update, we update the class means $b_c$ and covariance matrices $\Omega_c$ by means of their posterior predictive distribution. The mean and covariance matrix for a new generated cluster is drawn from the prior predictive distribution. The corresponding formulas are given in @Li2019.
 
 The Dirichlet process directly integrates into our existing Gibbs sampler. Given $\beta$ values, it updated the class means $b_c$ and class covariance matrices $\Omega_c$. The Dirichlet process updating scheme is implemented in the function `update_classes_dp()`. In the following, we give a small example in the bivariate case `P_r = 2`. We sample true class means `b_true` and class covariance matrices `Omega_true` for `C_true = 3` true latent classes. The true (unbalanced) class sizes are given by the vector `N`, and `z_true` denotes the true allocations.
 

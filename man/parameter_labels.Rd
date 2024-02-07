@@ -37,8 +37,4 @@ A list of labels for the selected model parameters.
 \description{
 This function creates model parameter labels.
 }
-\examples{
-RprobitB:::parameter_labels(P_f = 1, P_r = 2, J = 3, C = 2, cov_sym = TRUE)
-
-}
 \keyword{internal}

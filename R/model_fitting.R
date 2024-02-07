@@ -1079,10 +1079,10 @@ sufficient_statistics <- function(data, normalization) {
   ### (not for an ordered probit model)
   RprobitB_pp("Computing sufficient statistics", 0, 4)
   if (!data$ordered) {
+    delta_level <- oeli::delta(ref = normalization$level$level, dim = J)
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
-        data_copy$data[[n]]$X[[t]] <- delta(J, normalization$level$level) %*%
-          data_copy$data[[n]]$X[[t]]
+        data_copy$data[[n]]$X[[t]] <- delta_level %*% data_copy$data[[n]]$X[[t]]
       }
     }
   }
@@ -1091,7 +1091,7 @@ sufficient_statistics <- function(data, normalization) {
   RprobitB_pp("Computing sufficient statistics", 1, 4)
   y <- matrix(0, nrow = N, ncol = max(Tvec))
   if (data$ranked) {
-    choice_set <- sapply(permutations(data$alternatives), paste, collapse = ",")
+    choice_set <- sapply(oeli::permutations(data$alternatives), paste, collapse = ",")
   } else {
     choice_set <- data$alternatives
   }
@@ -1188,10 +1188,18 @@ sufficient_statistics <- function(data, normalization) {
   ### compute 'rdiff' (only in the ranked case)
   if (data$ranked) {
     rdiff <- list()
-    perm <- permutations(data$alternatives)
-    Dinv <- round(MASS::ginv(delta(J, normalization$level$level)))
+    perm <- oeli::permutations(data$alternatives)
+    delta_level <- oeli::delta(ref = normalization$level$level, dim = J)
+    Dinv <- round(MASS::ginv(delta_level))
     for (p in 1:length(perm)) {
-      rdiff[[p]] <- M(ranking = match(perm[[p]], data$alternatives)) %*% Dinv
+      ranking <- match(perm[[p]], data$alternatives)
+      J <- length(ranking)
+      M <- matrix(0, nrow = J - 1, ncol = J)
+      for (i in 1:(J - 1)) {
+        M[i, ranking[i]] <- -1
+        M[i, ranking[i + 1]] <- 1
+      }
+      rdiff[[p]] <- M %*% Dinv
     }
   } else {
     rdiff <- NA
@@ -1862,28 +1870,16 @@ preference_flip <- function(model_old, model_new) {
 #'
 #' @keywords
 #' internal
-#'
-#' @examples
-#' J <- 3
-#' i <- 2
-#' Sigma_full <- rwishart(3, diag(3))$W
-#' Sigma <- delta(J, 2) %*% Sigma_full %*% t(delta(J, 2))
-#' Sigma_back <- RprobitB:::undiff_Sigma(Sigma = Sigma, i = 2)
+
 undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
+
   J <- nrow(Sigma) + 1
+
   if (checks) {
     ### check inputs
     Sigma <- as.matrix(Sigma)
-    if (!is_covariance_matrix(Sigma)) {
-      stop("'Sigma' is no covariance matrix.",
-        all. = FALSE
-      )
-    }
-    if (!(length(i) == 1 && is.numeric(i) && i %% 1 == 0 && i <= J && i >= 1)) {
-      stop("'i' must be an alternative number.",
-        call. = FALSE
-      )
-    }
+    oeli::assert_covariance_matrix(Sigma)
+    checkmate::assert_int(i, lower = 1, upper = J)
   }
 
   ### add zero row and column to Sigma at row and column i
@@ -1902,15 +1898,17 @@ undiff_Sigma <- function(Sigma, i, checks = TRUE, pos = TRUE, labels = TRUE) {
   }
 
   if (checks) {
+
     ### check if 'Sigma_full' is a covariance matrix
-    if (!is_covariance_matrix(Sigma_full)) {
+    if (!oeli::test_covariance_matrix(Sigma_full)) {
       stop("Back-transformed matrix is no covariance matrix.",
         call. = FALSE
       )
     }
 
     ### check if back-differencing yields differenced matrix
-    Sigma_back <- delta(J, i) %*% Sigma_full %*% t(delta(J, i))
+    delta_i <- oeli::delta(ref = i, dim = J)
+    Sigma_back <- delta_i %*% Sigma_full %*% t(delta_i)
     if (any(abs(Sigma_back - Sigma) > sqrt(.Machine$double.eps))) {
       stop("Back-differencing failed.",
         call. = FALSE

@@ -1,6 +1,16 @@
-#' @keywords internal
+## usethis namespace: start
+#' @importFrom checkmate assert_int
+#' @importFrom oeli assert_covariance_matrix
+#' @importFrom oeli delta
+#' @importFrom oeli permutations
+#' @importFrom oeli print_matrix
+#' @importFrom oeli test_covariance_matrix
 #' @importFrom Rcpp sourceCpp
+#' @importFrom Rdpack reprompt
+#' @importFrom stats var
+## usethis namespace: end
 #' @useDynLib RprobitB, .registration=TRUE
+
 "_PACKAGE"
 
 #' @noRd
@@ -43,13 +53,18 @@ RprobitB_pb_tick <- function(pb) {
 }
 
 #' @noRd
-#' @importFrom utils packageVersion
 #' @importFrom cli style_hyperlink
+#' @importFrom utils packageVersion
 
 .onAttach <- function(lib, pkg) {
-  msg <- paste0(
-    "This is {RprobitB} ", utils::packageVersion("RprobitB"), ", happy choice modeling!\n",
-    "See ", cli::style_hyperlink("https://loelschlaeger.de/RprobitB", "https://loelschlaeger.de/RprobitB"), " for help."
+  doc_link <- "https://loelschlaeger.de/RprobitB"
+  msg <- c(
+    paste0(
+      "Thanks for using {RprobitB} version ", utils::packageVersion("RprobitB")
+    ),
+    ", happy choice modeling!\n",
+    "Documentation: ",
+    cli::style_hyperlink(doc_link, doc_link)
   )
   packageStartupMessage(msg)
   invisible()

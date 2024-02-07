@@ -5,7 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 ---
 

@@ -28,11 +28,4 @@ again \code{Sigma}.
 This function transforms the differenced error term covariance matrix
 \code{Sigma} back to a non-differenced error term covariance matrix.
 }
-\examples{
-J <- 3
-i <- 2
-Sigma_full <- rwishart(3, diag(3))$W
-Sigma <- delta(J, 2) \%*\% Sigma_full \%*\% t(delta(J, 2))
-Sigma_back <- RprobitB:::undiff_Sigma(Sigma = Sigma, i = 2)
-}
 \keyword{internal}

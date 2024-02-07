@@ -14,6 +14,7 @@ Bayes estimation of probit choice models, both in the cross-sectional and panel 
 Useful links:
 \itemize{
   \item \url{https://loelschlaeger.de/RprobitB/}
+  \item \url{https://github.com/loelschlaeger/RprobitB}
   \item Report bugs at \url{https://github.com/loelschlaeger/RprobitB/issues}
 }
 
@@ -33,4 +34,3 @@ Other contributors:
 }
 
 }
-\keyword{internal}

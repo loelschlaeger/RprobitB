@@ -503,7 +503,6 @@ point_estimates <- function(x, FUN = mean) {
   return(out)
 }
 
-
 #' Create parameters labels
 #'
 #' @description
@@ -519,9 +518,6 @@ point_estimates <- function(x, FUN = mean) {
 #'
 #' @return
 #' A list of labels for the selected model parameters.
-#'
-#' @examples
-#' RprobitB:::parameter_labels(P_f = 1, P_r = 2, J = 3, C = 2, cov_sym = TRUE)
 #'
 #' @keywords
 #' internal
@@ -1148,6 +1144,7 @@ compute_choice_probabilities <- function(
         }
       }
     } else {
+      delta_j <- oeli::delta(ref = j, dim = J)
       if (P_f > 0) {
         if (P_r > 0) {
           probabilities[j] <- sum(
@@ -1156,11 +1153,11 @@ compute_choice_probabilities <- function(
               FUN = function(c) {
                 s[c] * mvtnorm::pmvnorm(
                   lower = rep(-Inf, J - 1),
-                  upper = as.vector(-delta(J, j) %*% X %*% c(alpha, b[, c])),
+                  upper = as.vector(-delta_j %*% X %*% c(alpha, b[, c])),
                   mean = rep(0, J - 1),
-                  sigma = delta(J, j) %*%
+                  sigma = delta_j %*%
                     (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
-                      t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta(J, j))
+                      t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta_j)
                 )
               }
             )
@@ -1168,9 +1165,9 @@ compute_choice_probabilities <- function(
         } else {
           probabilities[j] <- mvtnorm::pmvnorm(
             lower = rep(-Inf, J - 1),
-            upper = as.vector(-delta(J, j) %*% X %*% alpha),
+            upper = as.vector(-delta_j %*% X %*% alpha),
             mean = rep(0, J - 1),
-            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+            sigma = delta_j %*% Sigma_full %*% t(delta_j)
           )[1]
         }
       } else {
@@ -1181,11 +1178,11 @@ compute_choice_probabilities <- function(
               FUN = function(c) {
                 s[c] * mvtnorm::pmvnorm(
                   lower = rep(-Inf, J - 1),
-                  upper = as.vector(-delta(J, j) %*% X %*% b[, c]),
+                  upper = as.vector(-delta_j %*% X %*% b[, c]),
                   mean = rep(0, J - 1),
-                  sigma = delta(J, j) %*%
+                  sigma = delta_j %*%
                     (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
-                    t(delta(J, j))
+                    t(delta_j)
                 )
               }
             )
@@ -1195,7 +1192,7 @@ compute_choice_probabilities <- function(
             lower = rep(-Inf, J - 1),
             upper = rep(0, J - 1),
             mean = rep(0, J - 1),
-            sigma = delta(J, j) %*% Sigma_full %*% t(delta(J, j))
+            sigma = delta_j %*% Sigma_full %*% t(delta_j)
           )[1]
         }
       }

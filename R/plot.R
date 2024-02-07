@@ -626,10 +626,15 @@ plot_roc <- function(..., reference = NULL) {
   if (length(models) > 1) {
     plot <- ggplot2::ggplot(
       data = pred_merge,
-      ggplot2::aes(m = M, d = D, color = name)
+      ggplot2::aes(
+        m = rlang::.data$M, d = rlang::.data$D, color = rlang::.data$name
+      )
     )
   } else {
-    plot <- ggplot2::ggplot(data = pred_merge, ggplot2::aes(m = M, d = D))
+    plot <- ggplot2::ggplot(
+      data = pred_merge,
+      ggplot2::aes(m = rlang::.data$M, d = rlang::.data$D)
+    )
   }
   plot <- plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
     plotROC::style_roc(theme = ggplot2::theme_grey) +

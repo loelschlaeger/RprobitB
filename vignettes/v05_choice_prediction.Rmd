@@ -5,11 +5,11 @@ vignette: >
   %\VignetteIndexEntry{Choice prediction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes  
 ---
 
-```{r, include = FALSE}
+```{r, label = setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,24 +26,14 @@ This vignette^[This vignette is built using R `r paste(R.Version()$major, R.Vers
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
-```{r, echo = FALSE}
-set.seed(1)
-data("Train", package = "mlogit")
-Train$price_A <- Train$price_A / 100 * 2.20371
-Train$price_B <- Train$price_B / 100 * 2.20371
-Train$time_A <- Train$time_A / 60
-Train$time_B <- Train$time_B / 60
-```
-
 ```{r, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
-data <- prepare_data(form = form, choice_data = Train)
+data <- prepare_data(form = form, choice_data = train_choice, id = "deciderID", idc = "occasionID")
 model_train <- fit_model(
   data = data,
   scale = "price := -1"
 )
 ```
-
 
 ## Reproducing the observed choices
 
@@ -78,7 +68,7 @@ The misclassification can be explained by preferences that differ from the avera
 point_estimates(model_train)$Sigma
 ```
 
-Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve [@Fawcett:2006], using the {plotROC} package [@Sachs:2017]. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here `n.cuts = 20`). The closer the curve is to the top-left corner, the better the binary classification.
+Apart from the prediction accuracy, the model performance can be evaluated more nuanced in terms of sensitivity and specificity. The following snippet exemplary shows how to visualize these measures by means of a receiver operating characteristic (ROC) curve [@Fawcett2006], using the `{plotROC}` package [@Sachs2017]. The curve is constructed by plotting the true positive fraction against the false positive fraction at various cutoffs (here `n.cuts = 20`). The closer the curve is to the top-left corner, the better the binary classification.
 
 ```{r, roc-example, warning = FALSE, message = FALSE, out.width = "50%", fig.dim = c(6,6)}
 library(plotROC)

@@ -31,7 +31,7 @@ Description:
     flexible modeling of choice behavior without the need to impose structural 
     constraints. For a reference on the method see Oelschlaeger and Bauer (2021) 
     <https://trid.trb.org/view/1759753>.
-URL: https://loelschlaeger.de/RprobitB/
+URL: https://loelschlaeger.de/RprobitB/, https://github.com/loelschlaeger/RprobitB
 BugReports: https://github.com/loelschlaeger/RprobitB/issues
 License: GPL-3
 Encoding: UTF-8
@@ -49,7 +49,11 @@ Imports:
     crayon,
     plotROC,
     MASS,
-    cli
+    cli,
+    Rdpack,
+    oeli,
+    stats,
+    checkmate
 LinkingTo:
     Rcpp,
     RcppArmadillo
@@ -60,6 +64,7 @@ Suggests:
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
+RdMacros: Rdpack
 VignetteBuilder: knitr
 LazyData: true
 LazyDataCompression: xz

@@ -30,13 +30,6 @@ You can install the released version of `{RprobitB}` from
 install.packages("RprobitB")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("loelschlaeger/RprobitB")
-```
-
 ## Documentation
 
 The package is documented in several vignettes, see
@@ -46,32 +39,8 @@ The package is documented in several vignettes, see
 
 We analyze a data set of 2929 stated choices by 235 Dutch individuals
 deciding between two virtual train trip options based on the price, the
-travel time, the level of comfort, and the number of changes. The data
-is saved in the {mlogit} package. We transform the travel time from
-minutes to hours and the travel price from guilders to euros:
-
-``` r
-data("Train", package = "mlogit")
-Train$price_A <- Train$price_A / 100 * 2.20371
-Train$price_B <- Train$price_B / 100 * 2.20371
-Train$time_A <- Train$time_A / 60
-Train$time_B <- Train$time_B / 60
-str(Train)
-#> 'data.frame':    2929 obs. of  11 variables:
-#>  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...
-#>  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...
-#>  $ price_A  : num  52.9 52.9 52.9 88.1 52.9 ...
-#>  $ time_A   : num  2.5 2.5 1.92 2.17 2.5 ...
-#>  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...
-#>  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...
-#>  $ price_B  : num  88.1 70.5 88.1 70.5 70.5 ...
-#>  $ time_B   : num  2.5 2.17 1.92 2.5 2.5 ...
-#>  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...
-#>  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...
-```
-
-The following lines fit a probit model that explains the chosen trip
+travel time, the level of comfort, and the number of changes. The
+following lines fit a probit model that explains the chosen trip
 alternatives (`choice`) by their `price`, `time`, number of `change`s,
 and level of `comfort` (the lower this value the higher the comfort).
 For normalization, the first linear coefficient, the `price`, is fixed
@@ -80,7 +49,7 @@ values:
 
 ``` r
 form <- choice ~ price + time + change + comfort | 0
-data <- prepare_data(form, Train)
+data <- prepare_data(form, train_choice, id = "deciderID", idc = "occasionID")
 model <- fit_model(data, scale = "price := -1")
 ```
 
@@ -111,9 +80,9 @@ predict(
   overview = FALSE
 )
 #> Checking for missing covariates
-#>   id idc    A    B prediction
-#> 1  1   1 0.50 0.50          A
-#> 2  2   1 0.35 0.65          B
+#>   deciderID occasionID    A    B prediction
+#> 1         1          1 0.50 0.50          A
+#> 2         2          1 0.35 0.65          B
 ```
 
 However, offering a better comfort class (`0` here is better than `1`)
@@ -132,11 +101,7 @@ predict(
   overview = FALSE
 )
 #> Checking for missing covariates
-#>   id idc    A    B prediction
-#> 1  1   1 0.50 0.50          A
-#> 2  2   1 0.57 0.43          A
+#>   deciderID occasionID    A    B prediction
+#> 1         1          1 0.50 0.50          A
+#> 2         2          1 0.57 0.43          A
 ```
-
-This is just the tip of the iceberg: `{RprobitB}` offers tools for
-modeling choice behavior heterogeneity, preference-based classification
-of deciders, model comparison and more.

@@ -118,13 +118,12 @@ See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the v
 for more details.
 }
 \examples{
-data("Train", package = "mlogit")
 data <- prepare_data(
   form = choice ~ price + time + comfort + change | 0,
-  choice_data = Train,
+  choice_data = train_choice,
   re = c("price", "time"),
-  id = "id",
-  idc = "choiceid",
+  id = "deciderID",
+  idc = "occasionID",
   standardize = c("price", "time")
 )
 

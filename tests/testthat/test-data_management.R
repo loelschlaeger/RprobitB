@@ -55,14 +55,13 @@ test_that("alternative-specific covariates can be renamed", {
 })
 
 test_that("data preparation works", {
-  data("Train", package = "mlogit")
   data <- prepare_data(
     form = choice ~ price | 1 | time + comfort + change,
-    choice_data = Train,
+    choice_data = train_choice,
     re = c("price", "time"),
     alternatives = c("A", "B"),
-    id = "id",
-    idc = "choiceid",
+    id = "deciderID",
+    idc = "occasionID",
     standardize = c("price", "time"),
   )
   expect_s3_class(data, "RprobitB_data")
@@ -118,14 +117,13 @@ test_that("data preparation with ranked choices works", {
 })
 
 test_that("data preparation with non-standard base alternative works", {
-  data("Train", package = "mlogit")
   data <- prepare_data(
     form = choice ~ price | 1 | time + comfort + change,
-    choice_data = Train,
+    choice_data = train_choice,
     re = c("price", "time"),
     alternatives = c("A", "B"),
-    id = "id",
-    idc = "choiceid",
+    id = "deciderID",
+    idc = "occasionID",
     standardize = c("price", "time"),
     base = "A"
   )

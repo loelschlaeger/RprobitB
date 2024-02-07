@@ -47,12 +47,6 @@ the three covariate types.
 \description{
 This function checks the input \code{form}.
 }
-\examples{
-form <- choice ~ price + time + comfort + change
-re <- c("price", "time")
-RprobitB:::check_form(form = form, re = re)
-
-}
 \seealso{
 \code{\link[=overview_effects]{overview_effects()}} for an overview of the model effects
 }

@@ -5,11 +5,11 @@ vignette: >
   %\VignetteIndexEntry{Model selection}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 ---
 
-```{r, include = FALSE}
+```{r, label = setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,18 +26,9 @@ The task of model selection targets the question: If there are several competing
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
-```{r, echo = FALSE}
-set.seed(1)
-data("Train", package = "mlogit")
-Train$price_A <- Train$price_A / 100 * 2.20371
-Train$price_B <- Train$price_B / 100 * 2.20371
-Train$time_A <- Train$time_A / 60
-Train$time_B <- Train$time_B / 60
-```
-
 ```{r, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
-data <- prepare_data(form = form, choice_data = Train)
+data <- prepare_data(form = form, choice_data = train_choice, id = "deciderID", idc = "occasionID")
 model_train <- fit_model(
   data = data,
   scale = "price := -1",
@@ -84,7 +75,7 @@ logLik(model_train_sparse)
 
 ### `AIC`
 
-Including `"AIC"` yields the Akaike's Information Criterion [@Akaike:1974], which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
+Including `"AIC"` yields the Akaike's Information Criterion [@Akaike1974], which is computed as $$-2 \cdot \text{LL} + k \cdot \text{npar},$$
 where $\text{LL}$ is the [model's log-likelihood value](#ll), $k$ is the penalty per parameter with $k = 2$ per default for the classical AIC, and $\text{npar}$ is the number of parameters in the fitted model.
 
 Alternatively, the `AIC()` method also returns the AIC values:
@@ -97,7 +88,7 @@ The AIC quantifies the trade-off between over- and under-fitting, where smaller 
 
 ### `BIC` 
 
-Similar to the AIC, `"BIC"` yields the Bayesian Information Criterion [@Schwarz:1978], which is defined as 
+Similar to the AIC, `"BIC"` yields the Bayesian Information Criterion [@Schwarz1978], which is defined as 
 $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
 where $\text{LL}$ is the [model's log-likelihood value](#ll), $\text{nobs}$ is the number of data points (which can be accessed via the `nobs()` method), and $\text{npar}$ is the [number of parameters in the fitted model](#npar). The interpretation is analogue to AIC.
 
@@ -109,13 +100,13 @@ BIC(model_train, model_train_sparse)
 
 ### `WAIC` (with `se(WAIC)` and `pWAIC`)
 
-WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion [@Watanabe:2010]. As for AIC and BIC, the smaller the WAIC value the better the model. Including `"WAIC"` in `criteria` yields the WAIC value, its standard error `se(WAIC)`, and the effective number of parameters `pWAIC`, see below.
+WAIC is short for Widely Applicable (or Watanabe-Akaike) Information Criterion [@Watanabe2010]. As for AIC and BIC, the smaller the WAIC value the better the model. Including `"WAIC"` in `criteria` yields the WAIC value, its standard error `se(WAIC)`, and the effective number of parameters `pWAIC`, see below.
 
 The WAIC is defined as 
 
 $$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
 
-where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath:2016 p. 220 for a reference.
+where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath2020 p. 220 for a reference.
 
 The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
 
@@ -143,7 +134,7 @@ WAIC(model_train_sparse)
 
 `"MMLL"` in `criteria` stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
 
-{RprobitB} uses the posterior Gibbs samples derived from the `mcmc()` function to approximate the model's marginal likelihood via the posterior harmonic mean estimator [@Newton:1994]: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then, 
+`{RprobitB}` uses the posterior Gibbs samples derived from the `mcmc()` function to approximate the model's marginal likelihood via the posterior harmonic mean estimator [@Newton1994]: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then, 
 $$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$ 
 
 By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
@@ -156,7 +147,7 @@ model_train$mml
 attr(model_train$mml, "mmll")
 ```
 
-There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator [@Hammersley:1964]: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then, 
+There are two options for improving the approximation: As for the WAIC, you can use more posterior samples. Alternatively, you can combine the posterior harmonic mean estimate with the prior arithmetic mean estimator [@Hammersley1964]: For this approach, $S$ samples $\theta_1,\dots,\theta_S$ are drawn from the model's prior distribution. Then, 
 
 $$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$ 
 
@@ -168,11 +159,11 @@ To use the prior arithmetic mean estimator, call the `mml()` function with a spe
 model_train <- mml(model_train, S = 1000, recompute = TRUE)
 ```
 
-Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as @Gronau:2017 points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number `S` of prior samples is required.
+Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as @Gronau2017 points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number `S` of prior samples is required.
 
 ### `BF`
 
-The Bayes factor is an index of relative posterior model plausibility of one model over another [@Marin:2014]. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
+The Bayes factor is an index of relative posterior model plausibility of one model over another [@Marin2014]. Given data $\texttt{y}$ and two models $\texttt{mod0}$ and $\texttt{mod1}$, it is defined as
 
 $$
 BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
@@ -180,7 +171,7 @@ $$
 
 The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, {RprobitB} sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
 
-Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys:1998] in favor of `model_train`.
+Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys1998] in favor of `model_train`.
 
 ```{r, bayes-factor-example, eval = FALSE}
 model_selection(model_train, model_train_sparse, criteria = c("BF"))

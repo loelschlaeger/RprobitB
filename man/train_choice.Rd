@@ -34,8 +34,8 @@ Dutch Railways. Prices were recorded in Dutch guilder and in this data set
 transformed to Euro at an exchange rate of 2.20371 guilders = 1 Euro.
 }
 \references{
-\insertRef{Ben:1993}{RprobitB}
+\insertRef{Ben1993}{RprobitB}
 
-\insertRef{Meijer:2006}{RprobitB}
+\insertRef{Meijer2006}{RprobitB}
 }
 \keyword{datasets}

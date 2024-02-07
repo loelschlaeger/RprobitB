@@ -27,8 +27,8 @@
 #' }
 #'
 #' @references
-#' \insertRef{Ben:1993}{RprobitB}
+#' \insertRef{BenAkiva1993}{RprobitB}
 #'
-#' \insertRef{Meijer:2006}{RprobitB}
+#' \insertRef{Meijer2006}{RprobitB}
 
 "train_choice"

@@ -73,10 +73,6 @@ reference:
   desc: These functions draw from conditional posterior distributions.
   contents:
   - has_keyword("posterior")
-- title: Utilities
-  desc: These functions may be useful beyond {RprobitB}.
-  contents:
-  - has_keyword("utils")
 - title: internal
   desc: These functions are not user-level.
   contents:

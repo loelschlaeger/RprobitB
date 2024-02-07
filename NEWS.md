@@ -2,6 +2,8 @@
 
 * Small fixes.
 
+* Added `train_choice` data set.
+
 # version 1.1.2
 
 * `logLik()` method now returns a `logLik` object that can be passed to `AIC()` and `BIC()` methods from {stats}.
