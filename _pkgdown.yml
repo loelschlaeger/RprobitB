@@ -39,6 +39,7 @@ reference:
   contents:
   - check_prior
   - fit_model
+  - R_hat
   - update.RprobitB_fit
   - transform.RprobitB_fit
 - title: Model evaluation
@@ -73,9 +74,5 @@ reference:
   desc: These functions draw from conditional posterior distributions.
   contents:
   - has_keyword("posterior")
-- title: internal
-  desc: These functions are not user-level.
-  contents:
-  - has_keyword("internal")
 
 

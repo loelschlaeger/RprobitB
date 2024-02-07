@@ -38,4 +38,4 @@ transformed to Euro at an exchange rate of 2.20371 guilders = 1 Euro.
 
 \insertRef{Meijer2006}{RprobitB}
 }
-\keyword{datasets}
+\keyword{dataset}

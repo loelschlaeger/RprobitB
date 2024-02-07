@@ -30,5 +30,7 @@
 #' \insertRef{BenAkiva1993}{RprobitB}
 #'
 #' \insertRef{Meijer2006}{RprobitB}
+#'
+#' @keywords dataset
 
 "train_choice"

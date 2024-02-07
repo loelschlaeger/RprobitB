@@ -63,6 +63,7 @@
 #' @importFrom viridis magma
 ## usethis namespace: end
 #' @useDynLib RprobitB, .registration=TRUE
+#' @keywords internal
 
 "_PACKAGE"
 
