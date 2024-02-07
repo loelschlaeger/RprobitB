@@ -133,14 +133,14 @@ the outer products of the residuals \((\epsilon_n = U_n - X_n\beta)_n\).</p>
 <span class="r-in"><span><span class="va">Sigma_draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fu">update_Sigma</span><span class="op">(</span><span class="va">kappa</span>, <span class="va">E</span>, <span class="va">N</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">Sigma_draws</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]        [,2]        [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.2433933 0.599333881 0.303754609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.5993339 1.126533916 0.002703635</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.3037546 0.002703635 2.054583290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.2410191  0.61306570  0.16269546</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.6130657  1.15402615 -0.04130621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.1626955 -0.04130621  1.50028635</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">Sigma_draws</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]      [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.1910950 0.1469450 0.1866532</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.1469450 0.1481329 0.1588351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.1866532 0.1588351 0.3048582</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.2093024 0.1533339 0.1488460</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.1533339 0.1634999 0.1488295</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.1488460 0.1488295 0.2210208</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

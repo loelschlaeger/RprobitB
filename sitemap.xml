@@ -40,9 +40,6 @@
     <loc>https://loelschlaeger.de/RprobitB/news/index.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/M.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/R_hat.html</loc>
   </url>
   <url>
@@ -121,9 +118,6 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/d_to_gamma.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/delta.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/dmvnorm.html</loc>
   </url>
   <url>
@@ -148,9 +142,6 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/is_covariance_matrix.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/ll_ordered.html</loc>
   </url>
   <url>
@@ -172,9 +163,6 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/parameter_labels.html</loc>
   </url>
   <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/permutations.html</loc>
-  </url>
-  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot.RprobitB_data.html</loc>
   </url>
   <url>
@@ -187,6 +175,9 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/plot_class_allocation.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/plot_class_seq.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/plot_mixture_contour.html</loc>
   </url>
   <url>
@@ -196,13 +187,13 @@
     <loc>https://loelschlaeger.de/RprobitB/reference/plot_roc.html</loc>
   </url>
   <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/plot_trace.html</loc>
+  </url>
+  <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/point_estimates.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/posterior_pars.html</loc>
-  </url>
-  <url>
-    <loc>https://loelschlaeger.de/RprobitB/reference/pprint.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/pred_acc.html</loc>
@@ -239,6 +230,9 @@
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/sufficient_statistics.html</loc>
+  </url>
+  <url>
+    <loc>https://loelschlaeger.de/RprobitB/reference/train_choice.html</loc>
   </url>
   <url>
     <loc>https://loelschlaeger.de/RprobitB/reference/train_test.html</loc>

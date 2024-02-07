@@ -119,10 +119,6 @@
 <p>You can install the released version of <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></span></code></pre></div>
-<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"loelschlaeger/RprobitB"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
@@ -132,38 +128,23 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>We analyze a data set of 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. The data is saved in the {mlogit} package. We transform the travel time from minutes to hours and the travel price from guilders to euros:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
-<span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span></span>
-<span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">2.20371</span></span>
-<span><span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">/</span> <span class="fl">60</span></span>
-<span><span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">/</span> <span class="fl">60</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Train</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    2929 obs. of  11 variables:</span></span>
-<span><span class="co">#&gt;  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
-<span><span class="co">#&gt;  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ price_A  : num  52.9 52.9 52.9 88.1 52.9 ...</span></span>
-<span><span class="co">#&gt;  $ time_A   : num  2.5 2.5 1.92 2.17 2.5 ...</span></span>
-<span><span class="co">#&gt;  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...</span></span>
-<span><span class="co">#&gt;  $ price_B  : num  88.1 70.5 88.1 70.5 70.5 ...</span></span>
-<span><span class="co">#&gt;  $ time_B   : num  2.5 2.17 1.92 2.5 2.5 ...</span></span>
-<span><span class="co">#&gt;  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...</span></span></code></pre></div>
+<p>We analyze a data set of 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://loelschlaeger.de/RprobitB/">"RprobitB"</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Thanks for using {RprobitB} version 1.1.3, happy choice modeling!</span></span>
+<span><span class="co">#&gt; Documentation: https://loelschlaeger.de/RprobitB</span></span></code></pre></div>
 <p>The following lines fit a probit model that explains the chosen trip alternatives (<code>choice</code>) by their <code>price</code>, <code>time</code>, number of <code>change</code>s, and level of <code>comfort</code> (the lower this value the higher the comfort). For normalization, the first linear coefficient, the <code>price</code>, is fixed to <code>-1</code>, which allows to interpret the other coefficients as monetary values:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">form</span>, <span class="va">Train</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">form</span>, <span class="va">train_choice</span>, id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_model.html">fit_model</a></span><span class="op">(</span><span class="va">data</span>, scale <span class="op">=</span> <span class="st">"price := -1"</span><span class="op">)</span></span></code></pre></div>
 <p>The estimated effects can be visualized via:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-coef-1.png" style="display: block; margin: auto;"></p>
 <p>The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 15€.</p>
 <p>Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15% of the customers to the competitor who does not increase their prices:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -173,11 +154,11 @@
 <span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking for missing covariates</span></span>
-<span><span class="co">#&gt;   id idc    A    B prediction</span></span>
-<span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
-<span><span class="co">#&gt; 2  2   1 0.35 0.65          B</span></span></code></pre></div>
+<span><span class="co">#&gt;   deciderID occasionID    A    B prediction</span></span>
+<span><span class="co">#&gt; 1         1          1 0.50 0.50          A</span></span>
+<span><span class="co">#&gt; 2         2          1 0.35 0.65          B</span></span></code></pre></div>
 <p>However, offering a better comfort class (<code>0</code> here is better than <code>1</code>) compensates for the higher price and even results in a gain of 7% market share:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -189,10 +170,9 @@
 <span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking for missing covariates</span></span>
-<span><span class="co">#&gt;   id idc    A    B prediction</span></span>
-<span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
-<span><span class="co">#&gt; 2  2   1 0.57 0.43          A</span></span></code></pre></div>
-<p>This is just the tip of the iceberg: <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> offers tools for modeling choice behavior heterogeneity, preference-based classification of deciders, model comparison and more.</p>
+<span><span class="co">#&gt;   deciderID occasionID    A    B prediction</span></span>
+<span><span class="co">#&gt; 1         1          1 0.50 0.50          A</span></span>
+<span><span class="co">#&gt; 2         2          1 0.57 0.43          A</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
