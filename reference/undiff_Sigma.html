@@ -101,15 +101,6 @@ matrix gets differenced with respect to alternative <code>i</code>, the results 
 again <code>Sigma</code>.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">J</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
-<span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">Sigma_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="rwishart.html">rwishart</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">W</span></span></span>
-<span class="r-in"><span><span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="delta.html">delta</a></span><span class="op">(</span><span class="va">J</span>, <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">Sigma_full</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="delta.html">delta</a></span><span class="op">(</span><span class="va">J</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">Sigma_back</span> <span class="op">&lt;-</span> <span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu">undiff_Sigma</span><span class="op">(</span>Sigma <span class="op">=</span> <span class="va">Sigma</span>, i <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

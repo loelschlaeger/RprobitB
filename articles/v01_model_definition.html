@@ -96,9 +96,9 @@
 <h2 id="the-probit-model">The probit model<a class="anchor" aria-label="anchor" href="#the-probit-model"></a>
 </h2>
 <p>The probit model<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The name &lt;em&gt;probit&lt;/em&gt; is a portmanteau of
-&lt;em&gt;prob&lt;/em&gt;ability and un&lt;em&gt;it&lt;/em&gt;. &lt;span class="citation"&gt;(&lt;a href="#ref-Bliss:1934" role="doc-biblioref"&gt;Bliss 1934&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;'><sup>1</sup></a> is a regression-type model where the
+&lt;em&gt;prob&lt;/em&gt;ability and un&lt;em&gt;it&lt;/em&gt;. &lt;span class="citation"&gt;(&lt;a href="#ref-Bliss1934" role="doc-biblioref"&gt;Bliss 1934&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;'><sup>1</sup></a> is a regression-type model where the
 dependent variable only takes a finite number of values and the error
-term is normally distributed <span class="citation">(<a href="#ref-Agresti:2015" role="doc-biblioref">Agresti 2015</a>)</span>.
+term is normally distributed <span class="citation">(<a href="#ref-Agresti2015" role="doc-biblioref">Agresti 2015</a>)</span>.
 Its purpose is to estimate the probability that the dependent variable
 takes a certain, discrete value. The most common application are
 discrete choice scenarios. The dependent variable here is one of
@@ -111,8 +111,10 @@ alternatives.</p>
 2\)&lt;/span&gt;.&lt;/p&gt;'><sup>2</sup></a> at each of <span class="math inline">\(T\)</span> choice occasions<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For notational simplicity, the number of choice
 occasions &lt;span class="math inline"&gt;\(T\)&lt;/span&gt; is assumed to be the
 same for each decision maker here. However, we are not restricted to
-this case: {RprobitB} allows for unbalanced panels, i.e. varying &lt;span class="math inline"&gt;\(T\)&lt;/span&gt;. Of course, the cross-sectional case
-&lt;span class="math inline"&gt;\(T = 1\)&lt;/span&gt; is possible.&lt;/p&gt;'><sup>3</sup></a>. Specific to each
+this case: &lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; allows for unbalanced panels,
+i.e. varying &lt;span class="math inline"&gt;\(T\)&lt;/span&gt;. Of course, the
+cross-sectional case &lt;span class="math inline"&gt;\(T = 1\)&lt;/span&gt; is
+possible.&lt;/p&gt;'><sup>3</sup></a>. Specific to each
 decision maker, alternative and choice occasion, we furthermore observe
 <span class="math inline">\(P\)</span> choice attributes that we use to
 explain the choices. The continuous choice attributes cannot be linked
@@ -141,13 +143,13 @@ alternative <span class="math inline">\(j\)</span> at choice occasion
 <span class="math inline">\(t\)</span>. Assuming utility maximizing
 behavior of the decision makers<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This in fact is a critical assumption because many
 studies show that humans do not decide in this rational sense in
-general, see for example &lt;span class="citation"&gt;Hewig et al. (&lt;a href="#ref-Hewig:2011" role="doc-biblioref"&gt;2011&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;'><sup>4</sup></a>, the decisions are linked to the utilities
+general, see for example &lt;span class="citation"&gt;Hewig et al. (&lt;a href="#ref-Hewig2011" role="doc-biblioref"&gt;2011&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;'><sup>4</sup></a>, the decisions are linked to the utilities
 via</p>
 <p><span class="math display">\[\begin{equation}
 y_{nt} = {\arg \max}_{j = 1,\dots,J} U_{ntj}.
 \end{equation}\]</span></p>
 <p>In the ordered probit case, the concept of decider’s having separate
-utilities for each alternative is no longer natural <span class="citation">(<a href="#ref-Train:2009" role="doc-biblioref">Train
+utilities for each alternative is no longer natural <span class="citation">(<a href="#ref-Train2009" role="doc-biblioref">Train
 2009</a>)</span>. Instead, we model only a single utility value <span class="math display">\[\begin{align*}
   U_{nt} = X_{nt}'\beta_n + \epsilon_{nt}
 \end{align*}\]</span> per decider <span class="math inline">\(n\)</span>
@@ -185,16 +187,13 @@ so-called mixing distribution.</p>
 difficult task of the model specification. In many applications,
 different types of standard parametric distributions (including the
 normal, log-normal, uniform and tent distribution) are tried in
-conjunction with a likelihood value-based model selection, cf., <span class="citation">Train (<a href="#ref-Train:2009" role="doc-biblioref">2009</a>)</span>, Chapter 6. Instead, {RprobitB}
-implements the approach of <span class="citation">(<a href="#ref-Oelschlaeger:2020" role="doc-biblioref">Oelschläger and Bauer
-2020</a>)</span> to approximate any underlying mixing distribution by a
-mixture of (multivariate) Gaussian densities. More precisely, the
-underlying mixing distribution <span class="math inline">\(g_{P_r}\)</span> for the random coefficients <span class="math inline">\((\beta_n)_{n}\)</span> is approximated by a
-mixture of <span class="math inline">\(P_r\)</span>-variate normal
-densities <span class="math inline">\(\phi_{P_r}\)</span> with mean
-vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance
-matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span>
-using <span class="math inline">\(C\)</span> components, i.e.</p>
+conjunction with a likelihood value-based model selection, cf., <span class="citation">Train (<a href="#ref-Train2009" role="doc-biblioref">2009</a>)</span>, Chapter 6. Instead,
+<a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> implements the approach of <span class="citation">(<a href="#ref-Oelschlaeger:2020" role="doc-biblioref"><strong>Oelschlaeger:2020?</strong></a>)</span> to
+approximate any underlying mixing distribution by a mixture of
+(multivariate) Gaussian densities. More precisely, the underlying mixing
+distribution <span class="math inline">\(g_{P_r}\)</span> for the random
+coefficients <span class="math inline">\((\beta_n)_{n}\)</span> is
+approximated by a mixture of <span class="math inline">\(P_r\)</span>-variate normal densities <span class="math inline">\(\phi_{P_r}\)</span> with mean vectors <span class="math inline">\(b=(b_c)_{c}\)</span> and covariance matrices <span class="math inline">\(\Omega=(\Omega_c)_{c}\)</span> using <span class="math inline">\(C\)</span> components, i.e.</p>
 <p><span class="math display">\[\begin{equation}
 \beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid
 b_c,\Omega_c).
@@ -218,7 +217,7 @@ model</em> if <span class="math inline">\(P_r=0\)</span> and to the
 <h2 id="model-normalization">Model normalization<a class="anchor" aria-label="anchor" href="#model-normalization"></a>
 </h2>
 <p>As is well known, any utility model needs to be normalized with
-respect to level and scale in order to be identified <span class="citation">(<a href="#ref-Train:2009" role="doc-biblioref">Train
+respect to level and scale in order to be identified <span class="citation">(<a href="#ref-Train2009" role="doc-biblioref">Train
 2009</a>)</span>. Therefore, we consider the transformed model</p>
 <p><span class="math display">\[\begin{equation}
 \tilde{U}_{ntj} = \tilde{X}_{ntj}' \beta + \tilde{\epsilon}_{ntj},
@@ -229,16 +228,16 @@ X_{ntJ}\)</span>, and <span class="math inline">\(\tilde{\epsilon}_{ntj}
 = \epsilon_{ntj} - \epsilon_{ntJ}\)</span>, where <span class="math inline">\((\tilde{\epsilon}_{nt:}) =
 (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})' \sim
 \text{MVN}_{J-1} (0,\tilde{\Sigma})\)</span> and <span class="math inline">\(\tilde{\Sigma}\)</span> denotes a covariance
-matrix with the top-left element restricted to one.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;{RprobitB} provides an alternative to fixing an error
-term variance in order to normalize with respect to scale by fixing an
-element of &lt;span class="math inline"&gt;\(\alpha\)&lt;/span&gt;.&lt;/p&gt;'><sup>6</sup></a></p>
+matrix with the top-left element restricted to one.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; provides an alternative to
+fixing an error term variance in order to normalize with respect to
+scale by fixing an element of &lt;span class="math inline"&gt;\(\alpha\)&lt;/span&gt;.&lt;/p&gt;'><sup>6</sup></a></p>
 </div>
 <div class="section level2">
-<h2 id="parameter-labels-in-rprobitb">Parameter labels in {RprobitB}<a class="anchor" aria-label="anchor" href="#parameter-labels-in-rprobitb"></a>
+<h2 id="parameter-labels">Parameter labels<a class="anchor" aria-label="anchor" href="#parameter-labels"></a>
 </h2>
-<p>In {RprobitB}, the probit model parameters are saved as an
-<code>RprobitB_parameter</code> object. Their labels are consistent with
-their definition in this vignette. For example:</p>
+<p>In <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>, the probit model parameters are saved as
+an <code>RprobitB_parameter</code> object. Their labels are consistent
+with their definition in this vignette. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">RprobitB</span><span class="fu">:::</span><span class="fu"><a href="../reference/RprobitB_parameter.html">RprobitB_parameter</a></span><span class="op">(</span></span>
 <span>  P_f <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -261,34 +260,29 @@ their definition in this vignette. For example:</p>
 <span><span class="co">#&gt; C : 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; s : double vector of length 2 </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 0.6 0.4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; b : 2 x 2 matrix of doubles </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      [,1] [,2]</span></span>
 <span><span class="co">#&gt; [1,]   -1    1</span></span>
 <span><span class="co">#&gt; [2,]    1    2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Omega : 4 x 2 matrix of doubles </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      [,1] [,2]</span></span>
 <span><span class="co">#&gt; [1,]    1  0.1</span></span>
-<span><span class="co">#&gt; [2,]    0  0.0</span></span>
-<span><span class="co">#&gt; [3,]    0  0.0</span></span>
+<span><span class="co">#&gt; [2,]    0    0</span></span>
+<span><span class="co">#&gt; [3,]    0    0</span></span>
 <span><span class="co">#&gt; [4,]    1  0.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Sigma : 2 x 2 matrix of doubles </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      [,1] [,2]</span></span>
 <span><span class="co">#&gt; [1,]    1    0</span></span>
 <span><span class="co">#&gt; [2,]    0    1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Sigma_full : 3 x 3 matrix of doubles </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span><span class="co">#&gt; [1,]    2    1    1</span></span>
 <span><span class="co">#&gt; [2,]    1    2    1</span></span>
@@ -296,14 +290,12 @@ their definition in this vignette. For example:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; beta : 2 x 10 matrix of doubles </span></span>
+<span><span class="co">#&gt;       [,1] [,2]  [,3] ... [,10]</span></span>
+<span><span class="co">#&gt; [1,] -1.05 1.55 -2.22 ...  0.96</span></span>
+<span><span class="co">#&gt; [2,]  0.07 2.09   1.3 ...  2.04</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         [,1]   [,2]    [,3] ...  [,10]</span></span>
-<span><span class="co">#&gt; [1,] -0.7978 0.8606 -1.1832 ... 0.4483</span></span>
-<span><span class="co">#&gt; [2,]  0.6710 2.0330  2.1069 ... 2.0604</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; z : integer vector of length 10 </span></span>
-<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; z : double vector of length 10 </span></span>
 <span><span class="co">#&gt; 1 2 1 ... 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; d : NA</span></span></code></pre></div>
@@ -316,25 +308,20 @@ see the non-exported function
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Agresti:2015" class="csl-entry">
+<div id="ref-Agresti2015" class="csl-entry">
 Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear
-Models.</em> Wiley.
+Models</em>. Wiley.
 </div>
-<div id="ref-Bliss:1934" class="csl-entry">
+<div id="ref-Bliss1934" class="csl-entry">
 Bliss, C. I. 1934. <span>“The Method of Probits.”</span>
-<em>Science</em> 79 (2037): 38–39. <a href="https://doi.org/10.1126/science.79.2037.38" class="external-link">https://doi.org/10.1126/science.79.2037.38</a>.
+<em>Science</em> 79 (2037). <a href="https://doi.org/10.1126/science.79.2037.38" class="external-link">https://doi.org/10.1126/science.79.2037.38</a>.
 </div>
-<div id="ref-Hewig:2011" class="csl-entry">
+<div id="ref-Hewig2011" class="csl-entry">
 Hewig, J., N. Kretschmer, R. H. Trippe, H. Hecht, M. G. H. Coles, C. B.
 Holroyd, and W. H. R. Miltner. 2011. <span>“Why Humans Deviate from
 Rational Choice.”</span> <em>Psychophysiology</em> 48 (4). <a href="https://doi.org/10.1111/j.1469-8986.2010.01081.x" class="external-link">https://doi.org/10.1111/j.1469-8986.2010.01081.x</a>.
 </div>
-<div id="ref-Oelschlaeger:2020" class="csl-entry">
-Oelschläger, L., and D. Bauer. 2020. <span>“Bayes Estimation of Latent
-Class Mixed Multinomial Probit Models.”</span> <em>TRB Annual Meeting
-2021</em>.
-</div>
-<div id="ref-Train:2009" class="csl-entry">
+<div id="ref-Train2009" class="csl-entry">
 Train, K. 2009. <em>Discrete Choice Methods with Simulation</em>.
 Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271" class="external-link">https://doi.org/10.1017/CBO9780511805271</a>.
 </div>

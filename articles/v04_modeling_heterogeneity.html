@@ -95,12 +95,12 @@
 <p>In the vignette on the model definition, we pointed out that the
 probit model can capture choice behavior heterogeneity by imposing a
 mixing distribution on the coefficient vector. The implementation in
-{RprobitB} is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.3.2 with the {RprobitB}
-1.1.3 package.&lt;/p&gt;"><sup>1</sup></a>.</p>
+<a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.3.2 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.3 package.&lt;/p&gt;'><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
 </h2>
-<p>The {mlogit} package <span class="citation">(<a href="#ref-Croissant:2020" role="doc-biblioref">Croissant
+<p>The <a href="https://cran.r-project.org/package=mlogit" class="external-link">mlogit</a> package <span class="citation">(<a href="#ref-Croissant2020" role="doc-biblioref">Croissant
 2020</a>)</span> contains the data set <code>Electricity</code>, in
 which residential electricity customers were asked to decide between
 four hypothetical electricity suppliers. The suppliers differed in 6
@@ -164,11 +164,11 @@ besides the average mean effects:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   (sd) Variance   (sd)</span></span>
 <span><span class="co">#&gt; 1   pf     -1.00 (0.00)       NA   (NA)</span></span>
-<span><span class="co">#&gt; 2   cl     -0.26 (0.03)     0.34 (0.03)</span></span>
-<span><span class="co">#&gt; 3  loc      2.80 (0.21)     6.84 (1.01)</span></span>
-<span><span class="co">#&gt; 4   wk      2.05 (0.17)     3.68 (0.61)</span></span>
-<span><span class="co">#&gt; 5  tod     -9.72 (0.21)    10.95 (1.55)</span></span>
-<span><span class="co">#&gt; 6 seas     -9.91 (0.19)     6.37 (0.96)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   cl     -0.25 (0.03)     0.29 (0.03)</span></span>
+<span><span class="co">#&gt; 3  loc      2.61 (0.18)     5.96 (1.01)</span></span>
+<span><span class="co">#&gt; 4   wk      1.87 (0.14)     3.06 (0.49)</span></span>
+<span><span class="co">#&gt; 5  tod     -9.69 (0.22)    10.31 (1.35)</span></span>
+<span><span class="co">#&gt; 6 seas     -9.78 (0.17)     5.47 (0.73)</span></span></code></pre></div>
 <p>By the sign of the estimates we can for example deduce, that the
 existence of the time-of-day electricity price <code>tod</code> in the
 contract has a negative effect. However, the deciders are very
@@ -180,17 +180,17 @@ longer contract length equals:</p>
 <code class="sourceCode R"><span><span class="va">cl_mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>, <span class="st">"mean"</span><span class="op">]</span></span>
 <span><span class="va">cl_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_elec</span><span class="op">)</span><span class="op">[</span><span class="st">"cl"</span>, <span class="st">"var"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">cl_mu</span> <span class="op">/</span> <span class="va">cl_sd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.3290768</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3224165</span></span></code></pre></div>
 <p>The correlation between the covariates can be accessed as follows:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Setting &lt;code&gt;cor = FALSE&lt;/code&gt; instead returns the
 estimated covariance matrix.&lt;/p&gt;"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cov_mix.html">cov_mix</a></span><span class="op">(</span><span class="va">model_elec</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               cl        loc          wk         tod        seas</span></span>
-<span><span class="co">#&gt; cl    1.00000000 0.09257805  0.05693256 -0.04929142 -0.10479958</span></span>
-<span><span class="co">#&gt; loc   0.09257805 1.00000000  0.76519164  0.11677991  0.01056551</span></span>
-<span><span class="co">#&gt; wk    0.05693256 0.76519164  1.00000000  0.11274721 -0.02059038</span></span>
-<span><span class="co">#&gt; tod  -0.04929142 0.11677991  0.11274721  1.00000000  0.52278596</span></span>
-<span><span class="co">#&gt; seas -0.10479958 0.01056551 -0.02059038  0.52278596  1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt;               cl         loc          wk         tod        seas</span></span>
+<span><span class="co">#&gt; cl    1.00000000  0.09302778  0.06447718 -0.04257237 -0.11701736</span></span>
+<span><span class="co">#&gt; loc   0.09302778  1.00000000  0.77341958  0.08017399 -0.01475695</span></span>
+<span><span class="co">#&gt; wk    0.06447718  0.77341958  1.00000000  0.07628481 -0.04344905</span></span>
+<span><span class="co">#&gt; tod  -0.04257237  0.08017399  0.07628481  1.00000000  0.55252248</span></span>
+<span><span class="co">#&gt; seas -0.11701736 -0.01475695 -0.04344905  0.55252248  1.00000000</span></span></code></pre></div>
 <p>Here, we see the confirmation of our initial assumption about a high
 correlation between <code>loc</code> and <code>wk</code>. The pairwise
 mixing distributions can be visualized via calling the
@@ -203,8 +203,8 @@ mixing distributions can be visualized via calling the
 <div class="section level2">
 <h2 id="estimating-latent-classes">Estimating latent classes<a class="anchor" aria-label="anchor" href="#estimating-latent-classes"></a>
 </h2>
-<p>More generally, {RprobitB} allows to specify a Gaussian mixture as
-the mixing distribution. In particular,</p>
+<p>More generally, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> allows to specify a Gaussian
+mixture as the mixing distribution. In particular,</p>
 <p><span class="math display">\[ \beta \sim \sum_{c=1}^C \text{MVN}
 (b_c,\Omega_c).\]</span> This specification allows for a) a better
 approximation of the true underlying mixing distribution and b) a
@@ -228,7 +228,7 @@ below,</p></li>
 <div class="section level3">
 <h3 id="weight-based-update-of-the-latent-classes">Weight-based update of the latent classes<a class="anchor" aria-label="anchor" href="#weight-based-update-of-the-latent-classes"></a>
 </h3>
-<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer, Büscher, and Batram (<a href="#ref-Bauer:2019" role="doc-biblioref">2019</a>)</span> and executed within the burn-in
+<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer, Büscher, and Batram (<a href="#ref-Bauer2019" role="doc-biblioref">2019</a>)</span> and executed within the burn-in
 period:</p>
 <ul>
 <li><p>We remove class <span class="math inline">\(c\)</span>, if <span class="math inline">\(s_c&lt;\varepsilon_{\text{min}}\)</span>, i.e. if
@@ -257,7 +257,8 @@ values of <span class="math inline">\(s\)</span> from <span class="math inline">
 </ul>
 <p>These rules contain choices on the values for <span class="math inline">\(\varepsilon_{\text{min}}\)</span>, <span class="math inline">\(\varepsilon_{\text{max}}\)</span> and <span class="math inline">\(\varepsilon_{\text{distmin}}\)</span>. The
 adequate value for <span class="math inline">\(\varepsilon_{\text{distmin}}\)</span> depends on
-the scale of the parameters. Per default, {RprobitB} sets</p>
+the scale of the parameters. Per default, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>
+sets</p>
 <ul>
 <li><p><code>epsmin = 0.01</code>,</p></li>
 <li><p><code>epsmax = 0.99</code>, and</p></li>
@@ -271,19 +272,19 @@ list.</p>
 </h3>
 <p>As an alternative to the weight-based updating scheme to determine
 the correct number <span class="math inline">\(C\)</span> of latent
-classes, {RprobitB} implemented the Dirichlet process.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;A similar approach in the context of discrete choice can
-be found in &lt;span class="citation"&gt;Burda, Harding, and Hausman (&lt;a href="#ref-Burda:2008" role="doc-biblioref"&gt;2008&lt;/a&gt;)&lt;/span&gt;, where the
-Dirichlet process is applied to estimate a mixed logit-probit model.&lt;/p&gt;'><sup>4</sup></a> The Dirichlet Process
-is a Bayesian nonparametric method, where nonparametric means that the
-number of model parameters can theoretically grow to infinity. The
-method allows to add more mixture components to the mixing distribution
-if needed for a better approximation, see <span class="citation">Neal
-(<a href="#ref-Neal:2000" role="doc-biblioref">2000</a>)</span> for a
-documentation of the general case. The literature offers many
-representations of the method, including the Chinese Restaurant Process
-<span class="citation">(<a href="#ref-Aldous:1985" role="doc-biblioref">Aldous 1985</a>)</span>, the stick-braking methapor
-<span class="citation">(<a href="#ref-Sethuraman:1994" role="doc-biblioref">Sethuraman 1994</a>)</span>, and the Polya Urn
-model <span class="citation">(<a href="#ref-Blackwell:1973" role="doc-biblioref">Blackwell and MacQueen 1973</a>)</span>.</p>
+classes, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> implements the Dirichlet process.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;A similar approach in the context of discrete choice can
+be found in &lt;span class="citation"&gt;Burda, Harding, and Hausman (&lt;a href="#ref-Burda2008" role="doc-biblioref"&gt;2008&lt;/a&gt;)&lt;/span&gt;, where the
+Dirichlet process is applied to estimate a mixed logit-probit model.&lt;/p&gt;'><sup>4</sup></a> The
+Dirichlet Process is a Bayesian nonparametric method, where
+nonparametric means that the number of model parameters can
+theoretically grow to infinity. The method allows to add more mixture
+components to the mixing distribution if needed for a better
+approximation, see <span class="citation">Neal (<a href="#ref-Neal2000" role="doc-biblioref">2000</a>)</span> for a documentation of the general
+case. The literature offers many representations of the method,
+including the Chinese Restaurant Process <span class="citation">(<a href="#ref-Aldous1985" role="doc-biblioref">Aldous 1985</a>)</span>, the
+stick-braking metaphor <span class="citation">(<a href="#ref-Sethuraman1994" role="doc-biblioref">Sethuraman
+1994</a>)</span>, and the Polya Urn model <span class="citation">(<a href="#ref-Blackwell1973" role="doc-biblioref">Blackwell and MacQueen
+1973</a>)</span>.</p>
 <p>In our case, we face the situation to find a distribution <span class="math inline">\(g\)</span> that explains the decider-specific
 coefficients <span class="math inline">\((\beta_n)_{n =
 1,\dots,N}\)</span>, where <span class="math inline">\(g\)</span> is
@@ -293,7 +294,7 @@ supposed to be a mixture of an unknown number <span class="math inline">\(C\)</s
 the class membership of <span class="math inline">\(\beta_n\)</span>. A
 priori, the mixture weights <span class="math inline">\((s_c)_c\)</span>
 are given a Dirichlet prior with concentration parameter <span class="math inline">\(\delta/C\)</span>, i.e. <span class="math inline">\((s_c)_c \mid \delta \sim
-\text{D}_C(\delta/C,\dots,\delta/C)\)</span>. <span class="citation">Rasmussen (<a href="#ref-Rasmussen:2000" role="doc-biblioref">2000</a>)</span> shows that</p>
+\text{D}_C(\delta/C,\dots,\delta/C)\)</span>. <span class="citation">Rasmussen (<a href="#ref-Rasmussen1999" role="doc-biblioref">1999</a>)</span> shows that</p>
 <p><span class="math display">\[ \Pr((z_n)_n\mid \delta) =
 \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c +
 \delta/C)}{\Gamma(\delta/C)}, \]</span> where <span class="math inline">\(\Gamma(\cdot)\)</span> denotes the gamma function
@@ -301,7 +302,7 @@ and <span class="math inline">\(m_c = \#\{n:z_n = c\}\)</span> the
 number of elements that are currently allocated to class <span class="math inline">\(c\)</span>. Crucially, the last equation is
 independent of the class weights <span class="math inline">\((s_c)_c\)</span>, yet it still depends on the
 finite number <span class="math inline">\(C\)</span> of latent classes.
-However, <span class="citation">Li, Schofield, and Gönen (<a href="#ref-Li:2019" role="doc-biblioref">2019</a>)</span> shows that</p>
+However, <span class="citation">Li, Schofield, and Gönen (<a href="#ref-Li2019" role="doc-biblioref">2019</a>)</span> shows that</p>
 <p><span class="math display">\[ \Pr(z_n = c \mid z_{-n}, \delta) =
 \frac{m_{c,-n} + \delta/C}{N-1+\delta},\]</span> where the notation
 <span class="math inline">\(-n\)</span> means excluding the <span class="math inline">\(n\)</span>th element. We can let <span class="math inline">\(C\)</span> approach infinity to derive:</p>
@@ -314,7 +315,7 @@ However, <span class="citation">Li, Schofield, and Gönen (<a href="#ref-Li:2019
 <p><span class="math display">\[ \Pr(z_n \neq z_m ~ \forall ~ m \neq n
 \mid z_{-n}, \delta) = \frac{\delta}{N-1+\delta} \]</span></p>
 <p>and constitutes the probability that a new cluster for observation
-<span class="math inline">\(n\)</span> is created. <span class="citation">Neal (<a href="#ref-Neal:2000" role="doc-biblioref">2000</a>)</span> points out that this probability
+<span class="math inline">\(n\)</span> is created. <span class="citation">Neal (<a href="#ref-Neal2000" role="doc-biblioref">2000</a>)</span> points out that this probability
 is proportional to the prior parameter <span class="math inline">\(\delta\)</span>: A greater value for <span class="math inline">\(\delta\)</span> encourages the creation of new
 clusters, a smaller value for <span class="math inline">\(\delta\)</span> increases the probability of an
 allocation to an already existing class.</p>
@@ -327,7 +328,7 @@ update, we update the class means <span class="math inline">\(b_c\)</span> and c
 predictive distribution. The mean and covariance matrix for a new
 generated cluster is drawn from the prior predictive distribution. The
 corresponding formulas are given in <span class="citation">Li,
-Schofield, and Gönen (<a href="#ref-Li:2019" role="doc-biblioref">2019</a>)</span>.</p>
+Schofield, and Gönen (<a href="#ref-Li2019" role="doc-biblioref">2019</a>)</span>.</p>
 <p>The Dirichlet process directly integrates into our existing Gibbs
 sampler. Given <span class="math inline">\(\beta\)</span> values, it
 updated the class means <span class="math inline">\(b_c\)</span> and
@@ -414,44 +415,49 @@ identifiability.</p>
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Aldous:1985" class="csl-entry">
-Aldous, D. J. 1985. <span>“Exchangeability and Related Topics,”</span>
-Lecture notes in math., 1117: 1–198.
+<div id="ref-Aldous1985" class="csl-entry">
+Aldous, David J. 1985. <span>“Exchangeability and Related
+Topics.”</span> In <em><span>É</span>cole
+d’<span>É</span>t<span>é</span> de Probabilit<span>é</span>s de
+Saint-Flour XIII — 1983</em>, edited by P. L. Hennequin, 1–198. Berlin,
+Heidelberg: Springer Berlin Heidelberg.
 </div>
-<div id="ref-Bauer:2019" class="csl-entry">
+<div id="ref-Bauer2019" class="csl-entry">
 Bauer, D., S. Büscher, and M. Batram. 2019. <span>“Non-Parameteric
 Estiation of Mixed Discrete Choice Models.”</span> <em>Second
 International Choice Modelling Conference in Kobe</em>.
 </div>
-<div id="ref-Blackwell:1973" class="csl-entry">
+<div id="ref-Blackwell1973" class="csl-entry">
 Blackwell, D., and J. MacQueen. 1973. <span>“Ferguson Distributions via
-Polya Urn Schemes.”</span> <em>The Annals of Statistics</em> 1: 353–55.
+<span>Polya</span> Urn Schemes.”</span> <em>The Annals of
+Statistics</em> 1: 353–55.
 </div>
-<div id="ref-Burda:2008" class="csl-entry">
-Burda, M., M. Harding, and J. Hausman. 2008. <span>“A Bayesian Mixed
-Logit–Probit Model for Multinomial Choice.”</span> <em>Journal of
-Econometrics</em> 147 (2). <a href="https://doi.org/10.1016/j.jeconom.2008.09.029" class="external-link">https://doi.org/10.1016/j.jeconom.2008.09.029</a>.
+<div id="ref-Burda2008" class="csl-entry">
+Burda, M., M. Harding, and J. Hausman. 2008. <span>“A
+<span>Bayesian</span> Mixed Logit-Probit Model for Multinomial
+Choice.”</span> <em>Journal of Econometrics</em> 147 (2). <a href="https://doi.org/10.1016/j.jeconom.2008.09.029" class="external-link">https://doi.org/10.1016/j.jeconom.2008.09.029</a>.
 </div>
-<div id="ref-Croissant:2020" class="csl-entry">
-Croissant, Y. 2020. <span>“Estimation of Random Utility Models in r: The
-Mlogit Package.”</span> <em>Journal of Statistical Software</em> 95
-(11). <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.
+<div id="ref-Croissant2020" class="csl-entry">
+Croissant, Y. 2020. <span>“Estimation of Random Utility Models in
+<span>R</span>: The Mlogit Package.”</span> <em>Journal of Statistical
+Software</em> 95 (11). <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.
 </div>
-<div id="ref-Li:2019" class="csl-entry">
-Li, Y., E. Schofield, and M. Gönen. 2019. <span>“A Tutorial on Dirichlet
-Process Mixture Modeling.”</span> <em>Journal of Mathematical
-Psychology</em> 91. <a href="https://doi.org/10.1016/j.jmp.2019.04.004" class="external-link">https://doi.org/10.1016/j.jmp.2019.04.004</a>.
+<div id="ref-Li2019" class="csl-entry">
+Li, Y., E. Schofield, and M. Gönen. 2019. <span>“A Tutorial on
+<span>Dirichlet</span> Process Mixture Modeling.”</span> <em>Journal of
+Mathematical Psychology</em> 91. <a href="https://doi.org/10.1016/j.jmp.2019.04.004" class="external-link">https://doi.org/10.1016/j.jmp.2019.04.004</a>.
 </div>
-<div id="ref-Neal:2000" class="csl-entry">
-Neal, R. M. 2000. <span>“Markov Chain Sampling Methods for Dirichlet
-Process Mixture Models.”</span> <em>Journal of Computational and
-Graphical Statistics</em> 9 (2). <a href="https://doi.org/10.2307/1390653" class="external-link">https://doi.org/10.2307/1390653</a>.
+<div id="ref-Neal2000" class="csl-entry">
+Neal, R. M. 2000. <span>“Markov Chain Sampling Methods for
+<span>Dirichlet</span> Process Mixture Models.”</span> <em>Journal of
+Computational and Graphical Statistics</em> 9 (2). <a href="https://doi.org/10.2307/1390653" class="external-link">https://doi.org/10.2307/1390653</a>.
 </div>
-<div id="ref-Rasmussen:2000" class="csl-entry">
-Rasmussen, C. E. 2000. <em>The Infinite Gaussian Mixture Model</em>.
-Vol. 12. MIT Press.
+<div id="ref-Rasmussen1999" class="csl-entry">
+Rasmussen, Carl. 1999. <span>“The Infinite <span>Gaussian</span> Mixture
+Model.”</span> <em>Advances in Neural Information Processing
+Systems</em> 12.
 </div>
-<div id="ref-Sethuraman:1994" class="csl-entry">
+<div id="ref-Sethuraman1994" class="csl-entry">
 Sethuraman, J. 1994. <span>“A Constructive Definition of Dirichlet
 Priors.”</span> <em>Statistica Sinica</em> 4 (2): 639–50. <a href="http://www.jstor.org/stable/24305538" class="external-link">http://www.jstor.org/stable/24305538</a>.
 </div>

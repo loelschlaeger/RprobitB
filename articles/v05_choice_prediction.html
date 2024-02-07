@@ -92,19 +92,19 @@
 
     
     
-<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is built using R 4.3.2 with the {RprobitB}
-1.1.3 package.&lt;/p&gt;"><sup>1</sup></a> discusses in-sample and out-of-sample
-prediction within {RprobitB}. The former case refers to reproducing the
-observed choices on the basis of the covariates and the fitted model and
-subsequently using the deviations between prediction and reality as an
-indicator for the model performance. The latter means forecasting choice
-behavior for changes in the choice attributes.</p>
+<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.3.2 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.3 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
+prediction within <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. The former case refers to
+reproducing the observed choices on the basis of the covariates and the
+fitted model and subsequently using the deviations between prediction
+and reality as an indicator for the model performance. The latter means
+forecasting choice behavior for changes in the choice attributes.</p>
 <p>For illustration, we revisit the probit model of travelers deciding
 between two fictional train route alternatives from <a href="https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html">the
 vignette on model fitting</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">train_choice</span>, id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span><span class="op">)</span></span>
 <span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_model.html">fit_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  scale <span class="op">=</span> <span class="st">"price := -1"</span></span>
@@ -112,7 +112,7 @@ vignette on model fitting</a>:</p>
 <div class="section level2">
 <h2 id="reproducing-the-observed-choices">Reproducing the observed choices<a class="anchor" aria-label="anchor" href="#reproducing-the-observed-choices"></a>
 </h2>
-<p>{RprobitB} provides a <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method for
+<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> provides a <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method for
 <code>RprobitB_fit</code> objects. Per default, the method returns a
 confusion matrix, which gives an overview of the in-sample prediction
 performance:</p>
@@ -120,25 +120,25 @@ performance:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     predicted</span></span>
 <span><span class="co">#&gt; true    A    B</span></span>
-<span><span class="co">#&gt;    A 1035  439</span></span>
-<span><span class="co">#&gt;    B  450 1005</span></span></code></pre></div>
+<span><span class="co">#&gt;    A 1031  443</span></span>
+<span><span class="co">#&gt;    B  449 1006</span></span></code></pre></div>
 <p>By setting the argument <code>overview = FALSE</code>, the method
 instead returns predictions on the level of individual choice
 occasions:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pred</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    id idc    A    B true predicted correct</span></span>
-<span><span class="co">#&gt; 1   1   1 0.91 0.09    A         A    TRUE</span></span>
-<span><span class="co">#&gt; 2   1   2 0.64 0.36    A         A    TRUE</span></span>
-<span><span class="co">#&gt; 3   1   3 0.79 0.21    A         A    TRUE</span></span>
-<span><span class="co">#&gt; 4   1   4 0.18 0.82    B         B    TRUE</span></span>
-<span><span class="co">#&gt; 5   1   5 0.55 0.45    B         A   FALSE</span></span>
-<span><span class="co">#&gt; 6   1   6 0.13 0.87    B         B    TRUE</span></span>
-<span><span class="co">#&gt; 7   1   7 0.54 0.46    B         A   FALSE</span></span>
-<span><span class="co">#&gt; 8   1   8 0.76 0.24    B         A   FALSE</span></span>
-<span><span class="co">#&gt; 9   1   9 0.55 0.45    A         A    TRUE</span></span>
-<span><span class="co">#&gt; 10  1  10 0.59 0.41    A         A    TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt;    deciderID occasionID    A    B true predicted correct</span></span>
+<span><span class="co">#&gt; 1          1          1 0.91 0.09    A         A    TRUE</span></span>
+<span><span class="co">#&gt; 2          1          2 0.64 0.36    A         A    TRUE</span></span>
+<span><span class="co">#&gt; 3          1          3 0.79 0.21    A         A    TRUE</span></span>
+<span><span class="co">#&gt; 4          1          4 0.18 0.82    B         B    TRUE</span></span>
+<span><span class="co">#&gt; 5          1          5 0.55 0.45    B         A   FALSE</span></span>
+<span><span class="co">#&gt; 6          1          6 0.13 0.87    B         B    TRUE</span></span>
+<span><span class="co">#&gt; 7          1          7 0.54 0.46    B         A   FALSE</span></span>
+<span><span class="co">#&gt; 8          1          8 0.76 0.24    B         A   FALSE</span></span>
+<span><span class="co">#&gt; 9          1          9 0.55 0.45    A         A    TRUE</span></span>
+<span><span class="co">#&gt; 10         1         10 0.59 0.41    A         A    TRUE</span></span></code></pre></div>
 <p>Among the three incorrect predictions shown here, the one for decider
 <code>id = 1</code> in choice occasion <code>idc = 8</code> is the most
 outstanding. Alternative <code>B</code> was chosen although the model
@@ -147,10 +147,10 @@ the convenience function <code><a href="../reference/get_cov.html">get_cov()</a>
 characteristics of this particular choice situation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_cov.html">get_cov</a></span><span class="op">(</span><span class="va">model_train</span>, id <span class="op">=</span> <span class="fl">1</span>, idc <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   id choiceid choice  price_A   time_A change_A comfort_A  price_B time_B</span></span>
-<span><span class="co">#&gt; 8  1        8      B 52.88904 1.916667        0         1 70.51872    2.5</span></span>
-<span><span class="co">#&gt;   change_B comfort_B idc</span></span>
-<span><span class="co">#&gt; 8        0         0   8</span></span></code></pre></div>
+<span><span class="co">#&gt;   deciderID occasionID choice  price_A   time_A change_A comfort_A  price_B</span></span>
+<span><span class="co">#&gt; 8         1          8      B 52.88904 1.916667        0         1 70.51872</span></span>
+<span><span class="co">#&gt;   time_B change_B comfort_B</span></span>
+<span><span class="co">#&gt; 8    2.5        0         0</span></span></code></pre></div>
 <p>The trip option <code>A</code> was 20€ cheaper and 30 minutes faster,
 which by our model outweighs the better comfort class for alternative
 <code>B</code>, recall the estimated effects:</p>
@@ -158,9 +158,9 @@ which by our model outweighs the better comfort class for alternative
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate   (sd)</span></span>
 <span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
-<span><span class="co">#&gt; 2    time    -25.90 (2.09)</span></span>
-<span><span class="co">#&gt; 3  change     -4.82 (0.84)</span></span>
-<span><span class="co">#&gt; 4 comfort    -14.49 (0.86)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2    time    -25.48 (2.28)</span></span>
+<span><span class="co">#&gt; 3  change     -4.89 (0.94)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.40 (0.91)</span></span></code></pre></div>
 <p>The misclassification can be explained by preferences that differ
 from the average decider (choice behavior heterogeneity), or by
 unobserved factors that influenced the choice. Indeed, the variance of
@@ -168,17 +168,18 @@ the error term was estimated high:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/point_estimates.html">point_estimates</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">$</span><span class="va">Sigma</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 661.6866</span></span>
+<span><span class="co">#&gt; [1,] 661.2606</span></span>
 <span><span class="co">#&gt; attr(,"names")</span></span>
 <span><span class="co">#&gt; [1] "1,1"</span></span></code></pre></div>
 <p>Apart from the prediction accuracy, the model performance can be
 evaluated more nuanced in terms of sensitivity and specificity. The
 following snippet exemplary shows how to visualize these measures by
-means of a receiver operating characteristic (ROC) curve <span class="citation">(<a href="#ref-Fawcett:2006" role="doc-biblioref">Fawcett 2006</a>)</span>, using the {plotROC}
-package <span class="citation">(<a href="#ref-Sachs:2017" role="doc-biblioref">Sachs 2017</a>)</span>. The curve is constructed by
-plotting the true positive fraction against the false positive fraction
-at various cutoffs (here <code>n.cuts = 20</code>). The closer the curve
-is to the top-left corner, the better the binary classification.</p>
+means of a receiver operating characteristic (ROC) curve <span class="citation">(<a href="#ref-Fawcett2006" role="doc-biblioref">Fawcett 2006</a>)</span>, using the
+<a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a> package <span class="citation">(<a href="#ref-Sachs2017" role="doc-biblioref">Sachs 2017</a>)</span>. The
+curve is constructed by plotting the true positive fraction against the
+false positive fraction at various cutoffs (here
+<code>n.cuts = 20</code>). The closer the curve is to the top-left
+corner, the better the binary classification.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pred</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">A</span>, d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">true</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -213,9 +214,9 @@ does not increase their prices.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   id idc    A    B prediction</span></span>
-<span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
-<span><span class="co">#&gt; 2  2   1 0.35 0.65          B</span></span></code></pre></div>
+<span><span class="co">#&gt;   deciderID occasionID    A    B prediction</span></span>
+<span><span class="co">#&gt; 1         1          1 0.50 0.50          A</span></span>
+<span><span class="co">#&gt; 2         2          1 0.35 0.65          B</span></span></code></pre></div>
 <p>However, offering a better comfort class compensates for the higher
 price and even results in a gain of 7% market share:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -229,22 +230,22 @@ price and even results in a gain of 7% market share:</p>
 <span>  <span class="op">)</span>,</span>
 <span>  overview <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   id idc    A    B prediction</span></span>
-<span><span class="co">#&gt; 1  1   1 0.50 0.50          A</span></span>
-<span><span class="co">#&gt; 2  2   1 0.57 0.43          A</span></span></code></pre></div>
+<span><span class="co">#&gt;   deciderID occasionID    A    B prediction</span></span>
+<span><span class="co">#&gt; 1         1          1 0.50 0.50          A</span></span>
+<span><span class="co">#&gt; 2         2          1 0.57 0.43          A</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Fawcett:2006" class="csl-entry">
-Fawcett, T. 2006. <span>“An Introduction to ROC Analysis.”</span>
-<em>Pattern Recognition Letters</em> 27 (8). <a href="https://doi.org/10.1016/j.patrec.2005.10.010" class="external-link">https://doi.org/10.1016/j.patrec.2005.10.010</a>.
+<div id="ref-Fawcett2006" class="csl-entry">
+Fawcett, T. 2006. <span>“An Introduction to <span>ROC</span>
+Analysis.”</span> <em>Pattern Recognition Letters</em> 27 (8). <a href="https://doi.org/10.1016/j.patrec.2005.10.010" class="external-link">https://doi.org/10.1016/j.patrec.2005.10.010</a>.
 </div>
-<div id="ref-Sachs:2017" class="csl-entry">
+<div id="ref-Sachs2017" class="csl-entry">
 Sachs, M. C. 2017. <span>“<span class="nocase">plotROC</span>: A Tool
-for Plotting ROC Curves.”</span> <em>Journal of Statistical Software,
-Code Snippets</em> 79 (2): 1–19. <a href="https://doi.org/10.18637/jss.v079.c02" class="external-link">https://doi.org/10.18637/jss.v079.c02</a>.
+for Plotting <span>ROC</span> Curves.”</span> <em>Journal of Statistical
+Software, Code Snippets</em> 79 (2): 1–19. <a href="https://doi.org/10.18637/jss.v079.c02" class="external-link">https://doi.org/10.18637/jss.v079.c02</a>.
 </div>
 </div>
 </div>

@@ -92,17 +92,17 @@
 
     
     
-<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This vignette is build using R 4.3.2 with the {RprobitB}
-1.1.3 package.&lt;/p&gt;"><sup>1</sup></a> provides a reference
-for data management in {RprobitB}. We use the Train data set from the
-{mlogit} package <span class="citation">(<a href="#ref-Croissant:2020" role="doc-biblioref">Croissant 2020</a>)</span> for illustration.</p>
+<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is build using R 4.3.2 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.3 package.&lt;/p&gt;'><sup>1</sup></a> provides a reference
+for data management in <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. We use the
+<code>train_choice</code> data set for illustration.</p>
 <div class="section level2">
 <h2 id="requirements-to-choice-data">Requirements to choice data<a class="anchor" aria-label="anchor" href="#requirements-to-choice-data"></a>
 </h2>
-<p>{RprobitB} helps in modeling the choice of individual deciders of one
-alternative from a finite set of choice alternatives. This choice set
-has to fulfill three properties <span class="citation">(<a href="#ref-Train:2009" role="doc-biblioref">Train 2009</a>)</span>:
-Choices need to be</p>
+<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> helps in modeling the choice of individual
+deciders of one alternative from a finite set of choice alternatives.
+This choice set has to fulfill three properties <span class="citation">(<a href="#ref-Train2009" role="doc-biblioref">Train
+2009</a>)</span>: Choices need to be</p>
 <ol style="list-style-type: decimal">
 <li><p>mutually exclusive (one can choose one and only one alternative
 that are all different),</p></li>
@@ -118,20 +118,20 @@ situation),</p></li>
 <li><p>the choices,</p></li>
 <li><p>alternative and decider specific covariates.</p></li>
 </ol>
-<p>Additionally, {RprobitB} asks the following formal requirements:</p>
+<p>Additionally, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> asks the following formal
+requirements:</p>
 <ol style="list-style-type: decimal">
 <li><p>The data set <strong>must</strong> be in “wide” format, that
-means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The {tidyr} package &lt;a href="https://tidyr.tidyverse.org/articles/pivot.html" class="external-link"&gt;contains
-functionality&lt;/a&gt; that can transform a &lt;code&gt;data.frame&lt;/code&gt; into this
-format.&lt;/p&gt;'><sup>2</sup></a></p></li>
+means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The&lt;code&gt;&lt;/code&gt;{tidyr}&lt;code&gt;package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform a&lt;/code&gt;data.frame`
+into this format.&lt;/p&gt;"><sup>2</sup></a></p></li>
 <li><p>It <strong>must</strong> contain a column with unique identifiers
 for each decision maker. Additionally, it <strong>can</strong> contain a
 column with identifier for each choice situation of each decider. If
 this information is missing, these identifier are generated
-automatically by the appearance of the choices in the data set.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The choice situation identifier are irrelevant for model
-estimation because {RprobitB} does not model correlation over choice
-occasions. They are useful to identify specific choice occasions later
-on.&lt;/p&gt;"><sup>3</sup></a></p></li>
+automatically by the appearance of the choices in the data set.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The choice situation identifier are irrelevant for model
+estimation because &lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; does not model correlation
+over choice occasions. They are useful to identify specific choice
+occasions later on.&lt;/p&gt;'><sup>3</sup></a></p></li>
 <li><p>It <strong>can</strong> contain a column with the observed
 choices. Such a column is required for model fitting but not for
 prediction.</p></li>
@@ -142,42 +142,40 @@ specific covariate.</p></li>
 <div class="section level3">
 <h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h3>
-<p>The Train data set contains 2929 stated choices by 235 Dutch
-individuals deciding between two virtual train trip options based on the
-price, the travel time, the level of comfort, and the number of changes.
-It fulfills the above requirements: Each row represents one choice
-occasion, the columns <code>id</code> and <code>choiceid</code> identify
-the deciders and the choice occasions, respectively. The column
-<code>choice</code> gives the observed choices. Four
-alternative-specific covariates are available, namely
+<p>The <code>train_choice</code> data set contains 2929 stated choices
+by 235 Dutch individuals deciding between two virtual train trip options
+based on the price, the travel time, the level of comfort, and the
+number of changes. It fulfills the above requirements: Each row
+represents one choice occasion, the columns <code>id</code> and
+<code>choiceid</code> identify the deciders and the choice occasions,
+respectively. The column <code>choice</code> gives the observed choices.
+Four alternative-specific covariates are available, namely
 <code>price</code>, <code>time</code>, <code>change</code>, and
 <code>comfort</code>. There values are given for each alternative.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For alternative specific variables, the alternative
 names must be added to the covariates via the &lt;code&gt;_&lt;/code&gt;
 separator.&lt;/p&gt;"><sup>4</sup></a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Train</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">train_choice</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    2929 obs. of  11 variables:</span></span>
-<span><span class="co">#&gt;  $ id       : int  1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ choiceid : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
-<span><span class="co">#&gt;  $ choice   : Factor w/ 2 levels "A","B": 1 1 1 2 2 2 2 2 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ price_A  : num  2400 2400 2400 4000 2400 4000 2400 2400 4000 2400 ...</span></span>
-<span><span class="co">#&gt;  $ time_A   : num  150 150 115 130 150 115 150 115 115 150 ...</span></span>
-<span><span class="co">#&gt;  $ change_A : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ comfort_A: num  1 1 1 1 1 0 1 1 0 1 ...</span></span>
-<span><span class="co">#&gt;  $ price_B  : num  4000 3200 4000 3200 3200 2400 3200 3200 3200 4000 ...</span></span>
-<span><span class="co">#&gt;  $ time_B   : num  150 130 115 150 150 130 115 150 130 115 ...</span></span>
-<span><span class="co">#&gt;  $ change_B : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ comfort_B: num  1 1 0 0 0 0 1 0 1 0 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ deciderID : int  1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ occasionID: int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ choice    : chr  "A" "A" "A" "B" ...</span></span>
+<span><span class="co">#&gt;  $ price_A   : num  52.9 52.9 52.9 88.1 52.9 ...</span></span>
+<span><span class="co">#&gt;  $ time_A    : num  2.5 2.5 1.92 2.17 2.5 ...</span></span>
+<span><span class="co">#&gt;  $ change_A  : int  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ comfort_A : int  1 1 1 1 1 0 1 1 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ price_B   : num  88.1 70.5 88.1 70.5 70.5 ...</span></span>
+<span><span class="co">#&gt;  $ time_B    : num  2.5 2.17 1.92 2.5 2.5 ...</span></span>
+<span><span class="co">#&gt;  $ change_B  : int  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ comfort_B : int  1 1 0 0 0 0 1 0 1 0 ...</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="the-model-formula">The model formula<a class="anchor" aria-label="anchor" href="#the-model-formula"></a>
 </h2>
-<p>We have to inform {RprobitB} about the covariates we want to include
-in our model via specifying a <code>formula</code> object. Say we want
-to model the utility <span class="math inline">\(U_{n,t,j}\)</span> of
-decider <span class="math inline">\(n\)</span> at choice occasion <span class="math inline">\(t\)</span> for alternative <span class="math inline">\(j\)</span> via the linear equation</p>
+<p>We have to inform <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> about the covariates we
+want to include in our model via specifying a <code>formula</code>
+object. Say we want to model the utility <span class="math inline">\(U_{n,t,j}\)</span> of decider <span class="math inline">\(n\)</span> at choice occasion <span class="math inline">\(t\)</span> for alternative <span class="math inline">\(j\)</span> via the linear equation</p>
 <p><span class="math display">\[U_{n,t,j} = A_{n,t,j} \beta_1 + B_{n,t}
 \beta_{2,j} + C_{n,t,j} \beta_{3,j} + \epsilon_{n,tj}.\]</span> Here,
 <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span> are alternative and choice situation
@@ -185,8 +183,8 @@ specific covariates, whereas <span class="math inline">\(B\)</span> is
 choice situation specific. The coefficient <span class="math inline">\(\beta_1\)</span> is generic (i.e. the same for
 each alternative), whereas <span class="math inline">\(\beta_{2,j}\)</span> and <span class="math inline">\(\beta_{3,j}\)</span> are alternative specific.</p>
 <p>To represent this structure, the <code>formula</code> object is of
-the form (analogously to {mlogit}) <code>choice ~ A | B | C</code>,
-where</p>
+the form (analogously to <a href="https://cran.r-project.org/package=mlogit" class="external-link">mlogit</a>)
+<code>choice ~ A | B | C</code>, where</p>
 <ul>
 <li><p><code>choice</code> is the dependent variable (the discrete
 choice we aim to explain),</p></li>
@@ -205,8 +203,8 @@ coefficient of the last alternative of each type 2-covariate is set to
 covariates with alternative specific coefficients (we call them
 covariates of type 3).</p></li>
 </ul>
-<p>Specifying a <code>formula</code> object for {RprobitB} must be
-consistent with the following rules:</p>
+<p>Specifying a <code>formula</code> object for <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>
+must be consistent with the following rules:</p>
 <ul>
 <li><p>By default, alternative specific constants (ASCs)<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;ASCs capture the average effect on utility of all
 factors that are not included in the model. Due to identifiability, we
@@ -234,18 +232,19 @@ To have random effects for the alternative specific constants, include
 <div class="section level3">
 <h3 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h3>
-<p>We specify a model formula for the Train data set. Say we want to
-include all the covariates <code>price</code>, <code>time</code>,
-<code>comfort</code>, and <code>change</code>, which are all alternative
-specific (that is, they contain a potentially different value for each
-alternative, such as different prices for A and B), so either of type 1
-or type 3. The difference between type 1 and type 3 is that in the
-former case, we would estimate a generic coefficient (i.e. a coefficient
-that is constant across alternatives), whereas in the latter case, we
-would estimate alternative specific coefficients. Deciding between type
-1 and type 3 for these covariates belongs into the topic of model
-selection, for which we provide a separate vignette. For now, we go with
-type 1 for all covariates and remove ASCs:</p>
+<p>We specify a model formula for the <code>train_choice</code> data
+set. Say we want to include all the covariates <code>price</code>,
+<code>time</code>, <code>comfort</code>, and <code>change</code>, which
+are all alternative specific (that is, they contain a potentially
+different value for each alternative, such as different prices for A and
+B), so either of type 1 or type 3. The difference between type 1 and
+type 3 is that in the former case, we would estimate a generic
+coefficient (i.e. a coefficient that is constant across alternatives),
+whereas in the latter case, we would estimate alternative specific
+coefficients. Deciding between type 1 and type 3 for these covariates
+belongs into the topic of model selection, for which we provide a
+separate vignette. For now, we go with type 1 for all covariates and
+remove ASCs:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">+</span> <span class="va">change</span> <span class="op">|</span> <span class="fl">0</span></span></code></pre></div>
 <p>Additionally, we specify random effects for <code>price</code> and
@@ -258,9 +257,9 @@ here):</p>
 <div class="section level2">
 <h2 id="the-prepare_data-function">The <code>prepare_data()</code> function<a class="anchor" aria-label="anchor" href="#the-prepare_data-function"></a>
 </h2>
-<p>Before model estimation with {RprobitB}, any empirical choice data
-set <code>choice_data</code> must pass the <code><a href="../reference/prepare_data.html">prepare_data()</a></code>
-function:</p>
+<p>Before model estimation with <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>, any empirical
+choice data set <code>choice_data</code> must pass the
+<code><a href="../reference/prepare_data.html">prepare_data()</a></code> function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">choice_data</span><span class="op">)</span></span></code></pre></div>
 <p>The function performs compatibility checks and data transformations
@@ -305,10 +304,11 @@ covariate mean.</p></li>
 <div class="section level3">
 <h3 id="example-2">Example<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h3>
-<p>Let’s prepare the Train data set for estimation with our previous
-specification of <code>form</code> and <code>re</code>:</p>
+<p>Let’s prepare the <code>train_choice</code> data set for estimation
+with our previous specification of <code>form</code> and
+<code>re</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">Train</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"id"</span>, idc <span class="op">=</span> <span class="st">"choiceid"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">train_choice</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>summary</code> and <code>plot</code> methods provide a
 quick data overview:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -321,7 +321,7 @@ quick data overview:</p>
 <span><span class="co">#&gt; - 'A'             1474</span></span>
 <span><span class="co">#&gt; - 'B'             1455</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img/summary-Train-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/summary-train-choice-data-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -416,9 +416,9 @@ alternatives <code>A</code> and <code>B</code>:</p>
 <span><span class="va">base</span> <span class="op">&lt;-</span> <span class="st">"B"</span></span>
 <span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var1</span> <span class="op">|</span> <span class="va">var2</span> <span class="op">|</span> <span class="va">var3</span></span>
 <span><span class="va">re</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ASC"</span>, <span class="st">"var2"</span><span class="op">)</span></span></code></pre></div>
-<p>{RprobitB} provides the function <code><a href="../reference/overview_effects.html">overview_effects()</a></code>
-which can be used to get an overview of the effects for which parameters
-can be specified:</p>
+<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> provides the function
+<code><a href="../reference/overview_effects.html">overview_effects()</a></code> which can be used to get an overview of
+the effects for which parameters can be specified:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/overview_effects.html">overview_effects</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, re <span class="op">=</span> <span class="va">re</span>, alternatives <span class="op">=</span> <span class="va">alternatives</span>, base <span class="op">=</span> <span class="va">base</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   effect as_value as_coef random</span></span>
@@ -498,12 +498,7 @@ the rest goes into the train subsample:</p>
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Croissant:2020" class="csl-entry">
-Croissant, Y. 2020. <span>“Estimation of Random Utility Models in r: The
-Mlogit Package.”</span> <em>Journal of Statistical Software</em> 95
-(11). <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.
-</div>
-<div id="ref-Train:2009" class="csl-entry">
+<div id="ref-Train2009" class="csl-entry">
 Train, K. 2009. <em>Discrete Choice Methods with Simulation</em>.
 Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271" class="external-link">https://doi.org/10.1017/CBO9780511805271</a>.
 </div>
