@@ -160,12 +160,12 @@ the <code>name</code> of the fixed effect.</p></li>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Any choice model has to be normalized with respect to the utility level and
-scale.</p><ul><li><p>For level normalization, <code>{RprobitB}</code> takes utility differences with
-respect to one alternative.
-For the ordered model where only one utility is modeled, RprobitB
-fixes the first utility threshold to 0.</p></li>
-<li><p>For scale normalization, RprobitB fixes one model parameter. Per
-default, the first error-term variance is fixed to <code>1</code>.
+scale.</p><ul><li><p>For level normalization, <code>{RprobitB}</code> takes utility differences
+with respect to one alternative.
+For the ordered model where only one utility is modeled,
+<code>{RprobitB}</code> fixes the first utility threshold to 0.</p></li>
+<li><p>For scale normalization, <code>{RprobitB}</code> fixes one model parameter.
+Per default, the first error-term variance is fixed to <code>1</code>.
 This is specified via <code>scale = "Sigma_1,1 := 1"</code>.
 Alternatively, any error-term variance or any non-random coefficient
 can be fixed.</p></li>

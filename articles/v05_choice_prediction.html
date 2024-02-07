@@ -121,7 +121,7 @@ performance:</p>
 <span><span class="co">#&gt;     predicted</span></span>
 <span><span class="co">#&gt; true    A    B</span></span>
 <span><span class="co">#&gt;    A 1029  445</span></span>
-<span><span class="co">#&gt;    B  450 1005</span></span></code></pre></div>
+<span><span class="co">#&gt;    B  448 1007</span></span></code></pre></div>
 <p>By setting the argument <code>overview = FALSE</code>, the method
 instead returns predictions on the level of individual choice
 occasions:</p>
@@ -158,9 +158,9 @@ which by our model outweighs the better comfort class for alternative
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate   (sd)</span></span>
 <span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
-<span><span class="co">#&gt; 2    time    -25.67 (2.15)</span></span>
-<span><span class="co">#&gt; 3  change     -4.83 (0.93)</span></span>
-<span><span class="co">#&gt; 4 comfort    -14.41 (0.94)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2    time    -25.31 (2.17)</span></span>
+<span><span class="co">#&gt; 3  change     -4.90 (0.83)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.38 (0.90)</span></span></code></pre></div>
 <p>The misclassification can be explained by preferences that differ
 from the average decider (choice behavior heterogeneity), or by
 unobserved factors that influenced the choice. Indeed, the variance of
@@ -168,7 +168,7 @@ the error term was estimated high:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/point_estimates.html">point_estimates</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">$</span><span class="va">Sigma</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 644.7962</span></span>
+<span><span class="co">#&gt; [1,] 660.2404</span></span>
 <span><span class="co">#&gt; attr(,"names")</span></span>
 <span><span class="co">#&gt; [1] "1,1"</span></span></code></pre></div>
 <p>Apart from the prediction accuracy, the model performance can be
