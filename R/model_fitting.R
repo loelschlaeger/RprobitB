@@ -507,12 +507,12 @@ print.RprobitB_latent_classes <- function(x, ...) {
 #' Any choice model has to be normalized with respect to the utility level and
 #' scale.
 #' \itemize{
-#'   \item For level normalization, \code{{RprobitB}} takes utility differences with
-#'         respect to one alternative.
-#'         For the ordered model where only one utility is modeled, {RprobitB}
-#'         fixes the first utility threshold to 0.
-#'   \item For scale normalization, RprobitB fixes one model parameter. Per
-#'         default, the first error-term variance is fixed to `1`.
+#'   \item For level normalization, \code{{RprobitB}} takes utility differences
+#'         with respect to one alternative.
+#'         For the ordered model where only one utility is modeled,
+#'         \code{{RprobitB}} fixes the first utility threshold to 0.
+#'   \item For scale normalization, \code{{RprobitB}} fixes one model parameter.
+#'         Per default, the first error-term variance is fixed to `1`.
 #'         This is specified via `scale = "Sigma_1,1 := 1"`.
 #'         Alternatively, any error-term variance or any non-random coefficient
 #'         can be fixed.

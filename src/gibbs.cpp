@@ -25,7 +25,7 @@ using namespace Rcpp;
 //' The conjugate prior \eqn{p(s)} for \eqn{s} is a Dirichlet distribution, which has a density function
 //' proportional to \deqn{\prod_{i=1}^C s_i^{\delta_i-1},} where \eqn{\delta = (\delta_1,\dots,\delta_C)}
 //' is the concentration parameter vector.
-//' Note that in {RprobitB}, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
+//' Note that in \code{{RprobitB}}, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
 //' The posterior distribution of \eqn{s} is proportional to \deqn{p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},}
 //' which in turn is proportional to a Dirichlet distribution with parameters \eqn{\delta+m}.
 //' @examples
