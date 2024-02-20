@@ -11,8 +11,10 @@ using namespace arma;
 using namespace Rcpp;
 
 //' Update class weight vector
+//'
 //' @description
 //' This function updates the class weight vector by drawing from its posterior distribution.
+//'
 //' @inheritParams check_prior
 //' @param m
 //' The vector of current class frequencies.
@@ -42,6 +44,7 @@ using namespace Rcpp;
 //' internal posterior
 //'
 // [[Rcpp::export]]
+
 arma::vec update_s (int delta, arma::vec m) {
   int C = m.size();
   return(rdirichlet(delta*ones(C)+m));
@@ -451,8 +454,8 @@ arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
   for(int i = 0; i<Jm1; i++){
     m = 0.0;
     for(int k = 0; k<Jm1; k++){
-      if (k!=i){
-        m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k)*(U_update[k]-sys[k]);
+      if (k != i) {
+        m += - 1/Sigmainv(Jm1*i+i) * Sigmainv(Jm1*i+k) * (U_update[k]-sys[k]);
       }
     }
     U_update[i] = rtnorm(sys[i]+m, sqrt(1/Sigmainv(Jm1*i+i)), 0.0, true);

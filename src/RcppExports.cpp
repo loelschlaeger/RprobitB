@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppEigen.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -298,6 +299,59 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// split_data
+Rcpp::List split_data(Rcpp::List data);
+RcppExport SEXP _RprobitB_split_data(SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(split_data(data));
+    return rcpp_result_gen;
+END_RCPP
+}
+// determine_data_sizes
+Rcpp::List determine_data_sizes(Rcpp::List dependent_variable, Rcpp::List independent_variable);
+RcppExport SEXP _RprobitB_determine_data_sizes(SEXP dependent_variableSEXP, SEXP independent_variableSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type dependent_variable(dependent_variableSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type independent_variable(independent_variableSEXP);
+    rcpp_result_gen = Rcpp::wrap(determine_data_sizes(dependent_variable, independent_variable));
+    return rcpp_result_gen;
+END_RCPP
+}
+// reference_normalization
+Rcpp::List reference_normalization(Rcpp::List independent_variable, int J, int reference_level);
+RcppExport SEXP _RprobitB_reference_normalization(SEXP independent_variableSEXP, SEXP JSEXP, SEXP reference_levelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type independent_variable(independent_variableSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type reference_level(reference_levelSEXP);
+    rcpp_result_gen = Rcpp::wrap(reference_normalization(independent_variable, J, reference_level));
+    return rcpp_result_gen;
+END_RCPP
+}
+// setup_data
+Rcpp::List setup_data(Rcpp::List data, int J, int P_f, int P_r, int reference_level, bool ordered, bool ranked);
+RcppExport SEXP _RprobitB_setup_data(SEXP dataSEXP, SEXP JSEXP, SEXP P_fSEXP, SEXP P_rSEXP, SEXP reference_levelSEXP, SEXP orderedSEXP, SEXP rankedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    Rcpp::traits::input_parameter< int >::type P_f(P_fSEXP);
+    Rcpp::traits::input_parameter< int >::type P_r(P_rSEXP);
+    Rcpp::traits::input_parameter< int >::type reference_level(reference_levelSEXP);
+    Rcpp::traits::input_parameter< bool >::type ordered(orderedSEXP);
+    Rcpp::traits::input_parameter< bool >::type ranked(rankedSEXP);
+    rcpp_result_gen = Rcpp::wrap(setup_data(data, J, P_f, P_r, reference_level, ordered, ranked));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rtnorm
 double rtnorm(double mu, double sig, double trunpt, bool above);
 RcppExport SEXP _RprobitB_rtnorm(SEXP muSEXP, SEXP sigSEXP, SEXP trunptSEXP, SEXP aboveSEXP) {
@@ -348,6 +402,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
     {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 10},
+    {"_RprobitB_split_data", (DL_FUNC) &_RprobitB_split_data, 1},
+    {"_RprobitB_determine_data_sizes", (DL_FUNC) &_RprobitB_determine_data_sizes, 2},
+    {"_RprobitB_reference_normalization", (DL_FUNC) &_RprobitB_reference_normalization, 3},
+    {"_RprobitB_setup_data", (DL_FUNC) &_RprobitB_setup_data, 7},
     {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
     {"_RprobitB_rttnorm", (DL_FUNC) &_RprobitB_rttnorm, 4},
     {NULL, NULL, 0}

@@ -59,7 +59,8 @@ Imports:
     viridis
 LinkingTo:
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    RcppEigen
 Suggests: 
     knitr,
     mlogit,

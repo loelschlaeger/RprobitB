@@ -219,8 +219,10 @@ rwishart <- function(nu, V) {
 }
 
 #' Update class weight vector
+#'
 #' @description
 #' This function updates the class weight vector by drawing from its posterior distribution.
+#'
 #' @inheritParams check_prior
 #' @param m
 #' The vector of current class frequencies.
@@ -667,6 +669,110 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #'
 gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked) {
     .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
+}
+
+#' Split data into dependent and independent variables
+#'
+#' @inheritParams setup_data
+#'
+#' @return
+#' A \code{list} with two elements:
+#' * \code{dependent_variable} is a \code{list} that contains the dependent
+#'   variables. It is of length \code{N}, where \code{N} is the number of
+#'   individuals. The \code{n}-th element of \code{dependent_variable} is a
+#'   \code{vector} of length \code{Tp[n]}, where the \code{t}-th element is an
+#'   \code{integer} that refers to the dependent variable from the underlying
+#'   choice set.
+#' * \code{independent_variable} is a \code{list} that contains the independent
+#'   variables. It is of length \code{N}, where \code{N} is the number of
+#'   individuals. The \code{n}-th element of \code{independent_variable} is a
+#'   \code{list} of length \code{Tp[n]}, where the \code{t}-th element is the
+#'   design \code{matrix} for time point \code{t}.
+#'
+split_data <- function(data) {
+    .Call(`_RprobitB_split_data`, data)
+}
+
+#' Determine data sizes
+#'
+#' @param dependent_variable
+#' A \code{list} that contains the dependent variables.
+#' It is of length \code{N}, where \code{N} is the number of individuals.
+#' The \code{n}-th element of \code{dependent_variable} is a \code{vector} of
+#' length \code{Tp[n]}, where the \code{t}-th element is an \code{integer} that
+#' refers to the dependent variable from the underlying choice set.
+#'
+#' @param independent_variable
+#' A \code{list} that contains the independent variables.
+#' It is of length \code{N}, where \code{N} is the number of individuals.
+#' The \code{n}-th element of \code{independent_variable} is a \code{list} of
+#' length \code{Tp[n]}, where the \code{t}-th element is the design
+#' \code{matrix} for time point \code{t}.
+#'
+#' @return
+#' A \code{list} with three elements:
+#' * \code{N}, the number of individuals
+#' * \code{Tp}, the \code{vector} of time points per individual
+#' * \code{cs_Tp}, the cumulative sum of \code{Tp}
+#'
+determine_data_sizes <- function(dependent_variable, independent_variable) {
+    .Call(`_RprobitB_determine_data_sizes`, dependent_variable, independent_variable)
+}
+
+#' Normalize independent variables with respect to level
+#'
+#' @inheritParams setup_data
+#' @inheritParams determine_data_sizes
+#'
+#' @return
+#' The input \code{independent_variable}, where for each design \code{matrix}
+#' differences with respect to the level \code{reference_level} are taken.
+#'
+reference_normalization <- function(independent_variable, J, reference_level) {
+    .Call(`_RprobitB_reference_normalization`, independent_variable, J, reference_level)
+}
+
+#' Function to setup data for MCMC
+#'
+#' @description
+#' 1. TODO
+#' 2.
+#' 3.
+#'
+#' @param data
+#' A \code{list} that contains the data.
+#' It is of length \code{N}, where \code{N} is the number of individuals.
+#' The \code{n}-th element of \code{data} contains the data for the \code{n}-th
+#' individual and is a \code{list} with two elements:
+#' * \code{X} is a \code{list} of length \code{Tp[n]}, where the
+#'   \code{t}-th element is the design \code{matrix} of \code{n}-th independent
+#'   variables for time point \code{t}.
+#'   Each design \code{matrix} must have \code{P_f + P_r} columns.
+#'   In the ordered case, each design \code{matrix} must have a single row.
+#'   In the non-ordered case, each design \code{matrix} have \code{J} rows.
+#' * \code{y} is a \code{vector} of length \code{Tp[n]}, where the
+#'   \code{t}-th element is an \code{integer} that refers to the dependent
+#'   variable from the underlying choice set.
+#'
+#' @param J
+#' An \code{integer}, the number of levels of the dependent variable.
+#'
+#' @param reference_level
+#' An \code{integer} between \code{1} and \code{J} that determines the
+#' reference level for level normalization. It is not relevant and ignored in
+#' the ordered case.
+#'
+#' @param ordered
+#' A \code{logical} that determines if the dependent variable is ordered.
+#'
+#' @param ranked
+#' A \code{logical} that determines if the dependent variable is ranked.
+#'
+#' @return
+#' A \code{list}... TODO
+#'
+setup_data <- function(data, J = 2L, P_f = 0L, P_r = 0L, reference_level = 1L, ordered = FALSE, ranked = FALSE) {
+    .Call(`_RprobitB_setup_data`, data, J, P_f, P_r, reference_level, ordered, ranked)
 }
 
 #' Draw from one-sided truncated normal
