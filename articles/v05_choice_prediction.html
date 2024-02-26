@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,7 @@
     
     
 <p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.3.2 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.3 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
 prediction within <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. The former case refers to
 reproducing the observed choices on the basis of the covariates and the
 fitted model and subsequently using the deviations between prediction
@@ -120,8 +120,8 @@ performance:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     predicted</span></span>
 <span><span class="co">#&gt; true    A    B</span></span>
-<span><span class="co">#&gt;    A 1031  443</span></span>
-<span><span class="co">#&gt;    B  449 1006</span></span></code></pre></div>
+<span><span class="co">#&gt;    A 1033  441</span></span>
+<span><span class="co">#&gt;    B  450 1005</span></span></code></pre></div>
 <p>By setting the argument <code>overview = FALSE</code>, the method
 instead returns predictions on the level of individual choice
 occasions:</p>
@@ -158,9 +158,9 @@ which by our model outweighs the better comfort class for alternative
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate   (sd)</span></span>
 <span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
-<span><span class="co">#&gt; 2    time    -25.65 (2.26)</span></span>
-<span><span class="co">#&gt; 3  change     -4.99 (0.89)</span></span>
-<span><span class="co">#&gt; 4 comfort    -14.39 (0.96)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2    time    -25.39 (2.10)</span></span>
+<span><span class="co">#&gt; 3  change     -4.93 (0.85)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.52 (0.87)</span></span></code></pre></div>
 <p>The misclassification can be explained by preferences that differ
 from the average decider (choice behavior heterogeneity), or by
 unobserved factors that influenced the choice. Indeed, the variance of
@@ -168,7 +168,7 @@ the error term was estimated high:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/point_estimates.html">point_estimates</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">$</span><span class="va">Sigma</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 656.3662</span></span>
+<span><span class="co">#&gt; [1,] 652.9585</span></span>
 <span><span class="co">#&gt; attr(,"names")</span></span>
 <span><span class="co">#&gt; [1] "1,1"</span></span></code></pre></div>
 <p>Apart from the prediction accuracy, the model performance can be
