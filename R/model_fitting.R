@@ -891,7 +891,7 @@ fit_model <- function(
   )
 
   ### compute sufficient statistics
-  suff_stat <- sufficient_statistics(data = data, normalization = normalization)
+  suff_stat <- sufficient_statistics(data = data, reference_level = normalization$level$level)
 
   ### set initial values for the Gibbs sampler
   init <- set_initial_gibbs_values(

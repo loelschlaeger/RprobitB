@@ -46,15 +46,10 @@
 #' @keywords
 #' internal
 
-sufficient_statistics <- function(data, normalization) {
+sufficient_statistics <- function(data, reference_level) {
   ### check input
   if (!inherits(data, "RprobitB_data")) {
     stop("'data' must be of class 'RprobitB_data'.", call. = FALSE)
-  }
-  if (!inherits(normalization, "RprobitB_normalization")) {
-    stop("'normalization' must be of class 'RprobitB_normalization'.",
-         call. = FALSE
-    )
   }
 
   ### make a copy of 'data'
@@ -68,11 +63,11 @@ sufficient_statistics <- function(data, normalization) {
   P_f <- data_copy$P_f
   P_r <- data_copy$P_r
 
-  ### compute utility differences with respect to 'normalization$level$level'
+  ### compute utility differences with respect to 'reference_level'
   ### (not for an ordered probit model)
   RprobitB_pp("Computing sufficient statistics", 0, 4)
   if (!data$ordered) {
-    delta_level <- oeli::delta(ref = normalization$level$level, dim = J)
+    delta_level <- oeli::delta(ref = reference_level, dim = J)
     for (n in seq_len(N)) {
       for (t in seq_len(Tvec[n])) {
         data_copy$data[[n]]$X[[t]] <- delta_level %*% data_copy$data[[n]]$X[[t]]
@@ -81,17 +76,17 @@ sufficient_statistics <- function(data, normalization) {
   }
 
   ### decode choice to numeric with respect to appearance
-  # RprobitB_pp("Computing sufficient statistics", 1, 4)
-  # y <- matrix(0, nrow = N, ncol = max(Tvec))
-  # if (data$ranked) {
-  #   choice_set <- sapply(oeli::permutations(data$alternatives), paste, collapse = ",")
-  # } else {
-  #   choice_set <- data$alternatives
-  # }
-  # for (n in 1:N) {
-  #   y_n <- match(data_copy$data[[n]][[2]], choice_set)
-  #   y[n, ] <- c(y_n, rep(NA, max(Tvec) - length(y_n)))
-  # }
+  RprobitB_pp("Computing sufficient statistics", 1, 4)
+  y <- matrix(0, nrow = N, ncol = max(Tvec))
+  if (data$ranked) {
+    choice_set <- sapply(oeli::permutations(data$alternatives), paste, collapse = ",")
+  } else {
+    choice_set <- data$alternatives
+  }
+  for (n in 1:N) {
+    y_n <- match(data_copy$data[[n]][[2]], choice_set)
+    y[n, ] <- c(y_n, rep(NA, max(Tvec) - length(y_n)))
+  }
 
   ### extract covariates linked to fixed ('W') and to random coefficients ('X')
   RprobitB_pp("Computing sufficient statistics", 2, 4)
@@ -182,7 +177,7 @@ sufficient_statistics <- function(data, normalization) {
   if (data$ranked) {
     rdiff <- list()
     perm <- oeli::permutations(data$alternatives)
-    delta_level <- oeli::delta(ref = normalization$level$level, dim = J)
+    delta_level <- oeli::delta(ref = reference_level, dim = J)
     Dinv <- round(MASS::ginv(delta_level))
     for (p in 1:length(perm)) {
       ranking <- match(perm[[p]], data$alternatives)

@@ -149,7 +149,7 @@ test_that("computation of sufficient statistics works", {
   normalization <- RprobitB:::RprobitB_normalization(
     form = form, re = re, alternatives = alternatives, base = "C"
   )
-  ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
+  ss <- RprobitB:::sufficient_statistics(data = data, reference_level = normalization$level$level)
   expect_snapshot(ss)
 })
 

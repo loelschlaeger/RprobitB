@@ -83,9 +83,10 @@ double trunNormBelow(double const& a){
 //' internal distribution
 //'
 // [[Rcpp::export]]
+
 double rtnorm(double mu, double sig, double trunpt, bool above){
   double a,z,draw;
-  if(!above){
+  if (!above) {
     a = (trunpt-mu)/sig;
     z = trunNormBelow(a);
     draw = sig*z + mu;
@@ -122,6 +123,7 @@ double rtnorm(double mu, double sig, double trunpt, bool above){
 //' internal distribution
 //'
 // [[Rcpp::export]]
+
 double rttnorm(double mu, double sig, double lower_bound, double upper_bound){
   double a = R::pnorm((lower_bound-mu)/sig,0,1,1,0);
   double b = R::pnorm((upper_bound-mu)/sig,0,1,1,0);
