@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@
 <p>The task of model selection targets the question: If there are
 several competing models, how do I choose the most appropriate one? This
 vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.3.2 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.3 package.&lt;/p&gt;'><sup>1</sup></a>
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a>
 outlines the model selection tools implemented in
 <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>.</p>
 <p>For illustration, we revisit the probit model of travelers deciding
@@ -128,9 +128,9 @@ selection criteria:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      model_train model_train_sparse</span></span>
 <span><span class="co">#&gt; npar           4                  1</span></span>
-<span><span class="co">#&gt; LL      -1727.73           -1865.91</span></span>
-<span><span class="co">#&gt; AIC      3463.46            3733.82</span></span>
-<span><span class="co">#&gt; BIC      3487.39            3739.81</span></span></code></pre></div>
+<span><span class="co">#&gt; LL      -1727.70           -1865.86</span></span>
+<span><span class="co">#&gt; AIC      3463.40            3733.72</span></span>
+<span><span class="co">#&gt; BIC      3487.33            3739.70</span></span></code></pre></div>
 <p>Specifying <code>criteria</code> is optional. Per default,
 <code>criteria = c("npar", "LL", "AIC", "BIC")</code>.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;To show the model formulas in the output of
 &lt;code&gt;&lt;a href="../reference/model_selection.html"&gt;model_selection()&lt;/a&gt;&lt;/code&gt;, add the argument
@@ -162,9 +162,9 @@ the point estimates derived from the Gibbs sample means.
 alternative statistics for the point estimate can be specified.&lt;/p&gt;'><sup>3</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -1727.729 (df=4)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -1727.702 (df=4)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -1865.912 (df=1)</span></span></code></pre></div>
+<span><span class="co">#&gt; 'log Lik.' -1865.86 (df=1)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="aic">
@@ -182,8 +182,8 @@ values:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    df      AIC</span></span>
-<span><span class="co">#&gt; model_train         4 3463.459</span></span>
-<span><span class="co">#&gt; model_train_sparse  1 3733.824</span></span></code></pre></div>
+<span><span class="co">#&gt; model_train         4 3463.404</span></span>
+<span><span class="co">#&gt; model_train_sparse  1 3733.721</span></span></code></pre></div>
 <p>The AIC quantifies the trade-off between over- and under-fitting,
 where smaller values are preferred. Here, the increase in goodness of
 fit justifies the additional 3 parameters of
@@ -205,8 +205,8 @@ AIC.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    df      BIC</span></span>
-<span><span class="co">#&gt; model_train         4 3487.389</span></span>
-<span><span class="co">#&gt; model_train_sparse  1 3739.806</span></span></code></pre></div>
+<span><span class="co">#&gt; model_train         4 3487.334</span></span>
+<span><span class="co">#&gt; model_train_sparse  1 3739.703</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="waic-with-sewaic-and-pwaic">
@@ -353,7 +353,7 @@ about 6% of the choices more than <code>model_train_sparse</code>:<a class="foot
 performance comparison in terms of sensitivity and specificity.&lt;/p&gt;"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pred_acc.html">pred_acc</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.6971663 0.6340048</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.6947764 0.6340048</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2 unnumbered">
