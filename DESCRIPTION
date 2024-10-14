@@ -66,7 +66,7 @@ Suggests:
     testthat (>= 3.0.0)
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 RdMacros: Rdpack
 VignetteBuilder: knitr
 LazyData: true
