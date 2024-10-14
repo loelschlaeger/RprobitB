@@ -5,76 +5,53 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="RprobitB">
 <title>Model selection • RprobitB</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model selection">
-<meta property="og:description" content="RprobitB">
-<meta property="og:image" content="https://loelschlaeger.de/RprobitB/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model selection">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/RprobitB.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/RprobitB.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/v01_model_definition.html">Model definition</a>
-    <a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a>
-    <a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a>
-    <a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a>
-    <a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a>
-    <a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/v01_model_definition.html">Model definition</a></li>
+    <li><a class="dropdown-item" href="../articles/v02_choice_data.html">Choice data</a></li>
+    <li><a class="dropdown-item" href="../articles/v03_model_fitting.html">Model fitting</a></li>
+    <li><a class="dropdown-item" href="../articles/v04_modeling_heterogeneity.html">Modeling heterogeneity</a></li>
+    <li><a class="dropdown-item" href="../articles/v05_choice_prediction.html">Choice prediction</a></li>
+    <li><a class="dropdown-item" href="../articles/v06_model_selection.html">Model selection</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/loelschlaeger/RprobitB/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -86,7 +63,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Model selection</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/loelschlaeger/RprobitB/blob/HEAD/vignettes/v06_model_selection.Rmd" class="external-link"><code>vignettes/v06_model_selection.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/loelschlaeger/RprobitB/blob/main/vignettes/v06_model_selection.Rmd" class="external-link"><code>vignettes/v06_model_selection.Rmd</code></a></small>
       <div class="d-none name"><code>v06_model_selection.Rmd</code></div>
     </div>
 
@@ -94,7 +71,7 @@
     
 <p>The task of model selection targets the question: If there are
 several competing models, how do I choose the most appropriate one? This
-vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.3.2 with the
+vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.4.1 with the
 &lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a>
 outlines the model selection tools implemented in
 <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>.</p>
@@ -128,9 +105,9 @@ selection criteria:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      model_train model_train_sparse</span></span>
 <span><span class="co">#&gt; npar           4                  1</span></span>
-<span><span class="co">#&gt; LL      -1727.73           -1865.86</span></span>
-<span><span class="co">#&gt; AIC      3463.46            3733.72</span></span>
-<span><span class="co">#&gt; BIC      3487.39            3739.71</span></span></code></pre></div>
+<span><span class="co">#&gt; LL      -1727.75           -1865.86</span></span>
+<span><span class="co">#&gt; AIC      3463.49            3733.73</span></span>
+<span><span class="co">#&gt; BIC      3487.42            3739.71</span></span></code></pre></div>
 <p>Specifying <code>criteria</code> is optional. Per default,
 <code>criteria = c("npar", "LL", "AIC", "BIC")</code>.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;To show the model formulas in the output of
 &lt;code&gt;&lt;a href="../reference/model_selection.html"&gt;model_selection()&lt;/a&gt;&lt;/code&gt;, add the argument
@@ -162,28 +139,34 @@ the point estimates derived from the Gibbs sample means.
 alternative statistics for the point estimate can be specified.&lt;/p&gt;'><sup>3</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -1727.729 (df=4)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -1727.746 (df=4)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">model_train_sparse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -1865.862 (df=1)</span></span></code></pre></div>
+<span><span class="co">#&gt; 'log Lik.' -1865.865 (df=1)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="aic">
 <code>AIC</code><a class="anchor" aria-label="anchor" href="#aic"></a>
 </h3>
 <p>Including <code>"AIC"</code> yields the Akaike’s Information
-Criterion <span class="citation">(<a href="#ref-Akaike1974" role="doc-biblioref">Akaike 1974</a>)</span>, which is computed as <span class="math display">\[-2 \cdot \text{LL} + k \cdot
-\text{npar},\]</span> where <span class="math inline">\(\text{LL}\)</span> is the <a href="#ll">model’s
-log-likelihood value</a>, <span class="math inline">\(k\)</span> is the
-penalty per parameter with <span class="math inline">\(k = 2\)</span>
-per default for the classical AIC, and <span class="math inline">\(\text{npar}\)</span> is the number of parameters
-in the fitted model.</p>
+Criterion <span class="citation">(<a href="#ref-Akaike1974">Akaike
+1974</a>)</span>, which is computed as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>2</mn><mo>⋅</mo><mtext mathvariant="normal">LL</mtext><mo>+</mo><mi>k</mi><mo>⋅</mo><mtext mathvariant="normal">npar</mtext><mo>,</mo></mrow><annotation encoding="application/x-tex">-2 \cdot \text{LL} + k \cdot \text{npar},</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">LL</mtext><annotation encoding="application/x-tex">\text{LL}</annotation></semantics></math>
+is the <a href="#ll">model’s log-likelihood value</a>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+is the penalty per parameter with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">k = 2</annotation></semantics></math>
+per default for the classical AIC, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">npar</mtext><annotation encoding="application/x-tex">\text{npar}</annotation></semantics></math>
+is the number of parameters in the fitted model.</p>
 <p>Alternatively, the <code><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC()</a></code> method also returns the AIC
 values:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    df      AIC</span></span>
-<span><span class="co">#&gt; model_train         4 3463.458</span></span>
-<span><span class="co">#&gt; model_train_sparse  1 3733.723</span></span></code></pre></div>
+<span><span class="co">#&gt; model_train         4 3463.492</span></span>
+<span><span class="co">#&gt; model_train_sparse  1 3733.729</span></span></code></pre></div>
 <p>The AIC quantifies the trade-off between over- and under-fitting,
 where smaller values are preferred. Here, the increase in goodness of
 fit justifies the additional 3 parameters of
@@ -194,19 +177,24 @@ fit justifies the additional 3 parameters of
 <code>BIC</code><a class="anchor" aria-label="anchor" href="#bic"></a>
 </h3>
 <p>Similar to the AIC, <code>"BIC"</code> yields the Bayesian
-Information Criterion <span class="citation">(<a href="#ref-Schwarz1978" role="doc-biblioref">Schwarz 1978</a>)</span>, which is defined as <span class="math display">\[-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot
-\text{npar},\]</span> where <span class="math inline">\(\text{LL}\)</span> is the <a href="#ll">model’s
-log-likelihood value</a>, <span class="math inline">\(\text{nobs}\)</span> is the number of data points
-(which can be accessed via the <code><a href="https://rdrr.io/r/stats/nobs.html" class="external-link">nobs()</a></code> method), and <span class="math inline">\(\text{npar}\)</span> is the <a href="#npar">number
-of parameters in the fitted model</a>. The interpretation is analogue to
-AIC.</p>
+Information Criterion <span class="citation">(<a href="#ref-Schwarz1978">Schwarz 1978</a>)</span>, which is defined as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>2</mn><mo>⋅</mo><mtext mathvariant="normal">LL</mtext><mo>+</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">nobs</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mtext mathvariant="normal">npar</mtext><mo>,</mo></mrow><annotation encoding="application/x-tex">-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">LL</mtext><annotation encoding="application/x-tex">\text{LL}</annotation></semantics></math>
+is the <a href="#ll">model’s log-likelihood value</a>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">nobs</mtext><annotation encoding="application/x-tex">\text{nobs}</annotation></semantics></math>
+is the number of data points (which can be accessed via the
+<code><a href="https://rdrr.io/r/stats/nobs.html" class="external-link">nobs()</a></code> method), and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">npar</mtext><annotation encoding="application/x-tex">\text{npar}</annotation></semantics></math>
+is the <a href="#npar">number of parameters in the fitted model</a>. The
+interpretation is analogue to AIC.</p>
 <p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> also provided a method for the
 <code>BIC</code> value:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">BIC</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    df      BIC</span></span>
-<span><span class="co">#&gt; model_train         4 3487.387</span></span>
-<span><span class="co">#&gt; model_train_sparse  1 3739.706</span></span></code></pre></div>
+<span><span class="co">#&gt; model_train         4 3487.422</span></span>
+<span><span class="co">#&gt; model_train_sparse  1 3739.712</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="waic-with-sewaic-and-pwaic">
@@ -214,31 +202,46 @@ AIC.</p>
 <code>pWAIC</code>)<a class="anchor" aria-label="anchor" href="#waic-with-sewaic-and-pwaic"></a>
 </h3>
 <p>WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
-Criterion <span class="citation">(<a href="#ref-Watanabe2010" role="doc-biblioref">Watanabe and Opper 2010</a>)</span>. As for AIC and
-BIC, the smaller the WAIC value the better the model. Including
-<code>"WAIC"</code> in <code>criteria</code> yields the WAIC value, its
-standard error <code>se(WAIC)</code>, and the effective number of
-parameters <code>pWAIC</code>, see below.</p>
+Criterion <span class="citation">(<a href="#ref-Watanabe2010">Watanabe
+and Opper 2010</a>)</span>. As for AIC and BIC, the smaller the WAIC
+value the better the model. Including <code>"WAIC"</code> in
+<code>criteria</code> yields the WAIC value, its standard error
+<code>se(WAIC)</code>, and the effective number of parameters
+<code>pWAIC</code>, see below.</p>
 <p>The WAIC is defined as</p>
-<p><span class="math display">\[-2  \cdot \text{lppd} + 2\cdot
-p_\text{WAIC},\]</span></p>
-<p>where <span class="math inline">\(\text{lppd}\)</span> stands for log
-pointwise predictive density and <span class="math inline">\(p_\text{WAIC}\)</span> is a penalty term
-proportional to the variance in the posterior distribution that is
-sometimes called effective number of parameters, see <span class="citation">McElreath (<a href="#ref-McElreath2020" role="doc-biblioref">2020</a>)</span> p. 220 for a reference.</p>
-<p>The <span class="math inline">\(\text{lppd}\)</span> is approximated
-as follows. Let <span class="math display">\[p_{si} = \Pr(y_i\mid
-\theta_s)\]</span> be the probability of observation <span class="math inline">\(y_i\)</span> (here the single choices) given the
-<span class="math inline">\(s\)</span>-th set <span class="math inline">\(\theta_s\)</span> of parameter samples from the
-posterior. Then</p>
-<p><span class="math display">\[\text{lppd} = \sum_i \log \left( S^{-1}
-\sum_s p_{si} \right).\]</span> The penalty term is computed as the sum
-over the variances in log-probability for each observation: <span class="math display">\[p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log
-(p_{si}) . \]</span> The <span class="math inline">\(\text{WAIC}\)</span> has a standard error of <span class="math display">\[\sqrt{n \cdot \mathbb{V}_i \left[-2
-\left(\text{lppd} - \mathbb{V}_{\theta}  \log
-(p_{si})  \right)\right]},\]</span> where <span class="math inline">\(n\)</span> is the number of choices.</p>
-<p>Before computing the WAIC of an object, the probabilities <span class="math inline">\(p_{si}\)</span> must be computed via the
-<code><a href="../reference/compute_p_si.html">compute_p_si()</a></code> function: <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This computation has been outsourced because it is very
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>2</mn><mo>⋅</mo><mtext mathvariant="normal">lppd</mtext><mo>+</mo><mn>2</mn><mo>⋅</mo><msub><mi>p</mi><mtext mathvariant="normal">WAIC</mtext></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">lppd</mtext><annotation encoding="application/x-tex">\text{lppd}</annotation></semantics></math>
+stands for log pointwise predictive density and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">WAIC</mtext></msub><annotation encoding="application/x-tex">p_\text{WAIC}</annotation></semantics></math>
+is a penalty term proportional to the variance in the posterior
+distribution that is sometimes called effective number of parameters,
+see <span class="citation">McElreath (<a href="#ref-McElreath2020">2020</a>)</span> p. 220 for a reference.</p>
+<p>The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">lppd</mtext><annotation encoding="application/x-tex">\text{lppd}</annotation></semantics></math>
+is approximated as follows. Let
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>θ</mi><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{si} = \Pr(y_i\mid \theta_s)</annotation></semantics></math>
+be the probability of observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>
+(here the single choices) given the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>-th
+set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\theta_s</annotation></semantics></math>
+of parameter samples from the posterior. Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">lppd</mtext><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>S</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><munder><mo>∑</mo><mi>s</mi></munder><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\text{lppd} = \sum_i \log \left( S^{-1} \sum_s p_{si} \right).</annotation></semantics></math>
+The penalty term is computed as the sum over the variances in
+log-probability for each observation:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">WAIC</mtext></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>𝕍</mi><mi>θ</mi></msub><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">p_\text{WAIC} = \sum_i \mathbb{V}_{\theta}  \log (p_{si}) . </annotation></semantics></math>
+The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">WAIC</mtext><annotation encoding="application/x-tex">\text{WAIC}</annotation></semantics></math>
+has a standard error of
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mi>n</mi><mo>⋅</mo><msub><mi>𝕍</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="normal">lppd</mtext><mo>−</mo><msub><mi>𝕍</mi><mi>θ</mi></msub><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></msqrt><mo>,</mo></mrow><annotation encoding="application/x-tex">\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+is the number of choices.</p>
+<p>Before computing the WAIC of an object, the probabilities
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><annotation encoding="application/x-tex">p_{si}</annotation></semantics></math>
+must be computed via the <code><a href="../reference/compute_p_si.html">compute_p_si()</a></code> function: <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This computation has been outsourced because it is very
 time consuming. For example, the computation for
 &lt;code&gt;model_train&lt;/code&gt; took about 5 minutes. To decrease the
 computation time, the function offers parallelization via specifying the
@@ -255,28 +258,36 @@ number &lt;code&gt;ncores&lt;/code&gt; of parallel CPU cores.&lt;/p&gt;"><sup>4<
 <code>MMLL</code><a class="anchor" aria-label="anchor" href="#mmll"></a>
 </h3>
 <p><code>"MMLL"</code> in <code>criteria</code> stands for marginal
-model log-likelihood. The model’s marginal likelihood <span class="math inline">\(\Pr(y\mid M)\)</span> for a model <span class="math inline">\(M\)</span> and data <span class="math inline">\(y\)</span> is required for the computation of
-Bayes factors, see below. In general, the term has no closed form and
-must be approximated numerically.</p>
+model log-likelihood. The model’s marginal likelihood
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Pr(y\mid M)</annotation></semantics></math>
+for a model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+and data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+is required for the computation of Bayes factors, see below. In general,
+the term has no closed form and must be approximated numerically.</p>
 <p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> uses the posterior Gibbs samples derived from
 the <code>mcmc()</code> function to approximate the model’s marginal
-likelihood via the posterior harmonic mean estimator <span class="citation">(<a href="#ref-Newton1994" role="doc-biblioref">Newton
-and Raftery 1994</a>)</span>: Let <span class="math inline">\(S\)</span>
-denote the number of available posterior samples <span class="math inline">\(\theta_1,\dots,\theta_S\)</span>. Then, <span class="math display">\[\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior}
-1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s
-1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid
-M).\]</span></p>
-<p>By the law of large numbers, <span class="math inline">\(\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)\)</span>
-almost surely as <span class="math inline">\(S \to \infty\)</span>.</p>
+likelihood via the posterior harmonic mean estimator <span class="citation">(<a href="#ref-Newton1994">Newton and Raftery
+1994</a>)</span>: Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+denote the number of available posterior samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">\theta_1,\dots,\theta_S</annotation></semantics></math>.
+Then,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝔼</mi><mtext mathvariant="normal">posterior</mtext></msub><mn>1</mn><mi>/</mi><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>θ</mi><mo>,</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>≈</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><mi>S</mi></mfrac><munder><mo>∑</mo><mi>s</mi></munder><mn>1</mn><mi>/</mi><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><msub><mi>θ</mi><mi>s</mi></msub><mo>,</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><mover><mo>Pr</mo><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).</annotation></semantics></math></p>
+<p>By the law of large numbers,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mo>Pr</mo><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)</annotation></semantics></math>
+almost surely as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">S \to \infty</annotation></semantics></math>.</p>
 <p>As for the <a href="#waic">WAIC</a>, computing the MMLL relies on the
-probabilities <span class="math inline">\(p_{si} = \Pr(y_i\mid
-\theta_s)\)</span>, which must first be computed via the
-<code><a href="../reference/compute_p_si.html">compute_p_si()</a></code> function. Afterwards, the <code><a href="../reference/mml.html">mml()</a></code>
-function can be called with an <code>RprobitB_fit</code> object as
-input. The function returns the <code>RprobitB_fit</code> object, where
-the marginal likelihood value is saved as the entry <code>"mml"</code>
-and the marginal log-likelihood value as the attribute
-<code>"mmll"</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Note that the marginal likelihood value is very small.
+probabilities
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>θ</mi><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{si} = \Pr(y_i\mid \theta_s)</annotation></semantics></math>,
+which must first be computed via the <code><a href="../reference/compute_p_si.html">compute_p_si()</a></code>
+function. Afterwards, the <code><a href="../reference/mml.html">mml()</a></code> function can be called with
+an <code>RprobitB_fit</code> object as input. The function returns the
+<code>RprobitB_fit</code> object, where the marginal likelihood value is
+saved as the entry <code>"mml"</code> and the marginal log-likelihood
+value as the attribute <code>"mmll"</code>:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Note that the marginal likelihood value is very small.
 The given representation is required so that the value is not rounded to
 0 by the computer.&lt;/p&gt;"><sup>5</sup></a></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -286,15 +297,18 @@ The given representation is required so that the value is not rounded to
 <p>There are two options for improving the approximation: As for the
 WAIC, you can use more posterior samples. Alternatively, you can combine
 the posterior harmonic mean estimate with the prior arithmetic mean
-estimator <span class="citation">(<a href="#ref-Hammersley1964" role="doc-biblioref">Hammersley and Handscomb 1964</a>)</span>: For this
-approach, <span class="math inline">\(S\)</span> samples <span class="math inline">\(\theta_1,\dots,\theta_S\)</span> are drawn from
-the model’s prior distribution. Then,</p>
-<p><span class="math display">\[\Pr(y\mid M) = \mathbb{E}_\text{prior}
-\Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) =
-\tilde{\Pr}(y\mid M).\]</span></p>
-<p>Again, it hols by the law of large numbers, that <span class="math inline">\(\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)\)</span>
-almost surely as <span class="math inline">\(S \to \infty\)</span>. The
-final approximation of the model’s marginal likelihood than is a
+estimator <span class="citation">(<a href="#ref-Hammersley1964">Hammersley and Handscomb 1964</a>)</span>:
+For this approach,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">\theta_1,\dots,\theta_S</annotation></semantics></math>
+are drawn from the model’s prior distribution. Then,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>𝔼</mi><mtext mathvariant="normal">prior</mtext></msub><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>θ</mi><mo>,</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mfrac><mn>1</mn><mi>S</mi></mfrac><munder><mo>∑</mo><mi>s</mi></munder><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><msub><mi>θ</mi><mi>s</mi></msub><mo>,</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mover><mo>Pr</mo><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).</annotation></semantics></math></p>
+<p>Again, it hols by the law of large numbers, that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mo>Pr</mo><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>∣</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)</annotation></semantics></math>
+almost surely as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">S \to \infty</annotation></semantics></math>.
+The final approximation of the model’s marginal likelihood than is a
 weighted sum of the posterior harmonic mean estimate and the prior
 arithmetic mean estimate, where the weights are determined by the sample
 sizes.</p>
@@ -306,36 +320,45 @@ via specifying the number &lt;code&gt;ncores&lt;/code&gt; of parallel CPU cores.
 <code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mml.html">mml</a></span><span class="op">(</span><span class="va">model_train</span>, S <span class="op">=</span> <span class="fl">1000</span>, recompute <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the prior arithmetic mean estimator works well if the prior
 and posterior distribution have a similar shape and strong overlap, as
-<span class="citation">Gronau et al. (<a href="#ref-Gronau2017" role="doc-biblioref">2017</a>)</span> points out. Otherwise, most of the
-sampled prior values result in a likelihood value close to zero, thereby
-contributing only marginally to the approximation. In this case, a very
-large number <code>S</code> of prior samples is required.</p>
+<span class="citation">Gronau et al. (<a href="#ref-Gronau2017">2017</a>)</span> points out. Otherwise, most of
+the sampled prior values result in a likelihood value close to zero,
+thereby contributing only marginally to the approximation. In this case,
+a very large number <code>S</code> of prior samples is required.</p>
 </div>
 <div class="section level3">
 <h3 id="bf">
 <code>BF</code><a class="anchor" aria-label="anchor" href="#bf"></a>
 </h3>
 <p>The Bayes factor is an index of relative posterior model plausibility
-of one model over another <span class="citation">(<a href="#ref-Marin2014" role="doc-biblioref">Marin and Robert
-2014</a>)</span>. Given data <span class="math inline">\(\texttt{y}\)</span> and two models <span class="math inline">\(\texttt{mod0}\)</span> and <span class="math inline">\(\texttt{mod1}\)</span>, it is defined as</p>
-<p><span class="math display">\[
-BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid
-\texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y}
-\mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} /
-\frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
-\]</span></p>
-<p>The ratio <span class="math inline">\(\Pr(\texttt{mod0}) /
-\Pr(\texttt{mod1})\)</span> expresses the factor by which <span class="math inline">\(\texttt{mod0}\)</span> a priori is assumed to be
-the correct model. Per default, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> sets <span class="math inline">\(\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) =
-0.5\)</span>. The front part <span class="math inline">\(\Pr(\texttt{y}
-\mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})\)</span> is
-the ratio of the <a href="#mmll">marginal model likelihoods</a>. A value
-of <span class="math inline">\(BF(\texttt{mod0},\texttt{mod1}) &gt;
-1\)</span> means that the model <span class="math inline">\(\texttt{mod0}\)</span> is more strongly supported
-by the data under consideration than <span class="math inline">\(\texttt{mod1}\)</span>.</p>
+of one model over another <span class="citation">(<a href="#ref-Marin2014">Marin and Robert 2014</a>)</span>. Given data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚢</mtext><annotation encoding="application/x-tex">\texttt{y}</annotation></semantics></math>
+and two models
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><annotation encoding="application/x-tex">\texttt{mod0}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><annotation encoding="application/x-tex">\texttt{mod1}</annotation></semantics></math>,
+it is defined as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo>,</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚢</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚢</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>=</mo><mfrac><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚢</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚢</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>/</mi><mfrac><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+BF(\texttt{mod0},\texttt{mod1}) = \frac{\Pr(\texttt{mod0} \mid \texttt{y})}{\Pr(\texttt{mod1} \mid \texttt{y})} = \frac{\Pr(\texttt{y} \mid \texttt{mod0} )}{\Pr(\texttt{y} \mid \texttt{mod1})} / \frac{\Pr(\texttt{mod0})}{\Pr(\texttt{mod1})}.
+</annotation></semantics></math></p>
+<p>The ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})</annotation></semantics></math>
+expresses the factor by which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><annotation encoding="application/x-tex">\texttt{mod0}</annotation></semantics></math>
+a priori is assumed to be the correct model. Per default,
+<a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> sets
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5</annotation></semantics></math>.
+The front part
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚢</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚢</mtext><mo>∣</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})</annotation></semantics></math>
+is the ratio of the <a href="#mmll">marginal model likelihoods</a>. A
+value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><mo>,</mo><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">BF(\texttt{mod0},\texttt{mod1}) &gt; 1</annotation></semantics></math>
+means that the model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚖𝚘𝚍𝟶</mtext><annotation encoding="application/x-tex">\texttt{mod0}</annotation></semantics></math>
+is more strongly supported by the data under consideration than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="monospace">𝚖𝚘𝚍𝟷</mtext><annotation encoding="application/x-tex">\texttt{mod1}</annotation></semantics></math>.</p>
 <p>Adding <code>"BF"</code> to the <code>criteria</code> argument of
 <code>model_selection</code> yields the Bayes factors. We find a
-decisive evidence <span class="citation">(<a href="#ref-Jeffreys1998" role="doc-biblioref">Jeffreys 1998</a>)</span> in favor of
+decisive evidence <span class="citation">(<a href="#ref-Jeffreys1998">Jeffreys 1998</a>)</span> in favor of
 <code>model_train</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_selection.html">model_selection</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span>, criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BF"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -353,13 +376,13 @@ about 6% of the choices more than <code>model_train_sparse</code>:<a class="foot
 performance comparison in terms of sensitivity and specificity.&lt;/p&gt;"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pred_acc.html">pred_acc</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_sparse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.6940935 0.6340048</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.6951178 0.6340048</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Akaike1974" class="csl-entry">
 Akaike, H. 1974. <span>“<span class="nocase">A New Look at the
 Statistical Model Identification</span>.”</span> <em>IEEE Transactions
@@ -408,28 +431,26 @@ Learning Research</em> 11 (12).
 </div>
 </div>
 
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
