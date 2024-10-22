@@ -30,7 +30,8 @@ npar.RprobitB_fit <- function(object, ...) {
     models <- c(list(object), models)
   }
   npar <- sapply(models, function(mod) {
-    mod$data$P_f + (mod$data$P_r + mod$data$P_r^2) * mod$latent_classes$C +
+    mod$data$P_f +
+      (mod$data$P_r + (mod$data$P_r * (mod$data$P_r + 1) / 2)) * mod$latent_classes$C +
       mod$data$J * (mod$data$J - 1) / 2 - 1
   })
   return(npar)
