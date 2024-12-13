@@ -59,8 +59,9 @@
 
 fit_model <- function(
     data, scale = "Sigma_1,1 := 1", R = 1000, B = R / 2, Q = 1,
-    print_progress = getOption("RprobitB_progress"), prior = NULL,
-    latent_classes = NULL, seed = NULL, fixed_parameter = list()) {
+    print_progress = getOption("RprobitB_progress", default = TRUE),
+    prior = NULL, latent_classes = NULL, seed = NULL, fixed_parameter = list()
+  ) {
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
     stop(
@@ -162,10 +163,6 @@ fit_model <- function(
     ordered = data[["ordered"]], ranked = data[["ranked"]]
   )
   timer_end <- Sys.time()
-  if (data$ordered) {
-    gibbs_samples$alpha <- gibbs_samples$alpha * 1.4
-    gibbs_samples$b <- gibbs_samples$b * 1.4
-  }
 
   ### filter Gibbs samples
   if (data$P_f == 0) {
@@ -183,18 +180,9 @@ fit_model <- function(
     latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
 
     ### remove zeros for unoccupied classes
-    gibbs_samples[["s"]] <- gibbs_samples[["s"]][,
-                                                 1:latent_classes[["C"]],
-                                                 drop = FALSE
-    ]
-    gibbs_samples[["b"]] <- gibbs_samples[["b"]][,
-                                                 1:(data[["P_r"]] * latent_classes[["C"]]),
-                                                 drop = FALSE
-    ]
-    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][,
-                                                         1:(data[["P_r"]]^2 * latent_classes[["C"]]),
-                                                         drop = FALSE
-    ]
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][,1:latent_classes[["C"]],drop = FALSE]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][,1:(data[["P_r"]] * latent_classes[["C"]]),drop = FALSE]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][,1:(data[["P_r"]]^2 * latent_classes[["C"]]),drop = FALSE]
   }
 
   ### save class sequence

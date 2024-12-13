@@ -43,10 +43,10 @@
 #'         that the resulting utility vector is negative.
 #' }
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 sufficient_statistics <- function(data, normalization) {
+
   ### check input
   if (!inherits(data, "RprobitB_data")) {
     stop("'data' must be of class 'RprobitB_data'.", call. = FALSE)
@@ -127,7 +127,7 @@ sufficient_statistics <- function(data, normalization) {
     if (!identical(W, NA)) {
       W <- lapply(W, function(x) matrix(as.numeric(x), nrow = 1))
     }
-    if (!identical(W, NA)) {
+    if (!identical(X, NA)) {
       X <- lapply(X, function(x) matrix(as.numeric(x), nrow = 1))
     }
   }

@@ -20,7 +20,7 @@
 #'   N = 2, T = 3, J = 3, P_f = 1, P_r = 2, C = 2
 #' )
 set_initial_gibbs_values <- function(
-    N, T, J, P_f, P_r, C, ordered = FALSE, ranked = FALSE, suff_stat = NULL) {
+    N, T, J, P_f, P_r, C, ordered = FALSE, suff_stat = NULL) {
   ### check inputs
   stopifnot(is.numeric(N), N %% 1 == 0, N > 0)
   stopifnot(is.numeric(T), T %% 1 == 0, T > 0)
@@ -28,7 +28,6 @@ set_initial_gibbs_values <- function(
   stopifnot(is.numeric(P_r), P_r %% 1 == 0, P_r >= 0)
   stopifnot(is.numeric(C), C %% 1 == 0, C > 0)
   stopifnot(is.logical(ordered))
-  stopifnot(is.logical(ranked))
 
   ### define initial values
   alpha0 <- if (P_f > 0) numeric(P_f) else NA
@@ -55,13 +54,11 @@ set_initial_gibbs_values <- function(
     if (!is.null(suff_stat)) {
       if (P_f > 0) {
         W_mat <- as.matrix(do.call(rbind, suff_stat$W))
-        alpha0 <- as.numeric(solve(t(W_mat) %*% W_mat) %*% t(W_mat) %*%
-                               na.omit(as.numeric(t(suff_stat$y))))
+        alpha0 <- as.numeric(solve(t(W_mat) %*% W_mat) %*% t(W_mat) %*% na.omit(as.numeric(t(suff_stat$y))))
       }
       if (P_r > 0) {
         X_mat <- as.matrix(do.call(rbind, suff_stat$X))
-        b0 <- as.numeric(solve(t(X_mat) %*% X_mat) %*% t(X_mat) %*%
-                           na.omit(as.numeric(t(suff_stat$y))))
+        b0 <- as.numeric(solve(t(X_mat) %*% X_mat) %*% t(X_mat) %*% na.omit(as.numeric(t(suff_stat$y))))
         b0 <- matrix(rep(b0, times = C), nrow = P_r, ncol = C)
       }
     }
