@@ -12,7 +12,6 @@ set_initial_gibbs_values(
   P_r,
   C,
   ordered = FALSE,
-  ranked = FALSE,
   suff_stat = NULL
 )
 }
@@ -33,8 +32,6 @@ Per default, \code{T = 1}.}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
-
-\item{ranked}{TBA}
 
 \item{suff_stat}{Optionally the output of \code{\link{sufficient_statistics}}.}
 }

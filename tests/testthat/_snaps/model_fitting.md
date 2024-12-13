@@ -206,8 +206,8 @@
                 true    mean      sd      R^
        alpha
                                             
-           1   -0.95   -1.07    0.05    1.00
-           2   -0.55   -0.88    0.08    1.00
+           1   -0.95   -0.77    0.04    1.00
+           2   -0.55   -0.63    0.06    1.00
       
        Sigma
                                             
@@ -225,8 +225,8 @@
       print(coef(model))
     Output
                 Estimate   (sd)
-      1    age     -1.07 (0.05)
-      2 gender     -0.88 (0.08)
+      1    age     -0.77 (0.04)
+      2 gender     -0.63 (0.06)
 
 # Ranked probit model estimation works
 
