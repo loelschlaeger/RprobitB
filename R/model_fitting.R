@@ -318,9 +318,9 @@ set_initial_gibbs_values <- function(
 #'         or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
 #'         equals the initial number of latent classes.
 #'   \item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
-#'         update the latent classes. See ... for details.
+#'         update the latent classes.
 #'   \item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
-#'         classes based on a Dirichlet process. See ... for details.
+#'         classes based on a Dirichlet process.
 #'   \item \code{Cmax}: The maximum number of latent classes.
 #'   \item \code{buffer}: The number of iterations to wait before a next
 #'         weight-based update of the latent classes.
@@ -328,7 +328,7 @@ set_initial_gibbs_values <- function(
 #'         a latent class in the weight-based updating scheme.
 #'   \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 #'         a latent class in the weight-based updating scheme.
-#'   \item \code{distmin}: The (non-negative) threshold in class mean difference
+#'   \item \code{deltamin}: The (non-negative) threshold in class mean difference
 #'         for joining two latent classes in the weight-based updating scheme.
 #' }
 #'
@@ -404,14 +404,14 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
     if (is.null(latent_classes[["epsmax"]])) {
       latent_classes[["epsmax"]] <- 0.99
     }
-    if (is.null(latent_classes[["distmin"]])) {
-      latent_classes[["distmin"]] <- 0.1
+    if (is.null(latent_classes[["deltamin"]])) {
+      latent_classes[["deltamin"]] <- 0.1
     }
 
     ### remove redundant parameters
     req_names <- c("C", "weight_update", "dp_update", "Cmax")
     if (latent_classes[["weight_update"]]) {
-      req_names <- c(req_names, "buffer", "epsmin", "epsmax", "distmin")
+      req_names <- c(req_names, "buffer", "epsmin", "epsmax", "deltamin")
     }
     latent_classes[!names(latent_classes) %in% req_names] <- NULL
   }
@@ -454,8 +454,8 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
         call. = FALSE
       )
     }
-    if (!is.numeric(latent_classes$distmin) || !0 <= latent_classes$distmin) {
-      stop("'latent_classes$distmin' must be a non-negative numeric value.",
+    if (!is.numeric(latent_classes$deltamin) || !0 <= latent_classes$deltamin) {
+      stop("'latent_classes$deltamin' must be a non-negative numeric value.",
         call. = FALSE
       )
     }
@@ -491,7 +491,7 @@ print.RprobitB_latent_classes <- function(x, ...) {
       cat("Updating buffer:", x$buffer, "\n")
       cat("Minimum class weight:", x$epsmin, "\n")
       cat("Maximum class weight:", x$epsmax, "\n")
-      cat("Mimumum class distance:", x$distmin, "\n")
+      cat("Mimumum class distance:", x$deltamin, "\n")
     }
   }
   return(invisible(x))
@@ -905,7 +905,7 @@ fit_model <- function(
     set.seed(seed)
   }
   timer_start <- Sys.time()
-  gibbs_samples <- gibbs_sampling(
+  gibbs_samples <- gibbs_sampler(
     sufficient_statistics = suff_stat, prior = prior,
     latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
     init = init, R = R, B = B, print_progress = print_progress,
@@ -1529,7 +1529,7 @@ transform.RprobitB_fit <- function(`_data`, B = NULL, Q = NULL, scale = NULL,
 #' This function normalizes, burns and thins the Gibbs samples.
 #'
 #' @param gibbs_samples
-#' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples for
+#' The output of \code{\link{gibbs_sampler}}, i.e. a list of Gibbs samples for
 #' \itemize{
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),

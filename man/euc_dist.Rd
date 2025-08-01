@@ -7,15 +7,17 @@
 euc_dist(a, b)
 }
 \arguments{
-\item{a}{A numeric vector.}
-
-\item{b}{Another numeric vector of the same length as \code{a}.}
+\item{a, b}{[\code{numeric()}]\cr
+Numeric vectors of the same length.}
 }
 \value{
-The euclidean distance.
+The Euclidean distance.
 }
 \description{
-This function computes the euclidean distance between two vectors.
+This helper function computes the Euclidean distance between two vectors.
 }
-\keyword{internal}
+\examples{
+euc_dist(c(0, 1), c(1, 0))
+
+}
 \keyword{utils}

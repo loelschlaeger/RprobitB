@@ -2,98 +2,95 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' Euclidean distance
+#'
 #' @description
-#' This function computes the euclidean distance between two vectors.
-#' @param a
-#' A numeric vector.
-#' @param b
-#' Another numeric vector of the same length as \code{a}.
+#' This helper function computes the Euclidean distance between two vectors.
+#'
+#' @param a,b \[`numeric()`\]\cr
+#' Numeric vectors of the same length.
+#'
 #' @return
-#' The euclidean distance.
+#' The Euclidean distance.
+#'
 #' @export
+#'
 #' @keywords
-#' internal utils
+#' utils
+#'
+#' @examples
+#' euc_dist(c(0, 1), c(1, 0))
 #'
 euc_dist <- function(a, b) {
     .Call(`_RprobitB_euc_dist`, a, b)
 }
 
-#' Weight-based update of latent classes
+#' Weight-based class updates
+#'
 #' @description
-#' This function updates the latent classes based on their class weights.
-#' @param Cmax
-#' The maximum number of classes.
-#' @param epsmin
+#' This helper function updates the classes based on weights and locations.
+#'
+#' @param Cmax \[`integer(1)`\]\cr
+#' The maximum number of classes, used to allocate space.
+#'
+#' @param epsmin \[`numeric(1)`\]\cr
 #' The threshold weight (between 0 and 1) for removing a class.
-#' @param epsmax
+#'
+#' @param epsmax \[`numeric(1)`\]\cr
 #' The threshold weight (between 0 and 1) for splitting a class.
-#' @param distmin
-#' The (non-negative) threshold difference in class means for joining two
-#' classes.
+#'
+#' @param deltamin \[`numeric(1)`\]\cr
+#' The threshold difference in class means for joining two classes.
+#'
 #' @inheritParams RprobitB_parameter
+#'
 #' @details
-#' The updating scheme bases on the following rules:
-#' * We remove class \eqn{c}, if \eqn{s_c<\epsilon_{min}}, i.e. if the
-#'   class weight \eqn{s_c} drops below some threshold
-#'   \eqn{\epsilon_{min}}.
-#'   This case indicates that class \eqn{c} has a negligible impact on the
-#'   mixing distribution.
-#' * We split class \eqn{c} into two classes \eqn{c_1} and \eqn{c_2}, if
-#'   \eqn{s_c>\epsilon_{max}}.
-#'   This case indicates that class \eqn{c} has a high influence on the mixing
-#'   distribution whose approximation can potentially be improved by
-#'   increasing the resolution in directions of high variance.
-#'   Therefore, the class means \eqn{b_{c_1}} and \eqn{b_{c_2}} of the new
-#'   classes \eqn{c_1} and \eqn{c_2} are shifted in opposite directions from
-#'   the class mean \eqn{b_c} of the old class \eqn{c} in the direction of the
-#'   highest variance.
-#' * We join two classes \eqn{c_1} and \eqn{c_2} to one class \eqn{c}, if
-#'   \eqn{||b_{c_1} - b_{c_2}||<\epsilon_{distmin}}, i.e. if
-#'   the euclidean distance between the class means \eqn{b_{c_1}} and
-#'   \eqn{b_{c_2}} drops below some threshold \eqn{\epsilon_{distmin}}.
-#'   This case indicates location redundancy which should be repealed. The
-#'   parameters of \eqn{c} are assigned by adding the values of \eqn{s} from
-#'   \eqn{c_1} and \eqn{c_2} and averaging the values for \eqn{b} and
-#'   \eqn{\Omega}.
-#' The rules are executed in the above order, but only one rule per iteration
-#' and only if \code{Cmax} is not exceeded.
+#' The following updating rules apply:
+#'
+#' * Class \eqn{c} is removed if \eqn{s_c<\epsilon_{min}}.
+#' * Class \eqn{c} is split into two classes, if \eqn{s_c>\epsilon_{max}}.
+#' * Two classes \eqn{c_1} and \eqn{c_2} are merged to one class, if
+#'   \eqn{||b_{c_1} - b_{c_2}||<\delta_{min}}.
+#'
 #' @examples
 #' ### parameter settings
 #' s <- c(0.8,0.2)
 #' b <- matrix(c(1,1,1,-1), ncol=2)
 #' Omega <- matrix(c(0.5,0.3,0.3,0.5,1,-0.1,-0.1,0.8), ncol=2)
 #'
-#' ### Remove class 2
-#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.3, epsmax = 0.9, distmin = 1,
-#'                              s = s, b = b, Omega = Omega)
+#' ### remove class 2
+#' RprobitB:::update_classes_wb(
+#'   epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
+#' )
 #'
-#' ### Split class 1
-#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.7, distmin = 1,
-#'                              s = s, b = b, Omega = Omega)
+#' ### split class 1
+#' RprobitB:::update_classes_wb(
+#'   epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
+#' )
 #'
-#' ### Join classes
-#' RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.9, distmin = 3,
-#'                              s = s, b = b, Omega = Omega)
+#' ### join classes 1 and 2
+#' RprobitB:::update_classes_wb(
+#'   epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
+#' )
+#'
 #' @return
 #' A list of updated values for \code{s}, \code{b}, and \code{Omega}.
-#' @keywords
-#' internal
 #'
-update_classes_wb <- function(Cmax, epsmin, epsmax, distmin, s, b, Omega) {
-    .Call(`_RprobitB_update_classes_wb`, Cmax, epsmin, epsmax, distmin, s, b, Omega)
+update_classes_wb <- function(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L) {
+    .Call(`_RprobitB_update_classes_wb`, epsmin, epsmax, deltamin, s, b, Omega, Cmax)
 }
 
-#' Dirichlet process-based update of latent classes
+#' Dirichlet process-based class updates
+#'
 #' @description
-#' This function updates the latent classes based on a Dirichlet process.
-#' @details
-#' To be added.
-#' @param Cmax
-#' The maximum number of classes.
-#' @inheritParams RprobitB_parameter
-#' @inheritParams check_prior
+#' This helper function updates the classes based on a Dirichlet process.
+#'
 #' @param s_desc
 #' If \code{TRUE}, sort the classes in descending class weight.
+#'
+#' @inheritParams RprobitB_parameter
+#' @inheritParams check_prior
+#' @inheritParams update_classes_wb
+#'
 #' @examples
 #' set.seed(1)
 #' z <- c(rep(1,20),rep(2,30))
@@ -109,11 +106,9 @@ update_classes_wb <- function(Cmax, epsmin, epsmax, distmin, s, b, Omega) {
 #'   Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
 #'   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
 #' )
+#'
 #' @return
-#' A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
-#' and \code{C}.
-#' @keywords
-#' internal
+#' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 #'
 update_classes_dp <- function(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc = TRUE) {
     .Call(`_RprobitB_update_classes_dp`, Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc)
@@ -665,8 +660,8 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' @keywords
 #' internal
 #'
-gibbs_sampling <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked) {
-    .Call(`_RprobitB_gibbs_sampling`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
+gibbs_sampler <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked) {
+    .Call(`_RprobitB_gibbs_sampler`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
 }
 
 #' Draw from one-sided truncated normal

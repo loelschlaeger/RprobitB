@@ -103,15 +103,15 @@ The following weight-based updating scheme is analogue to @Bauer2019 and execute
 
 - We split class $c$ into two classes $c_1$ and $c_2$, if $s_c>\varepsilon_\text{max}$. This case indicates that class $c$ has a high influence on the mixing distribution whose approximation can potentially be improved by increasing the resolution in directions of high variance. Therefore, the class means $b_{c_1}$ and $b_{c_2}$ of the new classes $c_1$ and $c_2$ are shifted in opposite directions from the class mean $b_c$ of the old class $c$ in the direction of the highest variance.
 
-- We join two classes $c_1$ and $c_2$ to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\varepsilon_{\text{distmin}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$  drops below some threshold $\varepsilon_{\text{distmin}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
+- We join two classes $c_1$ and $c_2$ to one class $c$, if $\lVert b_{c_1} - b_{c_2} \rVert<\delta_{\text{min}}$, i.e. if the euclidean distance between the class means $b_{c_1}$ and $b_{c_2}$ drops below some threshold $\delta_{\text{min}}$. This case indicates location redundancy which should be repealed. The parameters of $c$ are assigned by adding the values of $s$ from $c_1$ and $c_2$ and averaging the values for $b$ and $\Omega$.
 
-These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\varepsilon_{\text{distmin}}$. The adequate value for $\varepsilon_{\text{distmin}}$ depends on the scale of the parameters. Per default, `{RprobitB}` sets 
+These rules contain choices on the values for $\varepsilon_{\text{min}}$, $\varepsilon_{\text{max}}$ and $\delta_{\text{min}}$. The adequate value for $\delta_{\text{min}}$ depends on the scale of the parameters. Per default, `{RprobitB}` sets 
 
 - `epsmin = 0.01`,
 
 - `epsmax = 0.99`, and
 
-- `distmin = 0.1`.
+- `deltamin = 0.1`.
 
 These values can be adapted through the `latent_class` list.
 

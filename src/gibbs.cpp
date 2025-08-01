@@ -602,7 +602,7 @@ List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' internal
 //'
 // [[Rcpp::export]]
-List gibbs_sampling (
+List gibbs_sampler (
     List sufficient_statistics, List prior, List latent_classes,
     Rcpp::List fixed_parameter, List init, int R, int B, bool print_progress,
     bool ordered, bool ranked
@@ -640,7 +640,7 @@ List gibbs_sampling (
   int buffer = 50;
   double epsmin = 0.01;
   double epsmax = 0.99;
-  double distmin = 0.1;
+  double deltamin = 0.1;
   bool weight_update = as<bool>(latent_classes["weight_update"]);
   bool dp_update = as<bool>(latent_classes["dp_update"]);
   if(weight_update==false && dp_update==false){
@@ -654,7 +654,7 @@ List gibbs_sampling (
     buffer = as<int>(latent_classes["buffer"]);
     epsmin = as<double>(latent_classes["epsmin"]);
     epsmax = as<double>(latent_classes["epsmax"]);
-    distmin = as<double>(latent_classes["distmin"]);
+    deltamin = as<double>(latent_classes["deltamin"]);
   }
 
   // extract 'prior' parameters
@@ -884,7 +884,7 @@ List gibbs_sampling (
 
       // weight-based update of classes
       if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
-        List class_update = update_classes_wb(Cmax,epsmin,epsmax,distmin,s,b,Omega);
+        List class_update = update_classes_wb(epsmin,epsmax,deltamin,s,b,Omega,Cmax);
         s = as<vec>(class_update["s"]);
         C = s.size();
         b = as<mat>(class_update["b"]);

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_classes_dp}
 \alias{update_classes_dp}
-\title{Dirichlet process-based update of latent classes}
+\title{Dirichlet process-based class updates}
 \usage{
 update_classes_dp(
   Cmax,
@@ -19,7 +19,8 @@ update_classes_dp(
 )
 }
 \arguments{
-\item{Cmax}{The maximum number of classes.}
+\item{Cmax}{[\code{integer(1)}]\cr
+The maximum number of classes, used to allocate space.}
 
 \item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
 \code{P_r} x \code{N}.
@@ -58,14 +59,10 @@ Per default, \code{Theta = diag(P_r)}.}
 \item{s_desc}{If \code{TRUE}, sort the classes in descending class weight.}
 }
 \value{
-A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
-and \code{C}.
+A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 }
 \description{
-This function updates the latent classes based on a Dirichlet process.
-}
-\details{
-To be added.
+This helper function updates the classes based on a Dirichlet process.
 }
 \examples{
 set.seed(1)
@@ -82,5 +79,5 @@ RprobitB:::update_classes_dp(
   Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
   delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
 )
+
 }
-\keyword{internal}

@@ -127,7 +127,7 @@
        $ buffer       : num 100
        $ epsmin       : num 0.01
        $ epsmax       : num 0.99
-       $ distmin      : num 0.1
+       $ deltamin     : num 0.1
        $ class_update : logi TRUE
        - attr(*, "class")= chr "RprobitB_latent_classes"
 

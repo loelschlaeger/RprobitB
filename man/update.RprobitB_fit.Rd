@@ -106,9 +106,9 @@ which is set to 1 per default. If either \code{weight_update = TRUE}
 or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
 equals the initial number of latent classes.
 \item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
-update the latent classes. See ... for details.
+update the latent classes.
 \item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
-classes based on a Dirichlet process. See ... for details.
+classes based on a Dirichlet process.
 \item \code{Cmax}: The maximum number of latent classes.
 \item \code{buffer}: The number of iterations to wait before a next
 weight-based update of the latent classes.
@@ -116,7 +116,7 @@ weight-based update of the latent classes.
 a latent class in the weight-based updating scheme.
 \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
 a latent class in the weight-based updating scheme.
-\item \code{distmin}: The (non-negative) threshold in class mean difference
+\item \code{deltamin}: The (non-negative) threshold in class mean difference
 for joining two latent classes in the weight-based updating scheme.
 }}
 

@@ -37,7 +37,7 @@ double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec, arma:
 
 List update_d (arma::vec d, int y, double mu, double ll, arma::vec zeta, arma::mat Z, arma::vec Tvec, arma::vec csTvec);
 
-List gibbs_sampling (List sufficient_statistics, List prior, List latent_classes,
+List gibbs_sampler (List sufficient_statistics, List prior, List latent_classes,
                      List init, int R, int B, bool print_progress);
 
 #endif
