@@ -4,6 +4,7 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
+#include <oeli.h>
 #include "distributions.h"
 #include "truncated_normal.h"
 #include "class_update.h"
@@ -42,9 +43,9 @@ using namespace Rcpp;
 //' internal posterior
 //'
 // [[Rcpp::export]]
+
 arma::vec update_s (int delta, arma::vec m) {
-  int C = m.size();
-  return(rdirichlet(delta*ones(C)+m));
+  return oeli::rdirichlet(delta * ones(m.size()) + m);
 }
 
 //' Update class allocation vector

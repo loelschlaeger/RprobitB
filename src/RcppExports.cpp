@@ -11,18 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// euc_dist
-double euc_dist(arma::vec a, arma::vec b);
-RcppExport SEXP _RprobitB_euc_dist(SEXP aSEXP, SEXP bSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(euc_dist(a, b));
-    return rcpp_result_gen;
-END_RCPP
-}
 // update_classes_wb
 Rcpp::List update_classes_wb(double epsmin, double epsmax, double deltamin, arma::vec s, arma::mat b, arma::mat Omega, int Cmax);
 RcppExport SEXP _RprobitB_update_classes_wb(SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP CmaxSEXP) {
@@ -84,17 +72,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rdirichlet
-arma::vec rdirichlet(arma::vec delta);
-RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -328,12 +305,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
     {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
     {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
     {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
-    {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
     {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},

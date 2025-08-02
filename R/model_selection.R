@@ -752,7 +752,9 @@ draw_from_prior <- function(prior, C = 1) {
   if (identical(prior$delta, NA)) {
     s <- NULL
   } else {
-    s <- sort(rdirichlet(rep(prior$delta, C)), decreasing = TRUE)
+    s <- rep(prior$delta, C) |>
+      oeli::rdirichlet(n = 1) |>
+      sort(decreasing = TRUE)
   }
 
   ### b_c ~ MVN(xi,D) for all c

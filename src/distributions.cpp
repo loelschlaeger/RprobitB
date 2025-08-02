@@ -74,35 +74,6 @@ arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma){
   return(L * eps + mu);
 }
 
-//' Draw from Dirichlet distribution
-//' @description
-//' Function to draw from a Dirichlet distribution.
-//' @param delta
-//' A vector, the concentration parameter.
-//' @return
-//' A vector, the sample from the Dirichlet distribution of the same length as \code{delta}.
-//' @export
-//' @examples
-//' rdirichlet(delta = 1:3)
-//' @keywords
-//' internal distribution
-//'
-// [[Rcpp::export]]
-arma::vec rdirichlet(arma::vec delta) {
-  int n = delta.n_elem;
-  arma::vec draw = zeros(n);
-  double sum_term = 0;
-  for (int j = 0; j < n; ++j) {
-    double cur = R::rgamma(delta[j],1.0);
-    draw(j) = cur;
-    sum_term += cur;
-  }
-  for (int j = 0; j < n; ++j) {
-    draw(j) = draw(j)/sum_term;
-  }
-  return(draw);
-}
-
 //' Draw from Wishart distribution
 //' @description
 //' This function draws from a Wishart and inverted Wishart distribution.

@@ -4,38 +4,10 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
+#include <oeli.h>
 #include "gibbs.h"
 using namespace arma;
 using namespace Rcpp;
-
-//' Euclidean distance
-//'
-//' @description
-//' This helper function computes the Euclidean distance between two vectors.
-//'
-//' @param a,b \[`numeric()`\]\cr
-//' Numeric vectors of the same length.
-//'
-//' @return
-//' The Euclidean distance.
-//'
-//' @export
-//'
-//' @keywords
-//' utils
-//'
-//' @examples
-//' euc_dist(c(0, 1), c(1, 0))
-//'
-// [[Rcpp::export]]
-double euc_dist (arma::vec a, arma::vec b){
-  int N = a.size();
-  double euc_dist = 0;
-  for(int n=0; n<N; n++){
-    euc_dist += (a(n) - b(n)) * (a(n) - b(n));
-  }
-  return sqrt(euc_dist);
-}
 
 //' Weight-based class updates
 //'
@@ -113,7 +85,7 @@ Rcpp::List update_classes_wb (
   // split class
   if(flag == false && C < Cmax){
     int id_max = index_max(stack(0,span::all));
-    if(stack(0,id_max)>epsmax){
+    if(stack(0,id_max) > epsmax){
       mat max_class_Omega = reshape(stack(span(P+1,P+1+P*P-1),id_max),P,P);
       vec eigval;
       mat eigvec;
@@ -130,20 +102,26 @@ Rcpp::List update_classes_wb (
   }
 
   //join classes
-  if(flag==false && C > 1){
+  if (flag == false && C > 1) {
     vec closest_classes = zeros<vec>(3);
     closest_classes(0) = std::numeric_limits<int>::max();
-    for(int c1=0; c1<C; c1++){
-      for(int c2=0; c2<c1; c2++){
-        double dist = euc_dist(stack(span(1,1+P-1),c1),stack(span(1,1+P-1),c2));
-        if(dist < closest_classes(0)) {
-          closest_classes(0) = dist;
+    for(int c1 = 0; c1 < C; c1++){
+      for(int c2 = 0; c2 < c1; c2++){
+        arma::vec bc1 = stack(span(1,1+P-1),c1);
+        arma::vec bc2 = stack(span(1,1+P-1),c2);
+        double dev_sq = 0;
+        for(int p=0; p<P; p++){
+          dev_sq += (bc1(p) - bc2(p)) * (bc1(p) - bc2(p));
+        }
+        double euc_dist = sqrt(dev_sq);
+        if(euc_dist < closest_classes(0)) {
+          closest_classes(0) = euc_dist;
           closest_classes(1) = c1;
           closest_classes(2) = c2;
         }
       }
     }
-    if(closest_classes(0)<deltamin){
+    if (closest_classes(0) < deltamin) {
       int c1 = closest_classes(1);
       int c2 = closest_classes(2);
       stack(0,c1) += stack(0,c2);

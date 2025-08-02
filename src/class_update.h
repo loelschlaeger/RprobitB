@@ -6,10 +6,9 @@
 #include <float.h>
 #include <Rmath.h>
 #include <math.h>
+#include <oeli.h>
 using namespace arma;
 using namespace Rcpp;
-
-double euc_dist (arma::vec a, arma::vec b);
 
 Rcpp::List update_classes_wb (double epsmin, double epsmax, double deltamin,
                               arma::vec s, arma::mat b, arma::mat Omega, int Cmax);
