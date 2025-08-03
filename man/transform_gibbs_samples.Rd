@@ -7,7 +7,7 @@
 transform_gibbs_samples(gibbs_samples, R, B, Q, normalization)
 }
 \arguments{
-\item{gibbs_samples}{The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples for
+\item{gibbs_samples}{The output of \code{\link{gibbs_sampler}}, i.e. a list of Gibbs samples for
 \itemize{
 \item \code{Sigma},
 \item \code{alpha} (if \code{P_f>0}),

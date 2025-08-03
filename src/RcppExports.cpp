@@ -11,105 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// euc_dist
-double euc_dist(arma::vec a, arma::vec b);
-RcppExport SEXP _RprobitB_euc_dist(SEXP aSEXP, SEXP bSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(euc_dist(a, b));
-    return rcpp_result_gen;
-END_RCPP
-}
-// update_classes_wb
-Rcpp::List update_classes_wb(int Cmax, double epsmin, double epsmax, double distmin, arma::vec s, arma::mat b, arma::mat Omega);
-RcppExport SEXP _RprobitB_update_classes_wb(SEXP CmaxSEXP, SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP distminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type epsmin(epsminSEXP);
-    Rcpp::traits::input_parameter< double >::type epsmax(epsmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type distmin(distminSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_classes_wb(Cmax, epsmin, epsmax, distmin, s, b, Omega));
-    return rcpp_result_gen;
-END_RCPP
-}
-// update_classes_dp
-Rcpp::List update_classes_dp(int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, bool s_desc);
-RcppExport SEXP _RprobitB_update_classes_dp(SEXP CmaxSEXP, SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP s_descSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type D(DSEXP);
-    Rcpp::traits::input_parameter< int >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Theta(ThetaSEXP);
-    Rcpp::traits::input_parameter< bool >::type s_desc(s_descSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_classes_dp(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dmvnorm
-double dmvnorm(arma::vec const& x, arma::vec const& mean, arma::mat const& Sigma, bool log);
-RcppExport SEXP _RprobitB_dmvnorm(SEXP xSEXP, SEXP meanSEXP, SEXP SigmaSEXP, SEXP logSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec const& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec const& >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
-    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnorm(x, mean, Sigma, log));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rmvnorm
-arma::vec rmvnorm(arma::vec mu, arma::mat const& Sigma);
-RcppExport SEXP _RprobitB_rmvnorm(SEXP muSEXP, SEXP SigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type Sigma(SigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmvnorm(mu, Sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rdirichlet
-arma::vec rdirichlet(arma::vec delta);
-RcppExport SEXP _RprobitB_rdirichlet(SEXP deltaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet(delta));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rwishart
-List rwishart(double nu, arma::mat const& V);
-RcppExport SEXP _RprobitB_rwishart(SEXP nuSEXP, SEXP VSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type V(VSEXP);
-    rcpp_result_gen = Rcpp::wrap(rwishart(nu, V));
-    return rcpp_result_gen;
-END_RCPP
-}
 // update_s
 arma::vec update_s(int delta, arma::vec m);
 RcppExport SEXP _RprobitB_update_s(SEXP deltaSEXP, SEXP mSEXP) {
@@ -262,7 +163,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_d
-List update_d(arma::vec d, arma::mat y, arma::mat mu, double ll, arma::vec zeta, arma::mat Z, arma::vec Tvec);
+Rcpp::List update_d(arma::vec d, arma::mat y, arma::mat mu, double ll, arma::vec zeta, arma::mat Z, arma::vec Tvec);
 RcppExport SEXP _RprobitB_update_d(SEXP dSEXP, SEXP ySEXP, SEXP muSEXP, SEXP llSEXP, SEXP zetaSEXP, SEXP ZSEXP, SEXP TvecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -278,63 +179,68 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gibbs_sampling
-List gibbs_sampling(List sufficient_statistics, List prior, List latent_classes, Rcpp::List fixed_parameter, List init, int R, int B, bool print_progress, bool ordered, bool ranked);
-RcppExport SEXP _RprobitB_gibbs_sampling(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP fixed_parameterSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP orderedSEXP, SEXP rankedSEXP) {
+// update_classes_wb
+Rcpp::List update_classes_wb(double epsmin, double epsmax, double deltamin, arma::vec s, arma::mat b, arma::mat Omega, int Cmax);
+RcppExport SEXP _RprobitB_update_classes_wb(SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP CmaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type sufficient_statistics(sufficient_statisticsSEXP);
-    Rcpp::traits::input_parameter< List >::type prior(priorSEXP);
-    Rcpp::traits::input_parameter< List >::type latent_classes(latent_classesSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmin(epsminSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmax(epsmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type deltamin(deltaminSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_wb(epsmin, epsmax, deltamin, s, b, Omega, Cmax));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_classes_dp
+Rcpp::List update_classes_dp(int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, bool s_desc);
+RcppExport SEXP _RprobitB_update_classes_dp(SEXP CmaxSEXP, SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP s_descSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type D(DSEXP);
+    Rcpp::traits::input_parameter< int >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Theta(ThetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type s_desc(s_descSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_dp(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gibbs_sampler
+Rcpp::List gibbs_sampler(Rcpp::List sufficient_statistics, Rcpp::List prior, Rcpp::List latent_classes, Rcpp::List fixed_parameter, Rcpp::List init, int R, int B, bool print_progress, bool ordered, bool ranked);
+RcppExport SEXP _RprobitB_gibbs_sampler(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP fixed_parameterSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP orderedSEXP, SEXP rankedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type sufficient_statistics(sufficient_statisticsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type latent_classes(latent_classesSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type fixed_parameter(fixed_parameterSEXP);
-    Rcpp::traits::input_parameter< List >::type init(initSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type init(initSEXP);
     Rcpp::traits::input_parameter< int >::type R(RSEXP);
     Rcpp::traits::input_parameter< int >::type B(BSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< bool >::type ordered(orderedSEXP);
     Rcpp::traits::input_parameter< bool >::type ranked(rankedSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_sampling(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rtnorm
-double rtnorm(double mu, double sig, double trunpt, bool above);
-RcppExport SEXP _RprobitB_rtnorm(SEXP muSEXP, SEXP sigSEXP, SEXP trunptSEXP, SEXP aboveSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sig(sigSEXP);
-    Rcpp::traits::input_parameter< double >::type trunpt(trunptSEXP);
-    Rcpp::traits::input_parameter< bool >::type above(aboveSEXP);
-    rcpp_result_gen = Rcpp::wrap(rtnorm(mu, sig, trunpt, above));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rttnorm
-double rttnorm(double mu, double sig, double lower_bound, double upper_bound);
-RcppExport SEXP _RprobitB_rttnorm(SEXP muSEXP, SEXP sigSEXP, SEXP lower_boundSEXP, SEXP upper_boundSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sig(sigSEXP);
-    Rcpp::traits::input_parameter< double >::type lower_bound(lower_boundSEXP);
-    Rcpp::traits::input_parameter< double >::type upper_bound(upper_boundSEXP);
-    rcpp_result_gen = Rcpp::wrap(rttnorm(mu, sig, lower_bound, upper_bound));
+    rcpp_result_gen = Rcpp::wrap(gibbs_sampler(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked));
     return rcpp_result_gen;
 END_RCPP
 }
 
+RcppExport SEXP run_testthat_tests(SEXP);
+
 static const R_CallMethodDef CallEntries[] = {
-    {"_RprobitB_euc_dist", (DL_FUNC) &_RprobitB_euc_dist, 2},
-    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
-    {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
-    {"_RprobitB_dmvnorm", (DL_FUNC) &_RprobitB_dmvnorm, 4},
-    {"_RprobitB_rmvnorm", (DL_FUNC) &_RprobitB_rmvnorm, 2},
-    {"_RprobitB_rdirichlet", (DL_FUNC) &_RprobitB_rdirichlet, 1},
-    {"_RprobitB_rwishart", (DL_FUNC) &_RprobitB_rwishart, 2},
     {"_RprobitB_update_s", (DL_FUNC) &_RprobitB_update_s, 2},
     {"_RprobitB_update_z", (DL_FUNC) &_RprobitB_update_z, 4},
     {"_RprobitB_update_m", (DL_FUNC) &_RprobitB_update_m, 3},
@@ -347,9 +253,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_d_to_gamma", (DL_FUNC) &_RprobitB_d_to_gamma, 1},
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
-    {"_RprobitB_gibbs_sampling", (DL_FUNC) &_RprobitB_gibbs_sampling, 10},
-    {"_RprobitB_rtnorm", (DL_FUNC) &_RprobitB_rtnorm, 4},
-    {"_RprobitB_rttnorm", (DL_FUNC) &_RprobitB_rttnorm, 4},
+    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
+    {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
+    {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 10},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

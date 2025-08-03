@@ -47,7 +47,7 @@ beta <- matrix(c(-1,1), ncol=1)
 ### draw data
 N <- 100
 X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
-eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma_true), simplify = FALSE)
+eps <- replicate(N, oeli::rmvnorm(n = 1, mean = c(0,0,0), Sigma = Sigma_true), simplify = FALSE)
 U <- mapply(function(X, eps) X \%*\% beta + eps, X, eps, SIMPLIFY = FALSE)
 ### prior parameters for covariance matrix
 kappa <- 4

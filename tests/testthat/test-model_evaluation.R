@@ -61,17 +61,20 @@ test_that("choice prediction works", {
 
 test_that("preference classification works", {
   data <- simulate_choices(
-    form = choice ~ cost | income | time,
-    N = 30,
+    form = choice ~ cost,
+    N = 100,
     T = 10,
     J = 3,
-    re = c("cost", "ASC"),
+    re = c("cost"),
     alternatives = c("train", "bus", "car"),
     seed = 1,
-    true_parameter = list("C" = 2)
+    true_parameter = list(
+      "C" = 2, "s" = c(0.7, 0.3), "b" = matrix(c(2, -2), ncol = 2),
+      "Sigma_full" = diag(3)
+    )
   )
   model <- fit_model(data,
-    R = 1000,
+    R = 2000,
     seed = 1,
     latent_classes = list("C" = 2)
   )

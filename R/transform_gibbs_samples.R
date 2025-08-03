@@ -4,7 +4,7 @@
 #' This function normalizes, burns and thins the Gibbs samples.
 #'
 #' @param gibbs_samples
-#' The output of \code{\link{gibbs_sampling}}, i.e. a list of Gibbs samples for
+#' The output of \code{\link{gibbs_sampler}}, i.e. a list of Gibbs samples for
 #' \itemize{
 #'   \item \code{Sigma},
 #'   \item \code{alpha} (if \code{P_f>0}),

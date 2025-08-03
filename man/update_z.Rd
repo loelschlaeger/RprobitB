@@ -37,7 +37,7 @@ matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \
 }
 \examples{
 ### class weights for C = 2 classes
-s <- rdirichlet(c(1,1))
+s <- oeli::rdirichlet(n = 1, c(1,1))
 ### coefficient vector for N = 1 decider and P_r = 2 random coefficients
 beta <- matrix(c(1,1), ncol = 1)
 ### class means and covariances

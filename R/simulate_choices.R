@@ -361,7 +361,9 @@ simulate_choices <- function(
         )
         y_n[t] <- alternatives[y_nt_ind]
       } else {
-        eps <- as.vector(rmvnorm(mu = rep(0, J), Sigma = true_parameter$Sigma_full))
+        eps <- oeli::rmvnorm(
+          n = 1, mean = rep(0, J), Sigma = true_parameter$Sigma_full
+        )
         if (P_f == 0 & P_r == 0) {
           U_nt <- eps
         } else {
@@ -369,8 +371,9 @@ simulate_choices <- function(
           U_nt <- V_nt + eps
         }
         if (ranked) {
-          y_n[t] <- paste(alternatives[order(as.vector(U_nt), decreasing = TRUE)],
-                          collapse = ","
+          y_n[t] <- paste(
+            alternatives[order(as.vector(U_nt), decreasing = TRUE)],
+            collapse = ","
           )
         } else {
           y_n[t] <- alternatives[which.max(U_nt)]

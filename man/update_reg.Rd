@@ -48,7 +48,7 @@ Sigma <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3)
 ### draw data
 N <- 100
 X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
-eps <- replicate(N, rmvnorm(mu = c(0,0,0), Sigma = Sigma), simplify = FALSE)
+eps <- replicate(N, oeli::rmvnorm(n = 1, mean = c(0,0,0), Sigma = Sigma), simplify = FALSE)
 U <- mapply(function(X, eps) X \%*\% beta_true + eps, X, eps, SIMPLIFY = FALSE)
 ### prior parameters for coefficient vector
 mu0 <- c(0,0)

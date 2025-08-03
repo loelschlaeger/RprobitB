@@ -113,7 +113,9 @@ RprobitB_parameter <- function(
         s <- NA
       } else {
         if (is.null(s)) {
-          s <- round(sort(as.vector(rdirichlet(rep(1, C))), decreasing = T), 2)
+          s <- oeli::rdirichlet(n = 1, concentration = rep(1, C)) |>
+            sort(decreasing = TRUE) |>
+            round(digits = 2)
           s[C] <- 1 - sum(s[-C])
         }
         if (length(s) != C || !is.numeric(s) ||
@@ -151,7 +153,8 @@ RprobitB_parameter <- function(
       if (is.null(Omega)) {
         Omega <- matrix(0, nrow = P_r * P_r, ncol = C)
         for (c in 1:C) {
-          Omega[, c] <- as.vector(rwishart(P_r, diag(P_r))$W)
+          Omega[, c] <- oeli::rwishart(df = P_r, scale = diag(P_r), inv = TRUE) |>
+            as.vector()
         }
       }
       Omega <- as.matrix(Omega)
@@ -230,7 +233,7 @@ RprobitB_parameter <- function(
     } else {
       if (is.null(Sigma)) {
         if (is.null(Sigma_full)) {
-          Sigma_full <- rwishart(J, diag(J))$W
+          Sigma_full <- oeli::rwishart(df = J, scale = diag(J), inv = TRUE)
         } else {
           Sigma_full <- as.matrix(Sigma_full)
         }

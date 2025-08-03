@@ -29,35 +29,38 @@ draw_from_prior <- function(prior, C = 1) {
   if (identical(prior$eta, NA) || identical(prior$Psi, NA)) {
     alpha <- NULL
   } else {
-    alpha <- rmvnorm(mu = prior$eta, Sigma = prior$Psi)
+    alpha <- oeli::rmvnorm(n = 1, mean = prior$eta, Sigma = prior$Psi)
   }
 
   ### s ~ D(delta)
   if (identical(prior$delta, NA)) {
     s <- NULL
   } else {
-    s <- sort(rdirichlet(rep(prior$delta, C)), decreasing = TRUE)
+    s <- oeli::rdirichlet(n = 1, concentration = rep(prior$delta, C)) |>
+      sort(decreasing = TRUE)
   }
 
   ### b_c ~ MVN(xi,D) for all c
   if (identical(prior$xi, NA) || identical(prior$D, NA)) {
     b <- NULL
   } else {
-    b <- matrix(replicate(C, rmvnorm(mu = prior$xi, Sigma = prior$D)), ncol = C)
+    b <- replicate(C, oeli::rmvnorm(n = 1, mean = prior$xi, Sigma = prior$D)) |>
+      matrix(ncol = C)
   }
 
   ### Omega_c ~ IW(nu,Theta) for all c
   if (identical(prior$nu, NA) || identical(prior$Theta, NA)) {
     Omega <- NULL
   } else {
-    Omega <- matrix(replicate(C, rwishart(nu = prior$nu, V = prior$Theta)$IW), ncol = C)
+    Omega <- replicate(C, oeli::rwishart(df = prior$nu, scale = prior$Theta, inv = TRUE)) |>
+      matrix(ncol = C)
   }
 
   ### Sigma ~ IW(kappa,E)
   if (identical(prior$kappa, NA) || identical(prior$E, NA)) {
     Sigma <- NULL
   } else {
-    Sigma <- rwishart(nu = prior$kappa, V = prior$E)$IW
+    Sigma <- oeli::rwishart(df = prior$kappa, scale = prior$E, inv = TRUE)
   }
 
   ### return draws

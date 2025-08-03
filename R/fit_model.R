@@ -156,7 +156,7 @@ fit_model <- function(
     set.seed(seed)
   }
   timer_start <- Sys.time()
-  gibbs_samples <- gibbs_sampling(
+  gibbs_samples <- gibbs_sampler(
     sufficient_statistics = suff_stat, prior = prior,
     latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
     init = init, R = R, B = B, print_progress = print_progress,

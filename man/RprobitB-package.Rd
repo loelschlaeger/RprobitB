@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Bayes estimation of probit choice models, both in the cross-sectional and panel setting. The package can analyze binary, multivariate, ordered, and ranked choices, as well as heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Markov chain Monte Carlo m ethods, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating heuristic. This allows for flexible modeling of choice behavior without the need to impose structural constraints. For a reference on the method see Oelschlaeger and Bauer (2021) \url{https://trid.trb.org/view/1759753}.
+Bayes estimation of probit choice models in cross-sectional and panel settings. The package can analyze binary, multivariate, ordered, and ranked choices, as well as heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Gibbs sampling, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating heuristic. This allows for flexible modeling of choice behavior without the need to impose structural constraints. For a reference on the method, see Oelschlaeger and Bauer (2021) \url{https://trid.trb.org/view/1759753}.
 }
 \seealso{
 Useful links:
@@ -22,15 +22,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
 
-Authors:
-\itemize{
-  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID})
-}
-
 Other contributors:
 \itemize{
-  \item Sebastian Büscher \email{sebastian.buescher@uni-bielefeld.de} [contributor]
-  \item Manuel Batram \email{manuel.batram@uni-bielefeld.de} [contributor]
+  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID}) [contributor]
 }
 
 }

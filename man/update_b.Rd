@@ -52,7 +52,7 @@ N <- 100
 Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
 z <- c(rep(1,N/2),rep(2,N/2))
 m <- as.numeric(table(z))
-beta <- sapply(z, function(z) rmvnorm(b_true[,z], matrix(Omega[,z],2,2)))
+beta <- sapply(z, function(z) oeli::rmvnorm(n = 1, b_true[,z], matrix(Omega[,z],2,2)))
 ### prior mean vector and precision matrix (inverse of covariance matrix)
 xi <- c(0,0)
 Dinv <- diag(2)
