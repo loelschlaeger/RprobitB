@@ -10,7 +10,7 @@ fit_model(
   R = 1000,
   B = R/2,
   Q = 1,
-  print_progress = getOption("RprobitB_progress"),
+  print_progress = getOption("RprobitB_progress", default = TRUE),
   prior = NULL,
   latent_classes = NULL,
   seed = NULL,

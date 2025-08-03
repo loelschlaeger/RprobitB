@@ -2,6 +2,8 @@
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.
 
+* Fix in `sufficient_statistics()`. There was a bug in calculating sufficient statistics in the ordered case.
+
 # RprobitB 1.1.4
 
 * Small fixes and documentation improvements.
