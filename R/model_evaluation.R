@@ -237,6 +237,7 @@ filter_gibbs_samples <- function(
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @param add_true
 #' Set to \code{TRUE} to add true class memberships to output (if available).
 #'
@@ -276,11 +277,11 @@ classification <- function(x, add_true = FALSE) {
     X = x$gibbs_samples$gibbs_samples_nbt$z,
     MARGIN = 2,
     FUN = function(x) table(x),
-    simplify = TRUE
+    simplify = FALSE
   )
   allo_matrix <- matrix(0, nrow = x$data$N, ncol = x$latent_classes$C)
-  for (n in 1:x$data$N) {
-    for (c in 1:x$latent_classes$C) {
+  for (n in seq_len(x$data$N)) {
+    for (c in seq_len(x$latent_classes$C)) {
       freq <- allo_tables[[n]][c]
       if (!is.na(freq)) allo_matrix[n, c] <- freq
     }

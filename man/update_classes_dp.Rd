@@ -69,7 +69,7 @@ set.seed(1)
 z <- c(rep(1,20),rep(2,30))
 b <- matrix(c(1,1,1,-1), ncol=2)
 Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
-beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega[,z],2,2)))
+beta <- sapply(z, function(z) oeli::rmvnorm(n = 1, b[,z], matrix(Omega[,z],2,2)))
 delta <- 1
 xi <- numeric(2)
 D <- diag(2)

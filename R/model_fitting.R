@@ -994,10 +994,6 @@ fit_model <- function(
     comp_time = difftime(timer_end, timer_start)
   )
 
-  ### calculate log-likelihood
-  RprobitB_pp("Computing log-likelihood")
-  if (!data$ordered) out[["ll"]] <- suppressMessages(logLik.RprobitB_fit(out))
-
   ### return 'RprobitB_fit' object
   return(out)
 }

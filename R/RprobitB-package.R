@@ -1,3 +1,12 @@
+#' @useDynLib RprobitB, .registration=TRUE
+#' @keywords internal
+
+"_PACKAGE"
+
+(function() {
+  .Call("run_testthat_tests", FALSE, PACKAGE = "RprobitB")
+})
+
 ## usethis namespace: start
 #' @importFrom checkmate assert_int
 #' @importFrom crayon underline
@@ -62,10 +71,6 @@
 #' @importFrom utils tail
 #' @importFrom viridis magma
 ## usethis namespace: end
-#' @useDynLib RprobitB, .registration=TRUE
-#' @keywords internal
-
-"_PACKAGE"
 
 #' @noRd
 

@@ -15,31 +15,13 @@ latent classes, \code{delta = 0.1} per default.}
 \item{m}{The vector of current class frequencies.}
 }
 \value{
-A vector, a draw from the Dirichlet posterior distribution for \code{s}.
+A draw from the Dirichlet posterior distribution for \code{s}.
 }
 \description{
-This function updates the class weight vector by drawing from its posterior distribution.
-}
-\details{
-Let \eqn{m=(m_1,\dots,m_C)} be the frequencies of \eqn{C} classes.
-Given the class weight (probability) vector \eqn{s=(s_1,\dots,s_C)}, the distribution
-of \eqn{m} is multinomial and its likelihood is \deqn{L(m\mid s) \propto \prod_{i=1}^C s_i^{m_i}.}
-The conjugate prior \eqn{p(s)} for \eqn{s} is a Dirichlet distribution, which has a density function
-proportional to \deqn{\prod_{i=1}^C s_i^{\delta_i-1},} where \eqn{\delta = (\delta_1,\dots,\delta_C)}
-is the concentration parameter vector.
-Note that in \code{{RprobitB}}, \eqn{\delta_1=\dots=\delta_C}. This restriction is necessary because the class number \eqn{C} can change.
-The posterior distribution of \eqn{s} is proportional to \deqn{p(s) L(m\mid s) \propto \prod_{i=1}^C s_i^{\delta_i + m_i - 1},}
-which in turn is proportional to a Dirichlet distribution with parameters \eqn{\delta+m}.
+Update class weight vector
 }
 \examples{
-### number of classes
-C <- 4
-### current class sizes
-m <- sample.int(C)
-### concentration parameter for Dirichlet prior (single-valued)
-delta <- 1
-### updated class weight vector
-update_s(delta = 1, m = m)
+update_s(delta = 1, m = sample.int(4))
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

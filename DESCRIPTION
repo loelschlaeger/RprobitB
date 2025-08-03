@@ -1,7 +1,7 @@
 Package: RprobitB
 Type: Package
 Title: Bayesian Probit Choice Modeling
-Version: 1.1.4
+Version: 1.1.4.9000
 Authors@R: c(
     person("Lennart", "Oelschl\u00e4ger", 
            email = "oelschlaeger.lennart@gmail.com", 
@@ -9,14 +9,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5421-9313")),
     person("Dietmar", "Bauer", 
            email = "dietmar.bauer@uni-bielefeld.de", 
-           role = "aut",
-           comment = c(ORCID = "0000-0003-2920-7032")),
-    person("Sebastian", "B\u00fcscher", 
-           email = "sebastian.buescher@uni-bielefeld.de", 
-           role = "ctb"),
-    person("Manuel", "Batram", 
-           email = "manuel.batram@uni-bielefeld.de", 
-           role = "ctb"))
+           role = "ctb",
+           comment = c(ORCID = "0000-0003-2920-7032")))
 Description:
     Bayes estimation of probit choice models in cross-sectional and panel 
     settings. The package can analyze binary, multivariate, ordered, and  ranked 
@@ -59,11 +53,13 @@ Imports:
 LinkingTo:
     oeli (>= 0.7.5),
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    testthat
 Suggests: 
     knitr,
     mlogit,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    xml2
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

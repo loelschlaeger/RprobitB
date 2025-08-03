@@ -51,7 +51,7 @@ b <- cbind(c(0,0),c(1,1))
 (Omega_true <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2))
 z <- c(rep(1,N/2),rep(2,N/2))
 m <- as.numeric(table(z))
-beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega_true[,z],2,2)))
+beta <- sapply(z, function(z) oeli::rmvnorm(n = 1, b[,z], matrix(Omega_true[,z],2,2)))
 ### degrees of freedom and scale matrix for the Wishart prior
 nu <- 1
 Theta <- diag(2)

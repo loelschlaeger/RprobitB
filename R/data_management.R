@@ -1317,7 +1317,9 @@ simulate_choices <- function(
         )
         y_n[t] <- alternatives[y_nt_ind]
       } else {
-        eps <- as.vector(rmvnorm(mu = rep(0, J), Sigma = true_parameter$Sigma_full))
+        eps <- oeli::rmvnorm(
+          n = 1, mean = rep(0, J), Sigma = true_parameter$Sigma_full
+        )
         if (P_f == 0 & P_r == 0) {
           U_nt <- eps
         } else {

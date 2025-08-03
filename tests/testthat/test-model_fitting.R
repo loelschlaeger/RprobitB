@@ -83,17 +83,17 @@ test_that("Gibbs sampling works", {
 test_that("Ordered probit model estimation works", {
   data <- simulate_choices(
     form = opinion_on_sth ~ age + gender,
-    N = 50,
-    T = 1:50,
+    N = 100,
+    T = 10,
     J = 5,
     alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
     ordered = TRUE,
     covariates = list(
-      "gender" = rep(sample(c(0, 1), 50, replace = TRUE), times = 1:50)
+      "gender" = rep(sample(c(0, 1), 100, replace = TRUE), times = 10)
     ),
     seed = 1
   )
-  model <- fit_model(data)
+  model <- fit_model(data, R = 4000)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))

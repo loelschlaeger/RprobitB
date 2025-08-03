@@ -22,15 +22,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
 
-Authors:
-\itemize{
-  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID})
-}
-
 Other contributors:
 \itemize{
-  \item Sebastian Büscher \email{sebastian.buescher@uni-bielefeld.de} [contributor]
-  \item Manuel Batram \email{manuel.batram@uni-bielefeld.de} [contributor]
+  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID}) [contributor]
 }
 
 }

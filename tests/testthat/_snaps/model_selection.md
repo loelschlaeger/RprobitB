@@ -5,35 +5,35 @@
     Output
                model_train
       npar               4
-      LL          -1728.59
-      AIC          3465.18
-      BIC          3489.10
-      WAIC         3461.27
-      se(WAIC)        0.07
-      pWAIC           2.10
-      MMLL        -1730.35
-      pred_acc      69.10%
+      LL          -1728.22
+      AIC          3464.44
+      BIC          3488.37
+      WAIC         3467.35
+      se(WAIC)        0.45
+      pWAIC           5.90
+      MMLL        -1731.44
+      pred_acc      69.55%
 
 ---
 
     Code
       AIC(model_train)
     Output
-      [1] 3465.175
+      [1] 3464.44
 
 ---
 
     Code
       BIC(model_train)
     Output
-      [1] 3489.105
+      [1] 3488.369
 
 ---
 
     Code
       WAIC(model_train)
     Output
-      3461.27 (0.07)
+      3467.35 (0.45)
 
 ---
 
@@ -47,7 +47,7 @@
     Code
       logLik(model_train, recompute = TRUE)
     Output
-      'log Lik.' -1728.588 (df=4)
+      'log Lik.' -1728.22 (df=4)
 
 ---
 
