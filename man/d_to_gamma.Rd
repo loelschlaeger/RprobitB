@@ -24,6 +24,6 @@ threshold is fixed to \code{0} for identification.
 }
 \examples{
 d_to_gamma(c(0,0,0))
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

@@ -19,8 +19,7 @@ update_U(U, y, sys, Sigmainv)
 An updated utility vector of length \code{J-1}.
 }
 \description{
-This function updates the latent utility vector, where (independent across deciders and choice occasions)
-the utility for each alternative is updated conditional on the other utilities.
+Update latent utility vector
 }
 \details{
 The key ingredient to Gibbs sampling for probit models is considering the latent utilities
@@ -39,6 +38,7 @@ y <- 3
 sys <- c(0,0,0)
 Sigmainv <- solve(diag(3))
 update_U(U, y, sys, Sigmainv)
+
 }
 \references{
 See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal and Student-t Distributions Subject
@@ -46,5 +46,4 @@ to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs 
 from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
 of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

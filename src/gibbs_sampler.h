@@ -14,7 +14,7 @@ arma::vec update_z (
 );
 
 arma::vec update_m (
-    int C, arma::vec z, bool nozero
+    int C, arma::vec z, bool non_zero = false
 );
 
 arma::mat update_b (
@@ -54,14 +54,19 @@ Rcpp::List update_d (
 
 Rcpp::List update_classes_wb (
     double epsmin, double epsmax, double deltamin,
-    arma::vec s, arma::mat b, arma::mat Omega, int Cmax
+    arma::vec s, arma::mat b, arma::mat Omega,
+    int Cmax = 10, bool identify_classes = false
 );
 
 Rcpp::List update_classes_dp (
-    int Cmax, arma::mat beta, arma::vec z, arma::mat b,
-    arma::mat Omega, double delta, arma::vec xi, arma::mat D,
-    int nu, arma::mat Theta, bool s_desc
+    arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+    double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
+    int Cmax = 10, bool identify_classes = false
 );
+
+Rcpp::List update_classes_dp2 (int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+                               double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
+                               bool s_desc = true);
 
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior,

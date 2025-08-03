@@ -4,7 +4,16 @@
 \alias{update_classes_wb}
 \title{Weight-based class updates}
 \usage{
-update_classes_wb(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L)
+update_classes_wb(
+  epsmin,
+  epsmax,
+  deltamin,
+  s,
+  b,
+  Omega,
+  Cmax = 10L,
+  identify_classes = FALSE
+)
 }
 \arguments{
 \item{epsmin}{[\code{numeric(1)}]\cr
@@ -29,12 +38,15 @@ Set to \code{NA} if \code{P_r = 0}.}
 
 \item{Cmax}{[\code{integer(1)}]\cr
 The maximum number of classes, used to allocate space.}
+
+\item{identify_classes}{[\code{logical(1)}]\cr
+Identify classes by decreasing class weights?}
 }
 \value{
 A list of updated values for \code{s}, \code{b}, and \code{Omega}.
 }
 \description{
-This helper function updates the classes based on weights and locations.
+Weight-based class updates
 }
 \details{
 The following updating rules apply:
@@ -47,9 +59,9 @@ The following updating rules apply:
 }
 \examples{
 ### parameter settings
-s <- c(0.8,0.2)
-b <- matrix(c(1,1,1,-1), ncol=2)
-Omega <- matrix(c(0.5,0.3,0.3,0.5,1,-0.1,-0.1,0.8), ncol=2)
+s <- c(0.8, 0.2)
+b <- matrix(c(1, 1, 1, -1), ncol = 2)
+Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 
 ### remove class 2
 RprobitB:::update_classes_wb(
@@ -61,7 +73,7 @@ RprobitB:::update_classes_wb(
   epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
 )
 
-### join classes 1 and 2
+### merge classes 1 and 2
 RprobitB:::update_classes_wb(
   epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
 )

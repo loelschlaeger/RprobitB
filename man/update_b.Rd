@@ -30,7 +30,7 @@ of the normal prior for each \code{b_c}.}
 A matrix of updated means for each class in columns.
 }
 \description{
-This function updates the class means (independent from the other classes).
+Update class means
 }
 \details{
 The following holds independently for each class \eqn{c}.
@@ -58,6 +58,6 @@ xi <- c(0,0)
 Dinv <- diag(2)
 ### updated class means (in columns)
 update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

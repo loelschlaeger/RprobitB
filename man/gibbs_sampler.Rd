@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{gibbs_sampler}
 \alias{gibbs_sampler}
-\title{Markov chain Monte Carlo simulation for the probit model}
+\title{Gibbs sampler for probit models}
 \usage{
 gibbs_sampler(
   sufficient_statistics,
@@ -79,11 +79,10 @@ and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 entry is the number of latent classes after iteration \code{r}.
 }
 \description{
-This function draws from the posterior distribution of the probit model via
-Markov chain Monte Carlo simulation-
+Gibbs sampler for probit models
 }
 \details{
 This function is not supposed to be called directly, but rather via
 \code{\link{fit_model}}.
 }
-\keyword{internal}
+\keyword{gibbs_sampler}

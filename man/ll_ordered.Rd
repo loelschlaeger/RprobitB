@@ -19,11 +19,10 @@ ll_ordered(d, y, mu, Tvec)
 The log-likelihood value.
 }
 \description{
-This function computes the log-likelihood value given the threshold
-increments \code{d}.
+Log-likelihood in the ordered probit model
 }
 \examples{
 ll_ordered(c(0,0,0), matrix(1), matrix(1), 1)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

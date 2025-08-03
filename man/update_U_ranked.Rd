@@ -19,7 +19,7 @@ the vector is negative.}
 An updated utility vector of length \code{J-1}.
 }
 \description{
-This function updates the latent utility vector in the ranked probit case.
+Update latent utility vector in the ranked probit case
 }
 \details{
 This update is basically the same as in the non-ranked case, despite that
@@ -30,6 +30,6 @@ U <- c(0,0)
 sys <- c(0,0)
 Sigmainv <- diag(2)
 update_U_ranked(U, sys, Sigmainv)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

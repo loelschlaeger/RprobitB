@@ -24,7 +24,7 @@ A matrix, a draw from the Inverse Wishart posterior distribution of the error te
 covariance matrix in a multiple linear regression.
 }
 \description{
-This function updates the error term covariance matrix of a multiple linear regression.
+Update error term covariance matrix of multiple linear regression
 }
 \details{
 This function draws from the posterior distribution of the covariance matrix \eqn{\Sigma} in the linear utility
@@ -58,6 +58,6 @@ S <- Reduce(`+`, mapply(outer_prod, X, U, SIMPLIFY = FALSE))
 Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
 apply(Sigma_draws, 1:2, mean)
 apply(Sigma_draws, 1:2, stats::sd)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

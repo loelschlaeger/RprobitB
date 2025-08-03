@@ -38,15 +38,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_m
-arma::vec update_m(int C, arma::vec z, bool nozero);
-RcppExport SEXP _RprobitB_update_m(SEXP CSEXP, SEXP zSEXP, SEXP nozeroSEXP) {
+arma::vec update_m(int C, arma::vec z, bool non_zero);
+RcppExport SEXP _RprobitB_update_m(SEXP CSEXP, SEXP zSEXP, SEXP non_zeroSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type C(CSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
-    Rcpp::traits::input_parameter< bool >::type nozero(nozeroSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_m(C, z, nozero));
+    Rcpp::traits::input_parameter< bool >::type non_zero(non_zeroSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_m(C, z, non_zero));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -180,8 +180,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_classes_wb
-Rcpp::List update_classes_wb(double epsmin, double epsmax, double deltamin, arma::vec s, arma::mat b, arma::mat Omega, int Cmax);
-RcppExport SEXP _RprobitB_update_classes_wb(SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP CmaxSEXP) {
+Rcpp::List update_classes_wb(double epsmin, double epsmax, double deltamin, arma::vec s, arma::mat b, arma::mat Omega, int Cmax, bool identify_classes);
+RcppExport SEXP _RprobitB_update_classes_wb(SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP CmaxSEXP, SEXP identify_classesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -192,13 +192,35 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
     Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_classes_wb(epsmin, epsmax, deltamin, s, b, Omega, Cmax));
+    Rcpp::traits::input_parameter< bool >::type identify_classes(identify_classesSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_wb(epsmin, epsmax, deltamin, s, b, Omega, Cmax, identify_classes));
     return rcpp_result_gen;
 END_RCPP
 }
 // update_classes_dp
-Rcpp::List update_classes_dp(int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, bool s_desc);
-RcppExport SEXP _RprobitB_update_classes_dp(SEXP CmaxSEXP, SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP s_descSEXP) {
+Rcpp::List update_classes_dp(arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, int Cmax, bool identify_classes);
+RcppExport SEXP _RprobitB_update_classes_dp(SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP CmaxSEXP, SEXP identify_classesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type z(zSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type D(DSEXP);
+    Rcpp::traits::input_parameter< int >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Theta(ThetaSEXP);
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    Rcpp::traits::input_parameter< bool >::type identify_classes(identify_classesSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_dp(beta, z, b, Omega, delta, xi, D, nu, Theta, Cmax, identify_classes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_classes_dp2
+Rcpp::List update_classes_dp2(int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega, double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta, bool s_desc);
+RcppExport SEXP _RprobitB_update_classes_dp2(SEXP CmaxSEXP, SEXP betaSEXP, SEXP zSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP deltaSEXP, SEXP xiSEXP, SEXP DSEXP, SEXP nuSEXP, SEXP ThetaSEXP, SEXP s_descSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -213,7 +235,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Theta(ThetaSEXP);
     Rcpp::traits::input_parameter< bool >::type s_desc(s_descSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_classes_dp(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc));
+    rcpp_result_gen = Rcpp::wrap(update_classes_dp2(Cmax, beta, z, b, Omega, delta, xi, D, nu, Theta, s_desc));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -253,8 +275,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_d_to_gamma", (DL_FUNC) &_RprobitB_d_to_gamma, 1},
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
-    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 7},
+    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 8},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
+    {"_RprobitB_update_classes_dp2", (DL_FUNC) &_RprobitB_update_classes_dp2, 11},
     {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 10},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}

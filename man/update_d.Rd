@@ -25,7 +25,6 @@ update_d(d, y, mu, ll, zeta, Z, Tvec)
 The updated value for \code{d}.
 }
 \description{
-This function updates the utility threshold increments
+Update utility threshold increments
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

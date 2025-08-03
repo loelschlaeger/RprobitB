@@ -31,7 +31,7 @@ Per default, \code{Theta = diag(P_r)}.}
 A matrix of updated covariance matrices for each class in columns.
 }
 \description{
-This function updates the class covariances (independent from the other classes).
+Update class covariances
 }
 \details{
 The following holds independently for each class \eqn{c}.
@@ -57,6 +57,6 @@ nu <- 1
 Theta <- diag(2)
 ### updated class covariance matrices (in columns)
 update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

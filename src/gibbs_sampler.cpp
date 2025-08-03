@@ -1,17 +1,17 @@
 // [[Rcpp::depends("RcppArmadillo")]]
+#include <oeli.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-#include <oeli.h>
 
-//' Update class weight vector
+//' Update class weight vector \code{s}
 //'
 //' @inheritParams check_prior
 //'
-//' @param m
+//' @param m \[`numeric()`\]\cr
 //' The vector of current class frequencies.
 //'
 //' @return
-//' A draw from the Dirichlet posterior distribution for \code{s}.
+//' An update for \code{s}.
 //'
 //' @examples
 //' update_s(delta = 1, m = sample.int(4))
@@ -26,33 +26,25 @@ arma::vec update_s (int delta, arma::vec m) {
   return oeli::rdirichlet(delta * arma::ones(m.size()) + m);
 }
 
-//' Update class allocation vector
-//' @description
-//' This function updates the class allocation vector (independently for all observations)
-//' by drawing from its conditional distribution.
+//' Update class allocation vector \code{z}
+//'
 //' @inheritParams RprobitB_parameter
-//' @details
-//' Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
-//' Independently for each \eqn{n}, the conditional probability \eqn{\Pr(z_n = c \mid s,\beta_n,b,\Omega)} of having \eqn{\beta_n}
-//' allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class covariance
-//' matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
+//'
 //' @return
-//' An updated class allocation vector.
+//' An update for \code{z}.
+//'
 //' @examples
-//' ### class weights for C = 2 classes
-//' s <- oeli::rdirichlet(n = 1, c(1,1))
-//' ### coefficient vector for N = 1 decider and P_r = 2 random coefficients
-//' beta <- matrix(c(1,1), ncol = 1)
-//' ### class means and covariances
-//' b <- cbind(c(0,0),c(1,1))
-//' Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-//' ### updated class allocation vector
-//' update_z(s = s, beta = beta, b = b, Omega = Omega)
+//' update_z(
+//'   s = c(0.5, 0.5), beta = matrix(c(-2, 0, 2), ncol = 3),
+//'   b = cbind(0, 1), Omega = cbind(1, 1)
+//' )
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
   Rcpp::Function sample("sample");
   Rcpp::Function seq("seq");
@@ -61,57 +53,65 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
   int P_r = b.n_rows;
   arma::vec z = arma::zeros<arma::vec>(N);
   arma::vec prob_z = arma::zeros<arma::vec>(C);
-  for(int n = 0; n<N; n++){
-    for(int c = 0; c<C; c++){
-      prob_z[c] = s[c]*oeli::dmvnorm(beta(arma::span::all,n),b(arma::span::all,c),reshape(Omega(arma::span::all,c),P_r,P_r));
+  for(int n = 0; n < N; n++){
+    for(int c = 0; c < C; c++){
+      prob_z[c] = s[c] * oeli::dmvnorm(
+        beta(arma::span::all,n),
+        b(arma::span::all,c),
+        reshape(Omega(arma::span::all,c), P_r, P_r)
+      );
     }
-    z[n] = Rcpp::as<int>(sample(seq(1,C),1,false,prob_z));
+    z[n] = Rcpp::as<int>(sample(seq(1, C), 1, false, prob_z));
   }
-  return(z);
+  return z;
 }
 
-//' Update class sizes
-//' @description
-//' This function updates the class size vector.
+//' Update class sizes \code{m}
+//'
 //' @inheritParams RprobitB_parameter
-//' @param nozero
-//' If \code{TRUE}, each element in the output vector \code{m} is at least one
-//' (for numerical stability).
+//'
+//' @param non_zero \[`logical(1)`\]\cr
+//' Enforce strictly positive values in \code{m} (for numerical stability)?
+//'
 //' @return
-//' An updated class size vector.
+//' An update for \code{m}.
+//'
 //' @examples
-//' update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
+//' update_m(C = 3, z = c(1, 1, 1, 2, 2, 3))
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
-arma::vec update_m (int C, arma::vec z, bool nozero) {
+
+arma::vec update_m (int C, arma::vec z, bool non_zero = false) {
   int N = z.size();
   arma::vec m(C);
-  for(int c = 0; c<C; c++){
-    for(int n = 0; n<N; n++){
-      if(z[n]==c+1) m[c] += 1;
+  for (int c = 0; c < C; c++){
+    for (int n = 0; n < N; n++){
+      if (z[n] == c+1) m[c] += 1;
     }
   }
-  if(nozero==true){
-    for(int c = 0; c<C; c++){
-      if(m[c]==0) m[c] = 1;
-    }
+  if (non_zero == true){
+    for(int c = 0; c<C; c++) if(m[c]==0) m[c] = 1;
   }
-  return(m);
+  return m;
 }
 
 //' Update class means
-//' @description
-//' This function updates the class means (independent from the other classes).
+//'
 //' @inheritParams RprobitB_parameter
+//'
 //' @param m
 //' The vector of class sizes of length \code{C}.
+//'
 //' @inheritParams check_prior
+//'
 //' @param Dinv
 //' The precision matrix (i.e. the inverse of the covariance matrix) of dimension \code{P_r} x \code{P_r}
 //' of the normal prior for each \code{b_c}.
+//'
 //' @details
 //' The following holds independently for each class \eqn{c}.
 //' Let \eqn{b_c} be the mean of class number \eqn{c}. A priori, we assume that \eqn{b_c} is normally distributed
@@ -124,8 +124,10 @@ arma::vec update_m (int C, arma::vec z, bool nozero) {
 //' Due to the conjugacy of the prior, the posterior \eqn{\Pr(b_c \mid (\beta_n)_{z_n=c})} follows a normal distribution
 //' with mean \deqn{(D^{-1} + m_c\Omega_c^{-1})^{-1}(D^{-1}\xi + m_c\Omega_c^{-1}\bar{b}_c)} and covariance matrix
 //' \deqn{(D^{-1} + m_c \Omega_c^{-1})^{-1}.}
+//'
 //' @return
 //' A matrix of updated means for each class in columns.
+//'
 //' @examples
 //' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
 //' N <- 100
@@ -139,11 +141,13 @@ arma::vec update_m (int C, arma::vec z, bool nozero) {
 //' Dinv <- diag(2)
 //' ### updated class means (in columns)
 //' update_b(beta = beta, Omega = Omega, z = z, m = m, xi = xi, Dinv = Dinv)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, arma::vec xi, arma::mat Dinv) {
   int P_r = beta.n_rows;
   int C = m.size();
@@ -167,12 +171,14 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
 }
 
 //' Update class covariances
-//' @description
-//' This function updates the class covariances (independent from the other classes).
+//'
 //' @inheritParams RprobitB_parameter
+//'
 //' @param m
 //' The vector of class sizes of length \code{C}.
+//'
 //' @inheritParams check_prior
+//'
 //' @details
 //' The following holds independently for each class \eqn{c}.
 //' Let \eqn{\Omega_c} be the covariance matrix of class number \code{c}.
@@ -183,8 +189,10 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
 //' Due to the conjugacy of the prior, the posterior \eqn{\Pr(\Omega_c \mid (\beta_n)_{z_n=c})} follows an inverted Wishart distribution
 //' with \eqn{\nu + m_c} degrees of freedom and scale matrix \eqn{\Theta^{-1} + \sum_n (\beta_n - b_c)(\beta_n - b_c)'}, where
 //' the product is over the values \eqn{n} for which \eqn{z_n=c} holds.
+//'
 //' @return
 //' A matrix of updated covariance matrices for each class in columns.
+//'
 //' @examples
 //' ### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
 //' N <- 100
@@ -198,11 +206,13 @@ arma::mat update_b (arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m, a
 //' Theta <- diag(2)
 //' ### updated class covariance matrices (in columns)
 //' update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, int nu, arma::mat Theta) {
   int P_r = beta.n_rows;
   int C = m.size();
@@ -222,16 +232,20 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 }
 
 //' Update coefficient vector of multiple linear regression
-//' @description
-//' This function updates the coefficient vector of a multiple linear regression.
+//'
 //' @param mu0
 //' The mean vector of the normal prior distribution for the coefficient vector.
+//'
 //' @param Tau0
-//' The precision matrix (i.e. inverted covariance matrix) of the normal prior distribution for the coefficient vector.
+//' The precision matrix (i.e. inverted covariance matrix) of the normal prior
+//' distribution for the coefficient vector.
+//'
 //' @param XSigX
 //' The matrix \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}X_n}. See below for details.
+//'
 //' @param XSigU
 //' The vector \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}U_n}. See below for details.
+//'
 //' @details
 //' This function draws from the posterior distribution of \eqn{\beta} in the linear utility
 //' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
@@ -249,9 +263,11 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 //' Note the analogy of \eqn{\mu_1} to the generalized least squares estimator
 //' \deqn{\hat{\beta}_{GLS} = (\sum_{n=1}^N X_n'\Sigma^{-1}X_n)^{-1} \sum_{n=1}^N X_n'\Sigma^{-1}U_n} which
 //' becomes weighted by the prior parameters \eqn{\mu_0} and \eqn{T_0}.
+//'
 //' @return
 //' A vector, a draw from the normal posterior distribution of the coefficient
 //' vector in a multiple linear regression.
+//'
 //' @examples
 //' ### true coefficient vector
 //' beta_true <- matrix(c(-1,1), ncol=1)
@@ -270,11 +286,13 @@ arma::mat update_Omega (arma::mat beta, arma::mat b, arma::vec z, arma::vec m, i
 //' XSigU <- Reduce(`+`, mapply(function(X, U) t(X) %*% solve(Sigma) %*% U, X, U, SIMPLIFY = FALSE))
 //' beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
 //' rowMeans(beta_draws)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU) {
   arma::mat Sigma1 = arma::inv(Tau0 + XSigX);
   arma::mat mu1 = Sigma1 * (Tau0 * mu0 + XSigU);
@@ -282,13 +300,15 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 }
 
 //' Update error term covariance matrix of multiple linear regression
-//' @description
-//' This function updates the error term covariance matrix of a multiple linear regression.
+//'
 //' @param N
 //' The draw size.
+//'
 //' @param S
 //' A matrix, the sum over the outer products of the residuals \eqn{(\epsilon_n)_{n=1,\dots,N}}.
+//'
 //' @inheritParams check_prior
+//'
 //' @details
 //' This function draws from the posterior distribution of the covariance matrix \eqn{\Sigma} in the linear utility
 //' equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
@@ -301,9 +321,11 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 //' The posterior for \eqn{\Sigma} is the Inverted Wishart distribution with \eqn{\kappa + N} degrees of freedom
 //' and scale matrix \eqn{E^{-1}+S}, where \eqn{S = \sum_{n=1}^{N} \epsilon_n \epsilon_n'} is the sum over
 //' the outer products of the residuals \eqn{(\epsilon_n = U_n - X_n\beta)_n}.
+//'
 //' @return
 //' A matrix, a draw from the Inverse Wishart posterior distribution of the error term
 //' covariance matrix in a multiple linear regression.
+//'
 //' @examples
 //' ### true error term covariance matrix
 //' (Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3))
@@ -323,27 +345,31 @@ arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec 
 //' Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
 //' apply(Sigma_draws, 1:2, mean)
 //' apply(Sigma_draws, 1:2, stats::sd)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
   return oeli::rwishart(kappa + N, arma::inv(E + S), true);
 }
 
 //' Update latent utility vector
-//' @description
-//' This function updates the latent utility vector, where (independent across deciders and choice occasions)
-//' the utility for each alternative is updated conditional on the other utilities.
+//'
 //' @param U
 //' The current utility vector of length \code{J-1}.
+//'
 //' @param y
 //' An integer from \code{1} to \code{J}, the index of the chosen alternative.
+//'
 //' @param sys
 //' A vector of length \code{J-1}, the systematic utility part.
+//'
 //' @param Sigmainv
 //' The inverted error term covariance matrix of dimension \code{J-1} x \code{J-1}.
+//'
 //' @details
 //' The key ingredient to Gibbs sampling for probit models is considering the latent utilities
 //' as parameters themselves which can be updated (data augmentation).
@@ -354,24 +380,29 @@ arma::mat update_Sigma (int kappa, arma::mat E, int N, arma::mat S) {
 //' The truncation points are determined by the choices \eqn{y_{nt}}. To draw from a truncated multivariate
 //' normal distribution, this function implemented the approach of Geweke (1998) to conditionally draw each component
 //' separately from a univariate truncated normal distribution. See Oelschläger (2020) for the concrete formulas.
+//'
 //' @references
 //' See Geweke (1998) \emph{Efficient Simulation from the Multivariate Normal and Student-t Distributions Subject
 //' to Linear Constraints and the Evaluation of Constraint Probabilities} for Gibbs sampling
 //' from a truncated multivariate normal distribution. See Oelschläger and Bauer (2020) \emph{Bayes Estimation
 //' of Latent Class Mixed Multinomial Probit Models} for its application to probit utilities.
+//'
 //' @return
 //' An updated utility vector of length \code{J-1}.
+//'
 //' @examples
 //' U <- c(0,0,0)
 //' y <- 3
 //' sys <- c(0,0,0)
 //' Sigmainv <- solve(diag(3))
 //' update_U(U, y, sys, Sigmainv)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
   int Jm1 = U.size();
   bool above;
@@ -402,31 +433,37 @@ arma::vec update_U (arma::vec U, int y, arma::vec sys, arma::mat Sigmainv) {
 }
 
 //' Update latent utility vector in the ranked probit case
-//' @description
-//' This function updates the latent utility vector in the ranked probit case.
+//'
 //' @param U
 //' The current utility vector of length \code{J-1}, differenced such that
 //' the vector is negative.
+//'
 //' @param sys
 //' A vector of length \code{J-1}, the systematic utility part.
+//'
 //' @param Sigmainv
 //' The inverted error term covariance matrix of dimension
 //' \code{J-1} x \code{J-1}.
+//'
 //' @details
 //' This update is basically the same as in the non-ranked case, despite that
 //' the truncation point is zero.
+//'
 //' @return
 //' An updated utility vector of length \code{J-1}.
+//'
 //' @examples
 //' U <- c(0,0)
 //' sys <- c(0,0)
 //' Sigmainv <- diag(2)
 //' update_U_ranked(U, sys, Sigmainv)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
   int Jm1 = U.size();
   arma::vec U_update = U;
@@ -444,25 +481,32 @@ arma::vec update_U_ranked (arma::vec U, arma::vec sys, arma::mat Sigmainv) {
 }
 
 //' Transform threshold increments to thresholds
+//'
 //' @description
 //' This helper function transforms the threshold increments \code{d} to the
 //' thresholds \code{gamma}.
+//'
 //' @param d
 //' A numeric vector of threshold increments.
+//'
 //' @details
 //' The threshold vector \code{gamma} is computed from the threshold increments
 //' \code{d} as \code{c(-100,0,cumsum(exp(d)),100)}, where the bounds
 //' \code{-100} and \code{100} exist for numerical reasons and the first
 //' threshold is fixed to \code{0} for identification.
+//'
 //' @return
 //' A numeric vector of the thresholds.
+//'
 //' @examples
 //' d_to_gamma(c(0,0,0))
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 arma::vec d_to_gamma (arma::vec d) {
   int length_d = d.size();
   double acc = 0;
@@ -481,26 +525,31 @@ arma::vec d_to_gamma (arma::vec d) {
 }
 
 //' Log-likelihood in the ordered probit model
-//' @description
-//' This function computes the log-likelihood value given the threshold
-//' increments \code{d}.
+//'
 //' @param d
 //' A numeric vector of threshold increments.
+//'
 //' @param y
 //' A matrix of the choices.
+//'
 //' @param mu
 //' A matrix of the systematic utilities.
+//'
 //' @param Tvec
 //' The element \code{Tvec} in \code{\link{sufficient_statistics}}.
+//'
 //' @return
 //' The log-likelihood value.
+//'
 //' @examples
 //' ll_ordered(c(0,0,0), matrix(1), matrix(1), 1)
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
   int N = Tvec.size();
   double ll = 0.0;
@@ -519,24 +568,30 @@ double ll_ordered (arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec) {
 }
 
 //' Update utility threshold increments
-//' @description
-//' This function updates the utility threshold increments
+//'
 //' @param d
 //' The current vector of utility threshold increments.
+//'
 //' @param ll
 //' Current log-likelihood value.
+//'
 //' @param zeta
 //' The mean vector of the normal prior for \code{d}.
+//'
 //' @param Z
 //' The covariance matrix of the normal prior for \code{d}.
+//'
 //' @inheritParams ll_ordered
+//'
 //' @return
 //' The updated value for \code{d}.
+//'
 //' @export
-//' @keywords
-//' internal posterior
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
                arma::vec zeta, arma::mat Z, arma::vec Tvec) {
   int length_d = d.size();
@@ -556,9 +611,6 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 
 //' Weight-based class updates
 //'
-//' @description
-//' This helper function updates the classes based on weights and locations.
-//'
 //' @param Cmax \[`integer(1)`\]\cr
 //' The maximum number of classes, used to allocate space.
 //'
@@ -570,6 +622,9 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //'
 //' @param deltamin \[`numeric(1)`\]\cr
 //' The threshold difference in class means for joining two classes.
+//'
+//' @param identify_classes \[`logical(1)`\]\cr
+//' Identify classes by decreasing class weights?
 //'
 //' @inheritParams RprobitB_parameter
 //'
@@ -583,9 +638,9 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //'
 //' @examples
 //' ### parameter settings
-//' s <- c(0.8,0.2)
-//' b <- matrix(c(1,1,1,-1), ncol=2)
-//' Omega <- matrix(c(0.5,0.3,0.3,0.5,1,-0.1,-0.1,0.8), ncol=2)
+//' s <- c(0.8, 0.2)
+//' b <- matrix(c(1, 1, 1, -1), ncol = 2)
+//' Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 //'
 //' ### remove class 2
 //' RprobitB:::update_classes_wb(
@@ -597,7 +652,7 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //'   epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
 //' )
 //'
-//' ### join classes 1 and 2
+//' ### merge classes 1 and 2
 //' RprobitB:::update_classes_wb(
 //'   epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
 //' )
@@ -606,21 +661,22 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' A list of updated values for \code{s}, \code{b}, and \code{Omega}.
 //'
 // [[Rcpp::export]]
+
 Rcpp::List update_classes_wb (
    double epsmin, double epsmax, double deltamin,
-   arma::vec s, arma::mat b, arma::mat Omega,
-   int Cmax = 10
+   arma::vec s, arma::mat b, arma::mat Omega, int Cmax = 10,
+   bool identify_classes = false
 ) {
 
-  bool flag = false;
+   bool flag = false;
    int C = b.n_cols;
    int P = b.n_rows;
    double deltashift = deltamin;
-   arma::mat stack = join_cols(trans(s),join_cols(b,Omega));
+   arma::mat stack = join_cols(trans(s), join_cols(b, Omega));
 
    // remove class
-   int id_min = index_min(stack(0,arma::span::all));
-   if(C > 1 && stack(0,id_min) < epsmin){
+   int id_min = index_min(stack(0, arma::span::all));
+   if (C > 1 && stack(0, id_min) < epsmin) {
      C -= 1;
      stack.shed_col(id_min);
      stack.row(0) = stack.row(0) / arma::accu(stack.row(0));
@@ -628,10 +684,12 @@ Rcpp::List update_classes_wb (
    }
 
    // split class
-   if(flag == false && C < Cmax){
-     int id_max = index_max(stack(0,arma::span::all));
-     if(stack(0,id_max) > epsmax){
-       arma::mat max_class_Omega = reshape(stack(arma::span(P+1,P+1+P*P-1),id_max),P,P);
+   if (flag == false && C < Cmax) {
+     int id_max = index_max(stack(0, arma::span::all));
+     if (stack(0, id_max) > epsmax) {
+       arma::mat max_class_Omega = reshape(
+         stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
+       );
        arma::vec eigval;
        arma::mat eigvec;
        eig_sym(eigval, eigvec, max_class_Omega);
@@ -646,16 +704,16 @@ Rcpp::List update_classes_wb (
      }
    }
 
-   //join classes
+   // merge classes
    if (flag == false && C > 1) {
      arma::vec closest_classes = arma::zeros<arma::vec>(3);
      closest_classes(0) = std::numeric_limits<int>::max();
-     for(int c1 = 0; c1 < C; c1++){
-       for(int c2 = 0; c2 < c1; c2++){
-         arma::vec bc1 = stack(arma::span(1,1+P-1),c1);
-         arma::vec bc2 = stack(arma::span(1,1+P-1),c2);
+     for (int c1 = 0; c1 < C; c1++) {
+       for (int c2 = 0; c2 < c1; c2++) {
+         arma::vec bc1 = stack(arma::span(1, 1 + P - 1), c1);
+         arma::vec bc2 = stack(arma::span(1, 1 + P - 1), c2);
          double dev_sq = 0;
-         for(int p=0; p<P; p++){
+         for (int p = 0; p < P; p++) {
            dev_sq += (bc1(p) - bc2(p)) * (bc1(p) - bc2(p));
          }
          double euc_dist = sqrt(dev_sq);
@@ -669,34 +727,33 @@ Rcpp::List update_classes_wb (
      if (closest_classes(0) < deltamin) {
        int c1 = closest_classes(1);
        int c2 = closest_classes(2);
-       stack(0,c1) += stack(0,c2);
-       stack(arma::span(1,1+P-1),c1) += stack(arma::span(1,1+P-1),c2);
-       stack(arma::span(1,1+P-1),c1) /=2;
-       stack(arma::span(1+P,1+P+P*P-1),c1) += stack(arma::span(1+P,1+P+P*P-1),c2);
-       stack(arma::span(1+P,1+P+P*P-1),c1) /=2;
+       stack(0, c1) += stack(0, c2);
+       stack(arma::span(1, 1 + P - 1), c1) +=
+         stack(arma::span(1, 1 + P - 1), c2);
+       stack(arma::span(1, 1 + P - 1), c1) /=2;
+       stack(arma::span(1 + P, 1 + P + P * P - 1), c1) +=
+         stack(arma::span(1 + P, 1 + P + P * P - 1), c2);
+       stack(arma::span(1 + P, 1 + P + P * P - 1), c1) /= 2;
        stack.shed_col(c2);
        C -= 1;
        flag = true;
      }
    }
 
-   //sort s ascending
-   stack = stack.cols(sort_index(stack(0,arma::span::all),"descend"));
+   // identify classes
+   if (identify_classes == true) {
+     stack = stack.cols(sort_index(stack(0, arma::span::all), "descend"));
+   }
 
+   // return class updates
    return Rcpp::List::create(
      Rcpp::Named("s") = stack.row(0),
-     Rcpp::Named("b") = stack.rows(arma::span(1,1+P-1)),
-     Rcpp::Named("Omega") = stack.rows(arma::span(P+1,1+P+P*P-1))
+     Rcpp::Named("b") = stack.rows(arma::span(1, 1 + P - 1)),
+     Rcpp::Named("Omega") = stack.rows(arma::span(P + 1, 1 + P + P * P - 1))
    );
 }
 
 //' Dirichlet process-based class updates
-//'
-//' @description
-//' This helper function updates the classes based on a Dirichlet process.
-//'
-//' @param s_desc
-//' If \code{TRUE}, sort the classes in descending class weight.
 //'
 //' @inheritParams RprobitB_parameter
 //' @inheritParams check_prior
@@ -722,134 +779,237 @@ Rcpp::List update_classes_wb (
 //' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 //'
 // [[Rcpp::export]]
+
 Rcpp::List update_classes_dp (
-   int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+   arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
    double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
-   bool s_desc = true
+   int Cmax = 10, bool identify_classes = false
 ) {
 
-   // helper variables and functions
    Rcpp::Function sample("sample");
    Rcpp::Function seq("seq");
-
-   // sizes
    int N = z.size();
    int C = b.n_cols;
    int P_r = b.n_rows;
-
-   // space allocation for class characteristics
    arma::mat b_full(P_r,Cmax);
-   b_full(arma::span::all,arma::span(0,C-1)) = b;
-   arma::mat Omega_full(P_r*P_r,Cmax);
-   Omega_full(arma::span::all,arma::span(0,C-1)) = Omega;
+   b_full(arma::span::all, arma::span(0, C - 1)) = b;
+   arma::mat Omega_full(P_r * P_r, Cmax);
+   Omega_full(arma::span::all, arma::span(0, C - 1)) = Omega;
    arma::vec m_full(Cmax);
-   m_full(arma::span(0,C-1)) = update_m(C, z, true);
+   m_full(arma::span(0, C - 1)) = update_m(C, z, true);
+   arma::vec logp(C + 1);
 
-   // Dirichlet process
-   for(int n = 0; n<N; n++) {
+   // start Dirichlet process
+   for(int n = 0; n < N; n++) {
 
-     // un-assign initial class membership
-     m_full[z[n]-1] -= 1;
+     // unassign current class membership
+     m_full[z[n] - 1] -= 1;
 
-     if(m_full[z[n]-1] == 0){
-       // remove empty classes
-       m_full[z[n]-1] = m_full[C-1];
+     // remove empty class
+     if (m_full[z[n] - 1] == 0) {
+       m_full[z[n] - 1] = m_full[C - 1];
        z.elem(find(z == C)).fill(z[n]);
-       m_full[C-1] = 0;
+       m_full[C - 1] = 0;
        C -= 1;
-       b_full(arma::span::all,z[n]-1) = arma::zeros<arma::vec>(P_r);
-       Omega_full(arma::span::all,z[n]-1) = arma::zeros<arma::vec>(P_r*P_r);
+       b_full(arma::span::all, z[n] - 1) = arma::zeros<arma::vec>(P_r);
+       Omega_full(arma::span::all, z[n] - 1) = arma::zeros<arma::vec>(P_r *P_r);
      }
 
-     // ensure that z[n] does not get counted
-     z[n] = -1;
+     Rcpp::Rcout << "2" << std::endl;
 
-     // storage for class log-probabilities
-     arma::vec logp(C+1);
-
-     // update class characteristics
-     for(int c = 0; c<C; c++) {
-
-       // extract beta points currently allocated to class c
-       arma::mat beta_c = beta.cols(find(z == c+1));
-
-       // update Omega_c via mean of its posterior distribution
+     // calculate class allocation posteriors
+     for (int c = 0; c < C; c++) {
+       arma::mat beta_c = beta.cols(find(z == c + 1));
        arma::mat beta_c_diff_b = beta_c.each_col() - b_full.col(c);
-       arma::mat Omega_c = (Theta + beta_c_diff_b * trans(beta_c_diff_b)) / (m_full[c] + nu - P_r - 1);
-
-       // compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
-       arma::mat sig_b = arma::inv(arma::inv(D) + m_full[c] * arma::inv(Omega_c));
-       arma::vec mu_b = sig_b * (arma::inv(Omega_c) * arma::sum(beta_c, 1) + arma::inv(D) * xi);
-
-       // compute class assignment log-probabilities for existing classes from PPD
-       logp[c] = log(m_full[c]) + oeli::dmvnorm(beta(arma::span::all,n), mu_b, sig_b + Omega_c, true);
-
-       // save updates
-       b_full(arma::span::all,c) = mu_b;
-       Omega_full(arma::span::all,c) = reshape(Omega_c, P_r*P_r, 1);
+       arma::mat Omega_c = (Theta + beta_c_diff_b * trans(beta_c_diff_b)) /
+         (m_full[c] + nu - P_r - 1);
+       arma::mat sig_b = arma::inv(
+         arma::inv(D) + m_full[c] * arma::inv(Omega_c)
+        );
+       arma::vec mu_b = sig_b *
+         (arma::inv(Omega_c) * arma::sum(beta_c, 1) + arma::inv(D) * xi);
+       logp[c] = log(m_full[c]) +
+         oeli::dmvnorm(beta(arma::span::all,n), mu_b, sig_b, true);
      }
-
-     // compute log-probability for new class
+     // TODO
      arma::vec b_new = xi;
-     arma::mat Omega_new = reshape(Omega_full(arma::span::all,arma::span(0,C-1)) * (m_full(arma::span(0,C-1))/sum(m_full(arma::span(0,C-1)))), P_r, P_r);
-     logp[C] = log(delta) + oeli::dmvnorm(beta(arma::span::all,n), b_new, D + Omega_new, true);
+     arma::mat Omega_new = reshape(
+       Omega_full(arma::span::all, arma::span(0, C - 1)) *
+         (m_full(arma::span(0,C-1))/sum(m_full(arma::span(0, C - 1)))), P_r, P_r);
+     logp[C] = log(delta) +
+       oeli::dmvnorm(beta(arma::span::all,n), b_new, D + Omega_new, true);
 
-     // transform log-probabilities to probabilities
+     // normalize probability vector
      arma::vec loc_probs = exp(logp - max(logp));
      loc_probs = loc_probs / sum(loc_probs);
 
-     // draw new class membership (prevent 'Cmax' from exceeding)
+     // draw new class membership
      int newz;
      if(C == Cmax){
-       newz = Rcpp::as<int>(sample(seq(1,C),1,false,loc_probs(arma::span(0,C-1))));
+       newz = Rcpp::as<int>(
+         sample(seq(1, C), 1, false, loc_probs(arma::span(0, C - 1)))
+       );
      } else {
-       newz = Rcpp::as<int>(sample(seq(1,C+1),1,false,loc_probs(arma::span(0,C))));
+       newz = Rcpp::as<int>(
+         sample(seq(1, C + 1), 1, false, loc_probs(arma::span(0, C)))
+       );
      }
-     // spawn new class (but only if 'Cmax' is not exceeded)
-     if(newz == C+1) {
-       b_full(arma::span::all,C) = b_new;
-       Omega_full(arma::span::all,C) = reshape(Omega_new, P_r*P_r, 1);
+     if (newz == C + 1) {
+       b_full(arma::span::all, C) = b_new;
+       Omega_full(arma::span::all, C) = reshape(Omega_new, P_r * P_r, 1);
        C += 1;
      }
      z[n] = newz;
-     m_full[newz-1] += 1;
+     m_full[newz - 1] += 1;
    }
 
-   // compute class weights
-   arma::vec s_full = m_full / sum(m_full);
-
-   // sort updates with respect to descending class weights s
-   if(s_desc){
-     arma::uvec sortind = arma::sort_index(s_full, "descend");
-     s_full = s_full(sortind);
+   // identify classes
+   if (identify_classes == true) {
+     arma::uvec sortind = arma::sort_index(m_full, "descend");
      b_full = b_full.cols(sortind);
      Omega_full = Omega_full.cols(sortind);
      z += Cmax;
      arma::vec sortind_vec = arma::conv_to<arma::vec>::from(sortind);
-     for(int c = 0; c<C; c++) {
-       for(int n = 0; n<N; n++) {
-         if(z[n] == c+1+Cmax) z[n] = sortind_vec[c] + 1;
+     for (int c = 0; c < C; c++) {
+       for (int n = 0; n < N; n++) {
+         if (z[n] == c + 1 + Cmax) z[n] = sortind_vec[c] + 1;
        }
      }
    }
 
-   // return updates
+   // return class updates
    return(
      Rcpp::List::create(
        Rcpp::Named("z") = z,
-       Rcpp::Named("b") = b_full(arma::span::all, arma::span(0,C-1)),
-       Rcpp::Named("Omega") = Omega_full(arma::span::all, arma::span(0,C-1)),
-       Rcpp::Named("s") = s_full(arma::span(0,C-1)),
+       Rcpp::Named("b") = b_full(arma::span::all, arma::span(0, C - 1)),
+       Rcpp::Named("Omega") = Omega_full(arma::span::all, arma::span(0, C- 1 )),
        Rcpp::Named("C") = C
      )
    );
 }
 
-//' Markov chain Monte Carlo simulation for the probit model
-//'
-//' @description
-//' This function draws from the posterior distribution of the probit model via
-//' Markov chain Monte Carlo simulation-
+// [[Rcpp::export]]
+Rcpp::List update_classes_dp2 (int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+                              double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
+                              bool s_desc = true) {
+
+  // helper variables and functions
+  Rcpp::Function sample("sample");
+  Rcpp::Function seq("seq");
+
+  // sizes
+  int N = z.size();
+  int C = b.n_cols;
+  int P_r = b.n_rows;
+
+  // space allocation for class characteristics
+  arma::mat b_full(P_r,Cmax);
+  b_full(arma::span::all,arma::span(0,C-1)) = b;
+  arma::mat Omega_full(P_r*P_r,Cmax);
+  Omega_full(arma::span::all,arma::span(0,C-1)) = Omega;
+  arma::vec m_full(Cmax);
+  m_full(arma::span(0,C-1)) = update_m(C, z, true);
+
+  // Dirichlet process
+  for(int n = 0; n<N; n++) {
+
+    // un-assign initial class membership
+    m_full[z[n]-1] -= 1;
+
+    if(m_full[z[n]-1] == 0){
+      // remove empty classes
+      m_full[z[n]-1] = m_full[C-1];
+      z.elem(find(z == C)).fill(z[n]);
+      m_full[C-1] = 0;
+      C -= 1;
+      b_full(arma::span::all,z[n]-1) = arma::zeros<arma::vec>(P_r);
+      Omega_full(arma::span::all,z[n]-1) = arma::zeros<arma::vec>(P_r*P_r);
+    }
+
+    // ensure that z[n] does not get counted
+    z[n] = -1;
+
+    // storage for class log-probabilities
+    arma::vec logp(C+1);
+
+    // update class characteristics
+    for(int c = 0; c<C; c++) {
+
+      // extract beta points currently allocated to class c
+      arma::mat beta_c = beta.cols(find(z == c+1));
+
+      // update Omega_c via mean of its posterior distribution
+      arma::mat beta_c_diff_b = beta_c.each_col() - b_full.col(c);
+      arma::mat Omega_c = (Theta + beta_c_diff_b * trans(beta_c_diff_b)) / (m_full[c] + nu - P_r - 1);
+
+      // compute covariance (sig_b) and mean (mu_b) of posterior distribution of b_c
+      arma::mat sig_b = arma::inv(arma::inv(D) + m_full[c] * arma::inv(Omega_c));
+      arma::vec mu_b = sig_b * (arma::inv(Omega_c) * arma::sum(beta_c, 1) + arma::inv(D) * xi);
+
+      // compute class assignment log-probabilities for existing classes from PPD
+      logp[c] = log(m_full[c]) + oeli::dmvnorm(beta(arma::span::all,n), mu_b, sig_b + Omega_c, true);
+
+      // save updates
+      b_full(arma::span::all,c) = mu_b;
+      Omega_full(arma::span::all,c) = reshape(Omega_c, P_r*P_r, 1);
+    }
+
+    // compute log-probability for new class
+    arma::vec b_new = xi;
+    arma::mat Omega_new = reshape(Omega_full(arma::span::all,arma::span(0,C-1)) * (m_full(arma::span(0,C-1))/sum(m_full(arma::span(0,C-1)))), P_r, P_r);
+    logp[C] = log(delta) + oeli::dmvnorm(beta(arma::span::all,n), b_new, D + Omega_new, true);
+
+    // transform log-probabilities to probabilities
+    arma::vec loc_probs = exp(logp - max(logp));
+    loc_probs = loc_probs / sum(loc_probs);
+
+    // draw new class membership (prevent 'Cmax' from exceeding)
+    int newz;
+    if(C == Cmax){
+      newz = Rcpp::as<int>(sample(seq(1,C),1,false,loc_probs(arma::span(0,C-1))));
+    } else {
+      newz = Rcpp::as<int>(sample(seq(1,C+1),1,false,loc_probs(arma::span(0,C))));
+    }
+    // spawn new class (but only if 'Cmax' is not exceeded)
+    if(newz == C+1) {
+      b_full(arma::span::all,C) = b_new;
+      Omega_full(arma::span::all,C) = reshape(Omega_new, P_r*P_r, 1);
+      C += 1;
+    }
+    z[n] = newz;
+    m_full[newz-1] += 1;
+  }
+
+  // compute class weights
+  arma::vec s_full = m_full / sum(m_full);
+
+  // sort updates with respect to descending class weights s
+  if(s_desc){
+    arma::uvec sortind = arma::sort_index(s_full, "descend");
+    s_full = s_full(sortind);
+    b_full = b_full.cols(sortind);
+    Omega_full = Omega_full.cols(sortind);
+    z += Cmax;
+    arma::vec sortind_vec = arma::conv_to<arma::vec>::from(sortind);
+    for(int c = 0; c<C; c++) {
+      for(int n = 0; n<N; n++) {
+        if(z[n] == c+1+Cmax) z[n] = sortind_vec[c] + 1;
+      }
+    }
+  }
+
+  // return updates
+  return(
+    Rcpp::List::create(
+      Rcpp::Named("z") = z,
+      Rcpp::Named("b") = b_full(arma::span::all,arma::span(0,C-1)),
+      Rcpp::Named("Omega") = Omega_full(arma::span::all,arma::span(0,C-1)),
+      Rcpp::Named("s") = s_full(arma::span(0,C-1)),
+      Rcpp::Named("C") = C)
+    );
+}
+
+//' Gibbs sampler for probit models
 //'
 //' @details
 //' This function is not supposed to be called directly, but rather via
@@ -857,10 +1017,14 @@ Rcpp::List update_classes_dp (
 //'
 //' @param sufficient_statistics
 //' The output of \code{\link{sufficient_statistics}}.
+//'
 //' @inheritParams fit_model
+//'
 //' @inheritParams RprobitB_data
+//'
 //' @param init
 //' The output of \code{\link{set_initial_gibbs_values}}.
+//'
 //' @return
 //' A list of Gibbs samples for
 //' \itemize{
@@ -872,10 +1036,10 @@ Rcpp::List update_classes_dp (
 //' and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
 //' entry is the number of latent classes after iteration \code{r}.
 //'
-//' @keywords
-//' internal
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
+
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior, Rcpp::List latent_classes,
     Rcpp::List fixed_parameter, Rcpp::List init, int R, int B, bool print_progress,
@@ -1157,8 +1321,10 @@ Rcpp::List gibbs_sampler (
       }
 
       // weight-based update of classes
-      if(weight_update==true && (r+1)<=B && (r+1)%buffer==0){
-        Rcpp::List class_update = update_classes_wb(epsmin,epsmax,deltamin,s,b,Omega,Cmax);
+      if (weight_update == true && (r + 1) <= B && (r + 1) % buffer == 0) {
+        Rcpp::List class_update = update_classes_wb(
+          epsmin, epsmax, deltamin, s, b, Omega, Cmax, true
+        );
         s = Rcpp::as<arma::vec>(class_update["s"]);
         C = s.size();
         b = Rcpp::as<arma::mat>(class_update["b"]);
@@ -1168,12 +1334,13 @@ Rcpp::List gibbs_sampler (
       }
 
       // dp-based update of classes
-      if(dp_update==true && (r+1)<=B){
-        Rcpp::List class_update = update_classes_dp(Cmax,beta,z,b,Omega,delta,xi,D,nu,Theta,true);
+      if (dp_update == true && (r + 1) <= B) {
+        Rcpp::List class_update = update_classes_dp(
+          beta, z, b, Omega, delta, xi, D, nu, Theta, Cmax, true
+        );
         z = Rcpp::as<arma::vec>(class_update["z"]);
         b = Rcpp::as<arma::mat>(class_update["b"]);
         Omega = Rcpp::as<arma::mat>(class_update["Omega"]);
-        s = Rcpp::as<arma::vec>(class_update["s"]);
         C = Rcpp::as<int>(class_update["C"]);
         m = update_m(C, z, true);
       }
@@ -1314,20 +1481,22 @@ Rcpp::List gibbs_sampler (
     }
 
     // save draws
-    if(P_f>0)
-      alpha_draws(r,arma::span::all) = trans(alpha);
-    if(P_r>0){
-      s_draws(r,arma::span(0,s.size()-1)) = trans(s);
-      z_draws(r,arma::span::all) = trans(z);
+    if (P_f > 0) {
+      alpha_draws(r, arma::span::all) = trans(alpha);
+    }
+    if (P_r > 0) {
+      s_draws(r, arma::span(0, s.size() - 1)) = trans(s);
+      z_draws(r, arma::span::all) = trans(z);
       arma::vec vectorise_b = vectorise(b);
-      b_draws(r,arma::span(0,vectorise_b.size()-1)) = trans(vectorise_b);
+      b_draws(r, arma::span(0, vectorise_b.size() - 1)) = trans(vectorise_b);
       arma::vec vectorise_Omega = vectorise(Omega);
-      Omega_draws(r,arma::span(0,vectorise_Omega.size()-1)) =
+      Omega_draws(r, arma::span(0, vectorise_Omega.size() - 1)) =
         trans(vectorise_Omega);
     }
-    Sigma_draws(r,arma::span::all) = trans(vectorise(Sigma));
-    if(ordered)
-      d_draws(r,arma::span::all) = trans(d);
+    Sigma_draws(r, arma::span::all) = trans(vectorise(Sigma));
+    if (ordered == true) {
+      d_draws(r, arma::span::all) = trans(d);
+    }
   }
 
   // return Gibbs samples
@@ -1339,5 +1508,6 @@ Rcpp::List gibbs_sampler (
     Rcpp::Named("Omega") = Omega_draws,
     Rcpp::Named("Sigma") = Sigma_draws,
     Rcpp::Named("d") = d_draws,
-    Rcpp::Named("class_sequence") = class_sequence);
+    Rcpp::Named("class_sequence") = class_sequence
+  );
 }

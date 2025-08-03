@@ -5,7 +5,6 @@
 \title{Dirichlet process-based class updates}
 \usage{
 update_classes_dp(
-  Cmax,
   beta,
   z,
   b,
@@ -15,13 +14,11 @@ update_classes_dp(
   D,
   nu,
   Theta,
-  s_desc = TRUE
+  Cmax = 10L,
+  identify_classes = FALSE
 )
 }
 \arguments{
-\item{Cmax}{[\code{integer(1)}]\cr
-The maximum number of classes, used to allocate space.}
-
 \item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
 \code{P_r} x \code{N}.
 Set to \code{NA} if \code{P_r = 0}.}
@@ -56,13 +53,17 @@ Per default, \code{nu = P_r + 2}.}
 each \code{Omega_c}.
 Per default, \code{Theta = diag(P_r)}.}
 
-\item{s_desc}{If \code{TRUE}, sort the classes in descending class weight.}
+\item{Cmax}{[\code{integer(1)}]\cr
+The maximum number of classes, used to allocate space.}
+
+\item{identify_classes}{[\code{logical(1)}]\cr
+Identify classes by decreasing class weights?}
 }
 \value{
 A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 }
 \description{
-This helper function updates the classes based on a Dirichlet process.
+Dirichlet process-based class updates
 }
 \examples{
 set.seed(1)

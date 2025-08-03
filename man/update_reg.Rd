@@ -9,7 +9,8 @@ update_reg(mu0, Tau0, XSigX, XSigU)
 \arguments{
 \item{mu0}{The mean vector of the normal prior distribution for the coefficient vector.}
 
-\item{Tau0}{The precision matrix (i.e. inverted covariance matrix) of the normal prior distribution for the coefficient vector.}
+\item{Tau0}{The precision matrix (i.e. inverted covariance matrix) of the normal prior
+distribution for the coefficient vector.}
 
 \item{XSigX}{The matrix \eqn{\sum_{n=1}^N X_n'\Sigma^{-1}X_n}. See below for details.}
 
@@ -20,7 +21,7 @@ A vector, a draw from the normal posterior distribution of the coefficient
 vector in a multiple linear regression.
 }
 \description{
-This function updates the coefficient vector of a multiple linear regression.
+Update coefficient vector of multiple linear regression
 }
 \details{
 This function draws from the posterior distribution of \eqn{\beta} in the linear utility
@@ -58,6 +59,6 @@ XSigX <- Reduce(`+`, lapply(X, function(X) t(X) \%*\% solve(Sigma) \%*\% X))
 XSigU <- Reduce(`+`, mapply(function(X, U) t(X) \%*\% solve(Sigma) \%*\% U, X, U, SIMPLIFY = FALSE))
 beta_draws <- replicate(100, update_reg(mu0, Tau0, XSigX, XSigU), simplify = TRUE)
 rowMeans(beta_draws)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}
