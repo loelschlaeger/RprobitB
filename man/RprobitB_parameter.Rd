@@ -44,6 +44,7 @@ Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
 
 \item{s}{The vector of class weights of length \code{C}.
 Set to \code{NA} if \code{P_r = 0}.
+
 For identifiability, the vector must be non-ascending.}
 
 \item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
@@ -85,6 +86,7 @@ model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
 \description{
 This function creates an object of class \code{RprobitB_parameter}, which
 contains the parameters of a probit model.
+
 If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 }

@@ -3,49 +3,63 @@
 #' @description
 #' This function creates an object of class \code{RprobitB_parameter}, which
 #' contains the parameters of a probit model.
+#'
 #' If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 #' checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
 #'
 #' @inheritParams RprobitB_data
+#'
 #' @param C
 #' The number (greater or equal 1) of latent classes of decision makers.
 #' Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.
+#'
 #' @param alpha
 #' The fixed coefficient vector of length \code{P_f}.
 #' Set to \code{NA} if \code{P_f = 0}.
+#'
 #' @param s
 #' The vector of class weights of length \code{C}.
 #' Set to \code{NA} if \code{P_r = 0}.
+#'
 #' For identifiability, the vector must be non-ascending.
+#'
 #' @param b
 #' The matrix of class means as columns of dimension \code{P_r} x \code{C}.
 #' Set to \code{NA} if \code{P_r = 0}.
+#'
 #' @param Omega
 #' The matrix of class covariance matrices as columns of dimension
 #' \code{P_r*P_r} x \code{C}.
 #' Set to \code{NA} if \code{P_r = 0}.
+#'
 #' @param Sigma
 #' The differenced error term covariance matrix of dimension
 #' \code{J-1} x \code{J-1} with respect to alternative \code{J}.
 #' In case of \code{ordered = TRUE}, a numeric, the single error term variance.
+#'
 #' @param Sigma_full
 #' The error term covariance matrix of dimension \code{J} x \code{J}.
 #' Internally, \code{Sigma_full} gets differenced with respect to alternative
 #' \code{J}, so it becomes an identified covariance matrix of dimension
 #' \code{J-1} x \code{J-1}. \code{Sigma_full} is ignored if \code{Sigma} is
 #' specified or \code{ordered = TRUE}.
+#'
 #' @param beta
 #' The matrix of the decision-maker specific coefficient vectors of dimension
 #' \code{P_r} x \code{N}.
 #' Set to \code{NA} if \code{P_r = 0}.
+#'
 #' @param z
 #' The vector of the allocation variables of length \code{N}.
 #' Set to \code{NA} if \code{P_r = 0}.
+#'
 #' @param d
 #' The numeric vector of the logarithmic increases of the utility thresholds
 #' in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.
+#'
 #' @param sample
 #' A boolean, if \code{TRUE} (default) missing parameters get sampled.
+#'
 #' @param seed
 #' Set a seed for the sampling of missing parameters.
 #'
@@ -63,6 +77,7 @@ RprobitB_parameter <- function(
     P_f, P_r, J, N, ordered = FALSE, alpha = NULL, C = NULL, s = NULL, b = NULL,
     Omega = NULL, Sigma = NULL, Sigma_full = NULL, beta = NULL, z = NULL,
     d = NULL, seed = NULL, sample = TRUE) {
+
   ### seed for sampling missing parameters
   if (!is.null(seed)) {
     set.seed(seed)
@@ -153,7 +168,8 @@ RprobitB_parameter <- function(
       if (is.null(Omega)) {
         Omega <- matrix(0, nrow = P_r * P_r, ncol = C)
         for (c in 1:C) {
-          Omega[, c] <- oeli::rwishart(df = P_r, scale = diag(P_r), inv = TRUE) |>
+          Omega[, c] <- diag(P_r) +
+            oeli::rwishart(df = 2 * P_r, scale = diag(P_r), inv = TRUE) |>
             as.vector()
         }
       }
@@ -233,7 +249,8 @@ RprobitB_parameter <- function(
     } else {
       if (is.null(Sigma)) {
         if (is.null(Sigma_full)) {
-          Sigma_full <- oeli::rwishart(df = J, scale = diag(J), inv = TRUE)
+          Sigma_full <- diag(J) +
+            oeli::rwishart(df = 2 * J, scale = diag(J), inv = TRUE)
         } else {
           Sigma_full <- as.matrix(Sigma_full)
         }

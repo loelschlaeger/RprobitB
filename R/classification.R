@@ -1,38 +1,30 @@
-#' Classify deciders preference-based
+#' Preference-based classification of deciders
 #'
 #' @description
 #' This function classifies the deciders based on their allocation to the
 #' components of the mixing distribution.
 #'
 #' @details
-#' The function can only be used if the model has at least one random effect
-#' (i.e. \code{P_r >= 1}) and at least two latent classes (i.e. \code{C >= 2}).
-#'
-#' In that case, let \eqn{z_1,\dots,z_N} denote the class allocations
-#' of the \eqn{N} deciders based on their estimated mixed coefficients
-#' \eqn{\beta = (\beta_1,\dots,\beta_N)}.
-#' Independently for each decider \eqn{n}, the conditional probability
-#' \eqn{\Pr(z_n = c \mid s,\beta_n,b,\Omega)} of having \eqn{\beta_n}
-#' allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class
-#' allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class
-#' covariance matrices \eqn{Omega=(Omega_c)_c} and is proportional to
-#' \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
-#'
-#' This function displays the relative frequencies of which each decider
-#' was allocated to the classes during the Gibbs sampling. Only the
-#' thinned samples after the burn-in period are considered.
+#' The relative frequencies of which each decider was allocated to the classes
+#' during the Gibbs sampling are displayed. Only the thinned samples after the
+#' burn-in period are considered.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @param add_true
 #' Set to \code{TRUE} to add true class memberships to output (if available).
 #'
 #' @return
-#' A data frame. The row names are the decider ids. The first \code{C} columns
-#' contain the relative frequencies with which the deciders are allocated to
-#' the \code{C} classes. Next, the column \code{est} contains the estimated
-#' class of the decider based on the highest allocation frequency. If
-#' \code{add_true}, the next column \code{true} contains the true class
+#' A `data.frame`.
+#'
+#' The row names are the decider identifiers.
+#'
+#' The first `C` columns contain the relative frequencies with which the `
+#' deciders are allocated to classes. Next, the column `est` contains the
+#' estimated class of the decider based on the highest allocation frequency.
+#'
+#' If `add_true = TRUE`, the next column `true` contains the true class
 #' memberships.
 #'
 #' @seealso
@@ -41,44 +33,51 @@
 #' @export
 
 classification <- function(x, add_true = FALSE) {
-  ### check input
+
+  ### check inputs
   if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be of class 'RprobitB_fit'.",
-         call. = FALSE
-    )
+    stop("'x' must be of class 'RprobitB_fit'.", call. = FALSE)
   }
   if (!isTRUE(add_true) && !isFALSE(add_true)) {
-    stop("'add_true' must be either TRUE or FALSE.",
-         call. = FALSE
-    )
+    stop("'add_true' must be either TRUE or FALSE.", call. = FALSE)
   }
   if (x$data$P_r == 0) {
-    stop("The model has no random coefficients.",
-         call. = FALSE
-    )
+    stop("The model has no random coefficients.", call. = FALSE)
   }
+  if (isTRUE(add_true) && isFALSE(x$data$simulated)) {
+    warning("True class memberships not available.", call. = FALSE)
+    add_true <- FALSE
+  }
+
+  ### extract information
+  samples <- x$gibbs_samples$gibbs_samples_nbt$z
+  C <- x$latent_classes$C
+  N <- x$data$N
+  decider_ids <- unique(x$data$choice_data[[x$data$res_var_names$id]])
 
   ### create allocation matrix
   allo_tables <- apply(
-    X = x$gibbs_samples$gibbs_samples_nbt$z,
+    X = samples,
     MARGIN = 2,
-    FUN = function(x) table(x),
-    simplify = TRUE
+    FUN = function(x) table(factor(x, levels = seq_len(C))),
+    simplify = FALSE
   )
-  allo_matrix <- matrix(0, nrow = x$data$N, ncol = x$latent_classes$C)
-  for (n in 1:x$data$N) {
-    for (c in 1:x$latent_classes$C) {
-      freq <- allo_tables[[n]][c]
-      if (!is.na(freq)) allo_matrix[n, c] <- freq
-    }
+  allo_matrix <- matrix(0, nrow = N, ncol = C)
+  for (n in seq_len(N)) for (c in seq_len(C)) {
+    allo_matrix[n, c] <- allo_tables[[n]][c]
   }
   allo_matrix <- allo_matrix / rowSums(allo_matrix)
   allo_matrix <- cbind(allo_matrix, apply(allo_matrix, 1, which.max))
-  colnames(allo_matrix) <- c(1:x$latent_classes$C, "est")
+  colnames(allo_matrix) <- c(seq_len(C), "est")
+
+  ### add true classes
   if (add_true) {
     allo_matrix <- cbind(allo_matrix, "true" = x$data$true_parameter$z)
   }
+
+  ### return
   allo_matrix <- as.data.frame(allo_matrix)
-  row.names(allo_matrix) <- unique(x$data$choice_data[[x$data$res_var_names$id]])
+  row.names(allo_matrix) <- decider_ids
   return(allo_matrix)
 }
+

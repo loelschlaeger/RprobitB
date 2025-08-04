@@ -4,7 +4,7 @@
 \alias{update_Omega}
 \title{Update class covariances}
 \usage{
-update_Omega(beta, b, z, m, nu, Theta)
+update_Omega(beta, b, z, m, n_Omega_0, V_Omega_0)
 }
 \arguments{
 \item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
@@ -17,15 +17,8 @@ Set to \code{NA} if \code{P_r = 0}.}
 \item{z}{The vector of the allocation variables of length \code{N}.
 Set to \code{NA} if \code{P_r = 0}.}
 
-\item{m}{The vector of class sizes of length \code{C}.}
-
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
-Wishart prior for each \code{Omega_c}.
-Per default, \code{nu = P_r + 2}.}
-
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
-each \code{Omega_c}.
-Per default, \code{Theta = diag(P_r)}.}
+\item{m}{[\code{numeric(C)}]\cr
+The vector of current class frequencies.}
 }
 \value{
 A matrix of updated covariance matrices for each class in columns.
@@ -33,30 +26,19 @@ A matrix of updated covariance matrices for each class in columns.
 \description{
 Update class covariances
 }
-\details{
-The following holds independently for each class \eqn{c}.
-Let \eqn{\Omega_c} be the covariance matrix of class number \code{c}.
-A priori, we assume that \eqn{\Omega_c} is inverse Wishart distributed
-with \eqn{\nu} degrees of freedom and scale matrix \eqn{\Theta}.
-Let \eqn{(\beta_n)_{z_n=c}} be the collection of \eqn{\beta_n} that are currently allocated to class \eqn{c},
-\eqn{m_c} the size of class \eqn{c}, and \eqn{b_c} the class mean vector.
-Due to the conjugacy of the prior, the posterior \eqn{\Pr(\Omega_c \mid (\beta_n)_{z_n=c})} follows an inverted Wishart distribution
-with \eqn{\nu + m_c} degrees of freedom and scale matrix \eqn{\Theta^{-1} + \sum_n (\beta_n - b_c)(\beta_n - b_c)'}, where
-the product is over the values \eqn{n} for which \eqn{z_n=c} holds.
-}
 \examples{
-### N = 100 decider, P_r = 2 random coefficients, and C = 2 latent classes
 N <- 100
-b <- cbind(c(0,0),c(1,1))
-(Omega_true <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2))
-z <- c(rep(1,N/2),rep(2,N/2))
+b <- cbind(c(0, 0), c(1, 1))
+Omega <- matrix(c(1, 0.3, 0.3, 0.5, 1, -0.3, -0.3, 0.8), ncol = 2)
+z <- c(rep(1, N / 2), rep(2, N / 2))
 m <- as.numeric(table(z))
-beta <- sapply(z, function(z) oeli::rmvnorm(n = 1, b[,z], matrix(Omega_true[,z],2,2)))
-### degrees of freedom and scale matrix for the Wishart prior
-nu <- 1
-Theta <- diag(2)
-### updated class covariance matrices (in columns)
-update_Omega(beta = beta, b = b, z = z, m = m, nu = nu, Theta = Theta)
+beta <- sapply(
+  z, function(z) oeli::rmvnorm(n = 1, b[, z], matrix(Omega[, z], 2, 2))
+)
+update_Omega(
+  beta = beta, b = b, z = z, m = m,
+  n_Omega_0 = 4, V_Omega_0 = diag(2)
+)
 
 }
 \keyword{gibbs_sampler}

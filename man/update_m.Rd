@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_m}
 \alias{update_m}
-\title{Update class sizes \code{m}}
+\title{Update class sizes}
 \usage{
 update_m(C, z, non_zero = FALSE)
 }
@@ -20,10 +20,10 @@ Enforce strictly positive values in \code{m} (for numerical stability)?}
 An update for \code{m}.
 }
 \description{
-Update class sizes \code{m}
+Update class sizes
 }
 \examples{
-update_m(C = 3, z = c(1, 1, 1, 2, 2, 3))
+update_m(C = 4, z = c(1, 1, 1, 2, 2, 3))
 
 }
 \keyword{gibbs_sampler}

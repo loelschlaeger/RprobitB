@@ -2,13 +2,14 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_z}
 \alias{update_z}
-\title{Update class allocation vector \code{z}}
+\title{Update class allocation vector}
 \usage{
 update_z(s, beta, b, Omega)
 }
 \arguments{
 \item{s}{The vector of class weights of length \code{C}.
 Set to \code{NA} if \code{P_r = 0}.
+
 For identifiability, the vector must be non-ascending.}
 
 \item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
@@ -26,11 +27,11 @@ Set to \code{NA} if \code{P_r = 0}.}
 An update for \code{z}.
 }
 \description{
-Update class allocation vector \code{z}
+Update class allocation vector
 }
 \examples{
 update_z(
-  s = c(0.5, 0.5), beta = matrix(c(-2, 0, 2), ncol = 3),
+  s = c(0.6, 0.4), beta = matrix(c(-2, 0, 2), ncol = 3),
   b = cbind(0, 1), Omega = cbind(1, 1)
 )
 

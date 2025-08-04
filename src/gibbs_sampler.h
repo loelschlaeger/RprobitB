@@ -1,9 +1,9 @@
 #ifndef GIBBS_SAMPLER_H
 #define GIBBS_SAMPLER_H
 
+#include <oeli.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-#include <oeli.h>
 
 arma::vec update_s (
     int delta, arma::vec m
@@ -17,14 +17,23 @@ arma::vec update_m (
     int C, arma::vec z, bool non_zero = false
 );
 
+arma::mat update_b_c (
+    arma::vec bar_b_c, arma::mat Omega_c, int m_c,
+    arma::mat Sigma_b_0_inv, arma::vec mu_b_0
+);
+
 arma::mat update_b (
     arma::mat beta, arma::mat Omega, arma::vec z, arma::vec m,
-    arma::vec xi, arma::mat Dinv
+    arma::mat Sigma_b_0_inv, arma::vec mu_b_0
+);
+
+arma::mat update_Omega_c (
+    arma::mat S_c, int m_c, int n_Omega_0, arma::mat V_Omega_0
 );
 
 arma::mat update_Omega (
     arma::mat beta, arma::mat b, arma::vec z, arma::vec m,
-    int nu, arma::mat Theta
+    int n_Omega_0, arma::mat V_Omega_0
 );
 
 arma::vec update_reg (
@@ -59,14 +68,10 @@ Rcpp::List update_classes_wb (
 );
 
 Rcpp::List update_classes_dp (
-    arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
-    double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
-    int Cmax = 10, bool identify_classes = false
+  arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+  double delta, arma::vec mu_b_0, arma::mat Sigma_b_0, int n_Omega_0,
+  arma::mat V_Omega_0, bool identify_classes = false, int Cmax = 10
 );
-
-Rcpp::List update_classes_dp2 (int Cmax, arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
-                               double delta, arma::vec xi, arma::mat D, int nu, arma::mat Theta,
-                               bool s_desc = true);
 
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior,

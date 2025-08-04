@@ -27,6 +27,7 @@ The threshold difference in class means for joining two classes.}
 
 \item{s}{The vector of class weights of length \code{C}.
 Set to \code{NA} if \code{P_r = 0}.
+
 For identifiability, the vector must be non-ascending.}
 
 \item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.

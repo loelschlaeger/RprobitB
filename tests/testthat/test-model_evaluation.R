@@ -13,7 +13,8 @@ test_that("choice probabilities can be computed", {
     data = data,
     scale = "price := -1"
   )
-  expect_snapshot(choice_probabilities(model_train))
+  choice_probs <- choice_probabilities(model_train)
+  expect_snapshot(choice_probs)
 })
 
 test_that("creation of labels works", {
@@ -60,17 +61,17 @@ test_that("choice prediction works", {
 })
 
 test_that("preference classification works", {
+  N <- 200
   data <- simulate_choices(
     form = choice ~ cost,
-    N = 100,
-    T = 10,
+    N = N,
+    T = 5,
     J = 3,
     re = c("cost"),
     alternatives = c("train", "bus", "car"),
     seed = 1,
     true_parameter = list(
-      "C" = 2, "s" = c(0.7, 0.3), "b" = matrix(c(2, -2), ncol = 2),
-      "Sigma_full" = diag(3)
+      "C" = 2, "s" = c(0.5, 0.5), "b" = matrix(c(2, -2), ncol = 2)
     )
   )
   model <- fit_model(data,
@@ -78,5 +79,7 @@ test_that("preference classification works", {
     seed = 1,
     latent_classes = list("C" = 2)
   )
-  expect_snapshot(classification(model, add_true = TRUE))
+  classif <- classification(model, add_true = TRUE)
+  expect_snapshot(classif)
+  # sum(classif$est == classif$true) / N
 })

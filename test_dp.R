@@ -1,9 +1,9 @@
 ### parameter specification
 set.seed(1)
-N <- 500
+N <- 200
 s <- c(0.5, 0.3, 0.2)
 z <- sample.int(3, size = N, replace = TRUE, prob = s)
-b <- matrix(c(0, 0, 2, 0, 0, -2), ncol = 3)
+b <- matrix(c(0, 0, 4, 0, 0, -4), ncol = 3)
 Omega <- matrix(
   c(1.3, -1, -1, 1.3, 0.2, 0, 0, 0.2, 0.3, 0.2, 0.2, 0.3), ncol = 3
 )
@@ -14,9 +14,11 @@ beta <- sapply(
 )
 
 ### uninformed parameter values for conjugate prior distributions
-xi <- numeric(2); D <- 10 * diag(2) # mean and covariance for b
-nu <- 4; Theta <- 10 * diag(2)      # df and scale for Omega
-delta <- 1                         # concentration for s
+delta <- 1
+mu_b_0 <- numeric(2)
+Sigma_b_0 <- 10 * diag(2)
+n_Omega_0 <- 4
+V_Omega_0 <- diag(2)
 
 ### uninformed initial parameter values
 z_update <- rep(1, N)
@@ -26,15 +28,22 @@ Omega_update <- matrix(c(1, 0, 0, 1), nrow = 4)
 ### run Dirichlet process
 R <- 1000
 C_seq <- numeric(R)
+z_correct <- numeric(R)
+
 for(r in 1:R) {
-  update <- RprobitB:::update_classes_dp2(
-    Cmax = 10, beta = beta, z = z_update, b = b_update, Omega = Omega_update,
-    delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+  cat(r, "\n")
+  update <- update_classes_dp_new(
+    beta = beta, z = z_update, b = b_update, Omega = Omega_update,
+    delta = delta, mu_b_0 = mu_b_0, Sigma_b_0 = Sigma_b_0,
+    n_Omega_0 = n_Omega_0, V_Omega_0 = V_Omega_0
   )
   z_update <- update$z
   b_update <- update$b
   Omega_update <- update$Omega
   C_seq[r] <- update$C
+  z_correct[r] <- sum(z == z_update) / N
 }
 
 table(C_seq) / R * 100
+z_correct |> plot(type = "l")
+

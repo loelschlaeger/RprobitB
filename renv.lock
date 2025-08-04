@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.4.2",
+    "Version": "4.4.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -1492,7 +1492,7 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "oeli",
       "RemoteUsername": "loelschlaeger",
-      "RemoteSha": "eabd13b838ab56f7e67545ce4fb9366dba6413fa",
+      "RemoteSha": "dfb590bc82f9c5a0ade5629bf1f9265a4b7e9606",
       "Requirements": [
         "R",
         "R6",
@@ -1515,7 +1515,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "dab559010002e5ba939eb5983f6cc583"
+      "Hash": "b3b6d94d5805bdccd157732197f3a084"
     },
     "openssl": {
       "Package": "openssl",

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_s}
 \alias{update_s}
-\title{Update class weight vector \code{s}}
+\title{Update class weight vector}
 \usage{
 update_s(delta, m)
 }
@@ -12,17 +12,17 @@ Dirichlet prior for \code{s}.
 Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
 latent classes, \code{delta = 0.1} per default.}
 
-\item{m}{[\code{numeric()}]\cr
+\item{m}{[\code{numeric(C)}]\cr
 The vector of current class frequencies.}
 }
 \value{
 An update for \code{s}.
 }
 \description{
-Update class weight vector \code{s}
+Update class weight vector
 }
 \examples{
-update_s(delta = 1, m = sample.int(4))
+update_s(delta = 1, m = 4:1)
 
 }
 \keyword{gibbs_sampler}

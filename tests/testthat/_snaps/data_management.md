@@ -73,12 +73,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            3
-      - 'A,C,B'            9
-      - 'B,A,C'            4
-      - 'B,C,A'           17
+      - 'A,B,C'            4
+      - 'A,C,B'            3
+      - 'B,A,C'           11
+      - 'B,C,A'           14
       - 'C,A,B'            7
-      - 'C,B,A'           15
+      - 'C,B,A'           16
 
 # data preparation with non-standard base alternative works
 
@@ -117,9 +117,9 @@
       choice occasions  1-10
       total choices       55
       alternatives         3
-      - 'bus'              7
-      - 'car'             22
-      - 'train'           26
+      - 'bus'             10
+      - 'car'             17
+      - 'train'           28
 
 # simulating ordered choices works
 
@@ -161,12 +161,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            3
-      - 'A,C,B'            9
-      - 'B,A,C'            4
-      - 'B,C,A'           17
+      - 'A,B,C'            4
+      - 'A,C,B'            3
+      - 'B,A,C'           11
+      - 'B,C,A'           14
       - 'C,A,B'            7
-      - 'C,B,A'           15
+      - 'C,B,A'           16
 
 # splitting data set by N works
 
