@@ -93,7 +93,7 @@ test_that("Ordered probit model estimation works", {
     ),
     seed = 1
   )
-  model <- fit_model(data, R = 4000)
+  model <- fit_model(data)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))

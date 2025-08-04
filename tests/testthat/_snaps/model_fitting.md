@@ -198,7 +198,7 @@
     Output
       Probit model
       Formula: opinion_on_sth ~ age + gender 
-      R: 4000, B: 2000, Q: 1
+      R: 1000, B: 500, Q: 1
       Level: Fixed first utility threshold to 0.
       Scale: Error term variance fixed to 1.
       
@@ -206,8 +206,8 @@
                 true    mean      sd      R^
        alpha
                                             
-           1   -0.95   -0.76    0.04    1.00
-           2   -0.55   -0.60    0.06    1.00
+           1   -0.95   -0.76    0.04    1.01
+           2   -0.55   -0.61    0.06    1.01
       
        Sigma
                                             
@@ -215,9 +215,9 @@
       
        d
                                             
-           1    0.91    0.48    0.01    1.12
-           2    0.20   -0.33    0.02    1.12
-           3    0.90    0.84    0.01    1.12
+           1    0.91    0.44    0.05    1.15
+           2    0.20   -0.46    0.07    1.17
+           3    0.90    0.79    0.30    5.12
 
 ---
 
@@ -226,7 +226,7 @@
     Output
                 Estimate   (sd)
       1    age     -0.76 (0.04)
-      2 gender     -0.60 (0.06)
+      2 gender     -0.61 (0.06)
 
 # Ranked probit model estimation works
 

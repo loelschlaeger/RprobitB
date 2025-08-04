@@ -10,12 +10,12 @@ update_classes_dp(
   b,
   Omega,
   delta,
-  xi,
-  D,
-  nu,
-  Theta,
-  Cmax = 10L,
-  identify_classes = FALSE
+  mu_b_0,
+  Sigma_b_0,
+  n_Omega_0,
+  V_Omega_0,
+  identify_classes = FALSE,
+  Cmax = 10L
 )
 }
 \arguments{
@@ -38,26 +38,11 @@ Dirichlet prior for \code{s}.
 Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
 latent classes, \code{delta = 0.1} per default.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
-Per default, \code{xi = numeric(P_r)}.}
-
-\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal prior for
-each \code{b_c}.
-Per default, \code{D = diag(P_r)}.}
-
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
-Wishart prior for each \code{Omega_c}.
-Per default, \code{nu = P_r + 2}.}
-
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
-each \code{Omega_c}.
-Per default, \code{Theta = diag(P_r)}.}
+\item{identify_classes}{[\code{logical(1)}]\cr
+Identify classes by decreasing class weights?}
 
 \item{Cmax}{[\code{integer(1)}]\cr
 The maximum number of classes, used to allocate space.}
-
-\item{identify_classes}{[\code{logical(1)}]\cr
-Identify classes by decreasing class weights?}
 }
 \value{
 A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.

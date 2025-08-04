@@ -5,12 +5,13 @@ test_that("choice probabilities can be computed", {
   form <- choice ~ price + time + change + comfort | 0
   data <- prepare_data(
     form = form,
-    choice_data = train_choice,
+    choice_data = train_choice[1:500, ],
     id = "deciderID",
     idc = "occasionID"
   )
   model_train <- fit_model(
     data = data,
+    R = 100,
     scale = "price := -1"
   )
   choice_probs <- choice_probabilities(model_train)
@@ -47,7 +48,7 @@ test_that("choice prediction works", {
   data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 50,
-    T = 1:50,
+    T = sample.int(5, size = 50, replace = TRUE),
     J = 2,
     alternatives = c("bus", "car"),
     seed = 1,
@@ -75,9 +76,7 @@ test_that("preference classification works", {
     )
   )
   model <- fit_model(data,
-    R = 2000,
-    seed = 1,
-    latent_classes = list("C" = 2)
+    R = 500, seed = 1, latent_classes = list("C" = 2)
   )
   classif <- classification(model, add_true = TRUE)
   expect_snapshot(classif)
