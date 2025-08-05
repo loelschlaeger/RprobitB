@@ -67,3 +67,4 @@ RprobitB:::update_classes_dp(
 )
 
 }
+\keyword{gibbs_sampler}

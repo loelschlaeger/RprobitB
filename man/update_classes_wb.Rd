@@ -92,3 +92,4 @@ RprobitB:::update_classes_wb(
 )
 
 }
+\keyword{gibbs_sampler}

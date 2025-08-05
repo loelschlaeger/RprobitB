@@ -530,6 +530,10 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' - `2`: split class
 #' - `3`: merged classes
 #'
+#' @export
+#'
+#' @keywords gibbs_sampler
+#'
 update_classes_wb <- function(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L, identify_classes = FALSE) {
     .Call(`_RprobitB_update_classes_wb`, epsmin, epsmax, deltamin, s, b, Omega, Cmax, identify_classes)
 }
@@ -558,6 +562,10 @@ update_classes_wb <- function(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L,
 #'
 #' @return
 #' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
+#'
+#' @export
+#'
+#' @keywords gibbs_sampler
 #'
 update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Omega_0, V_Omega_0, identify_classes = FALSE, Cmax = 10L) {
     .Call(`_RprobitB_update_classes_dp`, beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Omega_0, V_Omega_0, identify_classes, Cmax)

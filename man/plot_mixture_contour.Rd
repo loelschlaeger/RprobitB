@@ -4,16 +4,21 @@
 \alias{plot_mixture_contour}
 \title{Plot bivariate contour of Gaussian mixture}
 \usage{
-plot_mixture_contour(means, covs, weights, names)
+plot_mixture_contour(means, covs, weights, names = c("1", "2"))
 }
 \arguments{
-\item{means}{The class means.}
+\item{means}{[\code{list(C)}]\cr
+The class means. Each list element must be a vector of length 2.}
 
-\item{covs}{The class covariances.}
+\item{covs}{[\code{list(C)}]\cr
+The class covariances. Each list element must be covariance matrix of
+dimension 2.}
 
-\item{weights}{The class weights.}
+\item{weights}{[\code{numeric(C)}]\cr
+The class weights.}
 
-\item{names}{The covariate names.}
+\item{names}{[\code{character(2)}]\cr
+The covariate names.}
 }
 \value{
 An object of class \code{ggplot}.

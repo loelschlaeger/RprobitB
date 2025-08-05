@@ -711,6 +711,10 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' - `2`: split class
 //' - `3`: merged classes
 //'
+//' @export
+//'
+//' @keywords gibbs_sampler
+//'
 // [[Rcpp::export]]
 
 Rcpp::List update_classes_wb (
@@ -829,6 +833,10 @@ Rcpp::List update_classes_wb (
 //'
 //' @return
 //' A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
+//'
+//' @export
+//'
+//' @keywords gibbs_sampler
 //'
 // [[Rcpp::export]]
 
