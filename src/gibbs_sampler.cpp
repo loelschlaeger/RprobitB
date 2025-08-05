@@ -682,6 +682,11 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' b <- matrix(c(1, 1, 1, -1), ncol = 2)
 //' Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 //'
+//' ### no update
+//' RprobitB:::update_classes_wb(
+//'   epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
+//' )
+//'
 //' ### remove class 2
 //' RprobitB:::update_classes_wb(
 //'   epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
@@ -698,7 +703,13 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' )
 //'
 //' @return
-//' A list of updated values for \code{s}, \code{b}, and \code{Omega}.
+//' A list of updated values for \code{s}, \code{b}, and \code{Omega} and
+//' the indicator \code{update_type} which signals the type of class update:
+//'
+//' - `0`: no update
+//' - `1`: removed class
+//' - `2`: split class
+//' - `3`: merged classes
 //'
 // [[Rcpp::export]]
 
@@ -708,89 +719,90 @@ Rcpp::List update_classes_wb (
    bool identify_classes = false
 ) {
 
-   bool flag = false;
-   int C = b.n_cols;
-   int P = b.n_rows;
-   double deltashift = deltamin;
-   arma::mat stack = join_cols(trans(s), join_cols(b, Omega));
+  int update_type = 0;
+  int C = b.n_cols;
+  int P = b.n_rows;
+  double deltashift = 0.5;
+  arma::mat stack = join_cols(trans(s), join_cols(b, Omega));
 
-   // remove class
-   int id_min = index_min(stack(0, arma::span::all));
-   if (C > 1 && stack(0, id_min) < epsmin) {
-     C -= 1;
-     stack.shed_col(id_min);
-     stack.row(0) = stack.row(0) / arma::accu(stack.row(0));
-     flag = true;
-   }
+  // remove class
+  int id_min = index_min(stack(0, arma::span::all));
+  if (C > 1 && stack(0, id_min) < epsmin) {
+    C -= 1;
+    stack.shed_col(id_min);
+    stack.row(0) = stack.row(0) / arma::accu(stack.row(0));
+    update_type = 1;
+  }
 
-   // split class
-   if (flag == false && C < Cmax) {
-     int id_max = index_max(stack(0, arma::span::all));
-     if (stack(0, id_max) > epsmax) {
-       arma::mat max_class_Omega = reshape(
-         stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
-       );
-       arma::vec eigval;
-       arma::mat eigvec;
-       eig_sym(eigval, eigvec, max_class_Omega);
-       arma::vec v = eigvec.col(P - 1);
-       arma::vec mean_shift = deltashift * std::sqrt(eigval(P - 1)) * v;
-       stack.insert_cols(id_max, stack(arma::span::all, id_max));
-       stack(0, arma::span(id_max, id_max + 1)) /= 2;
-       stack(arma::span(1, 1 + P - 1), id_max) += mean_shift;
-       stack(arma::span(1, 1 + P - 1), id_max + 1) -= mean_shift;
-       C += 1;
-       flag = true;
-     }
-   }
+  // split class
+  if (update_type == 0 && C < Cmax) {
+    int id_max = index_max(stack(0, arma::span::all));
+    if (stack(0, id_max) > epsmax) {
+      arma::mat max_class_Omega = reshape(
+        stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
+      );
+      arma::vec eigval;
+      arma::mat eigvec;
+      eig_sym(eigval, eigvec, max_class_Omega);
+      arma::vec v = eigvec.col(P - 1);
+      arma::vec mean_shift = deltashift * std::sqrt(eigval(P - 1)) * v;
+      stack.insert_cols(id_max, stack(arma::span::all, id_max));
+      stack(0, arma::span(id_max, id_max + 1)) /= 2;
+      stack(arma::span(1, 1 + P - 1), id_max) += mean_shift;
+      stack(arma::span(1, 1 + P - 1), id_max + 1) -= mean_shift;
+      C += 1;
+      update_type = 2;
+    }
+  }
 
-   // merge classes
-   if (flag == false && C > 1) {
-     arma::vec closest_classes = arma::zeros<arma::vec>(3);
-     closest_classes(0) = std::numeric_limits<int>::max();
-     for (int c1 = 0; c1 < C; ++c1) {
-       for (int c2 = 0; c2 < c1; ++c2) {
-         arma::vec bc1 = stack(arma::span(1, 1 + P - 1), c1);
-         arma::vec bc2 = stack(arma::span(1, 1 + P - 1), c2);
-         double dev_sq = 0;
-         for (int p = 0; p < P; ++p) {
-           dev_sq += (bc1(p) - bc2(p)) * (bc1(p) - bc2(p));
-         }
-         double euc_dist = sqrt(dev_sq);
-         if(euc_dist < closest_classes(0)) {
-           closest_classes(0) = euc_dist;
-           closest_classes(1) = c1;
-           closest_classes(2) = c2;
-         }
-       }
-     }
-     if (closest_classes(0) < deltamin) {
-       int c1 = closest_classes(1);
-       int c2 = closest_classes(2);
-       stack(0, c1) += stack(0, c2);
-       stack(arma::span(1, 1 + P - 1), c1) +=
-         stack(arma::span(1, 1 + P - 1), c2);
-       stack(arma::span(1, 1 + P - 1), c1) /=2;
-       stack(arma::span(1 + P, 1 + P + P * P - 1), c1) +=
-         stack(arma::span(1 + P, 1 + P + P * P - 1), c2);
-       stack(arma::span(1 + P, 1 + P + P * P - 1), c1) /= 2;
-       stack.shed_col(c2);
-       C -= 1;
-       flag = true;
-     }
-   }
+  // merge classes
+  if (update_type == 0 && C > 1) {
+    arma::vec closest_classes = arma::zeros<arma::vec>(3);
+    closest_classes(0) = std::numeric_limits<int>::max();
+    for (int c1 = 0; c1 < C; ++c1) {
+      for (int c2 = 0; c2 < c1; ++c2) {
+        arma::vec bc1 = stack(arma::span(1, 1 + P - 1), c1);
+        arma::vec bc2 = stack(arma::span(1, 1 + P - 1), c2);
+        double dev_sq = 0;
+        for (int p = 0; p < P; ++p) {
+          dev_sq += (bc1(p) - bc2(p)) * (bc1(p) - bc2(p));
+        }
+        double euc_dist = sqrt(dev_sq);
+        if(euc_dist < closest_classes(0)) {
+          closest_classes(0) = euc_dist;
+          closest_classes(1) = c1;
+          closest_classes(2) = c2;
+        }
+      }
+    }
+    if (closest_classes(0) < deltamin) {
+      int c1 = closest_classes(1);
+      int c2 = closest_classes(2);
+      stack(0, c1) += stack(0, c2);
+      stack(arma::span(1, 1 + P - 1), c1) +=
+        stack(arma::span(1, 1 + P - 1), c2);
+      stack(arma::span(1, 1 + P - 1), c1) /=2;
+      stack(arma::span(1 + P, 1 + P + P * P - 1), c1) +=
+        stack(arma::span(1 + P, 1 + P + P * P - 1), c2);
+      stack(arma::span(1 + P, 1 + P + P * P - 1), c1) /= 2;
+      stack.shed_col(c2);
+      C -= 1;
+      update_type = 3;
+    }
+  }
 
-   // identify classes
-   if (identify_classes == true) {
-     stack = stack.cols(sort_index(stack(0, arma::span::all), "descend"));
-   }
+  // identify classes
+  if (identify_classes == true) {
+    stack = stack.cols(sort_index(stack(0, arma::span::all), "descend"));
+  }
 
-   // return class updates
-   return Rcpp::List::create(
-     Rcpp::Named("s") = stack.row(0),
-     Rcpp::Named("b") = stack.rows(arma::span(1, 1 + P - 1)),
-     Rcpp::Named("Omega") = stack.rows(arma::span(P + 1, 1 + P + P * P - 1))
-   );
+  // return class updates
+  return Rcpp::List::create(
+    Rcpp::Named("s") = stack.row(0),
+    Rcpp::Named("b") = stack.rows(arma::span(1, 1 + P - 1)),
+    Rcpp::Named("Omega") = stack.rows(arma::span(P + 1, 1 + P + P * P - 1)),
+    Rcpp::Named("update_type") = update_type
+  );
 }
 
 //' Dirichlet process-based class updates

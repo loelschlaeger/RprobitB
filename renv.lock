@@ -1492,7 +1492,7 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "oeli",
       "RemoteUsername": "loelschlaeger",
-      "RemoteSha": "dfb590bc82f9c5a0ade5629bf1f9265a4b7e9606",
+      "RemoteSha": "ea0e1155e9c5e55e43ebf59472b489d6bd318505",
       "Requirements": [
         "R",
         "R6",
@@ -1508,6 +1508,7 @@
         "ggplot2",
         "glue",
         "hexSticker",
+        "mvtnorm",
         "progressr",
         "stats",
         "testthat",
@@ -1515,7 +1516,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "b3b6d94d5805bdccd157732197f3a084"
+      "Hash": "c63f14adee91827b0b85b064107be75c"
     },
     "openssl": {
       "Package": "openssl",

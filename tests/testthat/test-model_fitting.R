@@ -117,12 +117,12 @@ test_that("Ranked probit model estimation works", {
 test_that("setting fixed parameters for the Gibbs sampling works", {
   par <- list("Sigma" = 1, "alpha" = 1:2, b = 1, Omega = 0.1)
   data <- simulate_choices(
-    form = choice ~ a | b, N = 10, T = 1:10, J = 2, seed = 1, base = "B",
+    form = choice ~ a | b, N = 100, T = 5, J = 2, seed = 1, base = "B",
     re = "b", true_parameter = par
   )
   model <- fit_model(
     data,
-    R = 2000, seed = 1, fixed_parameter = par
+    R = 1000, seed = 1, fixed_parameter = par
   )
   true <- do.call(
     what = RprobitB_parameter,

@@ -234,24 +234,24 @@ compute_choice_probabilities <- function(
             sapply(
               X = seq_along(s),
               FUN = function(c) {
-                s[c] * mvtnorm::pmvnorm(
-                  lower = rep(-Inf, J - 1),
-                  upper = as.vector(-delta_j %*% X %*% c(alpha, b[, c])),
+                s[c] * oeli::pmvnorm_cpp(
+                  x = as.vector(-delta_j %*% X %*% c(alpha, b[, c])),
                   mean = rep(0, J - 1),
-                  sigma = delta_j %*%
+                  Sigma = delta_j %*%
                     (X[, -(1:P_f)] %*% matrix(Omega[, c], P_r, P_r) %*%
-                       t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta_j)
+                       t(X[, -(1:P_f)]) + Sigma_full) %*% t(delta_j),
+                  abseps = 0.01
                 )
               }
             )
           )
         } else {
-          probabilities[j] <- mvtnorm::pmvnorm(
-            lower = rep(-Inf, J - 1),
-            upper = as.vector(-delta_j %*% X %*% alpha),
+          probabilities[j] <- oeli::pmvnorm_cpp(
+            x = as.vector(-delta_j %*% X %*% alpha),
             mean = rep(0, J - 1),
-            sigma = delta_j %*% Sigma_full %*% t(delta_j)
-          )[1]
+            Sigma = delta_j %*% Sigma_full %*% t(delta_j),
+            abseps = 0.01
+          )
         }
       } else {
         if (P_r > 0) {
@@ -259,24 +259,24 @@ compute_choice_probabilities <- function(
             sapply(
               X = seq_along(s),
               FUN = function(c) {
-                s[c] * mvtnorm::pmvnorm(
-                  lower = rep(-Inf, J - 1),
-                  upper = as.vector(-delta_j %*% X %*% b[, c]),
+                s[c] * oeli::pmvnorm_cpp(
+                  x = as.vector(-delta_j %*% X %*% b[, c]),
                   mean = rep(0, J - 1),
-                  sigma = delta_j %*%
+                  Sigma = delta_j %*%
                     (X %*% matrix(Omega[, c], P_r, P_r) %*% t(X) + Sigma_full) %*%
-                    t(delta_j)
+                    t(delta_j),
+                  abseps = 0.01
                 )
               }
             )
           )
         } else {
-          probabilities[j] <- mvtnorm::pmvnorm(
-            lower = rep(-Inf, J - 1),
-            upper = rep(0, J - 1),
+          probabilities[j] <- oeli::pmvnorm_cpp(
+            x = rep(0, J - 1),
             mean = rep(0, J - 1),
-            sigma = delta_j %*% Sigma_full %*% t(delta_j)
-          )[1]
+            Sigma = delta_j %*% Sigma_full %*% t(delta_j),
+            abseps = 0.01
+          )
         }
       }
     }

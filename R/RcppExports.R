@@ -501,6 +501,11 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' b <- matrix(c(1, 1, 1, -1), ncol = 2)
 #' Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 #'
+#' ### no update
+#' RprobitB:::update_classes_wb(
+#'   epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
+#' )
+#'
 #' ### remove class 2
 #' RprobitB:::update_classes_wb(
 #'   epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
@@ -517,7 +522,13 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' )
 #'
 #' @return
-#' A list of updated values for \code{s}, \code{b}, and \code{Omega}.
+#' A list of updated values for \code{s}, \code{b}, and \code{Omega} and
+#' the indicator \code{update_type} which signals the type of class update:
+#'
+#' - `0`: no update
+#' - `1`: removed class
+#' - `2`: split class
+#' - `3`: merged classes
 #'
 update_classes_wb <- function(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L, identify_classes = FALSE) {
     .Call(`_RprobitB_update_classes_wb`, epsmin, epsmax, deltamin, s, b, Omega, Cmax, identify_classes)

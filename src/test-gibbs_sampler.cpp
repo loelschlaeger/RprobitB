@@ -141,12 +141,23 @@ test_that("weight-based updating scheme works") {
   Omega.col(0) = arma::vec({0.5, 0.3, 0.3, 0.5});
   Omega.col(1) = arma::vec({1.0, -0.1, -0.1, 0.8});
 
+  // no update
+  Rcpp::List update_no_update = update_classes_wb(
+    0.1, 0.9, 1, s, b, Omega, 10, true
+  );
+  arma::vec s_update_no_update = update_no_update["s"];
+  expect_true(s_update_no_update.size() == 2);
+  int update_type_no_update = update_no_update["update_type"];
+  expect_true(update_type_no_update == 0);
+
   // remove class
   Rcpp::List update_remove = update_classes_wb(
     0.3, 0.9, 1, s, b, Omega, 10, true
   );
   arma::vec s_update_remove = update_remove["s"];
   expect_true(s_update_remove.size() == 1);
+  int update_type_remove  = update_remove["update_type"];
+  expect_true(update_type_remove  == 1);
 
   // split class
   Rcpp::List update_split = update_classes_wb(
@@ -154,6 +165,8 @@ test_that("weight-based updating scheme works") {
   );
   arma::vec s_update_split = update_split["s"];
   expect_true(s_update_split.size() == 3);
+  int update_type_split  = update_split["update_type"];
+  expect_true(update_type_split  == 2);
 
   // merge classes
   Rcpp::List update_merge = update_classes_wb(
@@ -161,6 +174,8 @@ test_that("weight-based updating scheme works") {
   );
   arma::vec s_update_merge = update_merge["s"];
   expect_true(s_update_merge.size() == 1);
+  int update_type_merge  = update_merge["update_type"];
+  expect_true(update_type_merge  == 3);
 }
 
 }

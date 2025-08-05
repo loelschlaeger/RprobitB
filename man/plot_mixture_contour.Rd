@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_mixture_contour.R
 \name{plot_mixture_contour}
 \alias{plot_mixture_contour}
-\title{Plot bivariate contour of mixing distributions}
+\title{Plot bivariate contour of Gaussian mixture}
 \usage{
 plot_mixture_contour(means, covs, weights, names)
 }
@@ -19,6 +19,5 @@ plot_mixture_contour(means, covs, weights, names)
 An object of class \code{ggplot}.
 }
 \description{
-This function plots an estimated bivariate contour mixing distributions.
+Plot bivariate contour of Gaussian mixture
 }
-\keyword{internal}

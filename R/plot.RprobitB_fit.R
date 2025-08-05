@@ -5,6 +5,7 @@
 #'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
+#'
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
@@ -13,12 +14,12 @@
 #'   \item \code{"trace"} for trace plots of the Gibbs samples,
 #'   \item \code{"class_seq"} to visualize the sequence of class numbers.
 #' }
-#' See the details section for visualization options.
+#'
 #' @param ignore
-#' A character (vector) of covariate or parameter names that do not get
-#' visualized.
+#' The covariate or parameter names that do not get visualized.
+#'
 #' @param ...
-#' Ignored.
+#' Currently not used.
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -26,6 +27,7 @@
 #' @export
 
 plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
+
   ### check inputs
   if (!inherits(x, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.")

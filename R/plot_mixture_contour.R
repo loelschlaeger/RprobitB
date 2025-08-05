@@ -1,23 +1,31 @@
-#' Plot bivariate contour of mixing distributions
+#' Plot bivariate contour of Gaussian mixture
 #'
-#' @description
-#' This function plots an estimated bivariate contour mixing distributions.
+#' @param means \[`list(C)`\]\cr
+#' The class means. Each list element must be a vector of length 2.
 #'
-#' @param means
-#' The class means.
-#' @param covs
-#' The class covariances.
-#' @param weights
+#' @param covs \[`list(C)`\]\cr
+#' The class covariances. Each list element must be covariance matrix of
+#' dimension 2.
+#'
+#' @param weights \[`numeric(C)`\]\cr
 #' The class weights.
-#' @param names
+#'
+#' @param names \[`character(2)`\]\cr
 #' The covariate names.
+#'
 #' @return
 #' An object of class \code{ggplot}.
 #'
-#' @keywords
-#' internal
+#' @export
 
-plot_mixture_contour <- function(means, covs, weights, names) {
+plot_mixture_contour <- function(
+    means, covs, weights, names = c("1", "2")
+  ) {
+
+  ### input checks
+
+
+  ### plotting
   C <- length(weights)
   x_min <- min(mapply(function(x, y) x[1] - 5 * y[1, 1], means, covs))
   x_max <- max(mapply(function(x, y) x[1] + 5 * y[1, 1], means, covs))
@@ -30,7 +38,6 @@ plot_mixture_contour <- function(means, covs, weights, names) {
   z <- Reduce("+", sapply(1:C, function(c) {
     mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]])
   }, simplify = FALSE))
-
   x <- y <- grp <- NULL
   out <- ggplot2::ggplot(
     data = cbind(data.grid, z),
@@ -38,7 +45,6 @@ plot_mixture_contour <- function(means, covs, weights, names) {
   ) +
     ggplot2::geom_contour() +
     ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
-
   if (C > 1) {
     class_means <- data.frame(
       x = sapply(means, "[[", 1), y = sapply(means, "[[", 2), z = 0,
@@ -52,6 +58,5 @@ plot_mixture_contour <- function(means, covs, weights, names) {
         show.legend = FALSE
       )
   }
-
   return(out)
 }

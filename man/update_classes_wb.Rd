@@ -44,7 +44,14 @@ The maximum number of classes, used to allocate space.}
 Identify classes by decreasing class weights?}
 }
 \value{
-A list of updated values for \code{s}, \code{b}, and \code{Omega}.
+A list of updated values for \code{s}, \code{b}, and \code{Omega} and
+the indicator \code{update_type} which signals the type of class update:
+\itemize{
+\item \code{0}: no update
+\item \code{1}: removed class
+\item \code{2}: split class
+\item \code{3}: merged classes
+}
 }
 \description{
 Weight-based class updates
@@ -63,6 +70,11 @@ The following updating rules apply:
 s <- c(0.8, 0.2)
 b <- matrix(c(1, 1, 1, -1), ncol = 2)
 Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
+
+### no update
+RprobitB:::update_classes_wb(
+  epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
+)
 
 ### remove class 2
 RprobitB:::update_classes_wb(
