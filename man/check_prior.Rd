@@ -41,7 +41,8 @@ Per default, \code{Psi = diag(P_f)}.}
 
 \item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
 Dirichlet prior for \code{s}.
-Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
+
+Per default, \code{delta = 1}. In case of Dirichlet process updates of the
 latent classes, \code{delta = 0.1} per default.}
 
 \item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.

@@ -62,9 +62,9 @@ Rcpp::List update_d (
 );
 
 Rcpp::List update_classes_wb (
-    double epsmin, double epsmax, double deltamin,
     arma::vec s, arma::mat b, arma::mat Omega,
-    int Cmax = 10, bool identify_classes = false
+    double epsmin = 0.01, double epsmax = 0.7, double deltamin = 0.1,
+    double deltashift = 0.5, bool identify_classes = false, int Cmax = 10
 );
 
 Rcpp::List update_classes_dp (

@@ -25,7 +25,7 @@ test_that("RprobitB_latent_class setting works", {
   )
   expect_snapshot(
     (out <- RprobitB_latent_classes(list(
-      "weight_update" = TRUE,
+      "wb_update" = TRUE,
       "dp_update" = TRUE
     )))
   )

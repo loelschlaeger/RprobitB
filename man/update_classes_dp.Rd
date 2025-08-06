@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_classes_dp}
 \alias{update_classes_dp}
-\title{Dirichlet process-based class updates}
+\title{Dirichlet process class updates}
 \usage{
 update_classes_dp(
   beta,
@@ -35,7 +35,8 @@ Set to \code{NA} if \code{P_r = 0}.}
 
 \item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
 Dirichlet prior for \code{s}.
-Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
+
+Per default, \code{delta = 1}. In case of Dirichlet process updates of the
 latent classes, \code{delta = 0.1} per default.}
 
 \item{identify_classes}{[\code{logical(1)}]\cr
@@ -48,7 +49,7 @@ The maximum number of classes, used to allocate space.}
 A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 }
 \description{
-Dirichlet process-based class updates
+Dirichlet process class updates
 }
 \examples{
 set.seed(1)

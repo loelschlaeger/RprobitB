@@ -130,48 +130,40 @@ test_that("class covariances Omega can be updated") {
 
 test_that("weight-based updating scheme works") {
   arma::vec s(2);
-  s[0] = 0.8;
-  s[1] = 0.2;
+  s[0] = 0.7;
+  s[1] = 0.3;
   arma::mat b = arma::mat(2, 2);
-  b(0, 0) =  1;
-  b(0, 1) =  1;
-  b(1, 0) =  1;
+  b(0, 0) = 1;
+  b(0, 1) = 1;
+  b(1, 0) = 1;
   b(1, 1) = -1;
   arma::mat Omega(4, 2);
   Omega.col(0) = arma::vec({0.5, 0.3, 0.3, 0.5});
   Omega.col(1) = arma::vec({1.0, -0.1, -0.1, 0.8});
 
   // no update
-  Rcpp::List update_no_update = update_classes_wb(
-    0.1, 0.9, 1, s, b, Omega, 10, true
-  );
+  Rcpp::List update_no_update = update_classes_wb(s, b, Omega);
   arma::vec s_update_no_update = update_no_update["s"];
   expect_true(s_update_no_update.size() == 2);
   int update_type_no_update = update_no_update["update_type"];
   expect_true(update_type_no_update == 0);
 
   // remove class
-  Rcpp::List update_remove = update_classes_wb(
-    0.3, 0.9, 1, s, b, Omega, 10, true
-  );
+  Rcpp::List update_remove = update_classes_wb(s, b, Omega, 0.31);
   arma::vec s_update_remove = update_remove["s"];
   expect_true(s_update_remove.size() == 1);
   int update_type_remove  = update_remove["update_type"];
   expect_true(update_type_remove  == 1);
 
   // split class
-  Rcpp::List update_split = update_classes_wb(
-    0.1, 0.7, 1, s, b, Omega
-  );
+  Rcpp::List update_split = update_classes_wb(s, b, Omega, 0.01, 0.69);
   arma::vec s_update_split = update_split["s"];
   expect_true(s_update_split.size() == 3);
   int update_type_split  = update_split["update_type"];
   expect_true(update_type_split  == 2);
 
   // merge classes
-  Rcpp::List update_merge = update_classes_wb(
-    0.1, 0.9, 3, s, b, Omega
-  );
+  Rcpp::List update_merge = update_classes_wb(s, b, Omega, 0.01, 0.7, 3);
   arma::vec s_update_merge = update_merge["s"];
   expect_true(s_update_merge.size() == 1);
   int update_type_merge  = update_merge["update_type"];

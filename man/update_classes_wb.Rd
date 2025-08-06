@@ -5,26 +5,18 @@
 \title{Weight-based class updates}
 \usage{
 update_classes_wb(
-  epsmin,
-  epsmax,
-  deltamin,
   s,
   b,
   Omega,
-  Cmax = 10L,
-  identify_classes = FALSE
+  epsmin = 0.01,
+  epsmax = 0.7,
+  deltamin = 0.1,
+  deltashift = 0.5,
+  identify_classes = FALSE,
+  Cmax = 10L
 )
 }
 \arguments{
-\item{epsmin}{[\code{numeric(1)}]\cr
-The threshold weight (between 0 and 1) for removing a class.}
-
-\item{epsmax}{[\code{numeric(1)}]\cr
-The threshold weight (between 0 and 1) for splitting a class.}
-
-\item{deltamin}{[\code{numeric(1)}]\cr
-The threshold difference in class means for joining two classes.}
-
 \item{s}{The vector of class weights of length \code{C}.
 Set to \code{NA} if \code{P_r = 0}.
 
@@ -37,11 +29,23 @@ Set to \code{NA} if \code{P_r = 0}.}
 \code{P_r*P_r} x \code{C}.
 Set to \code{NA} if \code{P_r = 0}.}
 
-\item{Cmax}{[\code{integer(1)}]\cr
-The maximum number of classes, used to allocate space.}
+\item{epsmin}{[\code{numeric(1)}]\cr
+The threshold weight for removing a class.}
+
+\item{epsmax}{[\code{numeric(1)}]\cr
+The threshold weight for splitting a class.}
+
+\item{deltamin}{[\code{numeric(1)}]\cr
+The threshold difference in class means for joining two classes.}
+
+\item{deltashift}{[\code{numeric(1)}]\cr
+The scale for shifting the class means after a split.}
 
 \item{identify_classes}{[\code{logical(1)}]\cr
 Identify classes by decreasing class weights?}
+
+\item{Cmax}{[\code{integer(1)}]\cr
+The maximum number of classes, used to allocate space.}
 }
 \value{
 A list of updated values for \code{s}, \code{b}, and \code{Omega} and
@@ -59,37 +63,28 @@ Weight-based class updates
 \details{
 The following updating rules apply:
 \itemize{
-\item Class \eqn{c} is removed if \eqn{s_c<\epsilon_{min}}.
-\item Class \eqn{c} is split into two classes, if \eqn{s_c>\epsilon_{max}}.
+\item Class \eqn{c} is removed if \eqn{s_c < \epsilon_{min}}.
+\item Class \eqn{c} is split into two classes, if \eqn{s_c > \epsilon_{max}}.
 \item Two classes \eqn{c_1} and \eqn{c_2} are merged to one class, if
-\eqn{||b_{c_1} - b_{c_2}||<\delta_{min}}.
+\eqn{||b_{c_1} - b_{c_2}|| < \delta_{min}}.
 }
 }
 \examples{
-### parameter settings
-s <- c(0.8, 0.2)
+s <- c(0.7, 0.3)
 b <- matrix(c(1, 1, 1, -1), ncol = 2)
 Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 
 ### no update
-RprobitB:::update_classes_wb(
-  epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-)
+RprobitB::update_classes_wb(s = s, b = b, Omega = Omega)
 
 ### remove class 2
-RprobitB:::update_classes_wb(
-  epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-)
+RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
 
 ### split class 1
-RprobitB:::update_classes_wb(
-  epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
-)
+RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
 
 ### merge classes 1 and 2
-RprobitB:::update_classes_wb(
-  epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
-)
+RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
 
 }
 \keyword{gibbs_sampler}

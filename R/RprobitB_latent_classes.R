@@ -3,197 +3,140 @@
 #' @description
 #' This function creates an object of class `RprobitB_latent_classes` which
 #' defines the number of latent classes and their updating scheme.
-#' The `RprobitB_latent_classes` object generated
-#' by this function is only of relevance if the model possesses at least one
-#' random coefficient, i.e. if `P_r>0`.
 #'
-#' @details
-#' ## Why update latent classes?
-#' In order not to have to specify the number of latent classes before
-#' estimation.
+#' @param latent_classes \[`list()` | `NULL`\]\cr
+#' Optionally parameters specifying the number of latent classes and their
+#' updating scheme. The values in brackets are the default.
 #'
-#' ## What options to update latent classes exist?
-#' Currently two updating schemes are implemented, weight-based and
-#' via a Dirichlet process, see
-#' [the vignette on modeling heterogeneity](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html).
+#' - `C` (`1`): The fixed number (greater or equal 1) of (initial) classes.
+#' - `wb_update` (`FALSE`): Set to `TRUE` for weight-based class updates.
+#' - `dp_update` (`FALSE`): Set to `TRUE` for Dirichlet process class updates.
+#' - `Cmax` (`10`): The maximum number of latent classes.
 #'
-#' ## What is the default behavior?
-#' One latent class without updates is specified per default. Print an
-#' \code{RprobitB_latent_classes}-object to see a summary of all relevant
-#' (default) parameter settings.
+#' The following specifications are used for the weight-based updating scheme:
 #'
-#' ## Why is \code{Cmax} required?
-#' The implementation requires an upper bound on the number of latent classes
-#' for saving the Gibbs samples. However, this is not a restriction since the
-#' number of latent classes is bounded by the number of deciders in any case.
-#' A plot method for visualizing the sequence of class numbers after estimation
-#' and can be used to check if \code{Cmax} was reached, see
-#' \code{\link{plot.RprobitB_fit}}.
+#' - `buffer` (`50`): The number of iterations to wait before the next update.
+#' - `epsmin` (`0.01`): The threshold weight for removing a latent class.
+#' - `epsmax` (`0.7`): The threshold weight for splitting a latent class.
+#' - `deltamin` (`0.1`): The minimum mean distance before merging two classes.
+#' - `deltashift` (`0.5`): The scale for shifting the class means after a split.
 #'
-#' @param latent_classes
-#' Either \code{NULL} (for no latent classes) or a list of parameters specifying
-#' the number of latent classes and their updating scheme:
-#' \itemize{
-#'   \item \code{C}: The fixed number (greater or equal 1) of latent classes,
-#'         which is set to 1 per default. If either \code{weight_update = TRUE}
-#'         or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
-#'         equals the initial number of latent classes.
-#'   \item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
-#'         update the latent classes. See ... for details.
-#'   \item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
-#'         classes based on a Dirichlet process. See ... for details.
-#'   \item \code{Cmax}: The maximum number of latent classes.
-#'   \item \code{buffer}: The number of iterations to wait before a next
-#'         weight-based update of the latent classes.
-#'   \item \code{epsmin}: The threshold weight (between 0 and 1) for removing
-#'         a latent class in the weight-based updating scheme.
-#'   \item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
-#'         a latent class in the weight-based updating scheme.
-#'   \item \code{distmin}: The (non-negative) threshold in class mean difference
-#'         for joining two latent classes in the weight-based updating scheme.
-#' }
+#' @param x
+#' An object of class `RprobitB_latent_classes`.
+#'
+#' @param ...
+#' Currently not used.
 #'
 #' @return
-#' An object of class \code{RprobitB_latent_classes}.
+#' An object of class `RprobitB_latent_classes`.
 #'
 #' @examples
-#' ### default setting
 #' RprobitB:::RprobitB_latent_classes()
-#'
-#' ### setting for a fixed number of two latent classes
-#' RprobitB:::RprobitB_latent_classes(list(C = 2))
-#'
-#' ### setting for weight-based on Dirichlet process-based updates
-#' RprobitB:::RprobitB_latent_classes(
-#'   list("weight_update" = TRUE, "dp_update" = TRUE)
-#' )
-#'
-#' @keywords
-#' internal
+#' RprobitB:::RprobitB_latent_classes(list(wb_update = TRUE))
+#' RprobitB:::RprobitB_latent_classes(list(dp_update = TRUE))
 
 RprobitB_latent_classes <- function(latent_classes = NULL) {
-  ### check if 'latent_classes' is 'NULL' or a list
-  if (!is.null(latent_classes)) {
-    if (!is.list(latent_classes)) {
-      stop("'latent_classes' must be either a list or 'NULL'.",
-           call. = FALSE
-      )
-    }
-  } else {
-    latent_classes <- list()
-  }
 
-  ### set default number of latent classes to 1
+  ### input checks
+  if (is.null(latent_classes)) latent_classes <- list()
+  oeli::input_check_response(
+    check = checkmate::check_list(latent_classes),
+    var_name = "latent_classes"
+  )
+
+  ### set default values
   if (is.null(latent_classes[["C"]])) {
     latent_classes[["C"]] <- 1
   }
-
-  ### determine whether latent classes should be weight-based updated
-  latent_classes[["weight_update"]] <-
-    ifelse(!isTRUE(latent_classes[["weight_update"]]) &&
-             !isFALSE(latent_classes[["weight_update"]]),
-           FALSE, latent_classes[["weight_update"]]
-    )
-
-  ### determine whether latent classes should be DP-based updated
-  latent_classes[["dp_update"]] <-
-    ifelse(!isTRUE(latent_classes[["dp_update"]]) &&
-             !isFALSE(latent_classes[["dp_update"]]),
-           FALSE, latent_classes[["dp_update"]]
-    )
-
-  if (!latent_classes[["weight_update"]] && !latent_classes[["dp_update"]]) {
-    ### remove other parameters in case of no updates
-    latent_classes <- list(
-      "C" = latent_classes[["C"]],
-      "weight_update" = FALSE,
-      "dp_update" = FALSE
-    )
-  } else {
-    ### specify updating parameters
-    if (is.null(latent_classes[["Cmax"]])) {
-      latent_classes[["Cmax"]] <- max(10, latent_classes[["C"]])
-    }
-
-    ### set missing parameters to default values
-    if (is.null(latent_classes[["buffer"]])) {
-      latent_classes[["buffer"]] <- 100
-    }
-    if (is.null(latent_classes[["epsmin"]])) {
-      latent_classes[["epsmin"]] <- 0.01
-    }
-    if (is.null(latent_classes[["epsmax"]])) {
-      latent_classes[["epsmax"]] <- 0.99
-    }
-    if (is.null(latent_classes[["distmin"]])) {
-      latent_classes[["distmin"]] <- 0.1
-    }
-
-    ### remove redundant parameters
-    req_names <- c("C", "weight_update", "dp_update", "Cmax")
-    if (latent_classes[["weight_update"]]) {
-      req_names <- c(req_names, "buffer", "epsmin", "epsmax", "distmin")
-    }
-    latent_classes[!names(latent_classes) %in% req_names] <- NULL
+  if (is.null(latent_classes[["wb_update"]])) {
+    latent_classes[["wb_update"]] <- FALSE
+  }
+  if (is.null(latent_classes[["dp_update"]])) {
+    latent_classes[["dp_update"]] <- FALSE
+  }
+  if (is.null(latent_classes[["Cmax"]])) {
+    latent_classes[["Cmax"]] <- 10
+  }
+  if (is.null(latent_classes[["buffer"]])) {
+    latent_classes[["buffer"]] <- 50
+  }
+  if (is.null(latent_classes[["epsmin"]])) {
+    latent_classes[["epsmin"]] <- 0.01
+  }
+  if (is.null(latent_classes[["epsmax"]])) {
+    latent_classes[["epsmax"]] <- 0.7
+  }
+  if (is.null(latent_classes[["deltamin"]])) {
+    latent_classes[["deltamin"]] <- 0.1
+  }
+  if (is.null(latent_classes[["deltashift"]])) {
+    latent_classes[["deltashift"]] <- 0.5
   }
 
-  ### check 'latent_classes'
-  if (!is.numeric(latent_classes$C) || !latent_classes$C %% 1 == 0 ||
-      !latent_classes$C > 0) {
-    stop("'latent_classes$C' must be a positive integer.",
-         call. = FALSE
-    )
-  }
-  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
-    if (!is.numeric(latent_classes$Cmax) || !latent_classes$Cmax %% 1 == 0 ||
-        !latent_classes$Cmax > 0) {
-      stop("'latent_classes$Cmax' must be a positive integer.",
-           call. = FALSE
-      )
-    }
-  }
-  if (latent_classes[["weight_update"]]) {
-    if (!is.numeric(latent_classes$buffer) ||
-        !latent_classes$buffer %% 1 == 0 ||
-        !latent_classes$buffer > 0) {
-      stop("'latent_classes$buffer' must be a positive integer.",
-           call. = FALSE
-      )
-    }
-    if (!is.numeric(latent_classes$epsmin) || !latent_classes$epsmin <= 1 ||
-        !latent_classes$epsmin >= 0) {
-      stop("'latent_classes$epsmin' must be a numeric between 0 and 1.",
-           call. = FALSE
-      )
-    }
-    if (!is.numeric(latent_classes$epsmax) || !latent_classes$epsmax <= 1 ||
-        !latent_classes$epsmax >= 0 ||
-        !latent_classes$epsmin < latent_classes$epsmax) {
-      stop(
-        "'latent_classes$epsmax' must be a numeric between 0 and 1 and",
-        "greater than 'latent_classes$epsmin'.",
-        call. = FALSE
-      )
-    }
-    if (!is.numeric(latent_classes$distmin) || !0 <= latent_classes$distmin) {
-      stop("'latent_classes$distmin' must be a non-negative numeric value.",
-           call. = FALSE
-      )
-    }
-  }
+  ### check specifications
+  oeli::input_check_response(
+    check = checkmate::check_int(latent_classes[["C"]], lower = 1),
+    var_name = "latent_classes$C"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(latent_classes[["wb_update"]]),
+    var_name = "latent_classes$wb_update"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(latent_classes[["dp_update"]]),
+    var_name = "latent_classes$dp_update"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_int(latent_classes[["Cmax"]], lower = C),
+    var_name = "latent_classes$Cmax"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_int(latent_classes[["buffer"]], lower = 1),
+    var_name = "latent_classes$buffer"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_number(
+      latent_classes[["epsmin"]], lower = 0, upper = 1
+    ),
+    var_name = "latent_classes$epsmin"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_number(
+      latent_classes[["epsmax"]], lower = 0, upper = 1
+    ),
+    var_name = "latent_classes$epsmax"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_number(
+      latent_classes[["deltamin"]], lower = 0, finite = TRUE
+    ),
+    var_name = "latent_classes$deltamin"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_number(
+      latent_classes[["deltashift"]], lower = 0, finite = TRUE
+    ),
+    var_name = "latent_classes$deltashift"
+  )
 
-  ### add boolean for class update
-  if (latent_classes[["weight_update"]] || latent_classes[["dp_update"]]) {
+  ### add flag for class update
+  if (latent_classes[["wb_update"]] || latent_classes[["dp_update"]]) {
     latent_classes[["class_update"]] <- TRUE
   } else {
     latent_classes[["class_update"]] <- FALSE
   }
 
-  ### add class to 'latent_classes'
-  class(latent_classes) <- "RprobitB_latent_classes"
+  ### clean specifications
+  if (!latent_classes[["wb_update"]]) {
+    wb_spec_names <- c("buffer", "epsmin", "epsmax", "deltamin", "deltashift")
+    latent_classes[wb_spec_names] <- NULL
+  }
+  if (!latent_classes[["class_update"]]) {
+    latent_classes["Cmax"] <- NULL
+  }
 
-  ### return latent_classes
-  return(latent_classes)
+  ### return object
+  structure(latent_classes, class = "RprobitB_latent_classes")
 }
 
 #' @rdname RprobitB_latent_classes
@@ -204,16 +147,16 @@ print.RprobitB_latent_classes <- function(x, ...) {
   if (!x[["class_update"]]) {
     cat("C =", x$C, "\n")
   } else {
-    cat("DP-based update:", x[["dp_update"]], "\n")
-    cat("Weight-based update:", x[["weight_update"]], "\n")
+    cat("Dirichlet process update:", x[["dp_update"]], "\n")
+    cat("Weight-based update:", x[["wb_update"]], "\n")
     cat("Initial classes:", x$C, "\n")
     cat("Maximum classes:", x$Cmax, "\n")
-    if (x[["weight_update"]]) {
+    if (x[["wb_update"]]) {
       cat("Updating buffer:", x$buffer, "\n")
       cat("Minimum class weight:", x$epsmin, "\n")
       cat("Maximum class weight:", x$epsmax, "\n")
-      cat("Mimumum class distance:", x$distmin, "\n")
+      cat("Mimumum class distance:", x$deltamin, "\n")
     }
   }
-  return(invisible(x))
+  invisible(x)
 }

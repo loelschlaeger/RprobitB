@@ -655,13 +655,16 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' The maximum number of classes, used to allocate space.
 //'
 //' @param epsmin \[`numeric(1)`\]\cr
-//' The threshold weight (between 0 and 1) for removing a class.
+//' The threshold weight for removing a class.
 //'
 //' @param epsmax \[`numeric(1)`\]\cr
-//' The threshold weight (between 0 and 1) for splitting a class.
+//' The threshold weight for splitting a class.
 //'
 //' @param deltamin \[`numeric(1)`\]\cr
 //' The threshold difference in class means for joining two classes.
+//'
+//' @param deltashift \[`numeric(1)`\]\cr
+//' The scale for shifting the class means after a split.
 //'
 //' @param identify_classes \[`logical(1)`\]\cr
 //' Identify classes by decreasing class weights?
@@ -671,36 +674,27 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 //' @details
 //' The following updating rules apply:
 //'
-//' * Class \eqn{c} is removed if \eqn{s_c<\epsilon_{min}}.
-//' * Class \eqn{c} is split into two classes, if \eqn{s_c>\epsilon_{max}}.
+//' * Class \eqn{c} is removed if \eqn{s_c < \epsilon_{min}}.
+//' * Class \eqn{c} is split into two classes, if \eqn{s_c > \epsilon_{max}}.
 //' * Two classes \eqn{c_1} and \eqn{c_2} are merged to one class, if
-//'   \eqn{||b_{c_1} - b_{c_2}||<\delta_{min}}.
+//'   \eqn{||b_{c_1} - b_{c_2}|| < \delta_{min}}.
 //'
 //' @examples
-//' ### parameter settings
-//' s <- c(0.8, 0.2)
+//' s <- c(0.7, 0.3)
 //' b <- matrix(c(1, 1, 1, -1), ncol = 2)
 //' Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 //'
 //' ### no update
-//' RprobitB:::update_classes_wb(
-//'   epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-//' )
+//' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega)
 //'
 //' ### remove class 2
-//' RprobitB:::update_classes_wb(
-//'   epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-//' )
+//' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
 //'
 //' ### split class 1
-//' RprobitB:::update_classes_wb(
-//'   epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
-//' )
+//' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
 //'
 //' ### merge classes 1 and 2
-//' RprobitB:::update_classes_wb(
-//'   epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
-//' )
+//' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
 //'
 //' @return
 //' A list of updated values for \code{s}, \code{b}, and \code{Omega} and
@@ -718,15 +712,14 @@ Rcpp::List update_d (arma::vec d, arma::mat y, arma::mat mu, double ll,
 // [[Rcpp::export]]
 
 Rcpp::List update_classes_wb (
-   double epsmin, double epsmax, double deltamin,
-   arma::vec s, arma::mat b, arma::mat Omega, int Cmax = 10,
-   bool identify_classes = false
+   arma::vec s, arma::mat b, arma::mat Omega,
+   double epsmin = 0.01, double epsmax = 0.7, double deltamin = 0.1,
+   double deltashift = 0.5, bool identify_classes = false, int Cmax = 10
 ) {
 
   int update_type = 0;
   int C = b.n_cols;
   int P = b.n_rows;
-  double deltashift = 0.5;
   arma::mat stack = join_cols(trans(s), join_cols(b, Omega));
 
   // remove class
@@ -809,7 +802,7 @@ Rcpp::List update_classes_wb (
   );
 }
 
-//' Dirichlet process-based class updates
+//' Dirichlet process class updates
 //'
 //' @inheritParams RprobitB_parameter
 //' @inheritParams check_prior
@@ -1005,40 +998,41 @@ Rcpp::List gibbs_sampler (
   arma::mat WkW;
   Rcpp::List XkX;
   Rcpp::List rdiff;
-  if(P_f>0){
+  if (P_f > 0) {
     W = Rcpp::as<Rcpp::List>(sufficient_statistics["W"]);
     WkW = Rcpp::as<arma::mat>(sufficient_statistics["WkW"]);
   }
-  if(P_r>0){
+  if (P_r > 0) {
     X = Rcpp::as<Rcpp::List>(sufficient_statistics["X"]);
     XkX = Rcpp::as<Rcpp::List>(sufficient_statistics["XkX"]);
   }
-  if(ranked){
+  if (ranked) {
     rdiff = Rcpp::as<Rcpp::List>(sufficient_statistics["rdiff"]);
   }
 
   // extract 'latent_classes' parameters
   int C = Rcpp::as<int>(latent_classes["C"]);
   int Cmax = 10;
-  int Cdrawsize;
+  int Cdrawsize = 10;
   int buffer = 50;
   double epsmin = 0.01;
-  double epsmax = 0.99;
+  double epsmax = 0.7;
   double deltamin = 0.1;
-  bool weight_update = Rcpp::as<bool>(latent_classes["weight_update"]);
+  double deltashift = 0.5;
+  bool wb_update = Rcpp::as<bool>(latent_classes["wb_update"]);
   bool dp_update = Rcpp::as<bool>(latent_classes["dp_update"]);
-  if(weight_update == false && dp_update == false){
+  if (!wb_update && !dp_update) {
     Cdrawsize = C;
-  }
-  else{
+  } else {
     Cmax = Rcpp::as<int>(latent_classes["Cmax"]);
     Cdrawsize = Cmax;
   }
-  if(weight_update==true){
+  if (wb_update == true){
     buffer = Rcpp::as<int>(latent_classes["buffer"]);
     epsmin = Rcpp::as<double>(latent_classes["epsmin"]);
     epsmax = Rcpp::as<double>(latent_classes["epsmax"]);
     deltamin = Rcpp::as<double>(latent_classes["deltamin"]);
+    deltashift = Rcpp::as<double>(latent_classes["deltashift"]);
   }
 
   // extract 'prior' parameters
@@ -1054,11 +1048,11 @@ Rcpp::List gibbs_sampler (
   arma::mat E = Rcpp::as<arma::mat>(prior["E"]);
   arma::vec zeta;
   arma::mat Z;
-  if(P_f>0){
+  if (P_f > 0) {
     eta = Rcpp::as<arma::vec>(prior["eta"]);
     Psiinv = arma::inv(Rcpp::as<arma::mat>(prior["Psi"]));
   }
-  if(P_r>0){
+  if (P_r > 0) {
     delta = Rcpp::as<int>(prior["delta"]);
     xi = Rcpp::as<arma::vec>(prior["xi"]);
     D = Rcpp::as<arma::mat>(prior["D"]);
@@ -1066,7 +1060,7 @@ Rcpp::List gibbs_sampler (
     nu = Rcpp::as<int>(prior["nu"]);
     Theta = Rcpp::as<arma::mat>(prior["Theta"]);
   }
-  if(ordered){
+  if (ordered) {
     zeta = Rcpp::as<arma::vec>(prior["zeta"]);
     Z = Rcpp::as<arma::mat>(prior["Z"]);
   }
@@ -1081,17 +1075,17 @@ Rcpp::List gibbs_sampler (
   arma::mat U0 = Rcpp::as<arma::mat>(init["U0"]);
   arma::mat Sigma0 = Rcpp::as<arma::mat>(init["Sigma0"]);
   arma::vec d0;
-  if(P_f>0){
+  if (P_f > 0) {
     alpha0 = Rcpp::as<arma::vec>(init["alpha0"]);
   }
-  if(P_r>0){
+  if (P_r > 0) {
     m0 = Rcpp::as<arma::vec>(init["m0"]);
     z0 = Rcpp::as<arma::vec>(init["z0"]);
     b0 = Rcpp::as<arma::mat>(init["b0"]);
     Omega0 = Rcpp::as<arma::mat>(init["Omega0"]);
     beta0 = Rcpp::as<arma::mat>(init["beta0"]);
   }
-  if(ordered){
+  if (ordered) {
     d0 = Rcpp::as<arma::vec>(init["d0"]);
   }
 
@@ -1105,7 +1099,7 @@ Rcpp::List gibbs_sampler (
   arma::mat mu_mat = arma::zeros<arma::mat>(N,Tvec.size());
   arma::mat mu_mat_tmp = arma::zeros<arma::mat>(1,1);
   int ind;
-  int Jm1 = J-1;
+  int Jm1 = J - 1;
   double old_ll = 0.0;
   Rcpp::List update_d_out;
 
@@ -1191,7 +1185,7 @@ Rcpp::List gibbs_sampler (
 
     // print progress
     if(print_progress && ((r+1)%10 == 0 || r == 0)){
-      if(weight_update==false && dp_update==false){
+      if(wb_update==false && dp_update==false){
         RprobitB_pp("MCMC iteration", r+1, R);
       } else {
         RprobitB_pp("MCMC iteration (C = " + std::to_string(C) + ")", r+1, R);
@@ -1274,9 +1268,9 @@ Rcpp::List gibbs_sampler (
       }
 
       // weight-based update of classes
-      if (weight_update == true && (r + 1) <= B && (r + 1) % buffer == 0) {
+      if (wb_update == true && (r + 1) <= B && (r + 1) % buffer == 0) {
         Rcpp::List class_update = update_classes_wb(
-          epsmin, epsmax, deltamin, s, b, Omega, Cmax, true
+          s, b, Omega, epsmin, epsmax, deltamin, deltashift, true, Cmax
         );
         s = Rcpp::as<arma::vec>(class_update["s"]);
         C = s.size();
@@ -1286,7 +1280,7 @@ Rcpp::List gibbs_sampler (
         m = update_m(C, z, true);
       }
 
-      // dp-based update of classes
+      // Dirichlet process
       if (dp_update == true && (r + 1) <= B) {
         Rcpp::List class_update = update_classes_dp(
           beta, z, b, Omega, delta, xi, D, nu, Theta, true, Cmax

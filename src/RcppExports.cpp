@@ -209,20 +209,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_classes_wb
-Rcpp::List update_classes_wb(double epsmin, double epsmax, double deltamin, arma::vec s, arma::mat b, arma::mat Omega, int Cmax, bool identify_classes);
-RcppExport SEXP _RprobitB_update_classes_wb(SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP CmaxSEXP, SEXP identify_classesSEXP) {
+Rcpp::List update_classes_wb(arma::vec s, arma::mat b, arma::mat Omega, double epsmin, double epsmax, double deltamin, double deltashift, bool identify_classes, int Cmax);
+RcppExport SEXP _RprobitB_update_classes_wb(SEXP sSEXP, SEXP bSEXP, SEXP OmegaSEXP, SEXP epsminSEXP, SEXP epsmaxSEXP, SEXP deltaminSEXP, SEXP deltashiftSEXP, SEXP identify_classesSEXP, SEXP CmaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type epsmin(epsminSEXP);
-    Rcpp::traits::input_parameter< double >::type epsmax(epsmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type deltamin(deltaminSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type b(bSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmin(epsminSEXP);
+    Rcpp::traits::input_parameter< double >::type epsmax(epsmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type deltamin(deltaminSEXP);
+    Rcpp::traits::input_parameter< double >::type deltashift(deltashiftSEXP);
     Rcpp::traits::input_parameter< bool >::type identify_classes(identify_classesSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_classes_wb(epsmin, epsmax, deltamin, s, b, Omega, Cmax, identify_classes));
+    Rcpp::traits::input_parameter< int >::type Cmax(CmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_classes_wb(s, b, Omega, epsmin, epsmax, deltamin, deltashift, identify_classes, Cmax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -285,7 +286,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_d_to_gamma", (DL_FUNC) &_RprobitB_d_to_gamma, 1},
     {"_RprobitB_ll_ordered", (DL_FUNC) &_RprobitB_ll_ordered, 4},
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
-    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 8},
+    {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 9},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
     {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 10},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},

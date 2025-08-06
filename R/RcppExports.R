@@ -474,13 +474,16 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' The maximum number of classes, used to allocate space.
 #'
 #' @param epsmin \[`numeric(1)`\]\cr
-#' The threshold weight (between 0 and 1) for removing a class.
+#' The threshold weight for removing a class.
 #'
 #' @param epsmax \[`numeric(1)`\]\cr
-#' The threshold weight (between 0 and 1) for splitting a class.
+#' The threshold weight for splitting a class.
 #'
 #' @param deltamin \[`numeric(1)`\]\cr
 #' The threshold difference in class means for joining two classes.
+#'
+#' @param deltashift \[`numeric(1)`\]\cr
+#' The scale for shifting the class means after a split.
 #'
 #' @param identify_classes \[`logical(1)`\]\cr
 #' Identify classes by decreasing class weights?
@@ -490,36 +493,27 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #' @details
 #' The following updating rules apply:
 #'
-#' * Class \eqn{c} is removed if \eqn{s_c<\epsilon_{min}}.
-#' * Class \eqn{c} is split into two classes, if \eqn{s_c>\epsilon_{max}}.
+#' * Class \eqn{c} is removed if \eqn{s_c < \epsilon_{min}}.
+#' * Class \eqn{c} is split into two classes, if \eqn{s_c > \epsilon_{max}}.
 #' * Two classes \eqn{c_1} and \eqn{c_2} are merged to one class, if
-#'   \eqn{||b_{c_1} - b_{c_2}||<\delta_{min}}.
+#'   \eqn{||b_{c_1} - b_{c_2}|| < \delta_{min}}.
 #'
 #' @examples
-#' ### parameter settings
-#' s <- c(0.8, 0.2)
+#' s <- c(0.7, 0.3)
 #' b <- matrix(c(1, 1, 1, -1), ncol = 2)
 #' Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 #'
 #' ### no update
-#' RprobitB:::update_classes_wb(
-#'   epsmin = 0.1, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-#' )
+#' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega)
 #'
 #' ### remove class 2
-#' RprobitB:::update_classes_wb(
-#'   epsmin = 0.3, epsmax = 0.9, deltamin = 1, s = s, b = b, Omega = Omega
-#' )
+#' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
 #'
 #' ### split class 1
-#' RprobitB:::update_classes_wb(
-#'   epsmin = 0.1, epsmax = 0.7, deltamin = 1, s = s, b = b, Omega = Omega
-#' )
+#' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
 #'
 #' ### merge classes 1 and 2
-#' RprobitB:::update_classes_wb(
-#'   epsmin = 0.1, epsmax = 0.9, deltamin = 3, s = s, b = b, Omega = Omega
-#' )
+#' RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
 #'
 #' @return
 #' A list of updated values for \code{s}, \code{b}, and \code{Omega} and
@@ -534,11 +528,11 @@ update_d <- function(d, y, mu, ll, zeta, Z, Tvec) {
 #'
 #' @keywords gibbs_sampler
 #'
-update_classes_wb <- function(epsmin, epsmax, deltamin, s, b, Omega, Cmax = 10L, identify_classes = FALSE) {
-    .Call(`_RprobitB_update_classes_wb`, epsmin, epsmax, deltamin, s, b, Omega, Cmax, identify_classes)
+update_classes_wb <- function(s, b, Omega, epsmin = 0.01, epsmax = 0.7, deltamin = 0.1, deltashift = 0.5, identify_classes = FALSE, Cmax = 10L) {
+    .Call(`_RprobitB_update_classes_wb`, s, b, Omega, epsmin, epsmax, deltamin, deltashift, identify_classes, Cmax)
 }
 
-#' Dirichlet process-based class updates
+#' Dirichlet process class updates
 #'
 #' @inheritParams RprobitB_parameter
 #' @inheritParams check_prior

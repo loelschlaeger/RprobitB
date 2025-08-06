@@ -40,26 +40,23 @@ be discarded.}
 \item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 sample is kept.}
 
-\item{latent_classes}{Either \code{NULL} (for no latent classes) or a list of parameters specifying
-the number of latent classes and their updating scheme:
+\item{latent_classes}{[\code{list()} | \code{NULL}]\cr
+Optionally parameters specifying the number of latent classes and their
+updating scheme. The values in brackets are the default.
 \itemize{
-\item \code{C}: The fixed number (greater or equal 1) of latent classes,
-which is set to 1 per default. If either \code{weight_update = TRUE}
-or \code{dp_update = TRUE} (i.e. if classes are updated), \code{C}
-equals the initial number of latent classes.
-\item \code{weight_update}: A boolean, set to \code{TRUE} to weight-based
-update the latent classes. See ... for details.
-\item \code{dp_update}: A boolean, set to \code{TRUE} to update the latent
-classes based on a Dirichlet process. See ... for details.
-\item \code{Cmax}: The maximum number of latent classes.
-\item \code{buffer}: The number of iterations to wait before a next
-weight-based update of the latent classes.
-\item \code{epsmin}: The threshold weight (between 0 and 1) for removing
-a latent class in the weight-based updating scheme.
-\item \code{epsmax}: The threshold weight (between 0 and 1) for splitting
-a latent class in the weight-based updating scheme.
-\item \code{distmin}: The (non-negative) threshold in class mean difference
-for joining two latent classes in the weight-based updating scheme.
+\item \code{C} (\code{1}): The fixed number (greater or equal 1) of (initial) classes.
+\item \code{wb_update} (\code{FALSE}): Set to \code{TRUE} for weight-based class updates.
+\item \code{dp_update} (\code{FALSE}): Set to \code{TRUE} for Dirichlet process class updates.
+\item \code{Cmax} (\code{10}): The maximum number of latent classes.
+}
+
+The following specifications are used for the weight-based updating scheme:
+\itemize{
+\item \code{buffer} (\code{50}): The number of iterations to wait before the next update.
+\item \code{epsmin} (\code{0.01}): The threshold weight for removing a latent class.
+\item \code{epsmax} (\code{0.7}): The threshold weight for splitting a latent class.
+\item \code{deltamin} (\code{0.1}): The minimum mean distance before merging two classes.
+\item \code{deltashift} (\code{0.5}): The scale for shifting the class means after a split.
 }}
 
 \item{prior}{A named list of parameters for the prior distributions. See the documentation

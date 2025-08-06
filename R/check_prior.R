@@ -15,7 +15,8 @@
 #' @param delta
 #' A numeric for the concentration parameter vector `rep(delta,C)` of the
 #' Dirichlet prior for `s`.
-#' Per default, `delta = 1`. In case of Dirichlet process-based updates of the
+#'
+#' Per default, `delta = 1`. In case of Dirichlet process updates of the
 #' latent classes, `delta = 0.1` per default.
 #' @param xi
 #' The mean vector of length `P_r` of the normal prior for each `b_c`.

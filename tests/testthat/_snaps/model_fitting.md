@@ -102,16 +102,16 @@
 ---
 
     Code
-      (out <- RprobitB_latent_classes(list(weight_update = TRUE, dp_update = TRUE)))
+      (out <- RprobitB_latent_classes(list(wb_update = TRUE, dp_update = TRUE)))
     Output
       Latent classes
-      DP-based update: TRUE 
+      Dirichlet process update: TRUE 
       Weight-based update: TRUE 
       Initial classes: 1 
       Maximum classes: 10 
-      Updating buffer: 100 
+      Updating buffer: 50 
       Minimum class weight: 0.01 
-      Maximum class weight: 0.99 
+      Maximum class weight: 0.7 
       Mimumum class distance: 0.1 
 
 ---
@@ -119,16 +119,17 @@
     Code
       str(out)
     Output
-      List of 9
-       $ weight_update: logi TRUE
-       $ dp_update    : logi TRUE
-       $ C            : num 1
-       $ Cmax         : num 10
-       $ buffer       : num 100
-       $ epsmin       : num 0.01
-       $ epsmax       : num 0.99
-       $ distmin      : num 0.1
-       $ class_update : logi TRUE
+      List of 10
+       $ wb_update   : logi TRUE
+       $ dp_update   : logi TRUE
+       $ C           : num 1
+       $ Cmax        : num 10
+       $ buffer      : num 50
+       $ epsmin      : num 0.01
+       $ epsmax      : num 0.7
+       $ deltamin    : num 0.1
+       $ deltashift  : num 0.5
+       $ class_update: logi TRUE
        - attr(*, "class")= chr "RprobitB_latent_classes"
 
 # building of RprobitB_normalization works
