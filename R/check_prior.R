@@ -14,10 +14,7 @@
 #' Per default, `Psi = diag(P_f)`.
 #' @param delta
 #' A numeric for the concentration parameter vector `rep(delta,C)` of the
-#' Dirichlet prior for `s`.
-#'
-#' Per default, `delta = 1`. In case of Dirichlet process updates of the
-#' latent classes, `delta = 0.1` per default.
+#' Dirichlet prior for `s`. Per default, `delta = 1`.
 #' @param xi
 #' The mean vector of length `P_r` of the normal prior for each `b_c`.
 #' Per default, `xi = numeric(P_r)`.

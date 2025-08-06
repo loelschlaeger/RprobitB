@@ -106,9 +106,6 @@ fit_model <- function(
 
   ### set latent classes
   latent_classes <- RprobitB_latent_classes(latent_classes = latent_classes)
-  if (latent_classes$dp_update && is.null(prior[["delta"]])) {
-    prior[["delta"]] <- 0.1
-  }
 
   ### set fixed parameter
   fixed_parameter <- unclass(do.call(

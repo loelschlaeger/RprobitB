@@ -34,10 +34,7 @@ Set to \code{NA} if \code{P_r = 0}.}
 Set to \code{NA} if \code{P_r = 0}.}
 
 \item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
-Dirichlet prior for \code{s}.
-
-Per default, \code{delta = 1}. In case of Dirichlet process updates of the
-latent classes, \code{delta = 0.1} per default.}
+Dirichlet prior for \code{s}. Per default, \code{delta = 1}.}
 
 \item{identify_classes}{[\code{logical(1)}]\cr
 Identify classes by decreasing class weights?}
