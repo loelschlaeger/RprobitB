@@ -61,6 +61,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
         reshape(Omega(arma::span::all,c), P_r, P_r)
       );
     }
+    prob_z += 1e-6;
     z[n] = Rcpp::as<int>(sample(seq(1, C), 1, false, prob_z));
   }
   return z;
@@ -895,6 +896,7 @@ Rcpp::List update_classes_dp(
 
     // sample new class allocation
     int z_new;
+    p += 1e-6;
     if (C == Cmax) {
       z_new = Rcpp::as<int>(sample(seq(1, C), 1, false, p.subvec(0, C - 1)));
     } else {

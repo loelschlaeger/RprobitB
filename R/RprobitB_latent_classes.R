@@ -87,7 +87,9 @@ RprobitB_latent_classes <- function(latent_classes = NULL) {
     var_name = "latent_classes$dp_update"
   )
   oeli::input_check_response(
-    check = checkmate::check_int(latent_classes[["Cmax"]], lower = C),
+    check = checkmate::check_int(
+      latent_classes[["Cmax"]], lower = latent_classes[["C"]]
+    ),
     var_name = "latent_classes$Cmax"
   )
   oeli::input_check_response(
