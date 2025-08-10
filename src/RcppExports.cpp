@@ -249,8 +249,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // gibbs_sampler
-Rcpp::List gibbs_sampler(Rcpp::List sufficient_statistics, Rcpp::List prior, Rcpp::List latent_classes, Rcpp::List fixed_parameter, Rcpp::List init, int R, int B, bool print_progress, bool ordered, bool ranked);
-RcppExport SEXP _RprobitB_gibbs_sampler(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP fixed_parameterSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP orderedSEXP, SEXP rankedSEXP) {
+Rcpp::List gibbs_sampler(Rcpp::List sufficient_statistics, Rcpp::List prior, Rcpp::List latent_classes, Rcpp::List fixed_parameter, Rcpp::List init, int R, int B, bool print_progress, bool ordered, bool ranked, bool debugger);
+RcppExport SEXP _RprobitB_gibbs_sampler(SEXP sufficient_statisticsSEXP, SEXP priorSEXP, SEXP latent_classesSEXP, SEXP fixed_parameterSEXP, SEXP initSEXP, SEXP RSEXP, SEXP BSEXP, SEXP print_progressSEXP, SEXP orderedSEXP, SEXP rankedSEXP, SEXP debuggerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -264,7 +264,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< bool >::type ordered(orderedSEXP);
     Rcpp::traits::input_parameter< bool >::type ranked(rankedSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_sampler(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked));
+    Rcpp::traits::input_parameter< bool >::type debugger(debuggerSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_sampler(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked, debugger));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -288,7 +289,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
     {"_RprobitB_update_classes_wb", (DL_FUNC) &_RprobitB_update_classes_wb, 9},
     {"_RprobitB_update_classes_dp", (DL_FUNC) &_RprobitB_update_classes_dp, 11},
-    {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 10},
+    {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 11},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };

@@ -3,6 +3,27 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
+int sample_allocation(arma::vec const& prob_in) {
+  arma::uword n = prob_in.n_elem;
+  arma::vec prob = prob_in;
+  for (arma::uword i = 0; i < n; ++i) {
+    if (!arma::is_finite(prob[i]) || prob[i] < 0) prob[i] = 0.0;
+  }
+  double s = arma::accu(prob);
+  if (s <= 0.0) {
+    prob.fill(1.0 / double(n));
+  } else {
+    prob /= s;
+  }
+  double u = R::runif(0.0, 1.0);
+  double acc = 0.0;
+  for (arma::uword i = 0; i < n; ++i) {
+    acc += prob[i];
+    if (u < acc) return int(i + 1);
+  }
+  return int(n);
+}
+
 //' Update class weight vector
 //'
 //' @param m \[`numeric(C)`\]\cr
@@ -46,7 +67,6 @@ arma::vec update_s (int delta, arma::vec m) {
 // [[Rcpp::export]]
 
 arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
-  Rcpp::Function sample("sample");
   Rcpp::Function seq("seq");
   int N = beta.n_cols;
   int C = s.size();
@@ -61,8 +81,8 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
         reshape(Omega(arma::span::all,c), P_r, P_r)
       );
     }
-    prob_z += 1e-6;
-    z[n] = Rcpp::as<int>(sample(seq(1, C), 1, false, prob_z));
+    prob_z += 1e-8;
+    z[n] = sample_allocation(prob_z);
   }
   return z;
 }
@@ -88,7 +108,7 @@ arma::vec update_z (arma::vec s, arma::mat beta, arma::mat b, arma::mat Omega) {
 
 arma::vec update_m (int C, arma::vec z, bool non_zero = false) {
   int N = z.size();
-  arma::vec m(C);
+  arma::vec m(C, arma::fill::zeros);
   for (int c = 0; c < C; ++c) {
     for (int n = 0; n < N; ++n) {
       if (z[n] == c + 1) m[c] += 1;
@@ -181,7 +201,7 @@ arma::mat update_b (
   int N = beta.n_cols;
   arma::mat b_draw = arma::zeros<arma::mat>(P_r, C);
   for (int c = 0; c < C; ++c) {
-    arma::vec bar_b_c(P_r);
+    arma::vec bar_b_c(P_r, arma::fill::zeros);
     for (int n = 0; n < N; ++n) {
       if(z[n] == c + 1) bar_b_c += beta(arma::span::all, n);
     }
@@ -337,7 +357,7 @@ arma::mat update_Omega (
 arma::vec update_reg (arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU) {
   arma::mat Sigma1 = arma::inv(Tau0 + XSigX);
   arma::mat mu1 = Sigma1 * (Tau0 * mu0 + XSigU);
-  return(oeli::rmvnorm(mu1, Sigma1));
+  return oeli::rmvnorm(mu1, Sigma1);
 }
 
 //' Update error term covariance matrix of multiple linear regression
@@ -840,7 +860,6 @@ Rcpp::List update_classes_dp(
     arma::mat V_Omega_0, bool identify_classes = false, int Cmax = 10
 ) {
 
-  Rcpp::Function sample("sample");
   Rcpp::Function seq("seq");
   int N = z.n_elem;
   int C = b.n_cols;
@@ -896,11 +915,11 @@ Rcpp::List update_classes_dp(
 
     // sample new class allocation
     int z_new;
-    p += 1e-6;
+    p += 1e-8;
     if (C == Cmax) {
-      z_new = Rcpp::as<int>(sample(seq(1, C), 1, false, p.subvec(0, C - 1)));
+      z_new = sample_allocation(p.head(C));
     } else {
-      z_new = Rcpp::as<int>(sample(seq(1, C + 1), 1, false, p));
+      z_new = sample_allocation(p);
     }
     z[n] = z_new;
     m_full[z_new - 1] += 1;
@@ -982,9 +1001,10 @@ Rcpp::List update_classes_dp(
 // [[Rcpp::export]]
 
 Rcpp::List gibbs_sampler (
-    Rcpp::List sufficient_statistics, Rcpp::List prior, Rcpp::List latent_classes,
-    Rcpp::List fixed_parameter, Rcpp::List init, int R, int B, bool print_progress,
-    bool ordered, bool ranked
+    Rcpp::List sufficient_statistics, Rcpp::List prior,
+    Rcpp::List latent_classes, Rcpp::List fixed_parameter, Rcpp::List init,
+    int R, int B, bool print_progress, bool ordered, bool ranked,
+    bool debugger = false
 ) {
 
   // extract 'sufficient_statistics' parameters
@@ -1120,7 +1140,7 @@ Rcpp::List gibbs_sampler (
   arma::mat d_draws = arma::zeros<arma::mat>(R,J-2);
   arma::vec class_sequence(R);
 
-  // set initial values
+  // set initial Gibbs values
   arma::vec s = arma::ones(C) / C;
   arma::vec z = z0;
   arma::vec m = m0;
@@ -1137,42 +1157,42 @@ Rcpp::List gibbs_sampler (
 
   // set fixed parameter values
   bool do_update_s = true;
-  if(fixed_parameter.containsElementNamed("s")){
+  if (fixed_parameter.containsElementNamed("s")) {
     do_update_s = false;
     s = Rcpp::as<arma::vec>(fixed_parameter["s"]);
   }
   bool do_update_z = true;
-  if(fixed_parameter.containsElementNamed("z")){
-    do_update_s = false;
+  if (fixed_parameter.containsElementNamed("z")) {
+    do_update_z = false;
     z = Rcpp::as<arma::vec>(fixed_parameter["z"]);
   }
   bool do_update_b = true;
-  if(fixed_parameter.containsElementNamed("b")){
+  if (fixed_parameter.containsElementNamed("b")) {
     do_update_b = false;
     b = Rcpp::as<arma::mat>(fixed_parameter["b"]);
   }
   bool do_update_Omega = true;
-  if(fixed_parameter.containsElementNamed("Omega")){
+  if (fixed_parameter.containsElementNamed("Omega")) {
     do_update_Omega = false;
     Omega = Rcpp::as<arma::mat>(fixed_parameter["Omega"]);
   }
   bool do_update_alpha = true;
-  if(fixed_parameter.containsElementNamed("alpha")){
+  if (fixed_parameter.containsElementNamed("alpha")) {
     do_update_alpha = false;
     alpha = Rcpp::as<arma::vec>(fixed_parameter["alpha"]);
   }
   bool do_update_beta = true;
-  if(fixed_parameter.containsElementNamed("beta")){
+  if (fixed_parameter.containsElementNamed("beta")) {
     do_update_beta = false;
     beta = Rcpp::as<arma::mat>(fixed_parameter["beta"]);
   }
   bool do_update_Sigma = true;
-  if(fixed_parameter.containsElementNamed("Sigma")){
+  if (fixed_parameter.containsElementNamed("Sigma")) {
     do_update_Sigma = false;
     Sigma = Rcpp::as<arma::mat>(fixed_parameter["Sigma"]);
     Sigmainv = arma::inv(Sigma);
   }
-  if(ordered){
+  if (ordered) {
     do_update_Sigma = false;
     Sigma = arma::ones<arma::mat>(1,1);
     Sigmainv = arma::inv(Sigma);
@@ -1183,21 +1203,23 @@ Rcpp::List gibbs_sampler (
   Rcpp::Function RprobitB_pp = pkg["RprobitB_pp"];
 
   // start loop
-  for(int r = 0; r<R; ++r) {
+  for (int r = 0; r < R; ++r) {
 
     // print progress
-    if(print_progress && ((r+1)%10 == 0 || r == 0)){
-      if(wb_update==false && dp_update==false){
-        RprobitB_pp("MCMC iteration", r+1, R);
+    if (debugger) {
+      Rcpp::Rcout << "[r = " << r << ", " << "C = " << C << "] \n";
+    } else if (print_progress && ((r+1) % 10 == 0 || r == 0)) {
+      if (!wb_update && !dp_update) {
+        RprobitB_pp("MCMC iteration", r + 1, R);
       } else {
-        RprobitB_pp("MCMC iteration (C = " + std::to_string(C) + ")", r+1, R);
+        RprobitB_pp("MCMC iteration (C = " + std::to_string(C) + ")", r + 1, R);
       }
     }
 
     // check for code interruption by user
     Rcpp::checkUserInterrupt();
 
-    if(P_r>0){
+    if (P_r > 0) {
 
       // save number of classes in each iteration
       class_sequence[r] = C;
@@ -1205,19 +1227,23 @@ Rcpp::List gibbs_sampler (
       // update s, z, m, b, Omega by posterior draws if
       // - no DP or
       // - outside updating period
-      if(dp_update == false || r+1 > B || r == 0){
+      if (!dp_update || r + 1 > B || r == 0) {
 
         // update s (but only if draw is descending)
-        if(do_update_s) {
-          arma::vec s_cand = update_s(delta,m);
-          if(std::is_sorted(std::begin(s_cand),std::end(s_cand),
-                            std::greater_equal<double>())){
-            s = s_cand;
+        if (do_update_s) {
+          arma::vec s_cand = update_s(delta, m);
+          if (r < B / 10) {
+            // manually sort s in 10% burn-in
+            s_cand = arma::sort(s_cand, "descend");
           }
+          bool s_sorted = std::is_sorted(
+            s_cand.begin(), s_cand.end(), std::greater_equal<double>()
+          );
+          if (s_sorted) s = s_cand;
         }
 
         // update z
-        if(do_update_z) {
+        if (do_update_z) {
           z = update_z(s, beta, b, Omega);
         }
 
@@ -1248,7 +1274,8 @@ Rcpp::List gibbs_sampler (
           if (ordered){
             XSigX = reshape(Rcpp::as<arma::mat>(XkX[n]),P_r,P_r);
           } else {
-            XSigX = reshape(Rcpp::as<arma::mat>(XkX[n])*reshape(Sigmainv,Jm1*Jm1,1),P_r,P_r);
+            XSigX = reshape(Rcpp::as<arma::mat>(XkX[n]) *
+              reshape(Sigmainv, Jm1 * Jm1, 1), P_r, P_r);
           }
           arma::vec XSigU = arma::zeros<arma::vec>(P_r);
           for (int t = 0; t < Tvec[n]; ++t) {
@@ -1292,10 +1319,11 @@ Rcpp::List gibbs_sampler (
         Omega = Rcpp::as<arma::mat>(class_update["Omega"]);
         C = Rcpp::as<int>(class_update["C"]);
         m = update_m(C, z, true);
+        s = m / N;
       }
     }
 
-    if(P_f>0){
+    if (P_f > 0) {
       // update alpha
       if(do_update_alpha) {
         arma::mat WSigW;
@@ -1377,7 +1405,7 @@ Rcpp::List gibbs_sampler (
               Rcpp::as<arma::mat>(X[ind])*beta(arma::span::all,n), Sigmainv);
           }
           if(P_f==0 && P_r==0) {
-            arma::vec mu_null(Jm1);
+            arma::vec mu_null(Jm1, arma::fill::zeros);
             U(arma::span::all,ind) = update_U(U(arma::span::all,ind), y(n,t),
               mu_null, Sigmainv);
           }
@@ -1403,6 +1431,8 @@ Rcpp::List gibbs_sampler (
         }
       }
       Sigma = update_Sigma(kappa, E, sum(Tvec), S);
+      Sigma = 0.5 * (Sigma + Sigma.t());
+      Sigma += 1e-10 * arma::eye(Sigma.n_rows, Sigma.n_cols);
       Sigmainv = arma::inv(Sigma);
     }
 
@@ -1411,19 +1441,22 @@ Rcpp::List gibbs_sampler (
       for (int n = 0; n < N; ++n) {
         for (int t = 0; t < Tvec[n]; ++t) {
           ind = csTvec[n]+t;
-          if(P_f>0 && P_r>0)
-            mu_mat_tmp = Rcpp::as<arma::mat>(W[ind])*alpha+Rcpp::as<arma::mat>(X[ind])*beta(arma::span::all,n);
-          if(P_f>0 && P_r==0)
-            mu_mat_tmp = Rcpp::as<arma::mat>(W[ind])*alpha;
-          if(P_f==0 && P_r>0)
-            mu_mat_tmp = Rcpp::as<arma::mat>(X[ind])*beta(arma::span::all,n);
-          if(P_f==0 && P_r==0){
+          if (P_f > 0 && P_r > 0) {
+            mu_mat_tmp = Rcpp::as<arma::mat>(W[ind]) * alpha +
+              Rcpp::as<arma::mat>(X[ind]) * beta(arma::span::all,n);
+          } else if (P_f > 0 && P_r == 0) {
+            mu_mat_tmp = Rcpp::as<arma::mat>(W[ind]) * alpha;
+          } else if(P_f == 0 && P_r > 0) {
+            mu_mat_tmp = Rcpp::as<arma::mat>(X[ind]) * beta(arma::span::all,n);
+          } else {
             mu_mat_tmp = arma::zeros<arma::mat>(1,1);
           }
-          mu_mat(n,t) = mu_mat_tmp(0,0);
+          mu_mat(n,t) = mu_mat_tmp(0, 0);
         }
       }
-      if(r == 0) old_ll = ll_ordered(d, y, mu_mat, Tvec);
+      if (r == 0) {
+        old_ll = ll_ordered(d, y, mu_mat, Tvec);
+      }
       update_d_out = update_d(d, y, mu_mat, old_ll, zeta, Z, Tvec);
       d = Rcpp::as<arma::vec>(update_d_out["d"]);
       old_ll = Rcpp::as<double>(update_d_out["ll"]);

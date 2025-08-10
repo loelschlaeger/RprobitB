@@ -76,7 +76,7 @@ Rcpp::List update_classes_dp (
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior,
     Rcpp::List latent_classes, Rcpp::List init,
-    int R, int B, bool print_progress
+    int R, int B, bool print_progress, bool debugger = false
 );
 
 #endif

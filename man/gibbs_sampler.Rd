@@ -14,7 +14,8 @@ gibbs_sampler(
   B,
   print_progress,
   ordered,
-  ranked
+  ranked,
+  debugger = FALSE
 )
 }
 \arguments{

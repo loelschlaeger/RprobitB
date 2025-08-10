@@ -45,10 +45,11 @@ test_that("creation of labels works", {
 })
 
 test_that("choice prediction works", {
+  N <- 100
   data <- simulate_choices(
     form = choice ~ cost | income | time,
-    N = 50,
-    T = sample.int(5, size = 50, replace = TRUE),
+    N = N,
+    T = sample.int(5, size = N, replace = TRUE),
     J = 2,
     alternatives = c("bus", "car"),
     seed = 1,

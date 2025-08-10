@@ -594,7 +594,7 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #'
 #' @keywords gibbs_sampler
 #'
-gibbs_sampler <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked) {
-    .Call(`_RprobitB_gibbs_sampler`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked)
+gibbs_sampler <- function(sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked, debugger = FALSE) {
+    .Call(`_RprobitB_gibbs_sampler`, sufficient_statistics, prior, latent_classes, fixed_parameter, init, R, B, print_progress, ordered, ranked, debugger)
 }
 

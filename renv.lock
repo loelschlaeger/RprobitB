@@ -509,6 +509,16 @@
       ],
       "Hash": "ab12c7b080a57475248a30f4db6298c0"
     },
+    "cubature": {
+      "Package": "cubature",
+      "Version": "2.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp"
+      ],
+      "Hash": "5f1757bf7cd08d339ca22763dc000cbe"
+    },
     "curl": {
       "Package": "curl",
       "Version": "6.4.0",
@@ -1492,7 +1502,7 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "oeli",
       "RemoteUsername": "loelschlaeger",
-      "RemoteSha": "ea0e1155e9c5e55e43ebf59472b489d6bd318505",
+      "RemoteSha": "8d0896ecacf8b3bc341165a7162f7eb517c505e5",
       "Requirements": [
         "R",
         "R6",
@@ -1502,6 +1512,7 @@
         "benchmarkme",
         "checkmate",
         "cli",
+        "cubature",
         "dplyr",
         "future",
         "future.apply",
@@ -1516,7 +1527,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "c63f14adee91827b0b85b064107be75c"
+      "Hash": "0c2d71a291cd5ee487e05079a12f7526"
     },
     "openssl": {
       "Package": "openssl",
