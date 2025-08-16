@@ -9,17 +9,16 @@ gibbs_sampler(
   prior,
   latent_classes,
   fixed_parameter,
-  init,
   R,
   B,
   print_progress,
   ordered,
-  ranked,
-  debugger = FALSE
+  ranked
 )
 }
 \arguments{
-\item{sufficient_statistics}{The output of \code{\link{sufficient_statistics}}.}
+\item{sufficient_statistics}{[\code{list}]\cr
+The output of \code{\link{sufficient_statistics}}.}
 
 \item{prior}{A named list of parameters for the prior distributions. See the documentation
 of \code{\link{check_prior}} for details about which parameters can be
@@ -50,8 +49,6 @@ The following specifications are used for the weight-based updating scheme:
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 
-\item{init}{The output of \code{\link{set_initial_gibbs_values}}.}
-
 \item{R}{The number of iterations of the Gibbs sampler.}
 
 \item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
@@ -69,12 +66,12 @@ estimated remaining computation time.}
 A list of Gibbs samples for
 \itemize{
 \item \code{Sigma},
-\item \code{alpha} (if \code{P_f>0}),
-\item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}),
-\item \code{d} (if \code{ordered = TRUE}),
+\item \code{alpha} (only if \code{P_f > 0}),
+\item \code{s}, \code{z}, \code{b}, \code{Omega} (only if \code{P_r > 0}),
+\item \code{d} (only if \code{ordered = TRUE}),
 }
-and a vector \code{class_sequence} of length \code{R}, where the \code{r}th
-entry is the number of latent classes after iteration \code{r}.
+and a vector \code{class_sequence} of length \code{R}, where the \code{r}-th
+entry is the number of classes after iteration \code{r}.
 }
 \description{
 Gibbs sampler for probit models

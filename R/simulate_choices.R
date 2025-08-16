@@ -84,7 +84,9 @@
 simulate_choices <- function(
     form, N, T = 1, J, re = NULL, alternatives = NULL, ordered = FALSE,
     ranked = FALSE, base = NULL, covariates = NULL, seed = NULL,
-    true_parameter = list()) {
+    true_parameter = list()
+  ) {
+
   ### check 'form'
   if (missing(form)) {
     stop("Please specify the model formula 'form'.",
@@ -266,8 +268,7 @@ simulate_choices <- function(
     what = RprobitB_parameter,
     args = c(
       list(
-        "P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "seed" = seed,
-        "ordered" = ordered
+        "P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "ordered" = ordered
       ),
       true_parameter
     )

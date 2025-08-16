@@ -5,10 +5,6 @@
 #' different types of probit models (binary, multivariate, mixed, latent class,
 #' ordered, ranked) to discrete choice data.
 #'
-#' @details
-#' See [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html)
-#' for more details.
-#'
 #' @param data
 #' An object of class \code{RprobitB_data}.
 #' @inheritParams RprobitB_normalization
@@ -141,13 +137,6 @@ fit_model <- function(
   ### compute sufficient statistics
   suff_stat <- sufficient_statistics(data = data, normalization = normalization)
 
-  ### set initial values for the Gibbs sampler
-  init <- set_initial_gibbs_values(
-    N = data[["N"]], T = data[["T"]], J = data[["J"]], P_f = data[["P_f"]],
-    P_r = data[["P_r"]], C = latent_classes[["C"]], ordered = data[["ordered"]],
-    suff_stat = suff_stat
-  )
-
   ### Gibbs sampling
   if (!is.null(seed)) {
     set.seed(seed)
@@ -156,7 +145,7 @@ fit_model <- function(
   gibbs_samples <- gibbs_sampler(
     sufficient_statistics = suff_stat, prior = prior,
     latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
-    init = init, R = R, B = B, print_progress = print_progress,
+    R = R, B = B, print_progress = print_progress,
     ordered = data[["ordered"]], ranked = data[["ranked"]]
   )
   timer_end <- Sys.time()

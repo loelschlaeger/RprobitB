@@ -9,17 +9,17 @@ check_prior(
   P_r,
   J,
   ordered = FALSE,
-  eta = numeric(P_f),
-  Psi = diag(P_f),
+  mu_alpha_0 = numeric(P_f),
+  Sigma_alpha_0 = 10 * diag(P_f),
   delta = 1,
-  xi = numeric(P_r),
-  D = diag(P_r),
-  nu = P_r + 2,
-  Theta = diag(P_r),
-  kappa = if (ordered) 4 else (J + 1),
-  E = if (ordered) diag(1) else diag(J - 1),
-  zeta = numeric(J - 2),
-  Z = diag(J - 2)
+  mu_b_0 = numeric(P_r),
+  Sigma_b_0 = 10 * diag(P_r),
+  n_Omega_0 = P_r + 2,
+  V_Omega_0 = diag(P_r),
+  n_Sigma_0 = J + 1,
+  V_Sigma_0 = diag(J - 1),
+  mu_d_0 = numeric(J - 2),
+  Sigma_d_0 = diag(J - 2)
 )
 }
 \arguments{
@@ -32,68 +32,57 @@ check_prior(
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
-\item{eta}{The mean vector of length \code{P_f} of the normal prior for \code{alpha}.
-Per default, \code{eta = numeric(P_f)}.}
+\item{mu_alpha_0}{[\code{numeric(P_f)}]\cr
+The mean vector of the normal prior for \code{alpha}.}
 
-\item{Psi}{The covariance matrix of dimension \code{P_f} x \code{P_f} of the normal prior for
-\code{alpha}.
-Per default, \code{Psi = diag(P_f)}.}
+\item{Sigma_alpha_0}{[\code{matrix(P_f, P_f)}]\cr
+The covariance matrix of the normal prior for \code{alpha}.}
 
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
-Dirichlet prior for \code{s}. Per default, \code{delta = 1}.}
+\item{delta}{[\code{numeric(1)}]\cr
+The prior concentration for \code{s}.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
-Per default, \code{xi = numeric(P_r)}.}
+\item{mu_b_0}{[\code{numeric(P_r)}]\cr
+The mean vector of the normal prior for each \code{b_c}.}
 
-\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal prior for
-each \code{b_c}.
-Per default, \code{D = diag(P_r)}.}
+\item{Sigma_b_0}{[\code{matrix(P_r, P_r)}]\cr
+The covariance matrix of the normal prior for each \code{b_c}.}
 
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
-Wishart prior for each \code{Omega_c}.
-Per default, \code{nu = P_r + 2}.}
+\item{n_Omega_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for each \code{Omega_c}.}
 
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
-each \code{Omega_c}.
-Per default, \code{Theta = diag(P_r)}.}
+\item{V_Omega_0}{[\code{matrix(P_r, P_r)}]\cr
+The scale matrix of the Inverse Wishart prior for each \code{Omega_c}.}
 
-\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse
-Wishart prior for \code{Sigma}.
-Per default, \code{kappa = J + 1}.}
+\item{n_Sigma_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for \code{Sigma}.}
 
-\item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
-prior for \code{Sigma}.
-Per default, \code{E = diag(J - 1)}.}
+\item{V_Sigma_0}{[\code{matrix(J - 1, J - 1)}]\cr
+The scale matrix of the Inverse Wishart prior for \code{Sigma}.}
 
-\item{zeta}{The mean vector of length \code{J - 2} of the normal prior for the logarithmic
-increments \code{d} of the utility thresholds in the ordered probit model.
-Per default, \code{zeta = numeric(J - 2)}.}
+\item{mu_d_0}{[\code{numeric(J - 2)}]\cr
+The mean vector of the normal prior for \code{d} .}
 
-\item{Z}{The covariance matrix of dimension \code{J-2} x \code{J-2} of the normal prior for the
-logarithmic increments \code{d} of the utility thresholds in the ordered probit
-model. Per default, \code{Z = diag(J - 2)}.}
+\item{Sigma_d_0}{[\code{matrix(J - 2, J - 2)}]\cr
+The covariance matrix of the normal prior for \code{d}.}
 }
 \value{
-An object of class \code{RprobitB_prior}, which is a list containing all
-prior parameters. Parameters that are not relevant for the model
-configuration are set to \code{NA}.
+An object of class \code{RprobitB_prior}, which is a \code{list} containing all
+prior parameters.
 }
 \description{
 This function checks the compatibility of submitted parameters for the prior
 distributions and sets missing values to default values.
 }
 \details{
-A priori, we assume that the model parameters follow these distributions:
+A priori-distributions:
 \itemize{
-\item \eqn{\alpha \sim N(\eta, \Psi)}
+\item \eqn{\alpha \sim N(\mu_{\alpha_0}, \Sigma_{\alpha_0})}
 \item \eqn{s \sim Dir(\delta)}
-\item \eqn{b_c \sim N(\xi, D)} for all classes \eqn{c}
-\item \eqn{\Omega_c \sim IW(\nu,\Theta)} for all classes \eqn{c}
-\item \eqn{\Sigma \sim IW(\kappa,E)}
-\item \eqn{d \sim N(\zeta, Z)}
+\item \eqn{b_c \sim N(\mu_{b_0}, \Sigma_{b_0})} for all \eqn{c}
+\item \eqn{\Omega_c \sim IW(n_{\Omega_0}, V_{\Omega_0})} for all \eqn{c}
+\item \eqn{\Sigma \sim IW(n_{\Sigma_0}, V_{\Sigma_0})}
+\item \eqn{d \sim N(\mu_{d_0}, \Sigma_{d_0})}
 }
-where \eqn{N} denotes the normal, \eqn{Dir} the Dirichlet, and \eqn{IW}
-the Inverted Wishart distribution.
 }
 \examples{
 check_prior(P_f = 1, P_r = 2, J = 3, ordered = TRUE)

@@ -7,22 +7,23 @@
 update_b(beta, Omega, z, m, Sigma_b_0_inv, mu_b_0)
 }
 \arguments{
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
 \item{m}{[\code{numeric(C)}]\cr
 The vector of current class frequencies.}
 
 \item{Sigma_b_0_inv}{[\code{matrix(P_r, P_r)}]\cr
 The prior precision of the class mean.}
+
+\item{mu_b_0}{[\code{numeric(P_r)}]\cr
+The mean vector of the normal prior for each \code{b_c}.}
 }
 \value{
 A matrix of updated means for each class in columns.

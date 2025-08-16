@@ -63,22 +63,20 @@ test_that("choice prediction works", {
 })
 
 test_that("preference classification works", {
-  N <- 200
+  N <- 100
   data <- simulate_choices(
     form = choice ~ cost,
     N = N,
-    T = 5,
+    T = 10,
     J = 3,
     re = c("cost"),
     alternatives = c("train", "bus", "car"),
     seed = 1,
     true_parameter = list(
-      "C" = 2, "s" = c(0.5, 0.5), "b" = matrix(c(2, -2), ncol = 2)
+      "C" = 2, "s" = c(0.5, 0.5), "b" = matrix(c(3, -3), ncol = 2)
     )
   )
-  model <- fit_model(data,
-    R = 500, seed = 1, latent_classes = list("C" = 2)
-  )
+  model <- fit_model(data, seed = 1, latent_classes = list("C" = 2))
   classif <- classification(model, add_true = TRUE)
   expect_snapshot(classif)
   # sum(classif$est == classif$true) / N

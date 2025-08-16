@@ -17,17 +17,14 @@ update_classes_wb(
 )
 }
 \arguments{
-\item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
+\item{s}{[\code{numeric(C)}]\cr
+The vector of class weights.}
 
-For identifiability, the vector must be non-ascending.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
-
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
 \item{epsmin}{[\code{numeric(1)}]\cr
 The threshold weight for removing a class.}
@@ -75,16 +72,16 @@ b <- matrix(c(1, 1, 1, -1), ncol = 2)
 Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 
 ### no update
-RprobitB::update_classes_wb(s = s, b = b, Omega = Omega)
+update_classes_wb(s = s, b = b, Omega = Omega)
 
 ### remove class 2
-RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
+update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
 
 ### split class 1
-RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
+update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
 
 ### merge classes 1 and 2
-RprobitB::update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
+update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
 
 }
 \keyword{gibbs_sampler}

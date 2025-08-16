@@ -50,11 +50,11 @@
       choice occasions  1-10
       total choices       55
       alternatives         5
-      - 'very bad'        34
-      - 'bad'             17
-      - 'indifferent'      4
-      - 'good'             0
-      - 'very good'        0
+      - 'very bad'        10
+      - 'bad'              2
+      - 'indifferent'     40
+      - 'good'             1
+      - 'very good'        2
 
 # data preparation with ranked choices works
 
@@ -73,12 +73,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            4
-      - 'A,C,B'            3
-      - 'B,A,C'           11
-      - 'B,C,A'           14
-      - 'C,A,B'            7
-      - 'C,B,A'           16
+      - 'A,B,C'            2
+      - 'A,C,B'            1
+      - 'B,A,C'           14
+      - 'B,C,A'           24
+      - 'C,A,B'            4
+      - 'C,B,A'           10
 
 # data preparation with non-standard base alternative works
 
@@ -117,9 +117,9 @@
       choice occasions  1-10
       total choices       55
       alternatives         3
-      - 'bus'             10
-      - 'car'             17
-      - 'train'           28
+      - 'bus'             20
+      - 'car'             15
+      - 'train'           20
 
 # simulating ordered choices works
 
@@ -138,11 +138,11 @@
       choice occasions  1-10
       total choices       55
       alternatives         5
-      - 'very bad'        34
-      - 'bad'             17
-      - 'indifferent'      4
-      - 'good'             0
-      - 'very good'        0
+      - 'very bad'        10
+      - 'bad'              2
+      - 'indifferent'     40
+      - 'good'             1
+      - 'very good'        2
 
 # simulating ranked choices works
 
@@ -161,12 +161,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            4
-      - 'A,C,B'            3
-      - 'B,A,C'           11
-      - 'B,C,A'           14
-      - 'C,A,B'            7
-      - 'C,B,A'           16
+      - 'A,B,C'            2
+      - 'A,C,B'            1
+      - 'B,A,C'           14
+      - 'B,C,A'           24
+      - 'C,A,B'            4
+      - 'C,B,A'           10
 
 # splitting data set by N works
 

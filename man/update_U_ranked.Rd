@@ -2,34 +2,30 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_U_ranked}
 \alias{update_U_ranked}
-\title{Update latent utility vector in the ranked probit case}
+\title{Update ranked utility vector}
 \usage{
-update_U_ranked(U, sys, Sigmainv)
+update_U_ranked(U, sys, Sigma_inv)
 }
 \arguments{
-\item{U}{The current utility vector of length \code{J-1}, differenced such that
-the vector is negative.}
+\item{U}{[\code{numeric(J - 1)}]\cr
+The current utility vector.}
 
-\item{sys}{A vector of length \code{J-1}, the systematic utility part.}
+\item{sys}{[\code{numeric(J - 1)}]\cr
+The systematic utility.}
 
-\item{Sigmainv}{The inverted error term covariance matrix of dimension
-\code{J-1} x \code{J-1}.}
+\item{Sigma_inv}{[\code{matrix(J - 1, J - 1)}]\cr
+The inverted error covariance matrix.}
 }
 \value{
-An updated utility vector of length \code{J-1}.
+An update for (a single) ranked \code{U}.
 }
 \description{
-Update latent utility vector in the ranked probit case
-}
-\details{
-This update is basically the same as in the non-ranked case, despite that
-the truncation point is zero.
+Update ranked utility vector
 }
 \examples{
-U <- c(0,0)
-sys <- c(0,0)
-Sigmainv <- diag(2)
-update_U_ranked(U, sys, Sigmainv)
+U <- sys <- c(0, 0)
+Sigma_inv <- diag(2)
+update_U_ranked(U, sys, Sigma_inv)
 
 }
 \keyword{gibbs_sampler}

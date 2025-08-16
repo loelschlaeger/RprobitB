@@ -2,62 +2,49 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_Sigma}
 \alias{update_Sigma}
-\title{Update error term covariance matrix of multiple linear regression}
+\title{Update error covariance matrix}
 \usage{
-update_Sigma(kappa, E, N, S)
+update_Sigma(n_Sigma_0, V_Sigma_0, N, S)
 }
 \arguments{
-\item{kappa}{The degrees of freedom (a natural number greater than \code{J-1}) of the Inverse
-Wishart prior for \code{Sigma}.
-Per default, \code{kappa = J + 1}.}
+\item{n_Sigma_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for \code{Sigma}.}
 
-\item{E}{The scale matrix of dimension \code{J-1} x \code{J-1} of the Inverse Wishart
-prior for \code{Sigma}.
-Per default, \code{E = diag(J - 1)}.}
+\item{V_Sigma_0}{[\code{matrix(J - 1, J - 1)}]\cr
+The scale matrix of the Inverse Wishart prior for \code{Sigma}.}
 
-\item{N}{The draw size.}
+\item{N}{[\code{integer(1)}]\cr
+The sample size.}
 
-\item{S}{A matrix, the sum over the outer products of the residuals \eqn{(\epsilon_n)_{n=1,\dots,N}}.}
+\item{S}{[\code{matrix(J - 1, J - 1)}]\cr
+The sum over the outer products of the residuals
+\eqn{(\epsilon_n)_{n = 1, \dots, N}}.}
 }
 \value{
-A matrix, a draw from the Inverse Wishart posterior distribution of the error term
-covariance matrix in a multiple linear regression.
+An update for \code{Sigma}.
 }
 \description{
-Update error term covariance matrix of multiple linear regression
-}
-\details{
-This function draws from the posterior distribution of the covariance matrix \eqn{\Sigma} in the linear utility
-equation \deqn{U_n = X_n\beta + \epsilon_n,} where \eqn{U_n} is the
-(latent, but here assumed to be known) utility vector of decider \eqn{n = 1,\dots,N}, \eqn{X_n}
-is the design matrix build from the choice characteristics faced by \eqn{n},
-\eqn{\beta} is the coefficient vector, and \eqn{\epsilon_n} is the error term assumed to be
-normally distributed with mean \eqn{0} and unknown covariance matrix \eqn{\Sigma}.
-A priori we assume the (conjugate) Inverse Wishart distribution \deqn{\Sigma \sim W(\kappa,E)}
-with \eqn{\kappa} degrees of freedom and scale matrix \eqn{E}.
-The posterior for \eqn{\Sigma} is the Inverted Wishart distribution with \eqn{\kappa + N} degrees of freedom
-and scale matrix \eqn{E^{-1}+S}, where \eqn{S = \sum_{n=1}^{N} \epsilon_n \epsilon_n'} is the sum over
-the outer products of the residuals \eqn{(\epsilon_n = U_n - X_n\beta)_n}.
+Update error covariance matrix
 }
 \examples{
-### true error term covariance matrix
-(Sigma_true <- matrix(c(1,0.5,0.2,0.5,1,0.2,0.2,0.2,2), ncol=3))
-### coefficient vector
-beta <- matrix(c(-1,1), ncol=1)
-### draw data
+(Sigma_true <- matrix(c(1, 0.5, 0.2, 0.5, 1, 0.2, 0.2, 0.2, 2), ncol = 3))
+beta <- matrix(c(-1, 1), ncol = 1)
 N <- 100
-X <- replicate(N, matrix(rnorm(6), ncol=2), simplify = FALSE)
-eps <- replicate(N, oeli::rmvnorm(n = 1, mean = c(0,0,0), Sigma = Sigma_true), simplify = FALSE)
+X <- replicate(N, matrix(rnorm(6), ncol = 2), simplify = FALSE)
+eps <- replicate(
+  N, oeli::rmvnorm(n = 1, mean = c(0, 0, 0), Sigma = Sigma_true),
+  simplify = FALSE
+)
 U <- mapply(function(X, eps) X \%*\% beta + eps, X, eps, SIMPLIFY = FALSE)
-### prior parameters for covariance matrix
-kappa <- 4
-E <- diag(3)
-### draw from posterior of coefficient vector
+n_Sigma_0 <- 4
+V_Sigma_0 <- diag(3)
 outer_prod <- function(X, U) (U - X \%*\% beta) \%*\% t(U - X \%*\% beta)
-S <- Reduce(`+`, mapply(outer_prod, X, U, SIMPLIFY = FALSE))
-Sigma_draws <- replicate(100, update_Sigma(kappa, E, N, S))
+S <- Reduce(`+`, mapply(
+  function(X, U) (U - X \%*\% beta) \%*\% t(U - X \%*\% beta), X, U,
+  SIMPLIFY = FALSE
+))
+Sigma_draws <- replicate(100, update_Sigma(n_Sigma_0, V_Sigma_0, N, S))
 apply(Sigma_draws, 1:2, mean)
-apply(Sigma_draws, 1:2, stats::sd)
 
 }
 \keyword{gibbs_sampler}

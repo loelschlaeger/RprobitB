@@ -25,11 +25,11 @@ draw_from_prior <- function(prior, C = 1) {
     stop("'prior' must be of class 'RprobitB_prior.", call. = FALSE)
   }
 
-  ### alpha ~ MVN(eta,Psi)
-  if (identical(prior$eta, NA) || identical(prior$Psi, NA)) {
+  ### alpha ~ MVN(mu_alpha_0,Sigma_alpha_0)
+  if (identical(prior$mu_alpha_0, NA) || identical(prior$Sigma_alpha_0, NA)) {
     alpha <- NULL
   } else {
-    alpha <- oeli::rmvnorm(n = 1, mean = prior$eta, Sigma = prior$Psi)
+    alpha <- oeli::rmvnorm(n = 1, mean = prior$mu_alpha_0, Sigma = prior$Sigma_alpha_0)
   }
 
   ### s ~ D(delta)
@@ -40,27 +40,27 @@ draw_from_prior <- function(prior, C = 1) {
       sort(decreasing = TRUE)
   }
 
-  ### b_c ~ MVN(xi,D) for all c
-  if (identical(prior$xi, NA) || identical(prior$D, NA)) {
+  ### b_c ~ MVN(mu_b_0, Sigma_b_0) for all c
+  if (identical(prior$mu_b_0, NA) || identical(prior$Sigma_b_0, NA)) {
     b <- NULL
   } else {
-    b <- replicate(C, oeli::rmvnorm(n = 1, mean = prior$xi, Sigma = prior$D)) |>
+    b <- replicate(C, oeli::rmvnorm(n = 1, mean = prior$mu_b_0, Sigma = prior$Sigma_b_0)) |>
       matrix(ncol = C)
   }
 
-  ### Omega_c ~ IW(nu,Theta) for all c
-  if (identical(prior$nu, NA) || identical(prior$Theta, NA)) {
+  ### Omega_c ~ IW(n_Omega_0,V_Omega_0) for all c
+  if (identical(prior$n_Omega_0, NA) || identical(prior$V_Omega_0, NA)) {
     Omega <- NULL
   } else {
-    Omega <- replicate(C, oeli::rwishart(df = prior$nu, scale = prior$Theta, inv = TRUE)) |>
+    Omega <- replicate(C, oeli::rwishart(df = prior$n_Omega_0, scale = prior$V_Omega_0, inv = TRUE)) |>
       matrix(ncol = C)
   }
 
-  ### Sigma ~ IW(kappa,E)
-  if (identical(prior$kappa, NA) || identical(prior$E, NA)) {
+  ### Sigma ~ IW(n_Sigma_0,V_Sigma_0)
+  if (identical(prior$n_Sigma_0, NA) || identical(prior$V_Sigma_0, NA)) {
     Sigma <- NULL
   } else {
-    Sigma <- oeli::rwishart(df = prior$kappa, scale = prior$E, inv = TRUE)
+    Sigma <- oeli::rwishart(df = prior$n_Sigma_0, scale = prior$V_Sigma_0, inv = TRUE)
   }
 
   ### return draws

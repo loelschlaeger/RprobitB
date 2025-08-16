@@ -7,21 +7,17 @@
 update_z(s, beta, b, Omega)
 }
 \arguments{
-\item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
+\item{s}{[\code{numeric(C)}]\cr
+The vector of class weights.}
 
-For identifiability, the vector must be non-ascending.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
-
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 }
 \value{
 An update for \code{z}.

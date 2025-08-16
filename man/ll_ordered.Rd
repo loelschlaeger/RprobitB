@@ -2,27 +2,35 @@
 % Please edit documentation in R/RcppExports.R
 \name{ll_ordered}
 \alias{ll_ordered}
-\title{Log-likelihood in the ordered probit model}
+\title{Compute ordered probit log-likelihood}
 \usage{
-ll_ordered(d, y, mu, Tvec)
+ll_ordered(d, y, sys, Tvec)
 }
 \arguments{
-\item{d}{A numeric vector of threshold increments.}
+\item{d}{[\code{numeric(J - 2)}]\cr
+Threshold increments.}
 
-\item{y}{A matrix of the choices.}
+\item{y}{[\code{matrix(nrow = N, ncol = max(Tvec))}]\cr
+Choices \code{1,...,J} for each decider in each choice occasion.}
 
-\item{mu}{A matrix of the systematic utilities.}
+\item{sys}{[\code{matrix(nrow = N, ncol = max(Tvec))}]\cr
+Systematic utilties for each decider in each choice occasion.}
 
-\item{Tvec}{The element \code{Tvec} in \code{\link{sufficient_statistics}}.}
+\item{Tvec}{[\code{integer(N)}]\cr
+Number of choice occasions per decider.}
 }
 \value{
-The log-likelihood value.
+The ordered probit log-likelihood value.
 }
 \description{
-Log-likelihood in the ordered probit model
+Compute ordered probit log-likelihood
 }
 \examples{
-ll_ordered(c(0,0,0), matrix(1), matrix(1), 1)
+d <- c(0, 0, 0)
+y <- matrix(c(1, 2, 1, NA), ncol = 2)
+sys <- matrix(c(0, 0, 0, NA), ncol = 2)
+Tvec <- c(2, 1)
+ll_ordered(d = d, y = y, sys = sys, Tvec = Tvec)
 
 }
 \keyword{gibbs_sampler}

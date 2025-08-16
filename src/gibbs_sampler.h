@@ -1,9 +1,18 @@
 #ifndef GIBBS_SAMPLER_H
 #define GIBBS_SAMPLER_H
 
+#include <algorithm>
+#include <cmath>
+#include <limits>
 #include <oeli.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
+#include <unordered_map>
+#include <vector>
+
+int sample_allocation(
+    arma::vec const& prob
+);
 
 arma::vec update_s (
     int delta, arma::vec m
@@ -36,29 +45,36 @@ arma::mat update_Omega (
     int n_Omega_0, arma::mat V_Omega_0
 );
 
-arma::vec update_reg (
-    arma::vec mu0, arma::mat Tau0, arma::mat XSigX, arma::vec XSigU
+arma::vec update_coefficient (
+    arma::vec mu_beta_0, arma::mat Sigma_beta_0_inv,
+    arma::mat XSigX, arma::vec XSigU
 );
 
 arma::mat update_Sigma (
-    int kappa, arma::mat E, int N, arma::mat S
+    int n_Sigma_0, arma::mat V_Sigma_0, int N, arma::mat S
 );
 
 arma::vec update_U (
-    arma::vec U, int y, arma::vec sys, arma::mat Sigmainv
+    arma::vec U, int y, arma::vec sys, arma::mat Sigma_inv
+);
+
+arma::vec update_U_ranked (
+    arma::vec U, arma::vec sys, arma::mat Sigma_inv
 );
 
 arma::vec d_to_gamma (
-    arma::vec d
+    arma::vec const& d
 );
 
-double ll_ordered (
-    arma::vec d, arma::mat y, arma::mat mu, arma::vec Tvec, arma::vec csTvec
+double ll_ordered(
+    arma::vec const& d, arma::mat const& y, arma::mat const& sys,
+    arma::vec const& Tvec
 );
 
-Rcpp::List update_d (
-    arma::vec d, int y, double mu, double ll, arma::vec zeta, arma::mat Z,
-    arma::vec Tvec, arma::vec csTvec
+Rcpp::List update_d(
+    arma::vec d, arma::mat const& y, arma::mat const& sys, double ll,
+    arma::vec const& mu_d_0, arma::mat const& Sigma_d_0, arma::vec const& Tvec,
+    double step_scale = 0.1
 );
 
 Rcpp::List update_classes_wb (
@@ -67,16 +83,16 @@ Rcpp::List update_classes_wb (
     double deltashift = 0.5, bool identify_classes = false, int Cmax = 10
 );
 
-Rcpp::List update_classes_dp (
-  arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
-  double delta, arma::vec mu_b_0, arma::mat Sigma_b_0, int n_Omega_0,
-  arma::mat V_Omega_0, bool identify_classes = false, int Cmax = 10
+Rcpp::List update_classes_dp(
+    arma::mat beta, arma::vec z, arma::mat b, arma::mat Omega,
+    double delta, arma::vec mu_b_0, arma::mat Sigma_b_0, int n_Omega_0,
+    arma::mat V_Omega_0, bool identify_classes = false, int Cmax = 10
 );
 
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior,
-    Rcpp::List latent_classes, Rcpp::List init,
-    int R, int B, bool print_progress, bool debugger = false
+    Rcpp::List latent_classes,
+    int R, int B, bool print_progress
 );
 
 #endif

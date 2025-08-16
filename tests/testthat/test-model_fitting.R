@@ -6,13 +6,6 @@ test_that("setting prior parameter works", {
   expect_s3_class(prior, "RprobitB_prior")
 })
 
-test_that("setting of initial Gibbs values works", {
-  init <- RprobitB:::set_initial_gibbs_values(
-    N = 2, T = 3, J = 3, P_f = 1, P_r = 2, C = 2
-  )
-  expect_snapshot(init)
-})
-
 test_that("RprobitB_latent_class setting works", {
   expect_error(
     RprobitB_latent_classes("not a list")
@@ -81,18 +74,24 @@ test_that("Gibbs sampling works", {
 })
 
 test_that("Ordered probit model estimation works", {
+  N <- 100
+  T <- 10
   data <- simulate_choices(
     form = opinion_on_sth ~ age + gender,
-    N = 100,
-    T = 10,
+    N = N,
+    T = T,
     J = 5,
     alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
     ordered = TRUE,
     covariates = list(
-      "gender" = rep(sample(c(0, 1), 100, replace = TRUE), times = 10)
+      "gender" = rep(sample(c(0, 1), N, replace = TRUE), times = T)
+    ),
+    true_parameter = list(
+      "alpha" = c(1, 2), "d" = c(0, 1, 2)
     ),
     seed = 1
   )
+  # lapply(data$data, `[[`, "y") |> unlist() |> table() / (N * T) |> round(2)
   model <- fit_model(data)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))

@@ -2,28 +2,22 @@
 % Please edit documentation in R/RcppExports.R
 \name{d_to_gamma}
 \alias{d_to_gamma}
-\title{Transform threshold increments to thresholds}
+\title{Transform increments to thresholds}
 \usage{
 d_to_gamma(d)
 }
 \arguments{
-\item{d}{A numeric vector of threshold increments.}
+\item{d}{[\code{numeric(J - 2)}]\cr
+Threshold increments.}
 }
 \value{
-A numeric vector of the thresholds.
+The threshold vector of length \code{J + 1}.
 }
 \description{
-This helper function transforms the threshold increments \code{d} to the
-thresholds \code{gamma}.
-}
-\details{
-The threshold vector \code{gamma} is computed from the threshold increments
-\code{d} as \code{c(-100,0,cumsum(exp(d)),100)}, where the bounds
-\code{-100} and \code{100} exist for numerical reasons and the first
-threshold is fixed to \code{0} for identification.
+Transform increments to thresholds
 }
 \examples{
-d_to_gamma(c(0,0,0))
+d_to_gamma(c(0, 0, 0))
 
 }
 \keyword{gibbs_sampler}

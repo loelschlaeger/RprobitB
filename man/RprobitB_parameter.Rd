@@ -2,6 +2,7 @@
 % Please edit documentation in R/RprobitB_parameter.R
 \name{RprobitB_parameter}
 \alias{RprobitB_parameter}
+\alias{print.RprobitB_parameter}
 \title{Define probit model parameter}
 \usage{
 RprobitB_parameter(
@@ -9,9 +10,9 @@ RprobitB_parameter(
   P_r,
   J,
   N,
+  C = 1,
   ordered = FALSE,
   alpha = NULL,
-  C = NULL,
   s = NULL,
   b = NULL,
   Omega = NULL,
@@ -20,9 +21,10 @@ RprobitB_parameter(
   beta = NULL,
   z = NULL,
   d = NULL,
-  seed = NULL,
   sample = TRUE
 )
+
+\method{print}{RprobitB_parameter}(x, ..., digits = 4)
 }
 \arguments{
 \item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
@@ -33,55 +35,61 @@ RprobitB_parameter(
 
 \item{N}{The number (greater or equal 1) of decision makers.}
 
+\item{C}{[\code{integer(1)}]\cr
+The number (greater or equal 1) of latent classes of decision makers.}
+
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
-\item{alpha}{The fixed coefficient vector of length \code{P_f}.
-Set to \code{NA} if \code{P_f = 0}.}
+\item{alpha}{[\code{numeric(P_f)}]\cr
+The fixed coefficient vector.}
 
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
+\item{s}{[\code{numeric(C)}]\cr
+The vector of class weights.}
 
-\item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-For identifiability, the vector must be non-ascending.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Sigma}{[\code{matrix(nrow = J - 1, ncol = J - 1)} | \code{numeric(1)}]\cr
+The differenced (wrt. alternative \code{J}) error covariance matrix.
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+In case of \code{ordered = TRUE}, the single error variance.}
 
-\item{Sigma}{The differenced error term covariance matrix of dimension
-\code{J-1} x \code{J-1} with respect to alternative \code{J}.
-In case of \code{ordered = TRUE}, a numeric, the single error term variance.}
+\item{Sigma_full}{[\code{matrix(nrow = J, ncol = J)}]\cr
+The error covariance matrix.
 
-\item{Sigma_full}{The error term covariance matrix of dimension \code{J} x \code{J}.
-Internally, \code{Sigma_full} gets differenced with respect to alternative
-\code{J}, so it becomes an identified covariance matrix of dimension
-\code{J-1} x \code{J-1}. \code{Sigma_full} is ignored if \code{Sigma} is
-specified or \code{ordered = TRUE}.}
+Ignored if \code{Sigma} is specified or \code{ordered = TRUE}.
 
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+Internally, \code{Sigma_full} gets differenced wrt.  alternative \code{J}.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{d}{The numeric vector of the logarithmic increases of the utility thresholds
-in the ordered probit case (\code{ordered = TRUE}) of length \code{J-2}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
-\item{seed}{Set a seed for the sampling of missing parameters.}
+\item{d}{[\code{numeric(J - 2)}]\cr
+The logarithmic increases of the utility thresholds in the ordered probit
+case (\code{ordered = TRUE}).}
 
-\item{sample}{A boolean, if \code{TRUE} (default) missing parameters get sampled.}
+\item{sample}{[\code{logical(1)}]\cr
+Sample missing parameters?}
+
+\item{x}{An \code{RprobitB_parameter} object.}
+
+\item{...}{[\code{character()}]\cr
+Names of parameters to be printed. If not specified, all parameters are
+printed.}
+
+\item{digits}{[\code{integer(1)}]\cr
+The number of decimal places.}
 }
 \value{
-An object of class \code{RprobitB_parameter}, i.e. a named list with the
-model parameters \code{alpha}, \code{C}, \code{s}, \code{b}, \code{Omega},
-\code{Sigma}, \code{Sigma_full}, \code{beta}, and \code{z}.
+An object of class \code{RprobitB_parameter}, which is a named list with the
+model parameters.
 }
 \description{
 This function creates an object of class \code{RprobitB_parameter}, which
@@ -89,7 +97,10 @@ contains the parameters of a probit model.
 
 If \code{sample = TRUE}, missing parameters are sampled. All parameters are
 checked against the values of \code{P_f}, \code{P_r}, \code{J}, and \code{N}.
+
+Note that parameters are automatically ordered with respect to a
+non-ascending \code{s} for class identifiability.
 }
 \examples{
-RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10)
+RprobitB_parameter(P_f = 1, P_r = 2, J = 3, N = 10, C = 2)
 }

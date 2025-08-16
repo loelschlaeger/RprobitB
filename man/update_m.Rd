@@ -7,11 +7,11 @@
 update_m(C, z, non_zero = FALSE)
 }
 \arguments{
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
+\item{C}{[\code{integer(1)}]\cr
+The number (greater or equal 1) of latent classes of decision makers.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
 \item{non_zero}{[\code{logical(1)}]\cr
 Enforce strictly positive values in \code{m} (for numerical stability)?}

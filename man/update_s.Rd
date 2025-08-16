@@ -7,8 +7,8 @@
 update_s(delta, m)
 }
 \arguments{
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
-Dirichlet prior for \code{s}. Per default, \code{delta = 1}.}
+\item{delta}{[\code{numeric(1)}]\cr
+The prior concentration for \code{s}.}
 
 \item{m}{[\code{numeric(C)}]\cr
 The vector of current class frequencies.}

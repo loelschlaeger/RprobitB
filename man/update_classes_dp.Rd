@@ -19,22 +19,32 @@ update_classes_dp(
 )
 }
 \arguments{
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
-Dirichlet prior for \code{s}. Per default, \code{delta = 1}.}
+\item{delta}{[\code{numeric(1)}]\cr
+The prior concentration for \code{s}.}
+
+\item{mu_b_0}{[\code{numeric(P_r)}]\cr
+The mean vector of the normal prior for each \code{b_c}.}
+
+\item{Sigma_b_0}{[\code{matrix(P_r, P_r)}]\cr
+The covariance matrix of the normal prior for each \code{b_c}.}
+
+\item{n_Omega_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for each \code{Omega_c}.}
+
+\item{V_Omega_0}{[\code{matrix(P_r, P_r)}]\cr
+The scale matrix of the Inverse Wishart prior for each \code{Omega_c}.}
 
 \item{identify_classes}{[\code{logical(1)}]\cr
 Identify classes by decreasing class weights?}
@@ -50,18 +60,17 @@ Dirichlet process class updates
 }
 \examples{
 set.seed(1)
-z <- c(rep(1,20),rep(2,30))
-b <- matrix(c(1,1,1,-1), ncol=2)
-Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
-beta <- sapply(z, function(z) oeli::rmvnorm(n = 1, b[,z], matrix(Omega[,z],2,2)))
-delta <- 1
-xi <- numeric(2)
-D <- diag(2)
-nu <- 4
-Theta <- diag(2)
-RprobitB:::update_classes_dp(
-  Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
-  delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+z <- c(rep(1, 10),rep(2, 10))
+b <- matrix(c(5, 5, 5, -5), ncol = 2)
+Omega <- matrix(c(1, 0.3, 0.3, 0.5, 1, -0.3, -0.3, 0.8), ncol = 2)
+beta <- sapply(
+  z, function(z) oeli::rmvnorm(n = 1, b[, z], matrix(Omega[, z], 2, 2))
+)
+beta[, 1] <- c(-10, 10)
+update_classes_dp(
+  beta = beta, z = z, b = b, Omega = Omega,
+  delta = 1, mu_b_0 = numeric(2), Sigma_b_0 = diag(2),
+  n_Omega_0 = 4, V_Omega_0 = diag(2)
 )
 
 }

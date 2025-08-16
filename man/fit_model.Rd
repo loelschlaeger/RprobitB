@@ -75,10 +75,6 @@ This function performs Markov chain Monte Carlo simulation for fitting
 different types of probit models (binary, multivariate, mixed, latent class,
 ordered, ranked) to discrete choice data.
 }
-\details{
-See \href{https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html}{the vignette on model fitting}
-for more details.
-}
 \examples{
 data <- simulate_choices(
   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1

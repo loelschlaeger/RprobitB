@@ -7,18 +7,23 @@
 update_Omega(beta, b, z, m, n_Omega_0, V_Omega_0)
 }
 \arguments{
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
 \item{m}{[\code{numeric(C)}]\cr
 The vector of current class frequencies.}
+
+\item{n_Omega_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for each \code{Omega_c}.}
+
+\item{V_Omega_0}{[\code{matrix(P_r, P_r)}]\cr
+The scale matrix of the Inverse Wishart prior for each \code{Omega_c}.}
 }
 \value{
 A matrix of updated covariance matrices for each class in columns.

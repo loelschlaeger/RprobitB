@@ -12,6 +12,12 @@ The scatter matrix of this class.}
 
 \item{m_c}{[\code{integer(1)}]\cr
 The number of observations in this class.}
+
+\item{n_Omega_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for each \code{Omega_c}.}
+
+\item{V_Omega_0}{[\code{matrix(P_r, P_r)}]\cr
+The scale matrix of the Inverse Wishart prior for each \code{Omega_c}.}
 }
 \value{
 An update for \code{Omega_c}.

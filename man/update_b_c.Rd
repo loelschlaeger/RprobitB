@@ -18,6 +18,9 @@ The number of observations in this class.}
 
 \item{Sigma_b_0_inv}{[\code{matrix(P_r, P_r)}]\cr
 The prior precision of the class mean.}
+
+\item{mu_b_0}{[\code{numeric(P_r)}]\cr
+The mean vector of the normal prior for each \code{b_c}.}
 }
 \value{
 An update for \code{b_c}.
