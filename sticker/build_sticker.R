@@ -24,7 +24,7 @@ p <- ggplot2::ggplot(as.data.frame(mixture)) +
   ggplot2::geom_line(aes(x = x, y = C2), color = mixtures_color) +
   ggplot2::geom_line(aes(x = x, y = C3), color = mixtures_color) +
   ggplot2::geom_line(
-    aes(x = x, y = joint), color = total_mixture_color, linewidth = 0.6, linetype = "dashed"
+    aes(x = x, y = joint), color = total_mixture_color, size = 0.6, linetype = "dashed"
   )
 
 ### build sticker
@@ -69,4 +69,3 @@ sticker_file <- sticker(
   dpi = 300
 )
 plot(sticker_file)
-

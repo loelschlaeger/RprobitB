@@ -13,7 +13,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-2920-7032")))
 Description:
     Bayes estimation of probit choice models in cross-sectional and panel 
-    settings. The package can analyze binary, multivariate, ordered, and  ranked 
+    settings. The package can analyze binary, multivariate, ordered, and ranked 
     choices, as well as heterogeneity of choice behavior among deciders. The 
     main functionality includes model fitting via Gibbs sampling, tools for 
     convergence  diagnostic, choice data simulation, in-sample and out-of-sample 

@@ -67,8 +67,8 @@ transform_parameter <- function(parameter, normalization, ordered = FALSE) {
     parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor)
     parameter[["beta"]] <- scaling(parameter[["beta"]], sqrt(factor))
     if (!ordered) {
-      parameter[["Sigma_full"]] <- undiff_Sigma(
-        parameter[["Sigma"]], normalization[["level"]][["level"]]
+      parameter[["Sigma_full"]] <- oeli::undiff_cov(
+        cov = parameter[["Sigma"]], ref = normalization[["level"]][["level"]]
       )
     }
   }

@@ -75,7 +75,7 @@
 #' @noRd
 
 RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
-  if (identical(getOption("RprobitB_progress"), TRUE)) {
+  if (isTRUE(getOption("RprobitB_progress"))) {
     if (is.null(i) || is.null(total)) {
       message(title)
     } else {

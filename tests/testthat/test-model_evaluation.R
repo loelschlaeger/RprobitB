@@ -73,7 +73,7 @@ test_that("preference classification works", {
     alternatives = c("train", "bus", "car"),
     seed = 1,
     true_parameter = list(
-      "C" = 2, "s" = c(0.5, 0.5), "b" = matrix(c(3, -3), ncol = 2)
+      "C" = 2, "s" = c(0.6, 0.4), "b" = matrix(c(5, -5), ncol = 2)
     )
   )
   model <- fit_model(data, seed = 1, latent_classes = list("C" = 2))

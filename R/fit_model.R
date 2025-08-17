@@ -7,25 +7,30 @@
 #'
 #' @param data
 #' An object of class \code{RprobitB_data}.
-#' @inheritParams RprobitB_normalization
+#'
 #' @param R
 #' The number of iterations of the Gibbs sampler.
+#'
 #' @param B
 #' The length of the burn-in period, i.e. a non-negative number of samples to
 #' be discarded.
+#'
 #' @param Q
 #' The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
 #' sample is kept.
+#'
 #' @param print_progress
 #' A boolean, determining whether to print the Gibbs sampler progress and the
 #' estimated remaining computation time.
+#'
 #' @param prior
 #' A named list of parameters for the prior distributions. See the documentation
 #' of \code{\link{check_prior}} for details about which parameters can be
 #' specified.
-#' @inheritParams RprobitB_latent_classes
+#'
 #' @param seed
 #' Set a seed for the Gibbs sampling.
+#'
 #' @param fixed_parameter
 #' Optionally specify a named list with fixed parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
@@ -33,12 +38,15 @@
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
 #' for definitions of these variables.
 #'
+#' @inheritParams RprobitB_normalization
+#' @inheritParams RprobitB_latent_classes
+#'
 #' @return
 #' An object of class \code{RprobitB_fit}.
 #'
 #' @examples
 #' data <- simulate_choices(
-#'   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1
+#'   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1, re = "var"
 #' )
 #' model <- fit_model(data = data, R = 1000, seed = 1)
 #' summary(model)
@@ -58,6 +66,7 @@ fit_model <- function(
     print_progress = getOption("RprobitB_progress", default = TRUE),
     prior = NULL, latent_classes = NULL, seed = NULL, fixed_parameter = list()
   ) {
+
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
     stop(
@@ -134,18 +143,17 @@ fit_model <- function(
     ), prior)
   )
 
-  ### compute sufficient statistics
-  suff_stat <- sufficient_statistics(data = data, normalization = normalization)
-
   ### Gibbs sampling
   if (!is.null(seed)) {
     set.seed(seed)
   }
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampler(
-    sufficient_statistics = suff_stat, prior = prior,
-    latent_classes = unclass(latent_classes), fixed_parameter = fixed_parameter,
-    R = R, B = B, print_progress = print_progress,
+    sufficient_statistics = sufficient_statistics(
+      data = data, normalization = normalization
+    ), prior = prior, latent_classes = unclass(latent_classes),
+    fixed_parameter = fixed_parameter, R = R, B = B,
+    print_progress = print_progress,
     ordered = data[["ordered"]], ranked = data[["ranked"]]
   )
   timer_end <- Sys.time()

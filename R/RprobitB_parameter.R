@@ -238,7 +238,7 @@ RprobitB_parameter <- function(
         Sigma <- delta_J %*% Sigma_full %*% t(delta_J)
       } else {
         Sigma <- as.matrix(Sigma)
-        Sigma_full <- undiff_Sigma(Sigma, i = J)
+        Sigma_full <- oeli::undiff_cov(cov = Sigma, ref = J)
       }
       oeli::input_check_response(
         check = oeli::check_covariance_matrix(Sigma, dim = J - 1),

@@ -8,6 +8,53 @@
 #include <unordered_map>
 #include <vector>
 
+arma::mat safe_symmetrize(const arma::mat& M) {
+  return 0.5 * (M + M.t());
+}
+
+arma::mat safe_inv_sympd(const arma::mat& M, double jitter = 1e-8) {
+  arma::mat Msym = safe_symmetrize(M);
+  Msym += jitter * arma::eye(Msym.n_rows, Msym.n_cols);
+  arma::mat out;
+  if (!arma::inv_sympd(out, Msym)) {
+    arma::vec eigval;
+    arma::mat eigvec;
+    arma::eig_sym(eigval, eigvec, Msym);
+    eigval.elem(arma::find(eigval < jitter)).fill(jitter);
+    arma::mat repaired = eigvec * arma::diagmat(eigval) * eigvec.t();
+    if (!arma::inv_sympd(out, repaired)) {
+      out = arma::pinv(repaired);
+    }
+  }
+  return out;
+}
+
+arma::mat safe_chol(const arma::mat& M, double jitter = 1e-8) {
+  arma::mat Msym = safe_symmetrize(M);
+  Msym += jitter * arma::eye(Msym.n_rows, Msym.n_cols);
+  arma::mat out;
+  if (!arma::chol(out, Msym)) {
+    arma::vec eigval;
+    arma::mat eigvec;
+    arma::eig_sym(eigval, eigvec, Msym);
+    eigval.elem(arma::find(eigval < jitter)).fill(jitter);
+    arma::mat repaired = eigvec * arma::diagmat(eigval) * eigvec.t();
+    if (!arma::chol(out, repaired)) {
+      out = arma::eye(M.n_rows, M.n_cols);
+    }
+  }
+  return out;
+}
+
+arma::mat clamp_pd(const arma::mat& A, double floor = 1e-8) {
+  arma::mat S = safe_symmetrize(A);
+  arma::vec w; arma::mat V;
+  arma::eig_sym(w, V, S);
+  for (arma::uword i = 0; i < w.n_elem; ++i) if (w[i] < floor) w[i] = floor;
+  arma::mat out = V * arma::diagmat(w) * V.t();
+  return safe_symmetrize(out);
+}
+
 //' Sample allocation
 //'
 //' @param prob \[`numeric(C)`\]\cr
@@ -98,27 +145,27 @@ arma::vec update_z (
   std::vector<arma::vec> means(C);
   std::vector<arma::mat> covs(C);
   for (int c = 0; c < C; ++c) {
-    means[c] = b.col(c);
-    arma::mat Oc = arma::reshape(Omega.col(c), P_r, P_r);
-    Oc = 0.5 * (Oc + Oc.t());
-    Oc += 1e-12 * arma::eye(P_r, P_r);
-    covs[c]  = Oc;
-  }
-  for (int n = 0; n < N; ++n) {
-    for (int c = 0; c < C; ++c) {
-      const double logs = std::log(std::max(1e-300, static_cast<double>(s[c])));
-      const double loglik = oeli::dmvnorm(beta.col(n), means[c], covs[c], true);
-      logp[c] = logs + loglik;
+     means[c] = b.col(c);
+     arma::mat Oc = arma::reshape(Omega.col(c), P_r, P_r);
+     Oc = 0.5 * (Oc + Oc.t());
+     Oc += 1e-12 * arma::eye(P_r, P_r);
+     covs[c]  = Oc;
     }
-    const double m = logp.max();
-    arma::vec p = arma::exp(logp - m);
-    double ps = arma::accu(p);
-    if (!std::isfinite(ps) || ps <= 0.0) {
-      p.fill(1.0 / static_cast<double>(C));
-    } else {
-      p /= ps;
-    }
-    z[n] = sample_allocation(p);
+    for (int n = 0; n < N; ++n) {
+     for (int c = 0; c < C; ++c) {
+       const double logs = std::log(std::max(1e-300, static_cast<double>(s[c])));
+       const double loglik = oeli::dmvnorm(beta.col(n), means[c], covs[c], true);
+       logp[c] = logs + loglik;
+     }
+     const double m = logp.max();
+     arma::vec p = arma::exp(logp - m);
+     double ps = arma::accu(p);
+     if (!std::isfinite(ps) || ps <= 0.0) {
+       p.fill(1.0 / static_cast<double>(C));
+     } else {
+       p /= ps;
+     }
+     z[n] = sample_allocation(p);
   }
   return z;
 }
@@ -188,10 +235,10 @@ arma::mat update_b_c (
    arma::vec bar_b_c, arma::mat Omega_c, int m_c,
    arma::mat Sigma_b_0_inv, arma::vec mu_b_0
 ) {
-  arma::mat Omega_c_inv = arma::inv_sympd(Omega_c);
-  arma::mat Sigma_b_c = arma::inv_sympd(Sigma_b_0_inv + m_c * Omega_c_inv);
+  arma::mat Omega_c_inv = safe_inv_sympd(Omega_c);
+  arma::mat Sigma_b_c = safe_inv_sympd(Sigma_b_0_inv + m_c * Omega_c_inv);
   arma::vec mu_b_c = Sigma_b_c *
-    (Sigma_b_0_inv * mu_b_0 + m_c * Omega_c_inv * bar_b_c);
+   (Sigma_b_0_inv * mu_b_0 + m_c * Omega_c_inv * bar_b_c);
   return oeli::rmvnorm(mu_b_c, Sigma_b_c);
 }
 
@@ -233,24 +280,24 @@ arma::mat update_b (
   int N = beta.n_cols;
   arma::mat b_draw = arma::zeros<arma::mat>(P_r, C);
   for (int c = 0; c < C; ++c) {
-    arma::vec bar_b_c(P_r, arma::fill::zeros);
-    for (int n = 0; n < N; ++n) {
-      if (static_cast<int>(std::lround(z[n])) == c + 1) {
-        bar_b_c += beta(arma::span::all, n);
-      }
-    }
-    const int mc = static_cast<int>(std::lround(m[c]));
-    if (mc <= 0) {
-      b_draw(arma::span::all, c) = oeli::rmvnorm(
-        mu_b_0, arma::inv_sympd(Sigma_b_0_inv)
-      );
-      continue;
-    }
-    bar_b_c /= static_cast<double>(mc);
-    arma::mat Omega_c = arma::reshape(Omega(arma::span::all, c), P_r, P_r);
-    b_draw(arma::span::all, c) = update_b_c(
-      bar_b_c, Omega_c, mc, Sigma_b_0_inv, mu_b_0
-    );
+   arma::vec bar_b_c(P_r, arma::fill::zeros);
+   for (int n = 0; n < N; ++n) {
+     if (static_cast<int>(std::lround(z[n])) == c + 1) {
+       bar_b_c += beta(arma::span::all, n);
+     }
+   }
+   const int mc = static_cast<int>(std::lround(m[c]));
+   if (mc <= 0) {
+     b_draw(arma::span::all, c) = oeli::rmvnorm(
+       mu_b_0, safe_inv_sympd(Sigma_b_0_inv)
+     );
+     continue;
+   }
+   bar_b_c /= static_cast<double>(mc);
+   arma::mat Omega_c = arma::reshape(Omega(arma::span::all, c), P_r, P_r);
+   b_draw(arma::span::all, c) = update_b_c(
+     bar_b_c, Omega_c, mc, Sigma_b_0_inv, mu_b_0
+   );
   }
   return b_draw;
 }
@@ -278,9 +325,7 @@ arma::mat update_Omega_c (
    arma::mat S_c, int m_c, int n_Omega_0, arma::mat V_Omega_0
 ) {
   arma::mat out = oeli::rwishart(n_Omega_0 + m_c, V_Omega_0 + S_c, true);
-  out = 0.5 * (out + out.t());
-  out += 1e-10 * arma::eye(out.n_rows, out.n_cols);
-  return out;
+  return clamp_pd(out, 1e-8);
 }
 
 //' Update class covariances
@@ -320,17 +365,17 @@ arma::mat update_Omega (
   int N = beta.n_cols;
   arma::mat Omega_draw = arma::zeros<arma::mat>(P_r * P_r, C);
   for (int c = 0; c < C; ++c) {
-    const int mc = static_cast<int>(std::lround(m[c]));
-    arma::mat S_c = arma::zeros<arma::mat>(P_r, P_r);
-    for (int n = 0; n < N; ++n) {
-      if (static_cast<int>(std::lround(z[n])) == c + 1) {
-        arma::vec beta_centered = beta.col(n) - b.col(c);
-        S_c += beta_centered * beta_centered.t();
-      }
-    }
-    Omega_draw(arma::span::all, c) = arma::reshape(
-      update_Omega_c(S_c, mc, n_Omega_0, V_Omega_0), P_r * P_r, 1
-    );
+   const int mc = static_cast<int>(std::lround(m[c]));
+   arma::mat S_c = arma::zeros<arma::mat>(P_r, P_r);
+   for (int n = 0; n < N; ++n) {
+     if (static_cast<int>(std::lround(z[n])) == c + 1) {
+       arma::vec beta_centered = beta.col(n) - b.col(c);
+       S_c += beta_centered * beta_centered.t();
+     }
+   }
+   Omega_draw(arma::span::all, c) = arma::reshape(
+     update_Omega_c(S_c, mc, n_Omega_0, V_Omega_0), P_r * P_r, 1
+   );
   }
   return Omega_draw;
 }
@@ -389,7 +434,7 @@ arma::vec update_coefficient (
    arma::vec mu_beta_0, arma::mat Sigma_beta_0_inv,
    arma::mat XSigX, arma::vec XSigU
 ) {
-  arma::mat Sigma_beta = arma::inv_sympd(Sigma_beta_0_inv + XSigX);
+  arma::mat Sigma_beta = safe_inv_sympd(Sigma_beta_0_inv + XSigX);
   arma::mat mu_beta = Sigma_beta * (Sigma_beta_0_inv * mu_beta_0 + XSigU);
   return oeli::rmvnorm(mu_beta, Sigma_beta);
 }
@@ -436,7 +481,7 @@ arma::vec update_coefficient (
 arma::mat update_Sigma (
    int n_Sigma_0, arma::mat V_Sigma_0, int N, arma::mat S
 ) {
-  return oeli::rwishart(n_Sigma_0 + N, V_Sigma_0 + S, true);
+ return oeli::rwishart(n_Sigma_0 + N, V_Sigma_0 + S, true);
 }
 
 //' Update utility vector
@@ -472,18 +517,18 @@ arma::vec update_U (
   int Jm1 = U.size();
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
-    double bound = 0.0;
-    for (int j = 0; j < Jm1; ++j) if (j != i) {
-      bound = std::max(bound, U_update[j]);
-    }
-    double m = 0.0;
-    const double sii = Sigma_inv(i, i);
-    for (int k = 0; k < Jm1; ++k) if (k != i) {
-       m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
-    }
-    U_update[i] = oeli::rtnorm(
-      sys[i] + m, std::sqrt(1.0 / sii), bound, y != (i + 1)
-    );
+   double bound = 0.0;
+   for (int j = 0; j < Jm1; ++j) if (j != i) {
+     bound = std::max(bound, U_update[j]);
+   }
+   double m = 0.0;
+   const double sii = Sigma_inv(i, i);
+   for (int k = 0; k < Jm1; ++k) if (k != i) {
+     m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
+   }
+   U_update[i] = oeli::rtnorm(
+     sys[i] + m, std::sqrt(1.0 / sii), bound, y != (i + 1)
+   );
   }
   return U_update;
 }
@@ -511,12 +556,12 @@ arma::vec update_U_ranked (
   int Jm1 = U.size();
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
-    double m = 0.0;
-    const double sii = Sigma_inv(i, i);
-    for (int k = 0; k < Jm1; ++k) if (k != i) {
-      m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
-    }
-    U_update[i] = oeli::rtnorm(sys[i] + m, std::sqrt(1.0 / sii), 0.0, true);
+   double m = 0.0;
+   const double sii = Sigma_inv(i, i);
+   for (int k = 0; k < Jm1; ++k) if (k != i) {
+     m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
+   }
+   U_update[i] = oeli::rtnorm(sys[i] + m, std::sqrt(1.0 / sii), 0.0, true);
   }
   return U_update;
 }
@@ -583,29 +628,29 @@ double ll_ordered (
   const int N = static_cast<int>(Tvec.n_elem);
   double ll = 0.0;
   for (int n = 0; n < N; ++n) {
-    const int Tn = static_cast<int>(
-      std::lround(Tvec[static_cast<arma::uword>(n)])
-    );
-    for (int t = 0; t < Tn; ++t) {
-      const int c = static_cast<int>(std::lround(y(n, t)));
-      const double m  = sys(n, t);
-      const double lb = gamma[static_cast<arma::uword>(c - 1)] - m;
-      const double ub = gamma[static_cast<arma::uword>(c)] - m;
-      double logp;
-      if (std::isinf(lb) && lb < 0) {
-        logp = R::pnorm(ub, 0.0, 1.0, 1, 1);
-      } else if (std::isinf(ub) && ub > 0) {
-        logp = R::pnorm(lb, 0.0, 1.0, 0, 1);
-      } else {
-        const double logFb = R::pnorm(ub, 0.0, 1.0, 1, 1);
-        const double logFa = R::pnorm(lb, 0.0, 1.0, 1, 1);
-        logp = logFb + std::log1p(-std::exp(logFa - logFb));
-      }
-      if (!std::isfinite(logp)) {
-        logp = std::log(1e-300);
-      }
-      ll += logp;
-    }
+   const int Tn = static_cast<int>(
+     std::lround(Tvec[static_cast<arma::uword>(n)])
+   );
+   for (int t = 0; t < Tn; ++t) {
+     const int c = static_cast<int>(std::lround(y(n, t)));
+     const double m  = sys(n, t);
+     const double lb = gamma[static_cast<arma::uword>(c - 1)] - m;
+     const double ub = gamma[static_cast<arma::uword>(c)] - m;
+     double logp;
+     if (std::isinf(lb) && lb < 0) {
+       logp = R::pnorm(ub, 0.0, 1.0, 1, 1);
+     } else if (std::isinf(ub) && ub > 0) {
+       logp = R::pnorm(lb, 0.0, 1.0, 0, 1);
+     } else {
+       const double logFb = R::pnorm(ub, 0.0, 1.0, 1, 1);
+       const double logFa = R::pnorm(lb, 0.0, 1.0, 1, 1);
+       logp = logFb + std::log1p(-std::exp(logFa - logFb));
+     }
+     if (!std::isfinite(logp)) {
+       logp = std::log(1e-300);
+     }
+     ll += logp;
+   }
   }
   return ll;
 }
@@ -742,85 +787,85 @@ Rcpp::List update_classes_wb (
    double deltashift = 0.5, bool identify_classes = false, int Cmax = 10
 ) {
 
-  int update_type = 0;
-  int C = b.n_cols;
-  int P = b.n_rows;
-  arma::mat stack = arma::join_cols(arma::trans(s), arma::join_cols(b, Omega));
+ int update_type = 0;
+ int C = b.n_cols;
+ int P = b.n_rows;
+ arma::mat stack = arma::join_cols(arma::trans(s), arma::join_cols(b, Omega));
 
-  // remove class
-  int id_min = arma::index_min(stack(0, arma::span::all));
-  if (C > 1 && stack(0, id_min) < epsmin) {
-    C -= 1;
-    stack.shed_col(id_min);
-    stack.row(0) = stack.row(0) / arma::accu(stack.row(0));
-    update_type = 1;
-  }
+ // remove class
+ int id_min = arma::index_min(stack(0, arma::span::all));
+ if (C > 1 && stack(0, id_min) < epsmin) {
+   C -= 1;
+   stack.shed_col(id_min);
+   stack.row(0) = stack.row(0) / arma::accu(stack.row(0));
+   update_type = 1;
+ }
 
-  // split class
-  if (update_type == 0 && C < Cmax) {
-    int id_max = arma::index_max(stack(0, arma::span::all));
-    if (stack(0, id_max) > epsmax) {
-      arma::mat max_class_Omega = arma::reshape(
-        stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
-      );
-      arma::vec eigval;
-      arma::mat eigvec;
-      arma::eig_sym(eigval, eigvec, max_class_Omega);
-      arma::vec v = eigvec.col(P - 1);
-      arma::vec mean_shift = deltashift * std::sqrt(eigval(P - 1)) * v;
-      stack.insert_cols(id_max, stack(arma::span::all, id_max));
-      stack(0, arma::span(id_max, id_max + 1)) /= 2;
-      stack(arma::span(1, 1 + P - 1), id_max) += mean_shift;
-      stack(arma::span(1, 1 + P - 1), id_max + 1) -= mean_shift;
-      C += 1;
-      update_type = 2;
-    }
-  }
+ // split class
+ if (update_type == 0 && C < Cmax) {
+   int id_max = arma::index_max(stack(0, arma::span::all));
+   if (stack(0, id_max) > epsmax) {
+     arma::mat max_class_Omega = arma::reshape(
+       stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
+     );
+     arma::vec eigval;
+     arma::mat eigvec;
+     arma::eig_sym(eigval, eigvec, max_class_Omega);
+     arma::vec v = eigvec.col(P - 1);
+     arma::vec mean_shift = deltashift * std::sqrt(eigval(P - 1)) * v;
+     stack.insert_cols(id_max, stack(arma::span::all, id_max));
+     stack(0, arma::span(id_max, id_max + 1)) /= 2;
+     stack(arma::span(1, 1 + P - 1), id_max) += mean_shift;
+     stack(arma::span(1, 1 + P - 1), id_max + 1) -= mean_shift;
+     C += 1;
+     update_type = 2;
+   }
+ }
 
-  // merge classes
-  if (update_type == 0 && C > 1) {
-    arma::vec closest_classes = arma::zeros<arma::vec>(3);
-    closest_classes(0) = std::numeric_limits<int>::max();
-    for (int c1 = 0; c1 < C; ++c1) {
-      for (int c2 = 0; c2 < c1; ++c2) {
-        arma::vec bc1 = stack(arma::span(1, 1 + P - 1), c1);
-        arma::vec bc2 = stack(arma::span(1, 1 + P - 1), c2);
-        double euc_dist = arma::norm(bc1 - bc2, 2);
-        if (euc_dist < closest_classes(0)) {
-          closest_classes(0) = euc_dist;
-          closest_classes(1) = c1;
-          closest_classes(2) = c2;
-        }
-      }
-    }
-    if (closest_classes(0) < deltamin) {
-      int c1 = closest_classes(1);
-      int c2 = closest_classes(2);
-      stack(0, c1) += stack(0, c2);
-      stack(arma::span(1, 1 + P - 1), c1) +=
-        stack(arma::span(1, 1 + P - 1), c2);
-      stack(arma::span(1, 1 + P - 1), c1) /=2;
-      stack(arma::span(1 + P, 1 + P + P * P - 1), c1) +=
-        stack(arma::span(1 + P, 1 + P + P * P - 1), c2);
-      stack(arma::span(1 + P, 1 + P + P * P - 1), c1) /= 2;
-      stack.shed_col(c2);
-      C -= 1;
-      update_type = 3;
-    }
-  }
+ // merge classes
+ if (update_type == 0 && C > 1) {
+   arma::vec closest_classes = arma::zeros<arma::vec>(3);
+   closest_classes(0) = std::numeric_limits<int>::max();
+   for (int c1 = 0; c1 < C; ++c1) {
+     for (int c2 = 0; c2 < c1; ++c2) {
+       arma::vec bc1 = stack(arma::span(1, 1 + P - 1), c1);
+       arma::vec bc2 = stack(arma::span(1, 1 + P - 1), c2);
+       double euc_dist = arma::norm(bc1 - bc2, 2);
+       if (euc_dist < closest_classes(0)) {
+         closest_classes(0) = euc_dist;
+         closest_classes(1) = c1;
+         closest_classes(2) = c2;
+       }
+     }
+   }
+   if (closest_classes(0) < deltamin) {
+     int c1 = closest_classes(1);
+     int c2 = closest_classes(2);
+     stack(0, c1) += stack(0, c2);
+     stack(arma::span(1, 1 + P - 1), c1) +=
+       stack(arma::span(1, 1 + P - 1), c2);
+     stack(arma::span(1, 1 + P - 1), c1) /=2;
+     stack(arma::span(1 + P, 1 + P + P * P - 1), c1) +=
+       stack(arma::span(1 + P, 1 + P + P * P - 1), c2);
+     stack(arma::span(1 + P, 1 + P + P * P - 1), c1) /= 2;
+     stack.shed_col(c2);
+     C -= 1;
+     update_type = 3;
+   }
+ }
 
-  // identify classes
-  if (identify_classes) {
-    stack = stack.cols(arma::sort_index(stack(0, arma::span::all), "descend"));
-  }
+ // identify classes
+ if (identify_classes) {
+   stack = stack.cols(arma::sort_index(stack(0, arma::span::all), "descend"));
+ }
 
-  // return class updates
-  return Rcpp::List::create(
-    Rcpp::Named("s") = stack.row(0),
-    Rcpp::Named("b") = stack.rows(arma::span(1, 1 + P - 1)),
-    Rcpp::Named("Omega") = stack.rows(arma::span(P + 1, 1 + P + P * P - 1)),
-    Rcpp::Named("update_type") = update_type
-  );
+ // return class updates
+ return Rcpp::List::create(
+   Rcpp::Named("s") = stack.row(0),
+   Rcpp::Named("b") = stack.rows(arma::span(1, 1 + P - 1)),
+   Rcpp::Named("Omega") = stack.rows(arma::span(P + 1, 1 + P + P * P - 1)),
+   Rcpp::Named("update_type") = update_type
+ );
 }
 
 //' Dirichlet process class updates
@@ -860,7 +905,7 @@ Rcpp::List update_classes_dp(
   const int N = static_cast<int>(z.n_elem);
   int C = static_cast<int>(b.n_cols);
   const int P_r = static_cast<int>(b.n_rows);
-  arma::mat Sigma_b_0_inv = arma::inv_sympd(Sigma_b_0);
+  arma::mat Sigma_b_0_inv = safe_inv_sympd(Sigma_b_0);
   arma::mat b_full(P_r, Cmax, arma::fill::zeros);
   b_full.cols(0, std::max(0, C - 1)) = b;
   arma::mat Omega_full(P_r * P_r, Cmax, arma::fill::zeros);
@@ -872,100 +917,100 @@ Rcpp::List update_classes_dp(
   // start DP
   for (int n = 0; n < N; ++n) {
 
-    // unassign current class membership
-    int z_n = static_cast<int>(std::lround(z[n]));
-    if (z_n >= 1 && z_n <= C) {
-      m_full[static_cast<arma::uword>(z_n - 1)] -= 1.0;
-    }
+   // unassign current class membership
+   int z_n = static_cast<int>(std::lround(z[n]));
+   if (z_n >= 1 && z_n <= C) {
+     m_full[static_cast<arma::uword>(z_n - 1)] -= 1.0;
+   }
 
-    // remove empty class
-    bool rm = z_n >= 1 && z_n <= C &&
-      m_full[static_cast<arma::uword>(z_n - 1)] <= 0.0;
-    if (rm) {
-      if (C > 1) {
-        for (int i = 0; i < N; ++i) {
-          int zi = static_cast<int>(std::lround(z[i]));
-          if (zi == C) z[i] = static_cast<double>(z_n);
-        }
-        m_full[static_cast<arma::uword>(z_n - 1)] =
-          m_full[static_cast<arma::uword>(C - 1)];
-        m_full[static_cast<arma::uword>(C - 1)] = 0.0;
-        b_full.col(static_cast<arma::uword>(z_n - 1)) =
-          b_full.col(static_cast<arma::uword>(C - 1));
-        b_full.col(static_cast<arma::uword>(C - 1)).zeros();
-        Omega_full.col(static_cast<arma::uword>(z_n - 1)) =
-          Omega_full.col(static_cast<arma::uword>(C - 1));
-        Omega_full.col(static_cast<arma::uword>(C - 1)).zeros();
-        C -= 1;
-      } else {
-        b_full.col(0).zeros();
-        Omega_full.col(0).zeros();
-        m_full[0] = 0.0;
-        C = 0;
-      }
-    }
+   // remove empty class
+   bool rm = z_n >= 1 && z_n <= C &&
+     m_full[static_cast<arma::uword>(z_n - 1)] <= 0.0;
+   if (rm) {
+     if (C > 1) {
+       for (int i = 0; i < N; ++i) {
+         int zi = static_cast<int>(std::lround(z[i]));
+         if (zi == C) z[i] = static_cast<double>(z_n);
+       }
+       m_full[static_cast<arma::uword>(z_n - 1)] =
+         m_full[static_cast<arma::uword>(C - 1)];
+       m_full[static_cast<arma::uword>(C - 1)] = 0.0;
+       b_full.col(static_cast<arma::uword>(z_n - 1)) =
+         b_full.col(static_cast<arma::uword>(C - 1));
+       b_full.col(static_cast<arma::uword>(C - 1)).zeros();
+       Omega_full.col(static_cast<arma::uword>(z_n - 1)) =
+         Omega_full.col(static_cast<arma::uword>(C - 1));
+       Omega_full.col(static_cast<arma::uword>(C - 1)).zeros();
+       C -= 1;
+     } else {
+       b_full.col(0).zeros();
+       Omega_full.col(0).zeros();
+       m_full[0] = 0.0;
+       C = 0;
+     }
+   }
 
-    // compute class allocation posterior
-    const arma::vec beta_n = beta.col(n);
-    const bool at_cap = (C >= Cmax);
-    const int L = at_cap ? C : (C + 1);
-    arma::vec logp(L, arma::fill::zeros);
+   // compute class allocation posterior
+   const arma::vec beta_n = beta.col(n);
+   const bool at_cap = (C >= Cmax);
+   const int L = at_cap ? C : (C + 1);
+   arma::vec logp(L, arma::fill::zeros);
 
-    // existing classes
-    for (int c = 0; c < C; ++c) {
-      const double mc = m_full[static_cast<arma::uword>(c)];
-      if (mc <= 0.0) {
-        logp[c] = -std::numeric_limits<double>::infinity();
-        continue;
-      }
-      arma::vec mean_c = b_full.col(static_cast<arma::uword>(c));
-      arma::mat Sigma_c = arma::reshape(
-        Omega_full.col(static_cast<arma::uword>(c)), P_r, P_r
-      );
-      const double loglik = oeli::dmvnorm(beta_n, mean_c, Sigma_c, true);
-      logp[c] = std::log(mc) + loglik;
-    }
+   // existing classes
+   for (int c = 0; c < C; ++c) {
+     const double mc = m_full[static_cast<arma::uword>(c)];
+     if (mc <= 0.0) {
+       logp[c] = -std::numeric_limits<double>::infinity();
+       continue;
+     }
+     arma::vec mean_c = b_full.col(static_cast<arma::uword>(c));
+     arma::mat Sigma_c = arma::reshape(
+       Omega_full.col(static_cast<arma::uword>(c)), P_r, P_r
+     );
+     const double loglik = oeli::dmvnorm(beta_n, mean_c, Sigma_c, true);
+     logp[c] = std::log(mc) + loglik;
+   }
 
-    // new class
-    if (!at_cap) {
-      const int Rmc = 10;
-      double ppd = 0.0;
-      for (int r = 0; r < Rmc; ++r) {
-        arma::vec b_draw = oeli::rmvnorm(mu_b_0, Sigma_b_0);
-        arma::mat Omega_dr = oeli::rwishart(n_Omega_0, V_Omega_0, true);
-        ppd += oeli::dmvnorm(beta_n, b_draw, Omega_dr, false);
-      }
-      ppd /= static_cast<double>(Rmc);
-      const double tiny = 1e-300;
-      logp[C] = std::log(delta) + std::log(ppd + tiny);
-    }
+   // new class
+   if (!at_cap) {
+     const int Rmc = 10;
+     double ppd = 0.0;
+     for (int r = 0; r < Rmc; ++r) {
+       arma::vec b_draw = oeli::rmvnorm(mu_b_0, Sigma_b_0);
+       arma::mat Omega_dr = oeli::rwishart(n_Omega_0, V_Omega_0, true);
+       ppd += oeli::dmvnorm(beta_n, b_draw, Omega_dr, false);
+     }
+     ppd /= static_cast<double>(Rmc);
+     const double tiny = 1e-300;
+     logp[C] = std::log(delta) + std::log(ppd + tiny);
+   }
 
-    // sample new class allocation
-    double lp_max = logp.max();
-    arma::vec p = arma::exp(logp - lp_max);
-    double ps = arma::accu(p);
-    if (!std::isfinite(ps) || ps <= 0.0) {
-      p.ones();
-      ps = static_cast<double>(p.n_elem);
-    }
-    p /= ps;
+   // sample new class allocation
+   double lp_max = logp.max();
+   arma::vec p = arma::exp(logp - lp_max);
+   double ps = arma::accu(p);
+   if (!std::isfinite(ps) || ps <= 0.0) {
+     p.ones();
+     ps = static_cast<double>(p.n_elem);
+   }
+   p /= ps;
 
-    int z_new = sample_allocation(p);
-    z[n] = static_cast<double>(z_new);
-    m_full[static_cast<arma::uword>(z_new - 1)] += 1.0;
+   int z_new = sample_allocation(p);
+   z[n] = static_cast<double>(z_new);
+   m_full[static_cast<arma::uword>(z_new - 1)] += 1.0;
 
-    // generate new class
-    if (!at_cap && z_new == C + 1) {
-      C += 1;
-      arma::mat S_c = arma::zeros<arma::mat>(P_r, P_r);
-      const int m_c = 1;
-      arma::mat Omega_new = update_Omega_c(S_c, m_c, n_Omega_0, V_Omega_0);
-      arma::mat b_new =
-        update_b_c(beta_n, Omega_new, m_c, Sigma_b_0_inv, mu_b_0);
-      Omega_full.col(static_cast<arma::uword>(C - 1)) =
-        arma::vectorise(Omega_new);
-      b_full.col(static_cast<arma::uword>(C - 1)) = b_new;
-    }
+   // generate new class
+   if (!at_cap && z_new == C + 1) {
+     C += 1;
+     arma::mat S_c = arma::zeros<arma::mat>(P_r, P_r);
+     const int m_c = 1;
+     arma::mat Omega_new = update_Omega_c(S_c, m_c, n_Omega_0, V_Omega_0);
+     arma::mat b_new =
+       update_b_c(beta_n, Omega_new, m_c, Sigma_b_0_inv, mu_b_0);
+     Omega_full.col(static_cast<arma::uword>(C - 1)) =
+       arma::vectorise(Omega_new);
+     b_full.col(static_cast<arma::uword>(C - 1)) = b_new;
+   }
   }
 
   // update class parameters
@@ -979,20 +1024,20 @@ Rcpp::List update_classes_dp(
 
   // identify classes
   if (identify_classes) {
-    arma::uvec perm = arma::sort_index(m, "descend");
-    b_update = b_update.cols(perm);
-    Omega_update = Omega_update.cols(perm);
-    arma::uvec inv(perm.n_elem);
-    for (arma::uword new_id = 0; new_id < perm.n_elem; ++new_id) {
-      inv[perm[new_id]] = new_id;
-    }
-    arma::vec z_old = z;
-    for (int i = 0; i < N; ++i) {
-      int old_lbl = static_cast<int>(std::lround(z_old[i])) - 1;
-      if (old_lbl >= 0 && old_lbl < static_cast<int>(inv.n_elem)) {
-        z[i] = static_cast<double>(inv[static_cast<arma::uword>(old_lbl)] + 1);
-      }
-    }
+   arma::uvec perm = arma::sort_index(m, "descend");
+   b_update = b_update.cols(perm);
+   Omega_update = Omega_update.cols(perm);
+   arma::uvec inv(perm.n_elem);
+   for (arma::uword new_id = 0; new_id < perm.n_elem; ++new_id) {
+     inv[perm[new_id]] = new_id;
+   }
+   arma::vec z_old = z;
+   for (int i = 0; i < N; ++i) {
+     int old_lbl = static_cast<int>(std::lround(z_old[i])) - 1;
+     if (old_lbl >= 0 && old_lbl < static_cast<int>(inv.n_elem)) {
+       z[i] = static_cast<double>(inv[static_cast<arma::uword>(old_lbl)] + 1);
+     }
+   }
   }
 
   // return results
@@ -1036,278 +1081,269 @@ Rcpp::List gibbs_sampler (
    int R, int B, bool print_progress, bool ordered, bool ranked
 ) {
 
-  // extract 'sufficient_statistics' parameters
-  int N = Rcpp::as<int>(sufficient_statistics["N"]);
-  int J = Rcpp::as<int>(sufficient_statistics["J"]);
-  int P_f = Rcpp::as<int>(sufficient_statistics["P_f"]);
-  int P_r = Rcpp::as<int>(sufficient_statistics["P_r"]);
-  arma::vec Tvec = Rcpp::as<arma::vec>(sufficient_statistics["Tvec"]);
-  arma::vec csTvec = Rcpp::as<arma::vec>(sufficient_statistics["csTvec"]);
-  Rcpp::List W;
-  Rcpp::List X;
-  arma::mat y = Rcpp::as<arma::mat>(sufficient_statistics["y"]);
-  arma::mat WkW;
-  Rcpp::List XkX;
-  Rcpp::List rdiff;
-  if (P_f > 0) {
-    W = Rcpp::as<Rcpp::List>(sufficient_statistics["W"]);
-    WkW = Rcpp::as<arma::mat>(sufficient_statistics["WkW"]);
-  }
-  if (P_r > 0) {
-    X = Rcpp::as<Rcpp::List>(sufficient_statistics["X"]);
-    XkX = Rcpp::as<Rcpp::List>(sufficient_statistics["XkX"]);
-  }
-  if (ranked) {
-    rdiff = Rcpp::as<Rcpp::List>(sufficient_statistics["rdiff"]);
-  }
-  std::vector<arma::mat> rdiff_list;
-  std::vector<arma::mat> rdiff_inv_list;
-  if (ranked) {
-    const int L = rdiff.size();
-    rdiff_list.resize(L);
-    for (int i = 0; i < L; ++i) {
-      rdiff_list[i] = Rcpp::as<arma::mat>(rdiff[i]);
-    }
-    rdiff_inv_list.resize(L);
-    for (int i = 0; i < L; ++i) {
-      arma::mat invR;
-      if (!arma::inv(invR, rdiff_list[i])) {
-        invR = arma::pinv(rdiff_list[i]);
-      }
-      rdiff_inv_list[i] = invR;
-    }
-  }
-  std::vector<arma::mat> Wv, Xv;
-  const int NT = static_cast<int>(arma::accu(Tvec));
-  if (P_f > 0) {
-    Wv.resize(NT);
-    for (int i = 0; i < NT; ++i) Wv[i] = Rcpp::as<arma::mat>(W[i]);
-  }
-  if (P_r > 0) {
-    Xv.resize(NT);
-    for (int i = 0; i < NT; ++i) Xv[i] = Rcpp::as<arma::mat>(X[i]);
-  }
-  std::vector<arma::mat> XSigX_ord;
-  std::vector<arma::mat> XkX_mats;
-  if (ordered && P_r > 0) {
-    XSigX_ord.resize(N);
-    for (int n = 0; n < N; ++n) {
-      XSigX_ord[n] = arma::reshape(Rcpp::as<arma::mat>(XkX[n]), P_r, P_r);
-    }
-  } else if (P_r > 0) {
-    XkX_mats.resize(N);
-    for (int n = 0; n < N; ++n) {
-      XkX_mats[n] = Rcpp::as<arma::mat>(XkX[n]);
-    }
-  }
+ // extract 'sufficient_statistics' parameters
+ int N = Rcpp::as<int>(sufficient_statistics["N"]);
+ int J = Rcpp::as<int>(sufficient_statistics["J"]);
+ int P_f = Rcpp::as<int>(sufficient_statistics["P_f"]);
+ int P_r = Rcpp::as<int>(sufficient_statistics["P_r"]);
+ arma::vec Tvec = Rcpp::as<arma::vec>(sufficient_statistics["Tvec"]);
+ arma::vec csTvec = Rcpp::as<arma::vec>(sufficient_statistics["csTvec"]);
+ Rcpp::List W;
+ Rcpp::List X;
+ arma::mat y = Rcpp::as<arma::mat>(sufficient_statistics["y"]);
+ arma::mat WkW;
+ Rcpp::List XkX;
+ Rcpp::List rdiff;
+ if (P_f > 0) {
+   W = Rcpp::as<Rcpp::List>(sufficient_statistics["W"]);
+   WkW = Rcpp::as<arma::mat>(sufficient_statistics["WkW"]);
+ }
+ if (P_r > 0) {
+   X = Rcpp::as<Rcpp::List>(sufficient_statistics["X"]);
+   XkX = Rcpp::as<Rcpp::List>(sufficient_statistics["XkX"]);
+ }
+ if (ranked) {
+   rdiff = Rcpp::as<Rcpp::List>(sufficient_statistics["rdiff"]);
+ }
+ std::vector<arma::mat> rdiff_list;
+ std::vector<arma::mat> rdiff_inv_list;
+ if (ranked) {
+   const int L = rdiff.size();
+   rdiff_list.resize(L);
+   for (int i = 0; i < L; ++i) {
+     rdiff_list[i] = Rcpp::as<arma::mat>(rdiff[i]);
+   }
+   rdiff_inv_list.resize(L);
+   for (int i = 0; i < L; ++i) {
+     // Use Moore–Penrose pseudo-inverse for robustness
+     rdiff_inv_list[i] = arma::pinv(rdiff_list[i]);
+   }
+ }
+ std::vector<arma::mat> Wv, Xv;
+ const int NT = static_cast<int>(arma::accu(Tvec));
+ if (P_f > 0) {
+   Wv.resize(NT);
+   for (int i = 0; i < NT; ++i) Wv[i] = Rcpp::as<arma::mat>(W[i]);
+ }
+ if (P_r > 0) {
+   Xv.resize(NT);
+   for (int i = 0; i < NT; ++i) Xv[i] = Rcpp::as<arma::mat>(X[i]);
+ }
+ std::vector<arma::mat> XSigX_ord;
+ std::vector<arma::mat> XkX_mats;
+ if (ordered && P_r > 0) {
+   XSigX_ord.resize(N);
+   for (int n = 0; n < N; ++n) {
+     XSigX_ord[n] = arma::reshape(Rcpp::as<arma::mat>(XkX[n]), P_r, P_r);
+   }
+ } else if (P_r > 0) {
+   XkX_mats.resize(N);
+   for (int n = 0; n < N; ++n) {
+     XkX_mats[n] = Rcpp::as<arma::mat>(XkX[n]);
+   }
+ }
 
-  // extract 'latent_classes' parameters
-  int C = Rcpp::as<int>(latent_classes["C"]);
-  int Cmax = 10;
-  int Cdrawsize = 10;
-  int buffer = 50;
-  double epsmin = 0.01;
-  double epsmax = 0.7;
-  double deltamin = 0.1;
-  double deltashift = 0.5;
-  bool wb_update = Rcpp::as<bool>(latent_classes["wb_update"]);
-  bool dp_update = Rcpp::as<bool>(latent_classes["dp_update"]);
-  if (!wb_update && !dp_update) {
-    Cdrawsize = C;
-  } else {
-    Cmax = Rcpp::as<int>(latent_classes["Cmax"]);
-    Cdrawsize = Cmax;
-  }
-  if (wb_update == true){
-    buffer = Rcpp::as<int>(latent_classes["buffer"]);
-    epsmin = Rcpp::as<double>(latent_classes["epsmin"]);
-    epsmax = Rcpp::as<double>(latent_classes["epsmax"]);
-    deltamin = Rcpp::as<double>(latent_classes["deltamin"]);
-    deltashift = Rcpp::as<double>(latent_classes["deltashift"]);
-  }
+ // extract 'latent_classes' parameters
+ int C = Rcpp::as<int>(latent_classes["C"]);
+ int Cmax = 10;
+ int Cdrawsize = 10;
+ int buffer = 50;
+ double epsmin = 0.01;
+ double epsmax = 0.7;
+ double deltamin = 0.1;
+ double deltashift = 0.5;
+ bool wb_update = Rcpp::as<bool>(latent_classes["wb_update"]);
+ bool dp_update = Rcpp::as<bool>(latent_classes["dp_update"]);
+ if (!wb_update && !dp_update) {
+   Cdrawsize = C;
+ } else {
+   Cmax = Rcpp::as<int>(latent_classes["Cmax"]);
+   Cdrawsize = Cmax;
+ }
+ if (wb_update == true){
+   buffer = Rcpp::as<int>(latent_classes["buffer"]);
+   epsmin = Rcpp::as<double>(latent_classes["epsmin"]);
+   epsmax = Rcpp::as<double>(latent_classes["epsmax"]);
+   deltamin = Rcpp::as<double>(latent_classes["deltamin"]);
+   deltashift = Rcpp::as<double>(latent_classes["deltashift"]);
+ }
 
-  // extract 'prior' parameters
-  int delta = 1;
-  arma::vec mu_alpha_0;
-  arma::mat Sigma_alpha_0, Psiinv;
-  int n_Omega_0 = P_r+2;
-  arma::mat V_Omega_0;
-  arma::vec mu_b_0;
-  arma::mat Sigma_b_0;
-  arma::mat Sigma_b_0_inv;
-  int n_Sigma_0;
-  arma::mat V_Sigma_0;
-  if (!ordered) {
-    n_Sigma_0 = Rcpp::as<int>(prior["n_Sigma_0"]);
-    V_Sigma_0 = Rcpp::as<arma::mat>(prior["V_Sigma_0"]);
-  }
-  arma::vec mu_d_0;
-  arma::mat Sigma_d_0;
-  if (P_f > 0) {
-    mu_alpha_0 = Rcpp::as<arma::vec>(prior["mu_alpha_0"]);
-    Sigma_alpha_0 = Rcpp::as<arma::mat>(prior["Sigma_alpha_0"]);
-    Psiinv = arma::inv_sympd(Sigma_alpha_0);
-  }
-  if (P_r > 0) {
-    delta = Rcpp::as<int>(prior["delta"]);
-    mu_b_0 = Rcpp::as<arma::vec>(prior["mu_b_0"]);
-    Sigma_b_0 = Rcpp::as<arma::mat>(prior["Sigma_b_0"]);
-    Sigma_b_0_inv = arma::inv_sympd(Sigma_b_0);
-    n_Omega_0 = Rcpp::as<int>(prior["n_Omega_0"]);
-    V_Omega_0 = Rcpp::as<arma::mat>(prior["V_Omega_0"]);
-  }
-  if (ordered) {
-    mu_d_0 = Rcpp::as<arma::vec>(prior["mu_d_0"]);
-    Sigma_d_0 = Rcpp::as<arma::mat>(prior["Sigma_d_0"]);
-  }
+ // extract 'prior' parameters
+ int delta = 1;
+ arma::vec mu_alpha_0;
+ arma::mat Sigma_alpha_0, Sigma_alpha_0_;
+ int n_Omega_0 = P_r+2;
+ arma::mat V_Omega_0;
+ arma::vec mu_b_0;
+ arma::mat Sigma_b_0;
+ arma::mat Sigma_b_0_inv;
+ int n_Sigma_0;
+ arma::mat V_Sigma_0;
+ if (!ordered) {
+   n_Sigma_0 = Rcpp::as<int>(prior["n_Sigma_0"]);
+   V_Sigma_0 = Rcpp::as<arma::mat>(prior["V_Sigma_0"]);
+ }
+ arma::vec mu_d_0;
+ arma::mat Sigma_d_0;
+ if (P_f > 0) {
+   mu_alpha_0 = Rcpp::as<arma::vec>(prior["mu_alpha_0"]);
+   Sigma_alpha_0 = Rcpp::as<arma::mat>(prior["Sigma_alpha_0"]);
+   Sigma_alpha_0_ = safe_inv_sympd(Sigma_alpha_0);
+ }
+ if (P_r > 0) {
+   delta = Rcpp::as<int>(prior["delta"]);
+   mu_b_0 = Rcpp::as<arma::vec>(prior["mu_b_0"]);
+   Sigma_b_0 = Rcpp::as<arma::mat>(prior["Sigma_b_0"]);
+   Sigma_b_0_inv = safe_inv_sympd(Sigma_b_0);
+   n_Omega_0 = Rcpp::as<int>(prior["n_Omega_0"]);
+   V_Omega_0 = Rcpp::as<arma::mat>(prior["V_Omega_0"]);
+ }
+ if (ordered) {
+   mu_d_0 = Rcpp::as<arma::vec>(prior["mu_d_0"]);
+   Sigma_d_0 = Rcpp::as<arma::mat>(prior["Sigma_d_0"]);
+ }
 
-  // define helper variables and functions
-  arma::vec s_cand;
-  arma::mat Omega_c_inv;
-  arma::vec b_c;
-  arma::mat S;
-  arma::mat IW;
-  arma::vec eps;
-  const int Tmax = static_cast<int>(y.n_cols);
-  arma::mat mu_mat = arma::zeros<arma::mat>(N, Tmax);
-  arma::mat mu_mat_tmp = arma::zeros<arma::mat>(1,1);
-  int ind;
-  int Jm1 = J - 1;
-  double old_ll = 0.0;
-  Rcpp::List update_d_out;
-  arma::vec Sigmainv_vec;
-  std::vector<arma::mat> Sigmainv_ranked;
+ // define helper variables and functions
+ arma::vec s_cand;
+ arma::mat Omega_c_inv;
+ arma::vec b_c;
+ arma::mat S;
+ arma::mat IW;
+ arma::vec eps;
+ const int Tmax = static_cast<int>(y.n_cols);
+ arma::mat mu_mat = arma::zeros<arma::mat>(N, Tmax);
+ arma::mat mu_mat_tmp = arma::zeros<arma::mat>(1,1);
+ int ind;
+ int Jm1 = J - 1;
+ double old_ll = 0.0;
+ Rcpp::List update_d_out;
+ arma::vec Sigmainv_vec;
+ std::vector<arma::mat> Sigmainv_ranked;
 
-  // allocate space for output
-  arma::mat s_draws = arma::zeros<arma::mat>(R, Cdrawsize);
-  arma::mat z_draws = arma::zeros<arma::mat>(R, N);
-  arma::mat b_draws = arma::zeros<arma::mat>(R, P_r * Cdrawsize);
-  arma::mat Omega_draws = arma::zeros<arma::mat>(R, P_r * P_r * Cdrawsize);
-  arma::mat alpha_draws = arma::zeros<arma::mat>(R, P_f);
-  arma::mat Sigma_draws;
-  if (ordered) {
+ // allocate space for output
+ arma::mat s_draws = arma::zeros<arma::mat>(R, Cdrawsize);
+ arma::mat z_draws = arma::zeros<arma::mat>(R, N);
+ arma::mat b_draws = arma::zeros<arma::mat>(R, P_r * Cdrawsize);
+ arma::mat Omega_draws = arma::zeros<arma::mat>(R, P_r * P_r * Cdrawsize);
+ arma::mat alpha_draws = arma::zeros<arma::mat>(R, P_f);
+ arma::mat Sigma_draws;
+ if (ordered) {
    Sigma_draws = arma::zeros<arma::mat>(R, 1);
-  } else {
+ } else {
    Sigma_draws = arma::zeros<arma::mat>(R, Jm1 * Jm1);
-  }
-  arma::mat d_draws = arma::zeros<arma::mat>(R, J - 2);
-  arma::vec class_sequence(R, arma::fill::zeros);
-  bool frozen_C = false;
+ }
+ arma::mat d_draws = arma::zeros<arma::mat>(R, J - 2);
+ arma::vec class_sequence(R, arma::fill::zeros);
+ bool frozen_C = false;
 
-  // initialize Gibbs sampler
-  arma::vec s;
-  arma::vec z;
-  arma::vec m;
-  arma::mat b;
-  arma::mat Omega;
-  arma::vec alpha;
-  arma::mat beta;
-  arma::mat U;
-  arma::mat Sigma;
-  arma::mat Sigmainv;
-  arma::vec d;
-  arma::vec gamma;
-  const int rowsU = ordered ? 1 : (J - 1);
-  if (P_f > 0) {
-    alpha = oeli::rmvnorm(mu_alpha_0, Sigma_alpha_0);
-  } else {
-    alpha.reset();
-  }
-  if (ordered) {
-    Sigma = arma::ones<arma::mat>(1, 1);
-    Sigmainv = arma::ones<arma::mat>(1, 1);
-  } else {
-    Sigma = oeli::rwishart(n_Sigma_0, V_Sigma_0, true);
-    Sigma = 0.5 * (Sigma + Sigma.t());
-    Sigma += 1e-10 * arma::eye(Sigma.n_rows, Sigma.n_cols);
-    Sigmainv = arma::inv_sympd(Sigma);
-  }
-  if (ordered) {
-    d = oeli::rmvnorm(mu_d_0, Sigma_d_0);
-    gamma = d_to_gamma(d);
-  } else {
-    d.reset();
-  }
-  if (P_r > 0) {
-    s = oeli::rdirichlet(delta * arma::ones(C));
-    b.set_size(P_r, C);
-    Omega.set_size(P_r * P_r, C);
-    for (int c = 0; c < C; ++c) {
-      arma::mat Oc = oeli::rwishart(n_Omega_0, V_Omega_0, true);
-      Oc = 0.5 * (Oc + Oc.t());
-      Oc += 1e-10 * arma::eye(P_r, P_r);
-      Omega.col(c) = arma::vectorise(Oc);
-      b.col(c) = oeli::rmvnorm(mu_b_0, Sigma_b_0);
-    }
-    z.set_size(N);
-    for (int n = 0; n < N; ++n) {
-      z[n] = static_cast<double>(sample_allocation(s));
-    }
-    m = update_m(C, z, false);
-    beta.set_size(P_r, N);
-    for (int n = 0; n < N; ++n) {
-      int ci = std::max(
-        0, std::min(C - 1, static_cast<int>(std::lround(z[n])) - 1)
-      );
-      arma::mat Oc = arma::reshape(Omega.col(ci), P_r, P_r);
-      beta.col(n)  = oeli::rmvnorm(b.col(ci), Oc);
-    }
-  } else {
-    s.set_size(0); z.set_size(0); m.set_size(0);
-    b.set_size(P_r, 0); Omega.set_size(P_r * P_r, 0);
-    beta.set_size(P_r, N); beta.zeros();
-  }
-  U = arma::zeros<arma::mat>(rowsU, NT);
+ // initialize Gibbs sampler
+ arma::vec s;
+ arma::vec z;
+ arma::vec m;
+ arma::mat b;
+ arma::mat Omega;
+ arma::vec alpha;
+ arma::mat beta;
+ arma::mat U;
+ arma::mat Sigma;
+ arma::mat Sigmainv;
+ arma::vec d;
+ arma::vec gamma;
+ const int rowsU = ordered ? 1 : (J - 1);
 
-  // set fixed parameter values
-  bool do_update_s = true;
-  if (fixed_parameter.containsElementNamed("s")) {
-    do_update_s = false;
-    s = Rcpp::as<arma::vec>(fixed_parameter["s"]);
-  }
-  bool do_update_z = true;
-  if (fixed_parameter.containsElementNamed("z")) {
-    do_update_z = false;
-    z = Rcpp::as<arma::vec>(fixed_parameter["z"]);
-  }
-  bool do_update_b = true;
-  if (fixed_parameter.containsElementNamed("b")) {
-    do_update_b = false;
-    b = Rcpp::as<arma::mat>(fixed_parameter["b"]);
-  }
-  bool do_update_Omega = true;
-  if (fixed_parameter.containsElementNamed("Omega")) {
-    do_update_Omega = false;
-    Omega = Rcpp::as<arma::mat>(fixed_parameter["Omega"]);
-  }
-  bool do_update_alpha = true;
-  if (fixed_parameter.containsElementNamed("alpha")) {
-    do_update_alpha = false;
-    alpha = Rcpp::as<arma::vec>(fixed_parameter["alpha"]);
-  }
-  bool do_update_beta = true;
-  if (fixed_parameter.containsElementNamed("beta")) {
-    do_update_beta = false;
-    beta = Rcpp::as<arma::mat>(fixed_parameter["beta"]);
-  }
-  bool do_update_Sigma = true;
-  if (fixed_parameter.containsElementNamed("Sigma")) {
-    do_update_Sigma = false;
-    Sigma = Rcpp::as<arma::mat>(fixed_parameter["Sigma"]);
-    Sigmainv = arma::inv_sympd(Sigma);
-  }
-  if (ordered) {
-    do_update_Sigma = false;
-    Sigma = arma::ones<arma::mat>(1,1);
-    Sigmainv = arma::ones<arma::mat>(1,1);
-  }
+ if (P_f > 0) {
+   alpha = mu_alpha_0;
+ } else {
+   alpha.reset();
+ }
+ if (ordered) {
+   Sigma    = arma::ones<arma::mat>(1, 1);
+   Sigmainv = arma::ones<arma::mat>(1, 1);
+ } else {
+   Sigma    = arma::eye(J - 1, J - 1);
+   Sigmainv = arma::eye(J - 1, J - 1);
+ }
+ if (ordered) {
+   d = mu_d_0;
+   gamma = d_to_gamma(d);
+ } else {
+   d.reset();
+ }
+ if (P_r > 0) {
+   s = arma::ones<arma::vec>(C) / static_cast<double>(C);
+   b.set_size(P_r, C);
+   Omega.set_size(P_r * P_r, C);
+   arma::mat Omega0 = clamp_pd(V_Omega_0, 1e-8);
+   for (int c = 0; c < C; ++c) {
+     Omega.col(c) = arma::vectorise(Omega0);
+     b.col(c)     = mu_b_0;
+   }
+   z.set_size(N);
+   for (int n = 0; n < N; ++n) z[n] = static_cast<double>((n % C) + 1);
+   m = update_m(C, z, false);
+   beta.set_size(P_r, N);
+   for (int n = 0; n < N; ++n) {
+     int ci = std::max(
+       0, std::min(C - 1, static_cast<int>(std::lround(z[n])) - 1)
+     );
+     beta.col(n) = b.col(ci);
+   }
+ } else {
+   s.set_size(0); z.set_size(0); m.set_size(0);
+   b.set_size(P_r, 0); Omega.set_size(P_r * P_r, 0);
+   beta.set_size(P_r, N); beta.zeros();
+ }
+ U = arma::zeros<arma::mat>(rowsU, NT);
 
-  // set progress output
-  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("RprobitB");
-  Rcpp::Function RprobitB_pp = pkg["RprobitB_pp"];
+ // set fixed parameter values
+ bool do_update_s = true;
+ if (fixed_parameter.containsElementNamed("s")) {
+   do_update_s = false;
+   s = Rcpp::as<arma::vec>(fixed_parameter["s"]);
+ }
+ bool do_update_z = true;
+ if (fixed_parameter.containsElementNamed("z")) {
+   do_update_z = false;
+   z = Rcpp::as<arma::vec>(fixed_parameter["z"]);
+ }
+ bool do_update_b = true;
+ if (fixed_parameter.containsElementNamed("b")) {
+   do_update_b = false;
+   b = Rcpp::as<arma::mat>(fixed_parameter["b"]);
+ }
+ bool do_update_Omega = true;
+ if (fixed_parameter.containsElementNamed("Omega")) {
+   do_update_Omega = false;
+   Omega = Rcpp::as<arma::mat>(fixed_parameter["Omega"]);
+ }
+ bool do_update_alpha = true;
+ if (fixed_parameter.containsElementNamed("alpha")) {
+   do_update_alpha = false;
+   alpha = Rcpp::as<arma::vec>(fixed_parameter["alpha"]);
+ }
+ bool do_update_beta = true;
+ if (fixed_parameter.containsElementNamed("beta")) {
+   do_update_beta = false;
+   beta = Rcpp::as<arma::mat>(fixed_parameter["beta"]);
+ }
+ bool do_update_Sigma = true;
+ if (fixed_parameter.containsElementNamed("Sigma")) {
+   do_update_Sigma = false;
+   Sigma = Rcpp::as<arma::mat>(fixed_parameter["Sigma"]);
+   Sigmainv = safe_inv_sympd(Sigma);
+ }
+ if (ordered) {
+   do_update_Sigma = false;
+   Sigma = arma::ones<arma::mat>(1,1);
+   Sigmainv = arma::ones<arma::mat>(1,1);
+ }
 
-  // start loop
-  for (int r = 0; r < R; ++r) {
+ // set progress output
+ Rcpp::Environment pkg = Rcpp::Environment::namespace_env("RprobitB");
+ Rcpp::Function RprobitB_pp = pkg["RprobitB_pp"];
+
+ // start loop
+ for (int r = 0; r < R; ++r) {
 
    // freeze class number after burn-in
    if (P_r > 0 && !frozen_C && r == B && B > 0) {
@@ -1365,7 +1401,7 @@ Rcpp::List gibbs_sampler (
        arma::mat S_tmp = rdiff_list[yi] * Sigma * rdiff_list[yi].t();
        S_tmp = 0.5 * (S_tmp + S_tmp.t()) + 1e-12 *
          arma::eye(S_tmp.n_rows, S_tmp.n_cols);
-       Sigmainv_ranked[yi] = arma::inv_sympd(S_tmp);
+       Sigmainv_ranked[yi] = safe_inv_sympd(S_tmp);
      }
    }
 
@@ -1407,8 +1443,7 @@ Rcpp::List gibbs_sampler (
          Omega = update_Omega(beta, b, z, m, n_Omega_0, V_Omega_0);
          for (int c = 0; c < C; ++c) {
            arma::mat Oc = arma::reshape(Omega.col(c), P_r, P_r);
-           Oc = 0.5 * (Oc + Oc.t());
-           Oc += 1e-10 * arma::eye(P_r, P_r);
+           Oc = clamp_pd(Oc, 1e-10);
            Omega.col(c) = arma::vectorise(Oc);
          }
        }
@@ -1420,9 +1455,8 @@ Rcpp::List gibbs_sampler (
        Omega_inv_cache.reserve(C);
        for (int c = 0; c < C; ++c) {
          arma::mat Oc = arma::reshape(Omega.col(c), P_r, P_r);
-         Oc = 0.5 * (Oc + Oc.t());
-         Oc += 1e-12 * arma::eye(P_r, P_r);
-         Omega_inv_cache.emplace_back(arma::inv_sympd(Oc));
+         Oc = clamp_pd(Oc, 1e-12);
+         Omega_inv_cache.emplace_back(safe_inv_sympd(Oc));
        }
        for (int n = 0; n < N; ++n) {
          const int z_n_lbl = static_cast<int>(std::lround(z[n]));
@@ -1510,7 +1544,7 @@ Rcpp::List gibbs_sampler (
            }
          }
        }
-       alpha = update_coefficient(mu_alpha_0, Psiinv, WSigW, WSigU);
+       alpha = update_coefficient(mu_alpha_0, Sigma_alpha_0_, WSigW, WSigU);
      }
    }
 
@@ -1620,12 +1654,13 @@ Rcpp::List gibbs_sampler (
          S += eps * arma::trans(eps);
        }
      }
-     Sigma = update_Sigma(
-       n_Sigma_0, V_Sigma_0, static_cast<int>(arma::accu(Tvec)), S
+     Sigma = clamp_pd(
+       update_Sigma(
+         n_Sigma_0, V_Sigma_0, static_cast<int>(arma::accu(Tvec)), S
+       ),
+       1e-8
      );
-     Sigma = 0.5 * (Sigma + Sigma.t());
-     Sigma += 1e-10 * arma::eye(Sigma.n_rows, Sigma.n_cols);
-     Sigmainv = arma::inv_sympd(Sigma);
+     Sigmainv = safe_inv_sympd(Sigma);
    }
 
    // update d (for the ordered probit model)
@@ -1674,7 +1709,7 @@ Rcpp::List gibbs_sampler (
    if (ordered == true) {
      d_draws(r, arma::span::all) = arma::trans(d);
    }
-  }
+ }
 
   // return Gibbs samples
   return Rcpp::List::create(
