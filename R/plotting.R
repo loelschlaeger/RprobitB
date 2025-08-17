@@ -1,19 +1,16 @@
-#' Visualize choice data
-#'
-#' @description
-#' This function is the plot method for an object of class \code{RprobitB_data}.
+#' @rdname RprobitB_data
 #'
 #' @param x
 #' An object of class \code{RprobitB_data}.
+#'
 #' @param by_choice
 #' Set to \code{TRUE} to group the covariates by the chosen alternatives.
+#'
 #' @param alpha,position
 #' Passed to \code{\link[ggplot2]{ggplot}}.
-#' @param ...
-#' Ignored.
 #'
-#' @return
-#' No return value. Draws a plot to the current device.
+#' @param ...
+#' Currently not used.
 #'
 #' @export
 #'
