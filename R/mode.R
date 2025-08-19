@@ -28,6 +28,13 @@ mode <- function(samples) {
     ),
     var_name = "samples"
   )
-  den <- stats::density(samples, bw = "SJ")
-  den$x[den$y == max(den$y)]
+  samples <- as.vector(samples) |> stats::na.omit()
+  if (length(samples) == 0) {
+    return(NA_real_)
+  }
+  if (length(unique(samples)) == 1) {
+    return(samples[1])
+  }
+  den <- oeli::quiet(stats::density(samples))
+  den$x[den$y == max(den$y)][1]
 }

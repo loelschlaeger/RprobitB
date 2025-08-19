@@ -39,7 +39,6 @@ reference:
   contents:
   - check_prior
   - fit_model
-  - R_hat
   - update.RprobitB_fit
   - transform.RprobitB_fit
 - title: Model evaluation
@@ -56,6 +55,8 @@ reference:
   - plot_roc
   - plot_mixture_contour
   - plot_class_allocation
+  - R_hat
+  - mode
 - title: Model selection
   desc: Use these functions for model selection.
   contents:
