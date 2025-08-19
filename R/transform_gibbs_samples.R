@@ -20,8 +20,7 @@
 #' thinned version of \code{gibbs_samples} called \code{gibbs_samples_nbt}.
 #' The list gets the class \code{RprobitB_gibbs_samples}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 transform_gibbs_samples <- function(gibbs_samples, R, B, Q, normalization) {
   ### check inputs

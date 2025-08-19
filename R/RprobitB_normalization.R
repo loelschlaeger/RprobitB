@@ -54,8 +54,7 @@
 #'   base = "A"
 #' )
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 RprobitB_normalization <- function(
     level, scale = "Sigma_1,1 := 1", form, re = NULL, alternatives, base,

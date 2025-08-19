@@ -126,8 +126,7 @@ choice_probabilities <- function(x, data = NULL, par_set = mean) {
 #' @return
 #' A probability vector of length \code{length(alternatives)}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 compute_choice_probabilities <- function(
     X, alternatives, parameter, ordered = FALSE) {

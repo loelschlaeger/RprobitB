@@ -25,8 +25,7 @@
 #' of statistics from \code{gibbs_samples} obtained by applying the elements of
 #' \code{FUN}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 RprobitB_gibbs_samples_statistics <- function(
     gibbs_samples, FUN = list("mean" = mean)) {

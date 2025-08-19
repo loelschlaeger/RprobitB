@@ -12,8 +12,7 @@
 #' @return
 #' An object of class \code{RprobitB_parameter}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 transform_parameter <- function(parameter, normalization, ordered = FALSE) {
   ### check inputs

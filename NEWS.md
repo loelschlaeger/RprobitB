@@ -4,6 +4,8 @@
 
 * Fix in `sufficient_statistics()`. There was a bug in calculating sufficient statistics in the ordered case.
 
+* Now using robust SPD-safe inverses and Cholesky decompositions in Gibbs sampler.
+
 * Documentation improvements.
 
 # RprobitB 1.1.4

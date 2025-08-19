@@ -16,8 +16,7 @@
 #' @return
 #' An object of class \code{RprobitB_fit}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 RprobitB_fit <- function(
     data, scale, level, normalization, R, B, Q, latent_classes, prior,

@@ -1,3 +1,7 @@
+#ifndef ARMA_DONT_PRINT_ERRORS
+#define ARMA_DONT_PRINT_ERRORS
+#endif
+
 // [[Rcpp::depends("RcppArmadillo")]]
 #include <algorithm>
 #include <cmath>
@@ -8,51 +12,45 @@
 #include <unordered_map>
 #include <vector>
 
-arma::mat safe_symmetrize(const arma::mat& M) {
-  return 0.5 * (M + M.t());
+arma::mat safe_symmetrize (const arma::mat& M) {
+  arma::mat A = M;
+  A.elem(arma::find_nonfinite(A)).zeros();
+  return 0.5 * (A + A.t());
 }
 
-arma::mat safe_inv_sympd(const arma::mat& M, double jitter = 1e-8) {
-  arma::mat Msym = safe_symmetrize(M);
-  Msym += jitter * arma::eye(Msym.n_rows, Msym.n_cols);
-  arma::mat out;
-  if (!arma::inv_sympd(out, Msym)) {
-    arma::vec eigval;
-    arma::mat eigvec;
-    arma::eig_sym(eigval, eigvec, Msym);
-    eigval.elem(arma::find(eigval < jitter)).fill(jitter);
-    arma::mat repaired = eigvec * arma::diagmat(eigval) * eigvec.t();
-    if (!arma::inv_sympd(out, repaired)) {
-      out = arma::pinv(repaired);
-    }
-  }
-  return out;
-}
-
-arma::mat safe_chol(const arma::mat& M, double jitter = 1e-8) {
-  arma::mat Msym = safe_symmetrize(M);
-  Msym += jitter * arma::eye(Msym.n_rows, Msym.n_cols);
-  arma::mat out;
-  if (!arma::chol(out, Msym)) {
-    arma::vec eigval;
-    arma::mat eigvec;
-    arma::eig_sym(eigval, eigvec, Msym);
-    eigval.elem(arma::find(eigval < jitter)).fill(jitter);
-    arma::mat repaired = eigvec * arma::diagmat(eigval) * eigvec.t();
-    if (!arma::chol(out, repaired)) {
-      out = arma::eye(M.n_rows, M.n_cols);
-    }
-  }
-  return out;
-}
-
-arma::mat clamp_pd(const arma::mat& A, double floor = 1e-8) {
+arma::mat clamp_pd (const arma::mat& A, double floor = 1e-8) {
   arma::mat S = safe_symmetrize(A);
   arma::vec w; arma::mat V;
-  arma::eig_sym(w, V, S);
-  for (arma::uword i = 0; i < w.n_elem; ++i) if (w[i] < floor) w[i] = floor;
+  if (!arma::eig_sym(w, V, S)) {
+    arma::mat I = arma::eye(S.n_rows, S.n_cols);
+    return floor * I;
+  }
+  for (arma::uword i = 0; i < w.n_elem; ++i) {
+    if (!std::isfinite(w[i]) || w[i] < floor) w[i] = floor;
+  }
   arma::mat out = V * arma::diagmat(w) * V.t();
   return safe_symmetrize(out);
+}
+
+arma::mat safe_inv_sympd (const arma::mat& M, double floor = 1e-8) {
+  arma::mat A = clamp_pd(M, floor);
+  arma::mat out;
+  if (!arma::inv_sympd(out, A)) {
+    out = arma::pinv(A);
+  }
+  return safe_symmetrize(out);
+}
+
+arma::mat safe_chol (const arma::mat& M, double floor = 1e-8) {
+  arma::mat A = clamp_pd(M, floor);
+  arma::mat R;
+  if (!arma::chol(R, A)) {
+    A = clamp_pd(A, std::max(floor, 1e-6));
+    if (!arma::chol(R, A)) {
+      R = arma::eye(A.n_rows, A.n_cols);
+    }
+  }
+  return R;
 }
 
 //' Sample allocation
@@ -146,9 +144,7 @@ arma::vec update_z (
   std::vector<arma::mat> covs(C);
   for (int c = 0; c < C; ++c) {
      means[c] = b.col(c);
-     arma::mat Oc = arma::reshape(Omega.col(c), P_r, P_r);
-     Oc = 0.5 * (Oc + Oc.t());
-     Oc += 1e-12 * arma::eye(P_r, P_r);
+    arma::mat Oc = clamp_pd(arma::reshape(Omega.col(c), P_r, P_r), 1e-10);
      covs[c]  = Oc;
     }
     for (int n = 0; n < N; ++n) {
@@ -322,10 +318,13 @@ arma::mat update_b (
 //'
 // [[Rcpp::export]]
 arma::mat update_Omega_c (
-   arma::mat S_c, int m_c, int n_Omega_0, arma::mat V_Omega_0
+    arma::mat S_c, int m_c, int n_Omega_0, arma::mat V_Omega_0
 ) {
-  arma::mat out = oeli::rwishart(n_Omega_0 + m_c, V_Omega_0 + S_c, true);
-  return clamp_pd(out, 1e-8);
+  arma::mat scale = clamp_pd(V_Omega_0 + safe_symmetrize(S_c), 1e-8);
+  const int P = static_cast<int>(scale.n_rows);
+  const int dof = std::max(n_Omega_0 + std::max(m_c, 0), P + 1);
+  arma::mat draw = oeli::rwishart(dof, scale, true);
+  return clamp_pd(draw, 1e-8);
 }
 
 //' Update class covariances
@@ -431,12 +430,17 @@ arma::mat update_Omega (
 //'
 // [[Rcpp::export]]
 arma::vec update_coefficient (
-   arma::vec mu_beta_0, arma::mat Sigma_beta_0_inv,
-   arma::mat XSigX, arma::vec XSigU
+    arma::vec mu_beta_0, arma::mat Sigma_beta_0_inv,
+    arma::mat XSigX, arma::vec XSigU
 ) {
-  arma::mat Sigma_beta = safe_inv_sympd(Sigma_beta_0_inv + XSigX);
-  arma::mat mu_beta = Sigma_beta * (Sigma_beta_0_inv * mu_beta_0 + XSigU);
-  return oeli::rmvnorm(mu_beta, Sigma_beta);
+  arma::mat prior_prec = clamp_pd(Sigma_beta_0_inv, 1e-12);
+  arma::mat XSigX_clean = safe_symmetrize(XSigX);
+  XSigX_clean.elem(arma::find_nonfinite(XSigX_clean)).zeros();
+  arma::vec XSigU_clean = XSigU;
+  XSigU_clean.elem(arma::find_nonfinite(XSigU_clean)).zeros();
+  arma::mat Sigma_beta = safe_inv_sympd(prior_prec + XSigX_clean, 1e-12);
+  arma::vec mu_beta    = Sigma_beta * (prior_prec * mu_beta_0 + XSigU_clean);
+  return oeli::rmvnorm(mu_beta, clamp_pd(Sigma_beta, 1e-12));
 }
 
 //' Update error covariance matrix
@@ -512,23 +516,26 @@ arma::mat update_Sigma (
 //'
 // [[Rcpp::export]]
 arma::vec update_U (
-   arma::vec U, int y, arma::vec sys, arma::mat Sigma_inv
+    arma::vec U, int y, arma::vec sys, arma::mat Sigma_inv
 ) {
-  int Jm1 = U.size();
+  arma::mat Prec = clamp_pd(Sigma_inv, 1e-10);
+  const int Jm1 = static_cast<int>(U.n_elem);
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
-   double bound = 0.0;
-   for (int j = 0; j < Jm1; ++j) if (j != i) {
-     bound = std::max(bound, U_update[j]);
-   }
-   double m = 0.0;
-   const double sii = Sigma_inv(i, i);
-   for (int k = 0; k < Jm1; ++k) if (k != i) {
-     m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
-   }
-   U_update[i] = oeli::rtnorm(
-     sys[i] + m, std::sqrt(1.0 / sii), bound, y != (i + 1)
-   );
+    double bound = 0.0;
+    for (int j = 0; j < Jm1; ++j) {
+      if (j != i) {
+        bound = std::max(bound, U_update[j]);
+      }
+    }
+    const double sii = std::max(Prec(i, i), 1e-10);
+    double m = 0.0;
+    for (int k = 0; k < Jm1; ++k) if (k != i) {
+      m += -(Prec(i, k) / sii) * (U_update[k] - sys[k]);
+    }
+    double sd = std::sqrt(1.0 / sii);
+    if (!std::isfinite(sd) || sd <= 0.0) sd = 1.0;
+    U_update[i] = oeli::rtnorm(sys[i] + m, sd, bound, y != (i + 1));
   }
   return U_update;
 }
@@ -551,17 +558,20 @@ arma::vec update_U (
 //'
 // [[Rcpp::export]]
 arma::vec update_U_ranked (
-   arma::vec U, arma::vec sys, arma::mat Sigma_inv
+    arma::vec U, arma::vec sys, arma::mat Sigma_inv
 ) {
-  int Jm1 = U.size();
+  arma::mat Prec = clamp_pd(Sigma_inv, 1e-10);
+  const int Jm1 = static_cast<int>(U.n_elem);
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
-   double m = 0.0;
-   const double sii = Sigma_inv(i, i);
-   for (int k = 0; k < Jm1; ++k) if (k != i) {
-     m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
-   }
-   U_update[i] = oeli::rtnorm(sys[i] + m, std::sqrt(1.0 / sii), 0.0, true);
+    const double sii = std::max(Prec(i, i), 1e-10);
+    double m = 0.0;
+    for (int k = 0; k < Jm1; ++k) if (k != i) {
+      m += -(Prec(i, k) / sii) * (U_update[k] - sys[k]);
+    }
+    double sd = std::sqrt(1.0 / sii);
+    if (!std::isfinite(sd) || sd <= 0.0) sd = 1.0;
+    U_update[i] = oeli::rtnorm(sys[i] + m, sd, 0.0, true);
   }
   return U_update;
 }
@@ -805,8 +815,8 @@ Rcpp::List update_classes_wb (
  if (update_type == 0 && C < Cmax) {
    int id_max = arma::index_max(stack(0, arma::span::all));
    if (stack(0, id_max) > epsmax) {
-     arma::mat max_class_Omega = arma::reshape(
-       stack(arma::span(P + 1, P + 1 + P * P - 1), id_max), P, P
+     arma::mat max_class_Omega = clamp_pd(
+       arma::reshape(stack(arma::span(P+1, P+P*P), id_max), P, P), 1e-10
      );
      arma::vec eigval;
      arma::mat eigvec;

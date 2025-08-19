@@ -11,8 +11,7 @@
 #' @return
 #' No return value, called for side-effects.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 preference_flip <- function(model_old, model_new) {
   stopifnot(inherits(model_old, "RprobitB_fit"))

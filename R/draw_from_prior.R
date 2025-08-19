@@ -13,12 +13,12 @@
 #' A list of draws for \code{alpha}, \code{s}, \code{b}, \code{Omega}, and
 #' \code{Sigma} (if specified for the model).
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @examples
 #' prior <- check_prior(P_f = 1, P_r = 2, J = 3)
 #' RprobitB:::draw_from_prior(prior, C = 2)
+
 draw_from_prior <- function(prior, C = 1) {
   ### input checks
   if (!inherits(prior, "RprobitB_prior")) {

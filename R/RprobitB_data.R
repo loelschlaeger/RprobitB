@@ -67,8 +67,7 @@
 #' An object of class \code{RprobitB_data} with the arguments of this function
 #' as elements.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 RprobitB_data <- function(
     data, choice_data, N, T, J, P_f, P_r, alternatives, ordered, ranked, base,

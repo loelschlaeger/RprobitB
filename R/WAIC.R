@@ -34,8 +34,7 @@
 #'   \item \code{p_si}, the output of \code{\link{compute_p_si}}.
 #' }
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @export
 

@@ -10,8 +10,7 @@
 #' @return
 #' A list of \code{RprobitB_parameter} objects.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 posterior_pars <- function(x) {
   ### check input

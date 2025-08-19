@@ -11,8 +11,7 @@
 #' An object of class \code{RprobitB_gibbs_samples} filtered by the labels of
 #' \code{\link{parameter_labels}}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 filter_gibbs_samples <- function(
     x, P_f, P_r, J, C, cov_sym, ordered = FALSE,

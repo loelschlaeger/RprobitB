@@ -66,13 +66,9 @@ reference:
   desc: The following datasets are included in the package.
   contents:
   - has_keyword("dataset")
-- title: Distributions
-  desc: Implementation of distributions and number generating functions.
-  contents:
-  - has_keyword("distribution")
 - title: Posterior samplers
-  desc: These functions draw from conditional posterior distributions.
+  desc: These functions define the Gibbs sampler.
   contents:
-  - has_keyword("posterior")
+  - has_keyword("gibbs_sampler")
 
 

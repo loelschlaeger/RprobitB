@@ -230,8 +230,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #' @return
 #' No return value. Draws a plot to the current device.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @examples
 #' gibbs_samples <- matrix(arima.sim(list(order = c(1, 0, 0), ar = 0.5), n = 100))
@@ -271,8 +270,7 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #' @return
 #' An object of class \code{ggplot}.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @examples
 #' mean <- list(1, 2)
@@ -396,8 +394,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
 #' @return
 #' No return value. Draws a plot to the current device.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @noRd
 #'
@@ -438,8 +435,7 @@ plot_trace <- function(gibbs_samples, par_labels) {
 #' @return
 #' No return value. Draws a plot to the current device.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @noRd
 #'
@@ -496,8 +492,7 @@ plot_class_seq <- function(class_sequence, B) {
 #' @return
 #' No return value. Draws a plot to the current device.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 #'
 #' @examples
 #' b <- matrix(c(-1, 1, 1, 1), ncol = 2)

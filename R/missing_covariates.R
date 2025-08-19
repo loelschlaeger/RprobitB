@@ -22,8 +22,7 @@
 #' @return
 #' The input \code{choice_data}, in which missing covariates are addressed.
 #'
-#' @keywords
-#' internal
+#' @keywords internal
 
 missing_covariates <- function(
     choice_data, impute = "complete_cases", col_ignore = character()) {
