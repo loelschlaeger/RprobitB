@@ -18,9 +18,9 @@
 #' )
 #' hist(samples)
 #' mean(samples) # expected: 0.7 * (-2) + 0.3 * 2 = -0.8
-#' mode(samples) # expected: -2
+#' mode_approx(samples) # expected: -2
 
-mode <- function(samples) {
+mode_approx <- function(samples) {
   oeli::input_check_response(
     check = list(
       oeli::check_numeric_vector(samples, any.missing = FALSE),

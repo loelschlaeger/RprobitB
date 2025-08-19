@@ -78,8 +78,11 @@
 
 #' @noRd
 
-RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
-  if (isTRUE(getOption("RprobitB_progress"))) {
+RprobitB_pp <- function(
+    title, i = NULL, total = NULL, tail = NULL,
+    print_progress = isTRUE(getOption("RprobitB_progress"))
+  ) {
+  if (isTRUE(print_progress)) {
     if (is.null(i) || is.null(total)) {
       message(title)
     } else {
@@ -103,10 +106,10 @@ RprobitB_pb <- function(title, total, tail = NULL) {
 
 #' @noRd
 
-RprobitB_pb_tick <- function(pb) {
-  if (identical(getOption("RprobitB_progress"), TRUE)) {
-    pb$tick()
-  }
+RprobitB_pb_tick <- function(
+    pb, print_progress = isTRUE(getOption("RprobitB_progress"))
+  ) {
+  if (isTRUE(print_progress)) pb$tick()
 }
 
 #' @noRd

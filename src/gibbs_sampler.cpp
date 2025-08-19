@@ -439,7 +439,7 @@ arma::vec update_coefficient (
   arma::vec XSigU_clean = XSigU;
   XSigU_clean.elem(arma::find_nonfinite(XSigU_clean)).zeros();
   arma::mat Sigma_beta = safe_inv_sympd(prior_prec + XSigX_clean, 1e-12);
-  arma::vec mu_beta    = Sigma_beta * (prior_prec * mu_beta_0 + XSigU_clean);
+  arma::vec mu_beta = Sigma_beta * (prior_prec * mu_beta_0 + XSigU_clean);
   return oeli::rmvnorm(mu_beta, clamp_pd(Sigma_beta, 1e-12));
 }
 
@@ -516,26 +516,23 @@ arma::mat update_Sigma (
 //'
 // [[Rcpp::export]]
 arma::vec update_U (
-    arma::vec U, int y, arma::vec sys, arma::mat Sigma_inv
+  arma::vec U, int y, arma::vec sys, arma::mat Sigma_inv
 ) {
-  arma::mat Prec = clamp_pd(Sigma_inv, 1e-10);
-  const int Jm1 = static_cast<int>(U.n_elem);
+  int Jm1 = U.size();
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
     double bound = 0.0;
-    for (int j = 0; j < Jm1; ++j) {
-      if (j != i) {
-        bound = std::max(bound, U_update[j]);
-      }
+    for (int j = 0; j < Jm1; ++j) if (j != i) {
+      bound = std::max(bound, U_update[j]);
     }
-    const double sii = std::max(Prec(i, i), 1e-10);
     double m = 0.0;
+    const double sii = Sigma_inv(i, i);
     for (int k = 0; k < Jm1; ++k) if (k != i) {
-      m += -(Prec(i, k) / sii) * (U_update[k] - sys[k]);
+      m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
     }
-    double sd = std::sqrt(1.0 / sii);
-    if (!std::isfinite(sd) || sd <= 0.0) sd = 1.0;
-    U_update[i] = oeli::rtnorm(sys[i] + m, sd, bound, y != (i + 1));
+    U_update[i] = oeli::rtnorm(
+      sys[i] + m, std::sqrt(1.0 / sii), bound, y != (i + 1)
+    );
   }
   return U_update;
 }
@@ -558,20 +555,17 @@ arma::vec update_U (
 //'
 // [[Rcpp::export]]
 arma::vec update_U_ranked (
-    arma::vec U, arma::vec sys, arma::mat Sigma_inv
+  arma::vec U, arma::vec sys, arma::mat Sigma_inv
 ) {
-  arma::mat Prec = clamp_pd(Sigma_inv, 1e-10);
-  const int Jm1 = static_cast<int>(U.n_elem);
+  int Jm1 = U.size();
   arma::vec U_update = U;
   for (int i = 0; i < Jm1; ++i) {
-    const double sii = std::max(Prec(i, i), 1e-10);
     double m = 0.0;
+    const double sii = Sigma_inv(i, i);
     for (int k = 0; k < Jm1; ++k) if (k != i) {
-      m += -(Prec(i, k) / sii) * (U_update[k] - sys[k]);
+      m += -1.0 / sii * Sigma_inv(i, k) * (U_update[k] - sys[k]);
     }
-    double sd = std::sqrt(1.0 / sii);
-    if (!std::isfinite(sd) || sd <= 0.0) sd = 1.0;
-    U_update[i] = oeli::rtnorm(sys[i] + m, sd, 0.0, true);
+    U_update[i] = oeli::rtnorm(sys[i] + m, std::sqrt(1.0 / sii), 0.0, true);
   }
   return U_update;
 }
@@ -1256,7 +1250,7 @@ Rcpp::List gibbs_sampler (
  arma::mat beta;
  arma::mat U;
  arma::mat Sigma;
- arma::mat Sigmainv;
+ arma::mat Sigma_inv;
  arma::vec d;
  arma::vec gamma;
  const int rowsU = ordered ? 1 : (J - 1);
@@ -1267,11 +1261,11 @@ Rcpp::List gibbs_sampler (
    alpha.reset();
  }
  if (ordered) {
-   Sigma    = arma::ones<arma::mat>(1, 1);
-   Sigmainv = arma::ones<arma::mat>(1, 1);
+   Sigma = arma::ones<arma::mat>(1, 1);
+   Sigma_inv = arma::ones<arma::mat>(1, 1);
  } else {
-   Sigma    = arma::eye(J - 1, J - 1);
-   Sigmainv = arma::eye(J - 1, J - 1);
+   Sigma = arma::eye(J - 1, J - 1);
+   Sigma_inv = arma::eye(J - 1, J - 1);
  }
  if (ordered) {
    d = mu_d_0;
@@ -1340,12 +1334,12 @@ Rcpp::List gibbs_sampler (
  if (fixed_parameter.containsElementNamed("Sigma")) {
    do_update_Sigma = false;
    Sigma = Rcpp::as<arma::mat>(fixed_parameter["Sigma"]);
-   Sigmainv = safe_inv_sympd(Sigma);
+   Sigma_inv = safe_inv_sympd(Sigma);
  }
  if (ordered) {
    do_update_Sigma = false;
    Sigma = arma::ones<arma::mat>(1,1);
-   Sigmainv = arma::ones<arma::mat>(1,1);
+   Sigma_inv = arma::ones<arma::mat>(1,1);
  }
 
  // set progress output
@@ -1391,9 +1385,14 @@ Rcpp::List gibbs_sampler (
    // print progress
    if (print_progress && ((r+1) % 10 == 0 || r == 0)) {
      if (!wb_update && !dp_update) {
-       RprobitB_pp("MCMC iteration", r + 1, R);
+       RprobitB_pp(
+         "Gibbs sampler", r + 1, R, "iterations", true
+        );
      } else {
-       RprobitB_pp("MCMC iteration (C = " + std::to_string(C) + ")", r + 1, R);
+       RprobitB_pp(
+         "Gibbs sampler", r + 1, R, "iterations (C = " + std::to_string(C) + ")",
+         true
+       );
      }
    }
 
@@ -1402,7 +1401,7 @@ Rcpp::List gibbs_sampler (
 
    // prepare Sigma
    if (!ordered) {
-     Sigmainv_vec = arma::vectorise(Sigmainv);
+     Sigmainv_vec = arma::vectorise(Sigma_inv);
    }
    if (ranked) {
      const int L = static_cast<int>(rdiff_list.size());
@@ -1485,11 +1484,11 @@ Rcpp::List gibbs_sampler (
          for (int t = 0; t < Tn; ++t) {
            ind = base + t;
            if (P_f == 0) {
-             XSigU += arma::trans(Xv[ind]) * Sigmainv * U(arma::span::all,ind);
+             XSigU += arma::trans(Xv[ind]) * Sigma_inv * U(arma::span::all,ind);
            }
            if (P_f > 0) {
-             XSigU += arma::trans(Xv[ind]) * Sigmainv *
-               U(arma::span::all,ind) - arma::trans(Xv[ind]) * Sigmainv *
+             XSigU += arma::trans(Xv[ind]) * Sigma_inv *
+               U(arma::span::all,ind) - arma::trans(Xv[ind]) * Sigma_inv *
                Wv[ind] * alpha;
            }
          }
@@ -1546,10 +1545,10 @@ Rcpp::List gibbs_sampler (
          for (int t = 0; t < Tn; ++t) {
            ind = base + t;
            if (P_r == 0) {
-             WSigU += arma::trans(Wv[ind]) * Sigmainv * U(arma::span::all,ind);
+             WSigU += arma::trans(Wv[ind]) * Sigma_inv * U(arma::span::all,ind);
            }
            if (P_r > 0) {
-             WSigU += arma::trans(Wv[ind]) * Sigmainv *
+             WSigU += arma::trans(Wv[ind]) * Sigma_inv *
                (U(arma::span::all, ind) - Xv[ind] * beta(arma::span::all, n));
            }
          }
@@ -1566,8 +1565,7 @@ Rcpp::List gibbs_sampler (
        for (int t = 0; t < Tn; ++t) {
          ind = base + t;
          if (P_f > 0 && P_r > 0) {
-           mu_mat_tmp = Wv[ind] * alpha +
-             Xv[ind] * beta(arma::span::all, n);
+           mu_mat_tmp = Wv[ind] * alpha + Xv[ind] * beta(arma::span::all, n);
          }
          if (P_f > 0 && P_r == 0) {
            mu_mat_tmp = Wv[ind] * alpha;
@@ -1614,28 +1612,19 @@ Rcpp::List gibbs_sampler (
        const int base = static_cast<int>(std::lround(csTvec[n]));
        for (int t = 0; t < Tn; ++t) {
          ind = base + t;
+         arma::vec mu_vec_tmp = arma::zeros<arma::vec>(Jm1);
          if (P_f > 0 && P_r > 0) {
-           U(arma::span::all, ind) = update_U(
-             U(arma::span::all, ind), y(n, t),
-             Wv[ind] * alpha + Xv[ind] * beta(arma::span::all, n), Sigmainv
-           );
+           mu_vec_tmp = Wv[ind] * alpha + Xv[ind] * beta(arma::span::all, n);
          }
          if (P_f > 0 && P_r == 0) {
-           U(arma::span::all, ind) = update_U(
-             U(arma::span::all, ind), y(n, t), Wv[ind] * alpha, Sigmainv
-           );
+           mu_vec_tmp = Wv[ind] * alpha;
          }
          if (P_f == 0 && P_r > 0) {
-           U(arma::span::all, ind) = update_U(
-             U(arma::span::all, ind), y(n, t),
-             Xv[ind] * beta(arma::span::all, n), Sigmainv
-           );
+           mu_vec_tmp = Xv[ind] * beta(arma::span::all, n);
          }
-         if (P_f == 0 && P_r == 0) {
-           arma::vec mu_null(Jm1, arma::fill::zeros);
-           U(arma::span::all,ind) = update_U(U(arma::span::all, ind), y(n, t),
-             mu_null, Sigmainv);
-         }
+         U(arma::span::all,ind) = update_U(
+           U(arma::span::all, ind), y(n, t), mu_vec_tmp, Sigma_inv
+         );
        }
      }
    }
@@ -1670,7 +1659,7 @@ Rcpp::List gibbs_sampler (
        ),
        1e-8
      );
-     Sigmainv = safe_inv_sympd(Sigma);
+     Sigma_inv = safe_inv_sympd(Sigma);
    }
 
    // update d (for the ordered probit model)
