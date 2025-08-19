@@ -91,7 +91,7 @@ $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J-1$, where (choosing $J$ as the ref
 In `{RprobitB}`, the probit model parameters are saved as an `RprobitB_parameter` object. Their labels are consistent with their definition in this vignette. For example:
 
 ```{r, RprobitB-parameter-example}
-RprobitB:::RprobitB_parameter(
+RprobitB_parameter(
   P_f = 1,
   P_r = 2,
   J = 3,
@@ -108,7 +108,5 @@ RprobitB:::RprobitB_parameter(
   z = rep(1:2, 5) # the vector of the allocation variables of length 'N'
 )
 ```
-
-Mind that the matrix `Sigma_full` is not unique and can be any matrix that results into `Sigma` after the differencing, see the non-exported function `RprobitB:::undiff_Sigma()`.
 
 ## References

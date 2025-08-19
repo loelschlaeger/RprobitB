@@ -30,10 +30,7 @@
 #' @return
 #' An object of class `RprobitB_latent_classes`.
 #'
-#' @examples
-#' RprobitB:::RprobitB_latent_classes()
-#' RprobitB:::RprobitB_latent_classes(list(wb_update = TRUE))
-#' RprobitB:::RprobitB_latent_classes(list(dp_update = TRUE))
+#' @keywords internal
 
 RprobitB_latent_classes <- function(latent_classes = NULL) {
 

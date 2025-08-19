@@ -54,6 +54,8 @@ reference:
   - predict.RprobitB_fit
   - plot.RprobitB_fit
   - plot_roc
+  - plot_mixture_contour
+  - plot_class_allocation
 - title: Model selection
   desc: Use these functions for model selection.
   contents:

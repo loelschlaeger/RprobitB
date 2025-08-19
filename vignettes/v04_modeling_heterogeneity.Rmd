@@ -186,7 +186,7 @@ The following call to `update_classes_dp()` updates the latent classes in `100` 
 
 ```{r, dirichlet-process-app}
 for (r in 1:100) {
-  dp <- RprobitB::update_classes_dp(
+  dp <- update_classes_dp(
     beta, z, b, Omega, delta, xi, D, nu, Theta, identify_classes = TRUE
   )
   z <- dp$z
@@ -200,7 +200,7 @@ The Dirichlet process was able to infer the true number `C_true = 3` of latent c
 ```{r, dirichlet-example-plot, fig.dim = c(16,8)}
 par(mfrow = c(1, 2))
 plot(t(beta), xlab = bquote(beta[1]), ylab = bquote(beta[2]), pch = 19)
-RprobitB:::plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
+plot_class_allocation(beta, z, b, Omega, r = 100, perc = 0.95)
 ```
 
 ## References

@@ -40,8 +40,4 @@ An object of class \code{RprobitB_latent_classes}.
 This function creates an object of class \code{RprobitB_latent_classes} which
 defines the number of latent classes and their updating scheme.
 }
-\examples{
-RprobitB:::RprobitB_latent_classes()
-RprobitB:::RprobitB_latent_classes(list(wb_update = TRUE))
-RprobitB:::RprobitB_latent_classes(list(dp_update = TRUE))
-}
+\keyword{internal}

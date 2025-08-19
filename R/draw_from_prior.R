@@ -14,10 +14,6 @@
 #' \code{Sigma} (if specified for the model).
 #'
 #' @keywords internal
-#'
-#' @examples
-#' prior <- check_prior(P_f = 1, P_r = 2, J = 3)
-#' RprobitB:::draw_from_prior(prior, C = 2)
 
 draw_from_prior <- function(prior, C = 1) {
   ### input checks

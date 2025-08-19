@@ -19,8 +19,4 @@ A list of draws for \code{alpha}, \code{s}, \code{b}, \code{Omega}, and
 \description{
 This function returns a sample from each parameter's prior distribution.
 }
-\examples{
-prior <- check_prior(P_f = 1, P_r = 2, J = 3)
-RprobitB:::draw_from_prior(prior, C = 2)
-}
 \keyword{internal}

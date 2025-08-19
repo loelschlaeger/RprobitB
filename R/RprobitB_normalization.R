@@ -44,16 +44,6 @@
 #'         the `name` of the fixed effect.
 #' }
 #'
-#' @examples
-#' RprobitB:::RprobitB_normalization(
-#'   level = "B",
-#'   scale = "price := -1",
-#'   form = choice ~ price + time + comfort + change | 1,
-#'   re = "time",
-#'   alternatives = c("A", "B"),
-#'   base = "A"
-#' )
-#'
 #' @keywords internal
 
 RprobitB_normalization <- function(

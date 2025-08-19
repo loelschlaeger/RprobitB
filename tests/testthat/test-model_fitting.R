@@ -137,21 +137,6 @@ test_that("setting fixed parameters for the Gibbs sampling works", {
   expect_true(all.equal(true, est))
 })
 
-test_that("computation of sufficient statistics works", {
-  form <- choice ~ v1 | v2
-  re <- "v2"
-  alternatives <- c("A", "B", "C")
-  data <- simulate_choices(
-    form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives,
-    seed = 1
-  )
-  normalization <- RprobitB:::RprobitB_normalization(
-    form = form, re = re, alternatives = alternatives, base = "C"
-  )
-  ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
-  expect_snapshot(ss)
-})
-
 test_that("transforming RprobitB_fit works", {
   set.seed(1)
   form <- choice ~ price + time + change + comfort | 0

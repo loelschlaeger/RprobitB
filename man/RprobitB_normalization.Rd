@@ -100,15 +100,4 @@ Alternatively, any error-term variance or any non-random coefficient
 can be fixed.
 }
 }
-\examples{
-RprobitB:::RprobitB_normalization(
-  level = "B",
-  scale = "price := -1",
-  form = choice ~ price + time + comfort + change | 1,
-  re = "time",
-  alternatives = c("A", "B"),
-  base = "A"
-)
-
-}
 \keyword{internal}

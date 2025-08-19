@@ -70,8 +70,7 @@ fit_model <- function(
   ### check inputs
   if (!inherits(data, "RprobitB_data")) {
     stop(
-      "'data' must an object of class 'RprobitB_data', i.e. the output of",
-      " 'RprobitB::prepare()' or 'RprobitB::simulate()'.",
+      "'data' must an object of class 'RprobitB_data'.",
       call. = FALSE
     )
   }
