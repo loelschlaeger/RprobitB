@@ -56,7 +56,7 @@ reference:
   - plot_mixture_contour
   - plot_class_allocation
   - R_hat
-  - mode
+  - mode_approx
 - title: Model selection
   desc: Use these functions for model selection.
   contents:
