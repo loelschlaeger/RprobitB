@@ -7,6 +7,7 @@
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}, which generally is located
 #' as object \code{gibbs_samples} in an \code{RprobitB_model} object.
+#'
 #' @param FUN
 #' A (preferably named) list of functions that compute parameter statistics
 #' from the Gibbs samples, for example
@@ -28,7 +29,9 @@
 #' @keywords internal
 
 RprobitB_gibbs_samples_statistics <- function(
-    gibbs_samples, FUN = list("mean" = mean)) {
+    gibbs_samples, FUN = list("mean" = mean)
+  ) {
+
   ### check inputs
   if (!inherits(gibbs_samples, "RprobitB_gibbs_samples")) {
     stop("'gibbs_samples' must be of class 'RprobitB_gibbs_samples'.",

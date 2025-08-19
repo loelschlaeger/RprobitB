@@ -57,6 +57,7 @@
 #' @importFrom stats BIC
 #' @importFrom stats complete.cases
 #' @importFrom stats cov2cor
+#' @importFrom stats density
 #' @importFrom stats dnorm
 #' @importFrom stats ecdf
 #' @importFrom stats logLik
