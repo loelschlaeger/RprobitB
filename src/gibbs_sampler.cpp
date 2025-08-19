@@ -1182,12 +1182,12 @@ Rcpp::List gibbs_sampler (
  int delta = 1;
  arma::vec mu_alpha_0;
  arma::mat Sigma_alpha_0, Sigma_alpha_0_;
- int n_Omega_0 = P_r+2;
+ int n_Omega_0 = P_r + 2;
  arma::mat V_Omega_0;
  arma::vec mu_b_0;
  arma::mat Sigma_b_0;
  arma::mat Sigma_b_0_inv;
- int n_Sigma_0;
+ int n_Sigma_0 = J + 1;
  arma::mat V_Sigma_0;
  if (!ordered) {
    n_Sigma_0 = Rcpp::as<int>(prior["n_Sigma_0"]);
