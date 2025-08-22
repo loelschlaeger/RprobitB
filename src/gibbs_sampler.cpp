@@ -3,14 +3,10 @@
 #endif
 
 // [[Rcpp::depends("RcppArmadillo")]]
-#include <algorithm>
-#include <cmath>
-#include <limits>
+
 #include <oeli.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-#include <unordered_map>
-#include <vector>
 
 arma::mat safe_symmetrize (const arma::mat& M) {
   arma::mat A = M;
@@ -41,18 +37,6 @@ arma::mat safe_inv_sympd (const arma::mat& M, double floor = 1e-8) {
   return safe_symmetrize(out);
 }
 
-arma::mat safe_chol (const arma::mat& M, double floor = 1e-8) {
-  arma::mat A = clamp_pd(M, floor);
-  arma::mat R;
-  if (!arma::chol(R, A)) {
-    A = clamp_pd(A, std::max(floor, 1e-6));
-    if (!arma::chol(R, A)) {
-      R = arma::eye(A.n_rows, A.n_cols);
-    }
-  }
-  return R;
-}
-
 //' Sample allocation
 //'
 //' @param prob \[`numeric(C)`\]\cr
@@ -70,26 +54,16 @@ arma::mat safe_chol (const arma::mat& M, double floor = 1e-8) {
 //'
 // [[Rcpp::export]]
 int sample_allocation(arma::vec const& prob) {
-  const arma::uword n = prob.n_elem;
-  arma::vec p = prob;
-  for (arma::uword i = 0; i < n; ++i) {
-    double v = p[i];
-    if (!std::isfinite(v) || v < 0.0) p[i] = 0.0;
-  }
-  double s = arma::accu(p);
-  if (!(s > 0.0)) {
-    p.fill(1.0 / static_cast<double>(n));
-  } else {
-    p /= s;
-  }
-  arma::vec cdf = arma::cumsum(p);
-  cdf[n - 1] = 1.0;
-  const double u = R::runif(0.0, 1.0);
-  arma::uword idx = static_cast<arma::uword>(
-    std::upper_bound(cdf.begin(), cdf.end(), u) - cdf.begin()
-  );
-  if (idx >= n) idx = n - 1;
-  return static_cast<int>(idx + 1);
+  int C = prob.size();
+  Rcpp::Function sample("sample");
+  arma::vec safe_prob = prob;
+  safe_prob.elem(arma::find_nonfinite(safe_prob)).zeros();
+  safe_prob.transform([](double p) { return (p > 0.0) ? p : 0.0; });
+  double total = arma::sum(safe_prob);
+  if (total <= 0.0) safe_prob = arma::ones<arma::vec>(C);
+  Rcpp::NumericVector weights = Rcpp::wrap(safe_prob);
+  int z = Rcpp::as<int>(sample(Rcpp::seq(1, C), 1, false, weights));
+  return z;
 }
 
 //' Update class weight vector
