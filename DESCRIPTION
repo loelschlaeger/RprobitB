@@ -58,6 +58,7 @@ Suggests:
     knitr,
     mlogit,
     testthat (>= 3.0.0),
+    vdiffr,
     xml2
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
