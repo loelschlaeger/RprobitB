@@ -39,7 +39,6 @@ Imports:
     gridExtra,
     MASS,
     mixtools,
-    mvtnorm,
     oeli (>= 0.7.5),
     parallel,
     plotROC,

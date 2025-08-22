@@ -108,8 +108,6 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
-#'
-#' @importFrom graphics par
 
 plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### check inputs
@@ -231,9 +229,6 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #' No return value. Draws a plot to the current device.
 #'
 #' @keywords internal
-#'
-#' @importFrom stats spec.ar
-#' @importFrom graphics title legend
 
 plot_acf <- function(gibbs_samples, par_labels) {
   for (c in 1:ncol(gibbs_samples)) {
@@ -323,27 +318,36 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #' weights <- c(0.3, 0.7)
 #' names <- c("A", "B")
 #' plot_mixture_contour(means, covs, weights, names)
-#'
-#' @importFrom ggplot2 ggplot aes geom_contour labs geom_text
-#' @importFrom rlang .data
 
 plot_mixture_contour <- function(means, covs, weights, names) {
   C <- length(weights)
-  x_min <- min(mapply(function(x, y) x[1] - 5 * y[1, 1], means, covs))
-  x_max <- max(mapply(function(x, y) x[1] + 5 * y[1, 1], means, covs))
-  y_min <- min(mapply(function(x, y) x[2] - 5 * y[2, 2], means, covs))
-  y_max <- max(mapply(function(x, y) x[2] + 5 * y[2, 2], means, covs))
+  x_min <- min(mapply(function(x, y) x[1] - 5 * sqrt(y[1, 1]), means, covs))
+  x_max <- max(mapply(function(x, y) x[1] + 5 * sqrt(y[1, 1]), means, covs))
+  y_min <- min(mapply(function(x, y) x[2] - 5 * sqrt(y[2, 2]), means, covs))
+  y_max <- max(mapply(function(x, y) x[2] + 5 * sqrt(y[2, 2]), means, covs))
+
   data.grid <- expand.grid(
     x = seq(x_min, x_max, length.out = 200),
     y = seq(y_min, y_max, length.out = 200)
   )
-  z <- Reduce("+", sapply(1:C, function(c) {
-    mvtnorm::dmvnorm(data.grid, means[[c]], covs[[c]])
-  }, simplify = FALSE))
 
-  x <- y <- grp <- NULL
+  # compute mixture density
+  z <- numeric(nrow(data.grid))
+  for (c in seq_len(C)) {
+    z <- z + vapply(
+      seq_len(nrow(data.grid)),
+      function(i) oeli::dmvnorm_cpp(
+        as.numeric(data.grid[i, ]),
+        means[[c]],
+        covs[[c]]
+      ),
+      numeric(1)
+    ) * weights[c]
+  }
+
+  # plot
   out <- ggplot2::ggplot(
-    data = cbind(data.grid, z),
+    data = cbind(data.grid, z = z),
     ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)
   ) +
     ggplot2::geom_contour() +
@@ -351,13 +355,17 @@ plot_mixture_contour <- function(means, covs, weights, names) {
 
   if (C > 1) {
     class_means <- data.frame(
-      x = sapply(means, "[[", 1), y = sapply(means, "[[", 2), z = 0,
+      x = sapply(means, `[`, 1),
+      y = sapply(means, `[`, 2),
+      z = 0,
       grp = factor(1:C)
     )
     out <- out +
       ggplot2::geom_text(
         data = class_means,
-        mapping = ggplot2::aes(x = x, y = y, label = grp, color = grp),
+        mapping = ggplot2::aes(
+          x = .data$x, y = .data$y, label = .data$grp, color = .data$grp
+        ),
         size = 5,
         show.legend = FALSE
       )
@@ -381,12 +389,6 @@ plot_mixture_contour <- function(means, covs, weights, names) {
 #' No return value. Draws a plot to the current device.
 #'
 #' @keywords internal
-#'
-#' @noRd
-#'
-#' @importFrom graphics legend axis
-#' @importFrom stats plot.ts
-#' @importFrom viridis magma
 
 plot_trace <- function(gibbs_samples, par_labels) {
   ### define colors
@@ -422,11 +424,6 @@ plot_trace <- function(gibbs_samples, par_labels) {
 #' No return value. Draws a plot to the current device.
 #'
 #' @keywords internal
-#'
-#' @noRd
-#'
-#' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot aes geom_point labs theme_minimal expand_limits
 
 plot_class_seq <- function(class_sequence, B) {
   data <- data.frame(i = 1:length(class_sequence), c = class_sequence)

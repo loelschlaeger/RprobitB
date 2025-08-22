@@ -8,8 +8,9 @@
 #'
 #' @param ...
 #' One or more objects of class \code{RprobitB_fit}.
-#' @param criteria
-#' A vector of one or more of the following characters:
+#'
+#' @param criteria \[`character()`\]\cr
+#' One or more of the following:
 #' \itemize{
 #'   \item \code{"npar"} for the number of model parameters (see \code{\link{npar}}),
 #'   \item \code{"LL"} for the log-likelihood value (see \code{\link{logLik}}),
@@ -22,16 +23,19 @@
 #'   \item \code{"BF"} for the Bayes factor,
 #'   \item \code{"pred_acc"} for the prediction accuracy (see \code{\link{pred_acc}}).
 #' }
-#' @param add_form
-#' Set to \code{TRUE} to add the model formulas.
+#'
+#' @param add_form \[`logical(1)`\]\cr
+#' Add the model formulas?
 #'
 #' @return
-#' A data frame, criteria in columns, models in rows.
+#' A `data.frame`, criteria in columns, models in rows.
 #'
 #' @export
 
-model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
-                            add_form = FALSE) {
+model_selection <- function(
+    ..., criteria = c("npar", "LL", "AIC", "BIC"), add_form = FALSE
+  ) {
+
   ### check inputs
   models <- as.list(list(...))
   model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
@@ -106,7 +110,11 @@ model_selection <- function(..., criteria = c("npar", "LL", "AIC", "BIC"),
   return(output)
 }
 
-#' @noRd
+#' @rdname model_selection
+#' @param x
+#' An object of class `RprobitB_model_selection`.
+#' @param digits \[`integer(1)`\]\cr
+#' The number of digits.
 #' @export
 
 print.RprobitB_model_selection <- function(x, digits = 2, ...) {
