@@ -2,7 +2,9 @@
 % Please edit documentation in R/RprobitB_fit.R
 \name{RprobitB_fit}
 \alias{RprobitB_fit}
+\alias{print.RprobitB_fit}
 \alias{summary.RprobitB_fit}
+\alias{print.summary.RprobitB_fit}
 \title{Create object of class \code{RprobitB_fit}}
 \usage{
 RprobitB_fit(
@@ -20,7 +22,11 @@ RprobitB_fit(
   comp_time
 )
 
+\method{print}{RprobitB_fit}(x, ...)
+
 \method{summary}{RprobitB_fit}(object, FUN = c(mean = mean, sd = stats::sd, `R^` = R_hat), ...)
+
+\method{print}{summary.RprobitB_fit}(x, digits = 2, ...)
 }
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
@@ -68,8 +74,6 @@ specified.}
 \item{class_sequence}{The sequence of class numbers during Gibbs sampling of length \code{R}.}
 
 \item{comp_time}{The time spent for Gibbs sampling.}
-
-\item{...}{Currently not used.}
 }
 \value{
 An object of class \code{RprobitB_fit}.

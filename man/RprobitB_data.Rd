@@ -2,6 +2,9 @@
 % Please edit documentation in R/RprobitB_data.R, R/plotting.R
 \name{RprobitB_data}
 \alias{RprobitB_data}
+\alias{print.RprobitB_data}
+\alias{summary.RprobitB_data}
+\alias{print.summary.RprobitB_data}
 \alias{plot.RprobitB_data}
 \title{Create object of class \code{RprobitB_data}}
 \usage{
@@ -27,6 +30,12 @@ RprobitB_data(
   true_parameter,
   res_var_names
 )
+
+\method{print}{RprobitB_data}(x, ...)
+
+\method{summary}{RprobitB_data}(object, ...)
+
+\method{print}{summary.RprobitB_data}(x, ...)
 
 \method{plot}{RprobitB_data}(x, by_choice = FALSE, alpha = 1, position = "dodge", ...)
 }
@@ -116,11 +125,11 @@ If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{x}{An object of class \code{RprobitB_data}.}
 
+\item{...}{Currently not used.}
+
 \item{by_choice}{Set to \code{TRUE} to group the covariates by the chosen alternatives.}
 
 \item{alpha, position}{Passed to \code{\link[ggplot2]{ggplot}}.}
-
-\item{...}{Currently not used.}
 }
 \value{
 An object of class \code{RprobitB_data} with the arguments of this function

@@ -2,9 +2,15 @@
 % Please edit documentation in R/WAIC.R
 \name{WAIC}
 \alias{WAIC}
+\alias{print.RprobitB_waic}
+\alias{plot.RprobitB_waic}
 \title{Compute WAIC value}
 \usage{
 WAIC(x)
+
+\method{print}{RprobitB_waic}(x, digits = 2, ...)
+
+\method{plot}{RprobitB_waic}(x, ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}

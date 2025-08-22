@@ -20,16 +20,25 @@
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @param S
 #' The number of prior samples for the prior arithmetic mean estimate. Per
 #' default, \code{S = 0}. In this case, only the posterior samples are used
 #' for the approximation via the posterior harmonic mean estimator, see the
 #' details section.
+#'
 #' @param ncores
 #' Computation of the prior arithmetic mean estimate is parallelized, set the
 #' number of cores.
+#'
 #' @param recompute
 #' Set to \code{TRUE} to recompute the likelihood.
+#'
+#' @param log
+#' Return the logarithm of the marginal model likelihood?
+#'
+#' @param ...
+#' Currently not used.
 #'
 #' @return
 #' The object \code{x}, including the object \code{mml}, which is the model's
@@ -150,9 +159,7 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
   return(x)
 }
 
-#' @noRd
-#' @param log
-#' Set to \code{TRUE} to print the logarithm of the marginal model likelihood.
+#' @rdname mml
 #' @export
 
 print.RprobitB_mml <- function(x, log = FALSE, ...) {
@@ -163,7 +170,7 @@ print.RprobitB_mml <- function(x, log = FALSE, ...) {
   }
 }
 
-#' @noRd
+#' @rdname mml
 #' @export
 
 plot.RprobitB_mml <- function(x, log = FALSE, ...) {

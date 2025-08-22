@@ -20,7 +20,8 @@
 
 RprobitB_fit <- function(
     data, scale, level, normalization, R, B, Q, latent_classes, prior,
-    gibbs_samples, class_sequence, comp_time) {
+    gibbs_samples, class_sequence, comp_time
+  ) {
   ### check inputs
   stopifnot(inherits(data, "RprobitB_data"))
   stopifnot(is.character("scale"))
@@ -53,7 +54,7 @@ RprobitB_fit <- function(
   return(out)
 }
 
-#' @noRd
+#' @rdname RprobitB_fit
 #' @export
 
 print.RprobitB_fit <- function(x, ...) {
@@ -62,14 +63,11 @@ print.RprobitB_fit <- function(x, ...) {
 }
 
 #' @rdname RprobitB_fit
-#' @param ...
-#' Currently not used.
 #' @exportS3Method
 
-summary.RprobitB_fit <- function(object, FUN = c(
-  "mean" = mean, "sd" = stats::sd,
-  "R^" = R_hat
-), ...) {
+summary.RprobitB_fit <- function(
+  object, FUN = c("mean" = mean, "sd" = stats::sd, "R^" = R_hat), ...
+) {
   ### check class of 'object'
   if (!inherits(object, "RprobitB_fit")) {
     stop("Not of class 'RprobitB_fit'.",
@@ -120,7 +118,7 @@ summary.RprobitB_fit <- function(object, FUN = c(
   return(out)
 }
 
-#' @noRd
+#' @rdname RprobitB_fit
 #' @exportS3Method
 
 print.summary.RprobitB_fit <- function(x, digits = 2, ...) {

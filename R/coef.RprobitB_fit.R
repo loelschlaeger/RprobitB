@@ -8,6 +8,17 @@
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
+#'
+#' @param x
+#' An object of class \code{RprobitB_coef}.
+#'
+#' @param sd
+#' The number of standard deviations to display.
+#'
+#' @param het
+#' Set to \code{FALSE} to show the standard deviation of the estimate.
+#' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
+#'
 #' @param ...
 #' Ignored.
 #'
@@ -63,7 +74,7 @@ coef.RprobitB_fit <- function(object, ...) {
   return(coef)
 }
 
-#' @noRd
+#' @rdname coef.RprobitB_fit
 #' @export
 
 print.RprobitB_coef <- function(x, ...) {
@@ -91,14 +102,7 @@ print.RprobitB_coef <- function(x, ...) {
   print(out)
 }
 
-#' @noRd
-#'
-#' @param sd
-#' The number of standard deviations to display.
-#' @param het
-#' Set to \code{FALSE} to show the standard deviation of the estimate.
-#' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
-#'
+#' @rdname coef.RprobitB_fit
 #' @exportS3Method
 
 plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {

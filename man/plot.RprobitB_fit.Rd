@@ -15,8 +15,7 @@
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
 \item \code{"trace"} for trace plots of the Gibbs samples,
 \item \code{"class_seq"} to visualize the sequence of class numbers.
-}
-See the details section for visualization options.}
+}}
 
 \item{ignore}{A character (vector) of covariate or parameter names that do not get
 visualized.}

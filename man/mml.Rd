@@ -2,9 +2,15 @@
 % Please edit documentation in R/mml.R
 \name{mml}
 \alias{mml}
+\alias{print.RprobitB_mml}
+\alias{plot.RprobitB_mml}
 \title{Approximate marginal model likelihood}
 \usage{
 mml(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE)
+
+\method{print}{RprobitB_mml}(x, log = FALSE, ...)
+
+\method{plot}{RprobitB_mml}(x, log = FALSE, ...)
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
@@ -18,6 +24,10 @@ details section.}
 number of cores.}
 
 \item{recompute}{Set to \code{TRUE} to recompute the likelihood.}
+
+\item{log}{Return the logarithm of the marginal model likelihood?}
+
+\item{...}{Currently not used.}
 }
 \value{
 The object \code{x}, including the object \code{mml}, which is the model's

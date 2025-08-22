@@ -74,8 +74,6 @@
 #' @importFrom viridis magma
 ## usethis namespace: end
 
-#' @noRd
-
 RprobitB_pp <- function(
     title, i = NULL, total = NULL, tail = NULL,
     print_progress = isTRUE(getOption("RprobitB_progress"))
@@ -91,9 +89,6 @@ RprobitB_pp <- function(
   }
 }
 
-#' @noRd
-#' @importFrom progress progress_bar
-
 RprobitB_pb <- function(title, total, tail = NULL) {
   progress::progress_bar$new(
     format = paste(title, "-", ":current of :total", tail),
@@ -102,23 +97,15 @@ RprobitB_pb <- function(title, total, tail = NULL) {
   )
 }
 
-#' @noRd
-
 RprobitB_pb_tick <- function(
     pb, print_progress = isTRUE(getOption("RprobitB_progress"))
   ) {
   if (isTRUE(print_progress)) pb$tick()
 }
 
-#' @noRd
-
 .onLoad <- function(lib, pkg) {
   options("RprobitB_progress" = TRUE)
 }
-
-#' @noRd
-#' @importFrom cli style_hyperlink
-#' @importFrom utils packageVersion
 
 .onAttach <- function(lib, pkg) {
   doc_link <- "https://loelschlaeger.de/RprobitB"

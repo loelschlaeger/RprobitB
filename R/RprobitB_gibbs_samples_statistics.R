@@ -21,6 +21,10 @@
 #'   \item \code{R_hat} for the Gelman-Rubin statistic.
 #' }
 #'
+#' @param true
+#' Either \code{NULL} or an object of class \code{RprobitB_parameter}.
+#' @inheritParams print.summary.RprobitB_fit
+#'
 #' @return
 #' An object of class \code{RprobitB_gibbs_samples_statistics}, which is a list
 #' of statistics from \code{gibbs_samples} obtained by applying the elements of
@@ -90,16 +94,7 @@ RprobitB_gibbs_samples_statistics <- function(
   return(statistics)
 }
 
-#' @param x
-#' An object of class \code{RprobitB_gibbs_samples_statistics}.
-#' @param true
-#' Either \code{NULL} or an object of class \code{RprobitB_parameter}.
-#' @inheritParams print.summary.RprobitB_fit
-#' @param ...
-#' Ignored.
-#'
-#' @noRd
-#'
+#' @rdname RprobitB_gibbs_samples_statistics
 #' @export
 
 print.RprobitB_gibbs_samples_statistics <- function(

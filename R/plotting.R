@@ -89,6 +89,7 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #'
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
+#'
 #' @param type
 #' The type of plot, which can be one of:
 #' \itemize{
@@ -97,10 +98,11 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #'   \item \code{"trace"} for trace plots of the Gibbs samples,
 #'   \item \code{"class_seq"} to visualize the sequence of class numbers.
 #' }
-#' See the details section for visualization options.
+#'
 #' @param ignore
 #' A character (vector) of covariate or parameter names that do not get
 #' visualized.
+#'
 #' @param ...
 #' Ignored.
 #'
@@ -313,9 +315,9 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #' @export
 #'
 #' @examples
-#' means <- list(c(0, 0), c(1, 1))
+#' means <- list(c(0, 0), c(2, 2))
 #' covs <- list(diag(2), 0.5 * diag(2))
-#' weights <- c(0.3, 0.7)
+#' weights <- c(0.7, 0.3)
 #' names <- c("A", "B")
 #' plot_mixture_contour(means, covs, weights, names)
 
@@ -327,8 +329,8 @@ plot_mixture_contour <- function(means, covs, weights, names) {
   y_max <- max(mapply(function(x, y) x[2] + 5 * sqrt(y[2, 2]), means, covs))
 
   data.grid <- expand.grid(
-    x = seq(x_min, x_max, length.out = 200),
-    y = seq(y_min, y_max, length.out = 200)
+    x = seq(x_min, x_max, length.out = 100),
+    y = seq(y_min, y_max, length.out = 100)
   )
 
   # compute mixture density
@@ -351,7 +353,8 @@ plot_mixture_contour <- function(means, covs, weights, names) {
     ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)
   ) +
     ggplot2::geom_contour() +
-    ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])]))
+    ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])])) +
+    ggplot2::theme_minimal()
 
   if (C > 1) {
     class_means <- data.frame(

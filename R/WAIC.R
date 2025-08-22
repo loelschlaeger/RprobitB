@@ -77,7 +77,7 @@ WAIC <- function(x) {
   return(out)
 }
 
-#' @noRd
+#' @rdname WAIC
 #' @export
 
 print.RprobitB_waic <- function(x, digits = 2, ...) {
@@ -87,7 +87,7 @@ print.RprobitB_waic <- function(x, digits = 2, ...) {
   ))
 }
 
-#' @noRd
+#' @rdname WAIC
 #' @exportS3Method
 
 plot.RprobitB_waic <- function(x, ...) {

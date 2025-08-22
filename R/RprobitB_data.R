@@ -121,7 +121,7 @@ RprobitB_data <- function(
   return(out)
 }
 
-#' @noRd
+#' @rdname RprobitB_data
 #' @export
 
 print.RprobitB_data <- function(x, ...) {
@@ -135,7 +135,7 @@ print.RprobitB_data <- function(x, ...) {
   return(invisible(x))
 }
 
-#' @noRd
+#' @rdname RprobitB_data
 #' @export
 
 summary.RprobitB_data <- function(object, ...) {
@@ -179,7 +179,7 @@ summary.RprobitB_data <- function(object, ...) {
 }
 
 
-#' @noRd
+#' @rdname RprobitB_data
 #' @exportS3Method
 
 print.summary.RprobitB_data <- function(x, ...) {
