@@ -1,14 +1,9 @@
 #ifndef GIBBS_SAMPLER_H
 #define GIBBS_SAMPLER_H
 
-#include <algorithm>
-#include <cmath>
-#include <limits>
 #include <oeli.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-#include <unordered_map>
-#include <vector>
 
 int sample_allocation(
     arma::vec const& prob
