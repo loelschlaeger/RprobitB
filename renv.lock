@@ -177,7 +177,7 @@
     },
     "RcppArmadillo": {
       "Package": "RcppArmadillo",
-      "Version": "14.6.0-1",
+      "Version": "14.6.3-1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -187,7 +187,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "1361fd84118452c8e80fe7b5201a8c03"
+      "Hash": "46b265783c8e3feb9c0c817a66bfe529"
     },
     "Rdpack": {
       "Package": "Rdpack",
@@ -240,7 +240,7 @@
     },
     "XML": {
       "Package": "XML",
-      "Version": "3.99-0.18",
+      "Version": "3.99-0.19",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -248,7 +248,7 @@
         "methods",
         "utils"
       ],
-      "Hash": "4a5eca1070ecfe97e68727ed4b9a89fa"
+      "Hash": "2fb51b02bae18183093d668e490b59b8"
     },
     "askpass": {
       "Package": "askpass",
@@ -521,13 +521,13 @@
     },
     "curl": {
       "Package": "curl",
-      "Version": "6.4.0",
+      "Version": "7.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "a331a41f5a999c2b59fdff9f48ac579f"
+      "Hash": "aa27e963d3deccf4bade44d06b976977"
     },
     "data.table": {
       "Package": "data.table",
@@ -1262,14 +1262,14 @@
     },
     "later": {
       "Package": "later",
-      "Version": "1.4.2",
+      "Version": "1.4.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "Rcpp",
         "rlang"
       ],
-      "Hash": "9591aabef9cf988f05bde9324fd3ad99"
+      "Hash": "93fca3dead831f27c148c34faebbcd53"
     },
     "lattice": {
       "Package": "lattice",
@@ -2562,7 +2562,7 @@
     },
     "yulab.utils": {
       "Package": "yulab.utils",
-      "Version": "0.2.0",
+      "Version": "0.2.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2570,11 +2570,12 @@
         "cli",
         "digest",
         "fs",
+        "rappdirs",
         "rlang",
         "tools",
         "utils"
       ],
-      "Hash": "6298953be4b60e23b75cf48c9bf9b0a2"
+      "Hash": "43b1f7e7347a7040384d14f31b866868"
     },
     "zip": {
       "Package": "zip",
