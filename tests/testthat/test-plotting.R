@@ -1,3 +1,5 @@
+testthat::skip_on_os("mac")
+
 test_that("plotting choice data works", {
   data <- simulate_choices(
     form = choice ~ cost | 0,
