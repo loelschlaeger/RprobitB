@@ -38,13 +38,14 @@ effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Si
 
 \item{normalization}{An object of class \code{RprobitB_normalization}.}
 
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{R}{[\code{integer(1)}]\cr
+The number of iterations of the Gibbs sampler.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{Q}{[\code{integer(1)}]\cr
+The thinning factor for the Gibbs samples.}
 
 \item{latent_classes}{[\code{list()} | \code{NULL}]\cr
 Optionally parameters specifying the number of latent classes and their
@@ -65,7 +66,8 @@ The following specifications are used for the weight-based updating scheme:
 \item \code{deltashift} (\code{0.5}): The scale for shifting the class means after a split.
 }}
 
-\item{prior}{A named list of parameters for the prior distributions. See the documentation
+\item{prior}{[\code{list}]\cr
+A named list of parameters for the prior distributions. See the documentation
 of \code{\link{check_prior}} for details about which parameters can be
 specified.}
 

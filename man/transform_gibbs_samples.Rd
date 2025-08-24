@@ -14,13 +14,14 @@ transform_gibbs_samples(gibbs_samples, R, B, Q, normalization)
 \item \code{s}, \code{z}, \code{b}, \code{Omega} (if \code{P_r>0}).
 }}
 
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{R}{[\code{integer(1)}]\cr
+The number of iterations of the Gibbs sampler.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{Q}{[\code{integer(1)}]\cr
+The thinning factor for the Gibbs samples.}
 
 \item{normalization}{An object of class \code{RprobitB_normalization}, which can be created
 via \code{\link{RprobitB_normalization}}.}

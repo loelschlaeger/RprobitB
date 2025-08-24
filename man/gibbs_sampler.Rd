@@ -13,14 +13,16 @@ gibbs_sampler(
   B,
   print_progress,
   ordered,
-  ranked
+  ranked,
+  save_beta_draws = FALSE
 )
 }
 \arguments{
 \item{sufficient_statistics}{[\code{list}]\cr
 The output of \code{\link{sufficient_statistics}}.}
 
-\item{prior}{A named list of parameters for the prior distributions. See the documentation
+\item{prior}{[\code{list}]\cr
+A named list of parameters for the prior distributions. See the documentation
 of \code{\link{check_prior}} for details about which parameters can be
 specified.}
 
@@ -49,18 +51,23 @@ The following specifications are used for the weight-based updating scheme:
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{R}{[\code{integer(1)}]\cr
+The number of iterations of the Gibbs sampler.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
-estimated remaining computation time.}
+\item{print_progress}{[\code{logical(1)}]\cr
+Print the Gibbs sampler progress?}
 
 \item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
 \code{alternatives} is assumed to be ordered from worst to best.}
 
 \item{ranked}{TBA}
+
+\item{save_beta_draws}{[\code{logical(1)}]\cr
+Save draws for decider-specific coefficient vectors? Usually not recommended,
+as it requires a lot of storage space.}
 }
 \value{
 A list of Gibbs samples for

@@ -62,7 +62,6 @@
       Latent classes
       Dirichlet process update: TRUE 
       Weight-based update: TRUE 
-      Initial classes: 1 
       Maximum classes: 10 
       Updating buffer: 50 
       Minimum class weight: 0.01 

@@ -83,18 +83,20 @@ covariate entries (the default),
 effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{R}{[\code{integer(1)}]\cr
+The number of iterations of the Gibbs sampler.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{Q}{[\code{integer(1)}]\cr
+The thinning factor for the Gibbs samples.}
 
-\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
-estimated remaining computation time.}
+\item{print_progress}{[\code{logical(1)}]\cr
+Print the Gibbs sampler progress?}
 
-\item{prior}{A named list of parameters for the prior distributions. See the documentation
+\item{prior}{[\code{list}]\cr
+A named list of parameters for the prior distributions. See the documentation
 of \code{\link{check_prior}} for details about which parameters can be
 specified.}
 

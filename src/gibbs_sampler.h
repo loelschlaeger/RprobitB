@@ -87,7 +87,8 @@ Rcpp::List update_classes_dp(
 Rcpp::List gibbs_sampler (
     Rcpp::List sufficient_statistics, Rcpp::List prior,
     Rcpp::List latent_classes, Rcpp::List fixed_parameter,
-    int R, int B, bool print_progress, bool ordered, bool ranked
+    int R, int B, bool print_progress, bool ordered, bool ranked,
+    bool save_beta_draws = false
 );
 
 #endif

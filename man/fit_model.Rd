@@ -14,7 +14,8 @@ fit_model(
   prior = NULL,
   latent_classes = NULL,
   seed = NULL,
-  fixed_parameter = list()
+  fixed_parameter = list(),
+  save_beta_draws = FALSE
 )
 }
 \arguments{
@@ -25,18 +26,20 @@ fit_model(
 effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
 
-\item{R}{The number of iterations of the Gibbs sampler.}
+\item{R}{[\code{integer(1)}]\cr
+The number of iterations of the Gibbs sampler.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{Q}{[\code{integer(1)}]\cr
+The thinning factor for the Gibbs samples.}
 
-\item{print_progress}{A boolean, determining whether to print the Gibbs sampler progress and the
-estimated remaining computation time.}
+\item{print_progress}{[\code{logical(1)}]\cr
+Print the Gibbs sampler progress?}
 
-\item{prior}{A named list of parameters for the prior distributions. See the documentation
+\item{prior}{[\code{list}]\cr
+A named list of parameters for the prior distributions. See the documentation
 of \code{\link{check_prior}} for details about which parameters can be
 specified.}
 
@@ -66,14 +69,18 @@ The following specifications are used for the weight-based updating scheme:
 \code{beta}, \code{z}, or \code{d} for the simulation.
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
+
+\item{save_beta_draws}{[\code{logical(1)}]\cr
+Save draws for decider-specific coefficient vectors? Usually not recommended,
+as it requires a lot of storage space.}
 }
 \value{
 An object of class \code{RprobitB_fit}.
 }
 \description{
-This function performs Markov chain Monte Carlo simulation for fitting
-different types of probit models (binary, multivariate, mixed, latent class,
-ordered, ranked) to discrete choice data.
+This function performs Gibbs sampling for fitting different types of probit
+models (binary, multivariate, mixed, latent class, ordered, ranked) to
+discrete choice data.
 }
 \examples{
 data <- simulate_choices(

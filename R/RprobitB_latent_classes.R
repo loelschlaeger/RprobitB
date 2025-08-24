@@ -148,7 +148,6 @@ print.RprobitB_latent_classes <- function(x, ...) {
   } else {
     cat("Dirichlet process update:", x[["dp_update"]], "\n")
     cat("Weight-based update:", x[["wb_update"]], "\n")
-    cat("Initial classes:", x$C, "\n")
     cat("Maximum classes:", x$Cmax, "\n")
     if (x[["wb_update"]]) {
       cat("Updating buffer:", x$buffer, "\n")

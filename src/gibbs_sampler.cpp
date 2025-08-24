@@ -1020,7 +1020,8 @@ Rcpp::List update_classes_dp(
 Rcpp::List gibbs_sampler (
    Rcpp::List sufficient_statistics, Rcpp::List prior,
    Rcpp::List latent_classes, Rcpp::List fixed_parameter,
-   int R, int B, bool print_progress, bool ordered, bool ranked
+   int R, int B, bool print_progress, bool ordered, bool ranked,
+   bool save_beta_draws = false
 ) {
 
  // extract 'sufficient_statistics' parameters
@@ -1057,7 +1058,7 @@ Rcpp::List gibbs_sampler (
    }
    rdiff_inv_list.resize(L);
    for (int i = 0; i < L; ++i) {
-     // Use Moore–Penrose pseudo-inverse for robustness
+     // use Moore–Penrose pseudo-inverse for robustness
      rdiff_inv_list[i] = arma::pinv(rdiff_list[i]);
    }
  }
@@ -1167,6 +1168,7 @@ Rcpp::List gibbs_sampler (
  arma::mat z_draws = arma::zeros<arma::mat>(R, N);
  arma::mat b_draws = arma::zeros<arma::mat>(R, P_r * Cdrawsize);
  arma::mat Omega_draws = arma::zeros<arma::mat>(R, P_r * P_r * Cdrawsize);
+ Rcpp::List beta_draws(R);
  arma::mat alpha_draws = arma::zeros<arma::mat>(R, P_f);
  arma::mat Sigma_draws;
  if (ordered) {
@@ -1631,6 +1633,8 @@ Rcpp::List gibbs_sampler (
      arma::vec vectorise_Omega = arma::vectorise(Omega);
      Omega_draws(r, arma::span(0, vectorise_Omega.size() - 1)) =
        arma::trans(vectorise_Omega);
+     arma::vec vectorise_beta = arma::vectorise(beta);
+     if (save_beta_draws) beta_draws[r] = beta;
    }
    Sigma_draws(r, arma::span::all) = arma::trans(arma::vectorise(Sigma));
    if (ordered == true) {
@@ -1638,8 +1642,8 @@ Rcpp::List gibbs_sampler (
    }
  }
 
-  // return Gibbs samples
-  return Rcpp::List::create(
+ // return Gibbs samples
+ Rcpp::List out = Rcpp::List::create(
    Rcpp::Named("s") = s_draws,
    Rcpp::Named("z") = z_draws,
    Rcpp::Named("alpha") = alpha_draws,
@@ -1648,5 +1652,7 @@ Rcpp::List gibbs_sampler (
    Rcpp::Named("Sigma") = Sigma_draws,
    Rcpp::Named("d") = d_draws,
    Rcpp::Named("class_sequence") = class_sequence
-  );
+ );
+ if (save_beta_draws) out["beta"] = beta_draws;
+ return out;
 }

@@ -1,29 +1,26 @@
 #' Fit probit model to choice data
 #'
 #' @description
-#' This function performs Markov chain Monte Carlo simulation for fitting
-#' different types of probit models (binary, multivariate, mixed, latent class,
-#' ordered, ranked) to discrete choice data.
+#' This function performs Gibbs sampling for fitting different types of probit
+#' models (binary, multivariate, mixed, latent class, ordered, ranked) to
+#' discrete choice data.
 #'
 #' @param data
 #' An object of class \code{RprobitB_data}.
 #'
-#' @param R
+#' @param R \[`integer(1)`\]\cr
 #' The number of iterations of the Gibbs sampler.
 #'
-#' @param B
-#' The length of the burn-in period, i.e. a non-negative number of samples to
-#' be discarded.
+#' @param B \[`integer(1)`\]\cr
+#' The length of the burn-in period.
 #'
-#' @param Q
-#' The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-#' sample is kept.
+#' @param Q \[`integer(1)`\]\cr
+#' The thinning factor for the Gibbs samples.
 #'
-#' @param print_progress
-#' A boolean, determining whether to print the Gibbs sampler progress and the
-#' estimated remaining computation time.
+#' @param print_progress \[`logical(1)`\]\cr
+#' Print the Gibbs sampler progress?
 #'
-#' @param prior
+#' @param prior \[`list`\]\cr
 #' A named list of parameters for the prior distributions. See the documentation
 #' of \code{\link{check_prior}} for details about which parameters can be
 #' specified.
@@ -37,6 +34,10 @@
 #' \code{beta}, \code{z}, or \code{d} for the simulation.
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
 #' for definitions of these variables.
+#'
+#' @param save_beta_draws \[`logical(1)`\]\cr
+#' Save draws for decider-specific coefficient vectors? Usually not recommended,
+#' as it requires a lot of storage space.
 #'
 #' @inheritParams RprobitB_normalization
 #' @inheritParams RprobitB_latent_classes
@@ -64,7 +65,8 @@
 fit_model <- function(
     data, scale = "Sigma_1,1 := 1", R = 1000, B = R / 2, Q = 1,
     print_progress = getOption("RprobitB_progress", default = TRUE),
-    prior = NULL, latent_classes = NULL, seed = NULL, fixed_parameter = list()
+    prior = NULL, latent_classes = NULL, seed = NULL, fixed_parameter = list(),
+    save_beta_draws = FALSE
   ) {
 
   ### check inputs
@@ -153,7 +155,8 @@ fit_model <- function(
     ), prior = prior, latent_classes = unclass(latent_classes),
     fixed_parameter = fixed_parameter, R = R, B = B,
     print_progress = print_progress,
-    ordered = data[["ordered"]], ranked = data[["ranked"]]
+    ordered = data[["ordered"]], ranked = data[["ranked"]],
+    save_beta_draws = save_beta_draws
   )
   timer_end <- Sys.time()
 
@@ -162,7 +165,7 @@ fit_model <- function(
     gibbs_samples["alpha"] <- NULL
   }
   if (data$P_r == 0) {
-    gibbs_samples[c("s", "z", "b", "Omega", "class_sequence")] <- NULL
+    gibbs_samples[c("s", "z", "b", "Omega", "beta", "class_sequence")] <- NULL
   }
   if (!data$ordered) {
     gibbs_samples["d"] <- NULL

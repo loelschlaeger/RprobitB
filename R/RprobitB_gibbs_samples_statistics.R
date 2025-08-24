@@ -60,7 +60,8 @@ RprobitB_gibbs_samples_statistics <- function(
 
   ### build 'RprobitB_gibbs_sample_statistics'
   statistics <- list()
-  for (par in names(gibbs_samples[["gibbs_samples_nbt"]])) {
+  par_names <- setdiff(names(gibbs_samples[["gibbs_samples_nbt"]]), "beta")
+  for (par in par_names) {
     statistics[[par]] <- matrix(
       NA,
       nrow = ncol(gibbs_samples[["gibbs_samples_nbt"]][[par]]), ncol = 0,

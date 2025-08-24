@@ -16,11 +16,11 @@
 \arguments{
 \item{_data}{An object of class \code{\link{RprobitB_fit}}.}
 
-\item{B}{The length of the burn-in period, i.e. a non-negative number of samples to
-be discarded.}
+\item{B}{[\code{integer(1)}]\cr
+The length of the burn-in period.}
 
-\item{Q}{The thinning factor for the Gibbs samples, i.e. only every \code{Q}th
-sample is kept.}
+\item{Q}{[\code{integer(1)}]\cr
+The thinning factor for the Gibbs samples.}
 
 \item{scale}{A character which determines the utility scale. It is of the form
 \verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed

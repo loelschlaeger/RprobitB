@@ -277,7 +277,8 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
   xint <- grp <- NULL
   out <- ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
     ggplot2::geom_line() +
-    ggplot2::labs(x = bquote(beta[.(name)]), y = "")
+    ggplot2::labs(x = bquote(beta[.(name)]), y = "") +
+    ggplot2::theme_minimal()
 
   if (C > 1) {
     class_means <- data.frame(xint = unlist(mean), grp = factor(1:C))
@@ -287,7 +288,8 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
         mapping = ggplot2::aes(x = xint, y = 0, label = grp, color = grp),
         size = 5,
         show.legend = FALSE
-      )
+      ) +
+      ggplot2::scale_color_brewer(palette = "Set1")
   }
 
   return(out)
@@ -349,7 +351,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
     data = cbind(data.grid, z = z),
     ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)
   ) +
-    ggplot2::geom_contour() +
+    ggplot2::geom_contour(color = "black") +
     ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])])) +
     ggplot2::theme_minimal()
 
@@ -368,7 +370,8 @@ plot_mixture_contour <- function(means, covs, weights, names) {
         ),
         size = 5,
         show.legend = FALSE
-      )
+      ) +
+      ggplot2::scale_color_brewer(palette = "Set1")
   }
 
   return(out)
