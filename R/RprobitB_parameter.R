@@ -111,12 +111,12 @@ RprobitB_parameter <- function(
         if (is.null(s)) {
           if (is.null(z)) {
             s <- oeli::rdirichlet(n = 1, concentration = rep(1, C)) |>
-              sort(decreasing = TRUE) |>
-              round(digits = 2)
-            s[C] <- 1 - sum(s[-C])
+              sort(decreasing = TRUE)
           } else {
-            s <- table(factor(z, levels = 1:C)) / N
+            s <- as.numeric(table(factor(z, levels = 1:C)) / N)
           }
+          s <- round(s, digits = 2)
+          s[C] <- 1 - sum(s[-C])
         }
         oeli::input_check_response(
           check = oeli::check_probability_vector(s, len = C),
@@ -278,6 +278,9 @@ RprobitB_parameter <- function(
       b <- b[, idx]
       Omega <- Omega[, idx]
       z <- match(z, seq_len(C)[idx])
+      names(s) <- create_labels_s(P_r, C)
+      names(b) <- create_labels_b(P_r, C)
+      names(Omega) <- create_labels_Omega(P_r, C, cov_sym = TRUE)
     }
   }
 

@@ -268,7 +268,8 @@ simulate_choices <- function(
     what = RprobitB_parameter,
     args = c(
       list(
-        "P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "ordered" = ordered
+        "P_f" = P_f, "P_r" = P_r, "J" = J, "N" = N, "ordered" = ordered,
+        "sample" = TRUE
       ),
       true_parameter
     )
