@@ -270,20 +270,6 @@ RprobitB_parameter <- function(
     d <- NA
   }
 
-  ### sort b, Omega, and z with respect to s
-  if (!is.na(C) && C > 1) {
-    if (!is.null(s) && !all(diff(s) <= 0)) {
-      idx <- order(s, decreasing = TRUE)
-      s <- s[idx]
-      b <- b[, idx]
-      Omega <- Omega[, idx]
-      z <- match(z, seq_len(C)[idx])
-      names(s) <- create_labels_s(P_r, C)
-      names(b) <- create_labels_b(P_r, C)
-      names(Omega) <- create_labels_Omega(P_r, C, cov_sym = TRUE)
-    }
-  }
-
   ### build and return 'RprobitB_parameter'-object
   structure(
     list(
