@@ -6,10 +6,13 @@
 #'
 #' @param x
 #' Either an object of class \code{RprobitB_data} or \code{RprobitB_fit}.
+#'
 #' @param id
 #' A numeric (vector), that specifies the decider(s).
+#'
 #' @param idc
 #' A numeric (vector), that specifies the choice occasion(s).
+#'
 #' @param idc_label
 #' The name of the column that contains the choice occasion identifier.
 #'
@@ -30,9 +33,7 @@ get_cov <- function(x, id, idc, idc_label) {
     ind <- x$choice_data[[id_label]] %in% id & x$choice_data[[idc_label]] %in% idc
     out <- x$choice_data[ind, ]
     if (nrow(out) == 0) {
-      stop("Requested choice occasion not found.",
-           call. = FALSE
-      )
+      stop("Requested choice occasion not found.", call. = FALSE)
     }
     return(out)
   } else {

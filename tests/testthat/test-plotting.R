@@ -10,7 +10,7 @@ test_that("plotting choice data works", {
   pdf(NULL)
   out <- plot(data, by_choice = TRUE)
   dev.off()
-  expect_true(gtable::is.gtable(out))
+  expect_true(inherits(out, "gtable"))
 })
 
 test_that("plotting mixture contour works", {

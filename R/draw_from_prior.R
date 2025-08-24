@@ -6,6 +6,7 @@
 #' @param prior
 #' An object of class \code{RprobitB_prior}, which is the output of
 #' \code{\link{check_prior}}.
+#'
 #' @param C
 #' The number of latent classes.
 #'
@@ -44,7 +45,7 @@ draw_from_prior <- function(prior, C = 1) {
       matrix(ncol = C)
   }
 
-  ### Omega_c ~ IW(n_Omega_0,V_Omega_0) for all c
+  ### Omega_c ~ IW(n_Omega_0, V_Omega_0) for all c
   if (identical(prior$n_Omega_0, NA) || identical(prior$V_Omega_0, NA)) {
     Omega <- NULL
   } else {
@@ -52,11 +53,13 @@ draw_from_prior <- function(prior, C = 1) {
       matrix(ncol = C)
   }
 
-  ### Sigma ~ IW(n_Sigma_0,V_Sigma_0)
+  ### Sigma ~ IW(n_Sigma_0, V_Sigma_0)
   if (identical(prior$n_Sigma_0, NA) || identical(prior$V_Sigma_0, NA)) {
     Sigma <- NULL
   } else {
-    Sigma <- oeli::rwishart(df = prior$n_Sigma_0, scale = prior$V_Sigma_0, inv = TRUE)
+    Sigma <- oeli::rwishart(
+      df = prior$n_Sigma_0, scale = prior$V_Sigma_0, inv = TRUE
+    )
   }
 
   ### return draws
