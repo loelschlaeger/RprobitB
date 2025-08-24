@@ -109,10 +109,14 @@ RprobitB_parameter <- function(
         s <- NA
       } else {
         if (is.null(s)) {
-          s <- oeli::rdirichlet(n = 1, concentration = rep(1, C)) |>
-            sort(decreasing = TRUE) |>
-            round(digits = 2)
-          s[C] <- 1 - sum(s[-C])
+          if (is.null(z)) {
+            s <- oeli::rdirichlet(n = 1, concentration = rep(1, C)) |>
+              sort(decreasing = TRUE) |>
+              round(digits = 2)
+            s[C] <- 1 - sum(s[-C])
+          } else {
+            s <- table(factor(z, levels = 1:C)) / N
+          }
         }
         oeli::input_check_response(
           check = oeli::check_probability_vector(s, len = C),
