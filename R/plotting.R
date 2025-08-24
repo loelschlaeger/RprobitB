@@ -3,8 +3,8 @@
 #' @param x
 #' An object of class \code{RprobitB_data}.
 #'
-#' @param by_choice
-#' Set to \code{TRUE} to group the covariates by the chosen alternatives.
+#' @param by_choice \[`logical(1)`\]\cr
+#' Group the covariates by the chosen alternatives?
 #'
 #' @param alpha,position
 #' Passed to \code{\link[ggplot2]{ggplot}}.
@@ -25,8 +25,10 @@
 #' )
 #' plot(data, by_choice = TRUE)
 
-plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
-                               position = "dodge", ...) {
+plot.RprobitB_data <- function(
+    x, by_choice = FALSE, alpha = 1, position = "dodge", ...
+  ) {
+
   ### extract the data to be plotted
   data_red <- x$choice_data[names(x$choice_data) %in%
     unlist(x$res_var_names[c("choice", "cov")])]
@@ -81,7 +83,6 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
   suppressMessages(gridExtra::grid.arrange(grobs = plots))
 }
 
-
 #' Visualize fitted probit model
 #'
 #' @description
@@ -90,7 +91,7 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #' @param x
 #' An object of class \code{\link{RprobitB_fit}}.
 #'
-#' @param type
+#' @param type \[`character(1)`\]\cr
 #' The type of plot, which can be one of:
 #' \itemize{
 #'   \item \code{"mixture"} to visualize the mixing distribution,
@@ -99,12 +100,11 @@ plot.RprobitB_data <- function(x, by_choice = FALSE, alpha = 1,
 #'   \item \code{"class_seq"} to visualize the sequence of class numbers.
 #' }
 #'
-#' @param ignore
-#' A character (vector) of covariate or parameter names that do not get
-#' visualized.
+#' @param ignore \[`character()`\]\cr
+#' Covariate or parameter names that do not get visualized.
 #'
 #' @param ...
-#' Ignored.
+#' Currently not used.
 #'
 #' @return
 #' No return value. Draws a plot to the current device.
@@ -137,9 +137,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'mixture'
   if (type == "mixture") {
     if (x$data$P_r == 0) {
-      stop("Cannot plot a mixing distribution because the model has no random effects.",
-        call. = FALSE
-      )
+      stop("The model has no random effects.", call. = FALSE)
     }
     est <- point_estimates(x)
     est_b <- apply(est$b, 2, as.numeric, simplify = F)
@@ -199,9 +197,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'class_seq'
   if (type == "class_seq") {
     if (x$data$P_r == 0) {
-      stop("Cannot show the class sequence because the model has no random effect.",
-        call. = FALSE
-      )
+      stop("The model has no random effects.", call. = FALSE)
     }
     plot_class_seq(x[["class_sequence"]], B = x$B)
   }
@@ -223,6 +219,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
+#'
 #' @param par_labels
 #' A character vector with labels for the Gibbs samples, of length equal to the
 #' number of columns of \code{gibbs_samples}.
@@ -530,8 +527,10 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @param ...
 #' One or more \code{RprobitB_fit} objects or \code{data.frame}s of choice
 #' probability.
+#'
 #' @param reference
 #' The reference alternative.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
 #'

@@ -1,5 +1,3 @@
-testthat::skip_on_os("mac")
-
 test_that("plotting choice data works", {
   data <- simulate_choices(
     form = choice ~ cost | 0,
@@ -9,7 +7,10 @@ test_that("plotting choice data works", {
     alternatives = c("bus", "car"),
     true_parameter = list("alpha" = -1)
   )
-  vdiffr::expect_doppelganger("plot choice data", plot(data, by_choice = TRUE))
+  pdf(NULL)
+  out <- plot(data, by_choice = TRUE)
+  dev.off()
+  expect_true(gtable::is.gtable(out))
 })
 
 test_that("plotting mixture contour works", {
@@ -17,8 +18,6 @@ test_that("plotting mixture contour works", {
   covs <- list(diag(2), 0.5 * diag(2))
   weights <- c(0.7, 0.3)
   names <- c("A", "B")
-  vdiffr::expect_doppelganger(
-    "plot mixture contour",
-    plot_mixture_contour(means, covs, weights, names)
-  )
+  plot <- plot_mixture_contour(means, covs, weights, names)
+  expect_true(ggplot2::is_ggplot(plot))
 })

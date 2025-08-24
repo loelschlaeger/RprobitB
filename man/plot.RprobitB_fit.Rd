@@ -9,7 +9,8 @@
 \arguments{
 \item{x}{An object of class \code{\link{RprobitB_fit}}.}
 
-\item{type}{The type of plot, which can be one of:
+\item{type}{[\code{character(1)}]\cr
+The type of plot, which can be one of:
 \itemize{
 \item \code{"mixture"} to visualize the mixing distribution,
 \item \code{"acf"} for autocorrelation plots of the Gibbs samples,
@@ -17,10 +18,10 @@
 \item \code{"class_seq"} to visualize the sequence of class numbers.
 }}
 
-\item{ignore}{A character (vector) of covariate or parameter names that do not get
-visualized.}
+\item{ignore}{[\code{character()}]\cr
+Covariate or parameter names that do not get visualized.}
 
-\item{...}{Ignored.}
+\item{...}{Currently not used.}
 }
 \value{
 No return value. Draws a plot to the current device.

@@ -127,7 +127,8 @@ If \code{standardize = "all"}, all covariates get standardized.}
 
 \item{...}{Currently not used.}
 
-\item{by_choice}{Set to \code{TRUE} to group the covariates by the chosen alternatives.}
+\item{by_choice}{[\code{logical(1)}]\cr
+Group the covariates by the chosen alternatives?}
 
 \item{alpha, position}{Passed to \code{\link[ggplot2]{ggplot}}.}
 }
