@@ -32,13 +32,13 @@ A priori, we assume the following (conjugate) parameter distributions:
 
 - $(s_1,\dots,s_C)\sim D_C(\delta)$, where $D_C(\delta)$ denotes the $C$-dimensional Dirichlet distribution with concentration parameter vector $\delta = (\delta_1,\dots,\delta_C)$,
 
-- $\alpha\sim \text{MVN}_{P_f}(\psi,\Psi)$, where $\text{MVN}_{P_f}$ denotes the $P_f$-dimensional normal distribution with mean $\psi$ and covariance $\Psi$,
+- $\alpha\sim \text{MVN}_{P_f}(\mu_{\alpha_0},\Sigma_{\alpha_0})$, where $\text{MVN}_{P_f}$ denotes the $P_f$-dimensional normal distribution with mean $\mu_{\alpha_0}$ and covariance $\Sigma_{\alpha_0}$,
 
-- $b_c \sim \text{MVN}_{P_r}(\xi,\Xi)$, independent for all $c$,
+- $b_c \sim \text{MVN}_{P_r}(\mu_{b_0}, \Sigma_{b_0})$, independent for all $c$,
 
-- $\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)$, independent for all $c$, where $W^{-1}_{P_r}(\nu,\Theta)$ denotes the $P_r$-dimensional inverse Wishart distribution with $\nu$ degrees of freedom and scale matrix $\Theta$,
+- $\Omega_c \sim W^{-1}_{P_r}(n_{\Omega_0}, V_{\Omega_0})$, independent for all $c$, where $W^{-1}_{P_r}(n_{\Omega_0}, V_{\Omega_0})$ denotes the $P_r$-dimensional inverse Wishart distribution with $n_{\Omega_0}$ degrees of freedom and scale matrix $V_{\Omega_0}$,
 
-- and $\Sigma \sim W^{-1}_{J-1}(\kappa,\Lambda)$.
+- and $\Sigma \sim W^{-1}_{J-1}(n_{\Sigma_0}, V_{\Sigma_0})$.
 
 These prior distributions imply the following conditional posterior distributions:
 
@@ -55,15 +55,21 @@ where for $c=1,\dots,C$, $m_c=\#\{n:z_n=c\}$ denotes the current absolute class 
 
 - The class means $(b_c)_c$ are updated independently for all $c$ via
 \begin{equation}
-b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
+b_c\mid \Sigma_{b_0},\Omega,\mu_{b_0},z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
 \end{equation}
-where $\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)$, $\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}$, $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
+where 
+
+  - $\mu_{b_c}=(\Sigma_{b_0}^{-1}+m_c\Omega_c^{-1})^{-1}(\Sigma_{b_0}^{-1}\mu_{b_0} +m_c\Omega_c^{-1}\bar{b}_c)$, 
+  
+  - $\Sigma_{b_c}=(\Sigma_{b_0}^{-1}+m_c\Omega_c^{-1})^{-1}$,       
+  
+  - $\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n$.
 
 - The class covariance matrices $(\Omega_c)_c$ are updated independently for all $c$ via
 \begin{equation}
-\Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
+\Omega_c \mid n_{\Omega_0},V_{\Omega_0},z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
 \end{equation}
-where $\mu_{\Omega_c}=\nu+m_c$ and $\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
+where $\mu_{\Omega_c}=n_{\Omega_0} + m_c$ and $\Sigma_{\Omega_c}=V_{\Omega_0}^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'$.
 
 - Independently for all $n$ and $t$ and conditionally on the other components, the utility vectors $(U_{nt:})$ follow a $J-1$-dimensional truncated multivariate normal distribution, where the truncation points are determined by the choices $y_{nt}$. To sample from a truncated multivariate normal distribution, we apply a sub-Gibbs sampler, following the approach of @Geweke1998:
 \begin{equation}
@@ -81,21 +87,33 @@ where $(\Sigma^{-1})_{jj}$ denotes the $(j,j)$th element of $\Sigma^{-1}$, $(\Si
 
 - Updating the fixed coefficient vector $\alpha$ is achieved by applying the formula for Bayesian linear regression of the regressors $W_{nt}$ on the regressands $(U_{nt:})-X_{nt}'\beta_n$, i.e.
 \begin{equation}
-\alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
+\alpha \mid \Sigma_{\alpha_0},\mu_{\alpha_0},W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
 \end{equation}
-where $\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ and $\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
+where 
+
+  - $\mu_\alpha = \Sigma_\alpha (\Sigma_{\alpha_0}^{-1}\mu_{\alpha_0} + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )$ 
+  
+  - and $\Sigma_\alpha = (\Sigma_{\alpha_0}^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}$.
 
 - Analogously to $\alpha$, the random coefficients $(\beta_n)_n$ are updated independently via 
 \begin{equation}
 \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
 \end{equation}
-where $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )$ and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
+where 
+
+  - $\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )$ 
+  
+  - and $\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}$ .
 
 - The error term covariance matrix $\Sigma$ is updated by means of 
 \begin{equation}
-\Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
+\Sigma \mid n_{\Sigma_0}, V_{\Sigma_0}, U, W, \alpha, X, \beta \sim W^{-1}_{J-1}(n_{\Sigma_0} + NT, V_{\Sigma_0} + S), \\
 \end{equation}
-where $S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'$ and $\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n$.
+where 
+
+  - $S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'$ 
+  
+  - and $\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n$.
 
 ### Parameter normalization
 
@@ -141,23 +159,23 @@ where `data` must be an `RprobitB_data` object (see the vignette about choice da
 
 - `prior`: A named list of parameters for the prior distributions (their default values are documented in the `check_prior()` function):
 
-  - `eta`: The mean vector of length `P_f` of the normal prior for `alpha`.
+  - `mu_alpha_0`: The mean vector of length `P_f` of the normal prior for `alpha`.
   
-  - `Psi`: The covariance matrix of dimension `P_f` x `P_f` of the normal prior for `alpha`.
+  - `Sigma_alpha_0`: The covariance matrix of dimension `P_f` x `P_f` of the normal prior for `alpha`.
    
   - `delta`: The concentration parameter of length 1 of the Dirichlet prior for `s`.
   
-  - `xi`: The mean vector of length `P_r` of the normal prior for each `b_c`.
+  - `mu_b_0`: The mean vector of length `P_r` of the normal prior for each `b_c`.
   
-  - `D`: The covariance matrix of dimension `P_r` x `P_r` of the normal prior for each `b_c`.
+  - `Sigma_b_0`: The covariance matrix of dimension `P_r` x `P_r` of the normal prior for each `b_c`.
   
-  - `nu`: The degrees of freedom (a natural number greater than `P_r`) of the Inverse Wishart prior for each `Omega_c`.
+  - `n_Omega_0`: The degrees of freedom (a natural number greater than `P_r`) of the Inverse Wishart prior for each `Omega_c`.
   
-  - `Theta`: The scale matrix of dimension `P_r` x `P_r` of the Inverse Wishart prior for each `Omega_c`.
+  - `V_Omega_0`: The scale matrix of dimension `P_r` x `P_r` of the Inverse Wishart prior for each `Omega_c`.
    
-  - `kappa`: The degrees of freedom (a natural number greater than `J-1`) of the Inverse Wishart prior for `Sigma`.
+  - `n_Sigma_0`: The degrees of freedom (a natural number greater than `J - 1`) of the Inverse Wishart prior for `Sigma`.
   
-  - `E`: The scale matrix of dimension `J-1` x `J-1` of the Inverse Wishart prior for `Sigma`.
+  - `V_Sigma_0`: The scale matrix of dimension `J-1` x `J-1` of the Inverse Wishart prior for `Sigma`.
 
 - `latent_classes`: A list of parameters specifying the number and the updating scheme of latent classes, see the vignette [on modeling heterogeneity fitting](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html).
 
@@ -165,11 +183,8 @@ where `data` must be an `RprobitB_data` object (see the vignette about choice da
 
 In [the previous vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html), we introduced the `train_choice` data set that contains 2922 choices between two fictional train route alternatives. The following lines fit a probit model that explains the chosen trip alternatives (`choice`) by their `price`, `time`, number of `change`s, and level of `comfort` (the lower this value the higher the comfort). For normalization, the first linear coefficient, the `price`, was fixed to `-1`, which allows to interpret the other coefficients as monetary values:
 
-```{r, echo = FALSE}
-set.seed(1)
-```
-
 ```{r, message = FALSE}
+set.seed(1)
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = train_choice, id = "deciderID", idc = "occasionID")
 model_train <- fit_model(
@@ -182,12 +197,6 @@ The estimated coefficients (using the mean of the Gibbs samples as a point estim
 
 ```{r, coef-model-train}
 coef(model_train)
-```
-
-and visualized via
-
-```{r, plot-coef-model-train}
-plot(coef(model_train), sd = 3)
 ```
 
 The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 14€.^[These results are consistent with the ones that are presented [in a vignette of the mlogit package](https://cran.r-project.org/package=mlogit/vignettes/c5.mxl.html#train) on the same data set but using the logit model.]
@@ -210,6 +219,8 @@ Calling the summary function on the estimated `RprobitB_fit` object yields addit
 
 - `mean` for the arithmetic mean,
 
+- `mode_approx` for the (approximated) conditional posterior mode,
+
 - `stats::sd` for the standard deviation,
 
 - `R_hat` for the Gelman-Rubin statistic [@Gelman1992] ^[A Gelman-Rubin statistic close to 1 indicates that the chain of Gibbs samples converged to the stationary distribution.],
@@ -220,6 +231,7 @@ Calling the summary function on the estimated `RprobitB_fit` object yields addit
 summary(model_train,
   FUN = c(
     "mean" = mean,
+    "mode" = mode_approx,
     "sd" = stats::sd,
     "R^" = R_hat,
     "custom_stat" = function(x) abs(mean(x) - median(x))

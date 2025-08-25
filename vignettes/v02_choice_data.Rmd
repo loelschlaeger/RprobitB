@@ -179,8 +179,6 @@ The function `simulate_choices()` has the following optional arguments:
 
 - `standardize`: A character vector of variable names of `form` that get standardized.
 
-- `seed`: Set a seed for the simulation.
-
 We can specify the true parameters^[See the vignette on the model definition for more details, especially for the meaning of the parameters.] by adding a named list with values for
 
 - `alpha`, the fixed coefficient vector,

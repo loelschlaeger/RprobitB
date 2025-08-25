@@ -26,7 +26,7 @@ options("RprobitB_progress" = FALSE)
 
 The probit model is a regression-type model where the dependent variable takes a finite number of values and the error term is normally distributed [@Agresti2015]. Its purpose is to estimate the probability that the dependent variable takes a certain, discrete value. The most common application are discrete choice scenarios. The dependent variable here is one of finitely many and mutually exclusive alternatives, and explanatory variables typically are characteristics of the deciders or the alternatives.
 
-To be concrete, assume that we possess data of $N$ decision makers which choose between $J \geq 2$ alternatives^[To be precise, the model name gets the prefix *multinomial* in the case $J > 2$.] at each of $T$ choice occasions^[For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, we are not restricted to this case: `{RprobitB}` allows for unbalanced panels, i.e. varying $T$. Of course, the cross-sectional case $T = 1$ is possible.]. Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ choice attributes that we use to explain the choices. The continuous choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility of a certain alternative. Decider $n$'s utility $U_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
+To be concrete, assume that we possess data of $N$ decision makers which choose between $J \geq 2$ alternatives at each of $T$ choice occasions^[For notational simplicity, the number of choice occasions $T$ is assumed to be the same for each decision maker here. However, `{RprobitB}` allows for unbalanced panels and the cross-sectional case $T = 1$.]. Specific to each decision maker, alternative and choice occasion, we furthermore observe $P$ choice attributes that we use to explain the choices. The continuous choice attributes cannot be linked directly to the discrete choices but must take a detour over a latent variable. In the discrete choice setting, this variable can be interpreted as the decider's utility of a certain alternative. Decider $n$'s utility $U_{ntj}$ for alternative $j$ at choice occasion $t$ is modeled as
 
 \begin{equation}
   U_{ntj} = X_{ntj}'\beta + \epsilon_{ntj}
@@ -40,7 +40,7 @@ for $n=1,\dots,N$, $t=1,\dots,T$ and $j=1,\dots,J$, where
 
 - and $(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})' \sim \text{MVN}_{J} (0,\Sigma)$ is the model's error term vector for $n$ at $t$, which in the probit model is assumed to be multivariate normally distributed with zero mean and covariance matrix $\Sigma$.
 
-Now let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers^[This in fact is a critical assumption because many studies show that humans do not decide in this rational sense in general, see for example @Hewig2011], the decisions are linked to the utilities via
+Now let $y_{nt}=j$ denote the event that decision maker $n$ chooses alternative $j$ at choice occasion $t$. Assuming utility maximizing behavior of the decision makers^[This in fact is a critical assumption because many studies show that humans do not decide in this rational sense in general, see for example @Hewig2011.], the decisions are linked to the utilities via
 
 \begin{equation}
 y_{nt} = {\arg \max}_{j = 1,\dots,J} U_{ntj}.
@@ -58,7 +58,7 @@ with end points $\gamma_0 = -\infty$ and $\gamma_J = +\infty$, and thresholds $(
 
 ## Choice behavior heterogeneity
 
-Note that the coefficient vector $\beta$ is constant across decision makers. This assumption is too restrictive for many applications.^[For example, consider the case of modeling the choice of a means of transportation to work: It is easily imaginable that business people and pensioners do not share the same sensitivities towards cost and time.] Heterogeneity in choice behavior can be modeled by imposing a distribution on $\beta$ such that each decider can have their own preferences.
+Note that the coefficient vector $\beta$ is constant across decision makers. This assumption is too restrictive for many applications.^[For example, consider the case of modelling the choice of a means of transportation to work. It is imaginable that business people and pensioners do not share the same sensitivities towards cost and time.] Heterogeneity in choice behaviour can be modelled by imposing a distribution on $\beta$ such that each decider can have their own preferences.
 
 Formally, we define $\beta = (\alpha, \beta_n)$, where $\alpha$ are $P_f$ coefficients that are constant across deciders and $\beta_n$ are $P_r$ decider-specific coefficients. Consequently, $P = P_f + P_r$. Now if $P_r>0$, $\beta_n$ is distributed according to some $P_r$-variate distribution, the so-called mixing distribution.
 
@@ -99,12 +99,13 @@ RprobitB_parameter(
   C = 2, # the number of latent classes
   alpha = c(1), # the fixed coefficient vector of length 'P_f'
   s = c(0.6, 0.4), # the vector of class weights of length 'C'
-  b = matrix(c(-1, 1, 1, 2), nrow = 2, ncol = 2),
   # the matrix of class means as columns of dimension 'P_r' x 'C'
-  Omega = matrix(c(diag(2), 0.1 * diag(2)), nrow = 4, ncol = 2),
+  b = matrix(c(-1, 1, 1, 2), nrow = 2, ncol = 2),
   # the matrix of class covariance matrices as columns of dimension 'P_r^2' x 'C'
-  Sigma = diag(2), # the differenced error term covariance matrix of dimension '(J-1)' x '(J-1)'
-  # the undifferenced error term covariance matrix is labeled 'Sigma_full'
+  Omega = matrix(c(diag(2), 0.1 * diag(2)), nrow = 4, ncol = 2),
+  # the differenced error term covariance matrix of dimension '(J-1)' x '(J-1)'
+  # the undifferenced error term covariance matrix is labelled 'Sigma_full'
+  Sigma = diag(2),
   z = rep(1:2, 5) # the vector of the allocation variables of length 'N'
 )
 ```
