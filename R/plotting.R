@@ -83,7 +83,6 @@ plot.RprobitB_data <- function(
   suppressMessages(gridExtra::grid.arrange(grobs = plots))
 }
 
-
 #' Visualize fitted probit model
 #'
 #' @description
@@ -224,6 +223,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
+#'
 #' @param par_labels
 #' A character vector with labels for the Gibbs samples, of length equal to the
 #' number of columns of \code{gibbs_samples}.
@@ -255,12 +255,16 @@ plot_acf <- function(gibbs_samples, par_labels) {
 #'
 #' @param mean
 #' The class means.
+#'
 #' @param cov
 #' The class covariances.
+#'
 #' @param weights
 #' The class weights.
+#'
 #' @param name
 #' The covariate name.
+#'
 #' @return
 #' An object of class \code{ggplot}.
 #'
@@ -304,12 +308,16 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
 #'
 #' @param means
 #' The class means.
+#'
 #' @param covs
 #' The class covariances.
+#'
 #' @param weights
 #' The class weights.
+#'
 #' @param names
 #' The covariate names.
+#'
 #' @return
 #' An object of class \code{ggplot}.
 #'
@@ -385,6 +393,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
+#'
 #' @param par_labels
 #' A character vector of length equal to the number of columns of
 #' \code{gibbs_samples}, containing labels for the Gibbs samples.
@@ -466,6 +475,7 @@ plot_class_seq <- function(class_sequence, B) {
 #' Only applicable in the two-dimensional case, i.e. only if \code{P_r = 2}.
 #'
 #' @inheritParams RprobitB_parameter
+#'
 #' @param ...
 #' Optional visualization parameters:
 #' \itemize{
@@ -531,8 +541,10 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @param ...
 #' One or more \code{RprobitB_fit} objects or \code{data.frame}s of choice
 #' probability.
+#'
 #' @param reference
 #' The reference alternative.
+#'
 #' @return
 #' No return value. Draws a plot to the current device.
 #'

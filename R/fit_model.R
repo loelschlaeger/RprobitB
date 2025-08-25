@@ -25,10 +25,11 @@
 #' of \code{\link{check_prior}} for details about which parameters can be
 #' specified.
 #'
-#' @param fixed_parameter
-#' Optionally specify a named list with fixed parameter values for \code{alpha},
+#' @param fixed_parameter \[`list`\]\cr
+#' A named list with fixed parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
 #' \code{beta}, \code{z}, or \code{d} for the simulation.
+#'
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
 #' for definitions of these variables.
 #'
@@ -67,12 +68,10 @@ fit_model <- function(
   ) {
 
   ### check inputs
-  if (!inherits(data, "RprobitB_data")) {
-    stop(
-      "'data' must an object of class 'RprobitB_data'.",
-      call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(data, "RprobitB_data"),
+    var_name = "data"
+  )
   if (!data[["choice_available"]]) {
     stop(
       "Cannot use 'data' for model fitting because information on choices",
@@ -80,26 +79,22 @@ fit_model <- function(
       call. = FALSE
     )
   }
-  if (!is.numeric(R) || !R %% 1 == 0 || !R > 0) {
-    stop("'R' must be a positive integer.",
-         call. = FALSE
-    )
-  }
-  if (!is.numeric(B) || !B %% 1 == 0 || !B > 0 || !B < R) {
-    stop("'B' must be a positive integer smaller than 'R'.",
-         call. = FALSE
-    )
-  }
-  if (!is.numeric(Q) || !Q %% 1 == 0 || !Q > 0 || !Q < R) {
-    stop("'Q' must be a positive integer smaller than 'R'.",
-         call. = FALSE
-    )
-  }
-  if (!isTRUE(print_progress) && !isFALSE(print_progress)) {
-    stop("'print_progress' must be a boolean.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_count(R, positive = TRUE),
+    var_name = "R"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_int(B, lower = 1, upper = R - 1),
+    var_name = "B"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_int(Q, lower = 1, upper = R - 1),
+    var_name = "Q"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(print_progress),
+    var_name = "print_progress"
+  )
 
   ### set normalization
   normalization <- RprobitB_normalization(
@@ -124,10 +119,11 @@ fit_model <- function(
   if (latent_classes[["class_update"]]) {
     no_fix <- c("s", "z", "b", "Omega")
     if (any(names(fixed_parameter) %in% no_fix)) {
-      stop("You cannot fix parameter ",
-           paste(intersect(no_fix, names(fixed_parameter)), collapse = ", "),
-           " when updating C.",
-           call. = FALSE
+      stop(
+        "You cannot fix parameter ",
+        paste(intersect(no_fix, names(fixed_parameter)), collapse = ", "),
+        " when updating C.",
+        call. = FALSE
       )
     }
   }
@@ -167,12 +163,13 @@ fit_model <- function(
 
   if (latent_classes[["class_update"]]) {
     ### update number of latent classes
-    latent_classes[["C"]] <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
+    C <- sum(utils::tail(gibbs_samples[["s"]], 1) != 0)
+    latent_classes[["C"]] <- C
 
     ### remove zeros for unoccupied classes
-    gibbs_samples[["s"]] <- gibbs_samples[["s"]][,1:latent_classes[["C"]],drop = FALSE]
-    gibbs_samples[["b"]] <- gibbs_samples[["b"]][,1:(data[["P_r"]] * latent_classes[["C"]]),drop = FALSE]
-    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][,1:(data[["P_r"]]^2 * latent_classes[["C"]]),drop = FALSE]
+    gibbs_samples[["s"]] <- gibbs_samples[["s"]][, seq_len(C), drop = FALSE]
+    gibbs_samples[["b"]] <- gibbs_samples[["b"]][, 1:(data[["P_r"]] * C), drop = FALSE]
+    gibbs_samples[["Omega"]] <- gibbs_samples[["Omega"]][, 1:(data[["P_r"]]^2 * C), drop = FALSE]
   }
 
   ### save class sequence

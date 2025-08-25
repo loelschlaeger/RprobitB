@@ -15,7 +15,7 @@
 \arguments{
 \item{object}{An object of class \code{RprobitB_fit}.}
 
-\item{...}{Ignored.}
+\item{...}{Currently not used.}
 
 \item{x}{An object of class \code{RprobitB_coef}.}
 

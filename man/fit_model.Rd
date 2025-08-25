@@ -62,9 +62,11 @@ The following specifications are used for the weight-based updating scheme:
 \item \code{deltashift} (\code{0.5}): The scale for shifting the class means after a split.
 }}
 
-\item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
+\item{fixed_parameter}{[\code{list}]\cr
+A named list with fixed parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
 \code{beta}, \code{z}, or \code{d} for the simulation.
+
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 

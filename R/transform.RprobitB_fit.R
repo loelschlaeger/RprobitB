@@ -14,11 +14,14 @@
 #'
 #' @param _data
 #' An object of class \code{\link{RprobitB_fit}}.
-#' @inheritParams fit_model
+#'
 #' @param check_preference_flip
 #' Set to \code{TRUE} to check for flip in preferences after new \code{scale}.
+#'
 #' @param ...
-#' Ignored.
+#' Currently not used.
+#'
+#' @inheritParams fit_model
 #'
 #' @return
 #' The transformed \code{RprobitB_fit} object.

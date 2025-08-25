@@ -30,7 +30,7 @@ effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Si
 
 \item{check_preference_flip}{Set to \code{TRUE} to check for flip in preferences after new \code{scale}.}
 
-\item{...}{Ignored.}
+\item{...}{Currently not used.}
 }
 \value{
 The transformed \code{RprobitB_fit} object.

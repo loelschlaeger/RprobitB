@@ -19,12 +19,13 @@ same structure as \code{choice_data} used in \code{\link{prepare_data}}.
 Missing columns or \code{NA} values are set to 0.
 }}
 
-\item{overview}{If \code{TRUE}, returns a confusion matrix.}
+\item{overview}{[\code{logical(1)}]\cr
+Summarize the prediction in a confusion matrix?}
 
-\item{digits}{The number of digits of the returned choice probabilities. \code{digits = 2} per
-default.}
+\item{digits}{[\code{integer(1)}]\cr
+The number of digits of the returned choice probabilities.}
 
-\item{...}{Ignored.}
+\item{...}{Currently not used.}
 }
 \value{
 Either a table if \code{overview = TRUE} or a data frame otherwise.

@@ -25,15 +25,14 @@
 #'         Missing columns or \code{NA} values are set to 0.
 #' }
 #'
-#' @param overview
-#' If \code{TRUE}, returns a confusion matrix.
+#' @param overview \[`logical(1)`\]\cr
+#' Summarize the prediction in a confusion matrix?
 #'
-#' @param digits
-#' The number of digits of the returned choice probabilities. `digits = 2` per
-#' default.
+#' @param digits \[`integer(1)`\]\cr
+#' The number of digits of the returned choice probabilities.
 #'
 #' @param ...
-#' Ignored.
+#' Currently not used.
 #'
 #' @return
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
@@ -83,9 +82,10 @@ predict.RprobitB_fit <- function(
       impute = "zero"
     )
   }
-  if (!inherits(data, "RprobitB_data")) {
-    stop("'data' is not of class 'RprobitB_data'.", call. = FALSE)
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(data, "RprobitB_data"),
+    var_name = "data"
+  )
 
   ### compute choice probabilities
   choice_probs <- as.data.frame(choice_probabilities(object, data = data))
@@ -103,6 +103,7 @@ predict.RprobitB_fit <- function(
 
   ### predict
   prediction <- data$alternatives[apply(choice_probs[data$alternatives], 1, which.max)]
+  prediction <- factor(prediction, levels = data$alternatives)
 
   ### create and return output
   if (overview) {

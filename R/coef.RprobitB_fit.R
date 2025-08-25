@@ -20,7 +20,7 @@
 #' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
 #'
 #' @param ...
-#' Ignored.
+#' Currently not used.
 #'
 #' @export
 
