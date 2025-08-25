@@ -2,16 +2,21 @@
 #'
 #' @description
 #' This function computes the probability for each observed choice at the
-#' (normalized, burned and thinned) samples from the posterior. These
-#' probabilities are required to compute the \code{\link{WAIC}} and the
+#' (normalized, burned and thinned) samples from the posterior.
+#'
+#' These probabilities are required to compute the \code{\link{WAIC}} and the
 #' marginal model likelihood \code{\link{mml}}.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
-#' @param ncores
-#' This function is parallelized, set the number of cores here.
-#' @param recompute
-#' Set to \code{TRUE} to recompute the probabilities.
+#'
+#' @param ncores \[`integer(1)`\]\cr
+#' The number of cores for parallel computation.
+#'
+#' If set to 1, no parallel backend is used.
+#'
+#' @param recompute \[`logical(1)`\]\cr
+#' Recompute the probabilities?
 #'
 #' @return
 #' The object \code{x}, including the object \code{p_si}, which is a matrix of
@@ -19,30 +24,35 @@
 #'
 #' @export
 
-compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FALSE) {
+compute_p_si <- function(
+    x, ncores = parallel::detectCores() - 1, recompute = FALSE
+  ) {
+
   ### check input
-  if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be an object of class 'RprobitB_fit'.",
-         call. = FALSE
-    )
-  }
-  if (!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores %% 1 == 0)) {
-    stop("'ncores' must be a positive integer.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_fit"),
+    var_name = "x"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(ncores, positive = TRUE),
+    var_name = "ncores"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(recompute),
+    var_name = "recompute"
+  )
 
   ### check if 'p_si' in 'x' already exists if 'recompute = FALSE'
-  if (!recompute && !is.null(x$p_si)) {
-    return(x)
-  }
+  if (isFALSE(recompute) && !is.null(x$p_si)) return(x)
 
   ### extract pars from Gibbs samples
   pars <- posterior_pars(x)
 
-  ### register parallel backend
-  cluster <- parallel::makeCluster(ncores)
-  doSNOW::registerDoSNOW(cluster)
+  ### set up parallel only if ncores > 1
+  if (ncores > 1) {
+    cluster <- parallel::makeCluster(ncores)
+    doSNOW::registerDoSNOW(cluster)
+  }
 
   ### register progress bar
   if (getOption("RprobitB_progress")) {
@@ -56,12 +66,13 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
     opts <- list()
   }
 
-  ### compute probability for each observation i (rows) for each sample s (columns)
+  ### compute probability for each observation i (rows) and sample s (columns)
   s <- NULL
+  `%op%` <- if (ncores > 1) foreach::`%dopar%` else foreach::`%do%`
   p_si <- foreach::foreach(
     s = 1:length(pars), .packages = "RprobitB",
     .combine = "cbind", .options.snow = opts
-  ) %dopar% {
+  ) %op% {
     out <- c()
     for (n in 1:x$data$N) {
       X_n <- x$data$data[[n]]$X
@@ -78,8 +89,8 @@ compute_p_si <- function(x, ncores = parallel::detectCores() - 1, recompute = FA
     out
   }
 
-  ### stop parallel backend
-  parallel::stopCluster(cluster)
+  ### stop parallel backend if used
+  if (ncores > 1) parallel::stopCluster(cluster)
 
   ### save 'p_si' in 'x'
   x[["p_si"]] <- p_si

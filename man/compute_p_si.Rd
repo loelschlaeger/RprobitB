@@ -9,9 +9,13 @@ compute_p_si(x, ncores = parallel::detectCores() - 1, recompute = FALSE)
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{ncores}{This function is parallelized, set the number of cores here.}
+\item{ncores}{[\code{integer(1)}]\cr
+The number of cores for parallel computation.
 
-\item{recompute}{Set to \code{TRUE} to recompute the probabilities.}
+If set to 1, no parallel backend is used.}
+
+\item{recompute}{[\code{logical(1)}]\cr
+Recompute the probabilities?}
 }
 \value{
 The object \code{x}, including the object \code{p_si}, which is a matrix of
@@ -19,7 +23,8 @@ probabilities, observations in rows and posterior samples in columns.
 }
 \description{
 This function computes the probability for each observed choice at the
-(normalized, burned and thinned) samples from the posterior. These
-probabilities are required to compute the \code{\link{WAIC}} and the
+(normalized, burned and thinned) samples from the posterior.
+
+These probabilities are required to compute the \code{\link{WAIC}} and the
 marginal model likelihood \code{\link{mml}}.
 }

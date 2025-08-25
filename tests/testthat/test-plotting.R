@@ -21,3 +21,19 @@ test_that("plotting mixture contour works", {
   plot <- plot_mixture_contour(means, covs, weights, names)
   expect_true(ggplot2::is_ggplot(plot))
 })
+
+test_that("ROC curve can be created", {
+  data <- prepare_data(
+    form = choice ~ price | 0,
+    choice_data = train_choice, id = "deciderID", idc = "occasionID"
+  )
+  model_train_1 <- fit_model(
+    data = data,
+    scale = "price := -1"
+  )
+  model_train_2 <- update(
+    model_train_1, form = form <- choice ~ price + time + change + comfort | 0
+  )
+  expect_true(ggplot2::is_ggplot(plot_roc(model_train_1)))
+  expect_true(ggplot2::is_ggplot(plot_roc(model_train_1, model_train_2)))
+})

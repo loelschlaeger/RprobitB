@@ -552,9 +552,9 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 
 plot_roc <- function(..., reference = NULL) {
   models <- as.list(list(...))
-  model_names <- unlist(lapply(sys.call()[-1], as.character))[1:length(models)]
+  model_names <- unlist(lapply(sys.call()[-1], as.character))[seq_along(models)]
   pred_merge <- NULL
-  for (m in 1:length(models)) {
+  for (m in seq_along(models)) {
     if (inherits(models[[m]], "RprobitB_fit")) {
       if (is.null(reference)) {
         reference <- models[[m]]$data$alternatives[1]
@@ -586,20 +586,11 @@ plot_roc <- function(..., reference = NULL) {
   } else {
     colnames(pred_merge) <- c("D", "M")
   }
-  if (length(models) > 1) {
-    plot <- ggplot2::ggplot(
-      data = pred_merge,
-      ggplot2::aes(
-        m = rlang::.data$M, d = rlang::.data$D, color = rlang::.data$name
-      )
-    )
-  } else {
-    plot <- ggplot2::ggplot(
-      data = pred_merge,
-      ggplot2::aes(m = rlang::.data$M, d = rlang::.data$D)
-    )
-  }
-  plot + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
+  M <- D <- name <- NULL
+  ggplot2::ggplot(
+    data = pred_merge,
+    ggplot2::aes(m = M, d = D, color = if (length(models) > 1) name else NULL)
+  ) + plotROC::geom_roc(n.cuts = 20, labels = FALSE) +
     plotROC::style_roc(theme = ggplot2::theme_grey) +
     theme(legend.position = "top") +
     theme(legend.title = ggplot2::element_blank())

@@ -1666,7 +1666,7 @@
     },
     "plotROC": {
       "Package": "plotROC",
-      "Version": "2.3.1",
+      "Version": "2.3.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1679,7 +1679,7 @@
         "rlang",
         "shiny"
       ],
-      "Hash": "558f5a80080ad534c33324ceabb748f1"
+      "Hash": "57596acdf61dd720fd567ac5677bf4e9"
     },
     "plotly": {
       "Package": "plotly",
