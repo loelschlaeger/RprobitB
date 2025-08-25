@@ -27,19 +27,24 @@ RprobitB_parameter(
 \method{print}{RprobitB_parameter}(x, ..., digits = 4)
 }
 \arguments{
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
+\item{P_f}{[\code{integer(1)}]\cr
+The number of covariates connected to a fixed coefficient.}
 
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+\item{P_r}{[\code{integer(2)}]\cr
+The number of covariates connected to a random coefficient.}
 
-\item{J}{The number (greater or equal 2) of choice alternatives.}
+\item{J}{[\code{integer(1)}]\cr
+The number >= 2 of choice alternatives.}
 
-\item{N}{The number (greater or equal 1) of decision makers.}
+\item{N}{[\code{integer(1)}]\cr
+The number of decision makers.}
 
 \item{C}{[\code{integer(1)}]\cr
 The number (greater or equal 1) of latent classes of decision makers.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 
 \item{alpha}{[\code{numeric(P_f)}]\cr
 The fixed coefficient vector.}

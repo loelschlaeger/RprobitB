@@ -13,7 +13,6 @@ fit_model(
   print_progress = getOption("RprobitB_progress", default = TRUE),
   prior = NULL,
   latent_classes = NULL,
-  seed = NULL,
   fixed_parameter = list(),
   save_beta_draws = FALSE
 )
@@ -21,7 +20,8 @@ fit_model(
 \arguments{
 \item{data}{An object of class \code{RprobitB_data}.}
 
-\item{scale}{A character which determines the utility scale. It is of the form
+\item{scale}{[\code{character(1)}]\cr
+A character which determines the utility scale. It is of the form
 \verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}
@@ -62,8 +62,6 @@ The following specifications are used for the weight-based updating scheme:
 \item \code{deltashift} (\code{0.5}): The scale for shifting the class means after a split.
 }}
 
-\item{seed}{Set a seed for the Gibbs sampling.}
-
 \item{fixed_parameter}{Optionally specify a named list with fixed parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
 \code{beta}, \code{z}, or \code{d} for the simulation.
@@ -78,15 +76,15 @@ as it requires a lot of storage space.}
 An object of class \code{RprobitB_fit}.
 }
 \description{
-This function performs Gibbs sampling for fitting different types of probit
+This function performs MCMC simulation for fitting different types of probit
 models (binary, multivariate, mixed, latent class, ordered, ranked) to
 discrete choice data.
 }
 \examples{
-data <- simulate_choices(
-  form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1, re = "var"
-)
-model <- fit_model(data = data, R = 1000, seed = 1)
+set.seed(1)
+form <- choice ~ var | 0
+data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
+model <- fit_model(data = data, R = 1000)
 summary(model)
 
 }

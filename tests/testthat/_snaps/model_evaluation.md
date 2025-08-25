@@ -512,8 +512,8 @@
     Output
            predicted
       true  bus car
-        bus 129   3
-        car   3  71
+        bus 142   3
+        car   4  52
 
 ---
 
@@ -521,212 +521,207 @@
       predict(model, overview = FALSE)
     Output
           id idc  bus  car true predicted correct
-      1    1   1 0.04 0.96  car       car    TRUE
-      2    1   2 0.07 0.93  bus       car   FALSE
-      3    1   3 1.00 0.00  bus       bus    TRUE
-      4    1   4 0.95 0.05  bus       bus    TRUE
-      5    1   5 0.00 1.00  car       car    TRUE
-      6    2   1 0.00 1.00  car       car    TRUE
-      7    2   2 0.45 0.55  car       car    TRUE
-      8    3   1 1.00 0.00  bus       bus    TRUE
-      9    3   2 0.00 1.00  car       car    TRUE
-      10   3   3 1.00 0.00  bus       bus    TRUE
-      11   4   1 0.00 1.00  car       car    TRUE
-      12   4   2 1.00 0.00  bus       bus    TRUE
-      13   5   1 1.00 0.00  bus       bus    TRUE
-      14   5   2 0.00 1.00  car       car    TRUE
-      15   5   3 1.00 0.00  bus       bus    TRUE
-      16   6   1 0.00 1.00  car       car    TRUE
-      17   6   2 0.66 0.34  bus       bus    TRUE
-      18   6   3 1.00 0.00  bus       bus    TRUE
-      19   6   4 1.00 0.00  bus       bus    TRUE
-      20   6   5 1.00 0.00  bus       bus    TRUE
-      21   7   1 1.00 0.00  bus       bus    TRUE
-      22   7   2 0.07 0.93  car       car    TRUE
-      23   8   1 1.00 0.00  bus       bus    TRUE
-      24   8   2 1.00 0.00  bus       bus    TRUE
-      25   8   3 0.80 0.20  bus       bus    TRUE
-      26   8   4 0.00 1.00  car       car    TRUE
-      27   9   1 0.36 0.64  car       car    TRUE
-      28   9   2 0.00 1.00  car       car    TRUE
-      29  10   1 0.79 0.21  car       bus   FALSE
-      30  11   1 0.98 0.02  bus       bus    TRUE
-      31  11   2 1.00 0.00  bus       bus    TRUE
-      32  11   3 0.00 1.00  car       car    TRUE
-      33  11   4 1.00 0.00  bus       bus    TRUE
-      34  11   5 1.00 0.00  bus       bus    TRUE
-      35  12   1 1.00 0.00  bus       bus    TRUE
-      36  12   2 0.20 0.80  car       car    TRUE
-      37  12   3 1.00 0.00  bus       bus    TRUE
-      38  12   4 1.00 0.00  bus       bus    TRUE
-      39  13   1 0.00 1.00  car       car    TRUE
-      40  13   2 1.00 0.00  bus       bus    TRUE
-      41  13   3 0.09 0.91  car       car    TRUE
-      42  14   1 0.00 1.00  car       car    TRUE
-      43  14   2 0.70 0.30  bus       bus    TRUE
-      44  14   3 1.00 0.00  bus       bus    TRUE
-      45  14   4 0.10 0.90  bus       car   FALSE
-      46  14   5 0.84 0.16  car       bus   FALSE
-      47  15   1 1.00 0.00  bus       bus    TRUE
-      48  15   2 1.00 0.00  bus       bus    TRUE
-      49  16   1 0.00 1.00  car       car    TRUE
-      50  16   2 1.00 0.00  bus       bus    TRUE
-      51  17   1 1.00 0.00  bus       bus    TRUE
-      52  17   2 0.01 0.99  car       car    TRUE
-      53  17   3 0.02 0.98  car       car    TRUE
-      54  18   1 0.68 0.32  bus       bus    TRUE
-      55  18   2 1.00 0.00  bus       bus    TRUE
-      56  18   3 0.00 1.00  car       car    TRUE
-      57  19   1 1.00 0.00  bus       bus    TRUE
-      58  19   2 0.16 0.84  car       car    TRUE
-      59  19   3 1.00 0.00  bus       bus    TRUE
-      60  19   4 1.00 0.00  bus       bus    TRUE
-      61  20   1 1.00 0.00  bus       bus    TRUE
-      62  21   1 0.00 1.00  car       car    TRUE
+      1    1   1 1.00 0.00  bus       bus    TRUE
+      2    2   1 1.00 0.00  bus       bus    TRUE
+      3    2   2 0.00 1.00  car       car    TRUE
+      4    2   3 0.00 1.00  car       car    TRUE
+      5    2   4 1.00 0.00  bus       bus    TRUE
+      6    3   1 0.90 0.10  bus       bus    TRUE
+      7    4   1 0.00 1.00  car       car    TRUE
+      8    4   2 0.90 0.10  bus       bus    TRUE
+      9    5   1 1.00 0.00  bus       bus    TRUE
+      10   5   2 1.00 0.00  bus       bus    TRUE
+      11   5   3 0.05 0.95  car       car    TRUE
+      12   5   4 0.03 0.97  car       car    TRUE
+      13   5   5 0.90 0.10  bus       bus    TRUE
+      14   6   1 0.50 0.50  bus       bus    TRUE
+      15   6   2 0.79 0.21  bus       bus    TRUE
+      16   6   3 1.00 0.00  bus       bus    TRUE
+      17   7   1 1.00 0.00  bus       bus    TRUE
+      18   7   2 0.98 0.02  bus       bus    TRUE
+      19   8   1 1.00 0.00  bus       bus    TRUE
+      20   8   2 1.00 0.00  bus       bus    TRUE
+      21   8   3 1.00 0.00  bus       bus    TRUE
+      22   9   1 0.01 0.99  car       car    TRUE
+      23   9   2 0.47 0.53  car       car    TRUE
+      24   9   3 1.00 0.00  bus       bus    TRUE
+      25  10   1 1.00 0.00  bus       bus    TRUE
+      26  11   1 1.00 0.00  bus       bus    TRUE
+      27  11   2 0.00 1.00  car       car    TRUE
+      28  11   3 0.00 1.00  car       car    TRUE
+      29  11   4 1.00 0.00  bus       bus    TRUE
+      30  11   5 0.01 0.99  car       car    TRUE
+      31  12   1 1.00 0.00  bus       bus    TRUE
+      32  12   2 1.00 0.00  bus       bus    TRUE
+      33  12   3 0.00 1.00  car       car    TRUE
+      34  12   4 1.00 0.00  bus       bus    TRUE
+      35  12   5 1.00 0.00  bus       bus    TRUE
+      36  13   1 1.00 0.00  bus       bus    TRUE
+      37  13   2 0.00 1.00  car       car    TRUE
+      38  14   1 0.54 0.46  bus       bus    TRUE
+      39  14   2 0.59 0.41  car       bus   FALSE
+      40  15   1 1.00 0.00  bus       bus    TRUE
+      41  16   1 0.62 0.38  bus       bus    TRUE
+      42  16   2 0.00 1.00  car       car    TRUE
+      43  16   3 0.00 1.00  car       car    TRUE
+      44  16   4 1.00 0.00  bus       bus    TRUE
+      45  16   5 1.00 0.00  bus       bus    TRUE
+      46  17   1 0.00 1.00  car       car    TRUE
+      47  17   2 1.00 0.00  bus       bus    TRUE
+      48  17   3 1.00 0.00  bus       bus    TRUE
+      49  17   4 0.99 0.01  bus       bus    TRUE
+      50  17   5 0.65 0.35  car       bus   FALSE
+      51  18   1 1.00 0.00  bus       bus    TRUE
+      52  19   1 1.00 0.00  bus       bus    TRUE
+      53  20   1 1.00 0.00  bus       bus    TRUE
+      54  20   2 0.68 0.32  bus       bus    TRUE
+      55  20   3 0.00 1.00  car       car    TRUE
+      56  20   4 0.97 0.03  bus       bus    TRUE
+      57  20   5 0.61 0.39  bus       bus    TRUE
+      58  21   1 0.69 0.31  bus       bus    TRUE
+      59  21   2 1.00 0.00  bus       bus    TRUE
+      60  21   3 1.00 0.00  bus       bus    TRUE
+      61  21   4 0.83 0.17  bus       bus    TRUE
+      62  21   5 0.00 1.00  car       car    TRUE
       63  22   1 1.00 0.00  bus       bus    TRUE
-      64  22   2 1.00 0.00  bus       bus    TRUE
-      65  22   3 1.00 0.00  bus       bus    TRUE
-      66  22   4 1.00 0.00  bus       bus    TRUE
-      67  22   5 0.00 1.00  car       car    TRUE
-      68  23   1 1.00 0.00  bus       bus    TRUE
-      69  23   2 1.00 0.00  bus       bus    TRUE
-      70  24   1 1.00 0.00  bus       bus    TRUE
-      71  25   1 1.00 0.00  bus       bus    TRUE
-      72  25   2 0.95 0.05  bus       bus    TRUE
-      73  26   1 0.00 1.00  car       car    TRUE
-      74  26   2 0.00 1.00  car       car    TRUE
-      75  27   1 0.00 1.00  car       car    TRUE
-      76  27   2 0.97 0.03  bus       bus    TRUE
-      77  27   3 0.00 1.00  car       car    TRUE
-      78  28   1 0.00 1.00  car       car    TRUE
-      79  28   2 1.00 0.00  bus       bus    TRUE
-      80  28   3 1.00 0.00  bus       bus    TRUE
-      81  29   1 0.02 0.98  car       car    TRUE
-      82  29   2 1.00 0.00  bus       bus    TRUE
-      83  29   3 0.23 0.77  car       car    TRUE
-      84  29   4 1.00 0.00  bus       bus    TRUE
-      85  30   1 1.00 0.00  bus       bus    TRUE
-      86  30   2 0.88 0.12  bus       bus    TRUE
-      87  30   3 0.83 0.17  bus       bus    TRUE
-      88  30   4 0.73 0.27  bus       bus    TRUE
-      89  31   1 1.00 0.00  bus       bus    TRUE
-      90  31   2 0.00 1.00  car       car    TRUE
-      91  31   3 0.00 1.00  car       car    TRUE
-      92  31   4 0.97 0.03  bus       bus    TRUE
-      93  32   1 0.05 0.95  car       car    TRUE
-      94  32   2 1.00 0.00  bus       bus    TRUE
-      95  33   1 0.00 1.00  car       car    TRUE
-      96  33   2 0.01 0.99  car       car    TRUE
-      97  33   3 0.08 0.92  car       car    TRUE
-      98  34   1 0.04 0.96  car       car    TRUE
-      99  34   2 1.00 0.00  bus       bus    TRUE
-      100 34   3 0.99 0.01  bus       bus    TRUE
-      101 34   4 1.00 0.00  bus       bus    TRUE
-      102 35   1 0.00 1.00  car       car    TRUE
-      103 35   2 0.00 1.00  car       car    TRUE
-      104 36   1 0.00 1.00  car       car    TRUE
-      105 36   2 1.00 0.00  bus       bus    TRUE
-      106 36   3 0.98 0.02  bus       bus    TRUE
-      107 36   4 0.00 1.00  car       car    TRUE
-      108 37   1 0.96 0.04  bus       bus    TRUE
-      109 37   2 0.94 0.06  bus       bus    TRUE
-      110 37   3 0.99 0.01  bus       bus    TRUE
-      111 37   4 0.00 1.00  car       car    TRUE
-      112 38   1 1.00 0.00  bus       bus    TRUE
-      113 38   2 0.65 0.35  bus       bus    TRUE
-      114 38   3 0.00 1.00  car       car    TRUE
-      115 38   4 0.00 1.00  car       car    TRUE
-      116 38   5 1.00 0.00  bus       bus    TRUE
-      117 39   1 1.00 0.00  bus       bus    TRUE
-      118 39   2 0.00 1.00  car       car    TRUE
-      119 39   3 1.00 0.00  bus       bus    TRUE
-      120 40   1 1.00 0.00  bus       bus    TRUE
-      121 40   2 0.00 1.00  car       car    TRUE
-      122 40   3 0.98 0.02  bus       bus    TRUE
-      123 40   4 0.34 0.66  car       car    TRUE
-      124 41   1 0.99 0.01  bus       bus    TRUE
-      125 41   2 0.00 1.00  car       car    TRUE
-      126 41   3 0.00 1.00  car       car    TRUE
-      127 42   1 1.00 0.00  bus       bus    TRUE
-      128 42   2 1.00 0.00  bus       bus    TRUE
-      129 42   3 0.83 0.17  bus       bus    TRUE
-      130 43   1 0.98 0.02  bus       bus    TRUE
-      131 43   2 1.00 0.00  bus       bus    TRUE
-      132 43   3 0.00 1.00  car       car    TRUE
-      133 44   1 0.83 0.17  bus       bus    TRUE
-      134 45   1 0.00 1.00  car       car    TRUE
-      135 45   2 1.00 0.00  bus       bus    TRUE
-      136 45   3 1.00 0.00  bus       bus    TRUE
-      137 45   4 0.99 0.01  bus       bus    TRUE
-      138 45   5 0.99 0.01  bus       bus    TRUE
-      139 46   1 1.00 0.00  bus       bus    TRUE
-      140 47   1 0.02 0.98  car       car    TRUE
-      141 47   2 0.00 1.00  car       car    TRUE
-      142 47   3 0.02 0.98  car       car    TRUE
-      143 47   4 0.97 0.03  bus       bus    TRUE
-      144 48   1 0.98 0.02  bus       bus    TRUE
-      145 48   2 0.96 0.04  bus       bus    TRUE
-      146 49   1 0.98 0.02  bus       bus    TRUE
-      147 49   2 0.05 0.95  car       car    TRUE
-      148 49   3 1.00 0.00  bus       bus    TRUE
-      149 49   4 1.00 0.00  bus       bus    TRUE
-      150 50   1 1.00 0.00  bus       bus    TRUE
-      151 50   2 1.00 0.00  bus       bus    TRUE
-      152 50   3 1.00 0.00  bus       bus    TRUE
-      153 51   1 1.00 0.00  bus       bus    TRUE
-      154 51   2 1.00 0.00  bus       bus    TRUE
-      155 52   1 1.00 0.00  bus       bus    TRUE
-      156 52   2 0.08 0.92  car       car    TRUE
-      157 52   3 1.00 0.00  bus       bus    TRUE
-      158 52   4 0.00 1.00  car       car    TRUE
-      159 53   1 0.99 0.01  bus       bus    TRUE
-      160 54   1 1.00 0.00  bus       bus    TRUE
-      161 54   2 1.00 0.00  bus       bus    TRUE
-      162 55   1 1.00 0.00  bus       bus    TRUE
-      163 56   1 1.00 0.00  bus       bus    TRUE
-      164 56   2 1.00 0.00  bus       bus    TRUE
-      165 56   3 0.00 1.00  car       car    TRUE
-      166 56   4 0.00 1.00  car       car    TRUE
-      167 57   1 1.00 0.00  bus       bus    TRUE
-      168 57   2 0.92 0.08  bus       bus    TRUE
-      169 57   3 1.00 0.00  bus       bus    TRUE
-      170 57   4 1.00 0.00  bus       bus    TRUE
-      171 58   1 1.00 0.00  bus       bus    TRUE
-      172 58   2 1.00 0.00  bus       bus    TRUE
-      173 59   1 0.02 0.98  car       car    TRUE
-      174 59   2 1.00 0.00  bus       bus    TRUE
-      175 59   3 1.00 0.00  bus       bus    TRUE
-      176 59   4 0.31 0.69  car       car    TRUE
-      177 59   5 1.00 0.00  bus       bus    TRUE
-      178 60   1 1.00 0.00  bus       bus    TRUE
-      179 61   1 0.36 0.64  car       car    TRUE
-      180 61   2 0.18 0.82  car       car    TRUE
-      181 61   3 0.44 0.56  bus       car   FALSE
-      182 61   4 1.00 0.00  bus       bus    TRUE
-      183 62   1 1.00 0.00  bus       bus    TRUE
-      184 63   1 1.00 0.00  bus       bus    TRUE
-      185 63   2 0.00 1.00  car       car    TRUE
-      186 64   1 1.00 0.00  bus       bus    TRUE
-      187 65   1 1.00 0.00  bus       bus    TRUE
-      188 65   2 1.00 0.00  bus       bus    TRUE
-      189 65   3 1.00 0.00  bus       bus    TRUE
-      190 65   4 1.00 0.00  bus       bus    TRUE
-      191 65   5 0.00 1.00  car       car    TRUE
-      192 66   1 0.71 0.29  car       bus   FALSE
-      193 66   2 0.00 1.00  car       car    TRUE
+      64  22   2 0.52 0.48  car       bus   FALSE
+      65  23   1 1.00 0.00  bus       bus    TRUE
+      66  23   2 1.00 0.00  bus       bus    TRUE
+      67  24   1 0.99 0.01  bus       bus    TRUE
+      68  25   1 1.00 0.00  bus       bus    TRUE
+      69  25   2 0.15 0.85  car       car    TRUE
+      70  25   3 1.00 0.00  bus       bus    TRUE
+      71  25   4 1.00 0.00  bus       bus    TRUE
+      72  26   1 0.00 1.00  car       car    TRUE
+      73  27   1 1.00 0.00  bus       bus    TRUE
+      74  27   2 0.00 1.00  car       car    TRUE
+      75  27   3 0.00 1.00  car       car    TRUE
+      76  27   4 0.99 0.01  bus       bus    TRUE
+      77  28   1 1.00 0.00  bus       bus    TRUE
+      78  28   2 1.00 0.00  bus       bus    TRUE
+      79  28   3 1.00 0.00  bus       bus    TRUE
+      80  29   1 1.00 0.00  bus       bus    TRUE
+      81  29   2 1.00 0.00  bus       bus    TRUE
+      82  30   1 0.00 1.00  car       car    TRUE
+      83  30   2 1.00 0.00  bus       bus    TRUE
+      84  31   1 1.00 0.00  bus       bus    TRUE
+      85  31   2 1.00 0.00  bus       bus    TRUE
+      86  31   3 1.00 0.00  bus       bus    TRUE
+      87  31   4 1.00 0.00  bus       bus    TRUE
+      88  32   1 0.98 0.02  bus       bus    TRUE
+      89  32   2 0.90 0.10  bus       bus    TRUE
+      90  32   3 0.67 0.33  bus       bus    TRUE
+      91  32   4 1.00 0.00  bus       bus    TRUE
+      92  33   1 0.86 0.14  bus       bus    TRUE
+      93  33   2 0.99 0.01  bus       bus    TRUE
+      94  33   3 1.00 0.00  bus       bus    TRUE
+      95  33   4 0.34 0.66  car       car    TRUE
+      96  34   1 0.00 1.00  car       car    TRUE
+      97  34   2 0.93 0.07  bus       bus    TRUE
+      98  35   1 0.00 1.00  car       car    TRUE
+      99  35   2 1.00 0.00  bus       bus    TRUE
+      100 35   3 0.05 0.95  car       car    TRUE
+      101 35   4 1.00 0.00  bus       bus    TRUE
+      102 36   1 0.00 1.00  car       car    TRUE
+      103 37   1 1.00 0.00  bus       bus    TRUE
+      104 38   1 0.98 0.02  bus       bus    TRUE
+      105 38   2 0.00 1.00  car       car    TRUE
+      106 38   3 1.00 0.00  bus       bus    TRUE
+      107 38   4 1.00 0.00  bus       bus    TRUE
+      108 39   1 0.15 0.85  car       car    TRUE
+      109 40   1 1.00 0.00  bus       bus    TRUE
+      110 40   2 0.16 0.84  car       car    TRUE
+      111 41   1 1.00 0.00  bus       bus    TRUE
+      112 41   2 1.00 0.00  bus       bus    TRUE
+      113 41   3 1.00 0.00  bus       bus    TRUE
+      114 42   1 0.95 0.05  bus       bus    TRUE
+      115 42   2 1.00 0.00  bus       bus    TRUE
+      116 43   1 1.00 0.00  bus       bus    TRUE
+      117 43   2 1.00 0.00  bus       bus    TRUE
+      118 44   1 0.35 0.65  bus       car   FALSE
+      119 44   2 1.00 0.00  bus       bus    TRUE
+      120 44   3 0.99 0.01  bus       bus    TRUE
+      121 44   4 1.00 0.00  bus       bus    TRUE
+      122 44   5 0.00 1.00  car       car    TRUE
+      123 45   1 0.93 0.07  bus       bus    TRUE
+      124 45   2 1.00 0.00  bus       bus    TRUE
+      125 46   1 1.00 0.00  bus       bus    TRUE
+      126 47   1 0.52 0.48  bus       bus    TRUE
+      127 47   2 1.00 0.00  bus       bus    TRUE
+      128 47   3 0.28 0.72  car       car    TRUE
+      129 48   1 0.00 1.00  car       car    TRUE
+      130 48   2 1.00 0.00  bus       bus    TRUE
+      131 48   3 1.00 0.00  bus       bus    TRUE
+      132 49   1 0.00 1.00  car       car    TRUE
+      133 49   2 1.00 0.00  bus       bus    TRUE
+      134 49   3 0.44 0.56  car       car    TRUE
+      135 49   4 0.23 0.77  car       car    TRUE
+      136 50   1 1.00 0.00  bus       bus    TRUE
+      137 50   2 1.00 0.00  bus       bus    TRUE
+      138 50   3 0.00 1.00  car       car    TRUE
+      139 51   1 0.95 0.05  bus       bus    TRUE
+      140 52   1 1.00 0.00  bus       bus    TRUE
+      141 52   2 1.00 0.00  bus       bus    TRUE
+      142 52   3 0.06 0.94  car       car    TRUE
+      143 52   4 1.00 0.00  bus       bus    TRUE
+      144 53   1 1.00 0.00  bus       bus    TRUE
+      145 53   2 1.00 0.00  bus       bus    TRUE
+      146 53   3 0.00 1.00  car       car    TRUE
+      147 53   4 1.00 0.00  bus       bus    TRUE
+      148 53   5 0.96 0.04  bus       bus    TRUE
+      149 54   1 1.00 0.00  bus       bus    TRUE
+      150 55   1 1.00 0.00  bus       bus    TRUE
+      151 56   1 0.00 1.00  car       car    TRUE
+      152 56   2 1.00 0.00  bus       bus    TRUE
+      153 56   3 0.00 1.00  car       car    TRUE
+      154 56   4 1.00 0.00  bus       bus    TRUE
+      155 57   1 0.00 1.00  car       car    TRUE
+      156 57   2 1.00 0.00  bus       bus    TRUE
+      157 57   3 0.07 0.93  car       car    TRUE
+      158 57   4 0.00 1.00  car       car    TRUE
+      159 57   5 1.00 0.00  bus       bus    TRUE
+      160 58   1 1.00 0.00  bus       bus    TRUE
+      161 58   2 0.98 0.02  bus       bus    TRUE
+      162 58   3 0.91 0.09  bus       bus    TRUE
+      163 58   4 0.01 0.99  car       car    TRUE
+      164 58   5 1.00 0.00  bus       bus    TRUE
+      165 59   1 0.46 0.54  bus       car   FALSE
+      166 59   2 1.00 0.00  bus       bus    TRUE
+      167 59   3 1.00 0.00  bus       bus    TRUE
+      168 59   4 1.00 0.00  bus       bus    TRUE
+      169 60   1 1.00 0.00  bus       bus    TRUE
+      170 60   2 1.00 0.00  bus       bus    TRUE
+      171 60   3 1.00 0.00  bus       bus    TRUE
+      172 60   4 1.00 0.00  bus       bus    TRUE
+      173 60   5 1.00 0.00  bus       bus    TRUE
+      174 61   1 1.00 0.00  bus       bus    TRUE
+      175 61   2 1.00 0.00  bus       bus    TRUE
+      176 61   3 0.00 1.00  car       car    TRUE
+      177 61   4 1.00 0.00  bus       bus    TRUE
+      178 62   1 1.00 0.00  bus       bus    TRUE
+      179 62   2 1.00 0.00  bus       bus    TRUE
+      180 62   3 0.92 0.08  bus       bus    TRUE
+      181 62   4 0.09 0.91  car       car    TRUE
+      182 63   1 1.00 0.00  bus       bus    TRUE
+      183 64   1 0.96 0.04  car       bus   FALSE
+      184 64   2 1.00 0.00  bus       bus    TRUE
+      185 64   3 0.31 0.69  car       car    TRUE
+      186 64   4 1.00 0.00  bus       bus    TRUE
+      187 64   5 0.27 0.73  bus       car   FALSE
+      188 65   1 0.21 0.79  car       car    TRUE
+      189 65   2 0.06 0.94  car       car    TRUE
+      190 65   3 1.00 0.00  bus       bus    TRUE
+      191 65   4 1.00 0.00  bus       bus    TRUE
+      192 65   5 1.00 0.00  bus       bus    TRUE
+      193 66   1 1.00 0.00  bus       bus    TRUE
       194 67   1 1.00 0.00  bus       bus    TRUE
-      195 67   2 0.01 0.99  car       car    TRUE
-      196 67   3 0.96 0.04  bus       bus    TRUE
-      197 68   1 0.00 1.00  car       car    TRUE
-      198 68   2 1.00 0.00  bus       bus    TRUE
-      199 68   3 0.75 0.25  bus       bus    TRUE
-      200 68   4 0.02 0.98  car       car    TRUE
-      201 69   1 1.00 0.00  bus       bus    TRUE
-      202 69   2 1.00 0.00  bus       bus    TRUE
-      203 69   3 1.00 0.00  bus       bus    TRUE
-      204 70   1 1.00 0.00  bus       bus    TRUE
-      205 70   2 0.15 0.85  car       car    TRUE
-      206 70   3 1.00 0.00  bus       bus    TRUE
+      195 68   1 1.00 0.00  bus       bus    TRUE
+      196 68   2 1.00 0.00  bus       bus    TRUE
+      197 68   3 0.00 1.00  car       car    TRUE
+      198 69   1 1.00 0.00  bus       bus    TRUE
+      199 69   2 1.00 0.00  bus       bus    TRUE
+      200 70   1 1.00 0.00  bus       bus    TRUE
+      201 70   2 0.00 1.00  car       car    TRUE
 
 ---
 
@@ -735,8 +730,8 @@
     Output
            predicted
       true  bus car
-        bus  50   1
-        car   4  34
+        bus  62   0
+        car   1  31
 
 # preference classification works
 
@@ -744,104 +739,104 @@
       classif
     Output
               1     2 est true
-      1   0.032 0.968   2    2
-      2   0.102 0.898   2    2
-      3   0.970 0.030   1    1
-      4   0.014 0.986   2    2
-      5   0.934 0.066   1    1
-      6   0.924 0.076   1    1
-      7   0.002 0.998   2    2
-      8   0.910 0.090   1    2
-      9   0.038 0.962   2    2
-      10  0.348 0.652   2    2
+      1   0.000 1.000   2    2
+      2   0.000 1.000   2    2
+      3   1.000 0.000   1    1
+      4   0.002 0.998   2    2
+      5   0.994 0.006   1    1
+      6   0.988 0.012   1    1
+      7   0.968 0.032   1    2
+      8   0.002 0.998   2    2
+      9   0.002 0.998   2    2
+      10  0.000 1.000   2    2
       11  0.000 1.000   2    2
-      12  0.000 1.000   2    2
-      13  0.974 0.026   1    1
-      14  0.188 0.812   2    2
-      15  0.966 0.034   1    1
-      16  0.966 0.034   1    1
+      12  0.840 0.160   1    2
+      13  0.988 0.012   1    1
+      14  0.000 1.000   2    2
+      15  1.000 0.000   1    1
+      16  0.990 0.010   1    1
       17  0.942 0.058   1    1
-      18  0.038 0.962   2    2
-      19  0.974 0.026   1    1
-      20  0.000 1.000   2    2
-      21  0.000 1.000   2    2
-      22  0.916 0.084   1    1
-      23  0.964 0.036   1    1
-      24  0.984 0.016   1    1
-      25  0.982 0.018   1    1
-      26  0.936 0.064   1    1
-      27  0.004 0.996   2    2
-      28  0.934 0.066   1    1
-      29  0.000 1.000   2    2
-      30  0.978 0.022   1    1
-      31  0.984 0.016   1    1
-      32  0.732 0.268   1    1
-      33  0.884 0.116   1    1
+      18  0.000 1.000   2    2
+      19  0.972 0.028   1    1
+      20  0.958 0.042   1    2
+      21  0.526 0.474   1    2
+      22  0.994 0.006   1    1
+      23  0.992 0.008   1    1
+      24  0.996 0.004   1    1
+      25  0.990 0.010   1    1
+      26  0.998 0.002   1    1
+      27  0.722 0.278   1    2
+      28  1.000 0.000   1    1
+      29  0.002 0.998   2    2
+      30  0.994 0.006   1    1
+      31  0.994 0.006   1    1
+      32  0.992 0.008   1    1
+      33  0.994 0.006   1    1
       34  0.000 1.000   2    2
-      35  0.986 0.014   1    1
-      36  0.008 0.992   2    2
-      37  0.040 0.960   2    2
-      38  0.986 0.014   1    1
-      39  0.000 1.000   2    2
-      40  0.972 0.028   1    1
-      41  0.972 0.028   1    1
-      42  0.974 0.026   1    1
-      43  0.952 0.048   1    1
-      44  0.902 0.098   1    1
-      45  0.786 0.214   1    1
-      46  0.982 0.018   1    1
-      47  0.002 0.998   2    2
-      48  0.942 0.058   1    1
-      49  0.008 0.992   2    2
-      50  0.964 0.036   1    1
-      51  0.962 0.038   1    1
-      52  0.978 0.022   1    2
-      53  0.968 0.032   1    1
-      54  0.920 0.080   1    1
-      55  0.950 0.050   1    1
-      56  0.004 0.996   2    2
-      57  0.970 0.030   1    1
-      58  0.976 0.024   1    1
-      59  0.240 0.760   2    2
-      60  0.616 0.384   1    1
-      61  0.958 0.042   1    2
-      62  0.780 0.220   1    1
-      63  0.134 0.866   2    2
-      64  0.966 0.034   1    1
-      65  0.050 0.950   2    2
-      66  0.984 0.016   1    1
-      67  0.002 0.998   2    2
-      68  0.000 1.000   2    2
-      69  0.006 0.994   2    2
-      70  0.046 0.954   2    2
-      71  0.976 0.024   1    1
-      72  0.282 0.718   2    2
-      73  0.968 0.032   1    1
-      74  0.948 0.052   1    1
-      75  0.968 0.032   1    1
-      76  0.040 0.960   2    2
-      77  0.648 0.352   1    2
-      78  0.944 0.056   1    1
-      79  0.966 0.034   1    1
-      80  0.984 0.016   1    1
-      81  0.944 0.056   1    1
-      82  0.930 0.070   1    1
-      83  0.898 0.102   1    1
-      84  0.010 0.990   2    2
-      85  0.944 0.056   1    1
-      86  0.936 0.064   1    1
-      87  0.234 0.766   2    2
-      88  0.172 0.828   2    2
-      89  0.012 0.988   2    2
-      90  0.962 0.038   1    1
-      91  0.028 0.972   2    2
-      92  0.956 0.044   1    1
-      93  0.002 0.998   2    2
-      94  0.002 0.998   2    2
-      95  0.970 0.030   1    1
-      96  0.196 0.804   2    2
-      97  0.980 0.020   1    1
-      98  0.978 0.022   1    1
-      99  0.950 0.050   1    1
-      100 0.966 0.034   1    1
+      35  0.972 0.028   1    1
+      36  0.024 0.976   2    2
+      37  0.004 0.996   2    2
+      38  0.992 0.008   1    1
+      39  0.002 0.998   2    2
+      40  0.956 0.044   1    1
+      41  0.742 0.258   1    1
+      42  0.996 0.004   1    1
+      43  0.996 0.004   1    1
+      44  0.994 0.006   1    1
+      45  0.996 0.004   1    1
+      46  0.996 0.004   1    1
+      47  0.012 0.988   2    2
+      48  0.996 0.004   1    1
+      49  0.038 0.962   2    2
+      50  0.996 0.004   1    1
+      51  0.992 0.008   1    1
+      52  0.000 1.000   2    2
+      53  0.982 0.018   1    1
+      54  0.994 0.006   1    1
+      55  0.996 0.004   1    1
+      56  0.974 0.026   1    2
+      57  1.000 0.000   1    1
+      58  1.000 0.000   1    1
+      59  0.000 1.000   2    2
+      60  1.000 0.000   1    1
+      61  0.000 1.000   2    2
+      62  0.994 0.006   1    1
+      63  0.000 1.000   2    2
+      64  0.992 0.008   1    1
+      65  0.000 1.000   2    2
+      66  0.972 0.028   1    1
+      67  0.004 0.996   2    2
+      68  0.994 0.006   1    2
+      69  0.456 0.544   2    2
+      70  0.000 1.000   2    2
+      71  0.992 0.008   1    1
+      72  0.000 1.000   2    2
+      73  0.996 0.004   1    1
+      74  0.998 0.002   1    1
+      75  0.990 0.010   1    1
+      76  0.000 1.000   2    2
+      77  0.000 1.000   2    2
+      78  0.996 0.004   1    1
+      79  0.994 0.006   1    1
+      80  0.964 0.036   1    1
+      81  0.996 0.004   1    1
+      82  0.990 0.010   1    1
+      83  0.982 0.018   1    1
+      84  0.018 0.982   2    2
+      85  0.980 0.020   1    1
+      86  0.996 0.004   1    1
+      87  0.000 1.000   2    2
+      88  0.000 1.000   2    2
+      89  0.002 0.998   2    2
+      90  0.998 0.002   1    1
+      91  0.004 0.996   2    2
+      92  0.994 0.006   1    1
+      93  0.004 0.996   2    2
+      94  0.000 1.000   2    2
+      95  0.994 0.006   1    1
+      96  0.000 1.000   2    2
+      97  0.982 0.018   1    1
+      98  1.000 0.000   1    1
+      99  0.992 0.008   1    1
+      100 0.988 0.012   1    1
 

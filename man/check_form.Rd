@@ -7,8 +7,8 @@
 check_form(form, re = NULL, ordered = FALSE)
 }
 \arguments{
-\item{form}{A \code{formula} object that is used to specify the model equation.
-The structure is \code{choice ~ A | B | C}, where
+\item{form}{[\code{formula}]\cr
+A model description with the structure \code{choice ~ A | B | C}, where
 \itemize{
 \item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
@@ -26,12 +26,14 @@ They can be removed by adding \code{+0} in the second spot.
 In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
 object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
 
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
+\item{re}{[\code{character()} | \code{NULL}]\cr
+Names of covariates with random effects.
 If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 }
 \value{
 A list that contains the following elements:

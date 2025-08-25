@@ -11,8 +11,8 @@ missing_covariates(
 )
 }
 \arguments{
-\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
-one choice occasion.}
+\item{choice_data}{[\code{data.frame}]\cr
+Choice data in wide format, where each row represents one choice occasion.}
 
 \item{impute}{A character that specifies how to handle missing covariate entries in
 \code{choice_data}, one of:

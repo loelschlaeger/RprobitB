@@ -30,18 +30,19 @@ default.}
 Either a table if \code{overview = TRUE} or a data frame otherwise.
 }
 \description{
-This function predicts the discrete choice behavior
+This function predicts the discrete choice behaviour.
 }
 \details{
 Predictions are made based on the maximum predicted probability for each
-choice alternative. See the vignette on choice prediction for a demonstration
-on how to visualize the model's sensitivity and specificity by means of a
-receiver operating characteristic (ROC) curve.
+choice alternative.
+
+See \href{https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html}{the vignette on choice prediction}
+for a demonstration on how to visualize the model's sensitivity and
+specificity by means of a receiver operating characteristic (ROC) curve.
 }
 \examples{
-data <- simulate_choices(
-  form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1
-)
+set.seed(1)
+data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2)
 data <- train_test(data, test_proportion = 0.5)
 model <- fit_model(data$train)
 

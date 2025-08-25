@@ -1,25 +1,22 @@
-#' Split choice data in train and test subset
+#' Split choice data into train and test subset
 #'
 #' @description
 #' This function splits choice data into a train and a test part.
 #'
-#' @details
-#' See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html)
-#' for more details.
-#'
 #' @param x
 #' An object of class \code{RprobitB_data}.
-#' @param test_proportion
-#' A number between 0 and 1, the proportion of the test subsample.
-#' @param test_number
-#' A positive integer, the number of observations in the test subsample.
-#' @param by
-#' One of \code{"N"} (split by deciders) and \code{"T"} (split by choice
-#' occasions).
-#' @param random
-#' If \code{TRUE}, the subsamples are build randomly.
-#' @param seed
-#' Set a seed for building the subsamples randomly.
+#'
+#' @param test_proportion \[`numeric(1)`\]\cr
+#' The proportion of the test subset.
+#'
+#' @param test_number \[`integer(1)`\]\cr
+#' The number of observations in the test subset.
+#'
+#' @param by \[`character(1)`\]\cr
+#' Either \code{"N"} (split by deciders) and \code{"T"} (split by occasions).
+#'
+#' @param random \[`logical(1)`\]\cr
+#' Build subsets randomly?
 #'
 #' @return
 #' A list with two objects of class \code{RprobitB_data}, named \code{"train"}
@@ -35,49 +32,49 @@
 #'
 #' ### 2 randomly chosen choice occasions per decider in the test subsample,
 #' ### the rest in the train subsample
-#' train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
+#' train_test(x, test_number = 2, by = "T", random = TRUE)
 #'
 #' @export
 
-train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
-                       random = FALSE, seed = NULL) {
+train_test <- function(
+    x, test_proportion = NULL, test_number = NULL, by = "N", random = FALSE
+  ) {
+
   ### input checks
-  if (!inherits(x, "RprobitB_data")) {
-    stop("'x' must be of class 'RprobitB_data'.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_data"),
+    var_name = "x"
+  )
   if (is.null(test_proportion) && is.null(test_number)) {
-    stop("Either 'test_proportion' or 'test_number' must be specified.",
-         call. = FALSE
+    stop(
+      "Either 'test_proportion' or 'test_number' must be specified.",
+      call. = FALSE
     )
   }
   if (!is.null(test_proportion) && !is.null(test_number)) {
-    stop("Only one of 'test_proportion' and 'test_number' can be specified.",
-         call. = FALSE
+    stop(
+      "Only one of 'test_proportion' and 'test_number' can be specified.",
+      call. = FALSE
     )
   }
-  if (!is.null(test_proportion)) {
-    if (!(is.numeric(test_proportion) && length(test_proportion) == 1 &&
-          all(test_proportion >= 0) && all(test_proportion <= 1))) {
-      stop("'test_proportion' must be a number between 0 and 1.", call. = FALSE)
-    }
-  }
-  if (!is.null(test_number)) {
-    if (!(is.numeric(test_number) && length(test_number) == 1 &&
-          all(test_number >= 0) && all(test_number %% 1 == 0))) {
-      stop("'test_number' must be a positive integer.", call. = FALSE)
-    }
-  }
-  if (!(length(by) == 1 && by %in% c("N", "T"))) {
-    stop("'by' must be 'N' or 'T'.", call. = FALSE)
-  }
-  if (!isTRUE(random) && !isFALSE(random)) {
-    stop("'random' must be a boolean.", call. = FALSE)
-  }
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+  oeli::input_check_response(
+    check = checkmate::check_number(
+      test_proportion, lower = 0, upper = 1, null.ok = TRUE
+    ),
+    var_name = "test_proportion"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(test_number, null.ok = TRUE),
+    var_name = "test_number"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_choice(by, choices = c("N", "T")),
+    var_name = "by"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(random),
+    var_name = "random"
+  )
 
   ### create train and test data set
   train <- x
@@ -100,13 +97,13 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 
     ### remove elements from 'train'
     train$data <- train$data[ind_train]
-    train$choice_data <- x$choice_data[x$choice_data[[x$res_var_names$id]] %in% id[ind_train], ]
+    ids <- x$choice_data[[x$res_var_names$id]] %in% id[ind_train]
+    train$choice_data <- x$choice_data[ids, ]
     train$N <- sum(ind_train != 0)
     train$T <- train$T[ind_train]
     if (!identical(train$true_parameter$beta, NA)) {
-      train$true_parameter$beta <- train$true_parameter$beta[, ind_train,
-                                                             drop = FALSE
-      ]
+      train$true_parameter$beta <-
+        train$true_parameter$beta[, ind_train, drop = FALSE]
     }
     if (!identical(train$true_parameter$z, NA)) {
       train$true_parameter$z <- train$true_parameter$z[ind_train]
@@ -114,13 +111,13 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 
     ### remove elements from 'test'
     test$data <- test$data[ind_test]
-    test$choice_data <- x$choice_data[x$choice_data[[x$res_var_names$id]] %in% id[ind_test], ]
+    ids <- x$choice_data[[x$res_var_names$id]] %in% id[ind_test]
+    test$choice_data <- x$choice_data[ids, ]
     test$N <- sum(ind_test != 0)
     test$T <- test$T[ind_test]
     if (!identical(test$true_parameter$beta, NA)) {
-      test$true_parameter$beta <- test$true_parameter$beta[, ind_test,
-                                                           drop = FALSE
-      ]
+      test$true_parameter$beta <-
+        test$true_parameter$beta[, ind_test, drop = FALSE]
     }
     if (!identical(test$true_parameter$z, NA)) {
       test$true_parameter$z <- test$true_parameter$z[ind_test]
@@ -152,13 +149,15 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
 
       ### check 'ind_test' and 'ind_train'
       if (sum(ind_test != 0) == 0) {
-        warning("No observation(s) for decider ", n, " in test subsample.",
-                call. = FALSE, immediate. = TRUE
+        warning(
+          "No observation(s) for decider ", n, " in test subsample.",
+          call. = FALSE, immediate. = TRUE
         )
       }
       if (sum(ind_train != 0) == 0) {
-        warning("No observation(s) for decider ", n, " in train subsample.",
-                call. = FALSE, immediate. = TRUE
+        warning(
+          "No observation(s) for decider ", n, " in train subsample.",
+          call. = FALSE, immediate. = TRUE
         )
       }
 
@@ -167,9 +166,9 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
         "X" = train$data[[n]]$X[ind_train],
         "y" = train$data[[n]]$y[ind_train]
       )
-      train$choice_data[train$choice_data[[train$res_var_names$id]] == n &
-                          !train$choice_data[[train$res_var_names$idc]] %in%
-                          ind_train, ] <- NA
+      ids <- train$choice_data[[train$res_var_names$id]] == n &
+        !train$choice_data[[train$res_var_names$idc]] %in% ind_train
+      train$choice_data[ids, ] <- NA
       train$choice_data <- stats::na.omit(train$choice_data)
       train$T[n] <- sum(ind_train != 0)
 
@@ -178,14 +177,14 @@ train_test <- function(x, test_proportion = NULL, test_number = NULL, by = "N",
         "X" = test$data[[n]]$X[ind_test],
         "y" = test$data[[n]]$y[ind_test]
       )
-      test$choice_data[test$choice_data[[test$res_var_names$id]] == n &
-                         !test$choice_data[[test$res_var_names$idc]] %in%
-                         ind_test, ] <- NA
+      ids <- test$choice_data[[test$res_var_names$id]] == n &
+        !test$choice_data[[test$res_var_names$idc]] %in% ind_test
+      test$choice_data[ids, ] <- NA
       test$choice_data <- stats::na.omit(test$choice_data)
       test$T[n] <- sum(ind_test != 0)
     }
   }
 
   ### return train and test data set
-  return(list("train" = train, "test" = test))
+  list("train" = train, "test" = test)
 }

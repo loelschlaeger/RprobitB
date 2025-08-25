@@ -8,7 +8,7 @@
 #' @inheritParams RprobitB_data
 #'
 #' @return
-#' A data frame, each row is a effect, columns are the effect name
+#' A `data.frame`, each row is a effect, columns are the effect name
 #' \code{"effect"}, and booleans whether the covariate is alternative-specific
 #' \code{"as_value"}, whether the coefficient is alternative-specific
 #' \code{"as_coef"}, and whether it is a random effect \code{"random"}.
@@ -26,46 +26,39 @@
 #' @seealso
 #' [check_form()] for checking the model formula specification.
 
-overview_effects <- function(form, re = NULL, alternatives,
-                             base = tail(alternatives, 1), ordered = FALSE) {
+overview_effects <- function(
+    form, re = NULL, alternatives, base = tail(alternatives, 1), ordered = FALSE
+  ) {
+
   ### check input
-  if (missing(form)) {
-    stop("'Please specify 'form'.",
-         call. = FALSE
-    )
-  }
-  if (!inherits(form, "formula")) {
-    stop("'form' must be of class 'formula'.",
-         call. = FALSE
-    )
-  }
-  if (!(is.null(re) || is.character(re))) {
-    stop("'re' must be either 'NULL' or a character (vector).",
-         call. = FALSE
-    )
-  }
-  if (missing(alternatives)) {
-    stop("'Please specify 'alternatives'.",
-         call. = FALSE
-    )
-  }
-  if (!is.character(alternatives) || length(alternatives) < 2) {
-    stop("'alternatives' must be a character vector of length >= 2.",
-         call. = FALSE
-    )
-  }
-  if (!is.null(base)) {
-    if (!(length(base) == 1 && is.character(base) && base %in% alternatives)) {
-      stop("'base' must be one element of 'alternatives'.",
-           call. = FALSE
-      )
-    }
-  }
-  if (!(length(ordered) == 1 && is.logical(ordered))) {
-    stop("'ordered' must be a boolean.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(form),
+    var_name = "form"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_formula(form),
+    var_name = "form"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(re, null.ok = TRUE),
+    var_name = "re"
+  )
+  oeli::input_check_response(
+    check = oeli::check_missing(alternatives),
+    var_name = "alternatives"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(alternatives, min.len = 2),
+    var_name = "alternatives"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_choice(base, alternatives, null.ok = TRUE),
+    var_name = "base"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(ordered),
+    var_name = "ordered"
+  )
 
   ### check 'form'
   check_form_out <- check_form(form = form, re = re, ordered = ordered)

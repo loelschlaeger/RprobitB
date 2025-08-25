@@ -7,22 +7,23 @@
 #' See [the vignette on choice data](https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html)
 #' for more details.
 #'
-#' @inheritParams RprobitB_data
-#' @inheritParams check_form
-#' @param covariates
+#' @param covariates \[`list`\]\cr
 #' A named list of covariate values. Each element must be a vector of length
 #' equal to the number of choice occasions and named according to a covariate.
 #' Covariates for which no values are supplied are drawn from a standard normal
 #' distribution.
-#' @param seed
-#' Set a seed for the simulation.
-#' @param true_parameter
-#' Optionally specify a named list with true parameter values for \code{alpha},
+#'
+#' @param true_parameter \[`list`\]\cr
+#' A named list with true parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-#' \code{beta}, \code{z}, or \code{d} for the simulation.
+#' \code{beta}, \code{z}, \code{d} for the simulation.
+#'
 #' See [the vignette on model definition](https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html)
 #' for definitions of these variables.
+#'
 #' @inheritParams prepare_data
+#' @inheritParams RprobitB_data
+#' @inheritParams check_form
 #'
 #' @return
 #' An object of class \code{RprobitB_data}.
@@ -36,7 +37,6 @@
 #'   J = 2,
 #'   re = c("cost", "time"),
 #'   alternatives = c("car", "bus"),
-#'   seed = 1,
 #'   true_parameter = list(
 #'     "alpha" = c(-1, 1),
 #'     "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
@@ -54,8 +54,7 @@
 #'   ordered = TRUE,
 #'   covariates = list(
 #'     "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
-#'   ),
-#'   seed = 1
+#'   )
 #' )
 #'
 #' ### simulate data from a ranked probit model
@@ -65,8 +64,7 @@
 #'   T = 1:10,
 #'   J = 3,
 #'   alternatives = c("A", "B", "C"),
-#'   ranked = TRUE,
-#'   seed = 1
+#'   ranked = TRUE
 #' )
 #'
 #' @export
@@ -76,23 +74,21 @@
 #'   \item [check_form()] for checking the model formula
 #'   \item [overview_effects()] for an overview of the model effects
 #'   \item [create_lagged_cov()] for creating lagged covariates
-#'   \item [as_cov_names()] for re-labeling alternative-specific covariates
+#'   \item [as_cov_names()] for re-labelling alternative-specific covariates
 #'   \item [prepare_data()] for preparing empirical choice data
 #'   \item [train_test()] for splitting choice data into a train and test subset
 #' }
 
 simulate_choices <- function(
     form, N, T = 1, J, re = NULL, alternatives = NULL, ordered = FALSE,
-    ranked = FALSE, base = NULL, covariates = NULL, seed = NULL,
-    true_parameter = list()
+    ranked = FALSE, base = NULL, covariates = NULL, true_parameter = list()
   ) {
 
   ### check 'form'
-  if (missing(form)) {
-    stop("Please specify the model formula 'form'.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(form),
+    var_name = "form"
+  )
   check_form_out <- check_form(form = form, re = re, ordered = ordered)
   form <- check_form_out$form
   choice <- check_form_out$choice
@@ -101,67 +97,50 @@ simulate_choices <- function(
   ASC <- check_form_out$ASC
 
   ### check other inputs
-  if (missing(N)) {
-    stop("Please specify 'N'.",
-         call. = FALSE
-    )
-  }
-  if (!is.numeric(N) || N %% 1 != 0) {
-    stop("'N' must be a non-negative number.",
-         call. = FALSE
-    )
-  }
-  if (length(T) == 1) {
-    T <- rep(T, N)
-  }
-  if (any(!is.numeric(T)) || any(T %% 1 != 0)) {
-    stop("'T' must be non-negative or a vector of non-negative numbers.",
-         call. = FALSE
-    )
-  }
-  if (!is.numeric(J) || J %% 1 != 0 || !J >= 2) {
-    stop("'J' must be a number greater or equal 2.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing("N"),
+    var_name = "N"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(N, positive = TRUE),
+    var_name = "N"
+  )
+  if (length(T) == 1) T <- rep(T, N)
+  oeli::input_check_response(
+    check = checkmate::check_integerish(T, lower = 0, any.missing = FALSE),
+    var_name = "T"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_int(J, lower = 2),
+    var_name = "J"
+  )
   if (is.null(alternatives)) {
     if (J > 26) {
-      stop("Please specify 'alternatives'.",
-           call. = FALSE
-      )
+      stop("Please specify 'alternatives'.", call. = FALSE)
     } else {
       alternatives <- LETTERS[1:J]
     }
   }
-  if (length(alternatives) != J || !is.character(alternatives)) {
-    stop("'alternatives' must be a character (vector) of length 'J'.",
-         call. = FALSE
-    )
+  oeli::input_check_response(
+    check = checkmate::check_character(alternatives, len = J),
+    var_name = "alternatives"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(ordered),
+    var_name = "ordered"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(ranked),
+    var_name = "ranked"
+  )
+  if (isTRUE(ordered) && isTRUE(ranked)) {
+    stop("'ordered' and 'ranked' cannot both be TRUE.", call. = FALSE)
   }
-  if (!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean",
-         call. = FALSE
-    )
+  if (isTRUE(ordered) && J <= 2) {
+    stop("'J' must be >= 3 in the ordered probit model.", call. = FALSE)
   }
-  if (!isTRUE(ranked) && !isFALSE(ranked)) {
-    stop("'ranked' must be a boolean",
-         call. = FALSE
-    )
-  }
-  if (ordered == TRUE && ranked == TRUE) {
-    stop("'ordered' and 'ranked' cannot both be TRUE.",
-         call. = FALSE
-    )
-  }
-  if (ordered == TRUE && J <= 2) {
-    stop("'J' must be greater or equal 3 in the ordered probit model.",
-         call. = FALSE
-    )
-  }
-  if (ranked == TRUE && J <= 2) {
-    stop("'J' must be greater or equal 3 in the ranked probit model.",
-         call. = FALSE
-    )
+  if (isTRUE(ranked) && J <= 2) {
+    stop("'J' must be >= 3 in the ranked probit model.", call. = FALSE)
   }
   if (!is.null(covariates)) {
     for (i in 1:length(covariates)) {
@@ -178,9 +157,6 @@ simulate_choices <- function(
   }
 
   ### draw covariates
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
   choice_data <- data.frame(
     "id" = rep(1:N, times = T),
     "idc" = unlist(sapply(T, seq_len, simplify = FALSE))
@@ -248,7 +224,8 @@ simulate_choices <- function(
   if (length(names(covariates)) > 0) {
     warning(
       paste(
-        "The column(s)", paste(paste0("'", names(covariates), "'", collapse = ", ")),
+        "The column(s)",
+        paste(paste0("'", names(covariates), "'", collapse = ", ")),
         "in 'covariates' are ignored."
       ),
       call. = FALSE, immediate. = TRUE
@@ -317,7 +294,9 @@ simulate_choices <- function(
           }
           mat <- mat[, -base_index, drop = FALSE]
           X_nt <- cbind(X_nt, mat)
-          colnames(X_nt) <- c(old_names, paste0(var, "_", alternatives[(1:J)[-base_index]]))
+          colnames(X_nt) <- c(
+            old_names, paste0(var, "_", alternatives[(1:J)[-base_index]])
+          )
         }
 
         ### type-3 covariates
@@ -357,9 +336,9 @@ simulate_choices <- function(
           U_nt <- V_nt + eps
         }
         gamma <- c(0, cumsum(exp(true_parameter[["d"]])))
-        y_nt_ind <- cut(U_nt,
-                        breaks = c(-Inf, gamma, Inf),
-                        right = TRUE, include.lowest = TRUE, labels = FALSE
+        y_nt_ind <- cut(
+          U_nt, breaks = c(-Inf, gamma, Inf), right = TRUE,
+          include.lowest = TRUE, labels = FALSE
         )
         y_n[t] <- alternatives[y_nt_ind]
       } else {
@@ -393,18 +372,19 @@ simulate_choices <- function(
   if (ASC) choice_data$ASC <- NULL
 
   ### save cov names
+  alt_length <- length(alternatives)
   cov_names <- c(
     if (length(vars[[1]]) > 0) {
-      paste(rep(vars[[1]], each = length(alternatives)), alternatives, sep = "_")
+      paste(rep(vars[[1]], each = alt_length), alternatives, sep = "_")
     },
     vars[[2]],
     if (length(vars[[3]]) > 0) {
-      paste(rep(vars[[3]], each = length(alternatives)), alternatives, sep = "_")
+      paste(rep(vars[[3]], each = alt_length), alternatives, sep = "_")
     }
   )
 
   ### create output
-  out <- RprobitB_data(
+  RprobitB_data(
     data = data,
     choice_data = choice_data,
     N = N,
@@ -425,11 +405,7 @@ simulate_choices <- function(
     choice_available = TRUE,
     true_parameter = true_parameter,
     res_var_names = list(
-      "choice" = choice, "cov" = cov_names, "id" = "id",
-      "idc" = "idc"
+      "choice" = choice, "cov" = cov_names, "id" = "id", "idc" = "idc"
     )
   )
-
-  ### return 'RprobitB_data' object
-  return(out)
 }

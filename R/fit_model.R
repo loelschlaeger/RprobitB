@@ -1,7 +1,7 @@
 #' Fit probit model to choice data
 #'
 #' @description
-#' This function performs Gibbs sampling for fitting different types of probit
+#' This function performs MCMC simulation for fitting different types of probit
 #' models (binary, multivariate, mixed, latent class, ordered, ranked) to
 #' discrete choice data.
 #'
@@ -25,9 +25,6 @@
 #' of \code{\link{check_prior}} for details about which parameters can be
 #' specified.
 #'
-#' @param seed
-#' Set a seed for the Gibbs sampling.
-#'
 #' @param fixed_parameter
 #' Optionally specify a named list with fixed parameter values for \code{alpha},
 #' \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
@@ -46,10 +43,10 @@
 #' An object of class \code{RprobitB_fit}.
 #'
 #' @examples
-#' data <- simulate_choices(
-#'   form = choice ~ var | 0, N = 100, T = 10, J = 3, seed = 1, re = "var"
-#' )
-#' model <- fit_model(data = data, R = 1000, seed = 1)
+#' set.seed(1)
+#' form <- choice ~ var | 0
+#' data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
+#' model <- fit_model(data = data, R = 1000)
 #' summary(model)
 #'
 #' @export
@@ -65,7 +62,7 @@
 fit_model <- function(
     data, scale = "Sigma_1,1 := 1", R = 1000, B = R / 2, Q = 1,
     print_progress = getOption("RprobitB_progress", default = TRUE),
-    prior = NULL, latent_classes = NULL, seed = NULL, fixed_parameter = list(),
+    prior = NULL, latent_classes = NULL, fixed_parameter = list(),
     save_beta_draws = FALSE
   ) {
 
@@ -145,9 +142,6 @@ fit_model <- function(
   )
 
   ### Gibbs sampling
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
   timer_start <- Sys.time()
   gibbs_samples <- gibbs_sampler(
     sufficient_statistics = sufficient_statistics(
@@ -213,7 +207,7 @@ fit_model <- function(
   }
 
   ### build 'RprobitB_fit' object
-  out <- RprobitB_fit(
+  RprobitB_fit(
     data = data,
     scale = scale,
     level = NULL,
@@ -227,7 +221,4 @@ fit_model <- function(
     class_sequence = class_sequence,
     comp_time = difftime(timer_end, timer_start)
   )
-
-  ### return 'RprobitB_fit' object
-  return(out)
 }

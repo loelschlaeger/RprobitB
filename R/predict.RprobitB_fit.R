@@ -1,16 +1,19 @@
 #' Predict choices
 #'
 #' @description
-#' This function predicts the discrete choice behavior
+#' This function predicts the discrete choice behaviour.
 #'
 #' @details
 #' Predictions are made based on the maximum predicted probability for each
-#' choice alternative. See the vignette on choice prediction for a demonstration
-#' on how to visualize the model's sensitivity and specificity by means of a
-#' receiver operating characteristic (ROC) curve.
+#' choice alternative.
+#'
+#' See [the vignette on choice prediction](https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html)
+#' for a demonstration on how to visualize the model's sensitivity and
+#' specificity by means of a receiver operating characteristic (ROC) curve.
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @param data
 #' Either
 #' \itemize{
@@ -21,11 +24,14 @@
 #'         same structure as `choice_data` used in \code{\link{prepare_data}}.
 #'         Missing columns or \code{NA} values are set to 0.
 #' }
+#'
 #' @param overview
 #' If \code{TRUE}, returns a confusion matrix.
+#'
 #' @param digits
 #' The number of digits of the returned choice probabilities. `digits = 2` per
 #' default.
+#'
 #' @param ...
 #' Ignored.
 #'
@@ -33,9 +39,8 @@
 #' Either a table if \code{overview = TRUE} or a data frame otherwise.
 #'
 #' @examples
-#' data <- simulate_choices(
-#'   form = choice ~ cov, N = 10, T = 10, J = 2, seed = 1
-#' )
+#' set.seed(1)
+#' data <- simulate_choices(form = choice ~ cov, N = 10, T = 10, J = 2)
 #' data <- train_test(data, test_proportion = 0.5)
 #' model <- fit_model(data$train)
 #'
@@ -50,8 +55,10 @@
 #'
 #' @export
 
-predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
-                                 digits = 2, ...) {
+predict.RprobitB_fit <- function(
+    object, data = NULL, overview = TRUE, digits = 2, ...
+  ) {
+
   ### choose data
   if (is.null(data)) {
     data <- object$data
@@ -77,17 +84,15 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
     )
   }
   if (!inherits(data, "RprobitB_data")) {
-    stop("'data' is not of class 'RprobitB_data'.",
-         call. = FALSE
-    )
+    stop("'data' is not of class 'RprobitB_data'.", call. = FALSE)
   }
 
   ### compute choice probabilities
   choice_probs <- as.data.frame(choice_probabilities(object, data = data))
 
   ### round choice probabilities
-  choice_probs[data$alternatives] <- round(choice_probs[data$alternatives],
-                                           digits = digits
+  choice_probs[data$alternatives] <- round(
+    choice_probs[data$alternatives], digits = digits
   )
 
   ### check if true choices are available
@@ -108,9 +113,10 @@ predict.RprobitB_fit <- function(object, data = NULL, overview = TRUE,
     }
   } else {
     if (data$choice_available) {
-      out <- cbind(choice_probs,
-                   "true" = true_choices, "predicted" = prediction,
-                   "correct" = (true_choices == prediction)
+      out <- cbind(
+        choice_probs,
+        "true" = true_choices, "predicted" = prediction,
+        "correct" = (true_choices == prediction)
       )
     } else {
       out <- cbind(choice_probs, "prediction" = prediction)

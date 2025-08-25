@@ -10,8 +10,10 @@
 #'
 #' @param object
 #' An object of class \code{RprobitB_fit}.
+#'
 #' @param ...
-#' Ignored.
+#' Currently not used.
+#'
 #' @inheritParams prepare_data
 #' @inheritParams fit_model
 #'
@@ -22,7 +24,9 @@
 
 update.RprobitB_fit <- function(
     object, form, re, alternatives, id, idc, standardize, impute, scale, R, B,
-    Q, print_progress, prior, latent_classes, seed, ...) {
+    Q, print_progress, prior, latent_classes, ...
+  ) {
+
   data <- prepare_data(
     form = if (missing(form)) object$data$form else form,
     choice_data = object$data$choice_data,
@@ -33,6 +37,7 @@ update.RprobitB_fit <- function(
     standardize = if (missing(standardize)) object$data$standardize else standardize,
     impute = if (missing(impute)) "complete_cases" else impute
   )
+
   model <- fit_model(
     data = data,
     scale = if (missing(scale)) object$scale else scale,
@@ -41,8 +46,8 @@ update.RprobitB_fit <- function(
     Q = if (missing(Q)) object$Q else Q,
     print_progress = if (missing(print_progress)) getOption("RprobitB_progress") else print_progress,
     prior = if (missing(prior)) NULL else prior,
-    latent_classes = if (missing(latent_classes)) object$latent_classes else latent_classes,
-    seed = if (missing(seed)) NULL else seed
+    latent_classes = if (missing(latent_classes)) object$latent_classes else latent_classes
   )
+
   return(model)
 }

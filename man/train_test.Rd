@@ -2,30 +2,30 @@
 % Please edit documentation in R/train_test.R
 \name{train_test}
 \alias{train_test}
-\title{Split choice data in train and test subset}
+\title{Split choice data into train and test subset}
 \usage{
 train_test(
   x,
   test_proportion = NULL,
   test_number = NULL,
   by = "N",
-  random = FALSE,
-  seed = NULL
+  random = FALSE
 )
 }
 \arguments{
 \item{x}{An object of class \code{RprobitB_data}.}
 
-\item{test_proportion}{A number between 0 and 1, the proportion of the test subsample.}
+\item{test_proportion}{[\code{numeric(1)}]\cr
+The proportion of the test subset.}
 
-\item{test_number}{A positive integer, the number of observations in the test subsample.}
+\item{test_number}{[\code{integer(1)}]\cr
+The number of observations in the test subset.}
 
-\item{by}{One of \code{"N"} (split by deciders) and \code{"T"} (split by choice
-occasions).}
+\item{by}{[\code{character(1)}]\cr
+Either \code{"N"} (split by deciders) and \code{"T"} (split by occasions).}
 
-\item{random}{If \code{TRUE}, the subsamples are build randomly.}
-
-\item{seed}{Set a seed for building the subsamples randomly.}
+\item{random}{[\code{logical(1)}]\cr
+Build subsets randomly?}
 }
 \value{
 A list with two objects of class \code{RprobitB_data}, named \code{"train"}
@@ -33,10 +33,6 @@ and \code{"test"}.
 }
 \description{
 This function splits choice data into a train and a test part.
-}
-\details{
-See \href{https://loelschlaeger.de/RprobitB/articles/v02_choice_data.html}{the vignette on choice data}
-for more details.
 }
 \examples{
 ### simulate choices for demonstration
@@ -48,6 +44,6 @@ train_test(x, test_proportion = 0.3, by = "N")
 
 ### 2 randomly chosen choice occasions per decider in the test subsample,
 ### the rest in the train subsample
-train_test(x, test_number = 2, by = "T", random = TRUE, seed = 1)
+train_test(x, test_number = 2, by = "T", random = TRUE)
 
 }

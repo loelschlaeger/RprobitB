@@ -45,6 +45,7 @@ test_that("creation of labels works", {
 })
 
 test_that("choice prediction works", {
+  set.seed(1)
   N <- 100
   data <- simulate_choices(
     form = choice ~ cost | income | time,
@@ -52,17 +53,17 @@ test_that("choice prediction works", {
     T = sample.int(5, size = N, replace = TRUE),
     J = 2,
     alternatives = c("bus", "car"),
-    seed = 1,
     true_parameter = list("alpha" = 1:5, "Sigma" = 1)
   )
   data <- train_test(data, test_proportion = 0.3)
-  model <- fit_model(data$train, R = 1000, seed = 1)
+  model <- fit_model(data$train, R = 1000)
   expect_snapshot(predict(model, overview = TRUE))
   expect_snapshot(predict(model, overview = FALSE))
   expect_snapshot(predict(model, data = data$test, overview = TRUE))
 })
 
 test_that("preference classification works", {
+  set.seed(1)
   N <- 100
   data <- simulate_choices(
     form = choice ~ cost,
@@ -71,12 +72,11 @@ test_that("preference classification works", {
     J = 3,
     re = c("cost"),
     alternatives = c("train", "bus", "car"),
-    seed = 1,
     true_parameter = list(
-      "C" = 2, "s" = c(0.6, 0.4), "b" = matrix(c(3, -3), ncol = 2)
+      "C" = 2, "s" = c(0.6, 0.4), "b" = matrix(c(-3, 3), ncol = 2)
     )
   )
-  model <- fit_model(data, seed = 1, latent_classes = list("C" = 2))
+  model <- fit_model(data, latent_classes = list("C" = 2))
   classif <- classification(model, add_true = TRUE)
   expect_snapshot(classif)
   # sum(classif$est == classif$true) / N

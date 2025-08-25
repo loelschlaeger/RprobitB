@@ -1,16 +1,17 @@
 #' Re-label alternative specific covariates
 #'
 #' @description
-#' In \code{{RprobitB}}, alternative specific covariates must be named in the format
-#' \code{"<covariate>_<alternative>"}. This convenience function generates
-#' the format for a given \code{choice_data} set.
+#' In \code{{RprobitB}}, alternative specific covariates must be named in the
+#' format \code{"<covariate>_<alternative>"}. This helper function generates the
+#' format for a given \code{choice_data} set.
+#'
+#' @param cov \[`character()`\]\cr
+#' Names of alternative specific covariates in \code{choice_data}.
+#'
+#' @param alternatives \[`atomic()`\]\cr
+#' The alternative names.
 #'
 #' @inheritParams prepare_data
-#' @param cov
-#' A character vector of the names of alternative specific covariates in
-#' \code{choice_data}.
-#' @param alternatives
-#' A (character or numeric) vector of the alternative names.
 #'
 #' @return
 #' The \code{choice_data} input with updated column names.
@@ -26,6 +27,34 @@
 #' @export
 
 as_cov_names <- function(choice_data, cov, alternatives) {
+
+  ### input checks
+  oeli::input_check_response(
+    check = oeli::check_missing(choice_data),
+    var_name = "choice_data"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_data_frame(choice_data),
+    var_name = "choice_data"
+  )
+  oeli::input_check_response(
+    check = oeli::check_missing(cov),
+    var_name = "cov"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(cov),
+    var_name = "cov"
+  )
+  oeli::input_check_response(
+    check = oeli::check_missing(alternatives),
+    var_name = "alternatives"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_atomic(alternatives),
+    var_name = "alternatives"
+  )
+
+  ### change format
   x <- colnames(choice_data)
   for (i in seq_len(length(x))) {
     lab <- x[i]

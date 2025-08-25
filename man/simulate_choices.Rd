@@ -15,13 +15,12 @@ simulate_choices(
   ranked = FALSE,
   base = NULL,
   covariates = NULL,
-  seed = NULL,
   true_parameter = list()
 )
 }
 \arguments{
-\item{form}{A \code{formula} object that is used to specify the model equation.
-The structure is \code{choice ~ A | B | C}, where
+\item{form}{[\code{formula}]\cr
+A model description with the structure \code{choice ~ A | B | C}, where
 \itemize{
 \item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
@@ -39,44 +38,55 @@ They can be removed by adding \code{+0} in the second spot.
 In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
 object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
 
-\item{N}{The number (greater or equal 1) of decision makers.}
+\item{N}{[\code{integer(1)}]\cr
+The number of decision makers.}
 
-\item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).
-Per default, \code{T = 1}.}
+\item{T}{[\code{integer(1)} | \code{integer(N)}]\cr
+The number of choice occasions or a vector of decider-specific choice
+occasions of length \code{N}.}
 
-\item{J}{The number (greater or equal 2) of choice alternatives.}
+\item{J}{[\code{integer(1)}]\cr
+The number >= 2 of choice alternatives.}
 
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
+\item{re}{[\code{character()} | \code{NULL}]\cr
+Names of covariates with random effects.
 If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.
+\item{alternatives}{[\code{character()}]\cr
+The names of the choice alternatives. If not specified, the choice set is
+defined by the observed choices.
+
 If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
 the alternatives ordered from worst to best.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 
-\item{ranked}{TBA}
+\item{ranked}{[\code{logical(1)}]\cr
+Are the alternatives ranked?}
 
-\item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
-\code{NULL} if the model has no alternative specific covariates (e.g. in the
-ordered probit model).
-Per default, \code{base} is the last element of \code{alternatives}.}
+\item{base}{[\code{character(1)}]\cr
+The name of the base alternative for covariates that are not
+alternative specific (i.e. type 2 covariates and ASCs).
 
-\item{covariates}{A named list of covariate values. Each element must be a vector of length
+Ignored and set to \code{NULL} if the model has no alternative specific
+covariates (e.g. in the ordered probit model).
+
+By default, \code{base} is the last element of \code{alternatives}.}
+
+\item{covariates}{[\code{list}]\cr
+A named list of covariate values. Each element must be a vector of length
 equal to the number of choice occasions and named according to a covariate.
 Covariates for which no values are supplied are drawn from a standard normal
 distribution.}
 
-\item{seed}{Set a seed for the simulation.}
-
-\item{true_parameter}{Optionally specify a named list with true parameter values for \code{alpha},
+\item{true_parameter}{[\code{list}]\cr
+A named list with true parameter values for \code{alpha},
 \code{C}, \code{s}, \code{b}, \code{Omega}, \code{Sigma}, \code{Sigma_full},
-\code{beta}, \code{z}, or \code{d} for the simulation.
+\code{beta}, \code{z}, \code{d} for the simulation.
+
 See \href{https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html}{the vignette on model definition}
 for definitions of these variables.}
 }
@@ -99,7 +109,6 @@ data <- simulate_choices(
   J = 2,
   re = c("cost", "time"),
   alternatives = c("car", "bus"),
-  seed = 1,
   true_parameter = list(
     "alpha" = c(-1, 1),
     "b" = matrix(c(-1, -1, -0.5, -1.5, 0, -1), ncol = 2),
@@ -117,8 +126,7 @@ data <- simulate_choices(
   ordered = TRUE,
   covariates = list(
     "gender" = rep(sample(c(0, 1), 10, replace = TRUE), times = 1:10)
-  ),
-  seed = 1
+  )
 )
 
 ### simulate data from a ranked probit model
@@ -128,8 +136,7 @@ data <- simulate_choices(
   T = 1:10,
   J = 3,
   alternatives = c("A", "B", "C"),
-  ranked = TRUE,
-  seed = 1
+  ranked = TRUE
 )
 
 }
@@ -138,7 +145,7 @@ data <- simulate_choices(
 \item \code{\link[=check_form]{check_form()}} for checking the model formula
 \item \code{\link[=overview_effects]{overview_effects()}} for an overview of the model effects
 \item \code{\link[=create_lagged_cov]{create_lagged_cov()}} for creating lagged covariates
-\item \code{\link[=as_cov_names]{as_cov_names()}} for re-labeling alternative-specific covariates
+\item \code{\link[=as_cov_names]{as_cov_names()}} for re-labelling alternative-specific covariates
 \item \code{\link[=prepare_data]{prepare_data()}} for preparing empirical choice data
 \item \code{\link[=train_test]{train_test()}} for splitting choice data into a train and test subset
 }

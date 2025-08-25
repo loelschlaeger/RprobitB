@@ -22,7 +22,8 @@ The length of the burn-in period.}
 \item{Q}{[\code{integer(1)}]\cr
 The thinning factor for the Gibbs samples.}
 
-\item{scale}{A character which determines the utility scale. It is of the form
+\item{scale}{[\code{character(1)}]\cr
+A character which determines the utility scale. It is of the form
 \verb{<parameter> := <value>}, where \verb{<parameter>} is either the name of a fixed
 effect or \verb{Sigma_<j>,<j>} for the \verb{<j>}th diagonal element of \code{Sigma}, and
 \verb{<value>} is the value of the fixed parameter.}

@@ -4,20 +4,21 @@
 \alias{create_lagged_cov}
 \title{Create lagged choice covariates}
 \usage{
-create_lagged_cov(choice_data, column, k = 1, id = "id")
+create_lagged_cov(choice_data, column = character(), k = 1, id = "id")
 }
 \arguments{
-\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
-one choice occasion.}
+\item{choice_data}{[\code{data.frame}]\cr
+Choice data in wide format, where each row represents one choice occasion.}
 
-\item{column}{A character, the column name in \code{choice_data}, i.e. the covariate name.
-Can be a vector.}
+\item{column}{[\code{character()}]\cr
+Covariate names in \code{choice_data}.}
 
-\item{k}{A positive number, the number of lags (in units of observations), see the
-details. Can be a vector. The default is \code{k = 1}.}
+\item{k}{[\code{integer()}]\cr
+The number of lags (in units of observations), see the details.}
 
-\item{id}{A character, the name of the column in \code{choice_data} that contains
-unique identifier for each decision maker. The default is \code{"id"}.}
+\item{id}{[\code{character(1)}]\cr
+The name of the column in \code{choice_data} that contains unique identifier
+for each decision maker.}
 }
 \value{
 The input \code{choice_data} with the additional columns named
@@ -40,4 +41,9 @@ and each choice occasion the covariate faced before \code{k} choice
 occasions. If this data point is not available, it is set to
 \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 be \code{NA} (initial condition problem).
+}
+\examples{
+choice_data <- data.frame(id = rep(1:2, each = 3), cov = LETTERS[1:6])
+create_lagged_cov(choice_data, column = "cov", k = 1:2)
+
 }

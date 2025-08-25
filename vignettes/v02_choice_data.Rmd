@@ -223,6 +223,7 @@ overview_effects(form = form, re = re, alternatives = alternatives, base = base)
 Hence, the coefficient vector `alpha` must be of length 3, where the elements 1 to 3 correspond to `var1`, `var3_A`, and `var3_B`, respectively. The matrix `b` must be of dimension 2 x `C`, where (by default) `C = 1` and row 1 and 2 correspond to `var2_A` and `ASC_A`, respectively.
 
 ```{r, data-sim}
+set.seed(1)
 data <- simulate_choices(
   form = form,
   N = N,
@@ -230,7 +231,6 @@ data <- simulate_choices(
   J = 2,
   re = re,
   alternatives = alternatives,
-  seed = 1,
   true_parameter = list(
     alpha = c(-1, 0, 1),
     b = matrix(c(2, -0.5), ncol = 1)
@@ -258,7 +258,7 @@ train_test(data, test_proportion = 0.3, by = "N")
 Alternatively, the following code puts 2 randomly chosen choice occasions per decider from `data` into the test subsample, the rest goes into the train subsample:
 
 ```{r, data-split-occasions}
-train_test(data, test_number = 2, by = "T", random = TRUE, seed = 1)
+train_test(data, test_number = 2, by = "T", random = TRUE)
 ```
 
 ## References

@@ -7,21 +7,22 @@
 as_cov_names(choice_data, cov, alternatives)
 }
 \arguments{
-\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
-one choice occasion.}
+\item{choice_data}{[\code{data.frame}]\cr
+Choice data in wide format, where each row represents one choice occasion.}
 
-\item{cov}{A character vector of the names of alternative specific covariates in
-\code{choice_data}.}
+\item{cov}{[\code{character()}]\cr
+Names of alternative specific covariates in \code{choice_data}.}
 
-\item{alternatives}{A (character or numeric) vector of the alternative names.}
+\item{alternatives}{[\code{atomic()}]\cr
+The alternative names.}
 }
 \value{
 The \code{choice_data} input with updated column names.
 }
 \description{
-In \code{{RprobitB}}, alternative specific covariates must be named in the format
-\code{"<covariate>_<alternative>"}. This convenience function generates
-the format for a given \code{choice_data} set.
+In \code{{RprobitB}}, alternative specific covariates must be named in the
+format \code{"<covariate>_<alternative>"}. This helper function generates the
+format for a given \code{choice_data} set.
 }
 \examples{
 data("Electricity", package = "mlogit")

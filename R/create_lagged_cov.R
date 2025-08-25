@@ -17,50 +17,54 @@
 #' \code{NA}. In particular, the first \code{k} values of \code{column.k} will
 #' be \code{NA} (initial condition problem).
 #'
+#' @param column \[`character()`\]\cr
+#' Covariate names in \code{choice_data}.
+#'
+#' @param k \[`integer()`\]\cr
+#' The number of lags (in units of observations), see the details.
+#'
 #' @inheritParams prepare_data
-#' @param column
-#' A character, the column name in \code{choice_data}, i.e. the covariate name.
-#' Can be a vector.
-#' @param k
-#' A positive number, the number of lags (in units of observations), see the
-#' details. Can be a vector. The default is \code{k = 1}.
 #'
 #' @return
 #' The input \code{choice_data} with the additional columns named
 #' \code{column.k} for each element \code{column} and each number \code{k}
 #' containing the lagged covariates.
 #'
+#' @examples
+#' choice_data <- data.frame(id = rep(1:2, each = 3), cov = LETTERS[1:6])
+#' create_lagged_cov(choice_data, column = "cov", k = 1:2)
+#'
 #' @export
 
-create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
+create_lagged_cov <- function(
+    choice_data, column = character(), k = 1, id = "id"
+  ) {
+
   ### check inputs
-  if (!is.data.frame(choice_data)) {
-    stop("'choice_data' must be a data frame.",
-         call. = FALSE
-    )
-  }
-  if (!is.character(column)) {
-    stop("'column' must be a character (vector).",
-         call. = FALSE
-    )
-  }
-  if (!all(is.numeric(k) && k %% 1 == 0 && k > 0)) {
-    stop("'k' must be a number or a vector of numbers.",
-         call. = FALSE
-    )
-  }
-  if (!is.character(id) || length(id) != 1) {
-    stop("'id' must be a character.",
-         call. = FALSE
-    )
-  }
-  for (col in c(column, id)) {
-    if (!col %in% colnames(choice_data)) {
-      stop(paste0("Column '", col, "' not found in 'choice_data'."),
-           call. = FALSE
-      )
-    }
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(choice_data),
+    var_name = "choice_data"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_data_frame(choice_data),
+    var_name = "choice_data"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(column),
+    var_name = "column"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_integerish(k, lower = 1),
+    var_name = "k"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_string(id),
+    var_name = "id"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_subset(c(column, id), colnames(choice_data)),
+    var_name = "colnames(choice_data)"
+  )
 
   ### loop over 'column' and 'k'
   for (col in column) {
@@ -82,8 +86,8 @@ create_lagged_cov <- function(choice_data, column, k = 1, id = "id") {
 
       ### preserve factors
       if (is.factor(choice_data[[col]])) {
-        choice_data[[col_new]] <- factor(choice_data[[col_new]],
-                                         levels = levels(choice_data[[col]])
+        choice_data[[col_new]] <- factor(
+          choice_data[[col_new]], levels = levels(choice_data[[col]])
         )
       }
 

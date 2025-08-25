@@ -83,6 +83,7 @@ plot.RprobitB_data <- function(
   suppressMessages(gridExtra::grid.arrange(grobs = plots))
 }
 
+
 #' Visualize fitted probit model
 #'
 #' @description
@@ -137,7 +138,9 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'mixture'
   if (type == "mixture") {
     if (x$data$P_r == 0) {
-      stop("The model has no random effects.", call. = FALSE)
+      stop("Cannot plot a mixing distribution because the model has no random effects.",
+        call. = FALSE
+      )
     }
     est <- point_estimates(x)
     est_b <- apply(est$b, 2, as.numeric, simplify = F)
@@ -197,7 +200,9 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'class_seq'
   if (type == "class_seq") {
     if (x$data$P_r == 0) {
-      stop("The model has no random effects.", call. = FALSE)
+      stop("Cannot show the class sequence because the model has no random effect.",
+        call. = FALSE
+      )
     }
     plot_class_seq(x[["class_sequence"]], B = x$B)
   }
@@ -219,7 +224,6 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
 #'
 #' @param gibbs_samples
 #' A matrix of Gibbs samples.
-#'
 #' @param par_labels
 #' A character vector with labels for the Gibbs samples, of length equal to the
 #' number of columns of \code{gibbs_samples}.
@@ -277,8 +281,7 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
   xint <- grp <- NULL
   out <- ggplot2::ggplot(data = data.frame(x = x, y = y), ggplot2::aes(x, y)) +
     ggplot2::geom_line() +
-    ggplot2::labs(x = bquote(beta[.(name)]), y = "") +
-    ggplot2::theme_minimal()
+    ggplot2::labs(x = bquote(beta[.(name)]), y = "")
 
   if (C > 1) {
     class_means <- data.frame(xint = unlist(mean), grp = factor(1:C))
@@ -288,8 +291,7 @@ plot_mixture_marginal <- function(mean, cov, weights, name) {
         mapping = ggplot2::aes(x = xint, y = 0, label = grp, color = grp),
         size = 5,
         show.legend = FALSE
-      ) +
-      ggplot2::scale_color_brewer(palette = "Set1")
+      )
   }
 
   return(out)
@@ -351,7 +353,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
     data = cbind(data.grid, z = z),
     ggplot2::aes(x = .data$x, y = .data$y, z = .data$z)
   ) +
-    ggplot2::geom_contour(color = "black") +
+    ggplot2::geom_contour() +
     ggplot2::labs(x = bquote(beta[.(names[1])]), y = bquote(beta[.(names[2])])) +
     ggplot2::theme_minimal()
 
@@ -370,8 +372,7 @@ plot_mixture_contour <- function(means, covs, weights, names) {
         ),
         size = 5,
         show.legend = FALSE
-      ) +
-      ggplot2::scale_color_brewer(palette = "Set1")
+      )
   }
 
   return(out)
@@ -530,10 +531,8 @@ plot_class_allocation <- function(beta, z, b, Omega, ...) {
 #' @param ...
 #' One or more \code{RprobitB_fit} objects or \code{data.frame}s of choice
 #' probability.
-#'
 #' @param reference
 #' The reference alternative.
-#'
 #' @return
 #' No return value. Draws a plot to the current device.
 #'

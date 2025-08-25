@@ -63,11 +63,9 @@ test_that("building of RprobitB_normalization works", {
 
 test_that("Gibbs sampling works", {
   data <- simulate_choices(
-    form = choice ~ a | b | c,
-    N = 50, T = 1:50, J = 2,
-    seed = 1, base = "B"
+    form = choice ~ a | b | c, N = 50, T = 1:50, J = 2, base = "B"
   )
-  model <- fit_model(data, R = 2000, seed = 1)
+  model <- fit_model(data, R = 2000)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
@@ -88,8 +86,7 @@ test_that("Ordered probit model estimation works", {
     ),
     true_parameter = list(
       "alpha" = c(1, 2), "d" = c(0, 1, 2)
-    ),
-    seed = 1
+    )
   )
   # lapply(data$data, `[[`, "y") |> unlist() |> table() / (N * T) |> round(2)
   model <- fit_model(data)
@@ -104,8 +101,7 @@ test_that("Ranked probit model estimation works", {
     N = 100,
     T = 10,
     J = 3,
-    ranked = TRUE,
-    seed = 1
+    ranked = TRUE
   )
   model <- fit_model(data)
   expect_snapshot(print(model))
@@ -114,15 +110,13 @@ test_that("Ranked probit model estimation works", {
 })
 
 test_that("setting fixed parameters for the Gibbs sampling works", {
+  set.seed(1)
   par <- list("Sigma" = 1, "alpha" = 1:2, b = 1, Omega = 0.1)
   data <- simulate_choices(
-    form = choice ~ a | b, N = 100, T = 5, J = 2, seed = 1, base = "B",
+    form = choice ~ a | b, N = 100, T = 5, J = 2, base = "B",
     re = "b", true_parameter = par
   )
-  model <- fit_model(
-    data,
-    R = 1000, seed = 1, fixed_parameter = par
-  )
+  model <- fit_model(data, R = 1000, fixed_parameter = par)
   true <- do.call(
     what = RprobitB_parameter,
     args = c(

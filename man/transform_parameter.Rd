@@ -11,8 +11,9 @@ transform_parameter(parameter, normalization, ordered = FALSE)
 
 \item{normalization}{An object of class \code{RprobitB_normalization}.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 }
 \value{
 An object of class \code{RprobitB_parameter}.

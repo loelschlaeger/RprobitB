@@ -40,49 +40,65 @@ RprobitB_data(
 \method{plot}{RprobitB_data}(x, by_choice = FALSE, alpha = 1, position = "dodge", ...)
 }
 \arguments{
-\item{data}{A list with the choice data.
-The list has \code{N} elements.
-Each element is a list with two elements, \code{X} and \code{y}, which are
-the covariates and decisions for a decision maker. More precisely,
-\code{X} is a list of \code{T} elements, where each element is a matrix of
-dimension \code{J}x(\code{P_f}+\code{P_r}) and contains the characteristics
-for one choice occasion.
-\code{y} is a vector of length \code{T} and contains the labels for the
-chosen alternatives.}
+\item{data}{[\code{list}]\cr
+A list with the choice data.
+\itemize{
+\item The list has \code{N} elements.
+\item Each element is a list with two elements, \code{X} and \code{y}, which are
+the covariates and decisions for a decision maker. More precisely:
+\itemize{
+\item \code{X} is a list of \code{T} elements, where each element is a matrix
+of dimension \code{J}x(\code{P_f}+\code{P_r}) and contains the
+characteristics for one choice occasion.
+\item \code{y} is a vector of length \code{T} and contains the labels for the
+chosen alternatives.
+}
+}}
 
-\item{choice_data}{A \code{data.frame} of choice data in wide format, i.e. each row represents
-one choice occasion.}
+\item{choice_data}{[\code{data.frame}]\cr
+Choice data in wide format, where each row represents one choice occasion.}
 
-\item{N}{The number (greater or equal 1) of decision makers.}
+\item{N}{[\code{integer(1)}]\cr
+The number of decision makers.}
 
-\item{T}{The number (greater or equal 1) of choice occasions or a vector of choice
-occasions of length \code{N} (i.e. a decision maker specific number).
-Per default, \code{T = 1}.}
+\item{T}{[\code{integer(1)} | \code{integer(N)}]\cr
+The number of choice occasions or a vector of decider-specific choice
+occasions of length \code{N}.}
 
-\item{J}{The number (greater or equal 2) of choice alternatives.}
+\item{J}{[\code{integer(1)}]\cr
+The number >= 2 of choice alternatives.}
 
-\item{P_f}{The number of covariates connected to a fixed coefficient (can be 0).}
+\item{P_f}{[\code{integer(1)}]\cr
+The number of covariates connected to a fixed coefficient.}
 
-\item{P_r}{The number of covariates connected to a random coefficient (can be 0).}
+\item{P_r}{[\code{integer(2)}]\cr
+The number of covariates connected to a random coefficient.}
 
-\item{alternatives}{A character vector with the names of the choice alternatives.
-If not specified, the choice set is defined by the observed choices.
+\item{alternatives}{[\code{character()}]\cr
+The names of the choice alternatives. If not specified, the choice set is
+defined by the observed choices.
+
 If \code{ordered = TRUE}, \code{alternatives} is assumed to be specified with
 the alternatives ordered from worst to best.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 
-\item{ranked}{TBA}
+\item{ranked}{[\code{logical(1)}]\cr
+Are the alternatives ranked?}
 
-\item{base}{A character, the name of the base alternative for covariates that are not
-alternative specific (i.e. type 2 covariates and ASCs). Ignored and set to
-\code{NULL} if the model has no alternative specific covariates (e.g. in the
-ordered probit model).
-Per default, \code{base} is the last element of \code{alternatives}.}
+\item{base}{[\code{character(1)}]\cr
+The name of the base alternative for covariates that are not
+alternative specific (i.e. type 2 covariates and ASCs).
 
-\item{form}{A \code{formula} object that is used to specify the model equation.
-The structure is \code{choice ~ A | B | C}, where
+Ignored and set to \code{NULL} if the model has no alternative specific
+covariates (e.g. in the ordered probit model).
+
+By default, \code{base} is the last element of \code{alternatives}.}
+
+\item{form}{[\code{formula}]\cr
+A model description with the structure \code{choice ~ A | B | C}, where
 \itemize{
 \item \code{choice} is the name of the dependent variable (the choices),
 \item \code{A} are names of alternative and choice situation specific
@@ -100,28 +116,37 @@ They can be removed by adding \code{+0} in the second spot.
 In the ordered probit model (\code{ordered = TRUE}), the \code{formula}
 object has the simple structure \code{choice ~ A}. ASCs are not estimated.}
 
-\item{re}{A character (vector) of covariates of \code{form} with random effects.
+\item{re}{[\code{character()} | \code{NULL}]\cr
+Names of covariates with random effects.
 If \code{re = NULL} (the default), there are no random effects.
 To have random effects for the ASCs, include \code{"ASC"} in \code{re}.}
 
-\item{ASC}{A boolean, determining whether the model has ASCs.}
+\item{ASC}{[\code{logical(1)}]\cr
+Does the model have ASCs?}
 
-\item{effects}{A data frame with the effect names and booleans indicating whether
+\item{effects}{[\code{data.frame}]\cr
+A data frame with the effect names and booleans indicating whether
 they are connected to random effects.}
 
-\item{standardize}{A character vector of names of covariates that get standardized.
+\item{standardize}{[\code{character()} | \code{"all"}]\cr
+Names of covariates that get standardized.
+
 Covariates of type 1 or 3 have to be addressed by
 \code{<covariate>_<alternative>}.
+
 If \code{standardize = "all"}, all covariates get standardized.}
 
-\item{simulated}{A boolean, if \code{TRUE} then \code{data} is simulated, otherwise
-\code{data} is empirical.}
+\item{simulated}{[\code{logical(1)}]\cr
+Is \code{data} simulated?}
 
-\item{choice_available}{A boolean, if \code{TRUE} then \code{data} contains observed choices.}
+\item{choice_available}{[\code{logical(1)}]\cr
+Does \code{data} contain observed choices?}
 
-\item{true_parameter}{An object of class \code{RprobitB_parameters}.}
+\item{true_parameter}{[\code{RprobitB_parameters}]\cr
+True parameters for the data generating process.}
 
-\item{res_var_names}{A names list of reserved variable names in \code{choice_data}.}
+\item{res_var_names}{[\code{list}]\cr
+Reserved variable names in \code{choice_data}.}
 
 \item{x}{An object of class \code{RprobitB_data}.}
 
@@ -133,8 +158,7 @@ Group the covariates by the chosen alternatives?}
 \item{alpha, position}{Passed to \code{\link[ggplot2]{ggplot}}.}
 }
 \value{
-An object of class \code{RprobitB_data} with the arguments of this function
-as elements.
+An object of class \code{RprobitB_data}.
 }
 \description{
 This function constructs an object of class \code{RprobitB_data}.

@@ -16,8 +16,9 @@ alternatives for which choice probabilities are to be computed.}
 
 \item{parameter}{An object of class \code{RprobitB_parameter}.}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 }
 \value{
 A probability vector of length \code{length(alternatives)}.

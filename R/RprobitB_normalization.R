@@ -1,17 +1,16 @@
-#' Create object of class `RprobitB_normalization`
+#' Utility normalization
 #'
 #' @description
 #' This function creates an object of class `RprobitB_normalization`,
-#' which determines the utility scale and level.
+#' which defines the utility scale and level.
 #'
 #' @details
-#' Any choice model has to be normalized with respect to the utility level and
-#' scale.
+#' Utility models require normalization with respect to level and scale.
 #' \itemize{
 #'   \item For level normalization, \code{{RprobitB}} takes utility differences
-#'         with respect to one alternative.
-#'         For the ordered model where only one utility is modeled,
-#'         \code{{RprobitB}} fixes the first utility threshold to 0.
+#'         with respect to one alternative. For the ordered model where only
+#'         one utility is modelled, \code{{RprobitB}} fixes the first utility
+#'         threshold to 0.
 #'   \item For scale normalization, \code{{RprobitB}} fixes one model parameter.
 #'         Per default, the first error-term variance is fixed to `1`.
 #'         This is specified via `scale = "Sigma_1,1 := 1"`.
@@ -19,15 +18,17 @@
 #'         can be fixed.
 #' }
 #'
-#' @param level
+#' @param level \[`character(1)`\]\cr
 #' The alternative name with respect to which utility differences are computed.
-#' Currently, only differences with respect to the last alternative can be
-#' computed.
-#' @param scale
+#' Currently, only differences with respect to the last alternative are
+#' supported.
+#'
+#' @param scale \[`character(1)`\]\cr
 #' A character which determines the utility scale. It is of the form
 #' `<parameter> := <value>`, where `<parameter>` is either the name of a fixed
 #' effect or `Sigma_<j>,<j>` for the `<j>`th diagonal element of `Sigma`, and
 #' `<value>` is the value of the fixed parameter.
+#'
 #' @inheritParams overview_effects
 #' @inheritParams RprobitB_data
 #'
@@ -39,7 +40,7 @@
 #'         the alternative, i.e. the input `level`), or alternatively
 #'         \code{NA} in the ordered probit case,
 #'   \item and `scale`, a list with the elements `parameter` (either `"s"` for
-#'         an element of `Sigma` or `"a"`for an element of `alpha`), the
+#'         an element of `Sigma` or `"a"` for an element of `alpha`), the
 #'         parameter `index`, and the fixed `value`. If `parameter = "a"`, also
 #'         the `name` of the fixed effect.
 #' }
@@ -48,23 +49,23 @@
 
 RprobitB_normalization <- function(
     level, scale = "Sigma_1,1 := 1", form, re = NULL, alternatives, base,
-    ordered = FALSE) {
+    ordered = FALSE
+  ) {
+
   ### check inputs
-  if (missing(alternatives)) {
-    stop("Please specify 'alternatives'.",
-         call. = FALSE
-    )
-  }
-  if (!is.character(alternatives)) {
-    stop("'alternatives' must be a character vector",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(alternatives),
+    var_name = "alternatives"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(alternatives),
+    var_name = "alternatives"
+  )
   if (missing(level) || is.null(level)) {
-    level <- tail(alternatives, n = 1)
+    level <- utils::tail(alternatives, n = 1)
   }
-  if (level != tail(alternatives, n = 1)) {
-    level <- tail(alternatives, n = 1)
+  if (level != utils::tail(alternatives, n = 1)) {
+    level <- utils::tail(alternatives, n = 1)
     warning(
       paste0(
         "Currently, only alternatives with respect to the last ",
@@ -74,37 +75,30 @@ RprobitB_normalization <- function(
       immediate. = TRUE, call. = FALSE
     )
   }
-  if (missing(form)) {
-    stop("Please specify 'form'.",
-         call. = FALSE
-    )
-  }
-  if (!(is.character(level) && length(level) == 1 && level %in% alternatives)) {
-    stop("'level' must be one element of 'alternatives'.",
-         call. = FALSE
-    )
-  }
-  if (!(is.character(scale) && length(scale) == 1)) {
-    stop("'scale' must be a single character.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(form),
+    var_name = "form"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_choice(level, choices = alternatives),
+    var_name = "level"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_string(scale),
+    var_name = "scale"
+  )
   scale <- gsub(" ", "", scale, fixed = TRUE)
   if (!grepl(":=", scale, fixed = TRUE)) {
-    stop("'scale' is not in format '<parameter> := <value>'.",
-         call. = FALSE
-    )
+    stop("'scale' is not in format '<parameter> := <value>'.", call. = FALSE)
   }
-  if (missing(base)) {
-    stop("Please specify 'base'.",
-         call. = FALSE
-    )
-  }
-  if (!isTRUE(ordered) && !isFALSE(ordered)) {
-    stop("'ordered' must be a boolean.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = oeli::check_missing(base),
+    var_name = "base"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(ordered),
+    var_name = "ordered"
+  )
 
   ### set 'level'
   if (ordered) {
@@ -202,13 +196,20 @@ RprobitB_normalization <- function(
 }
 
 #' @rdname RprobitB_normalization
+#'
 #' @param x
 #' An object of class \code{RprobitB_normalization}.
+#'
 #' @param ...
 #' Currently not used.
+#'
 #' @exportS3Method
 
 print.RprobitB_normalization <- function(x, ...) {
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_normalization"),
+    var_name = "x"
+  )
   if (identical(NA, x$level)) {
     cat(paste0(
       "Level: Fixed first utility threshold to 0.\n"
@@ -234,5 +235,5 @@ print.RprobitB_normalization <- function(x, ...) {
       ))
     }
   }
-  return(invisible(x))
+  invisible(x)
 }

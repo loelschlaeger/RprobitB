@@ -60,10 +60,12 @@ The length of the burn-in period.}
 \item{print_progress}{[\code{logical(1)}]\cr
 Print the Gibbs sampler progress?}
 
-\item{ordered}{A boolean, \code{FALSE} per default. If \code{TRUE}, the choice set
-\code{alternatives} is assumed to be ordered from worst to best.}
+\item{ordered}{[\code{logical(1)}]\cr
+If \code{TRUE}, the choice set \code{alternatives} is assumed to be ordered
+from worst to best.}
 
-\item{ranked}{TBA}
+\item{ranked}{[\code{logical(1)}]\cr
+Are the alternatives ranked?}
 
 \item{save_beta_draws}{[\code{logical(1)}]\cr
 Save draws for decider-specific coefficient vectors? Usually not recommended,

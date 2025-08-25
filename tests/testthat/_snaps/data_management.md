@@ -207,13 +207,13 @@
 ---
 
     Code
-      train_test(x, test_proportion = 0.5, by = "N", random = TRUE, seed = 1)
+      train_test(x, test_proportion = 0.5, by = "N", random = TRUE)
     Output
       $train
-      Simulated data of 32 choices.
+      Simulated data of 23 choices.
       
       $test
-      Simulated data of 23 choices.
+      Simulated data of 32 choices.
       
 
 ---
@@ -243,13 +243,13 @@
 ---
 
     Code
-      train_test(x, test_number = 1, by = "N", random = TRUE, seed = 1)
+      train_test(x, test_number = 1, by = "N", random = TRUE)
     Output
       $train
-      Simulated data of 46 choices.
+      Simulated data of 48 choices.
       
       $test
-      Simulated data of 9 choices.
+      Simulated data of 7 choices.
       
 
 # splitting data set by T works
@@ -267,7 +267,7 @@
 ---
 
     Code
-      train_test(x, test_proportion = 0.5, by = "T", random = TRUE, seed = 1)
+      train_test(x, test_proportion = 0.5, by = "T", random = TRUE)
     Output
       $train
       Simulated data of 50 choices.
@@ -303,7 +303,7 @@
 ---
 
     Code
-      train_test(x, test_number = 1, by = "T", random = TRUE, seed = 1)
+      train_test(x, test_number = 1, by = "T", random = TRUE)
     Output
       $train
       Simulated data of 90 choices.
