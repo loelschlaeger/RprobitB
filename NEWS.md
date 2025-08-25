@@ -1,10 +1,10 @@
-# RprobitB development
+# RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.
 
 * Fix in `sufficient_statistics()`. There was a bug in calculating sufficient statistics in the ordered case.
 
-* Now using robust SPD-safe inverses and Cholesky decompositions in Gibbs sampler.
+* Added function `mode_approx()` to approximate conditional posterior modes.
 
 * Documentation improvements.
 
