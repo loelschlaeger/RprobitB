@@ -8,8 +8,8 @@
 <title>Choice data • RprobitB</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Choice data">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,16 +69,16 @@
 
     
     
-<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is build using R 4.4.1 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a> provides a reference
+<p>No choice model without choice data, so this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is build using R 4.5.1 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0 package.&lt;/p&gt;'><sup>1</sup></a> provides a reference
 for data management in <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. We use the
 <code>train_choice</code> data set for illustration.</p>
 <div class="section level2">
-<h2 id="requirements-to-choice-data">Requirements to choice data<a class="anchor" aria-label="anchor" href="#requirements-to-choice-data"></a>
+<h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
 </h2>
-<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> helps in modeling the choice of individual
+<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> helps in modelling the choice of individual
 deciders of one alternative from a finite set of choice alternatives.
-This choice set has to fulfill three properties <span class="citation">(<a href="#ref-Train2009">Train 2009</a>)</span>:
+This choice set has to satisfy three properties <span class="citation">(<a href="#ref-Train2009">Train 2009</a>)</span>:
 Choices need to be</p>
 <ol style="list-style-type: decimal">
 <li><p>mutually exclusive (one can choose one and only one alternative
@@ -95,20 +95,18 @@ situation),</p></li>
 <li><p>the choices,</p></li>
 <li><p>alternative and decider specific covariates.</p></li>
 </ol>
-<p>Additionally, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> asks the following formal
+<p>Additionally, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> needs the following formal
 requirements:</p>
 <ol style="list-style-type: decimal">
 <li><p>The data set <strong>must</strong> be in “wide” format, that
-means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The&lt;code&gt;&lt;/code&gt;{tidyr}&lt;code&gt;package [contains functionality](https://tidyr.tidyverse.org/articles/pivot.html) that can transform a&lt;/code&gt;data.frame`
-into this format.&lt;/p&gt;"><sup>2</sup></a></p></li>
+means each row provides the full information for one choice occasion.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The &lt;a href="https://tidyr.tidyverse.org" class="external-link"&gt;tidyr&lt;/a&gt; package &lt;a href="https://tidyr.tidyverse.org/articles/pivot.html" class="external-link"&gt;contains
+functionality&lt;/a&gt; that can transform a &lt;code&gt;data.frame&lt;/code&gt; into this
+format.&lt;/p&gt;'><sup>2</sup></a></p></li>
 <li><p>It <strong>must</strong> contain a column with unique identifiers
 for each decision maker. Additionally, it <strong>can</strong> contain a
 column with identifier for each choice situation of each decider. If
 this information is missing, these identifier are generated
-automatically by the appearance of the choices in the data set.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;The choice situation identifier are irrelevant for model
-estimation because &lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; does not model correlation
-over choice occasions. They are useful to identify specific choice
-occasions later on.&lt;/p&gt;'><sup>3</sup></a></p></li>
+automatically by the appearance of the choices in the data set.</p></li>
 <li><p>It <strong>can</strong> contain a column with the observed
 choices. Such a column is required for model fitting but not for
 prediction.</p></li>
@@ -130,7 +128,7 @@ Four alternative-specific covariates are available, namely
 <code>price</code>, <code>time</code>, <code>change</code>, and
 <code>comfort</code>. There values are given for each alternative.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For alternative specific variables, the alternative
 names must be added to the covariates via the &lt;code&gt;_&lt;/code&gt;
-separator.&lt;/p&gt;"><sup>4</sup></a></p>
+separator.&lt;/p&gt;"><sup>3</sup></a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">train_choice</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    2929 obs. of  11 variables:</span></span>
@@ -151,8 +149,8 @@ separator.&lt;/p&gt;"><sup>4</sup></a></p>
 <h2 id="the-model-formula">The model formula<a class="anchor" aria-label="anchor" href="#the-model-formula"></a>
 </h2>
 <p>We have to inform <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> about the covariates we
-want to include in our model via specifying a <code>formula</code>
-object. Say we want to model the utility
+want to include in our model via specifying a <code>formula</code>. Say
+we want to model the utility
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mrow><mi>n</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">U_{n,t,j}</annotation></semantics></math>
 of decider
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
@@ -185,12 +183,7 @@ choice we aim to explain),</p></li>
 covariates with a generic coefficient (we call them covariates of type
 1),</p></li>
 <li><p><code>B</code> are choice situation specific covariates with
-alternative specific coefficients<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Mind that not all alternative specific coefficients of
-type 2-covariates are identified. This is because the probit model is
-estimated on utility differences since the level of the utility is
-irrelevant, see the vignette on the model definition. Therefore, the
-coefficient of the last alternative of each type 2-covariate is set to
-0.&lt;/p&gt;"><sup>5</sup></a> (we call them covariates of type
+alternative specific coefficients (we call them covariates of type
 2),</p></li>
 <li><p>and <code>C</code> are alternative and choice situation specific
 covariates with alternative specific coefficients (we call them
@@ -202,7 +195,7 @@ must be consistent with the following rules:</p>
 <li><p>By default, alternative specific constants (ASCs)<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;ASCs capture the average effect on utility of all
 factors that are not included in the model. Due to identifiability, we
 cannot estimate ASCs for all the alternatives. Therefore, they are added
-for all except for the last alternative.&lt;/p&gt;"><sup>6</sup></a> are added to the
+for all except for the last alternative.&lt;/p&gt;"><sup>4</sup></a> are added to the
 model. They can be removed by adding <code>+ 0</code> in the second
 spot, e.g. <code>choice ~ A | B + 0 | C</code>.</p></li>
 <li><p>To exclude covariates of the backmost categories, use either
@@ -301,7 +294,10 @@ covariate mean.</p></li>
 with our previous specification of <code>form</code> and
 <code>re</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">train_choice</span>, re <span class="op">=</span> <span class="va">re</span>, id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span></span>
+<span>  form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">train_choice</span>, re <span class="op">=</span> <span class="va">re</span>, </span>
+<span>  id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The <code>summary</code> and <code>plot</code> methods provide a
 quick data overview:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -314,7 +310,7 @@ quick data overview:</p>
 <span><span class="co">#&gt; - 'A'             1474</span></span>
 <span><span class="co">#&gt; - 'B'             1455</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Fsummary-train-choice-data-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/summary-train-choice-data-1.png" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -351,7 +347,7 @@ data from a prespecified probit model. Say we want to simulate the
 choices of <code>N</code> deciders in <code>T</code> choice occasions<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;&lt;code&gt;T&lt;/code&gt; can be either a positive number,
 representing a fixed number of choice occasions for each decision maker,
 or a vector of length &lt;code&gt;N&lt;/code&gt; with decision maker specific
-numbers of choice occasions.&lt;/p&gt;"><sup>7</sup></a> among
+numbers of choice occasions.&lt;/p&gt;"><sup>5</sup></a> among
 <code>J</code> alternatives from a model formulation <code>form</code>,
 we have to call</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -374,10 +370,9 @@ which no values are specified are drawn from a standard normal
 distribution.</p></li>
 <li><p><code>standardize</code>: A character vector of variable names of
 <code>form</code> that get standardized.</p></li>
-<li><p><code>seed</code>: Set a seed for the simulation.</p></li>
 </ul>
 <p>We can specify the true parameters<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See the vignette on the model definition for more
-details, especially for the meaning of the parameters.&lt;/p&gt;"><sup>8</sup></a> by adding a named list with values for</p>
+details, especially for the meaning of the parameters.&lt;/p&gt;"><sup>6</sup></a> by adding a named list with values for</p>
 <ul>
 <li><p><code>alpha</code>, the fixed coefficient vector,</p></li>
 <li><p><code>C</code>, the number (greater or equal 1) of latent classes
@@ -427,14 +422,14 @@ where the elements 1 to 3 correspond to <code>var1</code>,
 default) <code>C = 1</code> and row 1 and 2 correspond to
 <code>var2_A</code> and <code>ASC_A</code>, respectively.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_choices.html">simulate_choices</a></span><span class="op">(</span></span>
 <span>  form <span class="op">=</span> <span class="va">form</span>,</span>
 <span>  N <span class="op">=</span> <span class="va">N</span>,</span>
 <span>  T <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  J <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  re <span class="op">=</span> <span class="va">re</span>,</span>
 <span>  alternatives <span class="op">=</span> <span class="va">alternatives</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  true_parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -446,13 +441,13 @@ default) <code>C = 1</code> and row 1 and 2 correspond to
 <span><span class="co">#&gt; choice occasions    10</span></span>
 <span><span class="co">#&gt; total choices     1000</span></span>
 <span><span class="co">#&gt; alternatives         2</span></span>
-<span><span class="co">#&gt; - 'A'              435</span></span>
-<span><span class="co">#&gt; - 'B'              565</span></span></code></pre></div>
+<span><span class="co">#&gt; - 'A'              452</span></span>
+<span><span class="co">#&gt; - 'B'              548</span></span></code></pre></div>
 <p>We can visualize the covariates grouped by the chosen
 alternatives:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data</span>, by_choice <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Fdata-plot-by-choice-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/data-plot-by-choice-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>What we see is consistent with our specification: Higher values of
 <code>var1_A</code> for example correspond more frequently to choice
 <code>B</code> (upper-right panel), because the coefficient of
@@ -480,7 +475,7 @@ train subsample and 30% of deciders in the test subsample:</p>
 occasions per decider from <code>data</code> into the test subsample,
 the rest goes into the train subsample:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_number <span class="op">=</span> <span class="fl">2</span>, by <span class="op">=</span> <span class="st">"T"</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/train_test.html">train_test</a></span><span class="op">(</span><span class="va">data</span>, test_number <span class="op">=</span> <span class="fl">2</span>, by <span class="op">=</span> <span class="st">"T"</span>, random <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $train</span></span>
 <span><span class="co">#&gt; Simulated data of 800 choices.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -492,8 +487,8 @@ the rest goes into the train subsample:</p>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Train2009" class="csl-entry">
-Train, Kenneth E. 2009. <em>Discrete Choice Methods with
-Simulation</em>. 2nd ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271" class="external-link">https://doi.org/10.1017/CBO9780511805271</a>.
+Train, K. E. 2009. <em>Discrete Choice Methods with Simulation</em>. 2nd
+ed. Cambridge University Press.
 </div>
 </div>
 </div>
@@ -505,11 +500,11 @@ Simulation</em>. 2nd ed. Cambridge University Press. <a href="https://doi.org/10
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

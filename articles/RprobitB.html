@@ -8,8 +8,8 @@
 <title>Introduction • RprobitB</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,45 +69,24 @@
 
     
     
-<div class="section level2">
-<h2 id="why-should-i-use-this-package">Why should I use this package?<a class="anchor" aria-label="anchor" href="#why-should-i-use-this-package"></a>
-</h2>
-<ol style="list-style-type: decimal">
-<li><p>With <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The package name is a portmanteau, combining
-&lt;strong&gt;R&lt;/strong&gt; (the programming language), &lt;strong&gt;probit&lt;/strong&gt;
-(the model class) and &lt;strong&gt;B&lt;/strong&gt; (for Bayes, the estimation
-method).&lt;/p&gt;"><sup>1</sup></a>, you can model the choices made by deciders
-among a discrete set of alternatives. For example, think of tourists
-that want to book a flight to their holiday destination. The knowledge
-why they prefer a certain route over another is of great value for
-airlines, especially the customer’s willingness to pay for say a faster
-or more comfortable flight alternative.</p></li>
-<li><p>Different deciders value different choice attributes differently.
-For example, it is imaginable that business people place a higher value
-on flight time and are willing to pay more for a faster route
-alternative than vacationers. Such choice behavior heterogeneity can be
-addressed by <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. Furthermore, the package enables
-to identify groups of deciders that share similar preferences.</p></li>
-<li><p>The package enables prediction of choice behavior when certain
-choice attributes change, for example the proportion of customers who
-will choose the competitor’s product in the event of a price
-increase.</p></li>
-<li><p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> can analyze binary, multivariate,
-ordered, and ranked choices, both in the cross-sectional and panel
-setting.</p></li>
-</ol>
-</div>
-<div class="section level2">
-<h2 id="how-can-i-use-this-package">How can I use this package?<a class="anchor" aria-label="anchor" href="#how-can-i-use-this-package"></a>
-</h2>
-<p>Working with <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> follows a clear workflow. The
-main functions can be grouped into ones for data management, model
-fitting, and model evaluation, see the flowchart below. The package can
-be used for two different purposes: (a) estimation of a model for given
-data and (b) estimation of a model for simulated data. Simulation
-typically serves to assess the properties of estimation algorithms
-either for research or in a bootstrap like fashion.</p>
-<p>A typical workflow is as follows:</p>
+<p><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> implements Bayes estimation of probit choice
+models in cross-sectional and panel settings. The package can analyze
+binary, multivariate, ordered, and ranked choices, as well as
+heterogeneity of choice behavior among deciders. The main functionality
+includes model fitting via Gibbs sampling, tools for convergence
+diagnostic, choice data simulation, in-sample and out-of-sample choice
+prediction, and model selection using information criteria and Bayes
+factors. The latent class model extension facilitates preference-based
+decider classification, where the number of latent classes can be
+inferred via the Dirichlet process or a weight-based updating heuristic.
+This allows for flexible modeling of choice behavior without the need to
+impose structural constraints. See <a href="https://loelschlaeger.de/RprobitB/articles/v01_model_definition.html">the
+vignette on the model definition</a> for details about the probit
+model.</p>
+<p>Working with <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> follows a structured workflow.
+The main functions fall into three categories: data management, model
+fitting, and model evaluation, as illustrated in the flowchart below. A
+typical workflow proceeds as follows:</p>
 <ol style="list-style-type: decimal">
 <li><p>Prepare a choice data set via the <code><a href="../reference/prepare_data.html">prepare_data()</a></code>
 function or simulate data via <code><a href="../reference/simulate_choices.html">simulate_choices()</a></code>. Both
@@ -127,29 +106,26 @@ modeling heterogeneity</a>.</p></li>
 into <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> to compute choice probabilities and forecast
 choice behavior if choice characteristics would change, see <a href="https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html">the
 vignette on choice prediction</a>. The <code><a href="../reference/classification.html">classification()</a></code>
-function allows for preference-based decider classification.</p></li>
-<li><p>The function <code><a href="../reference/model_selection.html">model_selection()</a></code> compares arbitrary
-many competing <code>RprobitB_fit</code> objects by computing different
-model selection criteria, see <a href="https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html">the
+function allows for preference-based decider classification. The
+function <code><a href="../reference/model_selection.html">model_selection()</a></code> compares
+<code>RprobitB_fit</code> objects by computing different model selection
+criteria, see <a href="https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html">the
 vignette on model selection</a>.</p></li>
 </ol>
 <div class="float">
-<img src="img%2Fflowchart.png" style="width:80.0%" alt="The flowchart of {RprobitB}."><div class="figcaption">The flowchart of <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>.</div>
+<img src="img/flowchart.png" style="width:80.0%" alt="The flowchart of {RprobitB}."><div class="figcaption">The flowchart of <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>.</div>
 </div>
-</div>
-
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside>
+  </main>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

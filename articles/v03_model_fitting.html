@@ -8,8 +8,8 @@
 <title>Model fitting • RprobitB</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Model fitting">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@
 
     
     
-<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.4.1 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a> is a documentation of the estimation
+<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.5.1 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0 package.&lt;/p&gt;'><sup>1</sup></a> is a documentation of the estimation
 procedure <code><a href="../reference/fit_model.html">fit_model()</a></code> in <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>.</p>
 <div class="section level2">
 <h2 id="bayes-estimation-of-the-probit-model">Bayes estimation of the probit model<a class="anchor" aria-label="anchor" href="#bayes-estimation-of-the-probit-model"></a>
@@ -98,31 +98,31 @@ denotes the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>-dimensional
 Dirichlet distribution with concentration parameter vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>δ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>δ</mi><mi>C</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\delta = (\delta_1,\dots,\delta_C)</annotation></semantics></math>,</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>f</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ψ</mi><mo>,</mo><mi>Ψ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha\sim \text{MVN}_{P_f}(\psi,\Psi)</annotation></semantics></math>,
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>f</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\alpha\sim \text{MVN}_{P_f}(\mu_{\alpha_0},\Sigma_{\alpha_0})</annotation></semantics></math>,
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>f</mi></msub></msub><annotation encoding="application/x-tex">\text{MVN}_{P_f}</annotation></semantics></math>
 denotes the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>f</mi></msub><annotation encoding="application/x-tex">P_f</annotation></semantics></math>-dimensional
 normal distribution with mean
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ψ</mi><annotation encoding="application/x-tex">\psi</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">\mu_{\alpha_0}</annotation></semantics></math>
 and covariance
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>,</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>c</mi></msub><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo>,</mo><mi>Ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">b_c \sim \text{MVN}_{P_r}(\xi,\Xi)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">\Sigma_{\alpha_0}</annotation></semantics></math>,</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>c</mi></msub><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>b</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>b</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">b_c \sim \text{MVN}_{P_r}(\mu_{b_0}, \Sigma_{b_0})</annotation></semantics></math>,
 independent for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,</p></li>
-<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Ω</mi><mi>c</mi></msub><mo>∼</mo><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ν</mi><mo>,</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Omega_c \sim W^{-1}_{P_r}(\nu,\Theta)</annotation></semantics></math>,
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Ω</mi><mi>c</mi></msub><mo>∼</mo><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>V</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Omega_c \sim W^{-1}_{P_r}(n_{\Omega_0}, V_{\Omega_0})</annotation></semantics></math>,
 independent for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ν</mi><mo>,</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W^{-1}_{P_r}(\nu,\Theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>V</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W^{-1}_{P_r}(n_{\Omega_0}, V_{\Omega_0})</annotation></semantics></math>
 denotes the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>r</mi></msub><annotation encoding="application/x-tex">P_r</annotation></semantics></math>-dimensional
 inverse Wishart distribution with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">n_{\Omega_0}</annotation></semantics></math>
 degrees of freedom and scale matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Θ</mi><annotation encoding="application/x-tex">\Theta</annotation></semantics></math>,</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">V_{\Omega_0}</annotation></semantics></math>,</p></li>
 <li><p>and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mo>∼</mo><msubsup><mi>W</mi><mrow><mi>J</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>κ</mi><mo>,</mo><mi>Λ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma \sim W^{-1}_{J-1}(\kappa,\Lambda)</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mo>∼</mo><msubsup><mi>W</mi><mrow><mi>J</mi><mo>−</mo><mn>1</mn></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><msub><mi>Σ</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>V</mi><msub><mi>Σ</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma \sim W^{-1}_{J-1}(n_{\Sigma_0}, V_{\Sigma_0})</annotation></semantics></math>.</p></li>
 </ul>
 <p>These prior distributions imply the following conditional posterior
 distributions:</p>
@@ -147,28 +147,32 @@ from their conditional distribution
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Prob</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo>∣</mo><mi>s</mi><mo>,</mo><mi>β</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>s</mi><mi>c</mi></msub><msub><mi>ϕ</mi><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>∣</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Ω</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mi>c</mi></munder><msub><mi>s</mi><mi>c</mi></msub><msub><mi>ϕ</mi><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>∣</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Ω</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
 \text{Prob}(z_n=c\mid s,\beta,b,\Omega )=\frac{s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}{\sum_c s_c\phi_{P_r}(\beta_n\mid b_c,\Omega_c)}.
 \end{equation}</annotation></semantics></math></p></li>
-<li><p>The class means
+<li>
+<p>The class means
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>b</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msub><annotation encoding="application/x-tex">(b_c)_c</annotation></semantics></math>
 are updated independently for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
 via
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>c</mi></msub><mo>∣</mo><mi>Ξ</mi><mo>,</mo><mi>Ω</mi><mo>,</mo><mi>ξ</mi><mo>,</mo><mi>z</mi><mo>,</mo><mi>β</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
-b_c\mid \Xi,\Omega,\xi,z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
-\end{equation}</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ξ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ξ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>ξ</mi><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mover><mi>b</mi><mo accent="true">‾</mo></mover><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}(\Xi^{-1}\xi +m_c\Omega_c^{-1}\bar{b}_c)</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ξ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Sigma_{b_c}=(\Xi^{-1}+m_c\Omega_c^{-1})^{-1}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>b</mi><mo accent="true">‾</mo></mover><mi>c</mi></msub><mo>=</mo><msubsup><mi>m</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mo>∑</mo><mrow><mi>n</mi><mo>:</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi></mrow></msub><msub><mi>β</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n</annotation></semantics></math>.</p></li>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>c</mi></msub><mo>∣</mo><msub><mi>Σ</mi><msub><mi>b</mi><mn>0</mn></msub></msub><mo>,</mo><mi>Ω</mi><mo>,</mo><msub><mi>μ</mi><msub><mi>b</mi><mn>0</mn></msub></msub><mo>,</mo><mi>z</mi><mo>,</mo><mi>β</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+b_c\mid \Sigma_{b_0},\Omega,\mu_{b_0},z,\beta \sim\text{MVN}_{P_r}\left( \mu_{b_c}, \Sigma_{b_c}  \right),
+\end{equation}</annotation></semantics></math> where</p>
+<ul>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Σ</mi><msub><mi>b</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Σ</mi><msub><mi>b</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>μ</mi><msub><mi>b</mi><mn>0</mn></msub></msub><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mover><mi>b</mi><mo accent="true">‾</mo></mover><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_{b_c}=(\Sigma_{b_0}^{-1}+m_c\Omega_c^{-1})^{-1}(\Sigma_{b_0}^{-1}\mu_{b_0} +m_c\Omega_c^{-1}\bar{b}_c)</annotation></semantics></math>,</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><msub><mi>b</mi><mi>c</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Σ</mi><msub><mi>b</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub><msubsup><mi>Ω</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Sigma_{b_c}=(\Sigma_{b_0}^{-1}+m_c\Omega_c^{-1})^{-1}</annotation></semantics></math>,</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>b</mi><mo accent="true">‾</mo></mover><mi>c</mi></msub><mo>=</mo><msubsup><mi>m</mi><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mo>∑</mo><mrow><mi>n</mi><mo>:</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi></mrow></msub><msub><mi>β</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\bar{b}_c=m_c^{-1}\sum_{n:z_n=c} \beta_n</annotation></semantics></math>.</p></li>
+</ul>
+</li>
 <li><p>The class covariance matrices
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Ω</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msub><annotation encoding="application/x-tex">(\Omega_c)_c</annotation></semantics></math>
 are updated independently for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
 via
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Ω</mi><mi>c</mi></msub><mo>∣</mo><mi>ν</mi><mo>,</mo><mi>Θ</mi><mo>,</mo><mi>z</mi><mo>,</mo><mi>β</mi><mo>,</mo><mi>b</mi><mo>∼</mo><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
-\Omega_c \mid \nu,\Theta,z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Ω</mi><mi>c</mi></msub><mo>∣</mo><msub><mi>n</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>V</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo>,</mo><mi>z</mi><mo>,</mo><mi>β</mi><mo>,</mo><mi>b</mi><mo>∼</mo><msubsup><mi>W</mi><msub><mi>P</mi><mi>r</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\Omega_c \mid n_{\Omega_0},V_{\Omega_0},z,\beta,b \sim W^{-1}_{P_r}(\mu_{\Omega_c},\Sigma_{\Omega_c}),
 \end{equation}</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>=</mo><mi>ν</mi><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">\mu_{\Omega_c}=\nu+m_c</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>=</mo><msub><mi>n</mi><msub><mi>Ω</mi><mn>0</mn></msub></msub><mo>+</mo><msub><mi>m</mi><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">\mu_{\Omega_c}=n_{\Omega_0} + m_c</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>=</mo><msup><mi>Θ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msub><mo>∑</mo><mrow><mi>n</mi><mo>:</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>−</mo><msub><mi>b</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>−</mo><msub><mi>b</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>′</mi></mrow><annotation encoding="application/x-tex">\Sigma_{\Omega_c}=\Theta^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><msub><mi>Ω</mi><mi>c</mi></msub></msub><mo>=</mo><msubsup><mi>V</mi><msub><mi>Ω</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>+</mo><msub><mo>∑</mo><mrow><mi>n</mi><mo>:</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>−</mo><msub><mi>b</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo>−</mo><msub><mi>b</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>′</mi></mrow><annotation encoding="application/x-tex">\Sigma_{\Omega_c}=V_{\Omega_0}^{-1} + \sum_{n:z_n=c} (\beta_n-b_c)(\beta_n-b_c)'</annotation></semantics></math>.</p></li>
 <li><p>Independently for all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 and
@@ -222,7 +226,8 @@ and
 respectively, without the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>th
 column.</p></li>
-<li><p>Updating the fixed coefficient vector
+<li>
+<p>Updating the fixed coefficient vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 is achieved by applying the formula for Bayesian linear regression of
 the regressors
@@ -230,33 +235,44 @@ the regressors
 on the regressands
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><msub><mi>β</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">(U_{nt:})-X_{nt}'\beta_n</annotation></semantics></math>,
 i.e.
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∣</mo><mi>Ψ</mi><mo>,</mo><mi>ψ</mi><mo>,</mo><mi>W</mi><mo>,</mo><mi>Σ</mi><mo>,</mo><mi>U</mi><mo>,</mo><mi>X</mi><mo>,</mo><mi>β</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>f</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>α</mi></msub><mo>,</mo><msub><mi>Σ</mi><mi>α</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
-\alpha \mid \Psi,\psi,W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
-\end{equation}</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>α</mi></msub><mo>=</mo><msub><mi>Σ</mi><mi>α</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ψ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>ψ</mi><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><msub><mi>β</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_\alpha = \Sigma_\alpha (\Psi^{-1}\psi + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><mi>α</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>Ψ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Sigma_\alpha = (\Psi^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}</annotation></semantics></math>.</p></li>
-<li><p>Analogously to
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∣</mo><msub><mi>Σ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><mo>,</mo><msub><mi>μ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><mo>,</mo><mi>W</mi><mo>,</mo><mi>Σ</mi><mo>,</mo><mi>U</mi><mo>,</mo><mi>X</mi><mo>,</mo><mi>β</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>f</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mi>α</mi></msub><mo>,</mo><msub><mi>Σ</mi><mi>α</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\alpha \mid \Sigma_{\alpha_0},\mu_{\alpha_0},W,\Sigma,U,X,\beta \sim \text{MVN}_{P_f}(\mu_\alpha,\Sigma_\alpha),
+\end{equation}</annotation></semantics></math> where</p>
+<ul>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>α</mi></msub><mo>=</mo><msub><mi>Σ</mi><mi>α</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Σ</mi><msub><mi>α</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>μ</mi><msub><mi>α</mi><mn>0</mn></msub></msub><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><msub><mi>β</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_\alpha = \Sigma_\alpha (\Sigma_{\alpha_0}^{-1}\mu_{\alpha_0} + \sum_{n=1,t=1}^{N,T} W_{nt} \Sigma^{-1} ((U_{nt:})-X_{nt}'\beta_n) )</annotation></semantics></math></p></li>
+<li><p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><mi>α</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Σ</mi><msub><mi>α</mi><mn>0</mn></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Sigma_\alpha = (\Sigma_{\alpha_0}^{-1} + \sum_{n=1,t=1}^{N,T} W_{nt}\Sigma^{-1} W_{nt}^{'} )^{-1}</annotation></semantics></math>.</p></li>
+</ul>
+</li>
+<li>
+<p>Analogously to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>,
 the random coefficients
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msub><annotation encoding="application/x-tex">(\beta_n)_n</annotation></semantics></math>
 are updated independently via
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mi>n</mi></msub><mo>∣</mo><mi>Ω</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>X</mi><mo>,</mo><mi>Σ</mi><mo>,</mo><mi>U</mi><mo>,</mo><mi>W</mi><mo>,</mo><mi>α</mi><mo>∼</mo><msub><mtext mathvariant="normal">MVN</mtext><msub><mi>P</mi><mi>r</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mo>,</mo><msub><mi>Σ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
 \beta_n \mid \Omega,b,X,\Sigma,U,W,\alpha \sim \text{MVN}_{P_r}(\mu_{\beta_n},\Sigma_{\beta_n}),
-\end{equation}</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mo>=</mo><msub><mi>Σ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Ω</mi><msub><mi>z</mi><mi>n</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>b</mi><msub><mi>z</mi><mi>n</mi></msub></msub><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></msubsup><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo>−</mo><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )</annotation></semantics></math>
-and
+\end{equation}</annotation></semantics></math> where</p>
+<ul>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mo>=</mo><msub><mi>Σ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Ω</mi><msub><mi>z</mi><mi>n</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>b</mi><msub><mi>z</mi><mi>n</mi></msub></msub><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></msubsup><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo>−</mo><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu_{\beta_n} = \Sigma_{\beta_n} (\Omega_{z_n}^{-1}b_{z_n} + \sum_{t=1}^{T} X_{nt} \Sigma^{-1} (U_{nt:}-W_{nt}'\alpha) )</annotation></semantics></math></p></li>
+<li><p>and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><msub><mi>β</mi><mi>n</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>Ω</mi><msub><mi>z</mi><mi>n</mi></msub><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>+</mo><msubsup><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></msubsup><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msup><mi>Σ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow><mi>′</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Sigma_{\beta_n} = (\Omega_{z_n}^{-1} + \sum_{t=1}^{T} X_{nt}\Sigma^{-1} X_{nt}^{'} )^{-1}</annotation></semantics></math>
 .</p></li>
-<li><p>The error term covariance matrix
+</ul>
+</li>
+<li>
+<p>The error term covariance matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
 is updated by means of <span class="math display">$$\begin{equation}
-\Sigma \mid \kappa,\Lambda,U,W,\alpha,X,\beta \sim
-W^{-1}_{J-1}(\kappa+NT,\Lambda+S), \\
-\end{equation}$$</span> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>ε</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msub><mi>ε</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi></mrow><annotation encoding="application/x-tex">S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'</annotation></semantics></math>
-and
+\Sigma \mid n_{\Sigma_0}, V_{\Sigma_0}, U, W, \alpha, X, \beta \sim
+W^{-1}_{J-1}(n_{\Sigma_0} + NT, V_{\Sigma_0} + S), \\
+\end{equation}$$</span> where</p>
+<ul>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>,</mo><mi>T</mi></mrow></msubsup><msub><mi>ε</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><msub><mi>ε</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi></mrow><annotation encoding="application/x-tex">S = \sum_{n=1,t=1}^{N,T} \varepsilon_{nt} \varepsilon_{nt}'</annotation></semantics></math></p></li>
+<li><p>and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ε</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mo>:</mo></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>W</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><mi>α</mi><mo>−</mo><msub><mi>X</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mi>′</mi><msub><mi>β</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\varepsilon_{nt} = (U_{nt:}) - W_{nt}'\alpha - X_{nt}'\beta_n</annotation></semantics></math>.</p></li>
+</ul>
+</li>
 </ul>
 <div class="section level3">
 <h3 id="parameter-normalization">Parameter normalization<a class="anchor" aria-label="anchor" href="#parameter-normalization"></a>
@@ -369,29 +385,29 @@ print the Gibbs sampler progress.</p></li>
 distributions (their default values are documented in the
 <code><a href="../reference/check_prior.html">check_prior()</a></code> function):</p>
 <ul>
-<li><p><code>eta</code>: The mean vector of length <code>P_f</code> of
-the normal prior for <code>alpha</code>.</p></li>
-<li><p><code>Psi</code>: The covariance matrix of dimension
+<li><p><code>mu_alpha_0</code>: The mean vector of length
+<code>P_f</code> of the normal prior for <code>alpha</code>.</p></li>
+<li><p><code>Sigma_alpha_0</code>: The covariance matrix of dimension
 <code>P_f</code> x <code>P_f</code> of the normal prior for
 <code>alpha</code>.</p></li>
 <li><p><code>delta</code>: The concentration parameter of length 1 of
 the Dirichlet prior for <code>s</code>.</p></li>
-<li><p><code>xi</code>: The mean vector of length <code>P_r</code> of
-the normal prior for each <code>b_c</code>.</p></li>
-<li><p><code>D</code>: The covariance matrix of dimension
+<li><p><code>mu_b_0</code>: The mean vector of length <code>P_r</code>
+of the normal prior for each <code>b_c</code>.</p></li>
+<li><p><code>Sigma_b_0</code>: The covariance matrix of dimension
 <code>P_r</code> x <code>P_r</code> of the normal prior for each
 <code>b_c</code>.</p></li>
-<li><p><code>nu</code>: The degrees of freedom (a natural number greater
-than <code>P_r</code>) of the Inverse Wishart prior for each
+<li><p><code>n_Omega_0</code>: The degrees of freedom (a natural number
+greater than <code>P_r</code>) of the Inverse Wishart prior for each
 <code>Omega_c</code>.</p></li>
-<li><p><code>Theta</code>: The scale matrix of dimension
+<li><p><code>V_Omega_0</code>: The scale matrix of dimension
 <code>P_r</code> x <code>P_r</code> of the Inverse Wishart prior for
 each <code>Omega_c</code>.</p></li>
-<li><p><code>kappa</code>: The degrees of freedom (a natural number
-greater than <code>J-1</code>) of the Inverse Wishart prior for
+<li><p><code>n_Sigma_0</code>: The degrees of freedom (a natural number
+greater than <code>J - 1</code>) of the Inverse Wishart prior for
 <code>Sigma</code>.</p></li>
-<li><p><code>E</code>: The scale matrix of dimension <code>J-1</code> x
-<code>J-1</code> of the Inverse Wishart prior for
+<li><p><code>V_Sigma_0</code>: The scale matrix of dimension
+<code>J-1</code> x <code>J-1</code> of the Inverse Wishart prior for
 <code>Sigma</code>.</p></li>
 </ul>
 </li>
@@ -414,7 +430,8 @@ value the higher the comfort). For normalization, the first linear
 coefficient, the <code>price</code>, was fixed to <code>-1</code>, which
 allows to interpret the other coefficients as monetary values:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="va">comfort</span> <span class="op">|</span> <span class="fl">0</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, choice_data <span class="op">=</span> <span class="va">train_choice</span>, id <span class="op">=</span> <span class="st">"deciderID"</span>, idc <span class="op">=</span> <span class="st">"occasionID"</span><span class="op">)</span></span>
 <span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_model.html">fit_model</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
@@ -426,13 +443,9 @@ point estimate) can be printed via</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate   (sd)</span></span>
 <span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
-<span><span class="co">#&gt; 2    time    -25.90 (2.09)</span></span>
-<span><span class="co">#&gt; 3  change     -4.82 (0.84)</span></span>
-<span><span class="co">#&gt; 4 comfort    -14.49 (0.86)</span></span></code></pre></div>
-<p>and visualized via</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Fplot-coef-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
+<span><span class="co">#&gt; 2    time    -25.81 (2.18)</span></span>
+<span><span class="co">#&gt; 3  change     -4.88 (0.88)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.49 (0.94)</span></span></code></pre></div>
 <p>The results indicate that the deciders value one hour travel time by
 about 25€, an additional change by 5€, and a more comfortable class by
 14€.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;These results are consistent with the ones that are
@@ -446,15 +459,15 @@ logit model.&lt;/p&gt;'><sup>3</sup></a></p>
 <p>The Gibbs samples are saved in list form in the
 <code>RprobitB_fit</code> object at the entry
 <code>"gibbs_samples"</code>, i.e.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">$</span><span class="va">gibbs_samples</span>, max.level <span class="op">=</span> <span class="fl">2</span>, give.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ gibbs_samples_raw:List of 2</span></span>
-<span><span class="co">#&gt;   ..$ alpha: num [1:1000, 1:4] -0.000713 -0.022961 -0.031988 -0.036215 -0.03571 ...</span></span>
-<span><span class="co">#&gt;   ..$ Sigma: num [1:1000, 1] 1.05 1.1 1.03 1.02 1.01 ...</span></span>
+<span><span class="co">#&gt;   ..$ alpha: num [1:1000, 1:4] -0.000713 -0.023068 -0.030523 -0.034482 -0.036309 ...</span></span>
+<span><span class="co">#&gt;   ..$ Sigma: num [1:1000, 1] 1.09 1.11 1.04 1.06 1.01 ...</span></span>
 <span><span class="co">#&gt;  $ gibbs_samples_nbt:List of 2</span></span>
 <span><span class="co">#&gt;   ..$ alpha: num [1:500, 1:4] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ...</span></span>
-<span><span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 617 611 626 552 734 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..$ Sigma: num [1:500, 1] 687 696 605 686 677 ...</span></span></code></pre></div>
 <p>This object contains 2 elements:</p>
 <ul>
 <li><p><code>gibbs_samples_raw</code> is a list of the raw samples from
@@ -472,6 +485,8 @@ access the Gibbs sample statistics as an &lt;code&gt;RprobitB_parameter&lt;/code
 object.&lt;/p&gt;'><sup>4</sup></a>, for example</p>
 <ul>
 <li><p><code>mean</code> for the arithmetic mean,</p></li>
+<li><p><code>mode_approx</code> for the (approximated) conditional
+posterior mode,</p></li>
 <li><p><code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd</a></code> for the standard deviation,</p></li>
 <li><p><code>R_hat</code> for the Gelman-Rubin statistic <span class="citation">(<a href="#ref-Gelman1992">Gelman and Rubin
 1992</a>)</span> <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;A Gelman-Rubin statistic close to 1 indicates that the
@@ -479,10 +494,11 @@ chain of Gibbs samples converged to the stationary distribution.&lt;/p&gt;"><sup
 <li><p>or custom statistics like the absolute difference between the
 median and the mean.</p></li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">model_train</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"mean"</span> <span class="op">=</span> <span class="va">mean</span>,</span>
+<span>    <span class="st">"mode"</span> <span class="op">=</span> <span class="va">mode_approx</span>,</span>
 <span>    <span class="st">"sd"</span> <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>,</span>
 <span>    <span class="st">"R^"</span> <span class="op">=</span> <span class="va">R_hat</span>,</span>
 <span>    <span class="st">"custom_stat"</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -495,33 +511,33 @@ median and the mean.</p></li>
 <span><span class="co">#&gt; Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="text-decoration: underline;">Gibbs sample statistics</span></span></span>
-<span><span class="co"><span style="text-decoration: underline;">#&gt; </span>               mean           sd           R^  custom_stat</span></span>
+<span><span class="co"><span style="text-decoration: underline;">#&gt; </span>               mean         mode           sd           R^  custom_stat</span></span>
 <span><span class="co">#&gt;  alpha</span></span>
-<span><span class="co">#&gt;                                                           </span></span>
-<span><span class="co">#&gt;      1        -1.00         0.00         1.00         0.00</span></span>
-<span><span class="co">#&gt;      2       -25.90         2.09         1.04         0.07</span></span>
-<span><span class="co">#&gt;      3        -4.82         0.84         1.00         0.02</span></span>
-<span><span class="co">#&gt;      4       -14.49         0.86         1.00         0.02</span></span>
+<span><span class="co">#&gt;                                                                        </span></span>
+<span><span class="co">#&gt;      1        -1.00        -1.00         0.00         1.00         0.00</span></span>
+<span><span class="co">#&gt;      2       -25.81       -25.59         2.18         1.00         0.06</span></span>
+<span><span class="co">#&gt;      3        -4.88        -5.16         0.88         1.00         0.04</span></span>
+<span><span class="co">#&gt;      4       -14.49       -14.54         0.94         1.00         0.02</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Sigma</span></span>
-<span><span class="co">#&gt;                                                           </span></span>
-<span><span class="co">#&gt;    1,1       661.69        59.21         1.03         7.30</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                                        </span></span>
+<span><span class="co">#&gt;    1,1       657.41       632.46        67.16         1.01         4.07</span></span></code></pre></div>
 <p>Calling the <code>plot</code> method with the additional argument
 <code>type = "trace"</code> plots the trace of the Gibbs samples
 <code>gibbs_samples_nbt</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"trace"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Fplot-trace-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/plot-trace-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Additionally, we can visualize the serial correlation of the Gibbs
 samples via the argument <code>type = "acf"</code>. The boxes in the
 top-right corner state the total sample size TSS (here <code>R</code> -
 <code>B</code> = 10000 - 5000 = 5000), the effective sample size ESS,
 and the factor by which TSS is larger than ESS.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_train</span>, type <span class="op">=</span> <span class="st">"acf"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Fplot-acf-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/plot-acf-model-train-1.png" width="75%" style="display: block; margin: auto;"></p>
 <p>Here, the effective sample size is the value
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">TSS</mtext><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mo>∑</mo><mrow><mi>k</mi><mo>≥</mo><mn>1</mn></mrow></msub><msub><mi>ρ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{TSS} / (1 + \sum_{k\geq 1} \rho_k)</annotation></semantics></math>,
 where
@@ -540,19 +556,19 @@ positions. The auto correlations are estimated via the
 <li>change the length <code>B</code> of the burn-in period, for
 example</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>change the thinning factor <code>Q</code> of the Gibbs samples, for
 example</li>
 </ol>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, Q <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>or change the model normalization <code>scale</code>, for
 example</li>
 </ol>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">model_train</span>, scale <span class="op">=</span> <span class="st">"Sigma_1 := 1"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2 unnumbered">
@@ -562,37 +578,37 @@ example</li>
 <div id="ref-Albert1993" class="csl-entry">
 Albert, J. H., and S. Chib. 1993. <span>“Bayesian Analysis of Binary and
 Polychotomous Response Data.”</span> <em>Journal of the American
-Statistical Association</em> 88. <a href="https://doi.org/10.2307/2290350" class="external-link">https://doi.org/10.2307/2290350</a>.
+Statistical Association</em> 88.
 </div>
 <div id="ref-Allenby1998" class="csl-entry">
 Allenby, G. M., and P. Rossi. 1998. <span>“Marketing Models of Consumer
-Heterogeneity.”</span> <em>Journal of Econometrics</em> 89. <a href="https://doi.org/10.1016/S0304-4076(98)00055-4" class="external-link">https://doi.org/10.1016/S0304-4076(98)00055-4</a>.
+Heterogeneity.”</span> <em>Journal of Econometrics</em> 89.
 </div>
 <div id="ref-Gelman1992" class="csl-entry">
 Gelman, A., and D. B. Rubin. 1992. <span>“Inference from Iterative
 Simulation Using Multiple Sequences.”</span> <em>Statistical
-Science</em> 7 (4). <a href="https://doi.org/10.1214/ss/1177011136" class="external-link">https://doi.org/10.1214/ss/1177011136</a>.
+Science</em> 7 (4).
 </div>
 <div id="ref-Geweke1998" class="csl-entry">
 Geweke, J. 1998. <span>“Efficient Simulation from the Multivariate
-Normal and Student-t Distributions Subject to Linear Constraints and the
-Evaluation of Constraint Probabilities.”</span> <em>Computing Science
-and Statistics</em> 23.
+Normal and <span class="nocase">Student-t</span> Distributions Subject
+to Linear Constraints and the Evaluation of Constraint
+Probabilities.”</span> <em>Computing Science and Statistics</em> 23.
 </div>
 <div id="ref-Imai2005" class="csl-entry">
-Imai, K., and D. A. van Dyk. 2005. <span>“A Bayesian Analysis of the
-Multinomial Probit Model Using Marginal Data Augmentation.”</span>
-<em>Journal of Econometrics</em>.
+Imai, K., and D. A. van Dyk. 2005. <span>“A <span>Bayesian</span>
+Analysis of the Multinomial Probit Model Using Marginal Data
+Augmentation.”</span> <em>Journal of Econometrics</em>.
 </div>
 <div id="ref-McCulloch1994" class="csl-entry">
 McCulloch, R., and P. Rossi. 1994. <span>“An Exact Likelihood Analysis
 of the Multinomial Probit Model.”</span> <em>Journal of
-Econometrics</em> 64. <a href="https://doi.org/10.1016/0304-4076(94)90064-7" class="external-link">https://doi.org/10.1016/0304-4076(94)90064-7</a>.
+Econometrics</em> 64.
 </div>
 <div id="ref-Nobile1998" class="csl-entry">
 Nobile, A. 1998. <span>“A Hybrid Markov Chain for the
-<span>Bayesian</span> Analysis of the Multinomial <span>Probit</span>
-Model.”</span> <em>Statistics and Computing</em> 8. <a href="https://doi.org/10.1023/A:1008905311214" class="external-link">https://doi.org/10.1023/A:1008905311214</a>.
+<span>Bayesian</span> Analysis of the Multinomial Probit Model.”</span>
+<em>Statistics and Computing</em> 8.
 </div>
 </div>
 </div>
@@ -604,11 +620,11 @@ Model.”</span> <em>Statistics and Computing</em> 8. <a href="https://doi.org/1
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
