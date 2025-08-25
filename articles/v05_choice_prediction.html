@@ -8,8 +8,8 @@
 <title>Choice prediction • RprobitB</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Choice prediction">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@
 
     
     
-<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.4.1 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.1.4 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
+<p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.5.1 with the
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
 prediction within <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. The former case refers to
 reproducing the observed choices on the basis of the covariates and the
 fitted model and subsequently using the deviations between prediction
@@ -97,7 +97,7 @@ performance:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     predicted</span></span>
 <span><span class="co">#&gt; true    A    B</span></span>
-<span><span class="co">#&gt;    A 1030  444</span></span>
+<span><span class="co">#&gt;    A 1035  439</span></span>
 <span><span class="co">#&gt;    B  448 1007</span></span></code></pre></div>
 <p>By setting the argument <code>overview = FALSE</code>, the method
 instead returns predictions on the level of individual choice
@@ -106,7 +106,7 @@ occasions:</p>
 <code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model_train</span>, overview <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pred</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    deciderID occasionID    A    B true predicted correct</span></span>
-<span><span class="co">#&gt; 1          1          1 0.92 0.08    A         A    TRUE</span></span>
+<span><span class="co">#&gt; 1          1          1 0.91 0.09    A         A    TRUE</span></span>
 <span><span class="co">#&gt; 2          1          2 0.64 0.36    A         A    TRUE</span></span>
 <span><span class="co">#&gt; 3          1          3 0.79 0.21    A         A    TRUE</span></span>
 <span><span class="co">#&gt; 4          1          4 0.18 0.82    B         B    TRUE</span></span>
@@ -119,7 +119,7 @@ occasions:</p>
 <p>Among the three incorrect predictions shown here, the one for decider
 <code>id = 1</code> in choice occasion <code>idc = 8</code> is the most
 outstanding. Alternative <code>B</code> was chosen although the model
-predicts a probability of 75% for alternative <code>A</code>. We can use
+predicts a probability of 76% for alternative <code>A</code>. We can use
 the convenience function <code><a href="../reference/get_cov.html">get_cov()</a></code> to extract the
 characteristics of this particular choice situation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -135,34 +135,31 @@ which by our model outweighs the better comfort class for alternative
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate   (sd)</span></span>
 <span><span class="co">#&gt; 1   price     -1.00 (0.00)</span></span>
-<span><span class="co">#&gt; 2    time    -25.39 (2.07)</span></span>
-<span><span class="co">#&gt; 3  change     -4.89 (0.88)</span></span>
-<span><span class="co">#&gt; 4 comfort    -14.35 (0.95)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2    time    -25.94 (2.20)</span></span>
+<span><span class="co">#&gt; 3  change     -4.96 (0.85)</span></span>
+<span><span class="co">#&gt; 4 comfort    -14.50 (0.91)</span></span></code></pre></div>
 <p>The misclassification can be explained by preferences that differ
-from the average decider (choice behavior heterogeneity), or by
+from the average decider (choice behaviour heterogeneity), or by
 unobserved factors that influenced the choice. Indeed, the variance of
 the error term was estimated high:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/point_estimates.html">point_estimates</a></span><span class="op">(</span><span class="va">model_train</span><span class="op">)</span><span class="op">$</span><span class="va">Sigma</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 648.0326</span></span>
+<span><span class="co">#&gt; [1,] 660.3985</span></span>
 <span><span class="co">#&gt; attr(,"names")</span></span>
 <span><span class="co">#&gt; [1] "1,1"</span></span></code></pre></div>
 <p>Apart from the prediction accuracy, the model performance can be
 evaluated more nuanced in terms of sensitivity and specificity. The
 following snippet exemplary shows how to visualize these measures by
 means of a receiver operating characteristic (ROC) curve <span class="citation">(<a href="#ref-Fawcett2006">Fawcett 2006</a>)</span>,
-using the <a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a> package <span class="citation">(<a href="#ref-Sachs2017">Sachs 2017</a>)</span>. The curve is constructed
-by plotting the true positive fraction against the false positive
-fraction at various cutoffs (here <code>n.cuts = 20</code>). The closer
-the curve is to the top-left corner, the better the binary
-classification.</p>
+comparing the prediction performance to a model that only uses the price
+as explanatory variable:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pred</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">A</span>, d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">true</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotROC/man/geom_roc.html" class="external-link">geom_roc</a></span><span class="op">(</span>n.cuts <span class="op">=</span> <span class="fl">20</span>, labels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotROC/man/style_roc.html" class="external-link">style_roc</a></span><span class="op">(</span>theme <span class="op">=</span> <span class="va">theme_grey</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img%2Froc-example-1.png" width="50%" style="display: block; margin: auto;"></p>
+<code class="sourceCode R"><span><span class="va">model_train_basic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">model_train</span>, form <span class="op">=</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">|</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_roc.html">plot_roc</a></span><span class="op">(</span><span class="va">model_train</span>, <span class="va">model_train_basic</span><span class="op">)</span></span></code></pre></div>
+<p><img src="img/roc-example-1.png" width="50%" style="display: block; margin: auto;"></p>
+<p>The prediction performance of <code>model_train</code> is better,
+because its ROC curve lies above.</p>
 </div>
 <div class="section level2">
 <h2 id="forecasting-choice-behavior">Forecasting choice behavior<a class="anchor" aria-label="anchor" href="#forecasting-choice-behavior"></a>
@@ -216,13 +213,8 @@ price and even results in a gain of 7% market share:</p>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-Fawcett2006" class="csl-entry">
-Fawcett, T. 2006. <span>“An Introduction to ROC Analysis.”</span>
-<em>Pattern Recognition Letters</em> 27 (8). <a href="https://doi.org/10.1016/j.patrec.2005.10.010" class="external-link">https://doi.org/10.1016/j.patrec.2005.10.010</a>.
-</div>
-<div id="ref-Sachs2017" class="csl-entry">
-Sachs, M. C. 2017. <span>“<span class="nocase">plotROC</span>: A Tool
-for Plotting <span>ROC</span> Curves.”</span> <em>Journal of Statistical
-Software, Code Snippets</em> 79 (2): 1–19. <a href="https://doi.org/10.18637/jss.v079.c02" class="external-link">https://doi.org/10.18637/jss.v079.c02</a>.
+Fawcett, T. 2006. <span>“An Introduction to <span>ROC</span>
+Analysis.”</span> <em>Pattern Recognition Letters</em> 27 (8).
 </div>
 </div>
 </div>
@@ -234,11 +226,11 @@ Software, Code Snippets</em> 79 (2): 1–19. <a href="https://doi.org/10.18637/j
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
