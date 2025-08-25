@@ -2,85 +2,76 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_classes_dp}
 \alias{update_classes_dp}
-\title{Dirichlet process-based update of latent classes}
+\title{Dirichlet process class updates}
 \usage{
 update_classes_dp(
-  Cmax,
   beta,
   z,
   b,
   Omega,
   delta,
-  xi,
-  D,
-  nu,
-  Theta,
-  s_desc = TRUE
+  mu_b_0,
+  Sigma_b_0,
+  n_Omega_0,
+  V_Omega_0,
+  identify_classes = FALSE,
+  Cmax = 10L
 )
 }
 \arguments{
-\item{Cmax}{The maximum number of classes.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{delta}{[\code{numeric(1)}]\cr
+The prior concentration for \code{s}.}
 
-\item{delta}{A numeric for the concentration parameter vector \code{rep(delta,C)} of the
-Dirichlet prior for \code{s}.
-Per default, \code{delta = 1}. In case of Dirichlet process-based updates of the
-latent classes, \code{delta = 0.1} per default.}
+\item{mu_b_0}{[\code{numeric(P_r)}]\cr
+The mean vector of the normal prior for each \code{b_c}.}
 
-\item{xi}{The mean vector of length \code{P_r} of the normal prior for each \code{b_c}.
-Per default, \code{xi = numeric(P_r)}.}
+\item{Sigma_b_0}{[\code{matrix(P_r, P_r)}]\cr
+The covariance matrix of the normal prior for each \code{b_c}.}
 
-\item{D}{The covariance matrix of dimension \code{P_r} x \code{P_r} of the normal prior for
-each \code{b_c}.
-Per default, \code{D = diag(P_r)}.}
+\item{n_Omega_0}{[\code{integer(1)}]\cr
+The degrees of freedom of the Inverse Wishart prior for each \code{Omega_c}.}
 
-\item{nu}{The degrees of freedom (a natural number greater than \code{P_r}) of the Inverse
-Wishart prior for each \code{Omega_c}.
-Per default, \code{nu = P_r + 2}.}
+\item{V_Omega_0}{[\code{matrix(P_r, P_r)}]\cr
+The scale matrix of the Inverse Wishart prior for each \code{Omega_c}.}
 
-\item{Theta}{The scale matrix of dimension \code{P_r} x \code{P_r} of the Inverse Wishart prior for
-each \code{Omega_c}.
-Per default, \code{Theta = diag(P_r)}.}
+\item{identify_classes}{[\code{logical(1)}]\cr
+Identify classes by decreasing class weights?}
 
-\item{s_desc}{If \code{TRUE}, sort the classes in descending class weight.}
+\item{Cmax}{[\code{integer(1)}]\cr
+The maximum number of classes, used to allocate space.}
 }
 \value{
-A list of updated values for \code{z}, \code{b}, \code{Omega}, \code{s},
-and \code{C}.
+A list of updated values for \code{z}, \code{b}, \code{Omega}, and \code{C}.
 }
 \description{
-This function updates the latent classes based on a Dirichlet process.
-}
-\details{
-To be added.
+Dirichlet process class updates
 }
 \examples{
 set.seed(1)
-z <- c(rep(1,20),rep(2,30))
-b <- matrix(c(1,1,1,-1), ncol=2)
-Omega <- matrix(c(1,0.3,0.3,0.5,1,-0.3,-0.3,0.8), ncol=2)
-beta <- sapply(z, function(z) rmvnorm(b[,z], matrix(Omega[,z],2,2)))
-delta <- 1
-xi <- numeric(2)
-D <- diag(2)
-nu <- 4
-Theta <- diag(2)
-RprobitB:::update_classes_dp(
-  Cmax = 10, beta = beta, z = z, b = b, Omega = Omega,
-  delta = delta, xi = xi, D = D, nu = nu, Theta = Theta
+z <- c(rep(1, 10),rep(2, 10))
+b <- matrix(c(5, 5, 5, -5), ncol = 2)
+Omega <- matrix(c(1, 0.3, 0.3, 0.5, 1, -0.3, -0.3, 0.8), ncol = 2)
+beta <- sapply(
+  z, function(z) oeli::rmvnorm(n = 1, b[, z], matrix(Omega[, z], 2, 2))
 )
+beta[, 1] <- c(-10, 10)
+update_classes_dp(
+  beta = beta, z = z, b = b, Omega = Omega,
+  delta = 1, mu_b_0 = numeric(2), Sigma_b_0 = diag(2),
+  n_Omega_0 = 4, V_Omega_0 = diag(2)
+)
+
 }
-\keyword{internal}
+\keyword{gibbs_sampler}

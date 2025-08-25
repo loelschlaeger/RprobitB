@@ -4,26 +4,26 @@
 \alias{update_m}
 \title{Update class sizes}
 \usage{
-update_m(C, z, nozero)
+update_m(C, z, non_zero = FALSE)
 }
 \arguments{
-\item{C}{The number (greater or equal 1) of latent classes of decision makers.
-Set to \code{NA} if \code{P_r = 0}. Otherwise, \code{C = 1} per default.}
+\item{C}{[\code{integer(1)}]\cr
+The number (greater or equal 1) of latent classes of decision makers.}
 
-\item{z}{The vector of the allocation variables of length \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{z}{[\code{numeric(N)}]\cr
+The decider class allocations.}
 
-\item{nozero}{If \code{TRUE}, each element in the output vector \code{m} is at least one
-(for numerical stability).}
+\item{non_zero}{[\code{logical(1)}]\cr
+Enforce strictly positive values in \code{m} (for numerical stability)?}
 }
 \value{
-An updated class size vector.
+An update for \code{m}.
 }
 \description{
-This function updates the class size vector.
+Update class sizes
 }
 \examples{
-update_m(C = 3, z = c(1,1,1,2,2,3), FALSE)
+update_m(C = 4, z = c(1, 1, 1, 2, 2, 3))
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

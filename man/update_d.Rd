@@ -4,28 +4,65 @@
 \alias{update_d}
 \title{Update utility threshold increments}
 \usage{
-update_d(d, y, mu, ll, zeta, Z, Tvec)
+update_d(d, y, sys, ll, mu_d_0, Sigma_d_0, Tvec, step_scale = 0.1)
 }
 \arguments{
-\item{d}{The current vector of utility threshold increments.}
+\item{d}{[\code{numeric(J - 2)}]\cr
+Threshold increments.}
 
-\item{y}{A matrix of the choices.}
+\item{y}{[\code{matrix(nrow = N, ncol = max(Tvec))}]\cr
+Choices \code{1,...,J} for each decider in each choice occasion.}
 
-\item{mu}{A matrix of the systematic utilities.}
+\item{sys}{[\code{matrix(nrow = N, ncol = max(Tvec))}]\cr
+Systematic utilties for each decider in each choice occasion.}
 
-\item{ll}{Current log-likelihood value.}
+\item{ll}{[\code{numeric(1)}]\cr
+Current log-likelihood value.}
 
-\item{zeta}{The mean vector of the normal prior for \code{d}.}
+\item{mu_d_0}{[\code{numeric(J - 2)}]\cr
+The mean vector of the normal prior for \code{d} .}
 
-\item{Z}{The covariance matrix of the normal prior for \code{d}.}
+\item{Sigma_d_0}{[\code{matrix(J - 2, J - 2)}]\cr
+The covariance matrix of the normal prior for \code{d}.}
 
-\item{Tvec}{The element \code{Tvec} in \code{\link{sufficient_statistics}}.}
+\item{Tvec}{[\code{integer(N)}]\cr
+Number of choice occasions per decider.}
+
+\item{step_scale}{[\code{numeric(1)}]\cr
+Scaling the variance for the Gaussian proposal.}
 }
 \value{
-The updated value for \code{d}.
+An update for \code{d}.
 }
 \description{
-This function updates the utility threshold increments
+Update utility threshold increments
 }
-\keyword{internal}
-\keyword{posterior}
+\examples{
+set.seed(1)
+N <- 1000
+d_true <- rnorm(2)
+gamma <- c(-Inf, 0, cumsum(exp(d_true)), Inf)
+X <- matrix(rnorm(N * 2L), ncol = 2L)
+beta <- c(0.8, -0.5)
+mu <- matrix(as.vector(X \%*\% beta), ncol = 1L)
+U <- rnorm(N, mean = mu[, 1], sd = 1)
+yvec <- as.integer(cut(U, breaks = gamma, labels = FALSE))
+y <- matrix(yvec, ncol = 1L)
+Tvec <- rep(1, N)
+mu_d_0 <- c(0, 0)
+Sigma_d_0 <- diag(2) * 5
+d <- rnorm(2)
+ll <- -Inf
+R <- 1000
+for (iter in seq_len(R)) {
+  ans <- update_d(
+    d = d, y = y, sys = mu, ll = ll, mu_d_0 = mu_d_0, Sigma_d_0 = Sigma_d_0,
+    Tvec = Tvec
+  )
+  d  <- ans$d
+  ll <- ans$ll
+}
+cbind("true" = d_true, "sample" = d) |> round(2)
+
+}
+\keyword{gibbs_sampler}

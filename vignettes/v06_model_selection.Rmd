@@ -9,7 +9,7 @@ bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 ---
 
-```{r, label = setup, include = FALSE}
+```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -26,7 +26,7 @@ The task of model selection targets the question: If there are several competing
 
 For illustration, we revisit the probit model of travelers deciding between two fictional train route alternatives from [the vignette on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html):
 
-```{r, message = FALSE}
+```{r, model-train, message = FALSE}
 form <- choice ~ price + time + change + comfort | 0
 data <- prepare_data(form = form, choice_data = train_choice, id = "deciderID", idc = "occasionID")
 model_train <- fit_model(
@@ -36,23 +36,21 @@ model_train <- fit_model(
 )
 ```
 
-As a competing model, we consider explaining the choices only by the alternative's price, i.e. the probit model with the formula `choice ~ price | 0`:
+As a competing model, we consider explaining the choices only by the alternative's price:^[The `update()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.]
 
-```{r, message = FALSE}
+```{r, model-train-sparse, message = FALSE}
 model_train_sparse <- update(model_train, form = choice ~ price | 0)
 ```
 
-The `update()` function helps to estimate a new version of `model_train` with new specifications. Here, only `form` has been changed.  
-
 ## The `model_selection()` function
 
-`{RprobitB}` provides the convenience function `model_selection()`, which takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
+The `model_selection()` function takes an arbitrary number of `RprobitB_fit` objects and returns a matrix of model selection criteria:
 
 ```{r, model-selection-example}
 model_selection(model_train, model_train_sparse)
 ```
 
-Specifying `criteria` is optional. Per default, `criteria = c("npar", "LL", "AIC", "BIC")`.^[To show the model formulas in the output of `model_selection()`, add the argument `add_form = TRUE`.] The available model selection criteria are explained in the following.
+Specifying `criteria` for `model_selection()` is optional. Per default, `criteria = c("npar", "LL", "AIC", "BIC")`.^[To show the model formulas in the output of `model_selection()`, add the argument `add_form = TRUE`.] The available model selection criteria are explained in the following.
 
 ### `npar`
 
@@ -61,8 +59,6 @@ Specifying `criteria` is optional. Per default, `criteria = c("npar", "LL", "AIC
 ```{r, npar-example}
 npar(model_train, model_train_sparse)
 ```
-
-Here, `model_train` has 4 parameters (a coefficient for price, time, change, and comfort, respectively), while `model_train_sparse` has only a single price coefficient.
 
 ### `LL` 
 
@@ -92,7 +88,7 @@ Similar to the AIC, `"BIC"` yields the Bayesian Information Criterion [@Schwarz1
 $$-2 \cdot \text{LL} + \log{(\text{nobs})} \cdot \text{npar},$$
 where $\text{LL}$ is the [model's log-likelihood value](#ll), $\text{nobs}$ is the number of data points (which can be accessed via the `nobs()` method), and $\text{npar}$ is the [number of parameters in the fitted model](#npar). The interpretation is analogue to AIC.
 
-`{RprobitB}` also provided a method for the `BIC` value:
+`{RprobitB}` also provides a method for the `BIC` value:
 
 ```{r, bic-example}
 BIC(model_train, model_train_sparse)
@@ -106,7 +102,7 @@ The WAIC is defined as
 
 $$-2  \cdot \text{lppd} + 2\cdot p_\text{WAIC},$$
 
-where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath2020 p. 220 for a reference.
+where $\text{lppd}$ stands for log pointwise predictive density and $p_\text{WAIC}$ is a penalty term proportional to the variance in the posterior distribution that is sometimes called effective number of parameters, see @McElreath2020 for a reference.
 
 The $\text{lppd}$ is approximated as follows. Let $$p_{si} = \Pr(y_i\mid \theta_s)$$ be the probability of observation $y_i$ (here the single choices) given the $s$-th set $\theta_s$ of parameter samples from the posterior. Then
 
@@ -117,15 +113,16 @@ The $\text{WAIC}$ has a standard error of
 $$\sqrt{n \cdot \mathbb{V}_i \left[-2 \left(\text{lppd} - \mathbb{V}_{\theta}  \log (p_{si})  \right)\right]},$$
 where $n$ is the number of choices.
 
-Before computing the WAIC of an \code{RprobitB_fit} object, the probabilities $p_{si}$ must be computed via the `compute_p_si()` function: ^[This computation has been outsourced because it is very time consuming. For example, the computation for `model_train` took about 5 minutes. To decrease the computation time, the function offers parallelization via specifying the number `ncores` of parallel CPU cores.]
+Before computing the WAIC of an \code{RprobitB_fit} object, the probabilities $p_{si}$ must be computed via the `compute_p_si()` function. This computation can be very time consuming. To decrease the computation time, the function offers parallelization via specifying the number `ncores` of parallel CPU cores.
 
-```{r, eval = FALSE}
-model_train <- compute_p_si(model_train)
+```{r, compute-p-si}
+model_train <- compute_p_si(model_train, ncores = 1)
+model_train_sparse <- compute_p_si(model_train_sparse, ncores = 1)
 ```
 
 Afterwards, the WAIC can be accessed as follows:
 
-```{r, waic-example, eval = FALSE}
+```{r, waic-example}
 WAIC(model_train)
 WAIC(model_train_sparse)
 ```
@@ -134,16 +131,15 @@ WAIC(model_train_sparse)
 
 `"MMLL"` in `criteria` stands for marginal model log-likelihood. The model's marginal likelihood $\Pr(y\mid M)$ for a model $M$ and data $y$ is required for the computation of Bayes factors, see below. In general, the term has no closed form and must be approximated numerically.
 
-`{RprobitB}` uses the posterior Gibbs samples derived from the `mcmc()` function to approximate the model's marginal likelihood via the posterior harmonic mean estimator [@Newton1994]: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then, 
+`{RprobitB}` uses the posterior Gibbs samples to approximate the model's marginal likelihood via the posterior harmonic mean estimator [@Newton1994]: Let $S$ denote the number of available posterior samples $\theta_1,\dots,\theta_S$. Then, 
 $$\Pr(y\mid M) = \left(\mathbb{E}_\text{posterior} 1/\Pr(y\mid \theta,M) \right)^{-1} \approx \left( \frac{1}{S} \sum_s 1/\Pr(y\mid \theta_s,M) \right) ^{-1} = \tilde{\Pr}(y\mid M).$$ 
 
 By the law of large numbers, $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$.
 
-As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`:^[Note that the marginal likelihood value is very small. The given representation is required so that the value is not rounded to 0 by the computer.]
+As for the [WAIC](#waic), computing the MMLL relies on the probabilities $p_{si} = \Pr(y_i\mid \theta_s)$, which must first be computed via the `compute_p_si()` function. Afterwards, the `mml()` function can be called with an `RprobitB_fit` object as input. The function returns the `RprobitB_fit` object, where the marginal likelihood value is saved as the entry `"mml"` and the marginal log-likelihood value as the attribute `"mmll"`:
 
-```{r, eval = FALSE}
+```{r, compute-mml}
 model_train <- mml(model_train)
-model_train$mml
 attr(model_train$mml, "mmll")
 ```
 
@@ -151,15 +147,9 @@ There are two options for improving the approximation: As for the WAIC, you can 
 
 $$\Pr(y\mid M) = \mathbb{E}_\text{prior} \Pr(y\mid \theta,M) \approx \frac{1}{S} \sum_s \Pr(y\mid \theta_s,M) = \tilde{\Pr}(y\mid M).$$ 
 
-Again, it hols by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
+Again, it holds by the law of large numbers, that $\tilde{\Pr}(y\mid M) \to \Pr(y\mid M)$ almost surely as $S \to \infty$. The final approximation of the model's marginal likelihood than is a weighted sum of the posterior harmonic mean estimate and the prior arithmetic mean estimate, where the weights are determined by the sample sizes.
 
-To use the prior arithmetic mean estimator, call the `mml()` function with a specification of the number of prior draws `S` and set `recompute = TRUE`:^[The `mml()` function offers parallelization via specifying the number `ncores` of parallel CPU cores.]
-
-```{r, eval = FALSE}
-model_train <- mml(model_train, S = 1000, recompute = TRUE)
-```
-
-Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as @Gronau2017 points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number `S` of prior samples is required.
+To use the prior arithmetic mean estimator, call the `mml()` function with a specification of the number of prior draws `S` and set `recompute = TRUE`. Note that the prior arithmetic mean estimator works well if the prior and posterior distribution have a similar shape and strong overlap, as @Gronau2017 points out. Otherwise, most of the sampled prior values result in a likelihood value close to zero, thereby contributing only marginally to the approximation. In this case, a very large number `S` of prior samples is required.
 
 ### `BF`
 
@@ -171,10 +161,10 @@ $$
 
 The ratio $\Pr(\texttt{mod0}) / \Pr(\texttt{mod1})$ expresses the factor by which $\texttt{mod0}$ a priori is assumed to be the correct model. Per default, `{RprobitB}` sets $\Pr(\texttt{mod0}) = \Pr(\texttt{mod1}) = 0.5$. The front part $\Pr(\texttt{y} \mid \texttt{mod0} ) / \Pr(\texttt{y} \mid \texttt{mod1})$ is the ratio of the [marginal model likelihoods](#mmll). A value of $BF(\texttt{mod0},\texttt{mod1}) > 1$ means that the model $\texttt{mod0}$ is more strongly supported by the data under consideration than $\texttt{mod1}$.
 
-Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys1998] in favor of `model_train`.
+Adding `"BF"` to the `criteria` argument of `model_selection` yields the Bayes factors. We find a decisive evidence [@Jeffreys1998] in favour of `model_train`.
 
-```{r, bayes-factor-example, eval = FALSE}
-model_selection(model_train, model_train_sparse, criteria = c("BF"))
+```{r, bayes-factor-example}
+model_selection(model_train, model_train_sparse, criteria = "BF")
 ```
 
 ### `pred_acc`

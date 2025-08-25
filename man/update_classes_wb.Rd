@@ -2,82 +2,86 @@
 % Please edit documentation in R/RcppExports.R
 \name{update_classes_wb}
 \alias{update_classes_wb}
-\title{Weight-based update of latent classes}
+\title{Weight-based class updates}
 \usage{
-update_classes_wb(Cmax, epsmin, epsmax, distmin, s, b, Omega)
+update_classes_wb(
+  s,
+  b,
+  Omega,
+  epsmin = 0.01,
+  epsmax = 0.7,
+  deltamin = 0.1,
+  deltashift = 0.5,
+  identify_classes = FALSE,
+  Cmax = 10L
+)
 }
 \arguments{
-\item{Cmax}{The maximum number of classes.}
+\item{s}{[\code{numeric(C)}]\cr
+The vector of class weights.}
 
-\item{epsmin}{The threshold weight (between 0 and 1) for removing a class.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{epsmax}{The threshold weight (between 0 and 1) for splitting a class.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 
-\item{distmin}{The (non-negative) threshold difference in class means for joining two
-classes.}
+\item{epsmin}{[\code{numeric(1)}]\cr
+The threshold weight for removing a class.}
 
-\item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
-For identifiability, the vector must be non-ascending.}
+\item{epsmax}{[\code{numeric(1)}]\cr
+The threshold weight for splitting a class.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{deltamin}{[\code{numeric(1)}]\cr
+The threshold difference in class means for joining two classes.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{deltashift}{[\code{numeric(1)}]\cr
+The scale for shifting the class means after a split.}
+
+\item{identify_classes}{[\code{logical(1)}]\cr
+Identify classes by decreasing class weights?}
+
+\item{Cmax}{[\code{integer(1)}]\cr
+The maximum number of classes, used to allocate space.}
 }
 \value{
-A list of updated values for \code{s}, \code{b}, and \code{Omega}.
+A list of updated values for \code{s}, \code{b}, and \code{Omega} and
+the indicator \code{update_type} which signals the type of class update:
+\itemize{
+\item \code{0}: no update
+\item \code{1}: removed class
+\item \code{2}: split class
+\item \code{3}: merged classes
+}
 }
 \description{
-This function updates the latent classes based on their class weights.
+Weight-based class updates
 }
 \details{
-The updating scheme bases on the following rules:
+The following updating rules apply:
 \itemize{
-\item We remove class \eqn{c}, if \eqn{s_c<\epsilon_{min}}, i.e. if the
-class weight \eqn{s_c} drops below some threshold
-\eqn{\epsilon_{min}}.
-This case indicates that class \eqn{c} has a negligible impact on the
-mixing distribution.
-\item We split class \eqn{c} into two classes \eqn{c_1} and \eqn{c_2}, if
-\eqn{s_c>\epsilon_{max}}.
-This case indicates that class \eqn{c} has a high influence on the mixing
-distribution whose approximation can potentially be improved by
-increasing the resolution in directions of high variance.
-Therefore, the class means \eqn{b_{c_1}} and \eqn{b_{c_2}} of the new
-classes \eqn{c_1} and \eqn{c_2} are shifted in opposite directions from
-the class mean \eqn{b_c} of the old class \eqn{c} in the direction of the
-highest variance.
-\item We join two classes \eqn{c_1} and \eqn{c_2} to one class \eqn{c}, if
-\eqn{||b_{c_1} - b_{c_2}||<\epsilon_{distmin}}, i.e. if
-the euclidean distance between the class means \eqn{b_{c_1}} and
-\eqn{b_{c_2}} drops below some threshold \eqn{\epsilon_{distmin}}.
-This case indicates location redundancy which should be repealed. The
-parameters of \eqn{c} are assigned by adding the values of \eqn{s} from
-\eqn{c_1} and \eqn{c_2} and averaging the values for \eqn{b} and
-\eqn{\Omega}.
-The rules are executed in the above order, but only one rule per iteration
-and only if \code{Cmax} is not exceeded.
+\item Class \eqn{c} is removed if \eqn{s_c < \epsilon_{min}}.
+\item Class \eqn{c} is split into two classes, if \eqn{s_c > \epsilon_{max}}.
+\item Two classes \eqn{c_1} and \eqn{c_2} are merged to one class, if
+\eqn{||b_{c_1} - b_{c_2}|| < \delta_{min}}.
 }
 }
 \examples{
-### parameter settings
-s <- c(0.8,0.2)
-b <- matrix(c(1,1,1,-1), ncol=2)
-Omega <- matrix(c(0.5,0.3,0.3,0.5,1,-0.1,-0.1,0.8), ncol=2)
+s <- c(0.7, 0.3)
+b <- matrix(c(1, 1, 1, -1), ncol = 2)
+Omega <- matrix(c(0.5, 0.3, 0.3, 0.5, 1, -0.1, -0.1, 0.8), ncol = 2)
 
-### Remove class 2
-RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.3, epsmax = 0.9, distmin = 1,
-                             s = s, b = b, Omega = Omega)
+### no update
+update_classes_wb(s = s, b = b, Omega = Omega)
 
-### Split class 1
-RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.7, distmin = 1,
-                             s = s, b = b, Omega = Omega)
+### remove class 2
+update_classes_wb(s = s, b = b, Omega = Omega, epsmin = 0.31)
 
-### Join classes
-RprobitB:::update_classes_wb(Cmax = 10, epsmin = 0.1, epsmax = 0.9, distmin = 3,
-                             s = s, b = b, Omega = Omega)
+### split class 1
+update_classes_wb(s = s, b = b, Omega = Omega, epsmax = 0.69)
+
+### merge classes 1 and 2
+update_classes_wb(s = s, b = b, Omega = Omega, deltamin = 3)
+
 }
-\keyword{internal}
+\keyword{gibbs_sampler}

@@ -1,0 +1,77 @@
+#' Transformation of parameter values
+#'
+#' @description
+#' This function transforms parameter values based on \code{normalization}.
+#'
+#' @param parameter
+#' An object of class \code{RprobitB_parameter}.
+#' @param normalization
+#' An object of class \code{RprobitB_normalization}.
+#' @inheritParams RprobitB_data
+#'
+#' @return
+#' An object of class \code{RprobitB_parameter}.
+#'
+#' @keywords internal
+
+transform_parameter <- function(parameter, normalization, ordered = FALSE) {
+  ### check inputs
+  if (!inherits(parameter, "RprobitB_parameter")) {
+    stop("'parameter' must be of class 'RprobitB_parameter'.",
+         stop = FALSE
+    )
+  }
+  if (!inherits(normalization, "RprobitB_normalization")) {
+    stop("'normalization' must be of class 'RprobitB_normalization'.",
+         stop = FALSE
+    )
+  }
+  if (!isTRUE(ordered) && !isFALSE(ordered)) {
+    stop("'ordered' must be a boolean.",
+         stop = FALSE
+    )
+  }
+
+  ### function to scale the parameters
+  scaling <- function(par, factor) {
+    if (anyNA(par)) {
+      NA
+    } else {
+      out <- par * factor
+      ### preserve names
+      names(out) <- names(par)
+      return(out)
+    }
+  }
+
+  ### scale elements of 'parameter'
+  scale <- normalization[["scale"]]
+  if (scale[["parameter"]] == "a") {
+    factor <- scale[["value"]] / parameter[["alpha"]][scale[["index"]]]
+    parameter[["alpha"]] <- scaling(parameter[["alpha"]], factor)
+    parameter[["b"]] <- scaling(parameter[["b"]], factor)
+    parameter[["Omega"]] <- scaling(parameter[["Omega"]], factor^2)
+    parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor^2)
+    parameter[["beta"]] <- scaling(parameter[["beta"]], factor)
+  }
+  if (scale[["parameter"]] == "s") {
+    factor <- if (ordered) {
+      scale[["value"]] / parameter[["Sigma"]]
+    } else {
+      scale[["value"]] / parameter[["Sigma"]][scale[["index"]], scale[["index"]]]
+    }
+    parameter[["alpha"]] <- scaling(parameter[["alpha"]], sqrt(factor))
+    parameter[["b"]] <- scaling(parameter[["b"]], sqrt(factor))
+    parameter[["Omega"]] <- scaling(parameter[["Omega"]], factor)
+    parameter[["Sigma"]] <- scaling(parameter[["Sigma"]], factor)
+    parameter[["beta"]] <- scaling(parameter[["beta"]], sqrt(factor))
+    if (!ordered) {
+      parameter[["Sigma_full"]] <- oeli::undiff_cov(
+        cov = parameter[["Sigma"]], ref = normalization[["level"]][["level"]]
+      )
+    }
+  }
+
+  ### return 'parameter'
+  return(parameter)
+}

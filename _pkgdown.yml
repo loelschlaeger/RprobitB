@@ -39,7 +39,6 @@ reference:
   contents:
   - check_prior
   - fit_model
-  - R_hat
   - update.RprobitB_fit
   - transform.RprobitB_fit
 - title: Model evaluation
@@ -54,6 +53,10 @@ reference:
   - predict.RprobitB_fit
   - plot.RprobitB_fit
   - plot_roc
+  - plot_mixture_contour
+  - plot_class_allocation
+  - R_hat
+  - mode_approx
 - title: Model selection
   desc: Use these functions for model selection.
   contents:
@@ -66,13 +69,9 @@ reference:
   desc: The following datasets are included in the package.
   contents:
   - has_keyword("dataset")
-- title: Distributions
-  desc: Implementation of distributions and number generating functions.
-  contents:
-  - has_keyword("distribution")
 - title: Posterior samplers
-  desc: These functions draw from conditional posterior distributions.
+  desc: These functions define the Gibbs sampler.
   contents:
-  - has_keyword("posterior")
+  - has_keyword("gibbs_sampler")
 
 

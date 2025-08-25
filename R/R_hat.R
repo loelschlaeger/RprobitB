@@ -3,18 +3,21 @@
 #' @description
 #' This function computes the Gelman-Rubin statistic \code{R_hat}.
 #'
-#' @references
-#' <https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html>
+#' @details
+#' NA values in `samples` are ignored. The degenerate case is indicated by `NA`.
+#' The Gelman-Rubin statistic is bounded by 1 from below. Values close to 1
+#' indicate reasonable convergence.
 #'
-#' @param samples
-#' A vector or a matrix of samples from a Markov chain, e.g. Gibbs samples.
-#' If \code{samples} is a matrix, each column gives the samples for a separate
-#' run.
-#' @param parts
+#' @param samples \[`numeric()` | `matrix`\]\cr
+#' Samples from a Markov chain.
+#'
+#' If it is a matrix, each column gives the samples for a separate chain.
+#'
+#' @param parts \[`integer(1)`\]\cr
 #' The number of parts to divide each chain into sub-chains.
 #'
 #' @return
-#' A numeric value, the Gelman-Rubin statistic.
+#' The Gelman-Rubin statistic.
 #'
 #' @examples
 #' no_chains <- 2
@@ -32,6 +35,20 @@
 #' @export
 
 R_hat <- function(samples, parts = 2) {
+
+  ### input checks
+  oeli::input_check_response(
+    check = list(
+      oeli::check_numeric_vector(samples),
+      checkmate::check_matrix(samples, mode = "numeric")
+    ),
+    var_name = "samples"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(parts, positive = TRUE),
+    var_name = "parts"
+  )
+
   ### divide chains into parts
   samples <- as.matrix(samples)
   no_chains <- ncol(samples)
@@ -48,9 +65,10 @@ R_hat <- function(samples, parts = 2) {
   L <- length_chains / parts
   chain_means <- sapply(sub_chains, mean)
   grand_mean <- mean(chain_means)
-  B <- 1 / (parts - 1) * sum((chain_means - grand_mean)^2)
+  B <- L / (parts - 1) * sum((chain_means - grand_mean)^2)
   chain_variances <- sapply(sub_chains, stats::var)
-  W <- sum(chain_variances) / parts
-  R_hat <- ((L - 1) / L * W + B) / W
-  return(R_hat)
+  W <- mean(chain_variances)
+  if (W == 0) return(NA)
+  R_hat <- sqrt(((L - 1) / L * W + B / L) / W)
+  max(R_hat, 1)
 }

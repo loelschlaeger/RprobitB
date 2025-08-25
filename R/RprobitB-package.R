@@ -1,5 +1,15 @@
+#' @useDynLib RprobitB, .registration=TRUE
+#' @keywords internal
+
+"_PACKAGE"
+
+(function() {
+  .Call("run_testthat_tests", FALSE, PACKAGE = "RprobitB")
+})
+
 ## usethis namespace: start
 #' @importFrom checkmate assert_int
+#' @importFrom checkmate check_matrix
 #' @importFrom crayon underline
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach %dopar%
@@ -29,12 +39,12 @@
 #' @importFrom gridExtra grid.arrange
 #' @importFrom MASS ginv
 #' @importFrom mixtools ellipse
-#' @importFrom mvtnorm dmvnorm
-#' @importFrom mvtnorm pmvnorm
 #' @importFrom oeli assert_covariance_matrix
+#' @importFrom oeli check_numeric_vector
 #' @importFrom oeli delta
 #' @importFrom oeli permutations
 #' @importFrom oeli print_matrix
+#' @importFrom oeli quiet
 #' @importFrom oeli test_covariance_matrix
 #' @importFrom parallel detectCores
 #' @importFrom parallel makeCluster
@@ -48,6 +58,7 @@
 #' @importFrom stats BIC
 #' @importFrom stats complete.cases
 #' @importFrom stats cov2cor
+#' @importFrom stats density
 #' @importFrom stats dnorm
 #' @importFrom stats ecdf
 #' @importFrom stats logLik
@@ -62,15 +73,12 @@
 #' @importFrom utils tail
 #' @importFrom viridis magma
 ## usethis namespace: end
-#' @useDynLib RprobitB, .registration=TRUE
-#' @keywords internal
 
-"_PACKAGE"
-
-#' @noRd
-
-RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
-  if (identical(getOption("RprobitB_progress"), TRUE)) {
+RprobitB_pp <- function(
+    title, i = NULL, total = NULL, tail = NULL,
+    print_progress = isTRUE(getOption("RprobitB_progress"))
+  ) {
+  if (isTRUE(print_progress)) {
     if (is.null(i) || is.null(total)) {
       message(title)
     } else {
@@ -81,9 +89,6 @@ RprobitB_pp <- function(title, i = NULL, total = NULL, tail = NULL) {
   }
 }
 
-#' @noRd
-#' @importFrom progress progress_bar
-
 RprobitB_pb <- function(title, total, tail = NULL) {
   progress::progress_bar$new(
     format = paste(title, "-", ":current of :total", tail),
@@ -92,23 +97,15 @@ RprobitB_pb <- function(title, total, tail = NULL) {
   )
 }
 
-#' @noRd
-
-RprobitB_pb_tick <- function(pb) {
-  if (identical(getOption("RprobitB_progress"), TRUE)) {
-    pb$tick()
-  }
+RprobitB_pb_tick <- function(
+    pb, print_progress = isTRUE(getOption("RprobitB_progress"))
+  ) {
+  if (isTRUE(print_progress)) pb$tick()
 }
-
-#' @noRd
 
 .onLoad <- function(lib, pkg) {
   options("RprobitB_progress" = TRUE)
 }
-
-#' @noRd
-#' @importFrom cli style_hyperlink
-#' @importFrom utils packageVersion
 
 .onAttach <- function(lib, pkg) {
   doc_link <- "https://loelschlaeger.de/RprobitB"

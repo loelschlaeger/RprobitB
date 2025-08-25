@@ -6,13 +6,6 @@ test_that("setting prior parameter works", {
   expect_s3_class(prior, "RprobitB_prior")
 })
 
-test_that("setting of initial Gibbs values works", {
-  init <- RprobitB:::set_initial_gibbs_values(
-    N = 2, T = 3, J = 3, P_f = 1, P_r = 2, C = 2
-  )
-  expect_snapshot(init)
-})
-
 test_that("RprobitB_latent_class setting works", {
   expect_error(
     RprobitB_latent_classes("not a list")
@@ -25,7 +18,7 @@ test_that("RprobitB_latent_class setting works", {
   )
   expect_snapshot(
     (out <- RprobitB_latent_classes(list(
-      "weight_update" = TRUE,
+      "wb_update" = TRUE,
       "dp_update" = TRUE
     )))
   )
@@ -70,29 +63,32 @@ test_that("building of RprobitB_normalization works", {
 
 test_that("Gibbs sampling works", {
   data <- simulate_choices(
-    form = choice ~ a | b | c,
-    N = 50, T = 1:50, J = 2,
-    seed = 1, base = "B"
+    form = choice ~ a | b | c, N = 50, T = 1:50, J = 2, base = "B"
   )
-  model <- fit_model(data, R = 2000, seed = 1)
+  model <- fit_model(data, R = 2000)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
 })
 
 test_that("Ordered probit model estimation works", {
+  N <- 100
+  T <- 10
   data <- simulate_choices(
     form = opinion_on_sth ~ age + gender,
-    N = 50,
-    T = 1:50,
+    N = N,
+    T = T,
     J = 5,
     alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
     ordered = TRUE,
     covariates = list(
-      "gender" = rep(sample(c(0, 1), 50, replace = TRUE), times = 1:50)
+      "gender" = rep(sample(c(0, 1), N, replace = TRUE), times = T)
     ),
-    seed = 1
+    true_parameter = list(
+      "alpha" = c(1, 2), "d" = c(0, 1, 2)
+    )
   )
+  # lapply(data$data, `[[`, "y") |> unlist() |> table() / (N * T) |> round(2)
   model <- fit_model(data)
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
@@ -105,8 +101,7 @@ test_that("Ranked probit model estimation works", {
     N = 100,
     T = 10,
     J = 3,
-    ranked = TRUE,
-    seed = 1
+    ranked = TRUE
   )
   model <- fit_model(data)
   expect_snapshot(print(model))
@@ -115,15 +110,13 @@ test_that("Ranked probit model estimation works", {
 })
 
 test_that("setting fixed parameters for the Gibbs sampling works", {
+  set.seed(1)
   par <- list("Sigma" = 1, "alpha" = 1:2, b = 1, Omega = 0.1)
   data <- simulate_choices(
-    form = choice ~ a | b, N = 10, T = 1:10, J = 2, seed = 1, base = "B",
+    form = choice ~ a | b, N = 100, T = 5, J = 2, base = "B",
     re = "b", true_parameter = par
   )
-  model <- fit_model(
-    data,
-    R = 2000, seed = 1, fixed_parameter = par
-  )
+  model <- fit_model(data, R = 1000, fixed_parameter = par)
   true <- do.call(
     what = RprobitB_parameter,
     args = c(
@@ -136,21 +129,6 @@ test_that("setting fixed parameters for the Gibbs sampling works", {
   )
   est <- point_estimates(model)
   expect_true(all.equal(true, est))
-})
-
-test_that("computation of sufficient statistics works", {
-  form <- choice ~ v1 | v2
-  re <- "v2"
-  alternatives <- c("A", "B", "C")
-  data <- simulate_choices(
-    form = form, N = 2, T = 1:2, J = 3, re = re, alternatives = alternatives,
-    seed = 1
-  )
-  normalization <- RprobitB:::RprobitB_normalization(
-    form = form, re = re, alternatives = alternatives, base = "C"
-  )
-  ss <- RprobitB:::sufficient_statistics(data = data, normalization = normalization)
-  expect_snapshot(ss)
 })
 
 test_that("transforming RprobitB_fit works", {
@@ -178,3 +156,20 @@ test_that("transforming RprobitB_fit works", {
   expect_s3_class(model_new_scale, "RprobitB_fit")
   expect_s3_class(model_new_scale$gibbs_samples, "RprobitB_gibbs_samples")
 })
+
+test_that("Gelman-Rubin statistic can be computed", {
+  set.seed(1)
+  no_chains <- 2
+  length_chains <- 1e3
+  samples <- matrix(NA_real_, length_chains, no_chains)
+  samples[1, ] <- 1
+  Gamma <- matrix(c(0.8, 0.1, 0.2, 0.9), 2, 2)
+  for (c in 1:no_chains) {
+    for (t in 2:length_chains) {
+      samples[t, c] <- sample(1:2, 1, prob = Gamma[samples[t - 1, c], ])
+    }
+  }
+  R_hat_val <- R_hat(samples)
+  expect_equal(round(R_hat_val, 2), 1.01)
+})
+

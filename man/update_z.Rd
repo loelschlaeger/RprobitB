@@ -7,44 +7,29 @@
 update_z(s, beta, b, Omega)
 }
 \arguments{
-\item{s}{The vector of class weights of length \code{C}.
-Set to \code{NA} if \code{P_r = 0}.
-For identifiability, the vector must be non-ascending.}
+\item{s}{[\code{numeric(C)}]\cr
+The vector of class weights.}
 
-\item{beta}{The matrix of the decision-maker specific coefficient vectors of dimension
-\code{P_r} x \code{N}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{beta}{[\code{matrix(nrow = P_r, ncol = N)}]\cr
+The matrix of the decider-specific coefficient vectors.}
 
-\item{b}{The matrix of class means as columns of dimension \code{P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{b}{[\code{matrix(nrow = P_r, ncol = C)}]\cr
+The matrix of class means as columns.}
 
-\item{Omega}{The matrix of class covariance matrices as columns of dimension
-\code{P_r*P_r} x \code{C}.
-Set to \code{NA} if \code{P_r = 0}.}
+\item{Omega}{[\code{matrix(nrow = P_r * P_r, ncol = C)}]\cr
+The matrix of vectorized class covariance matrices as columns.}
 }
 \value{
-An updated class allocation vector.
+An update for \code{z}.
 }
 \description{
-This function updates the class allocation vector (independently for all observations)
-by drawing from its conditional distribution.
-}
-\details{
-Let \eqn{z = (z_1,\dots,z_N)} denote the class allocation vector of the observations (mixed coefficients) \eqn{\beta = (\beta_1,\dots,\beta_N)}.
-Independently for each \eqn{n}, the conditional probability \eqn{\Pr(z_n = c \mid s,\beta_n,b,\Omega)} of having \eqn{\beta_n}
-allocated to class \eqn{c} for \eqn{c=1,\dots,C} depends on the class allocation vector \eqn{s}, the class means \eqn{b=(b_c)_c} and the class covariance
-matrices \eqn{Omega=(Omega_c)_c} and is proportional to \deqn{s_c \phi(\beta_n \mid b_c,Omega_c).}
+Update class allocation vector
 }
 \examples{
-### class weights for C = 2 classes
-s <- rdirichlet(c(1,1))
-### coefficient vector for N = 1 decider and P_r = 2 random coefficients
-beta <- matrix(c(1,1), ncol = 1)
-### class means and covariances
-b <- cbind(c(0,0),c(1,1))
-Omega <- cbind(c(1,0,0,1),c(1,0,0,1))
-### updated class allocation vector
-update_z(s = s, beta = beta, b = b, Omega = Omega)
+update_z(
+  s = c(0.6, 0.4), beta = matrix(c(-2, 0, 2), ncol = 3),
+  b = cbind(0, 1), Omega = cbind(1, 1)
+)
+
 }
-\keyword{internal}
-\keyword{posterior}
+\keyword{gibbs_sampler}

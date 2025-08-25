@@ -3,93 +3,48 @@
     Code
       prior
     Output
-      $eta
+      $mu_alpha_0
       [1] 0
       
-      $Psi
+      $Sigma_alpha_0
            [,1]
-      [1,]    1
+      [1,]   10
       
       $delta
       [1] 1
       
-      $xi
+      $mu_b_0
       [1] 0 0
       
-      $D
+      $Sigma_b_0
            [,1] [,2]
-      [1,]    1    0
-      [2,]    0    1
+      [1,]   10    0
+      [2,]    0   10
       
-      $nu
+      $n_Omega_0
       [1] 4
       
-      $Theta
+      $V_Omega_0
            [,1] [,2]
       [1,]    1    0
       [2,]    0    1
       
-      $kappa
+      $n_Sigma_0
       [1] 4
       
-      $E
+      $V_Sigma_0
            [,1] [,2]
       [1,]    1    0
       [2,]    0    1
       
-      $zeta
+      $mu_d_0
       [1] NA
       
-      $Z
+      $Sigma_d_0
       [1] NA
       
       attr(,"class")
       [1] "RprobitB_prior" "list"          
-
-# setting of initial Gibbs values works
-
-    Code
-      init
-    Output
-      $alpha0
-      [1] 0
-      
-      $z0
-      [1] 1 1
-      
-      $m0
-      [1] 1 1
-      
-      $b0
-           [,1] [,2]
-      [1,]    0    0
-      [2,]    0    0
-      
-      $Omega0
-           [,1] [,2]
-      [1,]    1    1
-      [2,]    0    0
-      [3,]    0    0
-      [4,]    1    1
-      
-      $beta0
-           [,1] [,2]
-      [1,]    0    0
-      [2,]    0    0
-      
-      $U0
-           [,1] [,2] [,3] [,4] [,5] [,6]
-      [1,]    0    0    0    0    0    0
-      [2,]    0    0    0    0    0    0
-      
-      $Sigma0
-           [,1] [,2]
-      [1,]    1    0
-      [2,]    0    1
-      
-      $d0
-      [1] NA
-      
 
 # RprobitB_latent_class setting works
 
@@ -102,16 +57,15 @@
 ---
 
     Code
-      (out <- RprobitB_latent_classes(list(weight_update = TRUE, dp_update = TRUE)))
+      (out <- RprobitB_latent_classes(list(wb_update = TRUE, dp_update = TRUE)))
     Output
       Latent classes
-      DP-based update: TRUE 
+      Dirichlet process update: TRUE 
       Weight-based update: TRUE 
-      Initial classes: 1 
       Maximum classes: 10 
-      Updating buffer: 100 
+      Updating buffer: 50 
       Minimum class weight: 0.01 
-      Maximum class weight: 0.99 
+      Maximum class weight: 0.7 
       Mimumum class distance: 0.1 
 
 ---
@@ -119,16 +73,17 @@
     Code
       str(out)
     Output
-      List of 9
-       $ weight_update: logi TRUE
-       $ dp_update    : logi TRUE
-       $ C            : num 1
-       $ Cmax         : num 10
-       $ buffer       : num 100
-       $ epsmin       : num 0.01
-       $ epsmax       : num 0.99
-       $ distmin      : num 0.1
-       $ class_update : logi TRUE
+      List of 10
+       $ wb_update   : logi TRUE
+       $ dp_update   : logi TRUE
+       $ C           : num 1
+       $ Cmax        : num 10
+       $ buffer      : num 50
+       $ epsmin      : num 0.01
+       $ epsmax      : num 0.7
+       $ deltamin    : num 0.1
+       $ deltashift  : num 0.5
+       $ class_update: logi TRUE
        - attr(*, "class")= chr "RprobitB_latent_classes"
 
 # building of RprobitB_normalization works
@@ -162,11 +117,11 @@
                 true    mean      sd      R^
        alpha
                                             
-           1   -0.49   -0.50    0.04    1.00
-           2   -0.28   -0.31    0.04    1.00
-           3    0.14    0.15    0.04    1.00
-           4    0.85    0.88    0.06    1.00
-           5   -0.64   -0.52    0.05    1.01
+           1   -1.09   -1.11    0.06    1.00
+           2    1.52    1.51    0.09    1.01
+           3   -0.61   -0.62    0.06    1.01
+           4   -0.12   -0.08    0.05    1.03
+           5    0.49    0.37    0.05    1.00
       
        Sigma
                                             
@@ -178,11 +133,11 @@
       print(coef(model))
     Output
                Estimate   (sd)
-      1     a     -0.50 (0.04)
-      2   b_A     -0.31 (0.04)
-      3 ASC_A      0.15 (0.04)
-      4   c_A      0.88 (0.06)
-      5   c_B     -0.52 (0.05)
+      1     a     -1.11 (0.06)
+      2   b_A      1.51 (0.09)
+      3 ASC_A     -0.62 (0.06)
+      4   c_A     -0.08 (0.05)
+      5   c_B      0.37 (0.05)
 
 # Ordered probit model estimation works
 
@@ -206,18 +161,18 @@
                 true    mean      sd      R^
        alpha
                                             
-           1   -0.95   -1.07    0.05    1.00
-           2   -0.55   -0.88    0.08    1.00
+           1    0.59    0.64    0.04    1.01
+           2    1.18    1.17    0.07    1.00
       
        Sigma
                                             
-         1,1    1.00    1.00    0.00     NaN
+         1,1    1.00    1.00    0.00      NA
       
        d
                                             
-           1    0.91    0.45    0.03    1.87
-           2    0.20   -0.40    0.07    1.33
-           3    0.90    0.46    0.07    1.12
+           1    0.00   -0.55    0.07    1.00
+           2    1.00    0.54    0.04    1.00
+           3    2.00    2.78    0.22    1.05
 
 ---
 
@@ -225,8 +180,8 @@
       print(coef(model))
     Output
                 Estimate   (sd)
-      1    age     -1.07 (0.05)
-      2 gender     -0.88 (0.08)
+      1    age      0.64 (0.04)
+      2 gender      1.17 (0.07)
 
 # Ranked probit model estimation works
 
@@ -250,15 +205,15 @@
                 true    mean      sd      R^
        alpha
                                             
-           1   -0.53   -0.48    0.03    1.02
-           2   -0.30   -0.28    0.04    1.05
-           3    0.15    0.16    0.03    1.00
+           1    1.00    1.04    0.05    1.00
+           2   -0.56   -0.57    0.05    1.00
+           3   -1.63   -1.65    0.09    1.01
       
        Sigma
                                             
          1,1    1.00    1.00    0.00    1.00
-         1,2   -0.24   -0.26    0.04    1.06
-         2,2    0.58    0.48    0.08    1.07
+         1,2    0.39    0.39    0.08    1.03
+         2,2    0.84    0.95    0.13    1.00
 
 ---
 
@@ -266,104 +221,7 @@
       print(coef(model))
     Output
                Estimate   (sd)
-      1 price     -0.48 (0.03)
-      2 ASC_A     -0.28 (0.04)
-      3 ASC_B      0.16 (0.03)
-
-# computation of sufficient statistics works
-
-    Code
-      ss
-    Output
-      $N
-      [1] 2
-      
-      $T
-      [1] 1 2
-      
-      $J
-      [1] 3
-      
-      $P_f
-      [1] 3
-      
-      $P_r
-      [1] 2
-      
-      $Tvec
-      [1] 1 2
-      
-      $csTvec
-      [1] 0 1
-      
-      $W
-      $W[[1]]
-                  v1 ASC_A ASC_B
-      [1,] -1.113883     1     0
-      [2,]  1.107852     0     1
-      
-      $W[[2]]
-                   v1 ASC_A ASC_B
-      [1,] -0.5546814     1     0
-      [2,] -0.4088169     0     1
-      
-      $W[[3]]
-                 v1 ASC_A ASC_B
-      [1,] -1.41141     1     0
-      [2,] -1.39625     0     1
-      
-      
-      $X
-      $X[[1]]
-                 v2_A       v2_B
-      [1,] -0.3053884  0.0000000
-      [2,]  0.0000000 -0.3053884
-      
-      $X[[2]]
-               v2_A     v2_B
-      [1,] 1.511781 0.000000
-      [2,] 0.000000 1.511781
-      
-      $X[[3]]
-                v2_A      v2_B
-      [1,] 0.3898432 0.0000000
-      [2,] 0.0000000 0.3898432
-      
-      
-      $y
-           [,1] [,2]
-      [1,]    1   NA
-      [2,]    1    1
-      
-      $WkW
-                 [,1]       [,2]       [,3]       [,4]
-       [1,]  3.540485  0.9634269  0.9634269  3.3439801
-       [2,] -3.079974  0.0000000 -0.6972149  0.0000000
-       [3,]  0.000000 -3.0799742  0.0000000 -0.6972149
-       [4,] -3.079974 -0.6972149  0.0000000  0.0000000
-       [5,]  3.000000  0.0000000  0.0000000  0.0000000
-       [6,]  0.000000  3.0000000  0.0000000  0.0000000
-       [7,]  0.000000  0.0000000 -3.0799742 -0.6972149
-       [8,]  0.000000  0.0000000  3.0000000  0.0000000
-       [9,]  0.000000  0.0000000  0.0000000  3.0000000
-      
-      $XkX
-      $XkX[[1]]
-                 [,1]       [,2]       [,3]       [,4]
-      [1,] 0.09326207 0.00000000 0.00000000 0.00000000
-      [2,] 0.00000000 0.09326207 0.00000000 0.00000000
-      [3,] 0.00000000 0.00000000 0.09326207 0.00000000
-      [4,] 0.00000000 0.00000000 0.00000000 0.09326207
-      
-      $XkX[[2]]
-              [,1]    [,2]    [,3]    [,4]
-      [1,] 2.43746 0.00000 0.00000 0.00000
-      [2,] 0.00000 2.43746 0.00000 0.00000
-      [3,] 0.00000 0.00000 2.43746 0.00000
-      [4,] 0.00000 0.00000 0.00000 2.43746
-      
-      
-      $rdiff
-      [1] NA
-      
+      1 price      1.04 (0.05)
+      2 ASC_A     -0.57 (0.05)
+      3 ASC_B     -1.65 (0.09)
 

@@ -19,11 +19,8 @@ test_that("parameter checks work", {
 })
 
 test_that("parameter reproducibility works", {
-  x <- RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100, seed = 1)
+  set.seed(1)
+  x <- RprobitB_parameter(P_f = 2, P_r = 2, J = 2, N = 100)
   expect_snapshot(unclass(x))
-})
-
-test_that("parameter printing works", {
-  x <- RprobitB_parameter(P_f = 1, P_r = 1, J = 2, N = 100, seed = 1)
   expect_snapshot(x)
 })

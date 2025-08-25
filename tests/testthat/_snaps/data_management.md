@@ -50,11 +50,11 @@
       choice occasions  1-10
       total choices       55
       alternatives         5
-      - 'very bad'        34
-      - 'bad'             17
-      - 'indifferent'      4
-      - 'good'             0
-      - 'very good'        0
+      - 'very bad'        10
+      - 'bad'              2
+      - 'indifferent'     40
+      - 'good'             1
+      - 'very good'        2
 
 # data preparation with ranked choices works
 
@@ -73,12 +73,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            3
-      - 'A,C,B'            9
-      - 'B,A,C'            4
-      - 'B,C,A'           17
-      - 'C,A,B'            7
-      - 'C,B,A'           15
+      - 'A,B,C'            2
+      - 'A,C,B'            1
+      - 'B,A,C'           14
+      - 'B,C,A'           24
+      - 'C,A,B'            4
+      - 'C,B,A'           10
 
 # data preparation with non-standard base alternative works
 
@@ -117,9 +117,9 @@
       choice occasions  1-10
       total choices       55
       alternatives         3
-      - 'bus'              7
-      - 'car'             22
-      - 'train'           26
+      - 'bus'             20
+      - 'car'             15
+      - 'train'           20
 
 # simulating ordered choices works
 
@@ -138,11 +138,11 @@
       choice occasions  1-10
       total choices       55
       alternatives         5
-      - 'very bad'        34
-      - 'bad'             17
-      - 'indifferent'      4
-      - 'good'             0
-      - 'very good'        0
+      - 'very bad'        10
+      - 'bad'              2
+      - 'indifferent'     40
+      - 'good'             1
+      - 'very good'        2
 
 # simulating ranked choices works
 
@@ -161,12 +161,12 @@
       choice occasions  1-10
       total choices       55
       alternatives         6
-      - 'A,B,C'            3
-      - 'A,C,B'            9
-      - 'B,A,C'            4
-      - 'B,C,A'           17
-      - 'C,A,B'            7
-      - 'C,B,A'           15
+      - 'A,B,C'            2
+      - 'A,C,B'            1
+      - 'B,A,C'           14
+      - 'B,C,A'           24
+      - 'C,A,B'            4
+      - 'C,B,A'           10
 
 # splitting data set by N works
 
@@ -207,13 +207,13 @@
 ---
 
     Code
-      train_test(x, test_proportion = 0.5, by = "N", random = TRUE, seed = 1)
+      train_test(x, test_proportion = 0.5, by = "N", random = TRUE)
     Output
       $train
-      Simulated data of 32 choices.
+      Simulated data of 23 choices.
       
       $test
-      Simulated data of 23 choices.
+      Simulated data of 32 choices.
       
 
 ---
@@ -243,13 +243,13 @@
 ---
 
     Code
-      train_test(x, test_number = 1, by = "N", random = TRUE, seed = 1)
+      train_test(x, test_number = 1, by = "N", random = TRUE)
     Output
       $train
-      Simulated data of 46 choices.
+      Simulated data of 48 choices.
       
       $test
-      Simulated data of 9 choices.
+      Simulated data of 7 choices.
       
 
 # splitting data set by T works
@@ -267,7 +267,7 @@
 ---
 
     Code
-      train_test(x, test_proportion = 0.5, by = "T", random = TRUE, seed = 1)
+      train_test(x, test_proportion = 0.5, by = "T", random = TRUE)
     Output
       $train
       Simulated data of 50 choices.
@@ -303,7 +303,7 @@
 ---
 
     Code
-      train_test(x, test_number = 1, by = "T", random = TRUE, seed = 1)
+      train_test(x, test_number = 1, by = "T", random = TRUE)
     Output
       $train
       Simulated data of 90 choices.

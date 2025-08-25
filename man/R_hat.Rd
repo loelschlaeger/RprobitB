@@ -7,17 +7,24 @@
 R_hat(samples, parts = 2)
 }
 \arguments{
-\item{samples}{A vector or a matrix of samples from a Markov chain, e.g. Gibbs samples.
-If \code{samples} is a matrix, each column gives the samples for a separate
-run.}
+\item{samples}{[\code{numeric()} | \code{matrix}]\cr
+Samples from a Markov chain.
 
-\item{parts}{The number of parts to divide each chain into sub-chains.}
+If it is a matrix, each column gives the samples for a separate chain.}
+
+\item{parts}{[\code{integer(1)}]\cr
+The number of parts to divide each chain into sub-chains.}
 }
 \value{
-A numeric value, the Gelman-Rubin statistic.
+The Gelman-Rubin statistic.
 }
 \description{
 This function computes the Gelman-Rubin statistic \code{R_hat}.
+}
+\details{
+NA values in \code{samples} are ignored. The degenerate case is indicated by \code{NA}.
+The Gelman-Rubin statistic is bounded by 1 from below. Values close to 1
+indicate reasonable convergence.
 }
 \examples{
 no_chains <- 2
@@ -32,7 +39,4 @@ for (c in 1:no_chains) {
 }
 R_hat(samples)
 
-}
-\references{
-\url{https://bookdown.org/rdpeng/advstatcomp/monitoring-convergence.html}
 }

@@ -14,5 +14,4 @@ LICENSE
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^sticker$
-^dev_pkgs\.R$
 ^development_packages\.R$

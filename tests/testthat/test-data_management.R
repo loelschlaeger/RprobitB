@@ -70,6 +70,7 @@ test_that("data preparation works", {
 })
 
 test_that("data preparation with ordered choices works", {
+  set.seed(1)
   form <- opinion ~ age + gender
   alternatives <- c("very bad", "bad", "indifferent", "good", "very good")
   choice_data <- simulate_choices(
@@ -80,7 +81,6 @@ test_that("data preparation with ordered choices works", {
     alternatives = alternatives,
     ordered = TRUE,
     covariates = list("gender" = rep(c(0, 1, 1, 0, 1), 11)),
-    seed = 1
   )$choice_data
   data <- prepare_data(
     form = form,
@@ -94,6 +94,7 @@ test_that("data preparation with ordered choices works", {
 })
 
 test_that("data preparation with ranked choices works", {
+  set.seed(1)
   form <- product ~ price
   alternatives <- c("A", "B", "C")
   choice_data <- simulate_choices(
@@ -102,8 +103,7 @@ test_that("data preparation with ranked choices works", {
     T = 1:10,
     J = 3,
     alternatives = alternatives,
-    ranked = TRUE,
-    seed = 1
+    ranked = TRUE
   )$choice_data
   data <- prepare_data(
     form = form,
@@ -151,6 +151,7 @@ test_that("missing covariates replacement works", {
 })
 
 test_that("simulating choice data works", {
+  set.seed(1)
   data <- simulate_choices(
     form = choice ~ cost | income | time,
     N = 10,
@@ -158,7 +159,6 @@ test_that("simulating choice data works", {
     J = 3,
     re = c("cost", "ASC"),
     alternatives = c("train", "bus", "car"),
-    seed = 1,
     true_parameter = list("C" = 2)
   )
   expect_snapshot(print(data))
@@ -166,6 +166,7 @@ test_that("simulating choice data works", {
 })
 
 test_that("simulating ordered choices works", {
+  set.seed(1)
   data <- simulate_choices(
     form = opinion ~ age + gender,
     N = 10,
@@ -173,61 +174,50 @@ test_that("simulating ordered choices works", {
     J = 5,
     alternatives = c("very bad", "bad", "indifferent", "good", "very good"),
     ordered = TRUE,
-    covariates = list("gender" = rep(c(0, 1, 1, 0, 1), 11)),
-    seed = 1
+    covariates = list("gender" = rep(c(0, 1, 1, 0, 1), 11))
   )
   expect_snapshot(print(data))
   expect_snapshot(summary(data))
 })
 
 test_that("simulating ranked choices works", {
+  set.seed(1)
   data <- simulate_choices(
     form = product ~ price,
     N = 10,
     T = 1:10,
     J = 3,
     alternatives = c("A", "B", "C"),
-    ranked = TRUE,
-    seed = 1
+    ranked = TRUE
   )
   expect_snapshot(print(data))
   expect_snapshot(summary(data))
 })
 
 test_that("splitting data set by N works", {
+  set.seed(1)
   x <- simulate_choices(
     form = choice ~ covariate, N = 10, T = 1:10, J = 2,
-    re = "covariate", true_parameter = list("C" = 2), seed = 1
+    re = "covariate", true_parameter = list("C" = 2)
   )
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "N"))
   expect_snapshot(train_test(x, test_proportion = 0, by = "N"))
   expect_snapshot(train_test(x, test_proportion = 1, by = "N"))
-  expect_snapshot(train_test(x,
-    test_proportion = 0.5, by = "N",
-    random = TRUE, seed = 1
-  ))
+  expect_snapshot(train_test(x, test_proportion = 0.5, by = "N", random = TRUE))
   expect_snapshot(train_test(x, test_number = 1, by = "N"))
   expect_snapshot(train_test(x, test_number = 2, by = "N"))
-  expect_snapshot(train_test(x,
-    test_number = 1, by = "N",
-    random = TRUE, seed = 1
-  ))
+  expect_snapshot(train_test(x, test_number = 1, by = "N", random = TRUE))
 })
 
 test_that("splitting data set by T works", {
+  set.seed(1)
   x <- simulate_choices(
     form = choice ~ covariate, N = 10, T = 10, J = 2,
-    re = "covariate", true_parameter = list("C" = 2), seed = 1
+    re = "covariate", true_parameter = list("C" = 2)
   )
   expect_snapshot(train_test(x, test_proportion = 0.3, by = "T"))
-  expect_snapshot(train_test(x,
-    test_proportion = 0.5, by = "T",
-    random = TRUE, seed = 1
-  ))
+  expect_snapshot(train_test(x, test_proportion = 0.5, by = "T", random = TRUE))
   expect_snapshot(train_test(x, test_number = 1, by = "T"))
   expect_snapshot(train_test(x, test_number = 2, by = "T"))
-  expect_snapshot(train_test(x,
-    test_number = 1, by = "T",
-    random = TRUE, seed = 1
-  ))
+  expect_snapshot(train_test(x, test_number = 1, by = "T", random = TRUE))
 })

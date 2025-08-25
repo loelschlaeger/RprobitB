@@ -2,6 +2,7 @@
 % Please edit documentation in R/model_selection.R
 \name{model_selection}
 \alias{model_selection}
+\alias{print.RprobitB_model_selection}
 \title{Compare fitted models}
 \usage{
 model_selection(
@@ -9,11 +10,14 @@ model_selection(
   criteria = c("npar", "LL", "AIC", "BIC"),
   add_form = FALSE
 )
+
+\method{print}{RprobitB_model_selection}(x, digits = 2, ...)
 }
 \arguments{
 \item{...}{One or more objects of class \code{RprobitB_fit}.}
 
-\item{criteria}{A vector of one or more of the following characters:
+\item{criteria}{[\code{character()}]\cr
+One or more of the following:
 \itemize{
 \item \code{"npar"} for the number of model parameters (see \code{\link{npar}}),
 \item \code{"LL"} for the log-likelihood value (see \code{\link{logLik}}),
@@ -27,10 +31,16 @@ see \code{\link{WAIC}}),
 \item \code{"pred_acc"} for the prediction accuracy (see \code{\link{pred_acc}}).
 }}
 
-\item{add_form}{Set to \code{TRUE} to add the model formulas.}
+\item{add_form}{[\code{logical(1)}]\cr
+Add the model formulas?}
+
+\item{x}{An object of class \code{RprobitB_model_selection}.}
+
+\item{digits}{[\code{integer(1)}]\cr
+The number of digits.}
 }
 \value{
-A data frame, criteria in columns, models in rows.
+A \code{data.frame}, criteria in columns, models in rows.
 }
 \description{
 This function returns a table with several criteria for model comparison.
