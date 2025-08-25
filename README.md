@@ -65,10 +65,36 @@ plot(data, by_choice = TRUE)
 model <- fit_model(data, scale = "price := -1")
 ```
 
-The estimated effects can be visualized via:
+The summary method provides summary statistics about the Gibbs samples:
 
 ``` r
-plot(coef(model))
+FUN <- c("mean" = mean, "mode" = mode_approx, "sd" = stats::sd, "R^" = R_hat)
+summary(model, FUN = FUN)
+#> Probit model
+#> Formula: choice ~ price + time + change + comfort | 0 
+#> R: 1000, B: 500, Q: 1
+#> Level: Utility differences with respect to alternative 'B'.
+#> Scale: Coefficient of effect 'price' (alpha_1) fixed to -1.
+#> 
+#> Gibbs sample statistics
+#>           mean    mode      sd      R^
+#>  alpha
+#>                                       
+#>      1   -1.00   -1.00    0.00    1.00
+#>      2  -25.84  -25.86    2.18    1.00
+#>      3   -4.96   -4.85    0.81    1.00
+#>      4  -14.36  -14.64    0.89    1.00
+#> 
+#>  Sigma
+#>                                       
+#>    1,1  648.51  622.88   63.32    1.00
+```
+
+The estimated effects obtained from the Gibbs sample means can be
+visualized via:
+
+``` r
+coef(model) |> plot()
 ```
 
 <img src="man/figures/README-coef-1.png" style="display: block; margin: auto;" />
@@ -83,7 +109,9 @@ ticket price from 100€ to 110€ (ceteris paribus) draws 15% of the
 customers to the competitor who does not increase their prices:
 
 ``` r
-new_prices <- data.frame("price_A" = c(100, 110), "price_B" = c(100, 100))
+new_prices <- data.frame(
+  "price_A" = c(100, 110), "price_B" = c(100, 100)
+)
 predict(model, data = new_prices, overview = FALSE)
 #>   deciderID occasionID    A    B prediction
 #> 1         1          1 0.50 0.50          A

@@ -59,10 +59,17 @@ plot(data, by_choice = TRUE)
 model <- fit_model(data, scale = "price := -1")
 ```
 
-The estimated effects can be visualized via:
+The summary method provides summary statistics about the Gibbs samples:
+
+```{r, summary}
+FUN <- c("mean" = mean, "mode" = mode_approx, "sd" = stats::sd, "R^" = R_hat)
+summary(model, FUN = FUN)
+```
+
+The estimated effects obtained from the Gibbs sample means can be visualized via:
 
 ```{r, coef, fig.height = 2}
-plot(coef(model))
+coef(model) |> plot()
 ```
 
 The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 15€.
@@ -70,7 +77,9 @@ The results indicate that the deciders value one hour travel time by about 25€
 Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices:
 
 ```{r, predict1}
-new_prices <- data.frame("price_A" = c(100, 110), "price_B" = c(100, 100))
+new_prices <- data.frame(
+  "price_A" = c(100, 110), "price_B" = c(100, 100)
+)
 predict(model, data = new_prices, overview = FALSE)
 ```
 

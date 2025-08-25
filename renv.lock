@@ -860,25 +860,49 @@
     },
     "ggimage": {
       "Package": "ggimage",
-      "Version": "0.3.3",
+      "Version": "0.3.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "ggfun",
+        "ggiraph",
         "ggplot2",
         "ggplotify",
         "grid",
         "jsonlite",
         "magick",
         "methods",
+        "purrr",
+        "rlang",
         "scales",
         "tibble",
         "tools",
         "utils",
         "withr"
       ],
-      "Hash": "18c57347f13a654ef8683a6676042624"
+      "Hash": "2b7d601dad6af54db743876e6263e19f"
+    },
+    "ggiraph": {
+      "Package": "ggiraph",
+      "Version": "0.9.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "cli",
+        "ggplot2",
+        "grid",
+        "htmltools",
+        "htmlwidgets",
+        "purrr",
+        "rlang",
+        "stats",
+        "systemfonts",
+        "uuid",
+        "vctrs"
+      ],
+      "Hash": "fe988c28523238b5b71e6f922523c5dc"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -2226,15 +2250,20 @@
     },
     "systemfonts": {
       "Package": "systemfonts",
-      "Version": "1.1.0",
+      "Version": "1.2.3",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
+        "base64enc",
         "cpp11",
-        "lifecycle"
+        "grid",
+        "jsonlite",
+        "lifecycle",
+        "tools",
+        "utils"
       ],
-      "Hash": "213b6b8ed5afbf934843e6c3b090d418"
+      "Hash": "fe31683d2c6fd9a5724bcdf8ed44ded9"
     },
     "testthat": {
       "Package": "testthat",
@@ -2413,6 +2442,16 @@
         "R"
       ],
       "Hash": "d526d558be176e9ceb68c3d1e83479b7"
+    },
+    "uuid": {
+      "Package": "uuid",
+      "Version": "1.2-1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "34e965e62a41fcafb1ca60e9b142085b"
     },
     "vctrs": {
       "Package": "vctrs",

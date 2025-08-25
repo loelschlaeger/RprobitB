@@ -15,8 +15,6 @@ Working with `{RprobitB}` follows a structured workflow. The main functions fall
 
 2. The estimation routine is called `fit_model()` and returns an `RprobitB_fit` object. The `transform_fit()` function allows to change normalization of the model after a model has been fitted. The details are documented in the vignettes [on model fitting](https://loelschlaeger.de/RprobitB/articles/v03_model_fitting.html) and [on modeling heterogeneity](https://loelschlaeger.de/RprobitB/articles/v04_modeling_heterogeneity.html). 
 
-3. The `RprobitB_fit` object can be fed into `coef()` to show the covariate effects on the choices and into `predict()` to compute choice probabilities and forecast choice behavior if choice characteristics would change, see [the vignette on choice prediction](https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html). The `classification()` function allows for preference-based decider classification.
-   
-4. The function `model_selection()` compares arbitrary many competing `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
+3. The `RprobitB_fit` object can be fed into `coef()` to show the covariate effects on the choices and into `predict()` to compute choice probabilities and forecast choice behavior if choice characteristics would change, see [the vignette on choice prediction](https://loelschlaeger.de/RprobitB/articles/v05_choice_prediction.html). The `classification()` function allows for preference-based decider classification. The function `model_selection()` compares `RprobitB_fit` objects by computing different model selection criteria, see [the vignette on model selection](https://loelschlaeger.de/RprobitB/articles/v06_model_selection.html).
 
 ![The flowchart of `{RprobitB}`.](img/flowchart.png){width=80%}
