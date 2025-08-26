@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,41 @@ Covariate or parameter names that do not get visualized.</p></dd>
     <p>No return value. Draws a plot to the current device.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">form</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">var</span> <span class="op">|</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_choices.html">simulate_choices</a></span><span class="op">(</span>form <span class="op">=</span> <span class="va">form</span>, N <span class="op">=</span> <span class="fl">100</span>, T <span class="op">=</span> <span class="fl">10</span>, J <span class="op">=</span> <span class="fl">3</span>, re <span class="op">=</span> <span class="st">"var"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_model.html">fit_model</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>, R <span class="op">=</span> <span class="fl">100</span>, latent_classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>C <span class="op">=</span> <span class="fl">2</span>, <span class="st">"dp_update"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 0 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 1 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 2 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 3 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing sufficient statistics - 4 of 4  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 1 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 10 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 20 of 100 iterations (C = 3) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 30 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 40 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 50 of 100 iterations (C = 3) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 60 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 70 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 80 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 90 of 100 iterations (C = 2) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Gibbs sampler - 100 of 100 iterations (C = 2) </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.RprobitB_fit-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"acf"</span>, ignore <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s"</span>, <span class="st">"Omega"</span>, <span class="st">"Sigma"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.RprobitB_fit-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="plot.RprobitB_fit-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"trace"</span>, ignore <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s"</span>, <span class="st">"Omega"</span>, <span class="st">"Sigma"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.RprobitB_fit-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"class_seq"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.RprobitB_fit-5.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

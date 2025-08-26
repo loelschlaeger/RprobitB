@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@
     
     
 <p>This vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.5.1 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0.9000 package.&lt;/p&gt;'><sup>1</sup></a> discusses in-sample and out-of-sample
 prediction within <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a>. The former case refers to
 reproducing the observed choices on the basis of the covariates and the
 fitted model and subsequently using the deviations between prediction
@@ -120,7 +120,7 @@ occasions:</p>
 <code>id = 1</code> in choice occasion <code>idc = 8</code> is the most
 outstanding. Alternative <code>B</code> was chosen although the model
 predicts a probability of 76% for alternative <code>A</code>. We can use
-the convenience function <code><a href="../reference/get_cov.html">get_cov()</a></code> to extract the
+the helper function <code><a href="../reference/get_cov.html">get_cov()</a></code> to extract the
 characteristics of this particular choice situation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_cov.html">get_cov</a></span><span class="op">(</span><span class="va">model_train</span>, id <span class="op">=</span> <span class="fl">1</span>, idc <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>

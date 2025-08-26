@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@
 probit model can capture choice behavior heterogeneity by imposing a
 mixing distribution on the coefficient vector. The implementation in
 <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.5.1 with the
-&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0 package.&lt;/p&gt;'><sup>1</sup></a>.</p>
+&lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0.9000 package.&lt;/p&gt;'><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
 </h2>
@@ -115,14 +115,13 @@ recommendations and past experiences, although they might be more
 expensive than unknown suppliers. The fitted multivariate normal
 distribution will reveal these correlations.</p>
 <p>The following lines prepare the <code>Electricity</code> data set for
-estimation. We use the convenience function <code><a href="../reference/as_cov_names.html">as_cov_names()</a></code>
-that relabels the data columns for alternative specific covariates into
-the required format
-“<code>&lt;covariate&gt;_&lt;alternative&gt;</code>”, compare to the
-vignette on choice data. Via the <code>re</code> argument, we specify
-that we want to model random effects for all but the price coefficient,
-which we will fix to <code>-1</code> to interpret the other estimates as
-monetary values.</p>
+estimation. We use the helper function <code><a href="../reference/as_cov_names.html">as_cov_names()</a></code> that
+relabels the data columns for alternative specific covariates into the
+required format “<code>&lt;covariate&gt;_&lt;alternative&gt;</code>”,
+compare to the vignette on choice data. Via the <code>re</code>
+argument, we specify that we want to model random effects for all but
+the price coefficient, which we will fix to <code>-1</code> to interpret
+the other estimates as monetary values.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Electricity"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">Electricity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_cov_names.html">as_cov_names</a></span><span class="op">(</span></span>
