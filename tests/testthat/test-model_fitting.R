@@ -69,6 +69,7 @@ test_that("Gibbs sampling works", {
   expect_snapshot(print(model))
   expect_snapshot(summary(model))
   expect_snapshot(print(coef(model)))
+  expect_true(ggplot2::is_ggplot(plot(coef(model))))
 })
 
 test_that("Ordered probit model estimation works", {

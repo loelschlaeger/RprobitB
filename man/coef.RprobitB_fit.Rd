@@ -19,10 +19,12 @@
 
 \item{x}{An object of class \code{RprobitB_coef}.}
 
-\item{sd}{The number of standard deviations to display.}
+\item{sd}{[\code{integer(1)}]\cr
+The number of standard deviations to display.}
 
-\item{het}{Set to \code{FALSE} to show the standard deviation of the estimate.
-Set to \code{TRUE} to show the standard deviation of the mixing distribution.}
+\item{het}{[\code{logical(1)}]\cr
+Show the standard deviation of the mixing distribution? If \code{FALSE},
+standard deviation of the estimate are shown.}
 }
 \value{
 An object of class \code{RprobitB_coef}.

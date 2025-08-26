@@ -7,9 +7,8 @@
 preference_flip(model_old, model_new)
 }
 \arguments{
-\item{model_old}{An object of class \code{RprobitB_fit}, the model before the scale change.}
-
-\item{model_new}{An object of class \code{RprobitB_fit}, the model after the scale change.}
+\item{model_old, model_new}{[\code{RprobitB_fit}]\cr
+Two models, one before and one after a scale change.}
 }
 \value{
 No return value, called for side-effects.

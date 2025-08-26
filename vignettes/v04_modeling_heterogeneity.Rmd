@@ -39,7 +39,7 @@ This constitutes a choice situation where choice behaviour heterogeneity is expe
 
 Additionally, we expect correlations between the random coefficients to certain covariates, for example a positive correlation between the influence of `loc` and `wk`: deciders that prefer local suppliers might also prefer well known companies due to recommendations and past experiences, although they might be more expensive than unknown suppliers. The fitted multivariate normal distribution will reveal these correlations.
 
-The following lines prepare the `Electricity` data set for estimation. We use the convenience function `as_cov_names()` that relabels the data columns for alternative specific covariates into the required format "`<covariate>_<alternative>`", compare to the vignette on choice data. Via the `re` argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to `-1` to interpret the other estimates as monetary values.
+The following lines prepare the `Electricity` data set for estimation. We use the helper function `as_cov_names()` that relabels the data columns for alternative specific covariates into the required format "`<covariate>_<alternative>`", compare to the vignette on choice data. Via the `re` argument, we specify that we want to model random effects for all but the price coefficient, which we will fix to `-1` to interpret the other estimates as monetary values.
 
 ```{r, elec-model, message = FALSE}
 data("Electricity", package = "mlogit")

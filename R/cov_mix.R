@@ -1,14 +1,14 @@
 #' Extract estimated covariance matrix of mixing distribution
 #'
 #' @description
-#' This convenience function returns the estimated covariance matrix of the
+#' This helper function returns the estimated covariance matrix of the
 #' mixing distribution.
 #'
 #' @param x
 #' An object of class \code{RprobitB_fit}.
 #'
-#' @param cor
-#' If \code{TRUE}, returns the correlation matrix instead.
+#' @param cor \[`integer(1)`\]\cr
+#' Return the correlation matrix instead?
 #'
 #' @return
 #' The estimated covariance matrix of the mixing distribution. In case of
@@ -17,9 +17,15 @@
 #' @export
 
 cov_mix <- function(x, cor = FALSE) {
-  if (x$data$P_r == 0) {
-    stop("No random effects.", call. = FALSE)
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_fit"),
+    var_name = "x"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(cor),
+    var_name = "cor"
+  )
+  if (x$data$P_r == 0) stop("No random effects.", call. = FALSE)
   est_Omega <- point_estimates(x)$Omega
   random <- NULL
   cov_names <- subset(x$data$effects, random == TRUE)$effect

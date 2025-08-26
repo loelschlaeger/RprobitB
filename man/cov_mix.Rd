@@ -9,13 +9,14 @@ cov_mix(x, cor = FALSE)
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{cor}{If \code{TRUE}, returns the correlation matrix instead.}
+\item{cor}{[\code{integer(1)}]\cr
+Return the correlation matrix instead?}
 }
 \value{
 The estimated covariance matrix of the mixing distribution. In case of
 multiple classes, a list of matrices for each class.
 }
 \description{
-This convenience function returns the estimated covariance matrix of the
+This helper function returns the estimated covariance matrix of the
 mixing distribution.
 }

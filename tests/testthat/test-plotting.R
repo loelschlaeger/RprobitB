@@ -1,3 +1,5 @@
+options("RprobitB_progress" = FALSE)
+
 test_that("plotting choice data works", {
   data <- simulate_choices(
     form = choice ~ cost | 0,
@@ -36,4 +38,19 @@ test_that("ROC curve can be created", {
   )
   expect_true(ggplot2::is_ggplot(plot_roc(model_train_1)))
   expect_true(ggplot2::is_ggplot(plot_roc(model_train_1, model_train_2)))
+})
+
+test_that("plotting model diagnostics works", {
+  set.seed(1)
+  form <- choice ~ var | 0
+  data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
+  model <- fit_model(
+    data = data, R = 100, latent_classes = list(C = 2, "dp_update" = TRUE)
+  )
+  pdf(NULL)
+  expect_silent(plot(model, type = "mixture"))
+  expect_silent(plot(model, type = "acf", ignore = c("s", "Omega", "Sigma")))
+  expect_silent(plot(model, type = "trace", ignore = c("s", "Omega", "Sigma")))
+  expect_silent(plot(model, type = "class_seq"))
+  dev.off()
 })

@@ -12,12 +12,12 @@
 #' @param x
 #' An object of class \code{RprobitB_coef}.
 #'
-#' @param sd
+#' @param sd \[`integer(1)`\]\cr
 #' The number of standard deviations to display.
 #'
-#' @param het
-#' Set to \code{FALSE} to show the standard deviation of the estimate.
-#' Set to \code{TRUE} to show the standard deviation of the mixing distribution.
+#' @param het \[`logical(1)`\]\cr
+#' Show the standard deviation of the mixing distribution? If `FALSE`,
+#' standard deviation of the estimate are shown.
 #'
 #' @param ...
 #' Currently not used.
@@ -25,6 +25,12 @@
 #' @export
 
 coef.RprobitB_fit <- function(object, ...) {
+
+  oeli::input_check_response(
+    check = checkmate::check_class(object, "RprobitB_fit"),
+    var_name = "object"
+  )
+
   ### compute Gibbs samples statistics
   C <- object$latent_classes$C
   statistics <- RprobitB_gibbs_samples_statistics(
@@ -78,6 +84,10 @@ coef.RprobitB_fit <- function(object, ...) {
 #' @export
 
 print.RprobitB_coef <- function(x, ...) {
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_coef"),
+    var_name = "x"
+  )
   classes <- sapply(
     attr(x, "coef_class"),
     function(cl) {
@@ -96,16 +106,27 @@ print.RprobitB_coef <- function(x, ...) {
     sprintf("(%.2f)", x[, "var_sd"])
   )
   colnames(out) <- c(" ", "Estimate", "(sd)", "Variance", "(sd)")
-  if (all(is.na(x[, c("var", "var_sd")]))) {
-    out <- out[, 1:3]
-  }
+  if (all(is.na(x[, c("var", "var_sd")]))) out <- out[, 1:3]
   print(out)
+  invisible(x)
 }
 
 #' @rdname coef.RprobitB_fit
 #' @exportS3Method
 
 plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_coef"),
+    var_name = "x"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(sd, positive = FALSE),
+    var_name = "sd"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(het),
+    var_name = "het"
+  )
   s <- attr(x, "s")
   x <- data.frame(
     "name" = rownames(x),
@@ -136,11 +157,13 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
       x = "",
       y = "",
       title = "Average effects",
-      subtitle = paste(
-        "The horizontal lines show \u00B1", sd,
-        "standard deviation of the",
-        ifelse(het, "mixing distribution", "estimate")
-      ),
+      subtitle = if (sd > 0) {
+        paste(
+          "The horizontal lines show \u00B1", sd,
+          "standard deviation of the",
+          ifelse(het, "mixing distribution", "estimate")
+        )
+      } else NULL,
       color = "Class"
     )
 
@@ -152,4 +175,5 @@ plot.RprobitB_coef <- function(x, sd = 1, het = FALSE, ...) {
   }
 
   suppressWarnings(print(p))
+  invisible(p)
 }

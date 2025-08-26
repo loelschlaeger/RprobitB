@@ -110,26 +110,40 @@ plot.RprobitB_data <- function(
 #' No return value. Draws a plot to the current device.
 #'
 #' @export
+#'
+#' @examples
+#' set.seed(1)
+#' form <- choice ~ var | 0
+#' data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
+#' model <- fit_model(
+#'   data = data, R = 100, latent_classes = list(C = 2, "dp_update" = TRUE)
+#' )
+#' plot(model, type = "mixture")
+#' plot(model, type = "acf", ignore = c("s", "Omega", "Sigma"))
+#' plot(model, type = "trace", ignore = c("s", "Omega", "Sigma"))
+#' plot(model, type = "class_seq")
 
 plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
+
   ### check inputs
-  if (!inherits(x, "RprobitB_fit")) {
-    stop("Not of class 'RprobitB_fit'.")
-  }
-  if (missing(type) ||
-    !(is.character(type) && length(type) == 1) ||
-    !type %in% c("mixture", "acf", "trace", "class_seq")) {
-    stop("'type' must be one of\n",
-      "- 'mixture' (to visualize the mixing distribution)\n",
-      "- 'acf' (for autocorrelation plots of the Gibbs samples)\n",
-      "- 'trace' (for trace plots of the Gibbs samples)\n",
-      "- 'class_seq' (to visualize the sequence of class numbers)",
-      call. = FALSE
-    )
-  }
-  if (!type %in% c("mixture", "acf", "trace", "class_seq")) {
-    stop("Unknown 'type'.", call. = FALSE)
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_fit"),
+    var_name = "x"
+  )
+  oeli::input_check_response(
+    check = oeli::check_missing(type),
+    var_name = "type"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_choice(
+      type, choices = c("mixture", "acf", "trace", "class_seq")
+    ),
+    var_name = "type"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_character(ignore, null.ok = TRUE),
+    var_name = "ignore"
+  )
 
   ### read ellipsis arguments
   add_par <- list(...)
@@ -137,9 +151,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'mixture'
   if (type == "mixture") {
     if (x$data$P_r == 0) {
-      stop("Cannot plot a mixing distribution because the model has no random effects.",
-        call. = FALSE
-      )
+      stop("The model has no random effects.", call. = FALSE)
     }
     est <- point_estimates(x)
     est_b <- apply(est$b, 2, as.numeric, simplify = F)
@@ -167,7 +179,9 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
         }))
       }
     }
-    do.call(gridExtra::grid.arrange, c(plots, ncol = floor(sqrt(length(plots)))))
+    do.call(
+      gridExtra::grid.arrange, c(plots, ncol = floor(sqrt(length(plots))))
+    )
   }
 
   ### make plot type 'acf' and 'trace'
@@ -199,9 +213,7 @@ plot.RprobitB_fit <- function(x, type, ignore = NULL, ...) {
   ### make plot type 'class_seq'
   if (type == "class_seq") {
     if (x$data$P_r == 0) {
-      stop("Cannot show the class sequence because the model has no random effect.",
-        call. = FALSE
-      )
+      stop("The model has no random effects.", call. = FALSE)
     }
     plot_class_seq(x[["class_sequence"]], B = x$B)
   }

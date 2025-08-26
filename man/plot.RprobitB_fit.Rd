@@ -29,3 +29,15 @@ No return value. Draws a plot to the current device.
 \description{
 This function is the plot method for an object of class \code{RprobitB_fit}.
 }
+\examples{
+set.seed(1)
+form <- choice ~ var | 0
+data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
+model <- fit_model(
+  data = data, R = 100, latent_classes = list(C = 2, "dp_update" = TRUE)
+)
+plot(model, type = "mixture")
+plot(model, type = "acf", ignore = c("s", "Omega", "Sigma"))
+plot(model, type = "trace", ignore = c("s", "Omega", "Sigma"))
+plot(model, type = "class_seq")
+}

@@ -21,20 +21,21 @@
 #' @param x
 #' An object of class \code{RprobitB_fit}.
 #'
-#' @param S
+#' @param S \[`integer(1)`\]\cr
 #' The number of prior samples for the prior arithmetic mean estimate. Per
 #' default, \code{S = 0}. In this case, only the posterior samples are used
 #' for the approximation via the posterior harmonic mean estimator, see the
 #' details section.
 #'
-#' @param ncores
-#' Computation of the prior arithmetic mean estimate is parallelized, set the
-#' number of cores.
+#' @param ncores \[`integer(1)`\]\cr
+#' The number of cores for parallel computation.
 #'
-#' @param recompute
-#' Set to \code{TRUE} to recompute the likelihood.
+#' If set to 1, no parallel backend is used.
 #'
-#' @param log
+#' @param recompute \[`logical(1)`\]\cr
+#' Recompute the probabilities?
+#'
+#' @param log \[`logical(1)`\]\cr
 #' Return the logarithm of the marginal model likelihood?
 #'
 #' @param ...
@@ -46,34 +47,37 @@
 #'
 #' @export
 
-mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE) {
+mml <- function(
+    x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE
+  ) {
+
   ### input checks
-  if (!inherits(x, "RprobitB_fit")) {
-    stop("'x' must be of class 'RprobitB_fit.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_class(x, "RprobitB_fit"),
+    var_name = "x"
+  )
   if (is.null(x[["p_si"]])) {
-    stop("Please compute the probability for each observed choice at posterior samples first.\n",
-         "For that, use the function 'compute_p_si()'.",
-         call. = FALSE
+    stop(
+      "Please compute the choice probabilities at posterior samples first.\n",
+      "For that, use the function 'compute_p_si()'.",
+      call. = FALSE
     )
   }
-  if (!(is.numeric(S) && length(S) == 1 && S >= 0 && S %% 1 == 0)) {
-    stop("'S' must be an integer.",
-         call. = FALSE
-    )
-  }
-  if (!(is.numeric(ncores) && length(ncores) == 1 && ncores > 0 && ncores %% 1 == 0)) {
-    stop("'ncores' must be a positive integer.",
-         call. = FALSE
-    )
-  }
+  oeli::input_check_response(
+    check = checkmate::check_int(S, lower = 0),
+    var_name = "S"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_count(ncores, positive = TRUE),
+    var_name = "ncores"
+  )
+  oeli::input_check_response(
+    check = checkmate::check_flag(recompute),
+    var_name = "recompute"
+  )
 
   ### check if 'mml' in 'x' already exists if 'recompute = FALSE'
-  if (!recompute && !is.null(x[["mml"]])) {
-    return(x)
-  }
+  if (!recompute && !is.null(x[["mml"]])) return(x)
 
   ### helper variables
   add_args <- list(
@@ -94,9 +98,12 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
   approx_seq <- seq_along(cont_post) / cumsum(cont_post)
 
   if (S > 0) {
-    ### register parallel backend
-    cluster <- parallel::makeCluster(ncores)
-    doSNOW::registerDoSNOW(cluster)
+
+    ### set up parallel only if ncores > 1
+    if (ncores > 1) {
+      cluster <- parallel::makeCluster(ncores)
+      doSNOW::registerDoSNOW(cluster)
+    }
 
     ### register progress bar
     if (getOption("RprobitB_progress")) {
@@ -112,7 +119,10 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
 
     ### compute prior arithmetic mean estimate
     s <- NULL
-    cont_prior <- foreach::foreach(s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts) %dopar% {
+    `%op%` <- if (ncores > 1) foreach::`%dopar%` else foreach::`%do%`
+    cont_prior <- foreach::foreach(
+      s = 1:S, .packages = "RprobitB", .combine = "cbind", .options.snow = opts
+    ) %op% {
       prior_sample <- draw_from_prior(x$prior, C = x$latent_classes$C)
       par <- do.call(what = RprobitB_parameter, args = c(prior_sample, add_args))
       probs <- choice_probabilities(x = x, par_set = par)
@@ -124,8 +134,8 @@ mml <- function(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALS
       exp(ll)
     }
 
-    ### stop parallel backend
-    parallel::stopCluster(cluster)
+    ### stop parallel backend if used
+    if (ncores > 1) parallel::stopCluster(cluster)
 
     ### merge posterior harmonic mean estimate with prior arithmetic mean estimate
     cont_prior <- cont_prior[cont_prior != 0]

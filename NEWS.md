@@ -1,3 +1,7 @@
+# RprobitB development
+
+* Added more unit tests.
+
 # RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.

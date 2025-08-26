@@ -6,7 +6,7 @@
 #'
 #' @param gibbs_samples
 #' An object of class \code{RprobitB_gibbs_samples}, which generally is located
-#' as object \code{gibbs_samples} in an \code{RprobitB_model} object.
+#' as object \code{gibbs_samples} in an \code{RprobitB_fit} object.
 #'
 #' @param FUN
 #' A (preferably named) list of functions that compute parameter statistics

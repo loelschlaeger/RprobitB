@@ -4,21 +4,35 @@
 \alias{get_cov}
 \title{Extract covariates of choice occasion}
 \usage{
-get_cov(x, id, idc, idc_label)
+get_cov(x, id = NULL, idc = NULL, id_label = NULL, idc_label = NULL)
 }
 \arguments{
 \item{x}{Either an object of class \code{RprobitB_data} or \code{RprobitB_fit}.}
 
-\item{id}{A numeric (vector), that specifies the decider(s).}
+\item{id, idc}{[\code{integer()} | \code{NULL}]\cr
+Identifiers for deciders and choice occasions.
 
-\item{idc}{A numeric (vector), that specifies the choice occasion(s).}
+If \code{NULL}, everything is returned.}
 
-\item{idc_label}{The name of the column that contains the choice occasion identifier.}
+\item{id_label, idc_label}{[\code{character(1)} | \code{NULL}]\cr
+The columns that contain the decider and choice occasion identifier.
+
+If \code{NULL}, this information is extracted from \code{x}.}
 }
 \value{
 A subset of the \code{choice_data} data frame specified in \code{prepare_data()}.
 }
 \description{
-This convenience function returns the covariates and the choices of specific
+This helper function returns the covariates and the choices of specific
 choice occasions.
+}
+\examples{
+data <- simulate_choices(
+  form = product ~ price,
+  N = 10,
+  T = 1:10,
+  J = 3,
+  ranked = TRUE
+)
+get_cov(data, id = 2)
 }

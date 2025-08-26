@@ -15,17 +15,22 @@ mml(x, S = 0, ncores = parallel::detectCores() - 1, recompute = FALSE)
 \arguments{
 \item{x}{An object of class \code{RprobitB_fit}.}
 
-\item{S}{The number of prior samples for the prior arithmetic mean estimate. Per
+\item{S}{[\code{integer(1)}]\cr
+The number of prior samples for the prior arithmetic mean estimate. Per
 default, \code{S = 0}. In this case, only the posterior samples are used
 for the approximation via the posterior harmonic mean estimator, see the
 details section.}
 
-\item{ncores}{Computation of the prior arithmetic mean estimate is parallelized, set the
-number of cores.}
+\item{ncores}{[\code{integer(1)}]\cr
+The number of cores for parallel computation.
 
-\item{recompute}{Set to \code{TRUE} to recompute the likelihood.}
+If set to 1, no parallel backend is used.}
 
-\item{log}{Return the logarithm of the marginal model likelihood?}
+\item{recompute}{[\code{logical(1)}]\cr
+Recompute the probabilities?}
+
+\item{log}{[\code{logical(1)}]\cr
+Return the logarithm of the marginal model likelihood?}
 
 \item{...}{Currently not used.}
 }
