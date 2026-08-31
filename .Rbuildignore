@@ -11,3 +11,4 @@ LICENSE
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
 ^sticker$
+^jss$
