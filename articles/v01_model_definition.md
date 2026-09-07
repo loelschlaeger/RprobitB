@@ -1,0 +1,253 @@
+# Model definition
+
+## The probit model
+
+The probit model is a regression-type model where the dependent variable
+takes a finite number of values and the error term is normally
+distributed ([Agresti 2015](#ref-Agresti2015)). Its purpose is to
+estimate the probability that the dependent variable takes a certain,
+discrete value. The most common application are discrete choice
+scenarios. The dependent variable here is one of finitely many and
+mutually exclusive alternatives, and explanatory variables typically are
+characteristics of the deciders or the alternatives.
+
+To be concrete, assume that we possess data of $`N`$ decision makers
+which choose between $`J \geq 2`$ alternatives at each of $`T`$ choice
+occasions[^1]. Specific to each decision maker, alternative and choice
+occasion, we furthermore observe $`P`$ choice attributes that we use to
+explain the choices. The continuous choice attributes cannot be linked
+directly to the discrete choices but must take a detour over a latent
+variable. In the discrete choice setting, this variable can be
+interpreted as the decider’s utility of a certain alternative. Decider
+$`n`$’s utility $`U_{ntj}`$ for alternative $`j`$ at choice occasion
+$`t`$ is modeled as
+
+``` math
+\begin{equation}
+  U_{ntj} = X_{ntj}'\beta + \epsilon_{ntj}
+\end{equation}
+```
+
+for $`n=1,\dots,N`$, $`t=1,\dots,T`$ and $`j=1,\dots,J`$, where
+
+- $`X_{ntj}`$ is a (column) vector of $`P`$ characteristics of $`j`$ as
+  faced by $`n`$ at $`t`$,
+
+- $`\beta \in {\mathbb R}^{P}`$ is a vector of coefficients,
+
+- and
+  $`(\epsilon_{nt:}) = (\epsilon_{nt1},\dots,\epsilon_{ntJ})' \sim \text{MVN}_{J} (0,\Sigma)`$
+  is the model’s error term vector for $`n`$ at $`t`$, which in the
+  probit model is assumed to be multivariate normally distributed with
+  zero mean and covariance matrix $`\Sigma`$.
+
+Now let $`y_{nt}=j`$ denote the event that decision maker $`n`$ chooses
+alternative $`j`$ at choice occasion $`t`$. Assuming utility maximizing
+behavior of the decision makers[^2], the decisions are linked to the
+utilities via
+
+``` math
+\begin{equation}
+y_{nt} = {\arg \max}_{j = 1,\dots,J} U_{ntj}.
+\end{equation}
+```
+
+In the ordered probit case, the concept of decider’s having separate
+utilities for each alternative is no longer natural ([Train
+2009](#ref-Train2009)). Instead, we model only a single utility value
+``` math
+\begin{align*}
+  U_{nt} = X_{nt}'\beta_n + \epsilon_{nt}
+\end{align*}
+```
+per decider $`n`$ and choice occasion $`t`$, which we interpret as the
+“level of association” that $`n`$ has with the choice question. The
+utility value falls into discrete categories, which in turn are linked
+to the ordered alternatives $`j=1,\dots,J`$. Formally,
+``` math
+\begin{align*}
+   y_{nt} = \sum_{j = 1,\dots,J} j \cdot I(\gamma_{j-1} < U_{nt} \leq \gamma_{j}),
+\end{align*}
+```
+with end points $`\gamma_0 = -\infty`$ and $`\gamma_J = +\infty`$, and
+thresholds $`(\gamma_j)_{j=1,\dots,J-1}`$. To ensure monotonicity of the
+thresholds, we rather estimate logarithmic threshold increments $`d_j`$
+with $`\gamma_j = \sum_{i=1,\dots,j} \exp{d_i}`$, $`j=1,\dots,J-1`$.
+
+## Choice behavior heterogeneity
+
+Note that the coefficient vector $`\beta`$ is constant across decision
+makers. This assumption is too restrictive for many applications.[^3]
+Heterogeneity in choice behaviour can be modelled by imposing a
+distribution on $`\beta`$ such that each decider can have their own
+preferences.
+
+Formally, we define $`\beta = (\alpha, \beta_n)`$, where $`\alpha`$ are
+$`P_f`$ coefficients that are constant across deciders and $`\beta_n`$
+are $`P_r`$ decider-specific coefficients. Consequently,
+$`P = P_f + P_r`$. Now if $`P_r>0`$, $`\beta_n`$ is distributed
+according to some $`P_r`$-variate distribution, the so-called mixing
+distribution.
+
+Choosing an appropriate mixing distribution is a notoriously difficult
+task of the model specification. In many applications, different types
+of standard parametric distributions (including the normal, log-normal,
+uniform and tent distribution) are tried in conjunction with a
+likelihood value-based model selection, cf., Train
+([2009](#ref-Train2009)), Chapter 6. Instead,
+[RprobitB](https://loelschlaeger.de/RprobitB/) implements the approach
+of ([Oelschläger and Bauer 2020](#ref-Oelschlaeger2020)) to approximate
+any underlying mixing distribution by a mixture of (multivariate)
+Gaussian densities. More precisely, the underlying mixing distribution
+$`g_{P_r}`$ for the random coefficients $`(\beta_n)_{n}`$ is
+approximated by a mixture of $`P_r`$-variate normal densities
+$`\phi_{P_r}`$ with mean vectors $`b=(b_c)_{c}`$ and covariance matrices
+$`\Omega=(\Omega_c)_{c}`$ using $`C`$ components, i.e.
+
+``` math
+\begin{equation}
+\beta_n\mid b,\Omega \sim \sum_{c=1}^{C} s_c \phi_{P_r} (\cdot \mid b_c,\Omega_c).
+\end{equation}
+```
+
+Here, $`(s_c)_{c}`$ are weights satisfying $`0 < s_c\leq 1`$ for
+$`c=1,\dots,C`$ and $`\sum_c s_c=1`$. One interpretation of the latent
+class model is obtained by introducing variables $`z=(z_n)_n`$,
+allocating each decision maker $`n`$ to class $`c`$ with probability
+$`s_c`$, i.e.
+
+``` math
+\begin{equation}
+\text{Prob}(z_n=c)=s_c \land \beta_n \mid z,b,\Omega \sim \phi_{P_r}(\cdot \mid b_{z_n},\Omega_{z_n}).
+\end{equation}
+```
+
+We call the resulting model the *latent class mixed multinomial probit
+model*. Note that the model collapses to the *(normally) mixed
+multinomial probit model* if $`P_r>0`$ and $`C=1`$, to the *multinomial
+probit model* if $`P_r=0`$ and to the *binary probit model* if
+additionally $`J=2`$.
+
+## Model normalization
+
+As is well known, any utility model needs to be normalized with respect
+to level and scale in order to be identified ([Train
+2009](#ref-Train2009)). Therefore, we consider the transformed model
+
+``` math
+\begin{equation}
+\tilde{U}_{ntj} = \tilde{X}_{ntj}' \beta + \tilde{\epsilon}_{ntj},
+\end{equation}
+```
+
+$`n=1,\dots,N`$, $`t=1,\dots,T`$ and $`j=1,\dots,J-1`$, where (choosing
+$`J`$ as the reference alternative)
+$`\tilde{U}_{ntj} = U_{ntj} - U_{ntJ}`$,
+$`\tilde{X}_{ntj} = X_{ntj} - X_{ntJ}`$, and
+$`\tilde{\epsilon}_{ntj} = \epsilon_{ntj} - \epsilon_{ntJ}`$, where
+$`(\tilde{\epsilon}_{nt:}) = (\tilde{\epsilon}_{nt1},...,\tilde{\epsilon}_{nt(J-1)})'  \sim \text{MVN}_{J-1} (0,\tilde{\Sigma})`$
+and $`\tilde{\Sigma}`$ denotes a covariance matrix with the top-left
+element restricted to one.[^4]
+
+## Parameter labels
+
+In [RprobitB](https://loelschlaeger.de/RprobitB/), the probit model
+parameters are saved as an `RprobitB_parameter` object. Their labels are
+consistent with their definition in this vignette. For example:
+
+``` r
+
+RprobitB_parameter(
+  P_f = 1,
+  P_r = 2,
+  J = 3,
+  N = 10,
+  C = 2, # the number of latent classes
+  alpha = c(1), # the fixed coefficient vector of length 'P_f'
+  s = c(0.6, 0.4), # the vector of class weights of length 'C'
+  # the matrix of class means as columns of dimension 'P_r' x 'C'
+  b = matrix(c(-1, 1, 1, 2), nrow = 2, ncol = 2),
+  # the matrix of class covariance matrices as columns of dimension 'P_r^2' x 'C'
+  Omega = matrix(c(diag(2), 0.1 * diag(2)), nrow = 4, ncol = 2),
+  # the differenced error term covariance matrix of dimension '(J-1)' x '(J-1)'
+  # the undifferenced error term covariance matrix is labelled 'Sigma_full'
+  Sigma = diag(2),
+  z = rep(1:2, 5) # the vector of the allocation variables of length 'N'
+)
+#> alpha : 1
+#> 
+#> C : 2
+#> 
+#> s : double vector of length 2 
+#> 0.6 0.4
+#> 
+#> b : 2 x 2 matrix of doubles 
+#>      [,1] [,2]
+#> [1,]   -1    1
+#> [2,]    1    2
+#> 
+#> 
+#> Omega : 4 x 2 matrix of doubles 
+#>      [,1] [,2]
+#> [1,]    1  0.1
+#> [2,]    0    0
+#> [3,]    0    0
+#> [4,]    1  0.1
+#> 
+#> 
+#> Sigma : 2 x 2 matrix of doubles 
+#>      [,1] [,2]
+#> [1,]    1    0
+#> [2,]    0    1
+#> 
+#> 
+#> Sigma_full : 3 x 3 matrix of doubles 
+#>      [,1] [,2] [,3]
+#> [1,]    1    0    0
+#> [2,]    0    1    0
+#> [3,]    0    0    0
+#> 
+#> 
+#> beta : 2 x 10 matrix of doubles 
+#>       [,1] [,2]  [,3] ... [,10]
+#> [1,] -0.03 0.97 -0.25 ...  1.52
+#> [2,] -0.01 1.82  0.07 ...  1.75
+#> 
+#> 
+#> z : double vector of length 10 
+#> 1 2 1 ... 2
+#> 
+#> d : NA
+```
+
+## References
+
+Agresti, A. 2015. *Foundations of Linear and Generalized Linear Models*.
+Wiley.
+
+Hewig, J., N. Kretschmer, R. H. Trippe, et al. 2011. “Why Humans Deviate
+from Rational Choice.” *Psychophysiology* 48 (4).
+
+Oelschläger, L., and D. Bauer. 2020. “Bayes Estimation of Latent Class
+Mixed Multinomial Probit Models.” *TRB Annual Meeting 2021*.
+
+Train, K. E. 2009. *Discrete Choice Methods with Simulation*. 2nd ed.
+Cambridge University Press.
+
+[^1]: For notational simplicity, the number of choice occasions $`T`$ is
+    assumed to be the same for each decision maker here. However,
+    [RprobitB](https://loelschlaeger.de/RprobitB/) allows for unbalanced
+    panels and the cross-sectional case $`T = 1`$.
+
+[^2]: This in fact is a critical assumption because many studies show
+    that humans do not decide in this rational sense in general, see for
+    example Hewig et al. ([2011](#ref-Hewig2011)).
+
+[^3]: For example, consider the case of modelling the choice of a means
+    of transportation to work. It is imaginable that business people and
+    pensioners do not share the same sensitivities towards cost and
+    time.
+
+[^4]: [RprobitB](https://loelschlaeger.de/RprobitB/) provides an
+    alternative to fixing an error term variance in order to normalize
+    with respect to scale by fixing an element of $`\alpha`$.

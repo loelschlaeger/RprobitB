@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Modeling heterogeneity • RprobitB</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modeling heterogeneity">
 </head>
@@ -72,7 +72,7 @@
 <p>In the vignette on the model definition, we pointed out that the
 probit model can capture choice behavior heterogeneity by imposing a
 mixing distribution on the coefficient vector. The implementation in
-<a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.5.1 with the
+<a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> is explained in this vignette<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This vignette is built using R 4.6.1 with the
 &lt;a href="https://loelschlaeger.de/RprobitB/"&gt;RprobitB&lt;/a&gt; 1.2.0.9000 package.&lt;/p&gt;'><sup>1</sup></a>.</p>
 <div class="section level2">
 <h2 id="estimating-a-joint-normal-mixing-distribution">Estimating a joint normal mixing distribution<a class="anchor" aria-label="anchor" href="#estimating-a-joint-normal-mixing-distribution"></a>
@@ -174,14 +174,14 @@ mixing distributions can be visualized via calling the
 <code>type = mixture</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_elec</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img/plot-mixture-model-elec-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/plot-mixture-model-elec-1.png" class="r-plt" alt="" width="75%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="estimating-latent-classes">Estimating latent classes<a class="anchor" aria-label="anchor" href="#estimating-latent-classes"></a>
 </h2>
 <p>More generally, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> allows to specify a Gaussian
 mixture as the mixing distribution. In particular,</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>∼</mo><munderover><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mtext mathvariant="normal">MVN</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Ω</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).</annotation></semantics></math>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>∼</mo><munderover><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mtext mathvariant="normal">MVN</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Ω</mi><mi>c</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex"> \beta \sim \sum_{c=1}^C \text{MVN} (b_c,\Omega_c).</annotation></semantics></math>
 This specification allows for a) a better approximation of the true
 underlying mixing distribution and b) a preference based classification
 of the deciders.</p>
@@ -204,8 +204,8 @@ below,</p></li>
 <div class="section level3">
 <h3 id="weight-based-update-of-the-latent-classes">Weight-based update of the latent classes<a class="anchor" aria-label="anchor" href="#weight-based-update-of-the-latent-classes"></a>
 </h3>
-<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer, Büscher, and Batram (<a href="#ref-Bauer2019">2019</a>)</span> and executed within the burn-in
-period:</p>
+<p>The following weight-based updating scheme is analogue to <span class="citation">Bauer et al. (<a href="#ref-Bauer2019">2019</a>)</span>
+and executed within the burn-in period:</p>
 <ul>
 <li><p>We remove class
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
@@ -250,7 +250,7 @@ and
 to one class
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
 if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">∥</mo><msub><mi>b</mi><msub><mi>c</mi><mn>1</mn></msub></msub><mo>−</mo><msub><mi>b</mi><msub><mi>c</mi><mn>2</mn></msub></msub><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><msub><mi>δ</mi><mtext mathvariant="normal">min</mtext></msub></mrow><annotation encoding="application/x-tex">\lVert b_{c_1} - b_{c_2} \rVert&lt;\delta_{\text{min}}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">‖</mo><msub><mi>b</mi><msub><mi>c</mi><mn>1</mn></msub></msub><mo>−</mo><msub><mi>b</mi><msub><mi>c</mi><mn>2</mn></msub></msub><mo stretchy="true" form="postfix">‖</mo></mrow><mo>&lt;</mo><msub><mi>δ</mi><mtext mathvariant="normal">min</mtext></msub></mrow><annotation encoding="application/x-tex">\lVert b_{c_1} - b_{c_2} \rVert&lt;\delta_{\text{min}}</annotation></semantics></math>,
 i.e. if the euclidean distance between the class means
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><msub><mi>c</mi><mn>1</mn></msub></msub><annotation encoding="application/x-tex">b_{c_1}</annotation></semantics></math>
 and
@@ -269,7 +269,7 @@ and
 and averaging the values for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>.</p></li>
 </ul>
 <p>These rules contain choices on the values for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ε</mi><mtext mathvariant="normal">min</mtext></msub><annotation encoding="application/x-tex">\varepsilon_{\text{min}}</annotation></semantics></math>,
@@ -296,7 +296,7 @@ the correct number
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
 of latent classes, <a href="https://loelschlaeger.de/RprobitB/">RprobitB</a> implements the Dirichlet
 process.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;A similar approach in the context of discrete choice can
-be found in &lt;span class="citation"&gt;Burda, Harding, and Hausman (&lt;a href="#ref-Burda2008"&gt;2008&lt;/a&gt;)&lt;/span&gt;, where the Dirichlet process is
+be found in &lt;span class="citation"&gt;Burda et al. (&lt;a href="#ref-Burda2008"&gt;2008&lt;/a&gt;)&lt;/span&gt;, where the Dirichlet process is
 applied to estimate a mixed logit-probit model.&lt;/p&gt;'><sup>4</sup></a>
 The method allows to add more mixture components to the mixing
 distribution if needed for a better approximation, see <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span> for a
@@ -309,49 +309,48 @@ and MacQueen 1973</a>)</span>.</p>
 <p>In our case, we face the situation to find a distribution
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
 that explains the decider-specific coefficients
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi></mrow></msub><annotation encoding="application/x-tex">(\beta_n)_{n = 1,\dots,N}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>β</mi><mi>n</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi></mrow></msub></mrow><annotation encoding="application/x-tex">(\beta_n)_{n = 1,\dots,N}</annotation></semantics></math>,
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
 is supposed to be a mixture of an unknown number
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
 of Gaussian densities,
-i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><msub><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>C</mi></mrow></msub><msub><mi>s</mi><mi>c</mi></msub><mtext mathvariant="normal">MVN</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi>Ω</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">g = \sum_{c = 1,\dots,C} s_c \text{MVN}(b_c, \Omega_c)</annotation></semantics></math>.</p>
+i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><msub><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>C</mi></mrow></msub><msub><mi>s</mi><mi>c</mi></msub><mtext mathvariant="normal">MVN</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>b</mi><mi>c</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Ω</mi><mi>c</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">g = \sum_{c = 1,\dots,C} s_c \text{MVN}(b_c, \Omega_c)</annotation></semantics></math>.</p>
 <p>Let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>n</mi></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">z_n \in \{1,\dots,C\}</annotation></semantics></math>
 denote the class membership of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\beta_n</annotation></semantics></math>.
 A priori, the mixture weights
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msub><annotation encoding="application/x-tex">(s_c)_c</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">(s_c)_c</annotation></semantics></math>
 are given a Dirichlet prior with concentration parameter
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mi>/</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">\delta/C</annotation></semantics></math>,
-i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msub><mo>∣</mo><mi>δ</mi><mo>∼</mo><msub><mtext mathvariant="normal">D</mtext><mi>C</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo>,</mo><mi>…</mi><mo>,</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(s_c)_c \mid \delta \sim \text{D}_C(\delta/C,\dots,\delta/C)</annotation></semantics></math>.
+i.e. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>c</mi></msub><mo>∣</mo><mi>δ</mi><mo>∼</mo><msub><mtext mathvariant="normal">D</mtext><mi>C</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo>,</mo><mi>…</mi><mo>,</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(s_c)_c \mid \delta \sim \text{D}_C(\delta/C,\dots,\delta/C)</annotation></semantics></math>.
 <span class="citation">Rasmussen (<a href="#ref-Rasmussen1999">1999</a>)</span> shows that</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msub><mo>∣</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>N</mi><mo>+</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>m</mi><mi>c</mi></msub><mo>+</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Pr((z_n)_n\mid \delta) = \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c + \delta/C)}{\Gamma(\delta/C)}, </annotation></semantics></math>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>n</mi></msub><mo>∣</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>+</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>m</mi><mi>c</mi></msub><mo>+</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mi>/</mi><mi>C</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Pr((z_n)_n\mid \delta) = \frac{\Gamma(\delta)}{\Gamma(N+\delta)} \prod_{c=1}^C \frac{\Gamma(m_c + \delta/C)}{\Gamma(\delta/C)}, </annotation></semantics></math>
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma(\cdot)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Gamma(\cdot)</annotation></semantics></math>
 denotes the gamma function and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mi>c</mi></msub><mo>=</mo><mi>#</mi><mo stretchy="false" form="prefix">{</mo><mi>n</mi><mo>:</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">m_c = \#\{n:z_n = c\}</annotation></semantics></math>
 the number of elements that are currently allocated to class
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>.
 Crucially, the last equation is independent of the class weights
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msub><annotation encoding="application/x-tex">(s_c)_c</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>c</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">(s_c)_c</annotation></semantics></math>,
 yet it still depends on the finite number
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
-of latent classes. However, <span class="citation">Li, Schofield, and
-Gönen (<a href="#ref-Li2019">2019</a>)</span> shows that</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo>∣</mo><msub><mi>z</mi><mrow><mo>−</mo><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mo>−</mo><mi>n</mi></mrow></msub><mo>+</mo><mi>δ</mi><mi>/</mi><mi>C</mi></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Pr(z_n = c \mid z_{-n}, \delta) = \frac{m_{c,-n} + \delta/C}{N-1+\delta},</annotation></semantics></math>
+of latent classes. However, <span class="citation">Li et al. (<a href="#ref-Li2019">2019</a>)</span> shows that</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo>∣</mo><msub><mi>z</mi><mrow><mi>−</mi><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mi>−</mi><mi>n</mi></mrow></msub><mo>+</mo><mi>δ</mi><mi>/</mi><mi>C</mi></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Pr(z_n = c \mid z_{-n}, \delta) = \frac{m_{c,-n} + \delta/C}{N-1+\delta},</annotation></semantics></math>
 where the notation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">-n</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">-n</annotation></semantics></math>
 means excluding the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>th
 element. We can let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
 approach infinity to derive:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo>∣</mo><msub><mi>z</mi><mrow><mo>−</mo><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mfrac><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mo>−</mo><mi>n</mi></mrow></msub><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex"> \Pr(z_n = c \mid z_{-n}, \delta) \to \frac{m_{c,-n}}{N-1+\delta}. </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>=</mo><mi>c</mi><mo>∣</mo><msub><mi>z</mi><mrow><mi>−</mi><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mfrac><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mi>−</mi><mi>n</mi></mrow></msub><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex"> \Pr(z_n = c \mid z_{-n}, \delta) \to \frac{m_{c,-n}}{N-1+\delta}. </annotation></semantics></math></p>
 <p>Note that the allocation probabilities do not sum to 1, instead</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mfrac><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mo>−</mo><mi>n</mi></mrow></msub><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex"> \sum_{c = 1}^C \frac{m_{c,-n}}{N-1+\delta} = \frac{N-1}{N-1+\delta}. </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><mfrac><msub><mi>m</mi><mrow><mi>c</mi><mo>,</mo><mi>−</mi><mi>n</mi></mrow></msub><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex"> \sum_{c = 1}^C \frac{m_{c,-n}}{N-1+\delta} = \frac{N-1}{N-1+\delta}. </annotation></semantics></math></p>
 <p>The difference to 1 equals</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Pr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>≠</mo><msub><mi>z</mi><mi>m</mi></msub><mspace width="0.222em"></mspace><mo>∀</mo><mspace width="0.222em"></mspace><mi>m</mi><mo>≠</mo><mi>n</mi><mo>∣</mo><msub><mi>z</mi><mrow><mo>−</mo><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mi>δ</mi><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex"> \Pr(z_n \neq z_m ~ \forall ~ m \neq n \mid z_{-n}, \delta) = \frac{\delta}{N-1+\delta} </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>n</mi></msub><mo>≠</mo><msub><mi>z</mi><mi>m</mi></msub><mspace width="0.222em"></mspace><mo>∀</mo><mspace width="0.222em"></mspace><mi>m</mi><mo>≠</mo><mi>n</mi><mo>∣</mo><msub><mi>z</mi><mrow><mi>−</mi><mi>n</mi></mrow></msub><mo>,</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mi>δ</mi><mrow><mi>N</mi><mo>−</mo><mn>1</mn><mo>+</mo><mi>δ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex"> \Pr(z_n \neq z_m ~ \forall ~ m \neq n \mid z_{-n}, \delta) = \frac{\delta}{N-1+\delta} </annotation></semantics></math></p>
 <p>and constitutes the probability that a new cluster for observation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 is created. <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span> points out that this probability
@@ -374,17 +373,17 @@ is bounded by
 As a final step after the allocation update, we update the class means
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>c</mi></msub><annotation encoding="application/x-tex">b_c</annotation></semantics></math>
 and covariance matrices
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ω</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\Omega_c</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ω</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\Omega_c</annotation></semantics></math>
 by means of their posterior predictive distribution. The mean and
 covariance matrix for a new generated cluster is drawn from the prior
-predictive distribution. The corresponding formulas are given in <span class="citation">Li, Schofield, and Gönen (<a href="#ref-Li2019">2019</a>)</span>.</p>
+predictive distribution. The corresponding formulas are given in <span class="citation">Li et al. (<a href="#ref-Li2019">2019</a>)</span>.</p>
 <p>The Dirichlet process directly integrates into our existing Gibbs
 sampler. Given
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
 values, it updated the class means
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>c</mi></msub><annotation encoding="application/x-tex">b_c</annotation></semantics></math>
 and class covariance matrices
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Ω</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\Omega_c</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ω</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\Omega_c</annotation></semantics></math>.
 The Dirichlet process updating scheme is implemented in the function
 <code><a href="../reference/update_classes_dp.html">update_classes_dp()</a></code>. In the following, we give a small
 example in the bivariate case <code>P_r = 2</code>. We sample true class
@@ -470,13 +469,13 @@ the class allocation in the final iteration (right):</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_class_allocation.html">plot_class_allocation</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">z</span>, <span class="va">b</span>, <span class="va">Omega</span>, r <span class="op">=</span> <span class="va">R</span>, perc <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></code></pre></div>
-<p><img src="img/dirichlet-example-plot-1.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/dirichlet-example-plot-1.png" class="r-plt" alt="" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Aldous1985" class="csl-entry">
 Aldous, D. J. 2006. <span>“Exchangeability and Related Topics.”</span>
 In <em><span>É</span>cole d’<span>É</span>t<span>é</span> de
@@ -536,7 +535,7 @@ Sethuraman, J. 1994. <span>“A Constructive Definition of
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
