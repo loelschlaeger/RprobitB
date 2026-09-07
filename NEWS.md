@@ -1,6 +1,13 @@
-# RprobitB development
+# RprobitB 2.0.0
 
-* Added more unit tests.
+* Replaced the former multi-step workflow with `fit()`, which accepts an
+  empirical data frame or simulates data when `data = NULL`.
+  
+* Added correlated and uncorrelated normal, positive log-normal, and negative
+  log-normal random effects through named `random_effects` specifications.
+  
+* Added `latent_class_effects` to `fit()`, which names the effects that
+  differ between the latent classes.
 
 # RprobitB 1.2.0
 
