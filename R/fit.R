@@ -848,13 +848,52 @@ fit <- function(
     column_alternative = column_alternative,
     delimiter = delimiter
   )
-  response_values <- choice_response_values(
-    data = choice_data,
-    choice_type = choice_type,
-    alternatives = alternatives,
-    response = response,
-    roles = data_roles
-  )
+
+  # one response per occasion
+  frame <- as.data.frame(choice_data)
+  key_columns <- c(column_decider, column_occasion)
+  key <- function(x) do.call(paste, c(unname(x[key_columns]), sep = "\r"))
+  occasion_key <- key(identifiers)
+  frame_key <- key(frame)
+  response_values <- rep(NA_character_, nrow(identifiers))
+  if (identical(choice_type, "ranked")) {
+    ranks <- if (identical(format, "wide")) {
+      rows <- match(occasion_key, frame_key)
+      columns <- paste(response, alternatives, sep = delimiter)
+      values <- as.matrix(frame[rows, columns, drop = FALSE])
+      colnames(values) <- alternatives
+      asplit(values, 1L)
+    } else {
+      split(
+        stats::setNames(
+          frame[[response]], as.character(frame[[column_alternative]])
+        ),
+        factor(frame_key, levels = occasion_key)
+      )
+    }
+    response_values <- vapply(ranks, function(rank) {
+      rank <- rank[!is.na(rank)]
+      if (!length(rank)) {
+        return(NA_character_)
+      }
+      paste(names(sort(rank)), collapse = ",")
+    }, character(1), USE.NAMES = FALSE)
+  } else if (identical(format, "long") &&
+    identical(choice_type, "unordered")) {
+    selected <- which(frame[[response]] == 1L)
+    counts <- tabulate(
+      match(frame_key[selected], occasion_key), nbins = length(occasion_key)
+    )
+    unique_choice <- counts == 1L
+    rows <- selected[match(occasion_key[unique_choice], frame_key[selected])]
+    response_values[unique_choice] <- as.character(
+      frame[[column_alternative]][rows]
+    )
+  } else {
+    answered <- which(!is.na(frame[[response]]))
+    rows <- answered[match(occasion_key, frame_key[answered])]
+    response_values <- as.character(frame[[response]][rows])
+  }
   observed <- !is.na(response_values)
   if (!any(observed)) {
     oeli::input_check_response(
