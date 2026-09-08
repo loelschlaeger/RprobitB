@@ -154,7 +154,7 @@
 #' Unspecified parameters are drawn at random.
 #'
 #' @param progress \[`logical(1)`\]\cr
-#' Show sampling progress?
+#' Show progress?
 #'
 #' @return An `RprobitB_fit` object, which is a `list` with the components:
 #'
@@ -759,13 +759,14 @@ fit <- function(
     column_occasion <- simulation_occasion
     format <- "wide"
   } else {
-    if (is.null(alternatives)) {
-      if (identical(choice_type, "ordered")) {
+    if (identical(choice_type, "ordered")) {
+      if (is.null(alternatives)) {
         oeli::input_check_response(
           "Must give the ordered response levels.", "alternatives"
         )
       }
-      if (identical(format, "long")) {
+    } else {
+      observed <- if (identical(format, "long")) {
         has_alternative_column <- !is.null(column_alternative) &&
           column_alternative %in% names(data)
         if (!has_alternative_column) {
@@ -773,7 +774,7 @@ fit <- function(
             "Must name a column in long data.", "column_alternative"
           )
         }
-        alternatives <- unique(as.character(data[[column_alternative]]))
+        unique(as.character(data[[column_alternative]]))
       } else {
         long <- choicedata::wide_to_long(
           data_frame = data,
@@ -782,7 +783,25 @@ fit <- function(
           delimiter = delimiter,
           choice_type = choice_type
         )
-        alternatives <- unique(as.character(long$.alternative))
+        unique(as.character(long$.alternative))
+      }
+
+      # the model alternatives must cover the ones in the data
+      if (is.null(alternatives)) {
+        alternatives <- observed
+      } else {
+        unnamed <- setdiff(stats::na.omit(observed), alternatives)
+        if (length(unnamed)) {
+          oeli::input_check_response(
+            paste0(
+              "Must name every alternative in `data`. Missing: ",
+              paste(unnamed, collapse = ", "),
+              ". To fit a smaller choice set, remove the choice occasions ",
+              "of the other alternatives from `data`."
+            ),
+            "alternatives"
+          )
+        }
       }
     }
     choice_alternatives <- choicedata::choice_alternatives(
@@ -954,7 +973,7 @@ fit <- function(
     )
   }
   scale_specification <- if (is.null(scale)) {
-    list(parameter = "s", index = 1L, value = 1, name = NA_character_)
+    list(parameter = "Sigma", index = 1L, value = 1, name = NA_character_)
   } else {
     oeli::input_check_response(
       checkmate::check_character(
@@ -980,7 +999,7 @@ fit <- function(
         )
       }
       list(
-        parameter = "a",
+        parameter = "alpha",
         index = match(effect_index, which(!random & !latent_class)),
         value = unname(scale),
         name = parameter
@@ -1006,7 +1025,7 @@ fit <- function(
         )
       }
       list(
-        parameter = "s",
+        parameter = "Sigma",
         index = variance_index,
         value = unname(scale),
         name = parameter
