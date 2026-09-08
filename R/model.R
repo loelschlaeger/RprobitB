@@ -1,0 +1,233 @@
+#' Print a fitted choice model
+#'
+#' @description
+#' Prints the model formula, data size, and retained posterior sample size.
+#'
+#' @param x \[`RprobitB_fit`\]\cr
+#' Fitted choice model.
+#'
+#' @param ... Currently not used.
+#'
+#' @return `x`, invisibly.
+#'
+#' @export
+#' @keywords models
+#'
+#' @examples
+#' model <- fit(choice ~ x, chains = 1)
+#' print(model)
+
+print.RprobitB_fit <- function(x, ...) {
+  check_fit(x, "x")
+  identifiers <- choicedata::extract_choice_identifiers(x$data)
+  cat("Bayesian probit choice model\n")
+  cat("Formula:", deparse1(x$model$formula), "\n")
+  cat(
+    "Data:", length(unique(identifiers[[x$model$data_roles$column_decider]])),
+    "deciders,", nrow(identifiers), "choice occasions\n"
+  )
+  cat(
+    "Samples:", x$sampler$retained_per_chain, "retained per chain,",
+    x$sampler$chains, if (x$sampler$chains == 1L) "chain\n" else "chains\n"
+  )
+  invisible(x)
+}
+
+#' Extract the fitted formula
+#'
+#' @description
+#' Returns the normalized three-part model formula stored in a fitted model.
+#'
+#' @param x \[`RprobitB_fit`\]\cr
+#' Fitted choice model.
+#'
+#' @param ... Currently not used.
+#'
+#' @return A `formula` object.
+#'
+#' @export
+#' @keywords models
+#'
+#' @examples
+#' model <- fit(choice ~ x, chains = 1)
+#' formula(model)
+
+formula.RprobitB_fit <- function(x, ...) {
+  check_fit(x, "x")
+  x$model$formula
+}
+
+#' Extract the fitted data
+#'
+#' @description
+#' Returns the choice data stored in a fitted model as a `data.frame`.
+#'
+#' @param formula \[`RprobitB_fit`\]\cr
+#' Fitted choice model.
+#'
+#' @param ... Currently not used.
+#'
+#' @return A `data.frame` containing the fitted choice data.
+#'
+#' @export
+#' @keywords models
+#'
+#' @examples
+#' model <- fit(choice ~ x, chains = 1)
+#' head(model.frame(model))
+
+model.frame.RprobitB_fit <- function(formula, ...) {
+  check_fit(formula, "formula")
+  as.data.frame(formula$data)
+}
+
+#' Count observed likelihood units
+#'
+#' @description
+#' Counts observed occasions for cross-sectional data and observed deciders for
+#' panel data.
+#'
+#' @param object \[`RprobitB_fit`\]\cr
+#' Fitted choice model.
+#'
+#' @param ... Currently not used.
+#'
+#' @return An `integer(1)` count. For panel data, a decider with at least one
+#' observed response is one likelihood unit; otherwise each observed occasion
+#' is one unit.
+#'
+#' @export
+#' @keywords models
+#'
+#' @examples
+#' model <- fit(choice ~ x, chains = 1)
+#' nobs(model)
+
+nobs.RprobitB_fit <- function(object, ...) {
+  check_fit(object)
+  observed <- !is.na(object$model$responses)
+  if (is.null(object$model$data_roles$column_occasion)) {
+    return(sum(observed))
+  }
+  identifiers <- choicedata::extract_choice_identifiers(object$data)
+  decider <- object$model$data_roles$column_decider
+  length(unique(identifiers[[decider]][observed]))
+}
+
+#' Update and refit a choice model
+#'
+#' @description
+#' Refits a choice model with a modified specification.
+#'
+#' @details
+#' Arguments that are not specified are taken from `object`.
+#'
+#' The model formula is updated part by part, so `. ~ . + income` extends the
+#' covariates that are constant across alternatives and leaves the other two
+#' formula parts unchanged.
+#'
+#' The choice data of `object` are reused, also if they were simulated, which
+#' makes the updated model comparable to `object`. Supply `data` to fit the
+#' updated model to other choice data.
+#'
+#' @param object \[`RprobitB_fit`\]\cr
+#' Fitted choice model.
+#'
+#' @param formula. \[`formula`\]\cr
+#' Changes to the model formula, see the details.
+#'
+#' @param ...
+#' Arguments of [fit()] that replace the ones of `object`.
+#'
+#' @param evaluate \[`logical(1)`\]\cr
+#' Refit the model? If `FALSE`, the updated call is returned, where `data`
+#' stands for the choice data of `object`.
+#'
+#' @return
+#' An object of class `RprobitB_fit`, or the updated `call` if `evaluate` is
+#' `FALSE`.
+#'
+#' @export
+#' @keywords models
+#'
+#' @examples
+#' ### simulate choice data and fit a model with two covariates
+#' set.seed(1)
+#' model <- fit(choice ~ x + y | 0, chains = 1)
+#' summary(model)
+#'
+#' ### drop `y` from the formula, the other formula parts stay as they are
+#' model_2 <- update(model, . ~ . - y)
+#' summary(model_2)
+#'
+#' ### let the coefficient of `x` vary across deciders instead
+#' model_3 <- update(model, random_effects = "x")
+#' summary(model_3)
+
+update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
+
+  # input checks
+  check_fit(object)
+  oeli::input_check_response(checkmate::check_flag(evaluate), "evaluate")
+  model_call <- object$call
+  extras <- as.list(match.call(expand.dots = FALSE)[["..."]])
+  model <- object$model
+  sampler <- object$sampler
+
+  # the specification of `object` replaces the arguments of its call, where
+  # every formula part is updated on its own
+  model_call$formula <- if (missing(formula.)) {
+    model$formula
+  } else {
+    oeli::input_check_response(checkmate::check_formula(formula.), "formula.")
+    stats::formula(
+      stats::update(Formula::as.Formula(model$formula), formula.)
+    )
+  }
+  model_call$random_effects <- model$random_effects
+  model_call$latent_class_effects <- model$latent_class_effects
+  model_call$choice_type <- model$choice_type
+  model_call$alternatives <- as.character(model$alternatives)
+  model_call$base <- attr(model$alternatives, "base")
+  model_call$classes <- model$latent_classes$initial
+  model_call$class_update <- model$latent_classes$update
+  changing_classes <- model$latent_classes$update %in%
+    c("dirichlet_process", "weight_based")
+  if (changing_classes) model_call$max_classes <- model$latent_classes$maximum
+  model_call$iterations <- sampler$iterations
+  if (!is.null(model_call$warmup)) model_call$warmup <- sampler$warmup
+  model_call$thin <- sampler$thin
+  model_call$chains <- sampler$chains
+  model_call$save_individual_draws <- sampler$save_individual_draws
+
+  # the choice data of `object` replace the data and the simulation arguments
+  supplied_data <- "data" %in% names(extras)
+  if (!supplied_data) {
+    roles <- model$data_roles
+    model_call$data <- as.name("data")
+    model_call$format <- roles$format
+    model_call$column_decider <- roles$column_decider
+    model_call$column_occasion <- roles$column_occasion
+    model_call$column_alternative <- roles$column_alternative
+    model_call$delimiter <- roles$delimiter
+    model_call[c(
+      "n_deciders", "n_occasions", "n_alternatives", "covariates",
+      "dgp_parameters"
+    )] <- NULL
+  }
+
+  # the arguments in `...` replace the ones of `object`
+  replaced <- !is.na(match(names(extras), names(model_call)))
+  for (name in names(extras)[replaced]) model_call[[name]] <- extras[[name]]
+  if (any(!replaced)) {
+    model_call <- as.call(c(as.list(model_call), extras[!replaced]))
+  }
+  if (!evaluate) {
+    return(model_call)
+  }
+  refit <- new.env(parent = parent.frame())
+  if (!supplied_data) refit$data <- object$data
+
+  # the refitted model
+  eval(model_call, refit)
+}

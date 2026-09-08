@@ -14,6 +14,8 @@
   effects or marginal effects at the average covariate values, each with
   posterior uncertainty.
 
+* Added the `update()` method for fitted models, which refits with a modified
+  specification.
 # RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.
