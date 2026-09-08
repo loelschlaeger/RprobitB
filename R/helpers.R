@@ -29,17 +29,6 @@ check_probability <- function(x, var_name = "level") {
   invisible(x)
 }
 
-check_draw_indices <- function(draws, total, var_name = "draws") {
-  oeli::input_check_response(
-    checkmate::check_integerish(
-      draws,
-      lower = 1, upper = total, any.missing = FALSE, null.ok = TRUE
-    ),
-    var_name
-  )
-  invisible(draws)
-}
-
 check_finite_matrix <- function(x, var_name) {
   oeli::input_check_response(
     checkmate::check_matrix(x, mode = "numeric", any.missing = FALSE),
@@ -82,4 +71,36 @@ select_columns <- function(design, columns) {
     return(NA)
   }
   lapply(design, function(x) x[, columns, drop = FALSE])
+}
+
+summarize_draws <- function(values, level) {
+  alpha <- (1 - level) / 2
+  data.frame(
+    mean = mean(values, na.rm = TRUE),
+    sd = stats::sd(values, na.rm = TRUE),
+    lower = unname(stats::quantile(values, alpha, na.rm = TRUE)),
+    upper = unname(stats::quantile(values, 1 - alpha, na.rm = TRUE))
+  )
+}
+
+posterior_mode <- function(x) {
+  x <- as.vector(x)
+  x <- x[!is.na(x)]
+  if (!length(x)) return(NA_real_)
+  tolerance <- sqrt(.Machine$double.eps) * max(1, abs(mean(x)))
+  if (diff(range(x)) <= tolerance) return(mean(x))
+  rounded <- round(x)
+  if (all(abs(x - rounded) <= tolerance)) x <- rounded
+  values <- sort(unique(x))
+  if (all(x == round(x))) {
+    frequencies <- tabulate(match(x, values), nbins = length(values))
+    return(values[which.max(frequencies)])
+  }
+  estimate <- stats::density(x, from = min(x), to = max(x))
+  estimate$x[which.max(estimate$y)]
+}
+
+individual_variables <- function(object) {
+  variables <- dimnames(object$draws)$variable
+  variables[startsWith(variables, "individual[")]
 }

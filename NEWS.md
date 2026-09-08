@@ -8,6 +8,11 @@
   
 * Added `latent_class_effects` to `fit()`, which names the effects that
   differ between the latent classes.
+  
+* Added `interpret()`, which reads the estimates as compensations between
+  effects, such as the willingness to pay, and as average marginal
+  effects or marginal effects at the average covariate values, each with
+  posterior uncertainty.
 
 # RprobitB 1.2.0
 

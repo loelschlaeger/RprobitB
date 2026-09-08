@@ -12,58 +12,50 @@ Authors@R: c(
            role = "ctb",
            comment = c(ORCID = "0000-0003-2920-7032")))
 Description:
-    Bayes estimation of probit choice models in cross-sectional and panel 
-    settings. The package can analyze binary, multivariate, ordered, and ranked 
-    choices, as well as heterogeneity of choice behavior among deciders. The 
-    main functionality includes model fitting via Gibbs sampling, tools for 
-    convergence  diagnostic, choice data simulation, in-sample and out-of-sample 
-    choice prediction, and model selection using information criteria and Bayes 
-    factors. The latent class model extension facilitates preference-based 
-    decider classification, where the number of latent classes can be inferred 
-    via the Dirichlet process or a weight-based updating heuristic. This allows 
-    for flexible modeling of choice behavior without the need to impose 
-    structural constraints. For a reference on the method, see Oelschlaeger and 
-    Bauer (2021) <https://trid.trb.org/view/1759753>.
+    Fits Bayesian probit models for binary, multinomial, ordered, and ranked
+    choices in cross-sectional and panel data. Correlated or uncorrelated normal 
+    and log-normal random coefficients, finite mixtures, sparse finite
+    mixtures, and Dirichlet process mixtures describe preference
+    heterogeneity. Multiple Gibbs chains produce posterior draws for
+    diagnostics and choice prediction. Empirical model data can be 
+    supplied as a data frame or simulated from the requested specification.
+    For an overarching treatment of the methodology, see Oelschlaeger (2026)
+    <https://pub.uni-bielefeld.de/record/3014719>. The latent-class model is
+    described in Oelschlaeger and Bauer (2021)
+    <https://trid.trb.org/view/1759753>.
 URL: https://loelschlaeger.de/RprobitB/, https://github.com/loelschlaeger/RprobitB
 BugReports: https://github.com/loelschlaeger/RprobitB/issues
 License: GPL-3
 Encoding: UTF-8
+Language: en-US
 Imports: 
+    bayesplot,
+    bridgesampling,
     checkmate,
+    choicedata (>= 0.2.0),
     cli,
-    crayon,
-    doSNOW,
-    foreach,
-    ggplot2,
-    graphics,
-    gridExtra,
-    MASS,
-    mixtools,
-    oeli (>= 0.7.5),
-    parallel,
-    plotROC,
-    progress,
-    Rcpp,
+    Formula,
+    future.apply,
+    loo,
+    oeli (>= 0.7.8),
+    posterior,
+    progressr,
     Rdpack,
-    rlang,
-    stats,
-    utils,
-    viridis
+    Rcpp,
+    stats
 LinkingTo:
-    oeli (>= 0.7.5),
+    oeli (>= 0.7.8),
     Rcpp,
     RcppArmadillo,
     testthat
 Suggests: 
     knitr,
-    mlogit,
-    testthat (>= 3.0.0),
-    xml2
-Depends: R (>= 4.1.0)
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+    rmarkdown,
+    testthat (>= 3.0.0)
 RdMacros: Rdpack
+Depends:
+    R (>= 4.1.0)
+Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
-LazyData: true
-LazyDataCompression: xz
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
