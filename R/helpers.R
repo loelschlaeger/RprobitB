@@ -567,3 +567,199 @@ as_choice_parameters <- function(object, draws = NULL) {
     stats::setNames(parameters, paste0("draw_", draws))
   }
 }
+
+probability_draws <- function(
+  object, prediction_data, type = "population", ghk_draws = 500L,
+  progress = FALSE
+) {
+  draws <- seq_len(prod(dim(object$draws)[1:2]))
+  alternatives <- as.character(object$model$alternatives)
+  effects <- object$model$effects
+  random <- !is.na(effects$mixing)
+  lc <- effects$effect_name %in% object$model$latent_class_effects
+  parameters <- as_choice_parameters(object, draws = draws)
+
+  # population probabilities integrate over the random coefficients
+  if (!identical(type, "conditional") || !any(random | lc)) {
+    block_size <- ceiling(length(draws) / 20)
+    blocks <- split(draws, ceiling(seq_along(draws) / block_size))
+    probabilities <- progressr::with_progress(
+      {
+        progressor <- progressr::progressor(steps = length(blocks))
+        future.apply::future_lapply(
+          blocks,
+          function(block) {
+            values <- choicedata::compute_choice_probabilities(
+              choice_parameters = parameters[block],
+              choice_data = prediction_data,
+              choice_effects = effects,
+              choice_only = FALSE,
+              input_checks = FALSE,
+              aggregate = "occasion",
+              ghk_draws = ghk_draws
+            )
+            for (j in seq_along(values)) {
+              values[[j]] <- as.matrix(
+                values[[j]][, alternatives, drop = FALSE]
+              )
+            }
+            progressor(
+              message = paste0(
+                "Choice probabilities of draws ", block[1L], " to ",
+                block[length(block)]
+              )
+            )
+            values
+          },
+          future.seed = TRUE
+        )
+      },
+      enable = progress
+    )
+    return(unlist(probabilities, recursive = FALSE, use.names = FALSE))
+  }
+
+  # conditional probabilities need the individual draws of fitted deciders
+  if (any(random) && !length(individual_variables(object))) {
+    cli::cli_abort(
+      paste(
+        "Conditional prediction requires individual coefficient draws.",
+        "Refit with {.code save_individual_draws = TRUE}."
+      ),
+      call = NULL
+    )
+  }
+  identifiers <- choicedata::extract_choice_identifiers(prediction_data)
+  column_decider <- object$model$data_roles$column_decider
+  prediction_deciders <- unique(identifiers[[column_decider]])
+  decider_index <- match(prediction_deciders, object$model$deciders)
+  if (anyNA(decider_index)) {
+    unknown <- prediction_deciders[is.na(decider_index)]
+    oeli::input_check_response(
+      paste0(
+        "Conditional prediction is only available for fitted deciders. ",
+        "Unknown: ", paste(unknown, collapse = ", "), "."
+      ),
+      "newdata"
+    )
+  }
+
+  # the decider's own coefficients and class replace the population values
+  samples <- posterior::as_draws_matrix(object$draws)
+  random_names <- effects$effect_name[random]
+  mixing <- sub("^c", "", as.character(effects$mixing[random]))
+  conditional_effects <- effects
+  conditional_effects$mixing[random] <- NA
+  frame <- as.data.frame(prediction_data)
+  by_decider <- progressr::with_progress(
+    {
+      progressor <- progressr::progressor(steps = length(prediction_deciders))
+      future.apply::future_lapply(
+        seq_along(prediction_deciders),
+        function(i) {
+          decider <- prediction_deciders[i]
+          fitted <- object$model$deciders[decider_index[i]]
+          variable_names <- sprintf("individual[%s,%s]", random_names, fitted)
+          classes <- if (any(lc)) {
+            as.integer(round(samples[draws, sprintf("class[%s]", fitted)]))
+          }
+          conditional_parameters <- vector("list", length(draws))
+          for (j in seq_along(draws)) {
+            shared <- parameters[[j]]
+            fixed <- if (is.list(shared$beta)) {
+              shared$beta[[1L]]
+            } else {
+              shared$beta
+            }
+            fixed <- fixed[!random]
+            beta <- samples[draws[j], variable_names]
+            beta[mixing == "ln"] <- exp(beta[mixing == "ln"])
+            beta[mixing == "ln-"] <- -exp(beta[mixing == "ln-"])
+            if (any(lc & !random)) {
+              fixed[lc[!random]] <- as.numeric(samples[
+                draws[j],
+                sprintf(
+                  "beta[%s,%s]", effects$effect_name[lc & !random], classes[j]
+                )
+              ])
+            }
+            conditional_parameters[[j]] <- choicedata::choice_parameters(
+              beta = stats::setNames(c(fixed, beta), effects$effect_name),
+              Sigma = shared$Sigma,
+              gamma = shared$gamma
+            )
+          }
+          decider_data <- as_prediction_data(
+            object,
+            frame[frame[[column_decider]] == decider, , drop = FALSE]
+          )
+          probabilities <- choicedata::compute_choice_probabilities(
+            choice_parameters = conditional_parameters,
+            choice_data = decider_data,
+            choice_effects = conditional_effects,
+            choice_only = FALSE,
+            input_checks = FALSE,
+            aggregate = "occasion",
+            ghk_draws = ghk_draws
+          )
+          progressor(
+            message = paste0("Conditional probabilities of decider ", decider)
+          )
+          probabilities
+        },
+        future.seed = TRUE
+      )
+    },
+    enable = progress
+  )
+
+  # one probability matrix per draw
+  template <- matrix(
+    NA_real_,
+    nrow = nrow(identifiers),
+    ncol = length(alternatives),
+    dimnames = list(NULL, alternatives)
+  )
+  probabilities <- rep(list(template), length(draws))
+  for (i in seq_along(prediction_deciders)) {
+    positions <- which(identifiers[[column_decider]] == prediction_deciders[i])
+    for (j in seq_along(draws)) {
+      probabilities[[j]][positions, ] <- as.matrix(
+        by_decider[[i]][[j]][, alternatives, drop = FALSE]
+      )
+    }
+  }
+  probabilities
+}
+
+as_prediction_data <- function(object, newdata) {
+  check_fit(object)
+  oeli::input_check_response(
+    checkmate::check_data_frame(newdata, null.ok = TRUE), "newdata"
+  )
+  if (is.null(newdata)) {
+    return(object$data)
+  }
+  roles <- object$model$data_roles
+  response <- all.vars(object$model$formula)[1L]
+  ranked_wide <- identical(object$model$choice_type, "ranked") &&
+    identical(roles$format, "wide")
+  if (ranked_wide) {
+    columns <- paste(response, object$model$alternatives, sep = roles$delimiter)
+    for (column in setdiff(columns, names(newdata))) {
+      newdata[[column]] <- NA_integer_
+    }
+  } else if (!response %in% names(newdata)) {
+    newdata[[response]] <- NA
+  }
+  choicedata::choice_data(
+    data_frame = newdata,
+    format = roles$format,
+    column_choice = response,
+    column_decider = roles$column_decider,
+    column_occasion = roles$column_occasion,
+    column_alternative = roles$column_alternative,
+    delimiter = roles$delimiter,
+    choice_type = object$model$choice_type
+  )
+}
