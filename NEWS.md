@@ -21,6 +21,9 @@
   marginal-likelihood estimator with bridge-sampling Bayes factors.
 
 * Reworked `predict()` and `residuals()` around posterior uncertainty.
+
+* Added posterior diagnostics and standard `bayesplot` displays through
+  `summary()` and `plot()`.
 # RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.
