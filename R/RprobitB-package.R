@@ -1,122 +1,94 @@
+#' RprobitB: Bayesian probit choice modeling
+#'
+#' @description
+#' Fits Bayesian probit models for binary, multinomial, ordered, and ranked
+#' choices in cross-sectional and panel data.
+#'
+#' @details
+#' ## Model
+#' Decider `n` faces `J` alternatives on choice occasion `t`. Alternative `j`
+#' has the latent utility `U[n,t,j] = X[n,t,j] %*% beta[n] + epsilon[n,t,j]`,
+#' where the covariate vector `X[n,t,j]` follows from `formula` and the error
+#' vector across alternatives is multivariate normal with covariance `Sigma`.
+#' Unordered choices select the alternative with the largest utility, ranked
+#' choices order all utilities, and ordered choices compare one utility with
+#' increasing thresholds `gamma`.
+#'
+#' Fixed coefficients are identical for all deciders. Random coefficients named
+#' in `random_effects` vary across deciders and follow a multivariate normal
+#' distribution with mean `mu` and covariance `Omega`. Effects named in
+#' `latent_class_effects` differ between `classes` latent classes with weights
+#' `weight`: a random effect then has class-specific means and covariances,
+#' another coefficient one value per class. Log-normal effects apply `exp()`
+#' or `-exp()` to the latent normal coefficient. Utilities are identified only
+#' up to level and scale, see the normalization details in [fit()].
+#'
+#' ## Estimation
+#' Posterior draws come from a Gibbs sampler that augments the latent utilities
+#' (Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van Dyk 2005).
+#' Heterogeneity can follow a finite mixture, a sparse overfitted finite
+#' mixture (Rousseau and Mengersen 2011; Frühwirth-Schnatter and Malsiner-Walli
+#' 2019), or a Dirichlet process mixture with Neal's (2000) auxiliary-parameter
+#' allocation update and the precision update of Escobar and West (1995).
+#' Independent chains run through the
+#' [**future**](https://future.futureverse.org/) framework, and retained
+#' draws use the [**posterior**](https://mc-stan.org/posterior/) format.
+#'
+#' ## Evaluation
+#' [predict()], [residuals()], [logLik()], [WAIC()], [loo()], and
+#' [bayes_factor()] evaluate choice probabilities and likelihoods with
+#' [**choicedata**](https://loelschlaeger.de/choicedata/). Panel likelihoods
+#' of mixed models integrate over the random coefficients with the GHK
+#' simulator (Train 2009). Information criteria follow Vehtari, Gelman, and
+#' Gabry (2017), and Bayes factors use bridge sampling (Gronau et al. 2017).
+#'
+#' @references
+#' \insertRef{Albert1993}{RprobitB}
+#'
+#' \insertRef{Escobar1995}{RprobitB}
+#'
+#' \insertRef{FruehwirthSchnatter2019}{RprobitB}
+#'
+#' \insertRef{Gronau2017}{RprobitB}
+#'
+#' \insertRef{Imai2005a}{RprobitB}
+#'
+#' \insertRef{McCulloch1994}{RprobitB}
+#'
+#' \insertRef{Neal2000}{RprobitB}
+#'
+#' \insertRef{Oelschlaeger2021}{RprobitB}
+#'
+#' \insertRef{Oelschlaeger2026c}{RprobitB}
+#'
+#' \insertRef{Rousseau2011}{RprobitB}
+#'
+#' \insertRef{Train2009}{RprobitB}
+#'
+#' \insertRef{Vehtari2017}{RprobitB}
 #' @useDynLib RprobitB, .registration=TRUE
+#' @importFrom Rcpp sourceCpp
+#' @importFrom Rdpack reprompt
+#' @importFrom choicedata choice_data train_test
+#' @importFrom loo loo
+#' @importFrom posterior as_draws
+#' @importFrom stats coef confint formula logLik model.frame nobs predict
+#' @importFrom stats residuals update vcov
 #' @keywords internal
 
 "_PACKAGE"
 
+# This dummy function definition ensures that the native routine registration
+# includes the 'run_testthat_tests' symbol of the compiled unit tests.
 (function() {
   .Call("run_testthat_tests", FALSE, PACKAGE = "RprobitB")
 })
 
-## usethis namespace: start
-#' @importFrom checkmate assert_int
-#' @importFrom checkmate check_matrix
-#' @importFrom crayon underline
-#' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach %dopar%
-#' @importFrom ggplot2 aes
-#' @importFrom ggplot2 element_blank
-#' @importFrom ggplot2 expand_limits
-#' @importFrom ggplot2 geom_bar
-#' @importFrom ggplot2 geom_contour
-#' @importFrom ggplot2 geom_density
-#' @importFrom ggplot2 geom_errorbar
-#' @importFrom ggplot2 geom_histogram
-#' @importFrom ggplot2 geom_line
-#' @importFrom ggplot2 geom_point
-#' @importFrom ggplot2 geom_ribbon
-#' @importFrom ggplot2 geom_text
-#' @importFrom ggplot2 geom_vline
-#' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 labs
-#' @importFrom ggplot2 position_dodge
-#' @importFrom ggplot2 theme
-#' @importFrom ggplot2 theme_bw
-#' @importFrom ggplot2 theme_minimal
-#' @importFrom graphics legend
-#' @importFrom graphics par
-#' @importFrom graphics points
-#' @importFrom graphics title
-#' @importFrom gridExtra grid.arrange
-#' @importFrom MASS ginv
-#' @importFrom mixtools ellipse
-#' @importFrom oeli assert_covariance_matrix
-#' @importFrom oeli check_numeric_vector
-#' @importFrom oeli delta
-#' @importFrom oeli permutations
-#' @importFrom oeli print_matrix
-#' @importFrom oeli quiet
-#' @importFrom oeli test_covariance_matrix
-#' @importFrom parallel detectCores
-#' @importFrom parallel makeCluster
-#' @importFrom parallel stopCluster
-#' @importFrom plotROC geom_roc
-#' @importFrom plotROC style_roc
-#' @importFrom Rcpp sourceCpp
-#' @importFrom Rdpack reprompt
-#' @importFrom rlang .data
-#' @importFrom stats AIC
-#' @importFrom stats BIC
-#' @importFrom stats complete.cases
-#' @importFrom stats cov2cor
-#' @importFrom stats density
-#' @importFrom stats dnorm
-#' @importFrom stats ecdf
-#' @importFrom stats logLik
-#' @importFrom stats na.omit
-#' @importFrom stats nobs
-#' @importFrom stats pnorm
-#' @importFrom stats rnorm
-#' @importFrom stats runif
-#' @importFrom stats sd
-#' @importFrom stats spec.ar
-#' @importFrom stats var
-#' @importFrom utils tail
-#' @importFrom viridis magma
-## usethis namespace: end
+#' @rdname loo.RprobitB_fit
+#' @export
 
-RprobitB_pp <- function(
-    title, i = NULL, total = NULL, tail = NULL,
-    print_progress = isTRUE(getOption("RprobitB_progress"))
-  ) {
-  if (isTRUE(print_progress)) {
-    if (is.null(i) || is.null(total)) {
-      message(title)
-    } else {
-      message(paste(title, "-", i, "of", total, tail, "\r"),
-        appendLF = (i == total)
-      )
-    }
-  }
-}
+loo::loo
 
-RprobitB_pb <- function(title, total, tail = NULL) {
-  progress::progress_bar$new(
-    format = paste(title, "-", ":current of :total", tail),
-    total = total,
-    clear = FALSE
-  )
-}
+#' @export
 
-RprobitB_pb_tick <- function(
-    pb, print_progress = isTRUE(getOption("RprobitB_progress"))
-  ) {
-  if (isTRUE(print_progress)) pb$tick()
-}
-
-.onLoad <- function(lib, pkg) {
-  options("RprobitB_progress" = TRUE)
-}
-
-.onAttach <- function(lib, pkg) {
-  doc_link <- "https://loelschlaeger.de/RprobitB"
-  msg <- c(
-    paste0(
-      "Thanks for using {RprobitB} version ", utils::packageVersion("RprobitB")
-    ),
-    ", happy choice modeling!\n",
-    "Documentation: ",
-    cli::style_hyperlink(doc_link, doc_link)
-  )
-  packageStartupMessage(msg)
-  invisible()
-}
+choicedata::train_test
