@@ -113,6 +113,7 @@ the average of the covariates.
 \examples{
 ### travel mode choice where travel time has an alternative-specific effect
 data("travel_mode_choice", package = "choicedata")
+set.seed(1)
 model <- fit(
   choice ~ cost | 1 | travel,
   data = travel_mode_choice,

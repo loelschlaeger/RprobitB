@@ -82,6 +82,7 @@
 #' @examples
 #' ### travel mode choice where travel time has an alternative-specific effect
 #' data("travel_mode_choice", package = "choicedata")
+#' set.seed(1)
 #' model <- fit(
 #'   choice ~ cost | 1 | travel,
 #'   data = travel_mode_choice,
@@ -207,13 +208,18 @@ interpret <- function(
   roles <- object$model$data_roles
   alternatives <- as.character(object$model$alternatives)
   long <- identical(roles$format, "long")
+  ordered <- identical(object$model$choice_type, "ordered")
+  ranked <- identical(object$model$choice_type, "ranked")
   covariates <- unique(overview$covariate[!is.na(overview$covariate)])
   columns_of <- lapply(covariates, function(covariate) {
-    varying <- isTRUE(
+    varying <- !ordered && isTRUE(
       any(overview$as_covariate[overview$covariate %in% covariate])
     )
+    first <- paste(covariate, alternatives[1L], sep = roles$delimiter)
     columns <- if (varying && !long) {
       paste(covariate, alternatives, sep = roles$delimiter)
+    } else if (ordered && first %in% names(frame)) {
+      rep(first, length(alternatives))
     } else {
       rep(covariate, length(alternatives))
     }
@@ -255,6 +261,9 @@ interpret <- function(
   if (identical(type, "mea")) {
     identifiers <- c(roles$column_decider, roles$column_occasion)
     response <- all.vars(object$model$formula)[1L]
+    if (ranked && !long) {
+      response <- paste(response, alternatives, sep = roles$delimiter)
+    }
     groups <- if (long) {
       lapply(alternatives, function(alternative) {
         which(frame[[roles$column_alternative]] == alternative)
@@ -265,7 +274,7 @@ interpret <- function(
     occasion <- do.call(rbind, lapply(groups, function(rows) {
       values <- lapply(names(frame), function(name) {
         column <- frame[[name]][rows]
-        if (name %in% identifiers || name == response) {
+        if (name %in% c(identifiers, response)) {
           column[1L]
         } else if (is.numeric(column)) {
           mean(column, na.rm = TRUE)
@@ -279,7 +288,7 @@ interpret <- function(
     if (long) occasion[[roles$column_alternative]] <- alternatives
     occasion[[roles$column_decider]] <- frame[[roles$column_decider]][1L]
     if (!is.null(roles$column_occasion)) occasion[[roles$column_occasion]] <- 1L
-    occasion[[response]] <- NA
+    occasion[response] <- NA
     for (name in names(at)) {
       target <- targets[[name]]
       rows <- if (long && !is.null(target$alternative)) {
@@ -313,53 +322,50 @@ interpret <- function(
   }
 
   # every covariate and alternative is differentiated independently
-  differentiate_effects <- function() {
-    progressor <- if (progress) {
-      progressr::progressor(steps = length(marginals))
-    }
-    differentiate <- function(marginal) {
-      selected <- if (marginal$varying && long) {
-        which(frame[[roles$column_alternative]] == marginal$alternative)
-      } else {
-        seq_len(nrow(frame))
-      }
-      values <- frame[[marginal$column]][selected]
-      step <- 1e-3 * stats::sd(frame[[marginal$column]])
-      if (!is.finite(step) || step == 0) step <- 1e-3
-      shifted <- lapply(c(1, -1), function(sign) {
-        data <- frame
-        data[[marginal$column]][selected] <- values + sign * step
-        probability_draws(object, as_prediction_data(object, data))
-      })
-      derivative <- vapply(seq_along(shifted[[1L]]), function(draw) {
-        difference <- shifted[[1L]][[draw]][, marginal$alternative] -
-          shifted[[2L]][[draw]][, marginal$alternative]
-        mean(difference / (2 * step))
-      }, numeric(1))
-      if (progress) {
-        progressor(
-          message = paste0(
-            "Marginal effect of ", marginal$covariate, " on ",
-            marginal$alternative
+  rows <- progressr::with_progress(
+    {
+      progressor <- progressr::progressor(steps = length(marginals))
+      future.apply::future_lapply(
+        marginals,
+        function(marginal) {
+          selected <- if (marginal$varying && long) {
+            which(frame[[roles$column_alternative]] == marginal$alternative)
+          } else {
+            seq_len(nrow(frame))
+          }
+          values <- frame[[marginal$column]][selected]
+          step <- 1e-3 * stats::sd(frame[[marginal$column]])
+          if (!is.finite(step) || step == 0) step <- 1e-3
+          shifted <- lapply(c(1, -1), function(sign) {
+            data <- frame
+            data[[marginal$column]][selected] <- values + sign * step
+            probability_draws(object, as_prediction_data(object, data))
+          })
+          derivative <- vapply(seq_along(shifted[[1L]]), function(draw) {
+            difference <- shifted[[1L]][[draw]][, marginal$alternative] -
+              shifted[[2L]][[draw]][, marginal$alternative]
+            mean(difference / (2 * step))
+          }, numeric(1))
+          progressor(
+            message = paste0(
+              "Marginal effect of ", marginal$covariate, " on ",
+              marginal$alternative
+            )
           )
-        )
-      }
-      summary <- summarize_draws(derivative, level)
-      if (identical(type, "mea")) {
-        summary <- cbind(at = mean(values), summary)
-      }
-      cbind(
-        covariate = marginal$covariate, alternative = marginal$alternative,
-        summary
+          summary <- summarize_draws(derivative, level)
+          if (identical(type, "mea")) {
+            summary <- cbind(at = mean(values), summary)
+          }
+          cbind(
+            covariate = marginal$covariate, alternative = marginal$alternative,
+            summary
+          )
+        },
+        future.seed = TRUE
       )
-    }
-    future.apply::future_lapply(marginals, differentiate, future.seed = TRUE)
-  }
-  rows <- if (progress) {
-    progressr::with_progress(differentiate_effects(), enable = TRUE)
-  } else {
-    differentiate_effects()
-  }
+    },
+    enable = progress
+  )
 
   # the marginal effects with their posterior summaries
   result <- do.call(rbind, rows)

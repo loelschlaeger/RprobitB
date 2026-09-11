@@ -49,3 +49,35 @@ test_that("interpret computes marginal effects for numeric covariates", {
   expect_true(all(is.finite(averaged$mean)))
   expect_true(any(grepl("Average marginal effects", output, fixed = TRUE)))
 })
+
+test_that("interpret computes marginal effects for ordered and ranked models", {
+  ordered <- fit(
+    choice ~ x | 0,
+    alternatives = c("low", "middle", "high"),
+    choice_type = "ordered",
+    n_deciders = 20L,
+    iterations = 20L,
+    warmup = 10L,
+    chains = 1L,
+    progress = FALSE
+  )
+  ranked <- fit(
+    rank ~ x | 0,
+    choice_type = "ranked",
+    n_deciders = 20L,
+    iterations = 20L,
+    warmup = 10L,
+    chains = 1L,
+    progress = FALSE
+  )
+
+  levels <- interpret(ordered, type = "mea", progress = FALSE)
+  first_ranks <- interpret(ranked, type = "mea", progress = FALSE)
+
+  expect_identical(levels$alternative, c("low", "middle", "high"))
+  expect_identical(levels$at, rep(levels$at[1L], 3L))
+  expect_equal(sum(levels$mean), 0, tolerance = 1e-6)
+  expect_identical(first_ranks$alternative, c("A", "B", "C"))
+  expect_true(all(is.finite(first_ranks$mean)))
+  expect_error(interpret(ordered, type = "mea", at = c(x_low = 1)), "at")
+})
