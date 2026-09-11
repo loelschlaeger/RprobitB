@@ -4,7 +4,14 @@
 \alias{bayes_factor}
 \title{Compare models with a Bayes factor}
 \usage{
-bayes_factor(model1, model2, log = FALSE, repetitions = 1L, ghk_draws = 500L)
+bayes_factor(
+  model1,
+  model2,
+  log = FALSE,
+  repetitions = 1L,
+  ghk_draws = 500L,
+  progress = interactive()
+)
 }
 \arguments{
 \item{model1, model2}{[\code{RprobitB_fit}]\cr
@@ -19,6 +26,9 @@ Number of independent bridge-sampling repetitions.}
 \item{ghk_draws}{[\code{integer(1)}]\cr
 Number of draws of the GHK simulator for multivariate normal probabilities
 of more than three dimensions, see \code{\link[oeli:pmvnorm]{oeli::pmvnorm()}}.}
+
+\item{progress}{[\code{logical(1)}]\cr
+Show progress?}
 }
 \value{
 A \code{bf_bridge} object from

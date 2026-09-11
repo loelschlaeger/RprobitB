@@ -18,7 +18,10 @@
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x | 0, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), chains = 1
+#' )
 #' logLik(model)
 
 logLik.RprobitB_fit <- function(object, ghk_draws = 500L, ...) {
@@ -103,7 +106,10 @@ logLik.RprobitB_fit <- function(object, ghk_draws = 500L, ...) {
 #'
 #' @examples
 #' set.seed(1)
-#' model <- fit(choice ~ x | 0, n_occasions = 5, chains = 1)
+#' model <- fit(
+#'   choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), n_occasions = 5,
+#'   chains = 1
+#' )
 #' WAIC(model)
 
 WAIC <- function(object, ghk_draws = 500L, progress = interactive(), ...) {
@@ -138,7 +144,10 @@ WAIC <- function(object, ghk_draws = 500L, progress = interactive(), ...) {
 #'
 #' @examples
 #' set.seed(1)
-#' model <- fit(choice ~ x | 0, n_occasions = 5, chains = 1)
+#' model <- fit(
+#'   choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), n_occasions = 5,
+#'   chains = 1
+#' )
 #' loo(model)
 
 loo.RprobitB_fit <- function(
@@ -198,7 +207,8 @@ loo.RprobitB_fit <- function(
 #' bayes_factor(correct_model, misspecified_model)
 
 bayes_factor <- function(
-  model1, model2, log = FALSE, repetitions = 1L, ghk_draws = 500L
+  model1, model2, log = FALSE, repetitions = 1L, ghk_draws = 500L,
+  progress = interactive()
 ) {
 
   # input checks
@@ -219,173 +229,202 @@ bayes_factor <- function(
     checkmate::check_int(repetitions, lower = 1L), "repetitions"
   )
   check_ghk_draws(ghk_draws)
+  oeli::input_check_response(checkmate::check_flag(progress), "progress")
 
-  # the marginal likelihood of each model is estimated by bridge sampling
-  bridges <- list()
-  for (name in names(models)) {
-    object <- models[[name]]
-    effects <- object$model$effects
-    prior <- object$prior
-    ordered <- identical(object$model$choice_type, "ordered")
-    base <- if (ordered) NA_integer_ else object$model$normalization$level$level
-    J <- length(object$model$alternatives)
-    random <- !is.na(effects$mixing)
-    random_correlated <- startsWith(as.character(effects$mixing[random]), "c")
-    likelihood <- choicedata::choice_likelihood(
-      choice_data = object$data,
-      choice_effects = effects
-    )
-
-    # change normalization to unit variance of first utility difference
-    draws <- seq_len(prod(dim(object$draws)[1:2]))
-    parameters <- as_choice_parameters(object, draws = draws)
-    lognormal <- sub("^c", "", as.character(effects$mixing[random])) != "n"
-    shifted <- c(rep(FALSE, sum(!random)), lognormal)
-    exponent <- outer(!lognormal, !lognormal, `+`)
-    for (i in if (ordered) integer() else seq_along(parameters)) {
-      draw <- parameters[[i]]
-      factor <- 1 / sqrt(oeli::diff_cov(draw$Sigma, ref = 1L)[1L, 1L])
-      betas <- if (is.list(draw$beta)) draw$beta else list(draw$beta)
-      for (k in seq_along(betas)) {
-        betas[[k]][!shifted] <- betas[[k]][!shifted] * factor
-        betas[[k]][shifted] <- betas[[k]][shifted] + log(factor)
-      }
-      Omega <- draw$Omega
-      if (is.list(Omega)) {
-        for (k in seq_along(Omega)) Omega[[k]] <- Omega[[k]] * factor^exponent
-      } else if (!is.null(Omega)) {
-        Omega <- Omega * factor^exponent
-      }
-      parameters[[i]] <- choicedata::choice_parameters(
-        beta = if (is.list(draw$beta)) betas else betas[[1L]],
-        Omega = Omega,
-        Sigma = draw$Sigma * factor^2,
-        weights = draw$weights
+  # the marginal likelihood of each model is estimated by bridge sampling,
+  # which evaluates the log posterior at half of the draws and at as many
+  # proposals per repetition
+  draws_total <- prod(dim(model1$draws)[1:2]) + prod(dim(model2$draws)[1:2])
+  bridges <- progressr::with_progress(
+    {
+      progressor <- progressr::progressor(
+        steps = ceiling(draws_total * (1 + repetitions) / 2)
       )
-    }
-
-    # the posterior draws on the unconstrained parameter space
-    transformed <- lapply(parameters, function(parameter) {
-      unclass(choicedata::switch_parameter_space(
-        choice_parameters = parameter,
-        choice_effects = effects
-      ))
-    })
-    template <- transformed[[1L]]
-    consistent <- vapply(transformed, function(value) {
-      identical(names(value), names(template))
-    }, logical(1))
-    if (!all(consistent)) {
-      cli::cli_abort(
-        "Posterior draws have incompatible parameter dimensions.", call = NULL
-      )
-    }
-    samples <- do.call(rbind, transformed)
-    colnames(samples) <- names(template)
-    varying <- apply(samples, 2L, stats::var) > sqrt(.Machine$double.eps)
-    if (!any(varying)) {
-      cli::cli_abort(
-        "Bridge sampling requires at least one varying parameter.", call = NULL
-      )
-    }
-    free <- names(template)[varying]
-    if (!ordered) {
-      reference <- oeli::delta(ref = 1L, dim = J) %*% diag(J)[, -base]
-      error_scale <- reference %*% prior$error_covariance_scale %*% t(reference)
-    }
-
-    # compute unnormalized log posterior density
-    log_posterior <- function(theta, ...) {
-      optimization <- template
-      optimization[free] <- theta
-      proposal <- tryCatch(
-        choicedata::switch_parameter_space(optimization, effects),
-        error = function(error) NULL
-      )
-      if (is.null(proposal)) {
-        return(-Inf)
-      }
-      log_likelihood <- tryCatch(
-        choicedata::compute_choice_likelihood(
-          choice_parameters = proposal,
-          choice_likelihood = likelihood,
-          logarithm = TRUE,
-          aggregate = "total",
-          ghk_draws = ghk_draws
-        ),
-        error = function(error) -Inf
-      )
-      if (!is.finite(log_likelihood)) {
-        return(-Inf)
-      }
-      beta <- proposal$beta
-      log_prior <- 0
-      covariances <- list()
-      if (any(!random)) {
-        log_prior <- log_prior + oeli::dmvnorm(
-          beta[!random], prior$fixed_mean, prior$fixed_covariance, log = TRUE
+      bridges <- list()
+      for (name in names(models)) {
+        object <- models[[name]]
+        effects <- object$model$effects
+        prior <- object$prior
+        ordered <- identical(object$model$choice_type, "ordered")
+        base <- if (ordered) {
+          NA_integer_
+        } else {
+          object$model$normalization$level$level
+        }
+        J <- length(object$model$alternatives)
+        random <- !is.na(effects$mixing)
+        random_correlated <- startsWith(
+          as.character(effects$mixing[random]), "c"
         )
-      }
-      if (any(random)) {
-        log_prior <- log_prior + oeli::dmvnorm(
-          beta[random], prior$random_mean, prior$random_mean_covariance,
-          log = TRUE
+        likelihood <- choicedata::choice_likelihood(
+          choice_data = object$data,
+          choice_effects = effects
         )
-        blocks <- c(
-          if (any(random_correlated)) list(which(random_correlated)),
-          as.list(which(!random_correlated))
-        )
-        for (block in blocks) {
-          covariances[[length(covariances) + 1L]] <- list(
-            matrix = proposal$Omega[block, block, drop = FALSE],
-            scale = prior$random_covariance_scale[block, block, drop = FALSE],
-            df = prior$random_covariance_df,
-            fixed = 0L
+
+        # change normalization to unit variance of first utility difference
+        draws <- seq_len(prod(dim(object$draws)[1:2]))
+        parameters <- as_choice_parameters(object, draws = draws)
+        lognormal <- sub("^c", "", as.character(effects$mixing[random])) != "n"
+        shifted <- c(rep(FALSE, sum(!random)), lognormal)
+        exponent <- outer(!lognormal, !lognormal, `+`)
+        for (i in if (ordered) integer() else seq_along(parameters)) {
+          draw <- parameters[[i]]
+          factor <- 1 / sqrt(oeli::diff_cov(draw$Sigma, ref = 1L)[1L, 1L])
+          betas <- if (is.list(draw$beta)) draw$beta else list(draw$beta)
+          for (k in seq_along(betas)) {
+            betas[[k]][!shifted] <- betas[[k]][!shifted] * factor
+            betas[[k]][shifted] <- betas[[k]][shifted] + log(factor)
+          }
+          Omega <- draw$Omega
+          if (is.list(Omega)) {
+            for (k in seq_along(Omega)) {
+              Omega[[k]] <- Omega[[k]] * factor^exponent
+            }
+          } else if (!is.null(Omega)) {
+            Omega <- Omega * factor^exponent
+          }
+          parameters[[i]] <- choicedata::choice_parameters(
+            beta = if (is.list(draw$beta)) betas else betas[[1L]],
+            Omega = Omega,
+            Sigma = draw$Sigma * factor^2,
+            weights = draw$weights
           )
         }
-      }
-      if (ordered) {
-        increments <- log(diff(proposal$gamma))
-        if (length(increments)) {
-          log_prior <- log_prior + oeli::dmvnorm(
-            increments, prior$threshold_mean, prior$threshold_covariance,
-            log = TRUE
+
+        # the posterior draws on the unconstrained parameter space
+        transformed <- lapply(parameters, function(parameter) {
+          unclass(choicedata::switch_parameter_space(
+            choice_parameters = parameter,
+            choice_effects = effects
+          ))
+        })
+        template <- transformed[[1L]]
+        consistent <- vapply(transformed, function(value) {
+          identical(names(value), names(template))
+        }, logical(1))
+        if (!all(consistent)) {
+          cli::cli_abort(
+            "Posterior draws have incompatible parameter dimensions.",
+            call = NULL
           )
         }
-      } else {
-        covariances[[length(covariances) + 1L]] <- list(
-          matrix = oeli::diff_cov(proposal$Sigma, ref = 1L),
-          scale = error_scale,
-          df = prior$error_covariance_df,
-          fixed = 1L
-        )
-      }
-      for (covariance in covariances) {
-        log_prior <- log_prior + oeli::dwishart(
-          covariance$matrix, df = covariance$df, scale = covariance$scale,
-          log = TRUE, inv = TRUE
-        )
-        dimension <- nrow(covariance$matrix)
-        if (dimension > covariance$fixed) {
-          indices <- seq.int(covariance$fixed + 1L, dimension)
-          diagonal <- diag(chol(covariance$matrix))
-          log_prior <- log_prior + (dimension - covariance$fixed) * log(2) +
-            sum((dimension + 1L - indices) * log(diagonal[indices]))
+        samples <- do.call(rbind, transformed)
+        colnames(samples) <- names(template)
+        varying <- apply(samples, 2L, stats::var) > sqrt(.Machine$double.eps)
+        if (!any(varying)) {
+          cli::cli_abort(
+            "Bridge sampling requires at least one varying parameter.",
+            call = NULL
+          )
         }
+        free <- names(template)[varying]
+        if (!ordered) {
+          reference <- oeli::delta(ref = 1L, dim = J) %*% diag(J)[, -base]
+          error_scale <- reference %*% prior$error_covariance_scale %*%
+            t(reference)
+        }
+
+        # compute unnormalized log posterior density
+        log_posterior <- function(theta, ...) {
+          progressor(message = paste0("Bridge sampling (", name, ")"))
+          optimization <- template
+          optimization[free] <- theta
+          proposal <- tryCatch(
+            choicedata::switch_parameter_space(optimization, effects),
+            error = function(error) NULL
+          )
+          if (is.null(proposal)) {
+            return(-Inf)
+          }
+          log_likelihood <- tryCatch(
+            choicedata::compute_choice_likelihood(
+              choice_parameters = proposal,
+              choice_likelihood = likelihood,
+              logarithm = TRUE,
+              aggregate = "total",
+              ghk_draws = ghk_draws
+            ),
+            error = function(error) -Inf
+          )
+          if (!is.finite(log_likelihood)) {
+            return(-Inf)
+          }
+          beta <- proposal$beta
+          log_prior <- 0
+          covariances <- list()
+          if (any(!random)) {
+            log_prior <- log_prior + oeli::dmvnorm(
+              beta[!random], prior$fixed_mean, prior$fixed_covariance,
+              log = TRUE
+            )
+          }
+          if (any(random)) {
+            log_prior <- log_prior + oeli::dmvnorm(
+              beta[random], prior$random_mean, prior$random_mean_covariance,
+              log = TRUE
+            )
+            blocks <- c(
+              if (any(random_correlated)) list(which(random_correlated)),
+              as.list(which(!random_correlated))
+            )
+            for (block in blocks) {
+              covariances[[length(covariances) + 1L]] <- list(
+                matrix = proposal$Omega[block, block, drop = FALSE],
+                scale = prior$random_covariance_scale[
+                  block, block,
+                  drop = FALSE
+                ],
+                df = prior$random_covariance_df,
+                fixed = 0L
+              )
+            }
+          }
+          if (ordered) {
+            increments <- log(diff(proposal$gamma))
+            if (length(increments)) {
+              log_prior <- log_prior + oeli::dmvnorm(
+                increments, prior$threshold_mean, prior$threshold_covariance,
+                log = TRUE
+              )
+            }
+          } else {
+            covariances[[length(covariances) + 1L]] <- list(
+              matrix = oeli::diff_cov(proposal$Sigma, ref = 1L),
+              scale = error_scale,
+              df = prior$error_covariance_df,
+              fixed = 1L
+            )
+          }
+          for (covariance in covariances) {
+            log_prior <- log_prior + oeli::dwishart(
+              covariance$matrix, df = covariance$df, scale = covariance$scale,
+              log = TRUE, inv = TRUE
+            )
+            dimension <- nrow(covariance$matrix)
+            if (dimension > covariance$fixed) {
+              indices <- seq.int(covariance$fixed + 1L, dimension)
+              diagonal <- diag(chol(covariance$matrix))
+              log_prior <- log_prior + (dimension - covariance$fixed) * log(2) +
+                sum((dimension + 1L - indices) * log(diagonal[indices]))
+            }
+          }
+          as.numeric(log_likelihood + log_prior)
+        }
+        bridges[[name]] <- bridgesampling::bridge_sampler(
+          samples = samples[, varying, drop = FALSE],
+          log_posterior = log_posterior,
+          lb = stats::setNames(rep(-Inf, length(free)), free),
+          ub = stats::setNames(rep(Inf, length(free)), free),
+          repetitions = as.integer(repetitions),
+          method = "normal",
+          cores = 1L,
+          silent = TRUE
+        )
       }
-      as.numeric(log_likelihood + log_prior)
-    }
-    bridges[[name]] <- bridgesampling::bridge_sampler(
-      samples = samples[, varying, drop = FALSE],
-      log_posterior = log_posterior,
-      lb = stats::setNames(rep(-Inf, length(free)), free),
-      ub = stats::setNames(rep(Inf, length(free)), free),
-      repetitions = as.integer(repetitions),
-      method = "normal",
-      cores = 1L,
-      silent = TRUE
-    )
-  }
+      bridges
+    },
+    enable = progress
+  )
 
   # the Bayes factor from the bridge sampling estimates of both models
   factor <- bridgesampling::bf(bridges$model1, bridges$model2, log = log)

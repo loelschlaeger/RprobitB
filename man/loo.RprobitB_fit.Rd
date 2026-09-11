@@ -33,7 +33,10 @@ using \code{\link[loo:loo]{loo::loo()}}.
 }
 \examples{
 set.seed(1)
-model <- fit(choice ~ x | 0, n_occasions = 5, chains = 1)
+model <- fit(
+  choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), n_occasions = 5,
+  chains = 1
+)
 loo(model)
 }
 \references{

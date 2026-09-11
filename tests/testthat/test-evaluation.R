@@ -134,8 +134,10 @@ test_that("bayes_factor compares models by bridge sampling", {
     progress = FALSE
   )
 
-  result <- suppressWarnings(bayes_factor(model, model))
-  mixed_result <- suppressWarnings(bayes_factor(mixed_model, mixed_model))
+  result <- suppressWarnings(bayes_factor(model, model, progress = FALSE))
+  mixed_result <- suppressWarnings(
+    bayes_factor(mixed_model, mixed_model, progress = FALSE)
+  )
 
   expect_s3_class(result, "bf_bridge")
   expect_true(is.finite(result$bf))

@@ -29,7 +29,10 @@ Computes WAIC from posterior log-likelihood draws using \code{\link[loo:waic]{lo
 }
 \examples{
 set.seed(1)
-model <- fit(choice ~ x | 0, n_occasions = 5, chains = 1)
+model <- fit(
+  choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), n_occasions = 5,
+  chains = 1
+)
 WAIC(model)
 }
 \references{

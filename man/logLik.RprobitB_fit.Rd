@@ -25,7 +25,10 @@ independent likelihood units.
 Evaluates the decider-level log-likelihood at the posterior mean parameters.
 }
 \examples{
-model <- fit(choice ~ x | 0, chains = 1)
+set.seed(1)
+model <- fit(
+  choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), chains = 1
+)
 logLik(model)
 }
 \keyword{models}
