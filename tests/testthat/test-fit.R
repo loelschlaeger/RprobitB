@@ -142,6 +142,7 @@ test_that("fit handles empirical and simulated data", {
     chains = 1L,
     progress = FALSE
   )
+  set.seed(1)
   dynamic_mixture <- suppressWarnings(fit(
     choice ~ x | 0,
     random_effects = "x",
@@ -266,7 +267,7 @@ test_that("fit handles empirical and simulated data", {
     chains = 1L,
     progress = FALSE
   )
-  choice_set_prediction <- predict(choice_sets, draws = 1:2)
+  choice_set_prediction <- predict(choice_sets)
   probability_columns <- paste0("probability_", c("A", "B", "C"))
   expect_s3_class(choice_sets, "RprobitB_fit")
   expect_identical(choice_set_prediction$probability_C[1L], 0)

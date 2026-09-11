@@ -213,7 +213,7 @@ one matrix per latent class.
 Unspecified parameters are drawn at random.}
 
 \item{progress}{[\code{logical(1)}]\cr
-Show sampling progress?}
+Show progress?}
 }
 \value{
 An \code{RprobitB_fit} object, which is a \code{list} with the components:

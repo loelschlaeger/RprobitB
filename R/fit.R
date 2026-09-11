@@ -605,6 +605,20 @@ fit <- function(
     )
   }
 
+  # the call is recorded, where arguments that a wrapper passed on through
+  # `...` are recorded by their values so that `update()` can rerun it
+  fit_call <- match.call()
+  for (name in names(fit_call)[-1L]) {
+    argument <- fit_call[[name]]
+    if (is.symbol(argument) && startsWith(as.character(argument), "..")) {
+      fit_call[[name]] <- if (identical(name, "data")) {
+        as.name("data")
+      } else {
+        get(name)
+      }
+    }
+  }
+
   # parse model formula
   environment(formula) <- globalenv()
   choice_formula <- choicedata::choice_formula(
@@ -1701,7 +1715,7 @@ fit <- function(
   # the fitted model object
   structure(
     list(
-      call = match.call(),
+      call = fit_call,
       data = choice_data,
       model = model,
       prior = prior_values,
