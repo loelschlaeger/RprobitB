@@ -24,6 +24,8 @@
 
 * Added posterior diagnostics and standard `bayesplot` displays through
   `summary()` and `plot()`.
+  
+* Improved numerical efficiency of the Gibbs sampler.
 # RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.

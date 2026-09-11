@@ -1414,7 +1414,6 @@ fit <- function(
         sufficient_statistics = statistics,
         prior = prior_sampler,
         latent_classes = unclass(latent_classes),
-        fixed_parameter = list(),
         R = iterations,
         B = warmup,
         ordered = sampler_data$ordered,
