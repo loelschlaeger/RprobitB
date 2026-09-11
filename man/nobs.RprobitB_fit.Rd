@@ -22,7 +22,11 @@ Counts observed occasions for cross-sectional data and observed deciders for
 panel data.
 }
 \examples{
-model <- fit(choice ~ x, chains = 1)
+set.seed(1)
+model <- fit(
+  choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+  chains = 1
+)
 nobs(model)
 }
 \keyword{models}

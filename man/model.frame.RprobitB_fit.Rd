@@ -19,7 +19,11 @@ A \code{data.frame} containing the fitted choice data.
 Returns the choice data stored in a fitted model as a \code{data.frame}.
 }
 \examples{
-model <- fit(choice ~ x, chains = 1)
+set.seed(1)
+model <- fit(
+  choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+  chains = 1
+)
 head(model.frame(model))
 }
 \keyword{models}

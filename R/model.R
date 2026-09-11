@@ -14,7 +14,11 @@
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+#'   chains = 1
+#' )
 #' print(model)
 
 print.RprobitB_fit <- function(x, ...) {
@@ -49,7 +53,11 @@ print.RprobitB_fit <- function(x, ...) {
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+#'   chains = 1
+#' )
 #' formula(model)
 
 formula.RprobitB_fit <- function(x, ...) {
@@ -73,7 +81,11 @@ formula.RprobitB_fit <- function(x, ...) {
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+#'   chains = 1
+#' )
 #' head(model.frame(model))
 
 model.frame.RprobitB_fit <- function(formula, ...) {
@@ -100,7 +112,11 @@ model.frame.RprobitB_fit <- function(formula, ...) {
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x, dgp_parameters = list(beta = c(x = 1, ASC_B = -0.5)),
+#'   chains = 1
+#' )
 #' nobs(model)
 
 nobs.RprobitB_fit <- function(object, ...) {
@@ -153,7 +169,10 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @examples
 #' ### simulate choice data and fit a model with two covariates
 #' set.seed(1)
-#' model <- fit(choice ~ x + y | 0, chains = 1)
+#' model <- fit(
+#'   choice ~ x + y | 0, dgp_parameters = list(beta = c(x = 1, y = -0.5)),
+#'   chains = 1
+#' )
 #' summary(model)
 #'
 #' ### drop `y` from the formula, the other formula parts stay as they are
@@ -173,6 +192,7 @@ update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
   extras <- as.list(match.call(expand.dots = FALSE)[["..."]])
   model <- object$model
   sampler <- object$sampler
+  roles <- model$data_roles
 
   # the specification of `object` replaces the arguments of its call, where
   # every formula part is updated on its own
@@ -184,16 +204,30 @@ update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
       stats::update(Formula::as.Formula(model$formula), formula.)
     )
   }
-  model_call$random_effects <- model$random_effects
-  model_call$latent_class_effects <- model$latent_class_effects
+  covariates <- c(all.vars(model_call$formula[[3L]]), "ASC")
+  random <- model$random_effects
+  model_call$random_effects <- random[names(random) %in% covariates]
+  latent <- model$latent_class_effects
+  suffix <- regexpr(roles$delimiter, latent, fixed = TRUE)
+  latent_covariates <- substr(latent, 1L, ifelse(suffix > 0L, suffix - 1L, 1e6))
+  model_call$latent_class_effects <- latent[
+    latent %in% covariates | latent_covariates %in% covariates
+  ]
   model_call$choice_type <- model$choice_type
   model_call$alternatives <- as.character(model$alternatives)
   model_call$base <- attr(model$alternatives, "base")
+  scale <- model$normalization$scale
+  model_call$scale <- if (is.na(scale$name)) {
+    NULL
+  } else {
+    stats::setNames(scale$value, scale$name)
+  }
   model_call$classes <- model$latent_classes$initial
   model_call$class_update <- model$latent_classes$update
   changing_classes <- model$latent_classes$update %in%
     c("dirichlet_process", "weight_based")
   if (changing_classes) model_call$max_classes <- model$latent_classes$maximum
+  model_call$weight_based_control <- model$latent_classes$control
   model_call$iterations <- sampler$iterations
   if (!is.null(model_call$warmup)) model_call$warmup <- sampler$warmup
   model_call$thin <- sampler$thin
@@ -201,20 +235,17 @@ update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
   model_call$save_individual_draws <- sampler$save_individual_draws
 
   # the choice data of `object` replace the data and the simulation arguments
+  model_call$format <- roles$format
+  model_call$column_decider <- roles$column_decider
+  model_call$column_occasion <- roles$column_occasion
+  model_call$column_alternative <- roles$column_alternative
+  model_call$delimiter <- roles$delimiter
+  model_call[c(
+    "n_deciders", "n_occasions", "n_alternatives", "covariates",
+    "dgp_parameters"
+  )] <- NULL
   supplied_data <- "data" %in% names(extras)
-  if (!supplied_data) {
-    roles <- model$data_roles
-    model_call$data <- as.name("data")
-    model_call$format <- roles$format
-    model_call$column_decider <- roles$column_decider
-    model_call$column_occasion <- roles$column_occasion
-    model_call$column_alternative <- roles$column_alternative
-    model_call$delimiter <- roles$delimiter
-    model_call[c(
-      "n_deciders", "n_occasions", "n_alternatives", "covariates",
-      "dgp_parameters"
-    )] <- NULL
-  }
+  if (!supplied_data) model_call$data <- as.name("data")
 
   # the arguments in `...` replace the ones of `object`
   replaced <- !is.na(match(names(extras), names(model_call)))

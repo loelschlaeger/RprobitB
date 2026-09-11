@@ -85,3 +85,22 @@ test_that("update.RprobitB_fit accepts other choice data", {
   updated <- update(model, data = data)
   expect_identical(nobs(updated), 2L)
 })
+
+test_that("update.RprobitB_fit fits a simulated model to supplied data", {
+  model <- fit(
+    choice ~ x | 0,
+    n_deciders = 8L,
+    iterations = 10L,
+    warmup = 5L,
+    chains = 1L,
+    progress = FALSE
+  )
+  subset <- as.data.frame(model$data)[1:5, ]
+
+  result <- update(model, data = subset)
+
+  expect_identical(nobs(result), 5L)
+  expect_null(result$simulation)
+  expect_false("n_deciders" %in% names(result$call))
+})
+

@@ -40,7 +40,10 @@ updated model to other choice data.
 \examples{
 ### simulate choice data and fit a model with two covariates
 set.seed(1)
-model <- fit(choice ~ x + y | 0, chains = 1)
+model <- fit(
+  choice ~ x + y | 0, dgp_parameters = list(beta = c(x = 1, y = -0.5)),
+  chains = 1
+)
 summary(model)
 
 ### drop `y` from the formula, the other formula parts stay as they are
