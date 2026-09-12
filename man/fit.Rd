@@ -127,12 +127,12 @@ number of classes the sampler starts from.}
 \item{class_update}{[\code{character(1)}]\cr
 Mixture specification:
 \itemize{
-\item \code{"fixed"} fits a finite mixture with \code{classes} components.
-\item \code{"sparse"} fits an overfitted finite mixture with \code{classes} components
+\item \code{"fixed"} fits a finite mixture with \code{classes} classes.
+\item \code{"sparse"} fits an overfitted finite mixture with \code{classes} classes
 and infers the occupied number through a sparse Dirichlet weight prior.
 \item \code{"dirichlet_process"} samples the occupied class count with a Dirichlet
 process allocation sampler.
-\item \code{"weight_based"} adapts the number of components during warmup with a
+\item \code{"weight_based"} adapts the number of classes during warmup with a
 weight-threshold split, removal, and merge heuristic.
 }}
 
@@ -283,18 +283,18 @@ reported as \verb{beta[<effect>,<class>]}.
 \itemize{
 \item \code{"fixed"} keeps all \code{classes} classes occupied, so the posterior is the
 finite-mixture posterior given that all of them are used.
-\item \code{"sparse"} starts from \code{classes} components, deliberately more than
+\item \code{"sparse"} starts from \code{classes} classes, deliberately more than
 expected, and empties the superfluous ones through a small symmetric
 Dirichlet weight prior (Rousseau and Mengersen 2011;
 Frühwirth-Schnatter and Malsiner-Walli 2019).
-\item \code{"dirichlet_process"} creates and removes occupied components with
+\item \code{"dirichlet_process"} creates and removes occupied classes with
 Neal's (2000) auxiliary-parameter allocation update, up to
 \code{max_classes}. Its precision hyperparameter is updated with the
 beta-gamma augmentation of Escobar and West (1995).
-\item \code{"weight_based"} splits, removes, and merges components during warmup
+\item \code{"weight_based"} splits, removes, and merges classes during warmup
 and then keeps their number fixed. Every \code{buffer} iterations it removes the
-component below \code{epsmin}, splits the component above \code{epsmax}, or merges
-the closest pair of component means below \code{deltamin}, attempting at most
+class below \code{epsmin}, splits the class above \code{epsmax}, or merges
+the closest pair of class means below \code{deltamin}, attempting at most
 one change in that order. A split moves the two means by \code{deltashift} times
 the leading within-class standard deviation. Updates stop after warmup, and
 retained iterations condition on the dimension selected separately by each

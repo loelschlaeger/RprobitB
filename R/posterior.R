@@ -229,7 +229,7 @@ print.summary.RprobitB_fit <- function(x, digits = 3L, ...) {
 #' probability of every decider belonging to each relabeled class.
 #'
 #' @param object \[`RprobitB_fit`\]\cr
-#' Fitted model with at least two finite components, a sparse finite mixture,
+#' Fitted model with at least two finite classes, a sparse finite mixture,
 #' a Dirichlet-process mixture, or a weight-based heuristic fit.
 #'
 #' @return A list with three elements:

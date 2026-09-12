@@ -8,7 +8,7 @@ latent_class_diagnostics(object)
 }
 \arguments{
 \item{object}{[\code{RprobitB_fit}]\cr
-Fitted model with at least two finite components, a sparse finite mixture,
+Fitted model with at least two finite classes, a sparse finite mixture,
 a Dirichlet-process mixture, or a weight-based heuristic fit.}
 }
 \value{

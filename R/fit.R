@@ -71,12 +71,12 @@
 #' @param class_update \[`character(1)`\]\cr
 #' Mixture specification:
 #'
-#' - `"fixed"` fits a finite mixture with `classes` components.
-#' - `"sparse"` fits an overfitted finite mixture with `classes` components
+#' - `"fixed"` fits a finite mixture with `classes` classes.
+#' - `"sparse"` fits an overfitted finite mixture with `classes` classes
 #'   and infers the occupied number through a sparse Dirichlet weight prior.
 #' - `"dirichlet_process"` samples the occupied class count with a Dirichlet
 #'   process allocation sampler.
-#' - `"weight_based"` adapts the number of components during warmup with a
+#' - `"weight_based"` adapts the number of classes during warmup with a
 #'   weight-threshold split, removal, and merge heuristic.
 #'
 #' @param max_classes \[`integer(1)`\]\cr
@@ -212,18 +212,18 @@
 #'
 #' - `"fixed"` keeps all `classes` classes occupied, so the posterior is the
 #'   finite-mixture posterior given that all of them are used.
-#' - `"sparse"` starts from `classes` components, deliberately more than
+#' - `"sparse"` starts from `classes` classes, deliberately more than
 #'   expected, and empties the superfluous ones through a small symmetric
 #'   Dirichlet weight prior (Rousseau and Mengersen 2011;
 #'   Frühwirth-Schnatter and Malsiner-Walli 2019).
-#' - `"dirichlet_process"` creates and removes occupied components with
+#' - `"dirichlet_process"` creates and removes occupied classes with
 #'   Neal's (2000) auxiliary-parameter allocation update, up to
 #'   `max_classes`. Its precision hyperparameter is updated with the
 #'   beta-gamma augmentation of Escobar and West (1995).
-#' - `"weight_based"` splits, removes, and merges components during warmup
+#' - `"weight_based"` splits, removes, and merges classes during warmup
 #'   and then keeps their number fixed. Every `buffer` iterations it removes the
-#'   component below `epsmin`, splits the component above `epsmax`, or merges
-#'   the closest pair of component means below `deltamin`, attempting at most
+#'   class below `epsmin`, splits the class above `epsmax`, or merges
+#'   the closest pair of class means below `deltamin`, attempting at most
 #'   one change in that order. A split moves the two means by `deltashift` times
 #'   the leading within-class standard deviation. Updates stop after warmup, and
 #'   retained iterations condition on the dimension selected separately by each
