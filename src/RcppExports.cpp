@@ -246,20 +246,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_d
-Rcpp::List update_d(arma::vec d, arma::mat const& y, arma::mat const& sys, double log_likelihood, arma::vec const& mu_d_0, arma::mat const& Sigma_d_0, arma::vec const& Tvec, double step_scale);
-RcppExport SEXP _RprobitB_update_d(SEXP dSEXP, SEXP ySEXP, SEXP sysSEXP, SEXP log_likelihoodSEXP, SEXP mu_d_0SEXP, SEXP Sigma_d_0SEXP, SEXP TvecSEXP, SEXP step_scaleSEXP) {
+arma::vec update_d(arma::vec d, arma::mat const& y, arma::mat const& sys, arma::vec const& mu_d_0, arma::mat const& Sigma_d_0, arma::vec const& Tvec, arma::vec const& step_scale);
+RcppExport SEXP _RprobitB_update_d(SEXP dSEXP, SEXP ySEXP, SEXP sysSEXP, SEXP mu_d_0SEXP, SEXP Sigma_d_0SEXP, SEXP TvecSEXP, SEXP step_scaleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type d(dSEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type sys(sysSEXP);
-    Rcpp::traits::input_parameter< double >::type log_likelihood(log_likelihoodSEXP);
     Rcpp::traits::input_parameter< arma::vec const& >::type mu_d_0(mu_d_0SEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type Sigma_d_0(Sigma_d_0SEXP);
     Rcpp::traits::input_parameter< arma::vec const& >::type Tvec(TvecSEXP);
-    Rcpp::traits::input_parameter< double >::type step_scale(step_scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_d(d, y, sys, log_likelihood, mu_d_0, Sigma_d_0, Tvec, step_scale));
+    Rcpp::traits::input_parameter< arma::vec const& >::type step_scale(step_scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_d(d, y, sys, mu_d_0, Sigma_d_0, Tvec, step_scale));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -302,7 +301,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RprobitB_update_Sigma", (DL_FUNC) &_RprobitB_update_Sigma, 4},
     {"_RprobitB_update_U", (DL_FUNC) &_RprobitB_update_U, 5},
     {"_RprobitB_update_U_ranked", (DL_FUNC) &_RprobitB_update_U_ranked, 3},
-    {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 8},
+    {"_RprobitB_update_d", (DL_FUNC) &_RprobitB_update_d, 7},
     {"_RprobitB_gibbs_sampler", (DL_FUNC) &_RprobitB_gibbs_sampler, 9},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}

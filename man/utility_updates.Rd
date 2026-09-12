@@ -20,7 +20,7 @@ update_U(U, y, sys, Sigma_inv, available = NULL)
 
 update_U_ranked(U, sys, Sigma_inv)
 
-update_d(d, y, sys, log_likelihood, mu_d_0, Sigma_d_0, Tvec, step_scale = 0.1)
+update_d(d, y, sys, mu_d_0, Sigma_d_0, Tvec, step_scale)
 }
 \arguments{
 \item{d}{[\code{numeric(J - 2)}]\cr
@@ -60,17 +60,14 @@ Availability of the \code{J - 1} non-base alternatives followed by the base
 alternative. Utilities of unavailable alternatives are drawn without
 truncation. By default (\code{NULL}), all alternatives are available.}
 
-\item{log_likelihood}{[\code{numeric(1)}]\cr
-Current ordered-response log-likelihood.}
-
 \item{mu_d_0}{[\code{numeric(J - 2)}]\cr
 Prior mean for threshold log-increments.}
 
 \item{Sigma_d_0}{[\code{matrix(J - 2, J - 2)}]\cr
 Prior covariance for threshold log-increments.}
 
-\item{step_scale}{[\code{numeric(1)}]\cr
-Random-walk proposal standard deviation.}
+\item{step_scale}{[\code{numeric(J - 2)}]\cr
+Random-walk proposal standard deviations, one per log-increment.}
 }
 \value{
 The functions return one sampler update or transformation:
@@ -81,7 +78,7 @@ utility matrices.
 \item \code{d_to_gamma()}: a numeric column matrix containing ordered thresholds
 and their infinite bounds.
 \item \code{log_likelihood_ordered()}: one numeric log-likelihood value.
-\item \code{update_d()}: a list with updated \code{d} and \code{log_likelihood} values.
+\item \code{update_d()}: a numeric vector of updated log-increments.
 }
 }
 \description{
@@ -98,10 +95,10 @@ Tvec <- c(2, 2)
 
 ### the thresholds, their likelihood, and their random-walk update
 d_to_gamma(d)
-log_likelihood <- log_likelihood_ordered(d, y, sys, Tvec)
+log_likelihood_ordered(d, y, sys, Tvec)
 update_d(
-  d, y, sys, log_likelihood, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2),
-  Tvec = Tvec
+  d, y, sys, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2), Tvec = Tvec,
+  step_scale = c(0.1, 0.1)
 )
 
 ### the latent utilities of an unordered and of a ranked choice

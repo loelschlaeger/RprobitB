@@ -334,17 +334,14 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #' @param Tvec \[`integer(N)`\]\cr
 #' Number of observed occasions for each decider.
 #'
-#' @param log_likelihood \[`numeric(1)`\]\cr
-#' Current ordered-response log-likelihood.
-#'
 #' @param mu_d_0 \[`numeric(J - 2)`\]\cr
 #' Prior mean for threshold log-increments.
 #'
 #' @param Sigma_d_0 \[`matrix(J - 2, J - 2)`\]\cr
 #' Prior covariance for threshold log-increments.
 #'
-#' @param step_scale \[`numeric(1)`\]\cr
-#' Random-walk proposal standard deviation.
+#' @param step_scale \[`numeric(J - 2)`\]\cr
+#' Random-walk proposal standard deviations, one per log-increment.
 #'
 #' @return
 #' The functions return one sampler update or transformation:
@@ -355,7 +352,7 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #' - `d_to_gamma()`: a numeric column matrix containing ordered thresholds
 #'   and their infinite bounds.
 #' - `log_likelihood_ordered()`: one numeric log-likelihood value.
-#' - `update_d()`: a list with updated `d` and `log_likelihood` values.
+#' - `update_d()`: a numeric vector of updated log-increments.
 #'
 #' @references
 #' \insertRef{Robert1995}{RprobitB}
@@ -372,10 +369,10 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #'
 #' ### the thresholds, their likelihood, and their random-walk update
 #' d_to_gamma(d)
-#' log_likelihood <- log_likelihood_ordered(d, y, sys, Tvec)
+#' log_likelihood_ordered(d, y, sys, Tvec)
 #' update_d(
-#'   d, y, sys, log_likelihood, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2),
-#'   Tvec = Tvec
+#'   d, y, sys, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2), Tvec = Tvec,
+#'   step_scale = c(0.1, 0.1)
 #' )
 #'
 #' ### the latent utilities of an unordered and of a ranked choice
@@ -408,8 +405,8 @@ update_U_ranked <- function(U, sys, Sigma_inv) {
 
 #' @rdname utility_updates
 #' @export
-update_d <- function(d, y, sys, log_likelihood, mu_d_0, Sigma_d_0, Tvec, step_scale = 0.1) {
-    .Call(`_RprobitB_update_d`, d, y, sys, log_likelihood, mu_d_0, Sigma_d_0, Tvec, step_scale)
+update_d <- function(d, y, sys, mu_d_0, Sigma_d_0, Tvec, step_scale) {
+    .Call(`_RprobitB_update_d`, d, y, sys, mu_d_0, Sigma_d_0, Tvec, step_scale)
 }
 
 gibbs_sampler <- function(sufficient_statistics, prior, latent_classes, R, B, ordered, ranked, save_beta_draws, progress = NULL) {

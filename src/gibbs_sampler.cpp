@@ -1105,17 +1105,14 @@ Rcpp::List update_classes_dp(
 //' @param Tvec \[`integer(N)`\]\cr
 //' Number of observed occasions for each decider.
 //'
-//' @param log_likelihood \[`numeric(1)`\]\cr
-//' Current ordered-response log-likelihood.
-//'
 //' @param mu_d_0 \[`numeric(J - 2)`\]\cr
 //' Prior mean for threshold log-increments.
 //'
 //' @param Sigma_d_0 \[`matrix(J - 2, J - 2)`\]\cr
 //' Prior covariance for threshold log-increments.
 //'
-//' @param step_scale \[`numeric(1)`\]\cr
-//' Random-walk proposal standard deviation.
+//' @param step_scale \[`numeric(J - 2)`\]\cr
+//' Random-walk proposal standard deviations, one per log-increment.
 //'
 //' @return
 //' The functions return one sampler update or transformation:
@@ -1126,7 +1123,7 @@ Rcpp::List update_classes_dp(
 //' - `d_to_gamma()`: a numeric column matrix containing ordered thresholds
 //'   and their infinite bounds.
 //' - `log_likelihood_ordered()`: one numeric log-likelihood value.
-//' - `update_d()`: a list with updated `d` and `log_likelihood` values.
+//' - `update_d()`: a numeric vector of updated log-increments.
 //'
 //' @references
 //' \insertRef{Robert1995}{RprobitB}
@@ -1143,10 +1140,10 @@ Rcpp::List update_classes_dp(
 //'
 //' ### the thresholds, their likelihood, and their random-walk update
 //' d_to_gamma(d)
-//' log_likelihood <- log_likelihood_ordered(d, y, sys, Tvec)
+//' log_likelihood_ordered(d, y, sys, Tvec)
 //' update_d(
-//'   d, y, sys, log_likelihood, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2),
-//'   Tvec = Tvec
+//'   d, y, sys, mu_d_0 = c(0, 0), Sigma_d_0 = diag(2), Tvec = Tvec,
+//'   step_scale = c(0.1, 0.1)
 //' )
 //'
 //' ### the latent utilities of an unordered and of a ranked choice
@@ -1233,29 +1230,30 @@ arma::vec update_U_ranked (
 //' @rdname utility_updates
 //' @export
 // [[Rcpp::export]]
-Rcpp::List update_d (
+arma::vec update_d (
    arma::vec d, arma::mat const& y, arma::mat const& sys,
-   double log_likelihood, arma::vec const& mu_d_0,
-   arma::mat const& Sigma_d_0, arma::vec const& Tvec, double step_scale = 0.1
+   arma::vec const& mu_d_0, arma::mat const& Sigma_d_0,
+   arma::vec const& Tvec, arma::vec const& step_scale
 ) {
   const arma::uword K = d.n_elem;
-  arma::vec step(K);
-  for (arma::uword k = 0; k < K; ++k) step[k] = step_scale * norm_rand();
-  arma::vec d_cand = d + step;
-  double log_likelihood_cand = log_likelihood_ordered(d_cand, y, sys, Tvec);
-  const double log_prior_curr =
-    oeli::dmvnorm(d, mu_d_0, Sigma_d_0, true);
-  const double log_prior_cand =
-    oeli::dmvnorm(d_cand, mu_d_0, Sigma_d_0, true);
-  const double log_alpha = (log_likelihood_cand - log_likelihood) +
-    (log_prior_cand - log_prior_curr);
-  if (log_alpha >= 0.0 || std::log(unif_rand()) <= log_alpha) {
-    d  = std::move(d_cand);
-    log_likelihood = log_likelihood_cand;
+  if (step_scale.n_elem != K) {
+    Rcpp::stop("`step_scale` must have one entry per log-increment.");
   }
-  return Rcpp::List::create(
-    Rcpp::Named("d") = d, Rcpp::Named("log_likelihood") = log_likelihood
-  );
+  double ll = log_likelihood_ordered(d, y, sys, Tvec);
+  double lp = oeli::dmvnorm(d, mu_d_0, Sigma_d_0, true);
+  for (arma::uword k = 0; k < K; ++k) {
+    arma::vec d_cand = d;
+    d_cand[k] += step_scale[k] * norm_rand();
+    const double ll_cand = log_likelihood_ordered(d_cand, y, sys, Tvec);
+    const double lp_cand = oeli::dmvnorm(d_cand, mu_d_0, Sigma_d_0, true);
+    const double log_alpha = (ll_cand - ll) + (lp_cand - lp);
+    if (log_alpha >= 0.0 || std::log(unif_rand()) <= log_alpha) {
+      d = std::move(d_cand);
+      ll = ll_cand;
+      lp = lp_cand;
+    }
+  }
+  return d;
 }
 
 // [[Rcpp::export]]
@@ -1511,10 +1509,9 @@ Rcpp::List gibbs_sampler (
   // define helper variables
   const int Tmax = static_cast<int>(y.n_cols);
   arma::mat mu_mat = arma::zeros<arma::mat>(N, Tmax);
+  arma::vec step_scale(mu_d_0.n_elem, arma::fill::value(0.1));
   int ind;
   int Jm1 = J - 1;
-  double old_ll = 0.0;
-  Rcpp::List threshold_update;
   arma::vec Sigmainv_vec;
   std::vector<arma::mat> Sigmainv_ranked;
 
@@ -2111,15 +2108,17 @@ Rcpp::List gibbs_sampler (
           mu_mat(n, t) = Mu(0, ind);
         }
       }
-      if (r == 0) {
-        old_ll = log_likelihood_ordered(d, y, mu_mat, Tvec);
-      }
-      threshold_update = update_d(
-        d, y, mu_mat, old_ll, mu_d_0, Sigma_d_0, Tvec
-      );
-      d = Rcpp::as<arma::vec>(threshold_update["d"]);
-      old_ll = Rcpp::as<double>(threshold_update["log_likelihood"]);
+      const arma::vec d_old = d;
+      d = update_d(d, y, mu_mat, mu_d_0, Sigma_d_0, Tvec, step_scale);
       gamma = d_to_gamma(d);
+      if (r < B) {
+        const double learn = 1.0 / std::sqrt(static_cast<double>(r + 1));
+        for (arma::uword k = 0; k < d.n_elem; ++k) {
+          const double accepted = d[k] != d_old[k] ? 1.0 : 0.0;
+          step_scale[k] *= std::exp(learn * (accepted - 0.44));
+          step_scale[k] = std::min(std::max(step_scale[k], 1e-6), 1e2);
+        }
+      }
     }
 
     // save draws

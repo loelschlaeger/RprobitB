@@ -185,15 +185,18 @@ test_that("log_likelihood_ordered returns a log-likelihood", {
 test_that("update_d returns a threshold update", {
   kernel <- getExportedValue("RprobitB", "update_d")
   fixture <- ordered_kernel_fixture()
-  likelihood <- log_likelihood_ordered(
-    fixture$d, fixture$y, fixture$sys, fixture$Tvec
-  )
   set.seed(1)
   result <- kernel(
-    fixture$d, fixture$y, fixture$sys, likelihood,
-    rep(0, 3), diag(3), fixture$Tvec
+    fixture$d, fixture$y, fixture$sys, rep(0, 3), diag(3), fixture$Tvec,
+    step_scale = rep(0.1, 3)
   )
-  expect_named(result, c("d", "log_likelihood"))
-  expect_identical(dim(result$d), c(3L, 1L))
-  expect_true(is.finite(result$log_likelihood))
+  expect_identical(dim(result), c(3L, 1L))
+  expect_true(all(is.finite(result)))
+  expect_error(
+    kernel(
+      fixture$d, fixture$y, fixture$sys, rep(0, 3), diag(3), fixture$Tvec,
+      step_scale = 0.1
+    ),
+    "one entry per log-increment"
+  )
 })
