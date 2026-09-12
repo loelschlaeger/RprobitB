@@ -46,9 +46,11 @@
 #' @keywords models
 #'
 #' @examples
+#' set.seed(1)
 #' model <- fit(
 #'   choice ~ x | 0,
 #'   random_effects = "x",
+#'   dgp_parameters = list(beta = c(x = 1), Omega = matrix(0.5)),
 #'   n_deciders = 20,
 #'   iterations = 300,
 #'   warmup = 150,
@@ -149,7 +151,10 @@ predict.RprobitB_fit <- function(
 #' @keywords models
 #'
 #' @examples
-#' model <- fit(choice ~ x | 0, chains = 1)
+#' set.seed(1)
+#' model <- fit(
+#'   choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), chains = 1
+#' )
 #' head(residuals(model))
 
 residuals.RprobitB_fit <- function(object, ...) {

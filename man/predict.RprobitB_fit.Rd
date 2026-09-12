@@ -64,9 +64,11 @@ provides as draws when the model is fitted with
 \code{save_individual_draws = TRUE}.
 }
 \examples{
+set.seed(1)
 model <- fit(
   choice ~ x | 0,
   random_effects = "x",
+  dgp_parameters = list(beta = c(x = 1), Omega = matrix(0.5)),
   n_deciders = 20,
   iterations = 300,
   warmup = 150,

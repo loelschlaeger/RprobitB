@@ -22,7 +22,10 @@ Computes observed choice indicators minus posterior mean occasion-level
 choice probabilities.
 }
 \examples{
-model <- fit(choice ~ x | 0, chains = 1)
+set.seed(1)
+model <- fit(
+  choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), chains = 1
+)
 head(residuals(model))
 }
 \keyword{models}
