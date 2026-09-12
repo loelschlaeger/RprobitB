@@ -263,15 +263,19 @@ transform_chain_draws <- function(
     # normal effects are scaled, log-normal effects are shifted on the log scale
     shifted <- rep(lognormal, C)
     samples$b[, !shifted] <- samples$b[, !shifted, drop = FALSE] * utility_scale
-    samples$b[, shifted] <- samples$b[, shifted, drop = FALSE] +
-      log(utility_scale)
+    if (any(lognormal)) {
+      samples$b[, shifted] <- samples$b[, shifted, drop = FALSE] +
+        log(utility_scale)
+    }
     exponent <- rep(as.numeric(outer(!lognormal, !lognormal, `+`)), C)
     samples$Omega <- samples$Omega * outer(utility_scale, exponent, `^`)
     if (!is.null(samples$beta)) {
       beta <- do.call(rbind, lapply(samples$beta, as.numeric))
       shifted <- rep(lognormal, N)
       beta[, !shifted] <- beta[, !shifted, drop = FALSE] * utility_scale
-      beta[, shifted] <- beta[, shifted, drop = FALSE] + log(utility_scale)
+      if (any(lognormal)) {
+        beta[, shifted] <- beta[, shifted, drop = FALSE] + log(utility_scale)
+      }
       samples$beta <- beta
     }
   }
