@@ -87,8 +87,9 @@ vary across alternatives end in the alternative name.
 \code{column_alternative}.
 }}
 
-\item{column_decider}{[\code{character(1)}]\cr
-Column name with decider identifiers.}
+\item{column_decider}{[\code{character(1)} | \code{NULL}]\cr
+Column name with decider identifiers. \code{NULL} treats every row of wide
+\code{data} as its own decider and adds the identifiers as column \code{deciderID}.}
 
 \item{column_occasion}{[\code{character(1)} | \code{NULL}]\cr
 Column name with occasion identifiers. Set to \code{NULL} in cross-sectional data.}
@@ -437,18 +438,24 @@ latent class needs at least one latent class effect.
 }
 
 \examples{
+\dontshow{if (requireNamespace("mlogit", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ### Fit a probit model to panel choice data
-data("train_choice", package = "choicedata")
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 / 2.20371 # price in Euro
+Train$price_B <- Train$price_B / 100 / 2.20371
+Train$time_A <- Train$time_A / 60 # time in hours
+Train$time_B <- Train$time_B / 60
 model <- fit(
-  choice ~ price + time + change + comfort | 0,
-  data = train_choice,
-  column_occasion = "occasionID",
+  choice ~ price + time + change + factor(comfort) | 0,
+  data = Train,
+  column_decider = "id",
+  column_occasion = "choiceid",
   scale = c(price = -1), # other coefficients are willingness-to-pay
   chains = 1
 )
 summary(model)
 interpret(model)
-
+\dontshow{\}) # examplesIf}
 ### Simulate choice data and compare the estimates with the truth
 set.seed(1)
 simulated <- fit(

@@ -746,6 +746,10 @@ as_prediction_data <- function(object, newdata) {
   }
   roles <- object$model$data_roles
   response <- all.vars(object$model$formula)[1L]
+  if (isTRUE(roles$generated_decider) &&
+      !roles$column_decider %in% names(newdata)) {
+    newdata[[roles$column_decider]] <- seq_len(nrow(newdata))
+  }
   ranked_wide <- identical(object$model$choice_type, "ranked") &&
     identical(roles$format, "wide")
   if (ranked_wide) {
@@ -756,6 +760,7 @@ as_prediction_data <- function(object, newdata) {
   } else if (!response %in% names(newdata)) {
     newdata[[response]] <- NA
   }
+  newdata <- newdata[, intersect(names(newdata), roles$columns), drop = FALSE]
   choicedata::choice_data(
     data_frame = newdata,
     format = roles$format,

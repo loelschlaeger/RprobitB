@@ -48,8 +48,13 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     testthat
-Suggests: 
+Suggests:
+    AER,
+    ggplot2,
     knitr,
+    MASS,
+    mlogit,
+    plotROC,
     rmarkdown,
     testthat (>= 3.0.0)
 RdMacros: Rdpack

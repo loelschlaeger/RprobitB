@@ -14,6 +14,10 @@
 #' format, a choice occasion may list only its available alternatives, see
 #' the details on individual choice sets.
 #'
+#' @param column_decider \[`character(1)` | `NULL`\]\cr
+#' Column name with decider identifiers. `NULL` treats every row of wide
+#' `data` as its own decider and adds the identifiers as column `deciderID`.
+#'
 #' @param alternatives \[`character()` | `NULL`\]\cr
 #' Alternative labels. Required if `choice_type = "ordered"`, then in
 #' increasing order of the response levels. Otherwise, `NULL` takes them
@@ -306,19 +310,25 @@
 #' @export
 #' @keywords models
 #'
-#' @examples
+#' @examplesIf requireNamespace("mlogit", quietly = TRUE)
 #' ### Fit a probit model to panel choice data
-#' data("train_choice", package = "choicedata")
+#' data("Train", package = "mlogit")
+#' Train$price_A <- Train$price_A / 100 / 2.20371 # price in Euro
+#' Train$price_B <- Train$price_B / 100 / 2.20371
+#' Train$time_A <- Train$time_A / 60 # time in hours
+#' Train$time_B <- Train$time_B / 60
 #' model <- fit(
-#'   choice ~ price + time + change + comfort | 0,
-#'   data = train_choice,
-#'   column_occasion = "occasionID",
+#'   choice ~ price + time + change + factor(comfort) | 0,
+#'   data = Train,
+#'   column_decider = "id",
+#'   column_occasion = "choiceid",
 #'   scale = c(price = -1), # other coefficients are willingness-to-pay
 #'   chains = 1
 #' )
 #' summary(model)
 #' interpret(model)
 #'
+#' @examples
 #' ### Simulate choice data and compare the estimates with the truth
 #' set.seed(1)
 #' simulated <- fit(
@@ -406,8 +416,18 @@ fit <- function(
     checkmate::check_string(base, min.chars = 1, null.ok = TRUE), "base"
   )
   oeli::input_check_response(
-    checkmate::check_string(column_decider, min.chars = 1), "column_decider"
+    checkmate::check_string(column_decider, min.chars = 1, null.ok = TRUE),
+    "column_decider"
   )
+  generated_decider <- is.null(column_decider)
+  if (generated_decider) {
+    if (identical(format, "long") && !is.null(data)) {
+      oeli::input_check_response(
+        "Must name a column in long data.", "column_decider"
+      )
+    }
+    column_decider <- "deciderID"
+  }
   oeli::input_check_response(
     checkmate::check_string(column_occasion, min.chars = 1, null.ok = TRUE),
     "column_occasion"
@@ -791,8 +811,11 @@ fit <- function(
         }
         unique(as.character(data[[column_alternative]]))
       } else {
+        responses <- names(data) == response |
+          startsWith(names(data), paste0(response, delimiter))
+        complete <- !vapply(data, anyNA, logical(1))
         long <- choicedata::wide_to_long(
-          data_frame = data,
+          data_frame = data[, responses | complete, drop = FALSE],
           column_choice = response,
           column_alternative = ".alternative",
           delimiter = delimiter,
@@ -825,6 +848,45 @@ fit <- function(
       base = base,
       ordered = identical(choice_type, "ordered")
     )
+    if (generated_decider) {
+      if (column_decider %in% names(data)) {
+        oeli::input_check_response(
+          "Must not be NULL if `data` has a column `deciderID`.",
+          "column_decider"
+        )
+      }
+      data[[column_decider]] <- seq_len(nrow(data))
+    }
+
+    # unused columns with missing values are dropped
+    variables <- all.vars(formula)[-1L]
+    if (!"." %in% variables) {
+      used <- c(
+        column_decider, column_occasion, column_alternative, response,
+        paste(response, alternatives, sep = delimiter), variables,
+        outer(variables, alternatives, paste, sep = delimiter)
+      )
+      complete <- !vapply(data, anyNA, logical(1))
+      data <- data[, names(data) %in% used | complete, drop = FALSE]
+    }
+
+    # an ordered response takes the order of the alternatives
+    if (identical(choice_type, "ordered")) {
+      levels <- unique(stats::na.omit(as.character(data[[response]])))
+      unknown <- setdiff(levels, alternatives)
+      if (length(unknown)) {
+        oeli::input_check_response(
+          paste0(
+            "Must only contain the levels in `alternatives`. Unknown: ",
+            paste(unknown, collapse = ", "), "."
+          ),
+          "data"
+        )
+      }
+      data[[response]] <- factor(
+        as.character(data[[response]]), levels = alternatives, ordered = TRUE
+      )
+    }
     choice_data <- choicedata::choice_data(
       data_frame = data,
       format = format,
@@ -858,7 +920,9 @@ fit <- function(
   alternatives <- as.character(choice_alternatives)
   data_roles <- list(
     format = format,
+    columns = names(choice_data),
     column_decider = column_decider,
+    generated_decider = generated_decider,
     column_occasion = column_occasion,
     column_alternative = column_alternative,
     delimiter = delimiter

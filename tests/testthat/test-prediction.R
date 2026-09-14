@@ -107,3 +107,38 @@ test_that("conditional prediction combines random and fixed class effects", {
   expect_equal(result$probability_A + result$probability_B, rep(1, 12L))
   expect_true(all(result$probability_A >= 0 & result$probability_A <= 1))
 })
+
+test_that("predict numbers the deciders of new data without identifiers", {
+  data <- data.frame(
+    choice = c("A", "B", "A", "B"),
+    x_A = c(0, 1, 0, 1),
+    x_B = c(1, 0, 1, 0)
+  )
+  model <- fit(
+    choice ~ x | 0, data = data, column_decider = NULL,
+    iterations = 20L, warmup = 10L, chains = 1L, progress = FALSE
+  )
+  prediction <- predict(model, newdata = data.frame(x_A = 0:1, x_B = 1:0))
+  expect_identical(nrow(prediction), 2L)
+  expect_true("deciderID" %in% names(prediction))
+})
+
+test_that("predict keeps the factor levels of the fitted data", {
+  data <- data.frame(
+    deciderID = 1:6,
+    choice = c("A", "B", "A", "B", "A", "B"),
+    x_A = c(0, 1, 2, 0, 1, 2),
+    x_B = c(2, 1, 0, 1, 0, 2)
+  )
+  model <- fit(
+    choice ~ factor(x) | 0, data = data,
+    iterations = 20L, warmup = 10L, chains = 1L, progress = FALSE
+  )
+  expect_identical(
+    names(coef(model))[1:2], c("beta[factor(x)1]", "beta[factor(x)2]")
+  )
+  prediction <- predict(
+    model, newdata = data.frame(deciderID = 1, x_A = 0, x_B = 1)
+  )
+  expect_identical(nrow(prediction), 1L)
+})
