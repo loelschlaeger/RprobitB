@@ -111,26 +111,30 @@ the average of the covariates.
 }
 
 \examples{
+\dontshow{if (requireNamespace("AER", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ### travel mode choice where travel time has an alternative-specific effect
-data("travel_mode_choice", package = "choicedata")
+data("TravelMode", package = "AER")
+TravelMode$choice <- TravelMode$choice == "yes"
+TravelMode$vcost <- TravelMode$vcost / 1.6196 # cost in Euro
 set.seed(1)
 model <- fit(
-  choice ~ cost | 1 | travel,
-  data = travel_mode_choice,
+  choice ~ vcost | 1 | travel,
+  data = TravelMode,
   format = "long",
   column_decider = "individual",
   column_alternative = "mode",
-  scale = c(cost = -1),
+  scale = c(vcost = -1),
   iterations = 100,
   chains = 1
 )
 
 ### travel time must be compensated far more in the plane than in the bus
 interpret(
-  model, type = "compensation", effects = c("travel_bus", "travel_plane")
+  model, type = "compensation", effects = c("travel_bus", "travel_air")
 )
 
 ### the marginal effects at the average covariates, and for a short flight
-interpret(model, type = "mea", at = c(travel_plane = 40))
+interpret(model, type = "mea", at = c(travel_air = 40))
+\dontshow{\}) # examplesIf}
 }
 \keyword{models}

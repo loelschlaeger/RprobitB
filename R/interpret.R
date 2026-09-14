@@ -79,28 +79,30 @@
 #' @export
 #' @keywords models
 #'
-#' @examples
+#' @examplesIf requireNamespace("AER", quietly = TRUE)
 #' ### travel mode choice where travel time has an alternative-specific effect
-#' data("travel_mode_choice", package = "choicedata")
+#' data("TravelMode", package = "AER")
+#' TravelMode$choice <- TravelMode$choice == "yes"
+#' TravelMode$vcost <- TravelMode$vcost / 1.6196 # cost in Euro
 #' set.seed(1)
 #' model <- fit(
-#'   choice ~ cost | 1 | travel,
-#'   data = travel_mode_choice,
+#'   choice ~ vcost | 1 | travel,
+#'   data = TravelMode,
 #'   format = "long",
 #'   column_decider = "individual",
 #'   column_alternative = "mode",
-#'   scale = c(cost = -1),
+#'   scale = c(vcost = -1),
 #'   iterations = 100,
 #'   chains = 1
 #' )
 #'
 #' ### travel time must be compensated far more in the plane than in the bus
 #' interpret(
-#'   model, type = "compensation", effects = c("travel_bus", "travel_plane")
+#'   model, type = "compensation", effects = c("travel_bus", "travel_air")
 #' )
 #'
 #' ### the marginal effects at the average covariates, and for a short flight
-#' interpret(model, type = "mea", at = c(travel_plane = 40))
+#' interpret(model, type = "mea", at = c(travel_air = 40))
 
 interpret <- function(
   object, type = c("compensation", "ame", "mea"), reference = NULL,
@@ -271,12 +273,21 @@ interpret <- function(
     } else {
       list(seq_len(nrow(frame)))
     }
+    xlevels <- attr(object$model$effects, "choice_formula")$xlevels
+    categorical <- as.character(unlist(lapply(
+      names(unlist(xlevels, recursive = FALSE)),
+      function(term) all.vars(str2lang(term))
+    )))
+    categorical <- c(
+      categorical,
+      outer(categorical, alternatives, paste, sep = roles$delimiter)
+    )
     occasion <- do.call(rbind, lapply(groups, function(rows) {
       values <- lapply(names(frame), function(name) {
         column <- frame[[name]][rows]
         if (name %in% c(identifiers, response)) {
           column[1L]
-        } else if (is.numeric(column)) {
+        } else if (is.numeric(column) && !name %in% categorical) {
           mean(column, na.rm = TRUE)
         } else {
           column[match(names(which.max(table(column))), as.character(column))]
@@ -404,14 +415,15 @@ print.RprobitB_interpretation <- function(x, digits = 3L, ...) {
       subject <- if (x$effect[i] %in% names(constants)) {
         paste0("the constant of `", constants[[x$effect[i]]], "` is worth ")
       } else {
-        paste0("one unit of `", x$effect[i], "` corresponds to ")
+        paste0("one unit of `", x$effect[i], "` compensates ")
       }
-      cat(
+      sentence <- paste0(
         class, subject, format(x$mean[i], digits = digits), " units of `",
         reference, "` (", interval, " ",
         format(x$lower[i], digits = digits), " to ",
-        format(x$upper[i], digits = digits), ")\n", sep = ""
+        format(x$upper[i], digits = digits), ")"
       )
+      cat(strwrap(sentence, exdent = 2L), sep = "\n")
     }
   } else {
     heading <- if (identical(type, "ame")) {
@@ -422,10 +434,10 @@ print.RprobitB_interpretation <- function(x, digits = 3L, ...) {
       "Marginal effects at the given covariate values"
     }
     cat(heading, "\n", sep = "")
-    cat(
+    cat(strwrap(paste(
       "Change in the probability of the alternative per unit of the",
-      "covariate, with", interval, "\n"
-    )
+      "covariate, with", interval
+    )), sep = "\n")
     table <- as.data.frame(x)
     numeric <- vapply(table, is.numeric, logical(1))
     table[numeric] <- lapply(table[numeric], format, digits = digits)
