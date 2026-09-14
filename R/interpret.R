@@ -415,15 +415,14 @@ print.RprobitB_interpretation <- function(x, digits = 3L, ...) {
       subject <- if (x$effect[i] %in% names(constants)) {
         paste0("the constant of `", constants[[x$effect[i]]], "` is worth ")
       } else {
-        paste0("one unit of `", x$effect[i], "` compensates ")
+        paste0("1 `", x$effect[i], "` compensates ")
       }
-      sentence <- paste0(
-        class, subject, format(x$mean[i], digits = digits), " units of `",
+      cat(
+        class, subject, format(x$mean[i], digits = digits), " `",
         reference, "` (", interval, " ",
         format(x$lower[i], digits = digits), " to ",
-        format(x$upper[i], digits = digits), ")"
+        format(x$upper[i], digits = digits), ")\n", sep = ""
       )
-      cat(strwrap(sentence, exdent = 2L), sep = "\n")
     }
   } else {
     heading <- if (identical(type, "ame")) {
@@ -434,10 +433,10 @@ print.RprobitB_interpretation <- function(x, digits = 3L, ...) {
       "Marginal effects at the given covariate values"
     }
     cat(heading, "\n", sep = "")
-    cat(strwrap(paste(
+    cat(
       "Change in the probability of the alternative per unit of the",
-      "covariate, with", interval
-    )), sep = "\n")
+      "covariate, with", interval, "\n"
+    )
     table <- as.data.frame(x)
     numeric <- vapply(table, is.numeric, logical(1))
     table[numeric] <- lapply(table[numeric], format, digits = digits)
