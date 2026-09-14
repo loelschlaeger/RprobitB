@@ -58,14 +58,6 @@ sticker_file <- sticker(
   l_height = 1,
   l_alpha = 0.8,
   white_around_sticker = FALSE,
-  ### URL
-  url = "loelschlaeger.de/RprobitB",
-  u_x = 1,
-  u_y = 0.1,
-  u_color = "#355c7d",
-  u_family = "my_font",
-  u_size = 5,
-  u_angle = 30,
   ### save file
   filename = "sticker/RprobitB_sticker.png",
   asp = 1,
