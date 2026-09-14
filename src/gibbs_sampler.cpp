@@ -2003,9 +2003,33 @@ Rcpp::List gibbs_sampler (
       delta_draws[r] = delta;
     }
 
-    // update U, component by component over all occasions at once
     const arma::mat Mu = systematic(true, true, true);
     arma::mat residual;
+
+    // update d (for the ordered probit model)
+    if (ordered) {
+      for (int n = 0; n < N; ++n) {
+        const int Tn = static_cast<int>(std::lround(Tvec[n]));
+        const int base = static_cast<int>(std::lround(csTvec[n]));
+        for (int t = 0; t < Tn; ++t) {
+          ind = base + t;
+          mu_mat(n, t) = Mu(0, ind);
+        }
+      }
+      const arma::vec d_old = d;
+      d = update_d(d, y, mu_mat, mu_d_0, Sigma_d_0, Tvec, step_scale);
+      gamma = d_to_gamma(d);
+      if (r < B) {
+        const double learn = 1.0 / std::sqrt(static_cast<double>(r + 1));
+        for (arma::uword k = 0; k < d.n_elem; ++k) {
+          const double accepted = d[k] != d_old[k] ? 1.0 : 0.0;
+          step_scale[k] *= std::exp(learn * (accepted - 0.44));
+          step_scale[k] = std::min(std::max(step_scale[k], 1e-6), 1e2);
+        }
+      }
+    }
+
+    // update U, component by component over all occasions at once
     if (ordered) {
       for (int n = 0; n < N; ++n) {
         const int Tn = static_cast<int>(std::lround(Tvec[n]));
@@ -2096,29 +2120,6 @@ Rcpp::List gibbs_sampler (
       Sigma = expanded / expanded.at(0, 0);
       Sigma_inv = inv_spd(Sigma);
       U = Mu + residual * std::sqrt(alpha2 / expanded.at(0, 0));
-    }
-
-    // update d (for the ordered probit model)
-    if (ordered) {
-      for (int n = 0; n < N; ++n) {
-        const int Tn = static_cast<int>(std::lround(Tvec[n]));
-        const int base = static_cast<int>(std::lround(csTvec[n]));
-        for (int t = 0; t < Tn; ++t) {
-          ind = base + t;
-          mu_mat(n, t) = Mu(0, ind);
-        }
-      }
-      const arma::vec d_old = d;
-      d = update_d(d, y, mu_mat, mu_d_0, Sigma_d_0, Tvec, step_scale);
-      gamma = d_to_gamma(d);
-      if (r < B) {
-        const double learn = 1.0 / std::sqrt(static_cast<double>(r + 1));
-        for (arma::uword k = 0; k < d.n_elem; ++k) {
-          const double accepted = d[k] != d_old[k] ? 1.0 : 0.0;
-          step_scale[k] *= std::exp(learn * (accepted - 0.44));
-          step_scale[k] = std::min(std::max(step_scale[k], 1e-6), 1e2);
-        }
-      }
     }
 
     // save draws
