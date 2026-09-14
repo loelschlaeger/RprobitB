@@ -4,11 +4,79 @@
 \name{RprobitB-package}
 \alias{RprobitB}
 \alias{RprobitB-package}
-\title{RprobitB: Bayesian Probit Choice Modeling}
+\title{RprobitB: Bayesian probit choice modeling}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+Fits Bayesian probit models for binary, multinomial, ordered, and ranked
+choices in cross-sectional and panel data.
+}
+\details{
+\subsection{Model}{
 
-Bayes estimation of probit choice models in cross-sectional and panel settings. The package can analyze binary, multivariate, ordered, and ranked choices, as well as heterogeneity of choice behavior among deciders. The main functionality includes model fitting via Gibbs sampling, tools for convergence diagnostic, choice data simulation, in-sample and out-of-sample choice prediction, and model selection using information criteria and Bayes factors. The latent class model extension facilitates preference-based decider classification, where the number of latent classes can be inferred via the Dirichlet process or a weight-based updating heuristic. This allows for flexible modeling of choice behavior without the need to impose structural constraints. For a reference on the method, see Oelschlaeger and Bauer (2021) \url{https://trid.trb.org/view/1759753}.
+Decider \code{n} faces \code{J} alternatives on choice occasion \code{t}. Alternative \code{j}
+has the latent utility \code{U[n,t,j] = X[n,t,j] \%*\% beta[n] + epsilon[n,t,j]},
+where the covariate vector \code{X[n,t,j]} follows from \code{formula} and the error
+vector across alternatives is multivariate normal with covariance \code{Sigma}.
+Unordered choices select the alternative with the largest utility, ranked
+choices order all utilities, and ordered choices compare one utility with
+increasing thresholds \code{gamma}.
+
+Fixed coefficients are identical for all deciders. Random coefficients named
+in \code{random_effects} vary across deciders and follow a multivariate normal
+distribution with mean \code{mu} and covariance \code{Omega}. Effects named in
+\code{latent_class_effects} differ between \code{classes} latent classes with weights
+\code{weight}: a random effect then has class-specific means and covariances,
+another coefficient one value per class. Log-normal effects apply \code{exp()}
+or \code{-exp()} to the latent normal coefficient. Utilities are identified only
+up to level and scale, see the normalization details in \code{\link[=fit]{fit()}}.
+}
+
+\subsection{Estimation}{
+
+Posterior draws come from a Gibbs sampler that augments the latent utilities
+(Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van Dyk 2005).
+Heterogeneity can follow a finite mixture, a sparse overfitted finite
+mixture (Rousseau and Mengersen 2011; Frühwirth-Schnatter and Malsiner-Walli
+2019), or a Dirichlet process mixture with Neal's (2000) auxiliary-parameter
+allocation update and the precision update of Escobar and West (1995).
+Independent chains run through the
+\href{https://future.futureverse.org/}{\strong{future}} framework, and retained
+draws use the \href{https://mc-stan.org/posterior/}{\strong{posterior}} format.
+}
+
+\subsection{Evaluation}{
+
+\code{\link[=predict]{predict()}}, \code{\link[=residuals]{residuals()}}, \code{\link[=logLik]{logLik()}}, \code{\link[=WAIC]{WAIC()}}, \code{\link[=loo]{loo()}}, and
+\code{\link[=bayes_factor]{bayes_factor()}} evaluate choice probabilities and likelihoods with
+\href{https://loelschlaeger.de/choicedata/}{\strong{choicedata}}. Panel likelihoods
+of mixed models integrate over the random coefficients with the GHK
+simulator (Train 2009). Information criteria follow Vehtari, Gelman, and
+Gabry (2017), and Bayes factors use bridge sampling (Gronau et al. 2017).
+}
+}
+\references{
+\insertRef{Albert1993}{RprobitB}
+
+\insertRef{Escobar1995}{RprobitB}
+
+\insertRef{FruehwirthSchnatter2019}{RprobitB}
+
+\insertRef{Gronau2017}{RprobitB}
+
+\insertRef{Imai2005a}{RprobitB}
+
+\insertRef{McCulloch1994}{RprobitB}
+
+\insertRef{Neal2000}{RprobitB}
+
+\insertRef{Oelschlaeger2021}{RprobitB}
+
+\insertRef{Oelschlaeger2026c}{RprobitB}
+
+\insertRef{Rousseau2011}{RprobitB}
+
+\insertRef{Train2009}{RprobitB}
+
+\insertRef{Vehtari2017}{RprobitB}
 }
 \seealso{
 Useful links:
@@ -21,6 +89,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
+
+Authors:
+\itemize{
+  \item Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
+}
 
 Other contributors:
 \itemize{
