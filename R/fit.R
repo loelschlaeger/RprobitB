@@ -922,7 +922,6 @@ fit <- function(
     format = format,
     columns = names(choice_data),
     column_decider = column_decider,
-    generated_decider = generated_decider,
     column_occasion = column_occasion,
     column_alternative = column_alternative,
     delimiter = delimiter

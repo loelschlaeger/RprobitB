@@ -21,7 +21,8 @@ Fitted choice model.}
 
 \item{newdata}{[\code{data.frame} | \code{NULL}]\cr
 Data for prediction. \code{NULL} uses the fitted data. A response column is
-optional.}
+optional. In wide format, missing decider and occasion identifiers make
+every row a choice occasion of its own decider.}
 
 \item{type}{[\code{character(1)}]\cr
 Which coefficients to predict with:
@@ -29,7 +30,8 @@ Which coefficients to predict with:
 \item \code{"population"} integrates over the estimated population distribution
 of the random coefficients and applies to any decider.
 \item \code{"conditional"} uses the posterior random coefficients and class
-allocations of the deciders that were observed when fitting the model.
+allocations of the deciders that were observed when fitting the model,
+which \code{newdata} must then name.
 }}
 
 \item{uncertainty}{[\code{logical(1)}]\cr

@@ -16,7 +16,8 @@
 #'
 #' @param newdata \[`data.frame` | `NULL`\]\cr
 #' Data for prediction. `NULL` uses the fitted data. A response column is
-#' optional.
+#' optional. In wide format, missing decider and occasion identifiers make
+#' every row a choice occasion of its own decider.
 #'
 #' @param type \[`character(1)`\]\cr
 #' Which coefficients to predict with:
@@ -24,7 +25,8 @@
 #' - `"population"` integrates over the estimated population distribution
 #'   of the random coefficients and applies to any decider.
 #' - `"conditional"` uses the posterior random coefficients and class
-#'   allocations of the deciders that were observed when fitting the model.
+#'   allocations of the deciders that were observed when fitting the model,
+#'   which `newdata` must then name.
 #'
 #' @param uncertainty \[`logical(1)`\]\cr
 #' Add posterior standard deviations and credible intervals?
@@ -83,6 +85,17 @@ predict.RprobitB_fit <- function(
   oeli::input_check_response(
     checkmate::check_data_frame(newdata, null.ok = TRUE), "newdata"
   )
+  decider <- object$model$data_roles$column_decider
+  if (identical(type, "conditional") && !is.null(newdata) &&
+      !decider %in% names(newdata)) {
+    oeli::input_check_response(
+      paste0(
+        "Must name the deciders in column `", decider,
+        "` if `type = \"conditional\"`."
+      ),
+      "newdata"
+    )
+  }
   check_ghk_draws(ghk_draws)
   oeli::input_check_response(checkmate::check_flag(progress), "progress")
   prediction_data <- as_prediction_data(object, newdata)

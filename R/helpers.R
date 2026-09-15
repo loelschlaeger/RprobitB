@@ -746,9 +746,19 @@ as_prediction_data <- function(object, newdata) {
   }
   roles <- object$model$data_roles
   response <- all.vars(object$model$formula)[1L]
-  if (isTRUE(roles$generated_decider) &&
-      !roles$column_decider %in% names(newdata)) {
-    newdata[[roles$column_decider]] <- seq_len(nrow(newdata))
+
+  # missing identifiers make every row a choice occasion of its own decider
+  if (identical(roles$format, "wide")) {
+    if (!roles$column_decider %in% names(newdata)) {
+      newdata[[roles$column_decider]] <- seq_len(nrow(newdata))
+    }
+    if (!is.null(roles$column_occasion) &&
+        !roles$column_occasion %in% names(newdata)) {
+      newdata[[roles$column_occasion]] <- stats::ave(
+        seq_len(nrow(newdata)), newdata[[roles$column_decider]],
+        FUN = seq_along
+      )
+    }
   }
   ranked_wide <- identical(object$model$choice_type, "ranked") &&
     identical(roles$format, "wide")
