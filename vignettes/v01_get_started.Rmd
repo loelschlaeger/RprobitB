@@ -1,0 +1,369 @@
+---
+title: "Get started with RprobitB"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started with RprobitB}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ../inst/REFERENCES.bib
+link-citations: true
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4,
+  fig.align = "center"
+)
+```
+
+People make choices all the time: which train to take, which electricity
+supplier to sign with, whether to halve the chess clock for the chance of an
+extra tournament point. Discrete choice models turn such decisions into
+statements about preferences, and **RprobitB** [@Oelschlaeger2026d] estimates
+them in a Bayesian probit framework. This vignette fits one model to real
+panel data and walks through the summaries, diagnostics, and plots that
+every later analysis builds on. The four other vignettes take it from
+there, and the last section says which one answers which question.
+
+## The model in brief
+
+Suppose a decider faces $J$ alternatives and picks the one they like best.
+The probit model gives "like best" a precise meaning by attaching a latent
+utility to every alternative,
+
+$$U_{ntj} = X_{ntj}' \beta_n + \epsilon_{ntj}, \qquad \epsilon_{nt} \sim
+\mathcal{N}(0, \Sigma),$$
+
+where $n$ indexes deciders, $t$ their choice occasions, and $X_{ntj}$ holds
+the covariates that the model formula assigns to alternative $j$. The
+alternative with the largest utility is the one that gets chosen, and the
+choice is all we observe. Two things therefore cannot be learned from
+choices alone: the level of utility and its scale. **RprobitB** works with
+utility differences relative to a base alternative, which settles the level,
+and fixes either one variance or one coefficient, which settles the scale.
+The coefficient vector $\beta_n$ is shared by all deciders unless you declare
+random effects, in which case every decider draws their own coefficients
+from a population distribution.
+`vignette("v02_model_variants")` spells out the normalization and the prior,
+and `vignette("v03_heterogeneity")` the ways of letting coefficients differ.
+Bayesian estimation of the multinomial probit model goes back to
+@McCulloch1994 and @Imai2005a, and @Oelschlaeger2026c gives a unified
+account of the heterogeneity models that **RprobitB** implements.
+
+## Which train would you take?
+
+In 1987, a survey commissioned by the Dutch national railways presented 235
+travelers with pairs of hypothetical train trips and asked which one they
+would book [@BenAkiva1993]. The two trips of a pair differ in
+price, travel time, number of changes, and comfort class, and every traveler
+answered about a dozen such questions. The **mlogit** package
+[@Croissant2020] ships the 2929 answers as `Train`. The data are in wide
+format: one row per question, with the attributes of trip `A` in columns
+ending in `_A` and those of trip `B` in columns ending in `_B`. The prices
+are recorded in cents of Dutch guilders and the travel times in minutes;
+converting them to euro and hours makes the estimates easier to read.
+These travelers come back twice: in `vignette("v03_heterogeneity")` they
+split into two classes with different values of time, and in
+`vignette("v04_prediction")` every one of them gets their own price
+coefficient.
+
+```{r data}
+library(RprobitB)
+set.seed(1)
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 / 2.20371
+Train$price_B <- Train$price_B / 100 / 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
+head(Train[, 1:7])
+```
+
+The formula `choice ~ A | B | C` sorts covariates into three groups:
+
+- `A`: attributes of the alternatives, such as the price of a trip, that
+  share one coefficient across alternatives,
+- `B`: characteristics of the decider, such as income, that do not vary
+  across alternatives and therefore get alternative-specific coefficients,
+- `C`: attributes of the alternatives with alternative-specific coefficients.
+
+All four train attributes are of type `A`. The comfort class is stored as
+a number, but it is a category with three levels, and `factor(comfort)`
+turns it into dummy variables the way it does in `lm()`. The `0` in the
+second part drops the alternative-specific constants, which makes sense
+here: the labels `A` and `B` were handed out arbitrarily, so nobody prefers
+one label over the other. Finally, `column_decider` names the traveler and
+`column_occasion` the question, so that `fit()` knows which rows belong to
+the same traveler. Their answers then share one set of coefficients and
+enter the likelihood together. `vignette("v02_model_variants")` treats the
+three covariate types in detail.
+
+```{r fit}
+model <- fit(
+  choice ~ price + time + change + factor(comfort) | 0,
+  data = Train,
+  column_decider = "id",
+  column_occasion = "choiceid",
+  iterations = 2000,
+  warmup = 1000,
+  chains = 2,
+  progress = FALSE
+)
+model
+```
+
+Four chains with 1000 iterations each are the default. Two chains of 2000
+iterations draw the same number of times in total, and two chains are enough
+for the convergence checks below.
+The `set.seed(1)` above makes the run reproducible, also when the chains run
+in parallel.
+
+## Reading the posterior
+
+`summary()` reports the posterior mean, mode, and standard deviation of every
+population-level parameter together with the convergence diagnostics of the
+`posterior` package [@Buerkner2026]. Add `probs` if you also want
+quantiles.
+
+```{r summary}
+summary(model)
+```
+
+The coefficient names follow the formula. Price, time, and changes all pull
+utility down, as they should. Comfort is a factor whose level `0` is the
+best class, so the negative coefficients of the dummies for levels `1` and
+`2` say that travelers dislike the poorer classes. One parameter is missing
+from the table: `Sigma[B,B]`, the error variance of the utility difference,
+is fixed to one by the default normalization, so there is nothing to
+summarize. It remains available in the draws.
+
+Because of this normalization, coefficients are measured in units of the
+error scale, so their absolute size means little on its own. The ratio of
+two coefficients is free of that scale, and it answers the more interesting
+question anyway: what would compensate a traveler for one more hour on the
+train? `interpret()` computes such ratios draw by draw and expresses every
+effect in the units of a reference effect, here the price:
+
+```{r interpret}
+compensation <- interpret(model, reference = "price")
+compensation
+```
+
+@BenAkiva1993 collected these data to estimate what an hour of travel time
+is worth, and found, as here, that price, travel time, changes, and the
+poorer comfort classes all make a trip less attractive. Their model let the
+value of time differ between travelers, which is what
+`vignette("v03_heterogeneity")` does with the same data; the single
+coefficient per attribute used here averages over them.
+
+A negative value is a price reduction. Read this way, these travelers would
+pay about
+`r round(abs(compensation$mean[compensation$effect == "time"]), 1)` euro (at
+1987 prices) to shorten a trip by one hour, and about
+`r round(abs(compensation$mean[compensation$effect == "factor(comfort)2"]), 1)`
+euro to travel in the best rather than the worst comfort class. The intervals
+come from the posterior distribution of the ratios, not from the ratio of
+two posterior means. `interpret()` can also read the estimates as changes of
+the choice probabilities, through `type = "ame"` and `type = "mea"`, which
+`vignette("v04_prediction")` covers.
+
+Back to the summary table. Its last two columns judge how well the sampler
+did its job and follow the current recommendations [@Vehtari2021]:
+
+- `rhat` compares the chains with each other and should stay below 1.01.
+- `ess_bulk` is the effective sample size for the center of the posterior.
+  A few hundred draws are plenty for posterior means.
+
+Two arguments change what the table shows. `probs` adds quantiles, and
+`statistics` picks the measures, among them the tail effective sample size
+that governs quantiles and the Monte Carlo standard error of the mean, which
+says how much of the reported digits is sampling noise. `?summary.RprobitB_fit`
+explains each measure.
+
+```{r summary-statistics}
+summary(
+  model,
+  statistics = c("mean", "mcse_mean", "ess_bulk", "ess_tail"),
+  probs = c(0.05, 0.95)
+)
+```
+
+The Monte Carlo standard errors are about twenty times smaller than the
+posterior standard deviations, so the sampler adds little noise to what the
+data say.
+
+`coef()` and `confint()` extract point estimates and equal-tailed credible
+intervals.
+
+```{r coef}
+coef(model)
+coef(model, type = "median")
+confint(model, level = 0.9)
+```
+
+Mean and median agree here, which is what one expects from posteriors as
+symmetric as these. `vcov()` adds the posterior covariances, which say how
+the estimates move together:
+
+```{r vcov}
+round(vcov(model), 5)
+```
+
+The comfort coefficients share the largest covariance, because the two
+dummies describe the same factor. The same information as a picture, with
+the thick bars covering the middle half of each posterior and the thin lines
+its middle 90 percent:
+
+```{r interval}
+plot(model, type = "interval")
+```
+
+The price coefficient looks like a point only because it is small next to
+the others. Every coefficient carries the scale of its own covariate, and
+prices run into tens of euro while the comfort dummies are zero or one.
+
+## A look at the chains
+
+`plot()` delegates to `bayesplot` [@Gabry2025]. Trace plots show how the
+chains wander through the parameter space, and density overlays compare their
+marginal posteriors. Chains that have converged look like stationary noise
+without any trend, and their densities lie almost on top of each other.
+
+```{r trace}
+plot(model, type = "trace", variables = c("beta[price]", "beta[time]"))
+plot(model, type = "density", variables = c("beta[price]", "beta[time]"))
+```
+
+Rank plots are the sharper test. They pool the draws of all chains, rank
+them, and show each chain's share of the ranks: with converged chains every
+histogram is flat, and a chain stuck in its own region shows up as a peak.
+Autocorrelation plots say how quickly a chain forgets where it was, which is
+what the effective sample size summarizes in one number.
+
+```{r rank}
+plot(model, type = "rank", variables = c("beta[price]", "beta[time]"))
+plot(model, type = "acf", variables = c("beta[price]", "beta[time]"))
+```
+
+Pairs plots show two parameters at once and reveal the posterior
+correlations that make a sampler slow.
+
+```{r pairs}
+plot(model, type = "pairs", variables = c("beta[price]", "beta[time]"))
+```
+
+Any additional argument is passed on to the `bayesplot` function.
+
+## When the diagnostics complain
+
+Diagnostics are only useful if you act on them. The fit below is
+deliberately too short: 200 iterations with 100 of them warmup.
+
+```{r short}
+short <- update(model, iterations = 200, warmup = 100)
+summary(short, statistics = c("mean", "sd", "rhat", "ess_bulk"))
+```
+
+The estimates are not far off, but the effective sample sizes stay below a
+hundred and `rhat` climbs above the threshold of 1.01: the two chains have
+not met yet. The remedy is more iterations, and the same fit
+with ten times as many puts every diagnostic in order.
+
+```{r longer}
+longer <- update(short, iterations = 2000, warmup = 1000)
+summary(longer, statistics = c("mean", "sd", "rhat", "ess_bulk"))
+```
+
+If more iterations do not help, the problem is usually the model rather than
+the sampler: a coefficient that the data cannot identify, or a mixture whose
+classes overlap. `vignette("v03_heterogeneity")` returns to that case.
+
+## Working with the draws
+
+Nothing is locked away inside the fitted object. The retained draws are
+stored as a `draws_array` of the `posterior` package with dimensions
+iteration, chain, and variable, so every tool of that package applies
+directly.
+
+```{r draws}
+draws <- posterior::as_draws(model)
+dim(draws)
+posterior::summarise_draws(draws, "mean", "quantile2")
+```
+
+The usual accessors work as well: `formula()` returns the fitted formula,
+`model.frame()` the data the model was fitted to, and `nobs()` the number of
+independent units in the likelihood, which for panel data is the number of
+deciders rather than the number of choices.
+
+```{r accessors}
+formula(model)
+nobs(model)
+head(model.frame(model)[, 1:4])
+```
+
+## Running chains in parallel
+
+**RprobitB** never selects a parallel backend on its own. Independent chains run
+through the `future` framework [@Bengtsson2021], so a plan set before fitting
+is picked up automatically.
+
+```{r parallel, eval=FALSE}
+future::plan(future::multisession, workers = 4)
+parallel_model <- fit(
+  choice ~ price + time + change + factor(comfort) | 0,
+  data = Train,
+  column_decider = "id",
+  column_occasion = "choiceid"
+)
+future::plan(future::sequential)
+```
+
+With `progress = TRUE`, the default in interactive sessions, all chains
+report their progress through the `progressr` package [@Bengtsson2026]. The
+marginal effects of `interpret()` and the log-likelihood draws behind
+`WAIC()` and `loo()` follow the same plan and report progress in the same
+way.
+
+## How long does this take?
+
+The fit above draws 2000 iterations for 2929 choices in about a second, and
+the cost grows roughly in proportion to iterations times choices. Three
+things change the picture:
+
+- **Random coefficients.** Every decider gets their own coefficient vector
+  in every iteration, so the cost grows with the number of deciders and with
+  the square of the number of random coefficients.
+  `vignette("v03_heterogeneity")` fits such models in seconds for a few
+  hundred deciders.
+- **Alternatives.** A free error covariance between many alternatives mixes
+  slowly and needs longer chains, not faster ones.
+  `vignette("v02_model_variants")` shows a four-alternative model that needs
+  fifteen thousand iterations before its covariance entries settle.
+- **Model evaluation.** `WAIC()`, `loo()`, and `bayes_factor()` evaluate the
+  likelihood for every retained draw, so they can cost more than the fit
+  itself when the model has random coefficients.
+
+When a fit or an evaluation is slow, the two levers are the future plan
+above and `thin`, which keeps every `thin`-th draw and shrinks everything
+downstream.
+
+## Where to go next
+
+- Is my model specified the way I mean it?
+  `vignette("v02_model_variants")` covers the normalization, the prior, the
+  covariate types, individual choice sets, and ordered and ranked responses.
+- Do all deciders share these preferences?
+  `vignette("v03_heterogeneity")` lets coefficients vary continuously over
+  the population or differ between latent classes.
+- What does the model predict, and what does a coefficient mean in
+  probabilities? `vignette("v04_prediction")` covers predictions for the
+  population and for single deciders, scenarios, and marginal effects.
+- Which of two models should I believe?
+  `vignette("v05_model_evaluation")` compares them with WAIC, PSIS-LOO, and
+  Bayes factors.
+
+The first two work through each variant twice: once on simulated data, where
+the truth is known and can be compared with the estimates, and once on a
+real data set.
+
+## References

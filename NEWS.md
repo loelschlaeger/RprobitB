@@ -26,6 +26,10 @@
   `summary()` and `plot()`.
   
 * Improved numerical efficiency of the Gibbs sampler.
+
+* Rewrote the vignettes: getting started, model variants, preference
+  heterogeneity, posterior prediction, and model evaluation.
+  
 # RprobitB 1.2.0
 
 * Fix in `npar.RprobitB_fit()`. Parameters for the covariance matrices of the mixing distributions have been miscounted.

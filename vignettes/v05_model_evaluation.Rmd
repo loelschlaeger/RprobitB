@@ -1,0 +1,378 @@
+---
+title: "Bayesian model evaluation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bayesian model evaluation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ../inst/REFERENCES.bib
+link-citations: true
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4,
+  fig.align = "center"
+)
+```
+
+Which of two models should you believe? **RprobitB** [@Oelschlaeger2026d] offers
+three complementary answers: the widely applicable information criterion (WAIC),
+Pareto-smoothed importance sampling leave-one-out cross-validation
+(PSIS-LOO), and Bayes factors. The first two estimate how well a model would
+predict new data, using the posterior log-likelihood draws. The third
+compares the marginal likelihoods of two models, that is, how well each model
+predicted the data before seeing them [@Watanabe2010;
+@Vehtari2017; @Kass1995]. In panel data, the
+log-likelihood is evaluated per decider, so the repeated choices of one
+person count as one independent unit. The examples use data sets of the
+**AER** package [@Kleiber2008], the **choicedata** package
+[@Oelschlaeger2026a], the **MASS** package [@VenablesRipley2002], and the
+**mlogit** package [@Croissant2020]. Fitting and reading a model is
+the subject of `vignette("v01_get_started")`, the specifications compared
+here come from `vignette("v02_model_variants")` and
+`vignette("v03_heterogeneity")`, and what they predict is the subject of
+`vignette("v04_prediction")`.
+
+## Does income change how people travel?
+
+In 1987, 210 travelers between Sydney and Melbourne reported which of four
+modes they had taken: air, train, bus, or car. The `TravelMode` data of the
+**AER** package [@Kleiber2008] are in long format with one row per mode.
+They are a standard benchmark for discrete choice models, used among others
+in Greene's econometrics textbook [@Greene2003b], where higher income is
+likewise found to favor the faster and more expensive modes. Terminal
+waiting time (`wait`), in-vehicle cost (`vcost`), and travel time vary
+across modes; household income and the size of the traveling party belong
+to the traveler. The choice indicator is coded as `"yes"` and `"no"`, which
+`fit()` expects as a logical or `0`/`1` indicator, and the cost and the
+income are converted from Australian dollars to euro. Cost and time surely
+matter, but does income also tilt travelers towards particular modes? The
+full model lets income and party size shift the utilities of the modes
+relative to the base alternative, the reduced model omits them. Thinning
+keeps 250 of the 2000 post-warmup draws, plenty for the information criteria
+and short enough for the bridge sampling below.
+
+```{r fit}
+library(RprobitB)
+set.seed(1)
+data("TravelMode", package = "AER")
+TravelMode$choice <- TravelMode$choice == "yes"
+TravelMode$vcost <- TravelMode$vcost / 1.6196
+TravelMode$income <- TravelMode$income / 1.6196
+
+full_model <- fit(
+  choice ~ wait + vcost + travel | income + size,
+  data = TravelMode,
+  format = "long",
+  column_decider = "individual",
+  column_alternative = "mode",
+  iterations = 2000,
+  warmup = 1000,
+  thin = 8,
+  chains = 2,
+  progress = FALSE
+)
+reduced_model <- fit(
+  choice ~ wait + vcost + travel | 0,
+  data = TravelMode,
+  format = "long",
+  column_decider = "individual",
+  column_alternative = "mode",
+  iterations = 2000,
+  warmup = 1000,
+  thin = 8,
+  chains = 2,
+  progress = FALSE
+)
+```
+
+`logLik()` evaluates the log-likelihood at the posterior mean parameters. Its
+`df` attribute counts the free parameters after normalization, and `nobs`
+counts the independent likelihood units, here the 210 travelers.
+
+```{r loglik}
+logLik(full_model)
+logLik(reduced_model)
+```
+
+**RprobitB** defines no `AIC()` or `BIC()` methods of its own. Because
+`logLik()` returns a standard `logLik` object, the generics of R's `stats`
+package [@RCoreTeam2026] compute both criteria directly.
+
+```{r classical-criteria}
+AIC(full_model, reduced_model)
+BIC(full_model, reduced_model)
+```
+
+These values are plug-in summaries at the posterior mean. They are handy for
+continuity with an existing analysis, but WAIC and PSIS-LOO use the full
+posterior and are the primary tools here. The distinction matters most for
+finite mixtures, which are singular models: the large-sample argument behind
+AIC and BIC can fail for them [@Watanabe2010]. For a substantively fixed
+class count, fit filled finite models with `classes = 1, 2, ...` to the same
+observations and compare them with the workflow below. Sparse finite and
+Dirichlet-process mixtures report a posterior over the occupied count
+instead; assess them with label-invariant predictive criteria and check
+their sensitivity to the concentration prior.
+
+The weight-based update is a different case again. It selects a dimension
+heuristically during warmup, so its `n_classes` draws do not represent
+posterior uncertainty. WAIC or PSIS-LOO can still assess the resulting
+fitted model, but they do not turn the preceding search into Bayesian
+inference about the number of classes.
+
+## WAIC and PSIS-LOO
+
+`WAIC()` and `loo()` return objects of the `loo` package [@Vehtari2026]. Both
+report the expected log predictive density `elpd`, an effective number of
+parameters, and the criterion on the deviance scale. Lower `waic` and
+`looic`, or equivalently higher `elpd`, mean better predictive accuracy.
+@Watanabe2010 introduced WAIC and showed that it approximates Bayesian
+cross-validation asymptotically; @Vehtari2017 and
+@Vehtari2024 developed the practical PSIS-LOO approximation and its
+diagnostics.
+
+```{r waic}
+WAIC(full_model)
+WAIC(reduced_model)
+```
+
+`WAIC()` warns about large `p_waic` values: some travelers are influential
+enough to make the WAIC approximation shaky, which is exactly the situation
+in which PSIS-LOO is preferable. It comes with Pareto-k diagnostics. Values
+below the printed threshold mean that the importance sampling for that
+traveler is reliable, and a few larger values usually point to travelers
+whose choices are surprising under the model [@Vehtari2024].
+
+```{r loo}
+loo_full <- loo(full_model)
+loo_reduced <- loo(reduced_model)
+loo_full
+```
+
+The `loo` package plots these diagnostics per traveler. Points below the
+dashed line are unproblematic; the few above it are the travelers whose
+choices the model finds hardest to reproduce when they are left out.
+
+```{r loo-plot}
+plot(loo_full)
+```
+
+`loo::loo_compare()` ranks the models by `elpd` and reports the difference to
+the best model with its standard error. A difference of several standard
+errors, as here, is decisive: knowing a traveler's income and party size
+clearly improves the prediction of their mode.
+
+```{r compare}
+loo::loo_compare(loo_full, loo_reduced)
+```
+
+What is it that income changes? `interpret(type = "mea")` differentiates
+the probability of every mode at the average traveler, so the rows for
+`income` say where an additional thousand euro of household income shifts
+the choice:
+
+```{r income-effects}
+mode_effects <- interpret(full_model, type = "mea")
+mode_effects
+```
+
+```{r income-numbers, include=FALSE}
+income_effect <- function(mode) {
+  row <- mode_effects$covariate == "income" & mode_effects$alternative == mode
+  round(100 * mode_effects$mean[row], 1)
+}
+```
+
+A higher income moves travelers away from the train, by about
+`r abs(income_effect("train"))` percentage points per thousand euro, and
+towards the plane and the car, by `r income_effect("air")` and
+`r income_effect("car")` points. A larger traveling party has the opposite
+effect on the plane and the train, which fits the economics of the trip: the
+fare is paid per person, the car is paid per trip.
+
+## Bayes factors
+
+`bayes_factor()` estimates the marginal likelihood of each model with the
+`bridgesampling` package [@Gronau2020] and returns their
+ratio; values above one favor the first model. Bayes factors weigh the prior
+predictive performance of the models, so they are sensitive to the prior,
+and the priors of both models should be chosen deliberately when a Bayes
+factor informs a substantive decision [@Kass1995]. Bridge sampling
+estimates the required ratio of normalizing constants [@Meng1996];
+@Gronau2017 give a practical tutorial. **RprobitB** deliberately avoids the
+harmonic-mean estimator: it is easy to compute from posterior likelihood
+draws, but it can have infinite variance and converge far too slowly for
+practical use [@Wolpert2012]. The current implementation requires
+fixed single-class models; their normalization does not matter, because all
+draws are brought to the same one before bridge sampling. Repeated bridge
+runs should agree before a result is reported.
+
+```{r bf}
+set.seed(1)
+log_bf <- bayes_factor(full_model, reduced_model, log = TRUE)
+log_bf
+```
+
+A log Bayes factor of about `r round(log_bf$bf)` leaves no doubt either:
+the data are $e^{`r round(log_bf$bf)`}$ times more probable under the full
+model, even though a Bayes factor weighs how well each model predicted the
+data before seeing them and the nine extra parameters of the full model have
+to earn their keep against the prior. Information criteria and Bayes factors
+answer different questions and need not agree; here they do.
+
+Bridge sampling is a Monte Carlo estimate, so the number should be checked
+before it is reported. `repetitions` reruns the bridge
+estimate several times and reports the spread, which shows how much the
+number depends on any single run:
+
+```{r bf-repetitions}
+set.seed(2)
+bayes_factor(full_model, reduced_model, log = TRUE, repetitions = 3)
+```
+
+The second estimate agrees with the first to within a fraction of a log
+unit, so the conclusion does not rest on the accident of one bridge run.
+
+## When the likelihood is an integral
+
+For models with random coefficients, the likelihood of a decider integrates
+over the coefficient distribution jointly for all their occasions. The
+result is a multivariate normal probability with one dimension per occasion
+and alternative difference, which for a panel of moderate length quickly
+means dozens of dimensions. `oeli::pmvnorm()` evaluates
+probabilities of up to three dimensions exactly and higher dimensions with
+the GHK simulator on a fixed sequence of `ghk_draws` quasi-random points, so
+results are reproducible and smooth in the parameters. More draws reduce the
+simulation error at a proportional cost in time. The GHK simulator is
+reviewed and evaluated by @Hajivassiliou1996; @Genz2002 compare the
+alternative methods for multivariate normal probabilities.
+
+In Mejia, Ecuador, 98 dairy farmers took part in a choice experiment on
+water conservation [@Ortiz2023]. Each farmer faced four choice tasks
+with two conservation plans and the status quo. The plans differ in
+irrigation technology, manure and waste management, whether training is
+offered, and a cost-share payment to the farmer; farm size, milk production,
+and cattle density describe the farmer. @Ortiz2023 collected these data to
+measure what farmers require in return for conservation practices and report
+that the cost-share payment raises the acceptance of a plan, which the
+estimates below reproduce. Do farmers differ in how much the payment sways
+them? `update()` refits the first model with a normal random
+effect on the payment coefficient and keeps everything else, including the
+data. The panel likelihood of a farmer then integrates over the coefficient,
+which makes the evaluation of the criteria noticeably slower than for the
+fixed model.
+
+```{r water}
+data("water_conservation_choice", package = "choicedata")
+water_effects <- choice ~ irrigation + manure + waste + training + payment |
+  farm_size + milk_production + cattle_density
+fixed_water <- fit(
+  water_effects,
+  data = water_conservation_choice,
+  format = "long",
+  column_decider = "farmer",
+  column_occasion = "occasion",
+  column_alternative = "alternative",
+  iterations = 1000,
+  warmup = 500,
+  chains = 2,
+  progress = FALSE
+)
+mixed_water <- update(fixed_water, random_effects = "payment")
+loo_fixed <- loo(fixed_water)
+loo_mixed <- loo(mixed_water)
+loo::loo_compare(loo_fixed, loo_mixed)
+```
+
+Both models are compared on the same farmer-level scale, and the answer is
+sobering: letting the payment coefficient vary does not improve the expected
+predictive accuracy, it lowers it. The `N < 100` flag and the large standard
+error of the difference caution that a comparison based on 98 farmers is
+rough, and the warnings about high Pareto-k values concern a few farmers
+whose importance weights are unstable. `loo::loo_moment_match()` would
+tighten the comparison. Still, the
+message makes sense: four choices per farmer carry little information about
+individual payment sensitivities, and the extra flexibility costs more than
+it returns.
+
+What do the farmers actually want? With the model chosen, `interpret()`
+reads the coefficients as the payment that offsets each practice:
+
+```{r water-interpret}
+interpret(fixed_water, reference = "payment", effects = "trainingTRUE")
+```
+
+Training is worth a few hundred dollars of cost share to these farmers. The
+other practices come with intervals several thousand dollars wide, which is
+worth a warning about ratios in general: `interpret()` divides by the
+reference coefficient draw by draw, and when that coefficient is not safely
+away from zero, as the payment coefficient is not here, a few draws blow the
+ratio up and the interval becomes useless. Check the reference coefficient
+before reading a compensation.
+
+## Ordered and ranked responses
+
+Nothing about the criteria is specific to unordered choices. The ordered
+model of `vignette("v02_model_variants")` asked whether older students smoke
+less; the comparison below asks whether the exercise variable earns its
+three dummy coefficients.
+
+```{r ordered-comparison}
+data("survey", package = "MASS")
+smoking_full <- fit(
+  Smoke ~ Age + Exer | 0,
+  data = survey,
+  alternatives = c("Never", "Occas", "Regul", "Heavy"),
+  choice_type = "ordered",
+  column_decider = NULL,
+  iterations = 2000,
+  warmup = 1000,
+  chains = 2,
+  progress = FALSE
+)
+smoking_age <- update(smoking_full, . ~ Age | 0)
+loo::loo_compare(
+  loo(smoking_full, progress = FALSE), loo(smoking_age, progress = FALSE)
+)
+```
+
+The difference is smaller than its standard error, so the exercise dummies
+do not improve the prediction of how much a student smokes. With fewer than
+fifty smokers among the 237 students that is the expected outcome, and it
+agrees with the wide credible intervals that the coefficients carried in
+`vignette("v02_model_variants")`.
+
+The same works for rankings. Because a ranking of six platforms carries more
+information than a single choice, the likelihood units are the 91
+respondents, and `logLik()` counts them as such.
+
+```{r ranked-loglik}
+data("Game", package = "mlogit")
+gaming <- fit(
+  ch ~ own | age + hours,
+  data = Game,
+  alternatives = c(
+    "Xbox", "PlayStation", "PSPortable", "GameCube", "GameBoy", "PC"
+  ),
+  choice_type = "ranked",
+  delimiter = ".",
+  column_decider = NULL,
+  iterations = 2000,
+  warmup = 1000,
+  chains = 2,
+  progress = FALSE
+)
+logLik(gaming)
+nobs(gaming)
+```
+
+## Where to go next
+
+A model that survives this comparison is ready to be read for its content.
+`vignette("v04_prediction")` turns it into choice probabilities and marginal
+effects, and `vignette("v03_heterogeneity")` offers the richer
+specifications that a comparison like the one above can then judge.
+
+## References
