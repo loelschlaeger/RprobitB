@@ -4,12 +4,14 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, setup, include = FALSE}
+```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  fig.align = "center"
+  fig.align = "center",
+  fig.width = 7,
+  fig.height = 3.5
 )
 ```
 
@@ -17,78 +19,177 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/RprobitB)](https://CRAN.R-project.org/package=RprobitB)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/last-month/RprobitB)](https://CRAN.R-project.org/package=RprobitB)
-[![Codecov test coverage](https://codecov.io/gh/loelschlaeger/RprobitB/branch/main/graph/badge.svg)](https://app.codecov.io/gh/loelschlaeger/RprobitB?branch=main)
 [![R-CMD-check](https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/loelschlaeger/RprobitB/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/loelschlaeger/RprobitB/graph/badge.svg)](https://app.codecov.io/gh/loelschlaeger/RprobitB)
 <!-- badges: end -->
 
-`{RprobitB}` is an R package for modeling and explaining choices among discrete alternatives.
-
-The package name is a portmanteau, combining **R** (the programming language), **probit** (the model class) and **B** (for Bayesian, the estimation method).
-
-The package is documented in several vignettes, see [here](https://loelschlaeger.de/RprobitB/articles/).
+Discrete choice models explain decisions between mutually exclusive
+alternatives through the utility a decider attaches to each of them.
+**RprobitB** estimates such models in a Bayesian probit framework, for
+binary, multinomial, ordered, and ranked responses, observed once per
+decider or repeatedly in panel data. Preferences may vary across the
+population, either through random coefficients or latent classes. The posterior 
+draws obtained from the Gibbs sampler support choice prediction, marginal 
+effects, and model comparison by information criteria and Bayes factors.
 
 ## Installation
 
-You can install the released version of `{RprobitB}` from [CRAN](https://CRAN.R-project.org) with:
+Install the released version from
+[CRAN](https://CRAN.R-project.org/package=RprobitB):
 
-```{r, install, eval = FALSE}
+```{r, eval=FALSE}
 install.packages("RprobitB")
-```
-
-Next, load it via:
-
-```{r, load}
-library("RprobitB")
-```
-
-```{r, hide progress, include = FALSE}
-options("RprobitB_progress" = FALSE)
 ```
 
 ## Example
 
-We analyze a data set of 2929 stated choices by 235 Dutch individuals deciding between two virtual train trip options based on the price, the travel time, the level of comfort, and the number of changes. 
+We use 2929 stated choices by 235 Dutch individuals deciding between two 
+hypothetical train trip options `"A"` and `"B"` based on the price, the 
+travel time, the number of rail-to-rail transfers (changes), and the level of 
+comfort (where `0` is the best comfort and `2` the worst). The data set 
+`Train` of the [**mlogit**](https://CRAN.R-project.org/package=mlogit) 
+package records the prices in cents of Dutch guilders and the travel times 
+in minutes, which we convert to euro and hours:
 
-The following lines fit a probit model that explains the chosen trip alternatives (`choice`) by their `price`, `time`, number of `change`s, and level of `comfort` (the lower this value the higher the comfort). For normalization, the `price` coefficient is fixed to `-1`, which allows to interpret the other coefficients as monetary values:
-
-```{r, fit, message = FALSE}
-form <- choice ~ price + time + change + comfort | 0
-data <- prepare_data(form, train_choice, id = "deciderID", idc = "occasionID")
-plot(data, by_choice = TRUE)
-model <- fit_model(data, scale = "price := -1")
+```{r data}
+data("Train", package = "mlogit")
+Train$price_A <- Train$price_A / 100 / 2.20371
+Train$price_B <- Train$price_B / 100 / 2.20371
+Train$time_A <- Train$time_A / 60
+Train$time_B <- Train$time_B / 60
+head(Train)
 ```
 
-The summary method provides summary statistics about the Gibbs samples:
+Choice models in **RprobitB** are estimated with the function `fit()`:
 
-```{r, summary}
-FUN <- c("mean" = mean, "mode" = mode_approx, "sd" = stats::sd, "R^" = R_hat)
-summary(model, FUN = FUN)
-```
-
-The estimated effects obtained from the Gibbs sample means can be visualized via:
-
-```{r, coef, fig.height = 2}
-coef(model) |> plot()
-```
-
-The results indicate that the deciders value one hour travel time by about 25€, an additional change by 5€, and a more comfortable class by 15€.
-
-Now assume that a train company wants to anticipate the effect of a price increase on their market share. By our model, increasing the ticket price from 100€ to 110€ (ceteris paribus) draws 15\% of the customers to the competitor who does not increase their prices:
-
-```{r, predict1}
-new_prices <- data.frame(
-  "price_A" = c(100, 110), "price_B" = c(100, 100)
+```{r fit}
+library(RprobitB)
+set.seed(1)
+train_model <- fit(
+  choice ~ price + time + change + factor(comfort) | 0, # model formula
+  data = Train,                                         # choice data
+  column_decider = "id",                                # decider identifiers
+  column_occasion = "choiceid"                          # occasion identifiers
 )
-predict(model, data = new_prices, overview = FALSE)
 ```
 
-However, offering a better comfort class (`0` here is better than `1`) compensates for the higher price and even results in a gain of 7\% market share:
+`summary()` reports the posterior together with convergence diagnostics:
 
-```{r, predict2}
-new_comfort <- data.frame(
-  "price_A" = c(100, 110), "comfort_A" = c(1, 0),
-  "price_B" = c(100, 100), "comfort_B" = c(1, 1)
+```{r summary}
+summary(train_model)
+```
+
+`plot()` displays the results via 
+[**bayesplot**](https://mc-stan.org/bayesplot/):
+
+```{r plot}
+plot(train_model, type = "interval")
+```
+
+The negative estimate signs indicate that a higher fare, a
+longer trip, an extra change, and a poorer comfort class each lower the
+utility of an alternative (as expected). Beyond the signs, the ratios of 
+the coefficients can be interpreted as trade-offs:
+
+```{r interpret}
+compensation <- interpret(train_model, reference = "price")
+compensation
+```
+
+```{r euro, include = FALSE}
+euro <- function(effect) {
+  round(abs(compensation$mean[compensation$effect == effect]), 2)
+}
+```
+
+Read this way, deciders would pay
+
+- `r euro("time")` euro to save one hour of travel time,
+- `r euro("change")` euro to avoid one change of train,
+- `r euro("factor(comfort)1")` euro for the highest comfort class instead of
+  the middle one, and
+- `r euro("factor(comfort)2")` euro for the highest comfort class instead of
+  the lowest.
+
+The fitted model can also be used to predict choices for trips that the data
+do not contain. Below, trip `"B"` saves an hour over trip `"A"` and charges a 
+premium of 2, 5, or 8 euro for it:
+
+```{r scenario}
+scenario <- data.frame(
+  price_A = 20,  price_B = c(22, 25, 28),
+  time_A = 2.5,  time_B = 1.5,
+  change_A = 0,  change_B = 0,
+  comfort_A = 1, comfort_B = 1
 )
-predict(model, data = new_comfort, overview = FALSE)
+predict(train_model, newdata = scenario)
 ```
+
+The prediction turns where the premium passes the `r euro("time")` euro that
+the hour is worth: the faster trip is the predicted choice at 2 euro, the two
+are almost tied at 5 euro, and the slower trip wins at 8 euro.
+
+Besides prices, are the other three choice attributes worth modeling at all? 
+`update()` refits the model with a changed specification on the same data, and 
+`bayes_factor()` compares the two:
+
+```{r compare}
+train_model_small <- update(train_model, . ~ price) # using only price
+comparison <- bayes_factor(train_model, train_model_small, log = TRUE)
+comparison
+```
+
+The log Bayes factor of `r round(comparison$bf)` is decisive: travel
+time, changes, and comfort carry information about the choices that the
+price alone does not.
+
+## What the package covers
+
+The **RprobitB** function `fit()` estimates the following model variants:
+
+- binary, multinomial, ordered, and ranked responses,
+- cross-sectional and panel data,
+- correlated or uncorrelated normal or log-normal random effects,
+- latent classes with a fixed, sparse finite, or Dirichlet-process based number 
+  of components.
+
+Five vignettes cover the details:
+
+- **[Get started](https://loelschlaeger.de/RprobitB/articles/v01_get_started.html)**
+  fits a first model and walks through summaries, convergence diagnostics,
+  plots, the posterior draws, and running chains in parallel.
+- **[Model specification and variants](https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html)**
+  covers the model normalization, the prior, the three covariate types,
+  individual choice sets, and ordered and ranked responses.
+- **[Modeling preference heterogeneity](https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html)**
+  covers random coefficients with six mixing distributions and latent
+  classes with a fixed, sparse finite, or Dirichlet-process based number of
+  components.
+- **[Posterior prediction](https://loelschlaeger.de/RprobitB/articles/v04_prediction.html)**
+  covers predictions for the population and for individual deciders,
+  scenarios for new data, residuals, and marginal effects.
+- **[Bayesian model evaluation](https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html)**
+  covers model comparison via WAIC, PSIS-LOO, and Bayes factors.
+
+Posterior draws are stored in the
+[**posterior**](https://mc-stan.org/posterior/) format. Chains run in parallel 
+through a [**future**](https://doi.org/10.32614/RJ-2021-048) plan. The examples 
+use data sets of the [**mlogit**](https://CRAN.R-project.org/package=mlogit),
+[**AER**](https://CRAN.R-project.org/package=AER), 
+[**MASS**](https://CRAN.R-project.org/package=MASS), and
+[**choicedata**](https://github.com/loelschlaeger/choicedata) packages, which
+are introduced in the vignettes.
+
+## Citation
+
+```{r cite}
+citation("RprobitB")
+```
+
+The broader methodological foundation is described in Oelschläger (2026),
+*Overcoming Challenges in Modeling Choice Behavior Heterogeneity*, doctoral
+dissertation, Bielefeld University,
+<https://pub.uni-bielefeld.de/record/3014719>. The latent-class mixed
+multinomial probit model is introduced in Oelschläger and Bauer (2021),
+*Bayes Estimation of Latent Class Mixed Multinomial Probit Models*, TRB
+Annual Meeting 2021, <https://trid.trb.org/view/1759753>.
