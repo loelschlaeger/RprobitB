@@ -51,6 +51,7 @@ LinkingTo:
 Suggests:
     AER,
     ggplot2,
+    gridExtra,
     knitr,
     MASS,
     mlogit,
