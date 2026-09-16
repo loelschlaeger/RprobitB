@@ -74,7 +74,7 @@ test_that("update.RprobitB_fit reuses simulated choice data", {
   expect_identical(
     as.data.frame(updated$data), as.data.frame(model$data)
   )
-  expect_null(updated$simulation)
+  expect_identical(updated$simulation, model$simulation)
 })
 
 test_that("update.RprobitB_fit accepts other choice data", {

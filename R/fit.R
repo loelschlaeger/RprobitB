@@ -1703,65 +1703,10 @@ fit <- function(
     ))
   )
   # the data-generating parameters on the scale of the draws
-  dgp <- NULL
-  if (simulated) {
-    parameters <- simulation_parameters
-    with_classes <- sampler_data$P_r > 0L || sampler_data$P_l > 0L
-    means <- if (is.list(parameters$beta)) {
-      parameters$beta
-    } else {
-      list(parameters$beta)
-    }
-    dgp_classes <- length(means)
-    covariances <- if (is.list(parameters$Omega)) {
-      parameters$Omega
-    } else {
-      rep(list(parameters$Omega), dgp_classes)
-    }
-    weights <- if (with_classes) parameters$weights
-    if (with_classes && is.null(weights)) {
-      weights <- rep(1 / dgp_classes, dgp_classes)
-    }
-    if (dgp_classes > 1L) {
-      by_weight <- order(weights, decreasing = TRUE)
-      means <- means[by_weight]
-      covariances <- covariances[by_weight]
-      weights <- weights[by_weight]
-    }
-    error_covariance <- if (ordered) {
-      as.numeric(parameters$Sigma)
-    } else {
-      difference <- oeli::delta(ref = normalization$level$level, dim = J)
-      as.numeric(difference %*% parameters$Sigma %*% t(difference))
-    }
-    truth <- list(
-      alpha = matrix(means[[1L]][!random & !latent_class], nrow = 1L),
-      s = if (with_classes) matrix(weights, nrow = 1L),
-      b = if (sampler_data$P_r) {
-        matrix(unlist(lapply(means, `[`, random)), nrow = 1L)
-      },
-      Omega = if (sampler_data$P_r) {
-        matrix(unlist(lapply(covariances, as.numeric)), nrow = 1L)
-      },
-      lambda = if (sampler_data$P_l) {
-        matrix(unlist(lapply(means, `[`, latent_class)), nrow = 1L)
-      },
-      Sigma = matrix(error_covariance, nrow = 1L),
-      d = if (ordered) matrix(log(diff(parameters$gamma)), nrow = 1L)
+  dgp <- if (simulated) {
+    dgp_values(
+      simulation_parameters, choice_effects, normalization, class_update
     )
-    values <- transform_chain_draws(
-      samples = truth,
-      warmup = 0L,
-      thin = 1L,
-      effects = choice_effects,
-      normalization = normalization,
-      decider_ids = character(),
-      class_update = "fixed"
-    )
-    dgp <- stats::setNames(as.numeric(values[1L, ]), colnames(values))
-    if (!identical(class_update, "fixed")) {
-      dgp <- c(dgp, n_classes = sum(weights > 0))
-    }
   }
   simulation <- if (simulated) {
     list(

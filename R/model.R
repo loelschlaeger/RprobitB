@@ -261,7 +261,22 @@ update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
   }
   refit <- new.env(parent = parent.frame())
   if (!supplied_data) refit$data <- object$data
+  refitted <- eval(model_call, refit)
 
-  # the refitted model
-  eval(model_call, refit)
+  # the refitted model keeps the true parameters of simulated data if only
+  # the normalization, the prior, or the sampler settings changed
+  harmless <- c(
+    "scale", "prior", "iterations", "warmup", "thin", "chains",
+    "save_individual_draws", "progress"
+  )
+  keep_simulation <- !supplied_data && missing(formula.) &&
+    !is.null(object$simulation) && all(names(extras) %in% harmless)
+  if (keep_simulation) {
+    refitted$simulation <- object$simulation
+    refitted$simulation$dgp <- dgp_values(
+      object$simulation$dgp_parameters, refitted$model$effects,
+      refitted$model$normalization, refitted$model$latent_classes$update
+    )
+  }
+  refitted
 }
