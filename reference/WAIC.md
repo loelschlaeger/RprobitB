@@ -1,52 +1,71 @@
-# Compute WAIC value
+# Compute the widely applicable information criterion
 
-This function computes the WAIC value of an `RprobitB_fit` object.
+Computes WAIC from posterior log-likelihood draws using
+[`loo::waic()`](https://mc-stan.org/loo/reference/waic.html).
 
 ## Usage
 
 ``` r
-WAIC(x)
-
-# S3 method for class 'RprobitB_waic'
-print(x, digits = 2, ...)
-
-# S3 method for class 'RprobitB_waic'
-plot(x, ...)
+WAIC(object, ghk_draws = 500L, progress = interactive(), ...)
 ```
 
 ## Arguments
 
-- x:
+- object:
 
-  An object of class `RprobitB_fit`.
+  \[`RprobitB_fit`\]  
+  Fitted choice model.
+
+- ghk_draws:
+
+  \[`integer(1)`\]  
+  Number of draws of the GHK simulator for multivariate normal
+  probabilities of more than three dimensions, see
+  [`oeli::pmvnorm()`](http://loelschlaeger.de/oeli/reference/dmvnorm.md).
+
+- progress:
+
+  \[`logical(1)`\]  
+  Show progress?
+
+- ...:
+
+  Further arguments passed to
+  [`loo::waic()`](https://mc-stan.org/loo/reference/waic.html).
 
 ## Value
 
-A numeric, the WAIC value, with the following attributes:
+A `waic` object from [**loo**](https://mc-stan.org/loo/). Its
+`estimates` matrix contains WAIC, effective parameter counts, and their
+standard errors.
 
-- `se_waic`, the standard error of the WAIC value,
+## References
 
-- `lppd`, the log pointwise predictive density,
+Watanabe S (2010). “Asymptotic Equivalence of Bayes Cross Validation and
+Widely Applicable Information Criterion in Singular Learning Theory.”
+*Journal of Machine Learning Research*, **11**, 3571–3594.
+<https://www.jmlr.org/papers/v11/watanabe10a.html>.
 
-- `p_waic`, the effective number of parameters,
+Vehtari A, Gelman A, Gabry J (2017). “Practical Bayesian Model
+Evaluation Using Leave-One-Out Cross-Validation and WAIC.” *Statistics
+and Computing*, **27**(5), 1413–1432.
+[doi:10.1007/s11222-016-9696-4](https://doi.org/10.1007/s11222-016-9696-4)
+.
 
-- `p_waic_vec`, the vector of summands of `p_waic`,
+## Examples
 
-- `p_si`, the output of
-  [`compute_p_si`](https://loelschlaeger.de/RprobitB/reference/compute_p_si.md).
-
-## Details
-
-WAIC is short for Widely Applicable (or Watanabe-Akaike) Information
-Criterion. As for AIC and BIC, the smaller the WAIC value the better the
-model. Its definition is \$\$WAIC = -2 \cdot lppd + 2 \cdot
-p\_{WAIC},\$\$ where \\lppd\\ stands for log pointwise predictive
-density and \\p\_{WAIC}\\ is a penalty term proportional to the variance
-in the posterior distribution that is sometimes called effective number
-of parameters. The \\lppd\\ is approximated as follows. Let \$\$p\_{is}
-= \Pr(y_i\mid \theta_s)\$\$ be the probability of observation \\y_i\\
-given the \\s\\th set \\\theta_s\\ of parameter samples from the
-posterior. Then \$\$lppd = \sum_i \log S^{-1} \sum_s p\_{si}.\$\$ The
-penalty term is computed as the sum over the variances in
-log-probability for each observation: \$\$p\_{WAIC} = \sum_i V\_{\theta}
-\left\[ \log p\_{si} \right\].\$\$
+``` r
+set.seed(1)
+model <- fit(
+  choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), n_occasions = 5,
+  chains = 1
+)
+WAIC(model)
+#> 
+#> Computed from 500 by 100 log-likelihood matrix.
+#> 
+#>           Estimate   SE
+#> elpd_waic   -185.5 12.2
+#> p_waic         0.8  0.2
+#> waic         371.0 24.3
+```

@@ -1,165 +1,93 @@
 # Package index
 
-## Data management
+## Fit models
 
-Use these functions for the choice data preparation or simulation.
+Fit empirical data or simulate and fit a specified model.
 
-- [`check_form()`](https://loelschlaeger.de/RprobitB/reference/check_form.md)
-  : Check model formula
-
-- [`overview_effects()`](https://loelschlaeger.de/RprobitB/reference/overview_effects.md)
-  : Print effect overview
-
-- [`create_lagged_cov()`](https://loelschlaeger.de/RprobitB/reference/create_lagged_cov.md)
-  : Create lagged choice covariates
-
-- [`as_cov_names()`](https://loelschlaeger.de/RprobitB/reference/as_cov_names.md)
-  : Re-label alternative specific covariates
-
-- [`prepare_data()`](https://loelschlaeger.de/RprobitB/reference/prepare_data.md)
-  : Prepare choice data for estimation
-
-- [`RprobitB_parameter()`](https://loelschlaeger.de/RprobitB/reference/RprobitB_parameter.md)
-  [`print(`*`<RprobitB_parameter>`*`)`](https://loelschlaeger.de/RprobitB/reference/RprobitB_parameter.md)
-  : Define probit model parameter
-
-- [`simulate_choices()`](https://loelschlaeger.de/RprobitB/reference/simulate_choices.md)
-  : Simulate choice data
-
-- [`train_test()`](https://loelschlaeger.de/RprobitB/reference/train_test.md)
-  : Split choice data into train and test subset
-
-- [`RprobitB_data()`](https://loelschlaeger.de/RprobitB/reference/RprobitB_data.md)
-  [`print(`*`<RprobitB_data>`*`)`](https://loelschlaeger.de/RprobitB/reference/RprobitB_data.md)
-  [`summary(`*`<RprobitB_data>`*`)`](https://loelschlaeger.de/RprobitB/reference/RprobitB_data.md)
-  [`print(`*`<summary.RprobitB_data>`*`)`](https://loelschlaeger.de/RprobitB/reference/RprobitB_data.md)
-  [`plot(`*`<RprobitB_data>`*`)`](https://loelschlaeger.de/RprobitB/reference/RprobitB_data.md)
-  :
-
-  Create object of class `RprobitB_data`
-
-## Model fitting
-
-Use these function for fitting a probit model to choice data.
-
-- [`check_prior()`](https://loelschlaeger.de/RprobitB/reference/check_prior.md)
-  : Check prior parameters
-- [`fit_model()`](https://loelschlaeger.de/RprobitB/reference/fit_model.md)
-  : Fit probit model to choice data
+- [`fit()`](https://loelschlaeger.de/RprobitB/reference/fit.md) : Fit a
+  Bayesian probit choice model
 - [`update(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/update.RprobitB_fit.md)
-  : Update and re-fit probit model
-- [`transform(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/transform.md)
-  : Transform fitted probit model
+  : Update and refit a choice model
 
-## Model evaluation
+## Posterior analysis
 
-Use these functions for model evaluation.
+Summarize, extract, and visualize posterior draws.
 
+- [`print(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/print.RprobitB_fit.md)
+  : Print a fitted choice model
+- [`summary(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/summary.RprobitB_fit.md)
+  : Summarize a fitted choice model
+- [`print(`*`<summary.RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/print.summary.RprobitB_fit.md)
+  : Print a fitted model summary
+- [`latent_class_diagnostics()`](https://loelschlaeger.de/RprobitB/reference/latent_class_diagnostics.md)
+  : Diagnose latent-class occupancy and membership
 - [`coef(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/coef.RprobitB_fit.md)
-  [`print(`*`<RprobitB_coef>`*`)`](https://loelschlaeger.de/RprobitB/reference/coef.RprobitB_fit.md)
-  [`plot(`*`<RprobitB_coef>`*`)`](https://loelschlaeger.de/RprobitB/reference/coef.RprobitB_fit.md)
-  : Extract model effects
+  : Extract posterior coefficient summaries
+- [`vcov(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/vcov.RprobitB_fit.md)
+  : Extract the posterior covariance matrix
+- [`confint(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/confint.RprobitB_fit.md)
+  : Compute posterior credible intervals
+- [`interpret()`](https://loelschlaeger.de/RprobitB/reference/interpret.md)
+  [`print(`*`<RprobitB_interpretation>`*`)`](https://loelschlaeger.de/RprobitB/reference/interpret.md)
+  : Interpret the estimates of a fitted choice model
+- [`as_draws(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/as_draws.RprobitB_fit.md)
+  : Convert a fitted model to posterior draws
+- [`plot(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/plot.RprobitB_fit.md)
+  : Plot posterior draws
 
-- [`cov_mix()`](https://loelschlaeger.de/RprobitB/reference/cov_mix.md)
-  : Extract estimated covariance matrix of mixing distribution
+## Prediction and accessors
 
-- [`point_estimates()`](https://loelschlaeger.de/RprobitB/reference/point_estimates.md)
-  : Compute point estimates
-
-- [`choice_probabilities()`](https://loelschlaeger.de/RprobitB/reference/choice_probabilities.md)
-  : Compute choice probabilities
-
-- [`classification()`](https://loelschlaeger.de/RprobitB/reference/classification.md)
-  : Preference-based classification of deciders
-
-- [`get_cov()`](https://loelschlaeger.de/RprobitB/reference/get_cov.md)
-  : Extract covariates of choice occasion
+Predict choices, inspect residuals, and extract fitted model
+information.
 
 - [`predict(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/predict.RprobitB_fit.md)
   : Predict choices
+- [`residuals(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/residuals.RprobitB_fit.md)
+  : Extract choice residuals
+- [`reexports`](https://loelschlaeger.de/RprobitB/reference/reexports.md)
+  [`train_test`](https://loelschlaeger.de/RprobitB/reference/reexports.md)
+  : Objects exported from other packages
+- [`formula(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/formula.RprobitB_fit.md)
+  : Extract the fitted formula
+- [`model.frame(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/model.frame.RprobitB_fit.md)
+  : Extract the fitted data
+- [`nobs(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/nobs.RprobitB_fit.md)
+  : Count independent likelihood units
+- [`logLik(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/logLik.RprobitB_fit.md)
+  : Extract the fitted log-likelihood
 
-- [`plot(`*`<RprobitB_fit>`*`)`](https://loelschlaeger.de/RprobitB/reference/plot.RprobitB_fit.md)
-  : Visualize fitted probit model
+## Bayesian model evaluation
 
-- [`plot_roc()`](https://loelschlaeger.de/RprobitB/reference/plot_roc.md)
-  : Plot ROC curve
+Compare predictive performance and model evidence.
 
-- [`plot_mixture_contour()`](https://loelschlaeger.de/RprobitB/reference/plot_mixture_contour.md)
-  : Plot bivariate contour of mixing distributions
+- [`WAIC()`](https://loelschlaeger.de/RprobitB/reference/WAIC.md) :
+  Compute the widely applicable information criterion
+- [`loo()`](https://loelschlaeger.de/RprobitB/reference/loo.RprobitB_fit.md)
+  : Compute approximate leave-one-out cross-validation
+- [`bayes_factor()`](https://loelschlaeger.de/RprobitB/reference/bayes_factor.md)
+  : Compare models with a Bayes factor
 
-- [`plot_class_allocation()`](https://loelschlaeger.de/RprobitB/reference/plot_class_allocation.md)
-  :
+## Sampler kernels
 
-  Plot class allocation (for `P_r = 2` only)
+Low-level functions for extending or testing the Gibbs sampler.
 
-- [`R_hat()`](https://loelschlaeger.de/RprobitB/reference/R_hat.md) :
-  Compute Gelman-Rubin statistic
-
-- [`mode_approx()`](https://loelschlaeger.de/RprobitB/reference/mode_approx.md)
-  : Gibbs sample mode
-
-## Model selection
-
-Use these functions for model selection.
-
-- [`model_selection()`](https://loelschlaeger.de/RprobitB/reference/model_selection.md)
-  [`print(`*`<RprobitB_model_selection>`*`)`](https://loelschlaeger.de/RprobitB/reference/model_selection.md)
-  : Compare fitted models
-- [`npar()`](https://loelschlaeger.de/RprobitB/reference/npar.md) :
-  Extract number of model parameters
-- [`mml()`](https://loelschlaeger.de/RprobitB/reference/mml.md)
-  [`print(`*`<RprobitB_mml>`*`)`](https://loelschlaeger.de/RprobitB/reference/mml.md)
-  [`plot(`*`<RprobitB_mml>`*`)`](https://loelschlaeger.de/RprobitB/reference/mml.md)
-  : Approximate marginal model likelihood
-- [`compute_p_si()`](https://loelschlaeger.de/RprobitB/reference/compute_p_si.md)
-  : Compute choice probabilities at posterior samples
-- [`pred_acc()`](https://loelschlaeger.de/RprobitB/reference/pred_acc.md)
-  : Compute prediction accuracy
-
-## Datasets
-
-The following datasets are included in the package.
-
-- [`train_choice`](https://loelschlaeger.de/RprobitB/reference/train_choice.md)
-  : Stated Preferences for Train Traveling
-
-## Posterior samplers
-
-These functions define the Gibbs sampler.
-
-- [`d_to_gamma()`](https://loelschlaeger.de/RprobitB/reference/d_to_gamma.md)
-  : Transform increments to thresholds
-- [`gibbs_sampler()`](https://loelschlaeger.de/RprobitB/reference/gibbs_sampler.md)
-  : Gibbs sampler for probit models
-- [`ll_ordered()`](https://loelschlaeger.de/RprobitB/reference/ll_ordered.md)
-  : Compute ordered probit log-likelihood
-- [`sample_allocation()`](https://loelschlaeger.de/RprobitB/reference/sample_allocation.md)
-  : Sample allocation
-- [`update_Omega()`](https://loelschlaeger.de/RprobitB/reference/update_Omega.md)
-  : Update class covariances
-- [`update_Omega_c()`](https://loelschlaeger.de/RprobitB/reference/update_Omega_c.md)
-  : Update covariance of a single class
-- [`update_Sigma()`](https://loelschlaeger.de/RprobitB/reference/update_Sigma.md)
-  : Update error covariance matrix
-- [`update_U()`](https://loelschlaeger.de/RprobitB/reference/update_U.md)
-  : Update utility vector
-- [`update_U_ranked()`](https://loelschlaeger.de/RprobitB/reference/update_U_ranked.md)
-  : Update ranked utility vector
-- [`update_b()`](https://loelschlaeger.de/RprobitB/reference/update_b.md)
-  : Update class means
-- [`update_b_c()`](https://loelschlaeger.de/RprobitB/reference/update_b_c.md)
-  : Update mean of a single class
-- [`update_classes_dp()`](https://loelschlaeger.de/RprobitB/reference/update_classes_dp.md)
-  : Dirichlet process class updates
-- [`update_classes_wb()`](https://loelschlaeger.de/RprobitB/reference/update_classes_wb.md)
-  : Weight-based class updates
-- [`update_coefficient()`](https://loelschlaeger.de/RprobitB/reference/update_coefficient.md)
-  : Update coefficient vector
-- [`update_d()`](https://loelschlaeger.de/RprobitB/reference/update_d.md)
-  : Update utility threshold increments
-- [`update_m()`](https://loelschlaeger.de/RprobitB/reference/update_m.md)
-  : Update class sizes
-- [`update_s()`](https://loelschlaeger.de/RprobitB/reference/update_s.md)
-  : Update class weight vector
-- [`update_z()`](https://loelschlaeger.de/RprobitB/reference/update_z.md)
-  : Update class allocation vector
+- [`sample_allocation()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  [`update_s()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  [`update_z()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  [`update_m()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  [`update_classes_wb()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  [`update_classes_dp()`](https://loelschlaeger.de/RprobitB/reference/class_updates.md)
+  : Update latent classes
+- [`update_coefficient()`](https://loelschlaeger.de/RprobitB/reference/coefficient_updates.md)
+  [`update_b_c()`](https://loelschlaeger.de/RprobitB/reference/coefficient_updates.md)
+  [`update_b()`](https://loelschlaeger.de/RprobitB/reference/coefficient_updates.md)
+  [`update_Omega_c()`](https://loelschlaeger.de/RprobitB/reference/coefficient_updates.md)
+  [`update_Omega()`](https://loelschlaeger.de/RprobitB/reference/coefficient_updates.md)
+  : Update coefficient distributions
+- [`d_to_gamma()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  [`log_likelihood_ordered()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  [`update_Sigma()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  [`update_U()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  [`update_U_ranked()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  [`update_d()`](https://loelschlaeger.de/RprobitB/reference/utility_updates.md)
+  : Update utilities and thresholds

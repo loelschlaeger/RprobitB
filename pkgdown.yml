@@ -2,14 +2,12 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
-  RprobitB: RprobitB.html
-  v01_model_definition: v01_model_definition.html
-  v02_choice_data: v02_choice_data.html
-  v03_model_fitting: v03_model_fitting.html
-  v04_modeling_heterogeneity: v04_modeling_heterogeneity.html
-  v05_choice_prediction: v05_choice_prediction.html
-  v06_model_selection: v06_model_selection.html
-last_built: 2026-09-07T07:32Z
+  v01_get_started: v01_get_started.html
+  v02_model_variants: v02_model_variants.html
+  v03_heterogeneity: v03_heterogeneity.html
+  v04_prediction: v04_prediction.html
+  v05_model_evaluation: v05_model_evaluation.html
+last_built: 2026-09-16T14:37Z
 urls:
   reference: https://loelschlaeger.de/RprobitB/reference
   article: https://loelschlaeger.de/RprobitB/articles

@@ -14,12 +14,12 @@ Source:
 [`DESCRIPTION`](https://github.com/loelschlaeger/RprobitB/blob/main/DESCRIPTION)
 
 Oelschläger L (2026). *RprobitB: Bayesian Probit Choice Modeling*. R
-package version 1.2.0.9000, <https://loelschlaeger.de/RprobitB/>.
+package version 2.0.0, <https://loelschlaeger.de/RprobitB/>.
 
     @Manual{,
       title = {RprobitB: Bayesian Probit Choice Modeling},
       author = {Lennart Oelschläger},
       year = {2026},
-      note = {R package version 1.2.0.9000},
+      note = {R package version 2.0.0},
       url = {https://loelschlaeger.de/RprobitB/},
     }

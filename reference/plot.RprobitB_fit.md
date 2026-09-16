@@ -1,78 +1,89 @@
-# Visualize fitted probit model
+# Plot posterior draws
 
-This function is the plot method for an object of class `RprobitB_fit`.
+Creates a standard posterior diagnostic or uncertainty plot with
+[**bayesplot**](https://mc-stan.org/bayesplot/).
 
 ## Usage
 
 ``` r
 # S3 method for class 'RprobitB_fit'
-plot(x, type, ignore = NULL, ...)
+plot(
+  x,
+  y = NULL,
+  type = c("trace", "rank", "acf", "density", "interval", "pairs"),
+  variables = NULL,
+  ...
+)
 ```
 
 ## Arguments
 
 - x:
 
-  An object of class
-  [`RprobitB_fit`](https://loelschlaeger.de/RprobitB/reference/RprobitB_fit.md).
+  \[`RprobitB_fit`\]  
+  Fitted choice model.
+
+- y:
+
+  \[`NULL`\]  
+  Currently not used.
 
 - type:
 
   \[`character(1)`\]  
-  The type of plot, which can be one of:
+  The plot to create:
 
-  - `"mixture"` to visualize the mixing distribution,
+  - `"trace"` draws the sampled values of each chain over the
+    iterations.
 
-  - `"acf"` for autocorrelation plots of the Gibbs samples,
+  - `"rank"` compares the chains through the ranks of their draws.
 
-  - `"trace"` for trace plots of the Gibbs samples,
+  - `"acf"` draws the autocorrelation within each chain.
 
-  - `"class_seq"` to visualize the sequence of class numbers.
+  - `"density"` overlays the marginal posterior density of each chain.
 
-- ignore:
+  - `"interval"` draws posterior point estimates with credible
+    intervals.
 
-  \[[`character()`](https://rdrr.io/r/base/character.html)\]  
-  Covariate or parameter names that do not get visualized.
+  - `"pairs"` draws bivariate scatter plots of the variables.
+
+- variables:
+
+  \[[`character()`](https://rdrr.io/r/base/character.html) \| `NULL`\]  
+  Posterior variables to include. `NULL` includes all varying model
+  parameters and excludes individual coefficients and latent
+  allocations.
 
 - ...:
 
-  Currently not used.
+  Further arguments passed to the selected
+  [**bayesplot**](https://mc-stan.org/bayesplot/) function.
 
 ## Value
 
-No return value. Draws a plot to the current device.
+A `ggplot` object or, for a pairs plot, a `bayesplot_grid` object.
 
 ## Examples
 
 ``` r
 set.seed(1)
-form <- choice ~ var | 0
-data <- simulate_choices(form = form, N = 100, T = 10, J = 3, re = "var")
-model <- fit_model(
-  data = data, R = 100, latent_classes = list(C = 2, "dp_update" = TRUE)
+model <- fit(
+  choice ~ x + z | 0, dgp_parameters = list(beta = c(x = 1, z = -0.5)),
+  chains = 2
 )
-#> Computing sufficient statistics - 0 of 4  
-#> Computing sufficient statistics - 1 of 4  
-#> Computing sufficient statistics - 2 of 4  
-#> Computing sufficient statistics - 3 of 4  
-#> Computing sufficient statistics - 4 of 4  
-#> Gibbs sampler - 1 of 100 iterations (C = 2) 
-#> Gibbs sampler - 10 of 100 iterations (C = 2) 
-#> Gibbs sampler - 20 of 100 iterations (C = 3) 
-#> Gibbs sampler - 30 of 100 iterations (C = 2) 
-#> Gibbs sampler - 40 of 100 iterations (C = 2) 
-#> Gibbs sampler - 50 of 100 iterations (C = 3) 
-#> Gibbs sampler - 60 of 100 iterations (C = 2) 
-#> Gibbs sampler - 70 of 100 iterations (C = 2) 
-#> Gibbs sampler - 80 of 100 iterations (C = 2) 
-#> Gibbs sampler - 90 of 100 iterations (C = 2) 
-#> Gibbs sampler - 100 of 100 iterations (C = 2) 
-plot(model, type = "mixture")
 
-plot(model, type = "acf", ignore = c("s", "Omega", "Sigma"))
+### convergence and mixing of the chains
+plot(model, type = "trace")
+
+plot(model, type = "rank")
+
+plot(model, type = "acf")
 
 
-plot(model, type = "trace", ignore = c("s", "Omega", "Sigma"))
+### marginal and joint posterior distributions
+plot(model, type = "density")
 
-plot(model, type = "class_seq")
+plot(model, type = "interval")
+
+plot(model, type = "pairs")
 ```
