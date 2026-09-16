@@ -12,7 +12,7 @@
 #'
 #' @return A scalar object of class `logLik`. The `df` attribute counts the free
 #' population-level parameters after normalization, and `nobs` is the number of
-#' independent likelihood units.
+#' independent likelihood units as counted by [nobs()].
 #'
 #' @export
 #' @keywords models
@@ -72,7 +72,7 @@ logLik.RprobitB_fit <- function(object, ghk_draws = 500L, ...) {
     sum(contributions),
     class = "logLik",
     df = as.integer(df),
-    nobs = length(contributions)
+    nobs = stats::nobs(object)
   )
 }
 

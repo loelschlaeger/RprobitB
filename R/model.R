@@ -93,20 +93,21 @@ model.frame.RprobitB_fit <- function(formula, ...) {
   as.data.frame(formula$data)
 }
 
-#' Count observed likelihood units
+#' Count independent likelihood units
 #'
 #' @description
-#' Counts observed occasions for cross-sectional data and observed deciders for
-#' panel data.
+#' Counts the observed choice occasions if the model has neither random
+#' effects nor latent classes, because the likelihood then factorizes over
+#' the occasions. Otherwise the occasions of a decider are dependent through
+#' the random coefficients or the class membership, and the deciders with at
+#' least one observed response are counted.
 #'
 #' @param object \[`RprobitB_fit`\]\cr
 #' Fitted choice model.
 #'
 #' @param ... Currently not used.
 #'
-#' @return An `integer(1)` count. For panel data, a decider with at least one
-#' observed response is one likelihood unit; otherwise each observed occasion
-#' is one unit.
+#' @return An `integer(1)` count.
 #'
 #' @export
 #' @keywords models
@@ -122,7 +123,9 @@ model.frame.RprobitB_fit <- function(formula, ...) {
 nobs.RprobitB_fit <- function(object, ...) {
   check_fit(object)
   observed <- !is.na(object$model$responses)
-  if (is.null(object$model$data_roles$column_occasion)) {
+  heterogeneous <- any(!is.na(object$model$effects$mixing)) ||
+    length(object$model$latent_class_effects) > 0L
+  if (is.null(object$model$data_roles$column_occasion) || !heterogeneous) {
     return(sum(observed))
   }
   identifiers <- choicedata::extract_choice_identifiers(object$data)

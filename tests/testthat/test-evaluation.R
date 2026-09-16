@@ -29,7 +29,7 @@ test_that("logLik.RprobitB_fit evaluates posterior mean parameters", {
   )
 
   expect_s3_class(result, "logLik")
-  expect_identical(attr(result, "nobs"), 2L)
+  expect_identical(attr(result, "nobs"), 4L)
   expect_identical(attr(result, "df"), 1L)
   expect_true(is.finite(as.numeric(result)))
   latent <- fit(

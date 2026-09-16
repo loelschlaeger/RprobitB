@@ -19,7 +19,7 @@ of more than three dimensions, see \code{\link[oeli:pmvnorm]{oeli::pmvnorm()}}.}
 \value{
 A scalar object of class \code{logLik}. The \code{df} attribute counts the free
 population-level parameters after normalization, and \code{nobs} is the number of
-independent likelihood units.
+independent likelihood units as counted by \code{\link[=nobs]{nobs()}}.
 }
 \description{
 Evaluates the decider-level log-likelihood at the posterior mean parameters.

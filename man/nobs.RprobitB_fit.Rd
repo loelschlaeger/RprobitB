@@ -2,7 +2,7 @@
 % Please edit documentation in R/model.R
 \name{nobs.RprobitB_fit}
 \alias{nobs.RprobitB_fit}
-\title{Count observed likelihood units}
+\title{Count independent likelihood units}
 \usage{
 \method{nobs}{RprobitB_fit}(object, ...)
 }
@@ -13,13 +13,14 @@ Fitted choice model.}
 \item{...}{Currently not used.}
 }
 \value{
-An \code{integer(1)} count. For panel data, a decider with at least one
-observed response is one likelihood unit; otherwise each observed occasion
-is one unit.
+An \code{integer(1)} count.
 }
 \description{
-Counts observed occasions for cross-sectional data and observed deciders for
-panel data.
+Counts the observed choice occasions if the model has neither random
+effects nor latent classes, because the likelihood then factorizes over
+the occasions. Otherwise the occasions of a decider are dependent through
+the random coefficients or the class membership, and the deciders with at
+least one observed response are counted.
 }
 \examples{
 set.seed(1)

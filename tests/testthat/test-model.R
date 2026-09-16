@@ -17,15 +17,18 @@ test_that("model.frame.RprobitB_fit returns plain fitted data", {
   expect_identical(nrow(model.frame(model)), 4L)
 })
 
-test_that("nobs.RprobitB_fit counts observed likelihood units", {
-  model <- make_test_fit(data.frame(
-    deciderID = c(1L, 1L, 2L),
-    occasionID = c(1L, 2L, 1L),
-    choice = c("A", NA, "B"),
-    x_A = c(0, 1, 0),
-    x_B = c(1, 0, 1)
-  ))
-  expect_identical(nobs(model), 2L)
+test_that("nobs.RprobitB_fit counts independent likelihood units", {
+  panel <- data.frame(
+    deciderID = c(1L, 1L, 2L, 2L),
+    occasionID = c(1L, 2L, 1L, 2L),
+    choice = c("A", NA, "B", "A"),
+    x_A = c(0, 1, 0, 1),
+    x_B = c(1, 0, 1, 0)
+  )
+  fixed <- make_test_fit(panel)
+  expect_identical(nobs(fixed), 3L)
+  mixed <- make_test_fit(panel, random_effects = "x")
+  expect_identical(nobs(mixed), 2L)
 })
 
 test_that("update.RprobitB_fit refits with replaced arguments", {
