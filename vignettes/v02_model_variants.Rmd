@@ -16,23 +16,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-Every model variant of **RprobitB** [@Oelschlaeger2026d] is requested through
-arguments of `fit()`: which covariates get which kind of coefficient, whether
-the choice sets differ between occasions, and whether the response is a
-choice, an ordered category, or a ranking. This vignette starts with the two
-things every probit fit rests on, the normalization and the prior, and then
-goes through the variants one by one. Letting preferences differ between
-deciders has a vignette of its own, and @Oelschlaeger2026c lays out the
-methodological background.
-
-From the covariate types onward, each section first fits the variant to
-simulated data and then to a data set of the **mlogit** package
-[@Croissant2020] or the **MASS** package [@VenablesRipley2002]. With
-`data = NULL`, `fit()` simulates the requested model before estimating it,
-and `summary()` prints the true values in a `dgp` column beside the posterior
-summaries, converted to the normalization of the fit; where the data were
-simulated by hand, a small table does the same. The simulated fits use one
-chain, the empirical ones two, so that their diagnostics can be read.
+This vignette describes how to specify a probit choice model with `fit()`.
+It covers the normalization of the utility scale and the prior distribution,
+which every fit involves, and then the model variants: the three types of
+covariates and the alternative-specific constants, choice sets that differ
+between occasions, and ordered and ranked responses. Preference
+heterogeneity between deciders is the subject of the vignette
+[Modeling preference heterogeneity][v03], and @Oelschlaeger2026c gives the
+methodological background. From the covariate types onward, each
+section first fits the variant to simulated data and then to a data set of
+the **AER** package [@Kleiber2008], the **MASS** package
+[@VenablesRipley2002], or the **mlogit** package [@Croissant2020]. Without
+data, `fit()` simulates the requested model before estimating it, and
+`summary()` prints the true values in a `dgp` column beside the posterior
+summaries, converted to the normalization of the fit.
 
 ```{r setup}
 library(RprobitB)
@@ -41,34 +38,44 @@ set.seed(1)
 
 ## Normalization
 
-Utilities are identified only up to level and scale: adding a constant to
-all of them or multiplying them by a positive number changes nothing about
-which alternative wins. **RprobitB** therefore works with differences relative
-to a base alternative, chosen by `base` and defaulting to the first
-alternative in alphabetical order, and fixes one parameter through `scale`.
-How this is done is a central design question of Bayesian multinomial probit
-models [@McCulloch1994; @Imai2005a]:
+The probit model introduced in the vignette
+[Get started with RprobitB][v01] assigns every alternative $j$ at occasion
+$t$ of decider $n$ the latent utility
+$U_{ntj} = X_{ntj}^\top \beta_n + \epsilon_{ntj}$ with jointly normal errors
+$\epsilon_{nt} \sim \mathrm{N}(0, \Sigma)$, and the decider chooses the
+alternative with the largest utility. The choice probability of an
+alternative is the probability that its utility exceeds the utilities of all
+others. These probabilities are invariant to adding a constant to all
+utilities and to multiplying all utilities by a positive number, so neither
+the level nor the scale of the utilities is identified. **RprobitB**
+therefore works with utility differences relative to a base alternative, by
+default the first in alphabetical order, and fixes one parameter through
+`scale`:
 
 - `scale = NULL` fixes the error variance of the first utility difference to
-  one. This is the default and yields the posterior variable names
-  `Sigma[B,B]`, `Sigma[C,B]`, and so on.
-- `scale = c(price = -1)` fixes a coefficient instead. All other coefficients
-  are then measured in units of that coefficient, which is convenient when
-  willingness-to-pay measures are the goal.
-- `scale = c("Sigma_B,B" = 1)` names the fixed variance explicitly.
+  one. This is the default. The covariance matrix of the error differences is
+  reported as `Sigma[<alternative>,<alternative>]`, with rows and columns
+  named by the alternatives other than the base. For three alternatives `A`,
+  `B`, and `C` with base `A`, its entries are `Sigma[B,B]`, `Sigma[C,B]`, and
+  `Sigma[C,C]`.
+- `scale = c(z = -1)` fixes the coefficient of `z` to `-1` instead, so that
+  all other coefficients are measured in units of it. With a price
+  coefficient fixed in this way, the other coefficients are willingness-to-pay
+  values.
 
 The sampler draws all parameters without restriction and rescales every
-retained draw afterwards. Variables that the normalization fixes stay in the
-draws but are left out of `summary()`, `coef()`, and `vcov()`.
+retained draw afterwards. Variables that the normalization fixes remain in
+the draws but are omitted from `summary()`, `coef()`, and `vcov()`.
 
-The proof of concept shows what the normalization does to the numbers. Data
-generated with coefficients `1` for `x` and `-0.5` for `z` are fitted once
-under the default scale and once with the coefficient of `z` fixed to `-1`.
-Seeding both calls identically makes `fit()` simulate the same data, so only
-the normalization differs.
+The following demonstration shows the effect of the normalization on the
+reported values. We simulate data with coefficients `1` for `x` and `-0.5`
+for `z` and fit them under the default scale. Simulated alternatives are
+labeled with capital letters unless `alternatives` names them, here `A` and
+`B`, and `A` is the base. `update()` then refits the same simulated data
+with the coefficient of `z` fixed to `-1`, so only the normalization differs
+between the two fits.
 
 ```{r normalization}
-set.seed(1)
 scale_default <- fit(
   choice ~ x + z | 0,
   dgp_parameters = list(beta = c(x = 1, z = -0.5)),
@@ -76,47 +83,52 @@ scale_default <- fit(
   chains = 1
 )
 summary(scale_default)
-set.seed(1)
-scale_z <- fit(
-  choice ~ x + z | 0,
-  dgp_parameters = list(beta = c(x = 1, z = -0.5)),
-  scale = c(z = -1),
-  n_deciders = 300,
-  chains = 1
-)
+scale_z <- update(scale_default, scale = c(z = -1))
 summary(scale_z)
 ```
 
+```{r normalization-deviation, include=FALSE}
+scale_table <- summary(scale_z)$posterior
+scale_deviation <- max(
+  abs(scale_table$mean - scale_table$dgp) / scale_table$sd
+)
+```
+
 Under the default scale, the `dgp` column shows the coefficients as
-specified, and `Sigma[B,B]` is fixed to one and therefore not listed. Under
-the coefficient normalization, `beta[z]` is the fixed variable, and
-everything else is expressed in units of it: the true `beta[x]` becomes `2`,
-the true error variance `4`, and the estimates follow within their posterior
-uncertainty. `summary()` always converts the truth to the normalization of
-the fit, so the columns are comparable in both cases.
+specified. `Sigma[B,B]`, the error variance of the utility difference
+between alternative `B` and the base `A`, is fixed to one and therefore not
+listed. Under
+the coefficient normalization, `beta[z]` is fixed to `-1` instead of its
+true `-0.5`, so all utilities are multiplied by `2`: the true `beta[x]`
+becomes `2` and the true error variance `4`. `summary()` converts the true
+values to the normalization of the fit, so the `dgp` column remains
+comparable.
+
+The convergence diagnostics of the two tables differ because `update()`
+runs the sampler again and because the rescaled variables are different
+functions of the draws: `beta[x]` is now a ratio of two coefficients, which
+mixes differently than a single coefficient.
 
 ## Prior distribution
 
-The prior is conjugate for every Gibbs update; the section "Prior
-distribution" of `?fit` lists all of its components. Fixed coefficients and
-class means have normal priors, covariance matrices have inverse Wishart
-priors, class weights have a Dirichlet prior, and the log-increments between
-ordered thresholds have a normal prior. The defaults for coefficients and
-covariances are weakly informative. The defaults for the mixture
-concentrations are a different matter: they encode assumptions about how
-many classes are occupied and deserve a sensitivity analysis, as discussed
-below. Single components are overridden through a named list, and the
-complete prior of a fit is stored in its `prior` component. The
-latent-utility data augmentation behind the sampler goes back to
-@Albert1993; @Imai2005a developed its marginal augmentation for the
-multinomial probit model.
+**RprobitB** estimates every model with a Gibbs sampler, which draws each
+block of parameters in turn from its conditional posterior distribution given
+the other parameters and the latent utilities. The prior is conjugate for
+every block, so each conditional posterior belongs to the same family as the
+prior. Fixed coefficients and class means have normal priors, covariance
+matrices have inverse Wishart priors, class weights have a Dirichlet prior,
+and the log-increments between ordered thresholds have a normal prior. The
+section "Prior distribution" of `?fit` lists all components with their
+defaults, which are weakly informative for coefficients and covariances.
+Single components are overridden through a named list, and the complete
+prior of a fit is stored in its `prior` component. The latent-utility data
+augmentation of the sampler goes back to @Albert1993, and @Imai2005a
+developed its marginal augmentation for the multinomial probit model.
 
-The proof of concept simulates 100 deciders with a true coefficient of `-1`
-under the default prior and then refits the same data under two priors that
-expect the coefficient near `1`: a moderate one with variance `0.5` and a
-tight one with variance `0.01`. `update()` takes care of the refits: it
-reuses the simulated data of the first fit and replaces only the arguments
-that are named.
+The following demonstration simulates 100 deciders with a true coefficient
+of `-1` under the default prior and then refits the same data under two
+priors with mean `1`: a moderate one with variance `0.5` and a tight one
+with variance `0.01`.
 
 ```{r prior}
 default_prior <- fit(
@@ -139,16 +151,19 @@ data.frame(
 )
 ```
 
-The default prior recovers the truth within the posterior uncertainty. The
-moderate prior pulls the estimate about
-`r round(abs(coef(moderate_prior) - coef(default_prior)), 2)` towards its
-mean, a visible
-but harmless nudge that a few hundred more observations would erase. The
-tight prior is a different story: it insists on a value near `1` with a
-standard deviation of `0.1`, and it drags the estimate all the way to zero.
-Priors on coefficients are harmless as long as they are honest about their
-uncertainty. The priors on mixture concentrations further below deserve
-attention even at their defaults.
+```{r prior-deviation, include=FALSE}
+prior_deviation <- abs(coef(default_prior) + 1) /
+  summary(default_prior)$posterior$sd
+```
+
+Under the default prior, the posterior mean deviates from the true value by
+`r round(prior_deviation, 1)` posterior standard deviations. The moderate
+prior shifts the posterior mean by about
+`r round(abs(coef(moderate_prior) - coef(default_prior)), 2)` towards the
+prior mean. The tight prior has a standard deviation of `0.1` around `1` and
+moves the posterior mean to `r round(coef(tight_prior), 2)`. A prior on a
+coefficient is unproblematic as long as its variance reflects the actual
+uncertainty about the coefficient.
 
 ## Covariate types and alternative-specific constants
 
@@ -156,13 +171,13 @@ The formula `choice ~ A | B | C` distinguishes three kinds of covariates:
 attributes of the alternatives with one shared coefficient (`A`),
 characteristics of the decider with alternative-specific coefficients (`B`),
 and attributes of the alternatives with alternative-specific coefficients
-(`C`). Alternative-specific constants are included by default and removed
-with `0` in the second part.
+(`C`). Alternative-specific constants, one intercept per alternative other
+than the base that captures the utility of the alternative beyond its
+attributes, are included by default and removed with `0` in the second part.
+The following demonstration simulates all three types at once, and
+`summary()` shows the posterior summaries beside the normalized true values.
 
-The proof of concept simulates all three types at once. Its summary lines up
-the posterior estimates with the normalized true values.
-
-```{r covariate-types-recovery}
+```{r covariate-types-sim}
 covariate_types <- fit(
   choice ~ x | z | w,
   n_deciders = 500,
@@ -174,244 +189,231 @@ covariate_types <- fit(
 summary(covariate_types)
 ```
 
-All five coefficients are recovered with the right signs and sizes,
-including the two alternative-specific effects of `w` and the constant of
-alternative `B`. The remaining deviations amount to at most two and a half
-posterior standard deviations, which is the sampling variation to expect
-from one simulated data set.
+```{r covariate-types-deviation, include=FALSE}
+types_table <- summary(covariate_types)$posterior
+types_deviation <- max(
+  abs(types_table$mean - types_table$dgp) / types_table$sd
+)
+types_signs <- all(sign(types_table$mean) == sign(types_table$dgp))
+```
 
-`base` chooses which alternative the alternative-specific coefficients are
-measured against. The default is the first in alphabetical order, here `A`;
-switching to `B` mirrors the constant and the decider effect without
-changing the model.
+The posterior means of the five coefficients, including the two
+alternative-specific coefficients of `w` and the constant of alternative
+`B`, deviate from the true values by at most `r round(types_deviation, 1)`
+posterior standard deviations, and
+`r if (types_signs) "all five" else "not all"` have the sign of the true
+value. `base` selects the alternative against which the alternative-specific
+coefficients are measured, by default the first in alphabetical order, here
+`A`. Switching the base to `B` changes the parameterization, not the model:
 
 ```{r base}
 base_b <- update(covariate_types, base = "B")
 coef(base_b)[c("beta[x]", "beta[z_A]", "beta[ASC_A]")]
 ```
 
-The shared coefficient of `x` is untouched, while `z` and the constant now
-describe alternative `A` relative to `B` and therefore change sign.
+```{r base-shift, include=FALSE}
+base_shift <- abs(
+  coef(base_b)[["beta[x]"]] - coef(covariate_types)[["beta[x]"]]
+)
+```
 
-Now for a real choice with several alternatives. Where do you go fishing:
-the beach, a pier, a private boat, or a charter boat? The `Fishing` data of
-the **mlogit** package [@Croissant2020] contain this decision for 1182 US
-respondents together with the cost of a trip and the expected catch rate of
-each mode, and their monthly income [@Herriges1999]. Cost and catch rate
-vary across modes and enter as type `A`; income is a property of the
-respondent and enters as type `B`. The columns are named `price.beach`,
-`catch.pier`, and so on, which `delimiter = "."` tells `fit()`. Every row is
-one respondent, and `column_decider = NULL` numbers them. The first
-alternative in alphabetical order, `beach`, is the base, so the constants
-and the income coefficients describe the other modes relative to fishing
-from the beach.
+The shared coefficient of `x` differs from the previous fit by only
+`r sprintf("%.4f", base_shift)`, the Monte Carlo error of two separate
+runs, while the coefficient of `z` and the constant now describe alternative
+`A` relative to `B` and therefore change sign.
 
-```{r fishing}
-data("Fishing", package = "mlogit")
-fishing <- fit(
-  mode ~ price + catch | income,
-  data = Fishing,
-  delimiter = ".",
-  column_decider = NULL,
-  iterations = 15000,
-  warmup = 7500,
-  thin = 5,
+In 1987, 210 travelers between Sydney and Melbourne reported which of four
+modes they had taken: air, train, bus, or car. The `TravelMode` data of the
+**AER** package [@Kleiber2008] are in long format with one row per mode and
+a `"yes"`/`"no"` indicator of the chosen mode, which `fit()` expects as a
+logical or `0`/`1` variable. Terminal waiting time (`wait`), in-vehicle
+cost (`vcost`), and travel time (`travel`) vary across modes and enter as
+type `A`. Household income and the size of the traveling party describe the
+traveler and enter as type `B`, with the alternative-specific constants
+included by default. Cost and income are converted from Australian dollars
+to euro.
+
+```{r travel-formula}
+travel_formula <- choice ~ wait + vcost + travel | income + size
+```
+
+The first alternative in alphabetical order, `air`, is the base, so the
+constants and the coefficients of income and party size describe the other
+modes relative to flying. A free error covariance between four alternatives
+is weakly identified when every traveler is observed once, and the sampler
+mixes slowly for its entries, so the chains run 20000 iterations and retain
+every twentieth draw.
+
+```{r travel}
+data("TravelMode", package = "AER")
+TravelMode$choice <- TravelMode$choice == "yes"
+TravelMode$vcost <- TravelMode$vcost / 1.6196
+TravelMode$income <- TravelMode$income / 1.6196
+travel <- fit(
+  formula = travel_formula,
+  data = TravelMode,
+  format = "long",
+  column_decider = "individual",
+  column_alternative = "mode",
+  iterations = 20000,
+  warmup = 10000,
+  thin = 20,
   chains = 2,
   progress = FALSE
 )
-summary(fishing)
+summary(travel)
 ```
 
-Why fifteen thousand iterations for a model with eight coefficients? Because
-of the five entries of `Sigma` below them. A free error covariance between
-four alternatives is weakly identified when every respondent is observed
-only once, and such parameters move slowly through the posterior. At this
-length the coefficients are comfortable and the covariance entries are
-usable; the default thousand iterations left `rhat` near 1.5 for them. The
-fit takes a few seconds, which is what a cross-section of this size costs.
-
-Higher prices make a mode less and higher catch rates make it more
-attractive, the two signs that @Herriges1999 also report; they fitted nested
-logit models to these data, so the error structure differs while the story
-does not. How much is a better catch worth? `interpret()` expresses the
-catch coefficient in units of the price, so the number is the price increase
-that just offsets a one unit higher catch rate:
-
-```{r fishing-interpret}
-catch_value <- interpret(fishing, reference = "price", effects = "catch")
-catch_value
+```{r travel-diagnostics, include=FALSE}
+travel_table <- summary(travel)$posterior
+travel_sigma <- startsWith(travel_table$variable, "Sigma")
+travel_rhat <- c(
+  beta = max(travel_table$rhat[!travel_sigma]),
+  Sigma = max(travel_table$rhat[travel_sigma])
+)
+travel_slowest <- paste0(
+  "`", travel_table$variable[which.min(travel_table$ess_bulk)], "`"
+)
+travel_cost <- travel_table[travel_table$variable == "beta[vcost]", ]
+travel_cost_ratio <- abs(travel_cost$mean) / travel_cost$sd
 ```
 
-Anglers would accept a trip that costs about `r round(catch_value$mean)`
-dollars more for a catch rate that is one unit higher, and the interval
-comes from the posterior of the ratio, not from the ratio of two posterior
-means.
+At this length, `rhat` is at most `r sprintf("%.3f", travel_rhat[["beta"]])`
+for the coefficients and `r sprintf("%.3f", travel_rhat[["Sigma"]])` for the
+covariance entries, and the smallest bulk effective sample size,
+`r round(min(travel_table$ess_bulk))`, belongs to `r travel_slowest`. The
+fit took `r round(travel$sampler$elapsed[["total"]])` seconds. The three
+attribute coefficients are negative: waiting, cost, and travel time reduce
+the utility of a mode. The cost coefficient lies only
+`r round(travel_cost_ratio, 1)` posterior standard deviations from zero, so
+these data contain little information about a value of time, and a
+compensation with the cost as reference would have an uninformative
+credible interval. The income and party size coefficients are
+alternative-specific and have no direct interpretation on the utility scale,
+so `interpret(type = "mea")` computes marginal effects, the derivatives of
+the choice probabilities with respect to a covariate, for a traveler with
+average covariates:
 
-And what does income do? Its three coefficients are alternative-specific
-and hard to read on the utility scale, so `interpret(type = "mea")`
-translates them into probabilities at the average angler:
-
-```{r fishing-income}
-income_effects <- interpret(fishing, type = "mea")
-income_effects[income_effects$covariate == "income", ]
+```{r travel-income}
+mode_effects <- interpret(travel, type = "mea")
+mode_effects[mode_effects$covariate == "income", ]
 ```
 
-```{r fishing-numbers, include=FALSE}
-income_row <- function(mode) {
-  row <- income_effects$covariate == "income" &
-    income_effects$alternative == mode
-  100 * 1000 * income_effects$mean[row]
+```{r travel-numbers, include=FALSE}
+income_effect <- function(mode) {
+  row <- mode_effects$covariate == "income" & mode_effects$alternative == mode
+  100 * mode_effects$mean[row]
 }
+direction <- function(x) if (x < 0) "lowers" else "raises"
 ```
 
-Income is recorded in dollars, so the effects are per dollar and look tiny.
-Per thousand dollars of monthly income, anglers move towards the private
-boat by about `r round(income_row("boat"), 1)` percentage points and away
-from the charter boat by about `r round(abs(income_row("charter")), 1)`
-points. The four effects sum to zero, because an angler has to fish
-somewhere.
-
-## Heterogeneous preferences
-
-Coefficients need not be the same for every decider. `random_effects` lets
-them vary continuously over the population, and `classes` sorts deciders
-into groups with their own coefficients. Both are covered in
-`vignette("v03_heterogeneity")`, together with the six available mixing
-distributions and the four ways of updating latent classes.
+An additional thousand euro of household income
+`r direction(income_effect("train"))` the probability of the train by about
+`r sprintf("%.1f", abs(income_effect("train")))` percentage points and
+`r direction(income_effect("air"))` that of the plane by about
+`r sprintf("%.1f", abs(income_effect("air")))` points. The four effects sum
+to zero because the four probabilities sum to one.
 
 ## Individual choice sets
 
-Not every alternative is on the menu at every occasion: a traveler without a
+Not every alternative is available at every occasion: a traveler without a
 car cannot drive, and a route without a rail link has no train option.
-Unordered choices may therefore be made from occasion-specific subsets of
-the alternatives. In long format, an occasion simply lists the rows of its
-available alternatives. The sampler imputes the latent utilities of
-unavailable alternatives without any restriction, so they do not affect the
-choice, and predictions assign them probability zero.
+Unordered choices can therefore be made from occasion-specific subsets of
+the alternatives. In long format, an occasion lists only the rows of its
+available alternatives, and no further argument is needed. The sampler
+imputes the latent utilities of unavailable alternatives without
+restriction, so they do not affect the choice, and predictions assign them
+probability zero. Ordered and ranked models require complete choice sets.
 
-`fit()` simulates complete choice sets only, so the proof of concept
-simulates its data by hand, reproducibly through the `set.seed()` call at
-the top. Alternatives A and B are always available and C is available to
-every second decider. Utilities use a coefficient of one; with A as the
-base, the two estimable error differences have unit variances and zero
-covariance. Availability is fixed before the choices are simulated.
+Between Montreal and Toronto, travelers can fly, drive, or take the train,
+but not all modes are available on every trip. The `ModeCanada` data of the
+**mlogit** package cover 4324 trips in this corridor [@Bhat1995].
 
-```{r choice-sets-recovery}
-choice_set_data <- expand.grid(
-  deciderID = 1:500, alternative = LETTERS[1:3]
-)
-choice_set_data <- subset(
-  choice_set_data, alternative != "C" | deciderID %% 2 == 0
-)
-choice_set_data$x <- rnorm(nrow(choice_set_data))
-utility <- choice_set_data$x + ifelse(
-  choice_set_data$alternative == "A", 0, rnorm(nrow(choice_set_data))
-)
-choice_set_data$choice <- ave(
-  utility, choice_set_data$deciderID,
-  FUN = function(x) as.integer(x == max(x))
-)
-choice_sets <- fit(
-  choice ~ x | 0,
-  data = choice_set_data,
-  format = "long",
-  column_alternative = "alternative",
-  chains = 1
-)
-choice_set_truth <- c("beta[x]" = 1, "Sigma[C,B]" = 0, "Sigma[C,C]" = 1)
-choice_set_summary <- summary(
-  choice_sets, variables = names(choice_set_truth)
-)$posterior
-data.frame(
-  variable = choice_set_summary$variable,
-  dgp = unname(choice_set_truth[choice_set_summary$variable]),
-  mean = choice_set_summary$mean,
-  mode = choice_set_summary$mode,
-  sd = choice_set_summary$sd
-)
+```{r canada-load}
+data("ModeCanada", package = "mlogit")
+head(ModeCanada)
 ```
 
-The coefficient is recovered closely, and the free error parameters within
-their posterior uncertainty, from choice sets of mixed size.
+Cost
+(`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and service
+frequency (`freq`) vary across modes; household income and the number of
+urban trip endpoints are trip-specific. The data also contain the bus, which
+was chosen on only `r sum(ModeCanada$alt == "bus" & ModeCanada$choice == 1)`
+trips, too few to identify its coefficients and error covariances, so the
+bus rows and the trips on which it was chosen are removed. Cost and income
+are converted from Canadian dollars to euro, and trips with a single
+remaining alternative are dropped.
 
-Between Montreal and Toronto, travelers can fly, take the bus, drive, or
-take the train, but not every trip has all four on offer. The `ModeCanada`
-data of the **mlogit** package [@Croissant2020] cover 4324 trips in this
-corridor with two to four available modes each [@Bhat1995]. Cost (`cost`),
-in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and service frequency
-(`freq`) vary across modes; household income and the number of urban trip
-endpoints are trip-specific. The data are in long format with one row per
-available mode, and the cost and the income are converted from Canadian
-dollars to euro.
-
-```{r canada}
-data("ModeCanada", package = "mlogit")
+```{r canada-data}
 ModeCanada$cost <- ModeCanada$cost / 1.6151
 ModeCanada$income <- ModeCanada$income / 1.6151
-table(table(ModeCanada$case))
+bus_trips <- ModeCanada$case[ModeCanada$alt == "bus" & ModeCanada$choice == 1]
+canada_data <- ModeCanada[
+  ModeCanada$alt != "bus" & !(ModeCanada$case %in% bus_trips),
+]
+set_size <- table(canada_data$case)
+canada_data <- canada_data[set_size[as.character(canada_data$case)] > 1, ]
+table(table(canada_data$case))
+```
+
+The choice sets are read from the rows of each trip. Every trip is one
+decider, and the model has the same structure as the travel mode model
+above: three attributes of type `A`, two trip characteristics of type `B`,
+and the constants, all relative to `air`.
+
+```{r canada}
 canada <- fit(
   choice ~ cost + ivt + ovt + freq | income + urban,
-  data = ModeCanada,
+  data = canada_data,
   format = "long",
   column_decider = "case",
   column_alternative = "alt",
-  chains = 1
+  iterations = 20000,
+  warmup = 10000,
+  thin = 10,
+  chains = 2,
+  progress = FALSE
 )
-coef(canada)[1:4]
+summary(canada)
 ```
 
-The choice sets are read from the rows of each trip; no further argument is
-needed. The estimates carry a well-known lesson of transport research, and
-the one @Bhat1995 drew from these very data: a minute spent waiting or
-walking weighs several times as much as a minute spent in the vehicle.
-`interpret()` computes this ratio with its posterior uncertainty, and with
-the cost as reference it turns both time coefficients into values of travel
-time.
-
-```{r canada-interpret}
+```{r canada-numbers, include=FALSE}
+canada_table <- summary(canada)$posterior
+canada_slowest <- paste0(
+  "`", canada_table$variable[which.min(canada_table$ess_bulk)], "`"
+)
 time_ratio <- interpret(canada, reference = "ivt", effects = "ovt")
-time_ratio
-time_values <- interpret(canada, reference = "cost", effects = c("ivt", "ovt"))
-time_values
+canada_income <- coef(canada)[c("beta[income_car]", "beta[income_train]")]
+canada_income_sign <- if (all(canada_income < 0)) {
+  "negative"
+} else {
+  "not both negative"
+}
 ```
 
-A minute out of the vehicle counts about `r round(abs(time_ratio$mean), 1)`
-times as much as a minute in it, with a credible interval from
-`r round(abs(time_ratio$upper), 1)` to `r round(abs(time_ratio$lower), 1)`.
-That is the one number in this vignette that can be held against the
-literature rather than only against a sign: mode choice studies of this
-corridor and of others place the ratio at roughly two to three, and the
-interval covers that range. In money, one more minute in the vehicle must be
-offset by a fare that is `r round(abs(time_values$mean[1]), 2)` euro lower,
-an hour therefore by about `r round(60 * abs(time_values$mean[1]))` euro.
-
-The two traveler characteristics enter with one coefficient per mode,
-relative to the air travelers who form the base:
-
-```{r canada-decider}
-coef(canada)[grepl("income|urban", names(coef(canada)))]
-```
-
-Income argues for flying: bus, car, and train all carry a negative income
-coefficient relative to the plane. Urban trip endpoints work differently.
-They speak for the bus and the train, whose stations sit in the city
-centers, and against the car, which is where the parking problem is.
-
-Ordered and ranked models require complete choice sets.
+The largest `rhat` is `r sprintf("%.3f", max(canada_table$rhat))`, and the
+smallest bulk effective sample size, `r round(min(canada_table$ess_bulk))`,
+belongs to `r canada_slowest`. A minute out of the vehicle reduces the
+utility about `r round(abs(time_ratio$mean), 1)` times as much as a minute
+in it, with a 95% credible interval from `r round(abs(time_ratio$upper), 1)`
+to `r round(abs(time_ratio$lower), 1)`, and the income coefficients of car
+and train are `r canada_income_sign`: a higher income increases the
+probability of flying.
 
 ## Ordered responses
 
-Some responses are levels rather than picks: never, occasionally, regularly,
-heavily. Ordered models estimate one utility per occasion and compare it
-with increasing thresholds `gamma`; the response levels are given through
-`alternatives` in increasing order. Latent-variable data augmentation
+Some responses are ordered levels, not choices between alternatives: never,
+occasionally, regularly, heavily. An ordered model has one latent utility
+per occasion and compares it with increasing thresholds `gamma`; the level
+is the interval into which the utility falls. `alternatives` gives the
+response levels in increasing order. Latent-variable data augmentation
 provides a direct Bayesian treatment of ordered probit models
-[@Albert1993]. The proof of concept estimates a simulated
+[@Albert1993]. The following demonstration estimates a simulated
 three-category model and reports the coefficient and the free threshold
 beside their true values.
 
-```{r ordered-recovery}
-ordered_recovery <- fit(
+```{r ordered-sim}
+ordered_sim <- fit(
   choice ~ x | 0,
   alternatives = c("low", "middle", "high"),
   choice_type = "ordered",
@@ -419,21 +421,24 @@ ordered_recovery <- fit(
   dgp_parameters = list(beta = c(x = 1), gamma = c(0, 1)),
   chains = 1
 )
-summary(ordered_recovery)
+summary(ordered_sim)
 ```
 
-Both the coefficient and the threshold between the middle and the high
-category are recovered within a tenth of their true values.
+```{r ordered-deviation, include=FALSE}
+ordered_table <- summary(ordered_sim)$posterior
+ordered_deviation <- max(abs(ordered_table$mean - ordered_table$dgp))
+```
+
+The posterior means of the coefficient and of the threshold between the
+middle and the high category deviate from their true values by at most
+`r signif(ordered_deviation, 1)`.
 
 The `survey` data of the **MASS** package [@VenablesRipley2002] come from
 237 statistics students at the University of Adelaide who reported how often
-they smoke, together with their age and how much they exercise. The survey
-is a teaching data set rather than a choice experiment, so there is no
-earlier choice model to compare the estimates with. The smoking level
-`Smoke` is stored as a factor whose levels are in alphabetical order;
+they smoke, together with their age and how much they exercise. The smoking
+level `Smoke` is stored as a factor whose levels are in alphabetical order;
 `alternatives` puts them in their natural order from never to heavy. The
-other survey questions are not used and may contain missing values, which
-`fit()` ignores.
+other survey questions are not used; `fit()` ignores their missing values.
 
 ```{r ordered}
 data("survey", package = "MASS")
@@ -451,12 +456,11 @@ summary(smoking)
 ```
 
 The first threshold is fixed to zero and the error variance to one; the
-remaining thresholds `gamma[2]` and `gamma[3]` are estimated. The picture
-behind these numbers: every student has one latent utility, normally
-distributed around their systematic part, and the thresholds cut it into the
-four levels. The area under the curve between two thresholds is the
-probability of that level. The curve below belongs to a student whose
-systematic utility is zero.
+remaining thresholds `gamma[2]` and `gamma[3]` are estimated. Each student
+has one latent utility, normally distributed around its systematic part,
+and the thresholds partition it into the four levels. The area under the
+density between two thresholds is the probability of that level. The figure
+shows the density of a student whose systematic utility is zero.
 
 ```{r ordered-figure}
 thresholds <- coef(smoking)[c("gamma[2]", "gamma[3]")]
@@ -483,22 +487,27 @@ legend(
 )
 ```
 
-The three smoking levels sit close together in the narrow region to the
-right of the first threshold: a student whose utility moves one unit to the
-right passes through all of them. A coefficient shifts the whole curve
-sideways, which is why one number per covariate describes its effect on all
-four levels at once. The factor
-`Exer` enters through its dummy variables relative to the students who
-exercise frequently. Older students report smoking less. Students who
-exercise only sometimes appear to smoke less than the frequent exercisers as
-well, which is not what one might expect; with fewer than 50 smokers among
-the 237 students, such contrasts rest on thin evidence.
+```{r smoking-numbers, include=FALSE}
+smoking_draws <- posterior::as_draws_matrix(smoking)
+smoking_negative <- sprintf("%.2f", mean(smoking_draws[, "beta[Age]"] < 0))
+smokers <- sum(survey$Smoke != "Never", na.rm = TRUE)
+```
 
-What does a coefficient of an ordered model mean for the probabilities of
-the levels? `interpret(type = "ame")` differentiates the probability of
-every level with respect to age and averages the derivatives over the
-students; `vignette("v04_prediction")` explains these marginal effects and
-their variant `type = "mea"` in more detail:
+The occasional and the regular level together occupy an interval of width
+`r round(coef(smoking)[["gamma[3]"]], 2)` to the right of the first
+threshold, and the two outer levels the unbounded intervals beyond. A
+covariate shifts the density along the utility axis, so one coefficient per
+covariate describes its effect on all four levels. The factor `Exer` enters
+through its dummy variables relative to the students who exercise
+frequently. The posterior probability that the age coefficient is negative
+is `r smoking_negative`: older students report smoking less. With
+`r smokers` smokers among the `r nobs(smoking)` students who answered the
+question, the data contain little information about the exercise
+contrasts. What does the age coefficient mean for the probabilities of the
+levels? `interpret(type = "ame")` differentiates the probability of each
+level with respect to age and averages the derivatives over the students;
+the vignette [Posterior prediction][v04] explains marginal effects in more
+detail:
 
 ```{r ordered-interpret}
 age_effects <- interpret(smoking, type = "ame")
@@ -507,21 +516,20 @@ age_effects
 
 One more year of age raises the probability of never smoking by about
 `r round(100 * age_effects$mean[age_effects$alternative == "Never"], 1)`
-percentage points and lowers the probabilities of all other levels. The four
-effects sum to zero, because the levels are exhaustive.
+percentage points and lowers the probabilities of the other three levels.
 
-## Rankings
+## Ranked responses
 
 Ranked data record the complete order of the alternatives. In wide format,
 the response columns combine the response name with each alternative, for
-example `rank_Xbox` or, with `delimiter = "."`, `ch.Xbox`. The model is the
-same probit model as for unordered choices, but the likelihood uses the
-full ordering of the utilities. The proof of concept simulates rankings of
-three alternatives and compares the
-coefficient and the free covariance parameters with the truth.
+example `rank_Xbox`. The model is the same probit model as for unordered
+choices, but the likelihood uses the full ordering of the utilities. The
+following demonstration simulates rankings of three alternatives and
+compares the coefficient and the free covariance parameters with the true
+values.
 
-```{r ranked-recovery}
-ranked_recovery <- fit(
+```{r ranked-sim}
+ranked_sim <- fit(
   rank ~ x | 0,
   choice_type = "ranked",
   n_deciders = 300,
@@ -531,20 +539,31 @@ ranked_recovery <- fit(
   ),
   chains = 1
 )
-summary(ranked_recovery, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]"))
+ranked_summary <- summary(
+  ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]")
+)
+ranked_summary
 ```
 
-The full ordering carries more information than a single choice: the
-coefficient is recovered closely, and the covariance and the variance of the
-error differences within their posterior uncertainty.
+```{r ranked-deviation, include=FALSE}
+ranked_table <- ranked_summary$posterior
+ranked_deviation <- round(
+  abs(ranked_table$mean - ranked_table$dgp) / ranked_table$sd, 1
+)
+```
 
-Which gaming platform would you rank first? The `Game` data of the
-**mlogit** package [@Croissant2020] contain complete rankings of six
-platforms by 91 Dutch respondents, together with whether they own each
-platform (`own`), their age, and their weekly gaming hours. The source study
-develops a rank-ordered choice model for these data [@Fok2012]. The ranks
-are stored in the columns `ch.Xbox`, `ch.PlayStation`, and so on, so the
-response in the formula is `ch`.
+A full ranking contains more information than a single choice. The
+posterior means of the coefficient, the covariance, and the variance deviate
+from their true values by `r ranked_deviation[1]`, `r ranked_deviation[2]`,
+and `r ranked_deviation[3]` posterior standard deviations.
+
+The `Game` data of the **mlogit** package contain complete rankings of six
+gaming platforms by 91 Dutch respondents, together with whether they own
+each platform (`own`), their age, and their weekly gaming hours; the source
+study develops a rank-ordered choice model for these data [@Fok2012]. The
+ranks are stored in the columns `ch.Xbox`, `ch.PlayStation`, and so on, so
+the response in the formula is `ch` and `delimiter = "."` separates it from
+the alternative.
 
 ```{r ranked}
 data("Game", package = "mlogit")
@@ -557,23 +576,26 @@ gaming <- fit(
   choice_type = "ranked",
   delimiter = ".",
   column_decider = NULL,
-  chains = 1
+  iterations = 2000,
+  warmup = 1000,
+  chains = 2,
+  progress = FALSE
 )
 coef(gaming)[1:6]
 ```
 
-Owning a platform raises its rank, as @Fok2012 also find. The
-alternative-specific constants and
-the coefficients of `age` and `hours` are relative to the base alternative,
-which is `GameBoy`, the first platform in alphabetical order, regardless of
-the order in `alternatives`. Which platform gains from a gamer's experience?
-For a ranked model, the marginal effects of `interpret()` refer to the
-probability of being ranked first. `type = "mea"` evaluates them for a
-respondent of average age who plays the average number of hours:
+The coefficient of `own` is positive: owning a platform raises its rank. The
+alternative-specific constants and the coefficients of `age` and `hours` are
+relative to the base alternative `GameBoy`, the first platform in
+alphabetical order, regardless of the order in `alternatives`. Which
+platform gains from additional gaming hours? For a ranked model, the
+marginal effects of `interpret()` refer to the probability of being ranked
+first, here for a respondent of average age who plays the average number of
+hours:
 
 ```{r ranked-interpret}
 platform_effects <- interpret(gaming, type = "mea")
-platform_effects
+platform_effects[platform_effects$covariate == "hours", ]
 ```
 
 ```{r ranked-numbers, include=FALSE}
@@ -582,37 +604,21 @@ pc_hours <- platform_effects$mean[
 ]
 ```
 
-The PC is the platform of the heavy gamers: every additional weekly hour
-raises the probability of ranking it first by about
-`r round(100 * pc_hours, 1)` percentage points, taken from the other
-platforms. The age effects are small and uncertain; 91 respondents cannot
-say much about them.
+Heavy gamers prefer the PC: every additional weekly hour raises the
+probability of ranking it first by about `r round(100 * pc_hours, 1)`
+percentage points and lowers the probabilities of the other platforms by the
+same amount in total.
 
-## RprobitB among its neighbors
+## Further reading
 
-Several R packages estimate related models. What sets **RprobitB** apart is the
-combination of Bayesian probit errors with panel random coefficients and
-finite or nonparametric mixtures, together with individual choice sets,
-posterior prediction, and decider-level model evaluation. The comparison below concerns the documented estimation routines
-of each package, not their data management or reporting features.
+The vignette [Modeling preference heterogeneity][v03] covers coefficients
+that differ between deciders. The vignette [Posterior prediction][v04]
+computes predictions and marginal effects from a fitted model, and the
+vignette [Bayesian model evaluation][v05] compares competing specifications.
 
-| Package | Main estimator and response family | Heterogeneity relevant here |
-|:--|:--|:--|
-| **Rchoice** [@Sarrias2016] | Simulated maximum likelihood for binary, ordinal, and count responses | Continuous random parameters in cross-sectional or panel data |
-| **mlogit** [@Croissant2020] | Maximum likelihood for multinomial logit and extensions | Random-parameter logit, but no Bayesian probit mixture |
-| **logitr** [@Helveston2023] | Maximum likelihood for multinomial and mixed logit, in preference or willingness-to-pay space | Normal and log-normal random parameters, but no discrete mixture |
-| **MNP** [@Imai2005b; @Imai2025] | Bayesian multinomial probit, including varying choice sets and rankings | No mixture on panel-level random coefficients |
-| **bayesm** [@Rossi2026] | Separate Bayesian multinomial probit and hierarchical multinomial logit routines | Finite and Dirichlet-process mixing for hierarchical logit, not hierarchical probit |
-| **gmnl** [@Sarrias2017] | Maximum or simulated maximum likelihood for multinomial logit variants | Continuous, finite latent-class, and mixed-mixed heterogeneity |
-| **RprobitB** [@Oelschlaeger2026d] | Bayesian binary, multinomial, ordered, and ranked probit | Panel random coefficients with a fixed, sparse finite, or Dirichlet-process mixture, and a weight-based update of the class count |
-
-## Where to go next
-
-The specification is only half of the model. Whether the coefficients are
-allowed to differ between deciders is the other half, and
-`vignette("v03_heterogeneity")` covers it. Once a model is specified and
-fitted, `vignette("v04_prediction")` turns it into predictions and marginal
-effects, and `vignette("v05_model_evaluation")` decides between competing
-specifications.
+[v01]: https://loelschlaeger.de/RprobitB/articles/v01_get_started.html
+[v03]: https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html
+[v04]: https://loelschlaeger.de/RprobitB/articles/v04_prediction.html
+[v05]: https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html
 
 ## References
