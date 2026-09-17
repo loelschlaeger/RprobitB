@@ -67,69 +67,80 @@
 
     
     
-<p>Every model variant of <strong>RprobitB</strong> <span class="citation">(<a href="#ref-Oelschlaeger2026d">Oelschläger and Bauer
-2026</a>)</span> is requested through arguments of <code><a href="../reference/fit.html">fit()</a></code>:
-which covariates get which kind of coefficient, whether the choice sets
-differ between occasions, and whether the response is a choice, an
-ordered category, or a ranking. This vignette starts with the two things
-every probit fit rests on, the normalization and the prior, and then
-goes through the variants one by one. Letting preferences differ between
-deciders has a vignette of its own, and <span class="citation">Oelschläger (<a href="#ref-Oelschlaeger2026c">2026</a>)</span> lays out the
-methodological background.</p>
-<p>From the covariate types onward, each section first fits the variant
-to simulated data and then to a data set of the <strong>mlogit</strong>
-package <span class="citation">(<a href="#ref-Croissant2020">Croissant
-2020</a>)</span> or the <strong>MASS</strong> package <span class="citation">(<a href="#ref-VenablesRipley2002">Venables and Ripley
-2002</a>)</span>. With <code>data = NULL</code>, <code><a href="../reference/fit.html">fit()</a></code>
-simulates the requested model before estimating it, and
-<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> prints the true values in a <code>dgp</code>
+<p>This vignette describes how to specify a probit choice model with
+<code><a href="../reference/fit.html">fit()</a></code>. It covers the normalization of the utility scale and
+the prior distribution, which every fit involves, and then the model
+variants: the three types of covariates and the alternative-specific
+constants, choice sets that differ between occasions, and ordered and
+ranked responses. Preference heterogeneity between deciders is the
+subject of the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html">Modeling
+preference heterogeneity</a>, and <span class="citation">Oelschläger (<a href="#ref-Oelschlaeger2026c">2026</a>)</span> gives the methodological
+background. From the covariate types onward, each section first fits the
+variant to simulated data and then to a data set of the
+<strong>AER</strong> package <span class="citation">(<a href="#ref-Kleiber2008">Kleiber and Zeileis 2008</a>)</span>, the
+<strong>MASS</strong> package <span class="citation">(<a href="#ref-VenablesRipley2002">Venables and Ripley 2002</a>)</span>, or
+the <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant 2020</a>)</span>. Without data,
+<code><a href="../reference/fit.html">fit()</a></code> simulates the requested model before estimating it,
+and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> prints the true values in a <code>dgp</code>
 column beside the posterior summaries, converted to the normalization of
-the fit; where the data were simulated by hand, a small table does the
-same. The simulated fits use one chain, the empirical ones two, so that
-their diagnostics can be read.</p>
+the fit.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="normalization">Normalization<a class="anchor" aria-label="anchor" href="#normalization"></a>
 </h2>
-<p>Utilities are identified only up to level and scale: adding a
-constant to all of them or multiplying them by a positive number changes
-nothing about which alternative wins. <strong>RprobitB</strong>
-therefore works with differences relative to a base alternative, chosen
-by <code>base</code> and defaulting to the first alternative in
-alphabetical order, and fixes one parameter through <code>scale</code>.
-How this is done is a central design question of Bayesian multinomial
-probit models <span class="citation">(<a href="#ref-McCulloch1994">McCulloch and Rossi 1994</a>; <a href="#ref-Imai2005a"><span class="nocase">Imai and van Dyk</span>
-2005a</a>)</span>:</p>
+<p>The probit model introduced in the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v01_get_started.html">Get
+started with RprobitB</a> assigns every alternative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+at occasion
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+of decider
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+the latent utility
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mrow><mi>n</mi><mi>t</mi><mi>j</mi></mrow></msub><mo>=</mo><msubsup><mi>X</mi><mrow><mi>n</mi><mi>t</mi><mi>j</mi></mrow><mi>⊤</mi></msubsup><msub><mi>β</mi><mi>n</mi></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>n</mi><mi>t</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">U_{ntj} = X_{ntj}^\top \beta_n + \epsilon_{ntj}</annotation></semantics></math>
+with jointly normal errors
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϵ</mi><mrow><mi>n</mi><mi>t</mi></mrow></msub><mo>∼</mo><mi mathvariant="normal">N</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi mathvariant="normal">Σ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\epsilon_{nt} \sim \mathrm{N}(0, \Sigma)</annotation></semantics></math>,
+and the decider chooses the alternative with the largest utility. The
+choice probability of an alternative is the probability that its utility
+exceeds the utilities of all others. These probabilities are invariant
+to adding a constant to all utilities and to multiplying all utilities
+by a positive number, so neither the level nor the scale of the
+utilities is identified. <strong>RprobitB</strong> therefore works with
+utility differences relative to a base alternative, by default the first
+in alphabetical order, and fixes one parameter through
+<code>scale</code>:</p>
 <ul>
 <li>
 <code>scale = NULL</code> fixes the error variance of the first
-utility difference to one. This is the default and yields the posterior
-variable names <code>Sigma[B,B]</code>, <code>Sigma[C,B]</code>, and so
-on.</li>
+utility difference to one. This is the default. The covariance matrix of
+the error differences is reported as
+<code>Sigma[&lt;alternative&gt;,&lt;alternative&gt;]</code>, with rows
+and columns named by the alternatives other than the base. For three
+alternatives <code>A</code>, <code>B</code>, and <code>C</code> with
+base <code>A</code>, its entries are <code>Sigma[B,B]</code>,
+<code>Sigma[C,B]</code>, and <code>Sigma[C,C]</code>.</li>
 <li>
-<code>scale = c(price = -1)</code> fixes a coefficient instead. All
-other coefficients are then measured in units of that coefficient, which
-is convenient when willingness-to-pay measures are the goal.</li>
-<li>
-<code>scale = c("Sigma_B,B" = 1)</code> names the fixed variance
-explicitly.</li>
+<code>scale = c(z = -1)</code> fixes the coefficient of
+<code>z</code> to <code>-1</code> instead, so that all other
+coefficients are measured in units of it. With a price coefficient fixed
+in this way, the other coefficients are willingness-to-pay values.</li>
 </ul>
 <p>The sampler draws all parameters without restriction and rescales
 every retained draw afterwards. Variables that the normalization fixes
-stay in the draws but are left out of <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>,
+remain in the draws but are omitted from <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>,
 <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>, and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code>.</p>
-<p>The proof of concept shows what the normalization does to the
-numbers. Data generated with coefficients <code>1</code> for
-<code>x</code> and <code>-0.5</code> for <code>z</code> are fitted once
-under the default scale and once with the coefficient of <code>z</code>
-fixed to <code>-1</code>. Seeding both calls identically makes
-<code><a href="../reference/fit.html">fit()</a></code> simulate the same data, so only the normalization
-differs.</p>
+<p>The following demonstration shows the effect of the normalization on
+the reported values. We simulate data with coefficients <code>1</code>
+for <code>x</code> and <code>-0.5</code> for <code>z</code> and fit them
+under the default scale. Simulated alternatives are labeled with capital
+letters unless <code>alternatives</code> names them, here <code>A</code>
+and <code>B</code>, and <code>A</code> is the base.
+<code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> then refits the same simulated data with the
+coefficient of <code>z</code> fixed to <code>-1</code>, so only the
+normalization differs between the two fits.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">scale_default</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">scale_default</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">z</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, z <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  n_deciders <span class="op">=</span> <span class="fl">300</span>,</span>
@@ -142,54 +153,53 @@ differs.</p>
 <span><span class="co">#&gt;  variable  dgp   mean   mode     sd rhat ess_bulk</span></span>
 <span><span class="co">#&gt;   beta[x]  1.0  1.124  1.079 0.1055    1     36.2</span></span>
 <span><span class="co">#&gt;   beta[z] -0.5 -0.617 -0.604 0.0877    1     51.1</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">scale_z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">z</span> <span class="op">|</span> <span class="fl">0</span>,</span>
-<span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, z <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>z <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>  n_deciders <span class="op">=</span> <span class="fl">300</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">scale_z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">scale_default</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>z <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">scale_z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x + z | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;    variable dgp mean mode    sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     beta[x]   2 1.85 1.79 0.253 1.01     98.8</span></span>
-<span><span class="co">#&gt;  Sigma[B,B]   4 2.81 2.16 0.926 1.00     51.1</span></span></code></pre></div>
+<span><span class="co">#&gt;     beta[x]   2 1.87 1.80 0.229 1.01      115</span></span>
+<span><span class="co">#&gt;  Sigma[B,B]   4 2.94 2.33 0.932 1.04       47</span></span></code></pre></div>
 <p>Under the default scale, the <code>dgp</code> column shows the
-coefficients as specified, and <code>Sigma[B,B]</code> is fixed to one
-and therefore not listed. Under the coefficient normalization,
-<code>beta[z]</code> is the fixed variable, and everything else is
-expressed in units of it: the true <code>beta[x]</code> becomes
-<code>2</code>, the true error variance <code>4</code>, and the
-estimates follow within their posterior uncertainty.
-<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> always converts the truth to the normalization of
-the fit, so the columns are comparable in both cases.</p>
+coefficients as specified. <code>Sigma[B,B]</code>, the error variance
+of the utility difference between alternative <code>B</code> and the
+base <code>A</code>, is fixed to one and therefore not listed. Under the
+coefficient normalization, <code>beta[z]</code> is fixed to
+<code>-1</code> instead of its true <code>-0.5</code>, so all utilities
+are multiplied by <code>2</code>: the true <code>beta[x]</code> becomes
+<code>2</code> and the true error variance <code>4</code>.
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> converts the true values to the normalization of
+the fit, so the <code>dgp</code> column remains comparable.</p>
+<p>The convergence diagnostics of the two tables differ because
+<code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> runs the sampler again and because the rescaled
+variables are different functions of the draws: <code>beta[x]</code> is
+now a ratio of two coefficients, which mixes differently than a single
+coefficient.</p>
 </div>
 <div class="section level2">
 <h2 id="prior-distribution">Prior distribution<a class="anchor" aria-label="anchor" href="#prior-distribution"></a>
 </h2>
-<p>The prior is conjugate for every Gibbs update; the section “Prior
-distribution” of <code><a href="../reference/fit.html">?fit</a></code> lists all of its components. Fixed
-coefficients and class means have normal priors, covariance matrices
-have inverse Wishart priors, class weights have a Dirichlet prior, and
-the log-increments between ordered thresholds have a normal prior. The
-defaults for coefficients and covariances are weakly informative. The
-defaults for the mixture concentrations are a different matter: they
-encode assumptions about how many classes are occupied and deserve a
-sensitivity analysis, as discussed below. Single components are
-overridden through a named list, and the complete prior of a fit is
-stored in its <code>prior</code> component. The latent-utility data
-augmentation behind the sampler goes back to <span class="citation">Albert and Chib (<a href="#ref-Albert1993">1993</a>)</span>; <span class="citation"><span class="nocase">Imai and van Dyk</span> (<a href="#ref-Imai2005a">2005a</a>)</span> developed its marginal
+<p><strong>RprobitB</strong> estimates every model with a Gibbs sampler,
+which draws each block of parameters in turn from its conditional
+posterior distribution given the other parameters and the latent
+utilities. The prior is conjugate for every block, so each conditional
+posterior belongs to the same family as the prior. Fixed coefficients
+and class means have normal priors, covariance matrices have inverse
+Wishart priors, class weights have a Dirichlet prior, and the
+log-increments between ordered thresholds have a normal prior. The
+section “Prior distribution” of <code><a href="../reference/fit.html">?fit</a></code> lists all components
+with their defaults, which are weakly informative for coefficients and
+covariances. Single components are overridden through a named list, and
+the complete prior of a fit is stored in its <code>prior</code>
+component. The latent-utility data augmentation of the sampler goes back
+to <span class="citation">Albert and Chib (<a href="#ref-Albert1993">1993</a>)</span>, and <span class="citation"><span class="nocase">Imai and van Dyk</span> (<a href="#ref-Imai2005a">2005</a>)</span> developed its marginal
 augmentation for the multinomial probit model.</p>
-<p>The proof of concept simulates 100 deciders with a true coefficient
-of <code>-1</code> under the default prior and then refits the same data
-under two priors that expect the coefficient near <code>1</code>: a
-moderate one with variance <code>0.5</code> and a tight one with
-variance <code>0.01</code>. <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> takes care of the
-refits: it reuses the simulated data of the first fit and replaces only
-the arguments that are named.</p>
+<p>The following demonstration simulates 100 deciders with a true
+coefficient of <code>-1</code> under the default prior and then refits
+the same data under two priors with mean <code>1</code>: a moderate one
+with variance <code>0.5</code> and a tight one with variance
+<code>0.01</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
@@ -214,8 +224,8 @@ the arguments that are named.</p>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;  variable dgp  mean  mode    sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;   beta[x]  -1 -1.08 -1.01 0.209 1.06     24.3</span></span>
+<span><span class="co">#&gt;  variable dgp  mean   mode    sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;   beta[x]  -1 -1.02 -0.986 0.163 1.02     46.3</span></span>
 <span><span class="va">moderate_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
 <span>  <span class="va">default_prior</span>, prior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fixed_mean <span class="op">=</span> <span class="fl">1</span>, fixed_covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -228,16 +238,14 @@ the arguments that are named.</p>
 <span>  row.names <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   variable dgp   default   moderate     tight</span></span>
-<span><span class="co">#&gt; 1  beta[x]  -1 -1.079866 -0.9457907 0.1108568</span></span></code></pre></div>
-<p>The default prior recovers the truth within the posterior
-uncertainty. The moderate prior pulls the estimate about 0.13 towards
-its mean, a visible but harmless nudge that a few hundred more
-observations would erase. The tight prior is a different story: it
-insists on a value near <code>1</code> with a standard deviation of
-<code>0.1</code>, and it drags the estimate all the way to zero. Priors
-on coefficients are harmless as long as they are honest about their
-uncertainty. The priors on mixture concentrations further below deserve
-attention even at their defaults.</p>
+<span><span class="co">#&gt; 1  beta[x]  -1 -1.016823 -0.9577477 0.1240365</span></span></code></pre></div>
+<p>Under the default prior, the posterior mean deviates from the true
+value by 0.1 posterior standard deviations. The moderate prior shifts
+the posterior mean by about 0.06 towards the prior mean. The tight prior
+has a standard deviation of <code>0.1</code> around <code>1</code> and
+moves the posterior mean to 0.12. A prior on a coefficient is
+unproblematic as long as its variance reflects the actual uncertainty
+about the coefficient.</p>
 </div>
 <div class="section level2">
 <h2 id="covariate-types-and-alternative-specific-constants">Covariate types and alternative-specific constants<a class="anchor" aria-label="anchor" href="#covariate-types-and-alternative-specific-constants"></a>
@@ -247,10 +255,12 @@ of covariates: attributes of the alternatives with one shared
 coefficient (<code>A</code>), characteristics of the decider with
 alternative-specific coefficients (<code>B</code>), and attributes of
 the alternatives with alternative-specific coefficients
-(<code>C</code>). Alternative-specific constants are included by default
-and removed with <code>0</code> in the second part.</p>
-<p>The proof of concept simulates all three types at once. Its summary
-lines up the posterior estimates with the normalized true values.</p>
+(<code>C</code>). Alternative-specific constants, one intercept per
+alternative other than the base that captures the utility of the
+alternative beyond its attributes, are included by default and removed
+with <code>0</code> in the second part. The following demonstration
+simulates all three types at once, and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> shows the
+posterior summaries beside the normalized true values.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">covariate_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">z</span> <span class="op">|</span> <span class="va">w</span>,</span>
@@ -264,269 +274,226 @@ lines up the posterior estimates with the normalized true values.</p>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | z | w </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;     variable   dgp   mean   mode     sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;      beta[x]  0.50  0.527  0.512 0.0604 1.012     80.2</span></span>
-<span><span class="co">#&gt;    beta[z_B] -0.50 -0.593 -0.583 0.0785 0.998     97.7</span></span>
-<span><span class="co">#&gt;  beta[ASC_B]  0.25  0.227  0.222 0.0668 0.999    155.4</span></span>
-<span><span class="co">#&gt;    beta[w_A] -0.50 -0.536 -0.505 0.0817 1.003    122.8</span></span>
-<span><span class="co">#&gt;    beta[w_B]  0.50  0.608  0.593 0.0774 1.002     82.0</span></span></code></pre></div>
-<p>All five coefficients are recovered with the right signs and sizes,
-including the two alternative-specific effects of <code>w</code> and the
-constant of alternative <code>B</code>. The remaining deviations amount
-to at most two and a half posterior standard deviations, which is the
-sampling variation to expect from one simulated data set.</p>
-<p><code>base</code> chooses which alternative the alternative-specific
-coefficients are measured against. The default is the first in
-alphabetical order, here <code>A</code>; switching to <code>B</code>
-mirrors the constant and the decider effect without changing the
-model.</p>
+<span><span class="co">#&gt;     variable   dgp   mean   mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;      beta[x]  0.50  0.510  0.512 0.0593 1.01       87</span></span>
+<span><span class="co">#&gt;    beta[z_B] -0.50 -0.512 -0.527 0.0730 1.01      117</span></span>
+<span><span class="co">#&gt;  beta[ASC_B]  0.25  0.234  0.236 0.0680 1.01      147</span></span>
+<span><span class="co">#&gt;    beta[w_A] -0.50 -0.433 -0.427 0.0649 1.00      160</span></span>
+<span><span class="co">#&gt;    beta[w_B]  0.50  0.306  0.282 0.0702 1.00      146</span></span></code></pre></div>
+<p>The posterior means of the five coefficients, including the two
+alternative-specific coefficients of <code>w</code> and the constant of
+alternative <code>B</code>, deviate from the true values by at most 2.8
+posterior standard deviations, and all five have the sign of the true
+value. <code>base</code> selects the alternative against which the
+alternative-specific coefficients are measured, by default the first in
+alphabetical order, here <code>A</code>. Switching the base to
+<code>B</code> changes the parameterization, not the model:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">covariate_types</span>, base <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">base_b</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"beta[z_A]"</span>, <span class="st">"beta[ASC_A]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;     beta[x]   beta[z_A] beta[ASC_A] </span></span>
-<span><span class="co">#&gt;   0.5269383   0.5822533  -0.2248615</span></span></code></pre></div>
-<p>The shared coefficient of <code>x</code> is untouched, while
-<code>z</code> and the constant now describe alternative <code>A</code>
-relative to <code>B</code> and therefore change sign.</p>
-<p>Now for a real choice with several alternatives. Where do you go
-fishing: the beach, a pier, a private boat, or a charter boat? The
-<code>Fishing</code> data of the <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant
-2020</a>)</span> contain this decision for 1182 US respondents together
-with the cost of a trip and the expected catch rate of each mode, and
-their monthly income <span class="citation">(<a href="#ref-Herriges1999">Herriges and Kling 1999</a>)</span>. Cost and
-catch rate vary across modes and enter as type <code>A</code>; income is
-a property of the respondent and enters as type <code>B</code>. The
-columns are named <code>price.beach</code>, <code>catch.pier</code>, and
-so on, which <code>delimiter = "."</code> tells <code><a href="../reference/fit.html">fit()</a></code>.
-Every row is one respondent, and <code>column_decider = NULL</code>
-numbers them. The first alternative in alphabetical order,
-<code>beach</code>, is the base, so the constants and the income
-coefficients describe the other modes relative to fishing from the
-beach.</p>
+<span><span class="co">#&gt;   0.5193362   0.5230973  -0.2385689</span></span></code></pre></div>
+<p>The shared coefficient of <code>x</code> differs from the previous
+fit by only 0.0092, the Monte Carlo error of two separate runs, while
+the coefficient of <code>z</code> and the constant now describe
+alternative <code>A</code> relative to <code>B</code> and therefore
+change sign.</p>
+<p>In 1987, 210 travelers between Sydney and Melbourne reported which of
+four modes they had taken: air, train, bus, or car. The
+<code>TravelMode</code> data of the <strong>AER</strong> package <span class="citation">(<a href="#ref-Kleiber2008">Kleiber and Zeileis
+2008</a>)</span> are in long format with one row per mode and a
+<code>"yes"</code>/<code>"no"</code> indicator of the chosen mode, which
+<code><a href="../reference/fit.html">fit()</a></code> expects as a logical or <code>0</code>/<code>1</code>
+variable. Terminal waiting time (<code>wait</code>), in-vehicle cost
+(<code>vcost</code>), and travel time (<code>travel</code>) vary across
+modes and enter as type <code>A</code>. Household income and the size of
+the traveling party describe the traveler and enter as type
+<code>B</code>, with the alternative-specific constants included by
+default. Cost and income are converted from Australian dollars to
+euro.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Fishing"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
-<span><span class="va">fishing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
-<span>  <span class="va">mode</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">catch</span> <span class="op">|</span> <span class="va">income</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">Fishing</span>,</span>
-<span>  delimiter <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>  column_decider <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  iterations <span class="op">=</span> <span class="fl">15000</span>,</span>
-<span>  warmup <span class="op">=</span> <span class="fl">7500</span>,</span>
-<span>  thin <span class="op">=</span> <span class="fl">5</span>,</span>
+<code class="sourceCode R"><span><span class="va">travel_formula</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">wait</span> <span class="op">+</span> <span class="va">vcost</span> <span class="op">+</span> <span class="va">travel</span> <span class="op">|</span> <span class="va">income</span> <span class="op">+</span> <span class="va">size</span></span></code></pre></div>
+<p>The first alternative in alphabetical order, <code>air</code>, is the
+base, so the constants and the coefficients of income and party size
+describe the other modes relative to flying. A free error covariance
+between four alternatives is weakly identified when every traveler is
+observed once, and the sampler mixes slowly for its entries, so the
+chains run 20000 iterations and retain every twentieth draw.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TravelMode"</span>, package <span class="op">=</span> <span class="st">"AER"</span><span class="op">)</span></span>
+<span><span class="va">TravelMode</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">choice</span> <span class="op">==</span> <span class="st">"yes"</span></span>
+<span><span class="va">TravelMode</span><span class="op">$</span><span class="va">vcost</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">vcost</span> <span class="op">/</span> <span class="fl">1.6196</span></span>
+<span><span class="va">TravelMode</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">income</span> <span class="op">/</span> <span class="fl">1.6196</span></span>
+<span><span class="va">travel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span>  formula <span class="op">=</span> <span class="va">travel_formula</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">TravelMode</span>,</span>
+<span>  format <span class="op">=</span> <span class="st">"long"</span>,</span>
+<span>  column_decider <span class="op">=</span> <span class="st">"individual"</span>,</span>
+<span>  column_alternative <span class="op">=</span> <span class="st">"mode"</span>,</span>
+<span>  iterations <span class="op">=</span> <span class="fl">20000</span>,</span>
+<span>  warmup <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  thin <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fishing</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">travel</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
-<span><span class="co">#&gt; Formula: mode ~ price + catch | income | 0 </span></span>
-<span><span class="co">#&gt; Samples: 1500 retained per chain, 2 chains</span></span>
+<span><span class="co">#&gt; Formula: choice ~ wait + vcost + travel | income + size | 0 </span></span>
+<span><span class="co">#&gt; Samples: 500 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                variable      mean      mode       sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;             beta[price] -9.35e-03 -9.03e-03 1.44e-03 1.05     25.6</span></span>
-<span><span class="co">#&gt;             beta[catch]  3.85e-01  3.81e-01 1.04e-01 1.01     65.9</span></span>
-<span><span class="co">#&gt;       beta[income.boat]  5.12e-05  5.41e-05 2.39e-05 1.01    342.9</span></span>
-<span><span class="co">#&gt;    beta[income.charter] -8.20e-05 -6.28e-05 4.89e-05 1.04     33.2</span></span>
-<span><span class="co">#&gt;       beta[income.pier] -6.75e-05 -4.23e-05 4.83e-05 1.04     26.4</span></span>
-<span><span class="co">#&gt;          beta[ASC.boat] -2.72e-01 -2.67e-01 1.77e-01 1.02     58.5</span></span>
-<span><span class="co">#&gt;       beta[ASC.charter]  4.30e-01  3.27e-01 2.74e-01 1.03     35.3</span></span>
-<span><span class="co">#&gt;          beta[ASC.pier]  4.54e-01  3.16e-01 2.68e-01 1.03     27.7</span></span>
-<span><span class="co">#&gt;     Sigma[boat,charter] -7.49e-01 -6.78e-01 2.93e-01 1.08     20.7</span></span>
-<span><span class="co">#&gt;  Sigma[charter,charter]  2.47e+00  1.37e+00 2.26e+00 1.06     20.0</span></span>
-<span><span class="co">#&gt;        Sigma[boat,pier]  7.93e-02  1.39e-01 3.16e-01 1.06     18.5</span></span>
-<span><span class="co">#&gt;     Sigma[charter,pier]  1.08e+00  2.68e-01 1.61e+00 1.06     21.8</span></span>
-<span><span class="co">#&gt;        Sigma[pier,pier]  9.73e-01  4.68e-01 1.16e+00 1.04     27.4</span></span></code></pre></div>
-<p>Why fifteen thousand iterations for a model with eight coefficients?
-Because of the five entries of <code>Sigma</code> below them. A free
-error covariance between four alternatives is weakly identified when
-every respondent is observed only once, and such parameters move slowly
-through the posterior. At this length the coefficients are comfortable
-and the covariance entries are usable; the default thousand iterations
-left <code>rhat</code> near 1.5 for them. The fit takes a few seconds,
-which is what a cross-section of this size costs.</p>
-<p>Higher prices make a mode less and higher catch rates make it more
-attractive, the two signs that <span class="citation">Herriges and Kling
-(<a href="#ref-Herriges1999">1999</a>)</span> also report; they fitted
-nested logit models to these data, so the error structure differs while
-the story does not. How much is a better catch worth?
-<code><a href="../reference/interpret.html">interpret()</a></code> expresses the catch coefficient in units of the
-price, so the number is the price increase that just offsets a one unit
-higher catch rate:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">catch_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">fishing</span>, reference <span class="op">=</span> <span class="st">"price"</span>, effects <span class="op">=</span> <span class="st">"catch"</span><span class="op">)</span></span>
-<span><span class="va">catch_value</span></span>
-<span><span class="co">#&gt; 1 `catch` compensates 41.3 `price` (95% interval 23.9 to 60.4)</span></span></code></pre></div>
-<p>Anglers would accept a trip that costs about 41 dollars more for a
-catch rate that is one unit higher, and the interval comes from the
-posterior of the ratio, not from the ratio of two posterior means.</p>
-<p>And what does income do? Its three coefficients are
-alternative-specific and hard to read on the utility scale, so
-<code>interpret(type = "mea")</code> translates them into probabilities
-at the average angler:</p>
+<span><span class="co">#&gt;            variable     mean     mode       sd  rhat ess_bulk</span></span>
+<span><span class="co">#&gt;          beta[wait] -0.04190 -0.04068 0.006463 1.004      366</span></span>
+<span><span class="co">#&gt;         beta[vcost] -0.00933 -0.00961 0.006023 1.001      871</span></span>
+<span><span class="co">#&gt;        beta[travel] -0.00228 -0.00207 0.000502 1.005      543</span></span>
+<span><span class="co">#&gt;    beta[income_bus] -0.01968 -0.01784 0.011561 1.001      664</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.00781 -0.00743 0.011476 1.001      747</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.05558 -0.05255 0.014245 1.000      560</span></span>
+<span><span class="co">#&gt;      beta[size_bus]  0.32076  0.34302 0.159507 1.001      620</span></span>
+<span><span class="co">#&gt;      beta[size_car]  0.44812  0.39388 0.140953 0.999      653</span></span>
+<span><span class="co">#&gt;    beta[size_train]  0.54106  0.56530 0.162805 1.000      603</span></span>
+<span><span class="co">#&gt;       beta[ASC_bus] -0.30811 -0.38835 0.494884 1.006      454</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -2.39816 -2.37504 0.689873 1.000      378</span></span>
+<span><span class="co">#&gt;     beta[ASC_train]  0.16482  0.04990 0.468125 1.004      580</span></span>
+<span><span class="co">#&gt;      Sigma[bus,car]  0.79569  0.72354 0.206590 1.001      299</span></span>
+<span><span class="co">#&gt;      Sigma[car,car]  1.28001  0.98104 0.506336 1.002      358</span></span>
+<span><span class="co">#&gt;    Sigma[bus,train]  0.86838  0.87828 0.196564 1.019      322</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.86047  0.77014 0.354483 1.007      297</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.35717  1.21939 0.447659 1.004      445</span></span></code></pre></div>
+<p>At this length, <code>rhat</code> is at most 1.006 for the
+coefficients and 1.019 for the covariance entries, and the smallest bulk
+effective sample size, 297, belongs to <code>Sigma[car,train]</code>.
+The fit took 3 seconds. The three attribute coefficients are negative:
+waiting, cost, and travel time reduce the utility of a mode. The cost
+coefficient lies only 1.5 posterior standard deviations from zero, so
+these data contain little information about a value of time, and a
+compensation with the cost as reference would have an uninformative
+credible interval. The income and party size coefficients are
+alternative-specific and have no direct interpretation on the utility
+scale, so <code>interpret(type = "mea")</code> computes marginal
+effects, the derivatives of the choice probabilities with respect to a
+covariate, for a traveler with average covariates:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">income_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">fishing</span>, type <span class="op">=</span> <span class="st">"mea"</span><span class="op">)</span></span>
-<span><span class="va">income_effects</span><span class="op">[</span><span class="va">income_effects</span><span class="op">$</span><span class="va">covariate</span> <span class="op">==</span> <span class="st">"income"</span>, <span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">mode_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">travel</span>, type <span class="op">=</span> <span class="st">"mea"</span><span class="op">)</span></span>
+<span><span class="va">mode_effects</span><span class="op">[</span><span class="va">mode_effects</span><span class="op">$</span><span class="va">covariate</span> <span class="op">==</span> <span class="st">"income"</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
-<span><span class="co">#&gt;  covariate alternative   at      mean       sd     lower     upper</span></span>
-<span><span class="co">#&gt;     income       beach 4099  9.80e-07 3.14e-06 -5.03e-06  7.35e-06</span></span>
-<span><span class="co">#&gt;     income        boat 4099  2.72e-05 6.44e-06  1.44e-05  3.97e-05</span></span>
-<span><span class="co">#&gt;     income     charter 4099 -1.89e-05 6.46e-06 -3.18e-05 -6.42e-06</span></span>
-<span><span class="co">#&gt;     income        pier 4099 -9.20e-06 3.35e-06 -1.58e-05 -2.76e-06</span></span></code></pre></div>
-<p>Income is recorded in dollars, so the effects are per dollar and look
-tiny. Per thousand dollars of monthly income, anglers move towards the
-private boat by about 2.7 percentage points and away from the charter
-boat by about 1.9 points. The four effects sum to zero, because an
-angler has to fish somewhere.</p>
-</div>
-<div class="section level2">
-<h2 id="heterogeneous-preferences">Heterogeneous preferences<a class="anchor" aria-label="anchor" href="#heterogeneous-preferences"></a>
-</h2>
-<p>Coefficients need not be the same for every decider.
-<code>random_effects</code> lets them vary continuously over the
-population, and <code>classes</code> sorts deciders into groups with
-their own coefficients. Both are covered in
-<code><a href="../articles/v03_heterogeneity.html">vignette("v03_heterogeneity")</a></code>, together with the six
-available mixing distributions and the four ways of updating latent
-classes.</p>
+<span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower    upper</span></span>
+<span><span class="co">#&gt;     income         air 21.3  0.00963 0.00351  0.00302  0.01665</span></span>
+<span><span class="co">#&gt;     income         bus 21.3  0.00134 0.00246 -0.00335  0.00626</span></span>
+<span><span class="co">#&gt;     income         car 21.3  0.00883 0.00376  0.00166  0.01656</span></span>
+<span><span class="co">#&gt;     income       train 21.3 -0.01981 0.00444 -0.02911 -0.01176</span></span></code></pre></div>
+<p>An additional thousand euro of household income lowers the
+probability of the train by about 2.0 percentage points and raises that
+of the plane by about 1.0 points. The four effects sum to zero because
+the four probabilities sum to one.</p>
 </div>
 <div class="section level2">
 <h2 id="individual-choice-sets">Individual choice sets<a class="anchor" aria-label="anchor" href="#individual-choice-sets"></a>
 </h2>
-<p>Not every alternative is on the menu at every occasion: a traveler
+<p>Not every alternative is available at every occasion: a traveler
 without a car cannot drive, and a route without a rail link has no train
-option. Unordered choices may therefore be made from occasion-specific
-subsets of the alternatives. In long format, an occasion simply lists
-the rows of its available alternatives. The sampler imputes the latent
-utilities of unavailable alternatives without any restriction, so they
-do not affect the choice, and predictions assign them probability
-zero.</p>
-<p><code><a href="../reference/fit.html">fit()</a></code> simulates complete choice sets only, so the proof
-of concept simulates its data by hand, reproducibly through the
-<code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> call at the top. Alternatives A and B are always
-available and C is available to every second decider. Utilities use a
-coefficient of one; with A as the base, the two estimable error
-differences have unit variances and zero covariance. Availability is
-fixed before the choices are simulated.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">choice_set_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
-<span>  deciderID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">500</span>, alternative <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">choice_set_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice_set_data</span>, <span class="va">alternative</span> <span class="op">!=</span> <span class="st">"C"</span> <span class="op">|</span> <span class="va">deciderID</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">0</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">choice_set_data</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">choice_set_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">utility</span> <span class="op">&lt;-</span> <span class="va">choice_set_data</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice_set_data</span><span class="op">$</span><span class="va">alternative</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">choice_set_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">choice_set_data</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html" class="external-link">ave</a></span><span class="op">(</span></span>
-<span>  <span class="va">utility</span>, <span class="va">choice_set_data</span><span class="op">$</span><span class="va">deciderID</span>,</span>
-<span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">choice_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">choice_set_data</span>,</span>
-<span>  format <span class="op">=</span> <span class="st">"long"</span>,</span>
-<span>  column_alternative <span class="op">=</span> <span class="st">"alternative"</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">choice_set_truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span> <span class="op">=</span> <span class="fl">1</span>, <span class="st">"Sigma[C,B]"</span> <span class="op">=</span> <span class="fl">0</span>, <span class="st">"Sigma[C,C]"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">choice_set_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice_sets</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">choice_set_truth</span><span class="op">)</span></span>
-<span><span class="op">)</span><span class="op">$</span><span class="va">posterior</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  variable <span class="op">=</span> <span class="va">choice_set_summary</span><span class="op">$</span><span class="va">variable</span>,</span>
-<span>  dgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">choice_set_truth</span><span class="op">[</span><span class="va">choice_set_summary</span><span class="op">$</span><span class="va">variable</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>  mean <span class="op">=</span> <span class="va">choice_set_summary</span><span class="op">$</span><span class="va">mean</span>,</span>
-<span>  mode <span class="op">=</span> <span class="va">choice_set_summary</span><span class="op">$</span><span class="va">mode</span>,</span>
-<span>  sd <span class="op">=</span> <span class="va">choice_set_summary</span><span class="op">$</span><span class="va">sd</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt;     variable dgp      mean      mode         sd</span></span>
-<span><span class="co">#&gt; 1    beta[x]   1 1.0208049 1.0023058 0.07513509</span></span>
-<span><span class="co">#&gt; 2 Sigma[C,B]   0 0.1576074 0.1510763 0.22755980</span></span>
-<span><span class="co">#&gt; 3 Sigma[C,C]   1 1.5205880 1.3008830 0.43919633</span></span></code></pre></div>
-<p>The coefficient is recovered closely, and the free error parameters
-within their posterior uncertainty, from choice sets of mixed size.</p>
-<p>Between Montreal and Toronto, travelers can fly, take the bus, drive,
-or take the train, but not every trip has all four on offer. The
+option. Unordered choices can therefore be made from occasion-specific
+subsets of the alternatives. In long format, an occasion lists only the
+rows of its available alternatives, and no further argument is needed.
+The sampler imputes the latent utilities of unavailable alternatives
+without restriction, so they do not affect the choice, and predictions
+assign them probability zero. Ordered and ranked models require complete
+choice sets.</p>
+<p>Between Montreal and Toronto, travelers can fly, drive, or take the
+train, but not all modes are available on every trip. The
 <code>ModeCanada</code> data of the <strong>mlogit</strong> package
-<span class="citation">(<a href="#ref-Croissant2020">Croissant
-2020</a>)</span> cover 4324 trips in this corridor with two to four
-available modes each <span class="citation">(<a href="#ref-Bhat1995">Bhat 1995</a>)</span>. Cost (<code>cost</code>),
-in-vehicle time (<code>ivt</code>), out-of-vehicle time
-(<code>ovt</code>), and service frequency (<code>freq</code>) vary
-across modes; household income and the number of urban trip endpoints
-are trip-specific. The data are in long format with one row per
-available mode, and the cost and the income are converted from Canadian
-dollars to euro.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+cover 4324 trips in this corridor <span class="citation">(<a href="#ref-Bhat1995">Bhat 1995</a>)</span>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ModeCanada"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
-<span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">/</span> <span class="fl">1.6151</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ModeCanada</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
+<span><span class="co">#&gt;    case alt   choice  dist  cost   ivt   ovt  freq income urban noalt</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 train      0    83  28.2    50    66     4     45     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     1 car        1    83  15.8    61     0     0     45     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     2 train      0    83  28.2    50    66     4     25     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     2 car        1    83  15.8    61     0     0     25     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     3 train      0    83  28.2    50    66     4     70     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     3 car        1    83  15.8    61     0     0     70     0     2</span></span></code></pre></div>
+<p>Cost (<code>cost</code>), in-vehicle time (<code>ivt</code>),
+out-of-vehicle time (<code>ovt</code>), and service frequency
+(<code>freq</code>) vary across modes; household income and the number
+of urban trip endpoints are trip-specific. The data also contain the
+bus, which was chosen on only 16 trips, too few to identify its
+coefficients and error covariances, so the bus rows and the trips on
+which it was chosen are removed. Cost and income are converted from
+Canadian dollars to euro, and trips with a single remaining alternative
+are dropped.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">/</span> <span class="fl">1.6151</span></span>
 <span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">income</span> <span class="op">/</span> <span class="fl">1.6151</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">case</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">bus_trips</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">case</span><span class="op">[</span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">alt</span> <span class="op">==</span> <span class="st">"bus"</span> <span class="op">&amp;</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">choice</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">canada_data</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">[</span></span>
+<span>  <span class="va">ModeCanada</span><span class="op">$</span><span class="va">alt</span> <span class="op">!=</span> <span class="st">"bus"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="op">(</span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">case</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">bus_trips</span><span class="op">)</span>,</span>
+<span><span class="op">]</span></span>
+<span><span class="va">set_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">canada_data</span><span class="op">$</span><span class="va">case</span><span class="op">)</span></span>
+<span><span class="va">canada_data</span> <span class="op">&lt;-</span> <span class="va">canada_data</span><span class="op">[</span><span class="va">set_size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">canada_data</span><span class="op">$</span><span class="va">case</span><span class="op">)</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">1</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">canada_data</span><span class="op">$</span><span class="va">case</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    2    3    4 </span></span>
-<span><span class="co">#&gt;  231 1314 2779</span></span>
-<span><span class="va">canada</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt;    2    3 </span></span>
+<span><span class="co">#&gt;  713 3593</span></span></code></pre></div>
+<p>The choice sets are read from the rows of each trip. Every trip is
+one decider, and the model has the same structure as the travel mode
+model above: three attributes of type <code>A</code>, two trip
+characteristics of type <code>B</code>, and the constants, all relative
+to <code>air</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">canada</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">cost</span> <span class="op">+</span> <span class="va">ivt</span> <span class="op">+</span> <span class="va">ovt</span> <span class="op">+</span> <span class="va">freq</span> <span class="op">|</span> <span class="va">income</span> <span class="op">+</span> <span class="va">urban</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">ModeCanada</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">canada_data</span>,</span>
 <span>  format <span class="op">=</span> <span class="st">"long"</span>,</span>
 <span>  column_decider <span class="op">=</span> <span class="st">"case"</span>,</span>
 <span>  column_alternative <span class="op">=</span> <span class="st">"alt"</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">1</span></span>
+<span>  iterations <span class="op">=</span> <span class="fl">20000</span>,</span>
+<span>  warmup <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  thin <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">canada</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   beta[cost]    beta[ivt]    beta[ovt]   beta[freq] </span></span>
-<span><span class="co">#&gt; -0.026015395 -0.004127017 -0.012019120  0.030824764</span></span></code></pre></div>
-<p>The choice sets are read from the rows of each trip; no further
-argument is needed. The estimates carry a well-known lesson of transport
-research, and the one <span class="citation">Bhat (<a href="#ref-Bhat1995">1995</a>)</span> drew from these very data: a
-minute spent waiting or walking weighs several times as much as a minute
-spent in the vehicle. <code><a href="../reference/interpret.html">interpret()</a></code> computes this ratio with
-its posterior uncertainty, and with the cost as reference it turns both
-time coefficients into values of travel time.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">time_ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">canada</span>, reference <span class="op">=</span> <span class="st">"ivt"</span>, effects <span class="op">=</span> <span class="st">"ovt"</span><span class="op">)</span></span>
-<span><span class="va">time_ratio</span></span>
-<span><span class="co">#&gt; 1 `ovt` compensates -2.93 `ivt` (95% interval -3.58 to -2.21)</span></span>
-<span><span class="va">time_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">canada</span>, reference <span class="op">=</span> <span class="st">"cost"</span>, effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ivt"</span>, <span class="st">"ovt"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">time_values</span></span>
-<span><span class="co">#&gt; 1 `ivt` compensates -0.166 `cost` (95% interval -0.286 to -0.118)</span></span>
-<span><span class="co">#&gt; 1 `ovt` compensates -0.473 `cost` (95% interval -0.687 to -0.374)</span></span></code></pre></div>
-<p>A minute out of the vehicle counts about 2.9 times as much as a
-minute in it, with a credible interval from 2.2 to 3.6. That is the one
-number in this vignette that can be held against the literature rather
-than only against a sign: mode choice studies of this corridor and of
-others place the ratio at roughly two to three, and the interval covers
-that range. In money, one more minute in the vehicle must be offset by a
-fare that is 0.17 euro lower, an hour therefore by about 10 euro.</p>
-<p>The two traveler characteristics enter with one coefficient per mode,
-relative to the air travelers who form the base:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">canada</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"income|urban"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">canada</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   beta[income_bus]   beta[income_car] beta[income_train]    beta[urban_bus] </span></span>
-<span><span class="co">#&gt;        -0.04023657        -0.01537473        -0.02874091         0.18558113 </span></span>
-<span><span class="co">#&gt;    beta[urban_car]  beta[urban_train] </span></span>
-<span><span class="co">#&gt;        -0.19375586         0.12975455</span></span></code></pre></div>
-<p>Income argues for flying: bus, car, and train all carry a negative
-income coefficient relative to the plane. Urban trip endpoints work
-differently. They speak for the bus and the train, whose stations sit in
-the city centers, and against the car, which is where the parking
-problem is.</p>
-<p>Ordered and ranked models require complete choice sets.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">canada</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Bayesian probit choice model</span></span>
+<span><span class="co">#&gt; Formula: choice ~ cost + ivt + ovt + freq | income + urban | 0 </span></span>
+<span><span class="co">#&gt; Samples: 1000 retained per chain, 2 chains</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;            variable     mean     mode       sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;          beta[cost] -0.03984 -0.04029 0.003431 1.06     40.8</span></span>
+<span><span class="co">#&gt;           beta[ivt] -0.00525 -0.00516 0.000411 1.01    299.0</span></span>
+<span><span class="co">#&gt;           beta[ovt] -0.01652 -0.01653 0.001180 1.00    611.6</span></span>
+<span><span class="co">#&gt;          beta[freq]  0.04246  0.04245 0.002401 1.00   1072.3</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.02041 -0.01987 0.002796 1.01    594.5</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.03635 -0.03641 0.003607 1.01    436.9</span></span>
+<span><span class="co">#&gt;     beta[urban_car] -0.26051 -0.24476 0.050660 1.00    806.9</span></span>
+<span><span class="co">#&gt;   beta[urban_train]  0.13590  0.14618 0.058486 1.00    569.0</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -0.58504 -0.54078 0.283682 1.07     37.9</span></span>
+<span><span class="co">#&gt;     beta[ASC_train] -0.25283 -0.26986 0.287186 1.08     23.4</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.56636  0.56680 0.099594 1.07     41.8</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.40236  1.34601 0.225902 1.01    166.5</span></span></code></pre></div>
+<p>The largest <code>rhat</code> is 1.080, and the smallest bulk
+effective sample size, 23, belongs to <code>beta[ASC_train]</code>. A
+minute out of the vehicle reduces the utility about 3.2 times as much as
+a minute in it, with a 95% credible interval from 2.6 to 3.8, and the
+income coefficients of car and train are negative: a higher income
+increases the probability of flying.</p>
 </div>
 <div class="section level2">
 <h2 id="ordered-responses">Ordered responses<a class="anchor" aria-label="anchor" href="#ordered-responses"></a>
 </h2>
-<p>Some responses are levels rather than picks: never, occasionally,
-regularly, heavily. Ordered models estimate one utility per occasion and
-compare it with increasing thresholds <code>gamma</code>; the response
-levels are given through <code>alternatives</code> in increasing order.
-Latent-variable data augmentation provides a direct Bayesian treatment
-of ordered probit models <span class="citation">(<a href="#ref-Albert1993">Albert and Chib 1993</a>)</span>. The proof of
-concept estimates a simulated three-category model and reports the
+<p>Some responses are ordered levels, not choices between alternatives:
+never, occasionally, regularly, heavily. An ordered model has one latent
+utility per occasion and compares it with increasing thresholds
+<code>gamma</code>; the level is the interval into which the utility
+falls. <code>alternatives</code> gives the response levels in increasing
+order. Latent-variable data augmentation provides a direct Bayesian
+treatment of ordered probit models <span class="citation">(<a href="#ref-Albert1993">Albert and Chib 1993</a>)</span>. The following
+demonstration estimates a simulated three-category model and reports the
 coefficient and the free threshold beside their true values.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ordered_recovery</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ordered_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  alternatives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"middle"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ordered"</span>,</span>
@@ -534,27 +501,26 @@ coefficient and the free threshold beside their true values.</p>
 <span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ordered_recovery</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ordered_sim</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;  variable dgp mean mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;   beta[x]   1 1.04 1.08 0.0726    1      120</span></span>
-<span><span class="co">#&gt;  gamma[2]   1 1.16 1.14 0.0631    1      104</span></span></code></pre></div>
-<p>Both the coefficient and the threshold between the middle and the
-high category are recovered within a tenth of their true values.</p>
+<span><span class="co">#&gt;  variable dgp  mean  mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;   beta[x]   1 1.067 1.091 0.0768 1.04     74.7</span></span>
+<span><span class="co">#&gt;  gamma[2]   1 0.926 0.891 0.0624 1.05    144.1</span></span></code></pre></div>
+<p>The posterior means of the coefficient and of the threshold between
+the middle and the high category deviate from their true values by at
+most 0.07.</p>
 <p>The <code>survey</code> data of the <strong>MASS</strong> package
 <span class="citation">(<a href="#ref-VenablesRipley2002">Venables and
 Ripley 2002</a>)</span> come from 237 statistics students at the
 University of Adelaide who reported how often they smoke, together with
-their age and how much they exercise. The survey is a teaching data set
-rather than a choice experiment, so there is no earlier choice model to
-compare the estimates with. The smoking level <code>Smoke</code> is
-stored as a factor whose levels are in alphabetical order;
-<code>alternatives</code> puts them in their natural order from never to
-heavy. The other survey questions are not used and may contain missing
-values, which <code><a href="../reference/fit.html">fit()</a></code> ignores.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+their age and how much they exercise. The smoking level
+<code>Smoke</code> is stored as a factor whose levels are in
+alphabetical order; <code>alternatives</code> puts them in their natural
+order from never to heavy. The other survey questions are not used;
+<code><a href="../reference/fit.html">fit()</a></code> ignores their missing values.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"survey"</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">survey</span><span class="op">$</span><span class="va">Smoke</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Heavy" "Never" "Occas" "Regul"</span></span>
@@ -571,20 +537,20 @@ values, which <code><a href="../reference/fit.html">fit()</a></code> ignores.</p
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: Smoke ~ Age + Exer | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;        variable    mean    mode      sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;       beta[Age] -0.0291 -0.0303 0.00562 1.001      169</span></span>
-<span><span class="co">#&gt;  beta[ExerNone] -0.1900 -0.0930 0.30380 1.012      157</span></span>
-<span><span class="co">#&gt;  beta[ExerSome] -0.4736 -0.4704 0.18491 1.001      129</span></span>
-<span><span class="co">#&gt;        gamma[2]  0.3718  0.3593 0.07167 1.000      160</span></span>
-<span><span class="co">#&gt;        gamma[3]  0.8706  0.8399 0.13154 0.999      103</span></span></code></pre></div>
+<span><span class="co">#&gt;        variable    mean   mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;       beta[Age] -0.0286 -0.028 0.0058    1      144</span></span>
+<span><span class="co">#&gt;  beta[ExerNone] -0.1815 -0.127 0.2977    1      219</span></span>
+<span><span class="co">#&gt;  beta[ExerSome] -0.4658 -0.480 0.1888    1      114</span></span>
+<span><span class="co">#&gt;        gamma[2]  0.3777  0.401 0.0824    1      108</span></span>
+<span><span class="co">#&gt;        gamma[3]  0.8967  0.837 0.1332    1      155</span></span></code></pre></div>
 <p>The first threshold is fixed to zero and the error variance to one;
 the remaining thresholds <code>gamma[2]</code> and <code>gamma[3]</code>
-are estimated. The picture behind these numbers: every student has one
-latent utility, normally distributed around their systematic part, and
-the thresholds cut it into the four levels. The area under the curve
-between two thresholds is the probability of that level. The curve below
-belongs to a student whose systematic utility is zero.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+are estimated. Each student has one latent utility, normally distributed
+around its systematic part, and the thresholds partition it into the
+four levels. The area under the density between two thresholds is the
+probability of that level. The figure shows the density of a student
+whose systematic utility is zero.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gamma[2]"</span>, <span class="st">"gamma[3]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">cuts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">0</span>, <span class="va">thresholds</span>, <span class="cn">Inf</span><span class="op">)</span></span>
 <span><span class="va">shades</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html" class="external-link">grey</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.45</span>, <span class="fl">0.9</span>, length.out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">smoking_levels</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -608,49 +574,46 @@ belongs to a student whose systematic utility is zero.</p>
 <span>  <span class="st">"topright"</span>, legend <span class="op">=</span> <span class="va">smoking_levels</span>, fill <span class="op">=</span> <span class="va">shades</span>, border <span class="op">=</span> <span class="cn">NA</span>, bty <span class="op">=</span> <span class="st">"n"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="v02_model_variants_files/figure-html/ordered-figure-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
-<p>The three smoking levels sit close together in the narrow region to
-the right of the first threshold: a student whose utility moves one unit
-to the right passes through all of them. A coefficient shifts the whole
-curve sideways, which is why one number per covariate describes its
-effect on all four levels at once. The factor <code>Exer</code> enters
-through its dummy variables relative to the students who exercise
-frequently. Older students report smoking less. Students who exercise
-only sometimes appear to smoke less than the frequent exercisers as
-well, which is not what one might expect; with fewer than 50 smokers
-among the 237 students, such contrasts rest on thin evidence.</p>
-<p>What does a coefficient of an ordered model mean for the
+<p>The occasional and the regular level together occupy an interval of
+width 0.9 to the right of the first threshold, and the two outer levels
+the unbounded intervals beyond. A covariate shifts the density along the
+utility axis, so one coefficient per covariate describes its effect on
+all four levels. The factor <code>Exer</code> enters through its dummy
+variables relative to the students who exercise frequently. The
+posterior probability that the age coefficient is negative is 1.00:
+older students report smoking less. With 47 smokers among the 236
+students who answered the question, the data contain little information
+about the exercise contrasts. What does the age coefficient mean for the
 probabilities of the levels? <code>interpret(type = "ame")</code>
-differentiates the probability of every level with respect to age and
-averages the derivatives over the students;
-<code><a href="../articles/v04_prediction.html">vignette("v04_prediction")</a></code> explains these marginal effects
-and their variant <code>type = "mea"</code> in more detail:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+differentiates the probability of each level with respect to age and
+averages the derivatives over the students; the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v04_prediction.html">Posterior
+prediction</a> explains marginal effects in more detail:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">age_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">smoking</span>, type <span class="op">=</span> <span class="st">"ame"</span><span class="op">)</span></span>
 <span><span class="va">age_effects</span></span>
 <span><span class="co">#&gt; Average marginal effects on the choice probabilities</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
 <span><span class="co">#&gt;  covariate alternative     mean       sd    lower    upper</span></span>
-<span><span class="co">#&gt;        Age       Never  0.00823 0.001356  0.00556  0.01094</span></span>
-<span><span class="co">#&gt;        Age       Occas -0.00235 0.000599 -0.00364 -0.00126</span></span>
-<span><span class="co">#&gt;        Age       Regul -0.00279 0.000726 -0.00430 -0.00146</span></span>
-<span><span class="co">#&gt;        Age       Heavy -0.00309 0.000795 -0.00489 -0.00177</span></span></code></pre></div>
+<span><span class="co">#&gt;        Age       Never  0.00817 0.001405  0.00529  0.01078</span></span>
+<span><span class="co">#&gt;        Age       Occas -0.00234 0.000657 -0.00370 -0.00118</span></span>
+<span><span class="co">#&gt;        Age       Regul -0.00285 0.000693 -0.00430 -0.00162</span></span>
+<span><span class="co">#&gt;        Age       Heavy -0.00297 0.000760 -0.00453 -0.00162</span></span></code></pre></div>
 <p>One more year of age raises the probability of never smoking by about
-0.8 percentage points and lowers the probabilities of all other levels.
-The four effects sum to zero, because the levels are exhaustive.</p>
+0.8 percentage points and lowers the probabilities of the other three
+levels.</p>
 </div>
 <div class="section level2">
-<h2 id="rankings">Rankings<a class="anchor" aria-label="anchor" href="#rankings"></a>
+<h2 id="ranked-responses">Ranked responses<a class="anchor" aria-label="anchor" href="#ranked-responses"></a>
 </h2>
 <p>Ranked data record the complete order of the alternatives. In wide
 format, the response columns combine the response name with each
-alternative, for example <code>rank_Xbox</code> or, with
-<code>delimiter = "."</code>, <code>ch.Xbox</code>. The model is the
-same probit model as for unordered choices, but the likelihood uses the
-full ordering of the utilities. The proof of concept simulates rankings
-of three alternatives and compares the coefficient and the free
-covariance parameters with the truth.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ranked_recovery</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+alternative, for example <code>rank_Xbox</code>. The model is the same
+probit model as for unordered choices, but the likelihood uses the full
+ordering of the utilities. The following demonstration simulates
+rankings of three alternatives and compares the coefficient and the free
+covariance parameters with the true values.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ranked_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">rank</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ranked"</span>,</span>
 <span>  n_deciders <span class="op">=</span> <span class="fl">300</span>,</span>
@@ -660,26 +623,31 @@ covariance parameters with the truth.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ranked_recovery</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"Sigma[C,B]"</span>, <span class="st">"Sigma[C,C]"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ranked_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span></span>
+<span>  <span class="va">ranked_sim</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"Sigma[C,B]"</span>, <span class="st">"Sigma[C,C]"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ranked_summary</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: rank ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;    variable dgp   mean  mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     beta[x] 1.0 1.1463 1.162 0.0795 1.00     52.5</span></span>
-<span><span class="co">#&gt;  Sigma[C,B] 0.2 0.0891 0.136 0.1521 1.02     54.0</span></span>
-<span><span class="co">#&gt;  Sigma[C,C] 1.0 1.2734 1.208 0.2968 1.00    106.5</span></span></code></pre></div>
-<p>The full ordering carries more information than a single choice: the
-coefficient is recovered closely, and the covariance and the variance of
-the error differences within their posterior uncertainty.</p>
-<p>Which gaming platform would you rank first? The <code>Game</code>
-data of the <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant 2020</a>)</span> contain complete
-rankings of six platforms by 91 Dutch respondents, together with whether
-they own each platform (<code>own</code>), their age, and their weekly
-gaming hours. The source study develops a rank-ordered choice model for
-these data <span class="citation">(<a href="#ref-Fok2012"><span class="nocase">Fok et al.</span> 2012</a>)</span>. The ranks are stored
-in the columns <code>ch.Xbox</code>, <code>ch.PlayStation</code>, and so
-on, so the response in the formula is <code>ch</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;    variable dgp  mean  mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;     beta[x] 1.0 1.227 1.225 0.0945 1.04     33.7</span></span>
+<span><span class="co">#&gt;  Sigma[C,B] 0.2 0.179 0.145 0.1598 1.02     52.0</span></span>
+<span><span class="co">#&gt;  Sigma[C,C] 1.0 1.644 1.607 0.3746 1.00     60.3</span></span></code></pre></div>
+<p>A full ranking contains more information than a single choice. The
+posterior means of the coefficient, the covariance, and the variance
+deviate from their true values by 2.4, 0.1, and 1.7 posterior standard
+deviations.</p>
+<p>The <code>Game</code> data of the <strong>mlogit</strong> package
+contain complete rankings of six gaming platforms by 91 Dutch
+respondents, together with whether they own each platform
+(<code>own</code>), their age, and their weekly gaming hours; the source
+study develops a rank-ordered choice model for these data <span class="citation">(<a href="#ref-Fok2012"><span class="nocase">Fok et
+al.</span> 2012</a>)</span>. The ranks are stored in the columns
+<code>ch.Xbox</code>, <code>ch.PlayStation</code>, and so on, so the
+response in the formula is <code>ch</code> and
+<code>delimiter = "."</code> separates it from the alternative.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Game"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">gaming</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">ch</span> <span class="op">~</span> <span class="va">own</span> <span class="op">|</span> <span class="va">age</span> <span class="op">+</span> <span class="va">hours</span>,</span>
@@ -690,151 +658,51 @@ on, so the response in the formula is <code>ch</code>.</p>
 <span>  choice_type <span class="op">=</span> <span class="st">"ranked"</span>,</span>
 <span>  delimiter <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  column_decider <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">1</span></span>
+<span>  iterations <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">gaming</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
 <span><span class="co">#&gt;             beta[own]    beta[age.GameCube]          beta[age.PC] </span></span>
-<span><span class="co">#&gt;          8.704695e-01          1.603362e-03          5.836835e-02 </span></span>
+<span><span class="co">#&gt;          0.8614642753          0.0071039586          0.0633536522 </span></span>
 <span><span class="co">#&gt; beta[age.PlayStation]  beta[age.PSPortable]        beta[age.Xbox] </span></span>
-<span><span class="co">#&gt;          2.738191e-02          5.245495e-06          1.839244e-02</span></span></code></pre></div>
-<p>Owning a platform raises its rank, as <span class="citation"><span class="nocase">Fok et al.</span> (<a href="#ref-Fok2012">2012</a>)</span> also find. The alternative-specific
-constants and the coefficients of <code>age</code> and
-<code>hours</code> are relative to the base alternative, which is
-<code>GameBoy</code>, the first platform in alphabetical order,
-regardless of the order in <code>alternatives</code>. Which platform
-gains from a gamer’s experience? For a ranked model, the marginal
-effects of <code><a href="../reference/interpret.html">interpret()</a></code> refer to the probability of being
-ranked first. <code>type = "mea"</code> evaluates them for a respondent
-of average age who plays the average number of hours:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;          0.0324054727          0.0006079602          0.0225638508</span></span></code></pre></div>
+<p>The coefficient of <code>own</code> is positive: owning a platform
+raises its rank. The alternative-specific constants and the coefficients
+of <code>age</code> and <code>hours</code> are relative to the base
+alternative <code>GameBoy</code>, the first platform in alphabetical
+order, regardless of the order in <code>alternatives</code>. Which
+platform gains from additional gaming hours? For a ranked model, the
+marginal effects of <code><a href="../reference/interpret.html">interpret()</a></code> refer to the probability of
+being ranked first, here for a respondent of average age who plays the
+average number of hours:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">platform_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">gaming</span>, type <span class="op">=</span> <span class="st">"mea"</span><span class="op">)</span></span>
-<span><span class="va">platform_effects</span></span>
+<span><span class="va">platform_effects</span><span class="op">[</span><span class="va">platform_effects</span><span class="op">$</span><span class="va">covariate</span> <span class="op">==</span> <span class="st">"hours"</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
-<span><span class="co">#&gt;  covariate alternative      at      mean      sd    lower     upper</span></span>
-<span><span class="co">#&gt;        own     GameBoy  0.1319  0.030051 0.01337  0.00995  0.061164</span></span>
-<span><span class="co">#&gt;        own    GameCube  0.0879  0.085871 0.02131  0.04795  0.129590</span></span>
-<span><span class="co">#&gt;        own          PC  0.8791  0.196197 0.04376  0.12119  0.289795</span></span>
-<span><span class="co">#&gt;        own PlayStation  0.3187  0.215567 0.04994  0.13114  0.328644</span></span>
-<span><span class="co">#&gt;        own  PSPortable  0.0989  0.089787 0.02487  0.04768  0.140993</span></span>
-<span><span class="co">#&gt;        own        Xbox  0.1319  0.225978 0.05441  0.13660  0.346109</span></span>
-<span><span class="co">#&gt;        age     GameBoy 20.2308 -0.000636 0.00125 -0.00308  0.001670</span></span>
-<span><span class="co">#&gt;        age    GameCube 20.2308 -0.002218 0.00652 -0.01495  0.010954</span></span>
-<span><span class="co">#&gt;        age          PC 20.2308  0.009418 0.01518 -0.01932  0.039762</span></span>
-<span><span class="co">#&gt;        age PlayStation 20.2308 -0.000310 0.01287 -0.02454  0.024360</span></span>
-<span><span class="co">#&gt;        age  PSPortable 20.2308 -0.002746 0.00521 -0.01367  0.007609</span></span>
-<span><span class="co">#&gt;        age        Xbox 20.2308 -0.003507 0.01190 -0.02579  0.017521</span></span>
-<span><span class="co">#&gt;      hours     GameBoy  3.8846 -0.002069 0.00126 -0.00497 -0.000288</span></span>
-<span><span class="co">#&gt;      hours    GameCube  3.8846 -0.005507 0.00391 -0.01406  0.001969</span></span>
-<span><span class="co">#&gt;      hours          PC  3.8846  0.033947 0.01332  0.01073  0.064125</span></span>
-<span><span class="co">#&gt;      hours PlayStation  3.8846 -0.003558 0.00797 -0.01853  0.012062</span></span>
-<span><span class="co">#&gt;      hours  PSPortable  3.8846 -0.009021 0.00392 -0.01740 -0.003136</span></span>
-<span><span class="co">#&gt;      hours        Xbox  3.8846 -0.013793 0.00784 -0.03036 -0.000296</span></span></code></pre></div>
-<p>The PC is the platform of the heavy gamers: every additional weekly
-hour raises the probability of ranking it first by about 3.4 percentage
-points, taken from the other platforms. The age effects are small and
-uncertain; 91 respondents cannot say much about them.</p>
+<span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower     upper</span></span>
+<span><span class="co">#&gt;      hours     GameBoy 3.88 -0.00213 0.00132 -0.00542 -0.000292</span></span>
+<span><span class="co">#&gt;      hours    GameCube 3.88 -0.00557 0.00386 -0.01375  0.001710</span></span>
+<span><span class="co">#&gt;      hours          PC 3.88  0.03477 0.01172  0.01299  0.059899</span></span>
+<span><span class="co">#&gt;      hours PlayStation 3.88 -0.00435 0.00761 -0.01968  0.010315</span></span>
+<span><span class="co">#&gt;      hours  PSPortable 3.88 -0.00898 0.00375 -0.01727 -0.002997</span></span>
+<span><span class="co">#&gt;      hours        Xbox 3.88 -0.01374 0.00760 -0.03012  0.000192</span></span></code></pre></div>
+<p>Heavy gamers prefer the PC: every additional weekly hour raises the
+probability of ranking it first by about 3.5 percentage points and
+lowers the probabilities of the other platforms by the same amount in
+total.</p>
 </div>
 <div class="section level2">
-<h2 id="rprobitb-among-its-neighbors">RprobitB among its neighbors<a class="anchor" aria-label="anchor" href="#rprobitb-among-its-neighbors"></a>
+<h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
-<p>Several R packages estimate related models. What sets
-<strong>RprobitB</strong> apart is the combination of Bayesian probit
-errors with panel random coefficients and finite or nonparametric
-mixtures, together with individual choice sets, posterior prediction,
-and decider-level model evaluation. The comparison below concerns the
-documented estimation routines of each package, not their data
-management or reporting features.</p>
-<table class="table">
-<colgroup>
-<col width="33%">
-<col width="33%">
-<col width="33%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Package</th>
-<th align="left">Main estimator and response family</th>
-<th align="left">Heterogeneity relevant here</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">
-<strong>Rchoice</strong> <span class="citation">(<a href="#ref-Sarrias2016">Sarrias 2016</a>)</span>
-</td>
-<td align="left">Simulated maximum likelihood for binary, ordinal, and
-count responses</td>
-<td align="left">Continuous random parameters in cross-sectional or
-panel data</td>
-</tr>
-<tr class="even">
-<td align="left">
-<strong>mlogit</strong> <span class="citation">(<a href="#ref-Croissant2020">Croissant 2020</a>)</span>
-</td>
-<td align="left">Maximum likelihood for multinomial logit and
-extensions</td>
-<td align="left">Random-parameter logit, but no Bayesian probit
-mixture</td>
-</tr>
-<tr class="odd">
-<td align="left">
-<strong>logitr</strong> <span class="citation">(<a href="#ref-Helveston2023">Helveston 2023</a>)</span>
-</td>
-<td align="left">Maximum likelihood for multinomial and mixed logit, in
-preference or willingness-to-pay space</td>
-<td align="left">Normal and log-normal random parameters, but no
-discrete mixture</td>
-</tr>
-<tr class="even">
-<td align="left">
-<strong>MNP</strong> <span class="citation">(<a href="#ref-Imai2005b"><span class="nocase">Imai and van Dyk</span>
-2005b</a>, <a href="#ref-Imai2025">2025</a>)</span>
-</td>
-<td align="left">Bayesian multinomial probit, including varying choice
-sets and rankings</td>
-<td align="left">No mixture on panel-level random coefficients</td>
-</tr>
-<tr class="odd">
-<td align="left">
-<strong>bayesm</strong> <span class="citation">(<a href="#ref-Rossi2026">Rossi 2026</a>)</span>
-</td>
-<td align="left">Separate Bayesian multinomial probit and hierarchical
-multinomial logit routines</td>
-<td align="left">Finite and Dirichlet-process mixing for hierarchical
-logit, not hierarchical probit</td>
-</tr>
-<tr class="even">
-<td align="left">
-<strong>gmnl</strong> <span class="citation">(<a href="#ref-Sarrias2017">Sarrias and Daziano 2017</a>)</span>
-</td>
-<td align="left">Maximum or simulated maximum likelihood for multinomial
-logit variants</td>
-<td align="left">Continuous, finite latent-class, and mixed-mixed
-heterogeneity</td>
-</tr>
-<tr class="odd">
-<td align="left">
-<strong>RprobitB</strong> <span class="citation">(<a href="#ref-Oelschlaeger2026d">Oelschläger and Bauer
-2026</a>)</span>
-</td>
-<td align="left">Bayesian binary, multinomial, ordered, and ranked
-probit</td>
-<td align="left">Panel random coefficients with a fixed, sparse finite,
-or Dirichlet-process mixture, and a weight-based update of the class
-count</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level2">
-<h2 id="where-to-go-next">Where to go next<a class="anchor" aria-label="anchor" href="#where-to-go-next"></a>
-</h2>
-<p>The specification is only half of the model. Whether the coefficients
-are allowed to differ between deciders is the other half, and
-<code><a href="../articles/v03_heterogeneity.html">vignette("v03_heterogeneity")</a></code> covers it. Once a model is
-specified and fitted, <code><a href="../articles/v04_prediction.html">vignette("v04_prediction")</a></code> turns it
-into predictions and marginal effects, and
-<code><a href="../articles/v05_model_evaluation.html">vignette("v05_model_evaluation")</a></code> decides between competing
-specifications.</p>
+<p>The vignette <a href="https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html">Modeling
+preference heterogeneity</a> covers coefficients that differ between
+deciders. The vignette <a href="https://loelschlaeger.de/RprobitB/articles/v04_prediction.html">Posterior
+prediction</a> computes predictions and marginal effects from a fitted
+model, and the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html">Bayesian
+model evaluation</a> compares competing specifications.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -861,61 +729,20 @@ Dijk</span>. 2012. <span>“A Rank-Ordered Logit Model with Unobserved
 Heterogeneity in Ranking Capabilities.”</span> <em>Journal of Applied
 Econometrics</em> 27 (5): 831–46. <a href="https://doi.org/10.1002/jae.1223" class="external-link">https://doi.org/10.1002/jae.1223</a>.
 </div>
-<div id="ref-Helveston2023" class="csl-entry">
-Helveston, John Paul. 2023. <span>“<span class="nocase">logitr</span>:
-Fast Estimation of Multinomial and Mixed Logit Models with Preference
-Space and Willingness-to-Pay Space Utility Parameterizations.”</span>
-<em>Journal of Statistical Software</em> 105 (10): 1–37. <a href="https://doi.org/10.18637/jss.v105.i10" class="external-link">https://doi.org/10.18637/jss.v105.i10</a>.
-</div>
-<div id="ref-Herriges1999" class="csl-entry">
-Herriges, Joseph A., and Catherine L. Kling. 1999. <span>“Nonlinear
-Income Effects in Random Utility Models.”</span> <em>The Review of
-Economics and Statistics</em> 81 (1): 62–72. <a href="https://doi.org/10.1162/003465399767923827" class="external-link">https://doi.org/10.1162/003465399767923827</a>.
-</div>
 <div id="ref-Imai2005a" class="csl-entry">
-<span class="nocase">Imai, Kosuke, and David A. van Dyk</span>. 2005a.
+<span class="nocase">Imai, Kosuke, and David A. van Dyk</span>. 2005.
 <span>“A Bayesian Analysis of the Multinomial Probit Model Using
 Marginal Data Augmentation.”</span> <em>Journal of Econometrics</em> 124
 (2): 311–34. <a href="https://doi.org/10.1016/j.jeconom.2004.02.002" class="external-link">https://doi.org/10.1016/j.jeconom.2004.02.002</a>.
 </div>
-<div id="ref-Imai2005b" class="csl-entry">
-<span class="nocase">Imai, Kosuke, and David A. van Dyk</span>. 2005b.
-<span>“<span>MNP</span>: <span>R</span> Package for Fitting the
-Multinomial Probit Model.”</span> <em>Journal of Statistical
-Software</em> 14 (3): 1–32. <a href="https://doi.org/10.18637/jss.v014.i03" class="external-link">https://doi.org/10.18637/jss.v014.i03</a>.
-</div>
-<div id="ref-Imai2025" class="csl-entry">
-<span class="nocase">Imai, Kosuke, and David A. van Dyk</span>. 2025.
-<em><span>MNP</span>: Fitting the Multinomial Probit Model</em>. <a href="https://CRAN.R-project.org/package=MNP" class="external-link">https://CRAN.R-project.org/package=MNP</a>.
-</div>
-<div id="ref-McCulloch1994" class="csl-entry">
-McCulloch, Robert E., and Peter E. Rossi. 1994. <span>“An Exact
-Likelihood Analysis of the Multinomial Probit Model.”</span> <em>Journal
-of Econometrics</em> 64 (1-2): 207–40. <a href="https://doi.org/10.1016/0304-4076(94)90064-7" class="external-link">https://doi.org/10.1016/0304-4076(94)90064-7</a>.
+<div id="ref-Kleiber2008" class="csl-entry">
+Kleiber, Christian, and Achim Zeileis. 2008. <em>Applied Econometrics
+with <span>R</span></em>. Springer. <a href="https://doi.org/10.1007/978-0-387-77318-6" class="external-link">https://doi.org/10.1007/978-0-387-77318-6</a>.
 </div>
 <div id="ref-Oelschlaeger2026c" class="csl-entry">
 Oelschläger, Lennart. 2026. <span>“Overcoming Challenges in Modeling
 Choice Behavior Heterogeneity.”</span> PhD thesis, Bielefeld University.
 <a href="https://pub.uni-bielefeld.de/record/3014719" class="external-link">https://pub.uni-bielefeld.de/record/3014719</a>.
-</div>
-<div id="ref-Oelschlaeger2026d" class="csl-entry">
-Oelschläger, Lennart, and Dietmar Bauer. 2026.
-<em><span>RprobitB</span>: Bayesian Probit Choice Modeling</em>. <a href="https://CRAN.R-project.org/package=RprobitB" class="external-link">https://CRAN.R-project.org/package=RprobitB</a>.
-</div>
-<div id="ref-Rossi2026" class="csl-entry">
-Rossi, Peter E. 2026. <em><span class="nocase">bayesm</span>: Bayesian
-Inference for Marketing/Micro-Econometrics</em>. <a href="https://CRAN.R-project.org/package=bayesm" class="external-link">https://CRAN.R-project.org/package=bayesm</a>.
-</div>
-<div id="ref-Sarrias2016" class="csl-entry">
-Sarrias, Mauricio. 2016. <span>“Discrete Choice Models with Random
-Parameters in <span>R</span>: The <span>Rchoice</span> Package.”</span>
-<em>Journal of Statistical Software</em> 74 (10): 1–31. <a href="https://doi.org/10.18637/jss.v074.i10" class="external-link">https://doi.org/10.18637/jss.v074.i10</a>.
-</div>
-<div id="ref-Sarrias2017" class="csl-entry">
-Sarrias, Mauricio, and Ricardo Daziano. 2017. <span>“Multinomial Logit
-Models with Continuous and Discrete Individual Heterogeneity in
-<span>R</span>: The <span class="nocase">gmnl</span> Package.”</span>
-<em>Journal of Statistical Software</em> 79 (2): 1–46. <a href="https://doi.org/10.18637/jss.v079.i02" class="external-link">https://doi.org/10.18637/jss.v079.i02</a>.
 </div>
 <div id="ref-VenablesRipley2002" class="csl-entry">
 Venables, William N., and Brian D. Ripley. 2002. <em>Modern Applied
