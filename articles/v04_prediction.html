@@ -85,6 +85,9 @@ residuals, and marginal effects. The examples use data sets of the
 <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant 2020</a>)</span>, the
 <strong>choicedata</strong> package <span class="citation">(<a href="#ref-Oelschlaeger2026a">Oelschläger 2026</a>)</span>, and the
 <strong>MASS</strong> package <span class="citation">(<a href="#ref-VenablesRipley2002">Venables and Ripley 2002</a>)</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="a-random-price-coefficient">A random price coefficient<a class="anchor" aria-label="anchor" href="#a-random-price-coefficient"></a>
 </h2>
@@ -100,13 +103,10 @@ introduced in the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v
 preference heterogeneity</a>: every traveler has an individual price
 coefficient, drawn from a normal population distribution whose mean and
 variance are estimated. The individual draws are saved because the
-conditional predictions below use them. Thinning keeps 50 of the 750
-post-warmup draws of each chain, 100 draws in total, which is enough for
-stable posterior means and keeps the predictions below fast.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
+conditional predictions below use them, and thinning keeps 100 draws in
+total, which keeps the predictions fast.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">/</span> <span class="fl">60</span></span>
@@ -138,10 +138,8 @@ stable posterior means and keeps the predictions below fast.</p>
 <span><span class="co">#&gt;      Omega[price,price]  0.0966  0.0931 0.0154 1.078     26.9</span></span></code></pre></div>
 <p><code>mu[price]</code> and <code>Omega[price,price]</code> are the
 mean and the variance of the price coefficient across the population.
-The square root of the posterior mean of the variance is 0.311, against
-a posterior mean of -0.392 for <code>mu[price]</code>: price sensitivity
-differs between travelers, which the predictions below take into
-account.</p>
+Price sensitivity differs considerably between travelers, which the
+predictions below take into account.</p>
 </div>
 <div class="section level2">
 <h2 id="population-predictions">Population predictions<a class="anchor" aria-label="anchor" href="#population-predictions"></a>
@@ -151,8 +149,8 @@ occasion with the identifiers, the most probable alternative in
 <code>.prediction</code>, and the posterior mean probability of every
 alternative. These population predictions integrate over the estimated
 population distribution of the random coefficient, so they apply to any
-traveler from the population, not only to those in the data.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+traveler from the population.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B</span></span>
@@ -165,8 +163,8 @@ traveler from the population, not only to those in the data.</p>
 <p><code>uncertainty = TRUE</code> adds the posterior standard deviation
 and an equal-tailed credible interval of every probability, here at the
 90% level. The intervals reflect the posterior uncertainty about the
-parameters, not the randomness of the choice.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+parameters.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, uncertainty <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B       sd_A       sd_B</span></span>
 <span><span class="co">#&gt; 1  1        1           A     0.8758825     0.1241175 0.01820053 0.01820053</span></span>
@@ -195,7 +193,7 @@ only for the deciders in the fitted data, and they are usually sharper
 because they use the decider’s own choices. This partial pooling is the
 main argument for hierarchical Bayesian choice models <span class="citation">(<a href="#ref-Allenby1998">Allenby and Rossi 1998</a>;
 <a href="#ref-Huber2001">Huber and Train 2001</a>)</span>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span>, level <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         price</span></span>
 <span><span class="co">#&gt; 1 -0.26940692</span></span>
@@ -215,27 +213,22 @@ main argument for hierarchical Bayesian choice models <span class="citation">(<a
 <span><span class="co">#&gt; 6  1        6           B     0.1071964    0.89280359</span></span></code></pre></div>
 <p>The hit rate, the share of correctly predicted choices in the fitted
 data, is one measure of the gain:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">observed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">$</span><span class="va">choice</span></span>
-<span><span class="va">hit_rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  population <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">population</span><span class="op">$</span><span class="va">.prediction</span> <span class="op">==</span> <span class="va">observed</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  conditional <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">conditional</span><span class="op">$</span><span class="va">.prediction</span> <span class="op">==</span> <span class="va">observed</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">hit_rate</span></span>
 <span><span class="co">#&gt;  population conditional </span></span>
 <span><span class="co">#&gt;   0.7108228   0.7869580</span></span></code></pre></div>
-<p>The traveler’s own choices raise the hit rate from 0.71 to 0.79. The
-hit rate evaluates the predictions at a single threshold, a probability
-of one half. A ROC curve compares them at every threshold: as the
-threshold for predicting trip <code>B</code> decreases from one to zero,
-the curve plots the share of <code>B</code> choices predicted correctly
-against the share of <code>A</code> choices wrongly predicted as
-<code>B</code>. The area under the curve is the probability that a
-randomly chosen <code>B</code> occasion receives a higher <code>B</code>
-probability than a randomly chosen <code>A</code> occasion. The
-<strong>plotROC</strong> package <span class="citation">(<a href="#ref-Sachs2017">Sachs 2017</a>)</span> draws the curves with
-<strong>ggplot2</strong> <span class="citation">(<a href="#ref-Wickham2016">Wickham 2016</a>)</span>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>The hit rate evaluates the predictions at a single threshold, a
+probability of one half. An ROC curve compares them at every threshold:
+as the threshold for predicting trip <code>B</code> decreases from one
+to zero, the curve plots the share of <code>B</code> choices predicted
+correctly against the share of <code>A</code> choices wrongly predicted
+as <code>B</code>. The <strong>plotROC</strong> package <span class="citation">(<a href="#ref-Sachs2017">Sachs 2017</a>)</span> draws
+the curves with <strong>ggplot2</strong> <span class="citation">(<a href="#ref-Wickham2016">Wickham 2016</a>)</span>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span></span>
 <span><span class="va">roc_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
@@ -258,29 +251,29 @@ probability than a randomly chosen <code>A</code> occasion. The
 <span>  <span class="fu"><a href="https://sachsmc.github.io/plotROC/reference/style_roc.html" class="external-link">style_roc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">roc_plot</span></span></code></pre></div>
 <p><img src="v04_prediction_files/figure-html/roc-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
-<p>The conditional curve lies above the population curve, and the area
-under the curve rises from 0.77 to 0.87.</p>
+<p>The conditional curve lies above the population curve and therefore
+has the larger area under the curve, which equals one for a perfect and
+one half for an uninformative prediction.</p>
 </div>
 <div class="section level2">
 <h2 id="scenario-analysis-in-a-stated-choice-experiment">Scenario analysis in a stated choice experiment<a class="anchor" aria-label="anchor" href="#scenario-analysis-in-a-stated-choice-experiment"></a>
 </h2>
-<p>A scenario predicts the choice probabilities for modified attributes,
-the typical use of a stated choice experiment. Near Setskog in Norway,
-308 residents were asked six times to choose between two plans for a
-proposed wind-power project and the status quo without the project,
-alternative <code>1</code> <span class="citation">(<a href="#ref-Dugstad2024">Dugstad et al. 2024</a>)</span>. The plans
-varied the number and height of the turbines, the routing of the power
-line, and an annual reduction in municipal taxes offered as
-compensation. The study also measured each respondent’s collective
-psychological ownership of the affected area, a standardized score of
-how strongly they feel that the landscape belongs to the residents. The
-score does not vary across alternatives and therefore enters the second
-part of the formula, which gives it one coefficient per plan relative to
-the status quo:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>A scenario predicts the choice probabilities for modified attributes.
+Near Setskog in Norway, 308 residents were asked six times to choose
+between two plans for a proposed wind-power project and the status quo
+without the project, alternative <code>1</code> <span class="citation">(<a href="#ref-Dugstad2024">Dugstad et al.
+2024</a>)</span>. The plans varied the number and height of the
+turbines, the routing of the power line, and an annual reduction in
+municipal taxes offered as compensation. The study also measured each
+respondent’s collective psychological ownership of the affected area, a
+standardized score of how strongly they feel that the landscape belongs
+to the residents. The score does not vary across alternatives and
+therefore enters the second part of the formula, which gives it one
+coefficient per plan relative to the status quo:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wind_formula</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">turbines</span> <span class="op">+</span> <span class="va">height</span> <span class="op">+</span> <span class="va">powerline</span> <span class="op">+</span> <span class="va">compensation</span> <span class="op">|</span></span>
 <span>  <span class="va">psychological_ownership</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"wind_power_choice"</span>, package <span class="op">=</span> <span class="st">"choicedata"</span><span class="op">)</span></span>
 <span><span class="va">wind</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">wind_formula</span>,</span>
@@ -296,33 +289,31 @@ the status quo:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[compensation]"</span>, <span class="st">"beta[psychological_ownership_2]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;              beta[compensation] beta[psychological_ownership_2] </span></span>
 <span><span class="co">#&gt;                     0.000903575                    -0.444736414</span></span></code></pre></div>
-<p>The posterior probability that the compensation coefficient is
-positive is 1.00, and that the ownership coefficient of the first plan
-is negative 1.00: compensation makes a plan more attractive, and
+<p>The compensation coefficient is positive and the ownership
+coefficient negative: compensation makes a plan more attractive, and
 residents with a stronger feeling of ownership are less willing to leave
-the status quo. What would happen if the municipality doubled the
-compensation? <code>newdata</code> accepts a data frame in the layout of
-the fitted data, with or without the response column. The scenario below
-doubles the compensation of both plans in the first four choice tasks
-and compares the probability of the status quo before and after.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+the status quo.</p>
+<p>What would happen if the municipality doubled the compensation?
+<code>newdata</code> accepts a data frame in the layout of the fitted
+data, with or without the response column. The scenario below doubles
+the compensation of both plans in the first four choice tasks and
+compares the probability of the status quo before and after.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span></span>
 <span><span class="va">scenario</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="va">scenario</span><span class="op">$</span><span class="va">compensation_2</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">scenario</span><span class="op">$</span><span class="va">compensation_2</span></span>
 <span><span class="va">scenario</span><span class="op">$</span><span class="va">compensation_3</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">scenario</span><span class="op">$</span><span class="va">compensation_3</span></span>
-<span><span class="va">status_quo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>  before <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span>, newdata <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">status_quo</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
 <span><span class="co">#&gt; [1,] 0.4102958 0.2813607</span></span>
 <span><span class="co">#&gt; [2,] 0.3766450 0.2881957</span></span>
 <span><span class="co">#&gt; [3,] 0.3695948 0.3047741</span></span>
 <span><span class="co">#&gt; [4,] 0.4362146 0.3807199</span></span></code></pre></div>
-<p>The status quo loses between 6 and 13 percentage points in the four
-tasks. Compensation matters, but it is not the only factor in the
-residents’ acceptance.</p>
+<p>Doubling the compensation lowers the probability of the status quo in
+all four tasks.</p>
 </div>
 <div class="section level2">
 <h2 id="out-of-sample-prediction-and-calibration">Out-of-sample prediction and calibration<a class="anchor" aria-label="anchor" href="#out-of-sample-prediction-and-calibration"></a>
@@ -343,16 +334,14 @@ the formula, which gives each of them one coefficient for the
 alternative <code>TRUE</code> relative to <code>FALSE</code>, for
 example <code>beta[rating_TRUE]</code>. Logical covariates appear as
 dummy variables such as <code>streakTRUE</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">berserk_formula</span> <span class="op">&lt;-</span> <span class="va">berserk</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">white</span> <span class="op">+</span> <span class="va">rating</span> <span class="op">+</span> <span class="va">ratingDifference</span> <span class="op">+</span></span>
 <span>  <span class="va">minutesRemaining</span> <span class="op">+</span> <span class="va">streak</span></span></code></pre></div>
 <p>The fit uses the games of the first 300 players.
-<code><a href="https://loelschlaeger.de/choicedata/reference/train_test.html" class="external-link">train_test()</a></code>, which <strong>RprobitB</strong> re-exports
-from <strong>choicedata</strong>, splits them by decider, not by row:
+<code><a href="https://loelschlaeger.de/choicedata/reference/train_test.html" class="external-link">train_test()</a></code> splits them by decider:
 <code>test_number = 60</code> puts all games of 60 players into the test
-set and the games of the other players into the training set, so no
-player contributes to both.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+set and the games of the other players into the training set.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lichess_berserk_choice"</span>, package <span class="op">=</span> <span class="st">"choicedata"</span><span class="op">)</span></span>
 <span><span class="va">players</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">lichess_berserk_choice</span><span class="op">$</span><span class="va">deciderID</span><span class="op">)</span></span>
 <span><span class="va">first_players</span> <span class="op">&lt;-</span> <span class="va">lichess_berserk_choice</span><span class="op">$</span><span class="va">deciderID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">players</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">300</span><span class="op">]</span></span>
@@ -373,32 +362,29 @@ player contributes to both.</p>
 <span><span class="co">#&gt;                5.454093e-05               -1.800991e-04 </span></span>
 <span><span class="co">#&gt;       beta[streakTRUE_TRUE]              beta[ASC_TRUE] </span></span>
 <span><span class="co">#&gt;               -7.983852e-02               -3.271449e+00</span></span></code></pre></div>
-<p>The posterior probability that the rating coefficient is positive is
-1.00, that the streak coefficient is negative 0.80, and that the
-coefficient of the remaining time is negative 0.72: stronger players go
-Berserk more often, players on a streak less often, and all players more
-often towards the end of the tournament. How well does the model predict
-the games of the 60 players in the test set? <code>newdata</code> takes
-the test set as it is, and the predicted alternative is compared with
-the observed one.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>The rating coefficient is positive: stronger players go Berserk more
+often. The coefficients of the streak and of the remaining time are
+negative. How well does the model predict the games of the 60 players in
+the test set? <code>newdata</code> takes the test set as it is, and the
+predicted alternative is compared with the observed one.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">holdout_prediction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">berserk</span>, newdata <span class="op">=</span> <span class="va">split</span><span class="op">$</span><span class="va">test</span><span class="op">)</span></span>
 <span><span class="va">holdout_choice</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">split</span><span class="op">$</span><span class="va">test</span><span class="op">$</span><span class="va">berserk</span><span class="op">)</span></span>
-<span><span class="va">holdout_accuracy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  accuracy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">holdout_prediction</span><span class="op">$</span><span class="va">.prediction</span> <span class="op">==</span> <span class="va">holdout_choice</span><span class="op">)</span>,</span>
 <span>  share_berserk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">split</span><span class="op">$</span><span class="va">test</span><span class="op">$</span><span class="va">berserk</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">holdout_accuracy</span></span>
 <span><span class="co">#&gt;      accuracy share_berserk </span></span>
 <span><span class="co">#&gt;     0.6810700     0.3497942</span></span></code></pre></div>
-<p>The hit rate is 68 percent, but the rule that never predicts Berserk
-would already reach 65 percent, so the hit rate alone is a weak
-criterion for an unbalanced binary response. A calibration analysis
-assesses the predicted probabilities instead. It groups the hold-out
-games by predicted Berserk probability in intervals of width 0.1 and
-compares the mean predicted probability with the observed Berserk rate
-in each group; groups with fewer than 50 games are dropped.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>The hit rate is only slightly higher than the share of games without
+Berserk, which the rule that never predicts Berserk would already reach,
+so the hit rate alone is a weak criterion for an unbalanced binary
+response. A calibration analysis assesses the predicted probabilities
+instead. It groups the hold-out games by predicted Berserk probability
+in intervals of width 0.1 and compares the mean predicted probability
+with the observed Berserk rate in each group; groups with fewer than 50
+games are dropped.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="va">holdout_prediction</span><span class="op">$</span><span class="va">probability_TRUE</span></span>
 <span><span class="va">bins</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">predicted</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">calibration</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -417,7 +403,7 @@ in each group; groups with fewer than 50 games are dropped.</p>
 <p>The calibration plot shows the same table. Points on the diagonal
 mean that the predicted probability equals the observed rate, and the
 point sizes are proportional to the number of games in a group.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">large</span><span class="op">$</span><span class="va">predicted</span>, <span class="va">large</span><span class="op">$</span><span class="va">observed</span>,</span>
 <span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>,</span>
@@ -427,13 +413,10 @@ point sizes are proportional to the number of games in a group.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v04_prediction_files/figure-html/calibration-plot-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
-<p>From the group with the lowest predictions to the group with the
-highest, the mean predicted probability rises from 14 to 43 percent and
-the observed rate from 18 to 57 percent. The observed rate rises from
-every group to the next, so the model orders the games by their Berserk
-rate. The largest gap between the observed rate and the predicted
-probability, 14 percentage points, occurs in the group (0.4,0.5], where
-the model underpredicts Berserk.</p>
+<p>The observed Berserk rate rises with the predicted probability, so
+the model orders the games by their Berserk rate. In the group with the
+highest predictions, the observed rate exceeds the predicted
+probability, so the model underpredicts Berserk for these games.</p>
 </div>
 <div class="section level2">
 <h2 id="residuals">Residuals<a class="anchor" aria-label="anchor" href="#residuals"></a>
@@ -446,7 +429,7 @@ residual is uninformative, because the indicator is zero or one while
 the probability lies in between, so the residuals are averaged over
 groups of occasions. The average residual per traveler shows whose
 choices the model reproduces:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_residuals</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              A          B</span></span>
@@ -459,31 +442,26 @@ choices the model reproduces:</p>
 <span><span class="va">by_decider</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span></span>
 <span>  <span class="va">model_residuals</span><span class="op">[</span>, <span class="st">"A"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">$</span><span class="va">id</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">decider_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">by_decider</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">decider_quantiles</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">by_decider</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     0%    25%    50%    75%   100% </span></span>
 <span><span class="co">#&gt; -0.337 -0.070  0.001  0.088  0.347</span></span></code></pre></div>
-<p>Half of the travelers have an average residual between -0.07 and
-0.09, and the extremes are -0.34 and 0.35: for these travelers the model
-predicts trip <code>A</code> too often or too rarely across all their
-questions. Grouping by a covariate checks the functional form instead,
-here by the price of trip <code>A</code> in four groups of equal
-size:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>Most travelers have an average residual close to zero. For the
+travelers at the extremes, the model predicts trip <code>A</code> too
+often or too rarely across all their questions. Grouping by a covariate
+checks the functional form instead, here by the price of trip
+<code>A</code> in four groups of equal size:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">price_group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">$</span><span class="va">price_A</span>,</span>
 <span>  breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">$</span><span class="va">price_A</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  include.lowest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">price_residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span></span>
-<span>  <span class="va">model_residuals</span><span class="op">[</span>, <span class="st">"A"</span><span class="op">]</span>, <span class="va">price_group</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">price_residuals</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">model_residuals</span><span class="op">[</span>, <span class="st">"A"</span><span class="op">]</span>, <span class="va">price_group</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [0.454,11.3]  (11.3,14.7]  (14.7,18.2]  (18.2,56.7] </span></span>
 <span><span class="co">#&gt;        0.008        0.004       -0.011        0.017</span></span></code></pre></div>
-<p>The group averages lie between -0.011 and 0.017. A systematic
-pattern, for example positive residuals at both ends, would indicate a
-nonlinear price effect or an unmodeled preference class.</p>
+<p>All four group averages are close to zero. A systematic pattern, for
+example positive residuals at both ends, would indicate a nonlinear
+price effect or an unmodeled preference class.</p>
 </div>
 <div class="section level2">
 <h2 id="marginal-effects">Marginal effects<a class="anchor" aria-label="anchor" href="#marginal-effects"></a>
@@ -498,9 +476,9 @@ evaluates the derivative for one occasion whose covariates equal the
 observed averages, reported in the column <code>at</code>.
 <code>type = "ame"</code> evaluates the derivative for every observed
 occasion and averages, which weights the occasions as they occur in the
-data and is usually the more relevant summary. Both use every posterior
-draw and therefore come with credible intervals.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+data. Both use every posterior draw and therefore come with credible
+intervals.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mea"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
@@ -522,15 +500,13 @@ draw and therefore come with credible intervals.</p>
 <span><span class="co">#&gt;     change           B -0.0824 0.01006 -0.1023 -0.0613</span></span>
 <span><span class="co">#&gt;      price           A -0.0813 0.00391 -0.0879 -0.0737</span></span>
 <span><span class="co">#&gt;      price           B -0.0813 0.00391 -0.0879 -0.0737</span></span></code></pre></div>
-<p>With two alternatives, a change in the attributes of one trip shifts
-probability to the other, so the two rows of each covariate have equal
-size and opposite signs. Averaged over the observed occasions, one euro
-more lowers the probability of a trip by about 8 percentage points and
-one hour more by about 43 percentage points. The <code>at</code>
-argument replaces the averages of selected covariates. A much cheaper
-trip <code>B</code> moves its probability close to one, where one euro
-more changes it only marginally:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>Averaged over the observed occasions, one euro more lowers the
+probability of a trip by about 8 percentage points and one hour more by
+about 43 percentage points.</p>
+<p>The <code>at</code> argument replaces the averages of selected
+covariates. A much cheaper trip <code>B</code> moves its probability
+close to one, where one euro more changes it only marginally:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mea"</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>price_A <span class="op">=</span> <span class="fl">30</span>, price_B <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Marginal effects at the given covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
@@ -552,7 +528,7 @@ specification and variants</a> describes. For such a model,
 <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> returns the probability of every level. The
 smoking model of that vignette predicts how often a student smokes from
 their age and exercise habits.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"survey"</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
 <span><span class="va">smoking</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">Smoke</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">+</span> <span class="va">Exer</span> <span class="op">|</span> <span class="fl">0</span>,</span>
@@ -565,8 +541,7 @@ their age and exercise habits.</p>
 <span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">smoking_prediction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">smoking_prediction</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   deciderID .prediction probability_Never probability_Occas probability_Regul</span></span>
 <span><span class="co">#&gt; 1         1       Never         0.8392239        0.07204511        0.05614407</span></span>
 <span><span class="co">#&gt; 2         2       Never         0.7527884        0.09583825        0.08622349</span></span>
@@ -582,35 +557,32 @@ their age and exercise habits.</p>
 <span><span class="co">#&gt; 5        0.02265073</span></span>
 <span><span class="co">#&gt; 6        0.02715244</span></span></code></pre></div>
 <p>Every row has four probabilities that sum to one, and
-<code>.prediction</code> names the most probable level. Because 80
-percent of the students never smoke, this level is the most probable for
-every one of the 237 students, and the probabilities are more
-informative than the predicted level. A scenario works as before. Ten
-more years of age shift the probability of never smoking of the first
-three students:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code>.prediction</code> names the most probable level. Because most
+students never smoke, this level is the most probable for almost every
+student, and the probabilities are more informative than the predicted
+level. A scenario works as before. Ten more years of age shift the
+probability of never smoking of the first three students:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">students</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span></span>
 <span><span class="va">students</span><span class="op">$</span><span class="va">Smoke</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="va">older</span> <span class="op">&lt;-</span> <span class="va">students</span></span>
 <span><span class="va">older</span><span class="op">$</span><span class="va">Age</span> <span class="op">&lt;-</span> <span class="va">older</span><span class="op">$</span><span class="va">Age</span> <span class="op">+</span> <span class="fl">10</span></span>
-<span><span class="va">age_scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>  before <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span>, newdata <span class="op">=</span> <span class="va">students</span><span class="op">)</span><span class="op">$</span><span class="va">probability_Never</span>,</span>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span>, newdata <span class="op">=</span> <span class="va">older</span><span class="op">)</span><span class="op">$</span><span class="va">probability_Never</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">age_scenario</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
 <span><span class="co">#&gt; [1,] 0.8392239 0.8997050</span></span>
 <span><span class="co">#&gt; [2,] 0.7527884 0.8329323</span></span>
 <span><span class="co">#&gt; [3,] 0.7467756 0.8282103</span></span></code></pre></div>
-<p>The probability rises by 6 to 8 percentage points, in the direction
+<p>The probability rises for all three students, in the direction
 implied by the negative age coefficient.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <p>Predictions describe what a model expects, not whether it is better
-than another model. That comparison, on the same decider-level scale as
-the hold-out check here, is the subject of the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html">Bayesian
+than another model. That comparison is the subject of the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html">Bayesian
 model evaluation</a>.</p>
 </div>
 <div class="section level2 unnumbered">

@@ -91,9 +91,7 @@ the deciders into groups. Both are requested through arguments of
 background. Each variant is first estimated on simulated data, where the
 estimates can be compared with the parameters that generated them, and
 then applied to data of the <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant
-2020</a>)</span>. Panel data are essential here: the population
-distribution of a coefficient is estimated from deciders observed
-repeatedly, so all simulations use several choices per decider.</p>
+2020</a>)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
@@ -177,8 +175,8 @@ such effects to the model. An uncorrelated effect has its own variance
 but no covariance with any other effect, which appears as zeros in
 <code>Omega</code>.</p>
 <p>The following demonstration combines both choices. The price
-coefficient is negative log-normal and therefore uncorrelated. Travel
-time and comfort receive correlated normal effects with a positive
+coefficient is negative log-normal and uncorrelated. Travel time and
+comfort receive correlated normal effects with a positive
 covariance.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mixing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
@@ -209,28 +207,25 @@ covariance.</p>
 <span><span class="co">#&gt;     Omega[time,comfort]  0.20  0.208  0.209 0.0365 1.03    74.59</span></span>
 <span><span class="co">#&gt;  Omega[comfort,comfort]  0.30  0.367  0.348 0.0548 1.22     7.29</span></span></code></pre></div>
 <p>The <code>dgp</code> column lists the parameters that generated the
-data. The posterior means of the three population means deviate from
-their true values by at most 0.5 posterior standard deviations. For the
-price coefficient, <code>mu[price]</code> is the mean of the latent
-normal variable, so the coefficient that enters the utility is minus its
-exponential and negative for every decider. <code>time</code> and
-<code>comfort</code> share the estimated covariance
-<code>Omega[time,comfort]</code>, while <code>price</code> has no
-covariance entry with either of them.</p>
+data. For the price coefficient, <code>mu[price]</code> is the mean of
+the latent normal variable, so the coefficient that enters the utility
+is minus its exponential and negative for every decider.
+<code>time</code> and <code>comfort</code> share the estimated
+covariance <code>Omega[time,comfort]</code>, while <code>price</code>
+has no covariance entry with either of them.</p>
 <p><code><a href="../reference/interpret.html">interpret()</a></code> converts the coefficients into trade-offs.
 For a random effect it uses the coefficient of the median decider, which
 for the log-normal price is minus the exponential of
 <code>mu[price]</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mixing_trade</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">mixing</span>, reference <span class="op">=</span> <span class="st">"price"</span><span class="op">)</span></span>
-<span><span class="va">mixing_trade</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">mixing</span>, reference <span class="op">=</span> <span class="st">"price"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1 `time` compensates -2.14 `price` (95% interval -2.48 to -1.83)</span></span>
 <span><span class="co">#&gt; 1 `comfort` compensates 1.4 `price` (95% interval 1.14 to 1.66)</span></span></code></pre></div>
 <p>The <code>dgp_parameters</code> set the latent mean of the price
-effect to <code>-1</code>, so the median price coefficient is
-<code>-exp(-1)</code>, about <code>-0.37</code>. One unit of time is
-therefore worth -2.17 units of price and one unit of comfort 1.36 units.
-Both values lie inside the 95% credible intervals.</p>
+effect to <code>-1</code>, so the true median price coefficient is
+<code>-exp(-1)</code>, about <code>-0.37</code>. Dividing the true time
+and comfort coefficients by it gives the true trade-offs, with which the
+posterior means above can be compared.</p>
 <p>The panel structure makes individual coefficients estimable.
 <code>coef(level = "individual")</code> returns the posterior mean
 coefficient of every decider, on the latent normal scale for log-normal
@@ -272,10 +267,7 @@ occasions of a household are numbered in the order of the rows.</p>
 coefficients, the other attributes one coefficient for all households.
 Fixing the price coefficient to <code>-1</code> identifies the scale and
 expresses every other coefficient in cents per kWh, that is, directly as
-a willingness to pay. All six attributes must enter the model: suppliers
-with time-of-day or seasonal rates have a price of zero in these data,
-so without their dummies the price coefficient would absorb the effect
-of their zero price.</p>
+a willingness to pay.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Electricity"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Electricity</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"([a-z]+)([1-4])$"</span>, <span class="st">"\\1_\\2"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Electricity</span><span class="op">)</span><span class="op">)</span></span>
@@ -324,10 +316,7 @@ kWh, with credible intervals:</p>
 <span><span class="co">#&gt; 1 `wk` compensates 1.52 `pf` (95% interval 1.38 to 1.67)</span></span></code></pre></div>
 <p>On average, households would accept a price about 2 cents per kWh
 higher for a local supplier, and would need a price about 0.22 cents
-lower for each additional year of contract length. The
-<code>Omega[...]</code> variables describe how much these valuations
-vary between households: the standard deviation of the locality premium
-across households is 1.5 cents, which is below its mean.</p>
+lower for each additional year of contract length.</p>
 </div>
 </div>
 <div class="section level2">
@@ -342,8 +331,7 @@ belongs to exactly one class. The class weights
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>w</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">w_1, \dots, w_K</annotation></semantics></math>
 are the probabilities of membership and sum to one, and the class
 allocation of every decider is a latent variable that the sampler draws
-together with the parameters. A class is occupied if at least one
-decider is allocated to it. Naming a random effect in
+together with the parameters. Naming a random effect in
 <code>latent_class_effects</code> replaces its normal distribution by a
 finite mixture of normals, which yields the latent-class mixed
 multinomial probit model of <span class="citation">Oelschläger and Bauer
@@ -368,32 +356,24 @@ Dirichlet-process mixture whose number of occupied classes is itself
 random;</li>
 <li>
 <code>class_update = "weight_based"</code> for the split, remove,
-and merge heuristic of earlier <strong>RprobitB</strong> versions, which
-is a search procedure, not a Bayesian model.</li>
+and merge heuristic.</li>
 </ul>
 <p>All four updates are demonstrated on one simulated data set with two
 classes. The fixed-class fit simulates the data; the other three are
-refits through <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code>, which reuses the simulated data,
-so all updates are compared on identical observations.</p>
+refits through <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code>, which reuses the simulated
+data.</p>
 <div class="section level3">
 <h3 id="a-fixed-number-of-classes">A fixed number of classes<a class="anchor" aria-label="anchor" href="#a-fixed-number-of-classes"></a>
 </h3>
 <p>For <code>class_update = "fixed"</code>, <code>classes = K</code>
-fixes the number of classes, and every class stays occupied. The class
-weights have the prior
+fixes the number of classes. The class weights have the prior
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>w</mi><mi>K</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>∼</mo><mrow><mi mathvariant="normal">Dirichlet</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo>,</mo><mi>…</mi><mo>,</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(w_1,\ldots,w_K)\sim\operatorname{Dirichlet}(\delta,\ldots,\delta)</annotation></semantics></math>,
 where the default <code>class_concentration = 1</code> is uniform on the
 weight simplex. The class labels are arbitrary: swapping them leaves the
 likelihood unchanged, so the sampler may swap them during a run.
-<strong>RprobitB</strong> leaves the sampler unconstrained and relabels
-the retained draws afterwards. It derives a representative grouping of
-the deciders from the posterior co-clustering matrix, whose entries are
-the posterior probabilities that two deciders belong to the same class
-<span class="citation">(<a href="#ref-Dahl2006">Dahl 2006</a>)</span>,
-matches the allocation of every draw to this grouping <span class="citation">(<a href="#ref-Papastamoulis2010">Papastamoulis and
-Iliopoulos 2010</a>)</span>, and permutes weights, means, covariances,
-and allocations accordingly. The classes are then numbered by decreasing
-weight, which is a naming convention.</p>
+<strong>RprobitB</strong> therefore relabels the retained draws after
+sampling, so that every draw uses the same labels <span class="citation">(<a href="#ref-Dahl2006">Dahl 2006</a>; <a href="#ref-Papastamoulis2010">Papastamoulis and Iliopoulos
+2010</a>)</span>, and numbers the classes by decreasing weight.</p>
 <p>The following demonstration uses eight occasions per decider and two
 well-separated classes: a majority with coefficients centered at
 <code>-1</code> and a minority centered at <code>2</code>. The
@@ -419,11 +399,10 @@ twenty thousand iterations each and retain every fifth draw.</p>
 <span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">mixture_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mixture</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mixture</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"weight[1]"</span>, <span class="st">"weight[2]"</span>, <span class="st">"mu[x,1]"</span>, <span class="st">"mu[x,2]"</span>,</span>
 <span>  <span class="st">"Omega[x,x,1]"</span>, <span class="st">"Omega[x,x,2]"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">mixture_summary</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 2000 retained per chain, 2 chains</span></span>
@@ -435,18 +414,11 @@ twenty thousand iterations each and retain every fifth draw.</p>
 <span><span class="co">#&gt;       mu[x,2]  2.0  2.198  2.172 0.3715 1.03      177</span></span>
 <span><span class="co">#&gt;  Omega[x,x,1]  0.2  0.191  0.142 0.0888 1.00      705</span></span>
 <span><span class="co">#&gt;  Omega[x,x,2]  0.2  0.491  0.231 0.4813 1.00      297</span></span></code></pre></div>
-<p>The relabeled weights and means can be read class by class. The class
-near <code>-1</code> has a posterior mean weight of 0.6 against a
-population weight of <code>0.6</code>, and the class near <code>2</code>
-the rest. The largest <code>rhat</code> in the table is 1.033, and the
-smallest bulk effective sample size, 177, belongs to
-<code>mu[x,2]</code>. Check both for every mixture fit, because
-relabeling cannot compensate for poor mixing or weak class
-separation.</p>
 <p><code><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics()</a></code> returns the posterior
 distribution of the number of occupied classes, the membership
 probabilities of the deciders after relabeling, and the co-clustering
-matrix, which does not depend on the class labels:</p>
+matrix. Its entries are the posterior probabilities that two deciders
+belong to the same class:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">class_diagnostics</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">mixture</span><span class="op">)</span></span>
 <span><span class="va">class_diagnostics</span><span class="op">$</span><span class="va">occupancy</span></span>
@@ -468,79 +440,6 @@ matrix, which does not depend on the class labels:</p>
 <span><span class="co">#&gt; 4 0.98750 0.99050 0.98850 1.00000 0.01625 0.98800</span></span>
 <span><span class="co">#&gt; 5 0.01875 0.01375 0.01675 0.01625 1.00000 0.01625</span></span>
 <span><span class="co">#&gt; 6 0.98800 0.99150 0.98800 0.98800 0.01625 1.00000</span></span></code></pre></div>
-<p>The three refits below relabel their draws in the same way. When the
-number of classes varies, a class exists only in part of the draws, and
-the <code>occupied</code> column of <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> reports this
-share. The refits have no <code>dgp</code> column, so a small helper
-compares them with the stored true parameters: the most probable number
-of occupied classes and, after assigning every decider to the true class
-whose mean is closer to their posterior mean coefficient, the share of
-deciders in the second class and the average coefficient in each
-class.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="va">mixture</span><span class="op">$</span><span class="va">simulation</span><span class="op">$</span><span class="va">dgp_parameters</span></span>
-<span><span class="va">class_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">truth</span><span class="op">$</span><span class="va">beta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">truth</span><span class="op">$</span><span class="va">beta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">recover_classes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
-<span>  <span class="va">individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">x</span>, level <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span><span class="op">[</span>, <span class="st">"x"</span><span class="op">]</span></span>
-<span>  <span class="va">upper</span> <span class="op">&lt;-</span> <span class="va">individual</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">class_means</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_classes"</span>, <span class="st">"weight[2]"</span>, <span class="st">"mu[x,1]"</span>, <span class="st">"mu[x,2]"</span><span class="op">)</span>,</span>
-<span>    dgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">truth</span><span class="op">$</span><span class="va">weights</span><span class="op">)</span>, <span class="va">truth</span><span class="op">$</span><span class="va">weights</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">class_means</span><span class="op">)</span>,</span>
-<span>    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="va">occupancy</span><span class="op">$</span><span class="va">n_classes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">occupancy</span><span class="op">$</span><span class="va">probability</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">upper</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">individual</span><span class="op">[</span><span class="op">!</span><span class="va">upper</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">individual</span><span class="op">[</span><span class="va">upper</span><span class="op">]</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="va">mixture_sim</span> <span class="op">&lt;-</span> <span class="fu">recover_classes</span><span class="op">(</span><span class="va">mixture</span><span class="op">)</span></span>
-<span><span class="va">mixture_sim</span></span>
-<span><span class="co">#&gt;    variable  dgp   estimate</span></span>
-<span><span class="co">#&gt; 1 n_classes  2.0  2.0000000</span></span>
-<span><span class="co">#&gt; 2 weight[2]  0.4  0.4000000</span></span>
-<span><span class="co">#&gt; 3   mu[x,1] -1.0 -0.7714234</span></span>
-<span><span class="co">#&gt; 4   mu[x,2]  2.0  2.1714848</span></span></code></pre></div>
-<p>Fitting two filled classes is not evidence that two meaningful
-populations exist. When
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
-is not fixed by the research design, fit each candidate value to the
-same data and compare the decider-level predictive accuracy with the
-<strong>loo</strong> package <span class="citation">(<a href="#ref-Vehtari2026">Vehtari et al. 2026</a>)</span>, as the vignette
-<a href="https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html">Bayesian
-model evaluation</a> describes. The fits are thinned, because each
-<code><a href="../reference/loo.RprobitB_fit.html">loo()</a></code> call evaluates the panel likelihood of every decider
-under every retained draw. This likelihood is a multivariate normal
-probability that is simulated with the GHK simulator, and
-<code>ghk_draws = 50</code> reduces its simulation draws from the
-default 500.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">models_by_K</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">K</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">class_effects</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">K</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="st">"x"</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
-<span>    <span class="va">mixture</span>, classes <span class="op">=</span> <span class="va">K</span>, latent_class_effects <span class="op">=</span> <span class="va">class_effects</span>,</span>
-<span>    iterations <span class="op">=</span> <span class="fl">2000</span>, warmup <span class="op">=</span> <span class="fl">1000</span>, thin <span class="op">=</span> <span class="fl">20</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">k_comparison</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">models_by_K</span>, <span class="va">loo</span>, ghk_draws <span class="op">=</span> <span class="fl">50</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
-<span><span class="va">k_comparison</span></span>
-<span><span class="co">#&gt;   model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
-<span><span class="co">#&gt;  model2       0.0     0.0      NA           1 k_psis &gt; 0.5</span></span>
-<span><span class="co">#&gt;  model3      -0.5     0.5    0.88   N &lt; 100 1 k_psis &gt; 0.5</span></span>
-<span><span class="co">#&gt;  model1     -11.3     3.5    1.00   N &lt; 100 3 k_psis &gt; 0.5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Diagnostic flags present.</span></span>
-<span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
-<span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span></code></pre></div>
-<p>The one-class model falls short of the best model by 11, 3 times the
-standard error of the difference, whereas the two- and the three-class
-model differ by only 0.5 with a standard error of 0.5, so the third
-class adds little. This is the expected result for data generated with
-two classes.</p>
 </div>
 <div class="section level3">
 <h3 id="class-specific-coefficients">Class-specific coefficients<a class="anchor" aria-label="anchor" href="#class-specific-coefficients"></a>
@@ -553,7 +452,7 @@ and gives the time coefficient two class-specific values through
 <code>latent_class_effects</code> without a random effect, so each class
 has its own value of travel time and the remaining coefficients are
 common to both classes.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
@@ -574,64 +473,89 @@ common to both classes.</p>
 <span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">train_classes_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">train_classes</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">train_classes</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"weight[1]"</span>, <span class="st">"weight[2]"</span>, <span class="st">"beta[time,1]"</span>, <span class="st">"beta[time,2]"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">train_classes_summary</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 2500 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;      variable   mean    mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     weight[1]   0.87   0.886 0.0537 1.01      167</span></span>
-<span><span class="co">#&gt;     weight[2]   0.13   0.114 0.0537 1.01      167</span></span>
-<span><span class="co">#&gt;  beta[time,1]  -3.56  -3.437 0.6658 1.01      240</span></span>
-<span><span class="co">#&gt;  beta[time,2] -21.96 -18.895 7.1465 1.02      101</span></span></code></pre></div>
+<span><span class="co">#&gt;      variable    mean    mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;     weight[1]   0.864   0.875 0.0519    1      598</span></span>
+<span><span class="co">#&gt;     weight[2]   0.136   0.125 0.0519    1      598</span></span>
+<span><span class="co">#&gt;  beta[time,1]  -3.461  -3.565 0.6483    1      752</span></span>
+<span><span class="co">#&gt;  beta[time,2] -20.544 -18.425 5.3774    1      319</span></span></code></pre></div>
 <p>With the price coefficient fixed at <code>-1</code>, the
 class-specific time coefficients are values of travel time in euro per
 hour, which <code><a href="../reference/interpret.html">interpret()</a></code> reports class by class:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time_by_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">train_classes</span>, effects <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
 <span><span class="va">time_by_class</span></span>
-<span><span class="co">#&gt; Class 1: 1 `time` compensates -3.56 `price` (95% interval -4.86 to -2.26)</span></span>
-<span><span class="co">#&gt; Class 2: 1 `time` compensates -22 `price` (95% interval -42.5 to -14)</span></span></code></pre></div>
-<p>The larger class, 87 percent of the travelers, values an hour at 3.6
-euro, the smaller class at 22 euro. The smaller class chooses the faster
-trip almost regardless of its price, a pattern that a single normal
-distribution of the time coefficient would represent as a heavy tail.
-The largest <code>rhat</code> of the four variables is 1.019 and the
-smallest bulk effective sample size 101.</p>
+<span><span class="co">#&gt; Class 1: 1 `time` compensates -3.46 `price` (95% interval -4.75 to -2.18)</span></span>
+<span><span class="co">#&gt; Class 2: 1 `time` compensates -20.5 `price` (95% interval -36.8 to -13.9)</span></span></code></pre></div>
+<p>The larger class values an hour at about 3 euro, the smaller class at
+about 21 euro. The smaller class chooses the faster trip almost
+regardless of its price.</p>
 </div>
 <div class="section level3">
 <h3 id="weight-based-class-updates">Weight-based class updates<a class="anchor" aria-label="anchor" href="#weight-based-class-updates"></a>
 </h3>
-<p>The weight-based update of <span class="citation">Oelschläger and
-Bauer (<a href="#ref-Oelschlaeger2021">2021</a>)</span> is kept for
-reproducing earlier <strong>RprobitB</strong> analyses. Every
-<code>buffer</code> warmup iterations, it removes the smallest class if
-its weight is below <code>epsmin</code>, splits the largest class if its
-weight is above <code>epsmax</code>, or merges the closest pair of
-classes if the distance of their means is below <code>deltamin</code>,
-at most one operation in this order. <code>weight_based_control</code>
-overrides the defaults of these constants, and <code>max_classes</code>
-bounds the splitting. These dimension changes correspond to no prior on
-the number of classes, and they stop after warmup, so the reported
+<p><span class="citation">Oelschläger and Bauer (<a href="#ref-Oelschlaeger2021">2021</a>)</span> presents a weight-based
+update scheme for latent class analysis. Every <code>buffer</code>
+warmup iterations, it removes the smallest class if its weight is below
+<code>epsmin</code>, splits the largest class if its weight is above
+<code>epsmax</code>, or merges the closest pair of classes if the
+distance of their means is below <code>deltamin</code>, at most one
+operation in this order. <code>weight_based_control</code> overrides the
+defaults of these constants, and <code>max_classes</code> bounds the
+splitting. These dimension changes correspond to no prior on the number
+of classes, and they stop after warmup, so the reported
 <code>n_classes</code> is the outcome of a search, not a posterior
-distribution. For inferential claims, prefer the fixed, sparse finite,
-or Dirichlet-process specifications.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+distribution.</p>
+<p>This refit and the two in the following subsections change the class
+update, so <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> has no <code>dgp</code> column for
+them. The helper <code>recover_classes()</code> provides the comparison
+with the true values instead. The classes are numbered by decreasing
+weight, so the first class should be the majority with weight
+<code>0.6</code> and mean <code>-1</code>, and the second class the
+minority with weight <code>0.4</code> and mean <code>2</code>. The
+helper puts the posterior means of these four variables and the most
+probable number of occupied classes beside the true values. Applied to
+the fit with two fixed classes, it gives the reference for the
+refits:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">recover_classes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weight[1]"</span>, <span class="st">"weight[2]"</span>, <span class="st">"mu[x,1]"</span>, <span class="st">"mu[x,2]"</span><span class="op">)</span></span>
+<span>  <span class="va">occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_classes"</span>, <span class="va">variables</span><span class="op">)</span>,</span>
+<span>    dgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="va">occupancy</span><span class="op">$</span><span class="va">n_classes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">occupancy</span><span class="op">$</span><span class="va">probability</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="va">variables</span><span class="op">]</span></span>
+<span>    <span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    row.names <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">mixture</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    variable  dgp estimate</span></span>
+<span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.60</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.40</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.76</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.20</span></span></code></pre></div>
+<p>The weight-based refit is compared in the same way:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weight_based</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mixture</span>, class_update <span class="op">=</span> <span class="st">"weight_based"</span><span class="op">)</span></span>
-<span><span class="va">weight_based_sim</span> <span class="op">&lt;-</span> <span class="fu">recover_classes</span><span class="op">(</span><span class="va">weight_based</span><span class="op">)</span></span>
-<span><span class="va">weight_based_sim</span></span>
-<span><span class="co">#&gt;    variable  dgp   estimate</span></span>
-<span><span class="co">#&gt; 1 n_classes  2.0  2.0000000</span></span>
-<span><span class="co">#&gt; 2 weight[2]  0.4  0.4000000</span></span>
-<span><span class="co">#&gt; 3   mu[x,1] -1.0 -0.7752978</span></span>
-<span><span class="co">#&gt; 4   mu[x,2]  2.0  2.1244682</span></span></code></pre></div>
-<p>The run ends with 2 classes, and the share and the class means differ
-from those of the fixed fit by at most 0.05. This is the case the
-heuristic was designed for; the caveats above concern the interpretation
-of its result.</p>
+<span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">weight_based</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    variable  dgp estimate</span></span>
+<span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.60</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.40</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.77</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.16</span></span></code></pre></div>
+<p>The run ends with the two classes that generated the data, and their
+weights and means agree closely with those of the fixed fit.</p>
 </div>
 <div class="section level3">
 <h3 id="sparse-finite-mixtures">Sparse finite mixtures<a class="anchor" aria-label="anchor" href="#sparse-finite-mixtures"></a>
@@ -663,92 +587,54 @@ into a statement about the number of classes. At the prior mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mn>0</mn></msub><mo>=</mo><mn>0.005</mn></mrow><annotation encoding="application/x-tex">e_0 = 0.005</annotation></semantics></math>,
 with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">K = 6</annotation></semantics></math>
-and the 80 deciders of the simulated data, it gives about 1.1 occupied
-classes: the prior expects close to a single occupied class. The refit
-sets the upper bound to six classes for the two-class data.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+and the 80 deciders of the simulated data, the prior expects close to a
+single occupied class. The refit sets the upper bound to six classes for
+the two-class data.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sparse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mixture</span>, classes <span class="op">=</span> <span class="fl">6</span>, class_update <span class="op">=</span> <span class="st">"sparse"</span><span class="op">)</span></span>
-<span><span class="va">sparse_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
-<span><span class="va">sparse_summary</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 2000 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;             variable occupied     mean     mode      sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;            weight[1]   1.0000  0.60628  0.62109 0.06037 1.00     1324</span></span>
-<span><span class="co">#&gt;            weight[2]   1.0000  0.39106  0.38037 0.06108 1.00     1303</span></span>
-<span><span class="co">#&gt;            weight[3]   0.0305  0.02573  0.00669 0.03845   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[4]   0.0185  0.04021  0.01468 0.04464   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[5]   0.0158  0.02666  0.00969 0.02630   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[6]   0.0095  0.02675  0.01257 0.02025   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,1]   1.0000 -0.75757 -0.74992 0.11076 1.00     1487</span></span>
-<span><span class="co">#&gt;              mu[x,2]   1.0000  2.14223  2.14647 0.32039 1.01      234</span></span>
-<span><span class="co">#&gt;              mu[x,3]   0.0305 -1.38106  1.13623 3.19781   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,4]   0.0185  1.68662  2.19947 2.10760   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,5]   0.0158  0.84980 -0.01850 1.92361   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,6]   0.0095  0.87222  1.56983 2.19091   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,1]   1.0000  0.19835  0.14044 0.10440 1.01      773</span></span>
-<span><span class="co">#&gt;         Omega[x,x,2]   1.0000  0.42822  0.19209 0.44007 1.00      370</span></span>
-<span><span class="co">#&gt;         Omega[x,x,3]   0.0305  0.67483  0.24658 0.80323   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,4]   0.0185  0.68901  0.31632 0.91526   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,5]   0.0158  0.63857  0.36350 0.60428   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,6]   0.0095  0.97210  0.33455 1.53646   NA       NA</span></span>
-<span><span class="co">#&gt;  class_concentration   1.0000  0.00942  0.00459 0.00654 1.00      308</span></span>
-<span><span class="co">#&gt;            n_classes   1.0000  2.07425  2.00000 0.26880 1.00      426</span></span>
-<span><span class="va">sparse_occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
-<span><span class="va">sparse_occupancy</span></span>
+<span><span class="co">#&gt;             variable occupied    mean     mode      sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;            weight[1]   1.0000  0.6023  0.61097 0.06241    1     1415</span></span>
+<span><span class="co">#&gt;            weight[2]   1.0000  0.3918  0.38866 0.06256    1     1411</span></span>
+<span><span class="co">#&gt;            weight[3]   0.0403  0.0434  0.01367 0.04705   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[4]   0.0232  0.0657  0.01532 0.08030   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[5]   0.0295  0.0489  0.01153 0.06430   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[6]   0.0107  0.0569  0.01441 0.06088   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,1]   1.0000 -0.7648 -0.78131 0.11338    1      901</span></span>
+<span><span class="co">#&gt;              mu[x,2]   1.0000  2.1781  2.08785 0.37107    1      215</span></span>
+<span><span class="co">#&gt;              mu[x,3]   0.0403  1.6597  2.39758 1.98303   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,4]   0.0232  0.8302  2.44834 1.73476   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,5]   0.0295 -0.4664 -1.06433 2.54668   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,6]   0.0107  1.2251 -0.32311 1.70532   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,1]   1.0000  0.1933  0.13431 0.09378    1      782</span></span>
+<span><span class="co">#&gt;         Omega[x,x,2]   1.0000  0.4830  0.20496 0.46470    1      298</span></span>
+<span><span class="co">#&gt;         Omega[x,x,3]   0.0403  0.8478  0.30128 1.61464   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,4]   0.0232  1.0452  0.26860 2.88996   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,5]   0.0295  0.8682  0.23290 1.92329   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,6]   0.0107  0.5064  0.26793 0.44232   NA       NA</span></span>
+<span><span class="co">#&gt;  class_concentration   1.0000  0.0103  0.00618 0.00654    1      397</span></span>
+<span><span class="co">#&gt;            n_classes   1.0000  2.1037  2.00000 0.31545    1      679</span></span>
+<span><span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
 <span><span class="co">#&gt;   n_classes probability</span></span>
-<span><span class="co">#&gt; 1         2     0.92750</span></span>
-<span><span class="co">#&gt; 2         3     0.07075</span></span>
-<span><span class="co">#&gt; 3         4     0.00175</span></span>
-<span><span class="va">sparse_sim</span> <span class="op">&lt;-</span> <span class="fu">recover_classes</span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
-<span><span class="va">sparse_sim</span></span>
-<span><span class="co">#&gt;    variable  dgp   estimate</span></span>
-<span><span class="co">#&gt; 1 n_classes  2.0  2.0000000</span></span>
-<span><span class="co">#&gt; 2 weight[2]  0.4  0.4000000</span></span>
-<span><span class="co">#&gt; 3   mu[x,1] -1.0 -0.7736973</span></span>
-<span><span class="co">#&gt; 4   mu[x,2]  2.0  2.1049214</span></span></code></pre></div>
-<p>Although the prior favors a single class, the posterior assigns a
-probability of 93 percent to exactly two occupied classes, and the class
-means are recovered as by the fixed model, -0.77 and 2.1 against
-<code>-1</code> and <code>2</code>. The smallest bulk effective sample
-size, 234, belongs to <code>mu[x,2]</code>. Both
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mn>0</mn></msub><annotation encoding="application/x-tex">e_0</annotation></semantics></math>
-affect the posterior of the number of occupied classes, so a sensitivity
-analysis should vary them. A less sparse alternative is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mn>0</mn></msub><mo>∼</mo><mrow><mi mathvariant="normal">Gamma</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>4</mn><mi>K</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">e_0\sim\operatorname{Gamma}(2,4K)</annotation></semantics></math><span class="citation">(<a href="#ref-FruehwirthSchnatter2019">Frühwirth-Schnatter and
-Malsiner-Walli 2019</a>)</span>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sparse_less</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
-<span>  <span class="va">mixture</span>,</span>
-<span>  classes <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>  class_update <span class="op">=</span> <span class="st">"sparse"</span>,</span>
-<span>  prior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>class_concentration <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, rate <span class="op">=</span> <span class="fl">24</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">less_occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">sparse_less</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
-<span><span class="va">less_occupancy</span></span>
-<span><span class="co">#&gt;   n_classes probability</span></span>
-<span><span class="co">#&gt; 1         2     0.46275</span></span>
-<span><span class="co">#&gt; 2         3     0.34625</span></span>
-<span><span class="co">#&gt; 3         4     0.15275</span></span>
-<span><span class="co">#&gt; 4         5     0.03450</span></span>
-<span><span class="co">#&gt; 5         6     0.00375</span></span>
-<span><span class="va">less_sim</span> <span class="op">&lt;-</span> <span class="fu">recover_classes</span><span class="op">(</span><span class="va">sparse_less</span><span class="op">)</span></span>
-<span><span class="va">less_sim</span></span>
-<span><span class="co">#&gt;    variable  dgp  estimate</span></span>
-<span><span class="co">#&gt; 1 n_classes  2.0  2.000000</span></span>
-<span><span class="co">#&gt; 2 weight[2]  0.4  0.400000</span></span>
-<span><span class="co">#&gt; 3   mu[x,1] -1.0 -0.782502</span></span>
-<span><span class="co">#&gt; 4   mu[x,2]  2.0  2.141113</span></span></code></pre></div>
-<p>With a prior that empties classes less readily, the posterior of the
-number of occupied classes spreads from 2 to 6 and assigns exactly two
-classes a probability of only 46 percent. The class means are still
-recovered, -0.78 and 2.14, because the extra classes contain few
-deciders, but the estimated number of classes has changed with the
-prior. Report the concentration prior together with the occupancy
-table.</p>
+<span><span class="co">#&gt; 1         2     0.89950</span></span>
+<span><span class="co">#&gt; 2         3     0.09725</span></span>
+<span><span class="co">#&gt; 3         4     0.00325</span></span>
+<span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    variable  dgp estimate</span></span>
+<span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.60</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.39</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.76</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.18</span></span></code></pre></div>
+<p>Although the prior favors a single class, the posterior concentrates
+on two occupied classes, whose weights and means are close to the true
+values. When the number of classes varies, a class exists only in part
+of the draws, and the <code>occupied</code> column of
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> reports this share.</p>
 </div>
 <div class="section level3">
 <h3 id="dirichlet-process-mixtures">Dirichlet-process mixtures<a class="anchor" aria-label="anchor" href="#dirichlet-process-mixtures"></a>
@@ -765,96 +651,78 @@ occupied classes among
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
 deciders, which for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\alpha = 0.5</annotation></semantics></math>
-and 80 deciders is about 3.2. <strong>RprobitB</strong> updates
+and 80 deciders is about three. <strong>RprobitB</strong> updates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 with the augmentation of <span class="citation">Escobar and West (<a href="#ref-Escobar1995">1995</a>)</span> and the allocations with the
 algorithm of <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span>. <code>max_classes</code> caps the
 number of classes the sampler may open, and <code><a href="../reference/fit.html">fit()</a></code> warns
-when the draws reach the cap. The number of occupied classes mixes
-slowly, because a decider opens a new class only rarely, so the refit
-runs longer chains than the reference fit, thinned to keep the fitted
-object small.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+when the draws reach the cap.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dynamic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
 <span>  <span class="va">mixture</span>, class_update <span class="op">=</span> <span class="st">"dirichlet_process"</span>, max_classes <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  iterations <span class="op">=</span> <span class="fl">30000</span>, warmup <span class="op">=</span> <span class="fl">15000</span>, thin <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">dynamic_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span></span>
-<span><span class="va">dynamic_summary</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 1500 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;             variable occupied    mean    mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;            weight[1]  1.00000  0.5764  0.6006 0.0683 1.01     1067</span></span>
-<span><span class="co">#&gt;            weight[2]  1.00000  0.3494  0.3909 0.0646 1.01      491</span></span>
-<span><span class="co">#&gt;            weight[3]  0.66733  0.0713  0.0196 0.0647   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[4]  0.36000  0.0474  0.0144 0.0512   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[5]  0.16300  0.0384  0.0140 0.0437   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[6]  0.06600  0.0324  0.0129 0.0337   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[7]  0.02567  0.0276  0.0125 0.0277   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[8]  0.01100  0.0246  0.0125 0.0208   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[9]  0.00500  0.0225  0.0125 0.0212   NA       NA</span></span>
-<span><span class="co">#&gt;           weight[10]  0.00133  0.0187  0.0125 0.0125   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,1]  1.00000 -0.7651 -0.7793 0.1280 1.00     1894</span></span>
-<span><span class="co">#&gt;              mu[x,2]  1.00000  2.2365  2.1718 0.4526 1.01      330</span></span>
-<span><span class="co">#&gt;              mu[x,3]  0.66733  1.1656  1.9625 2.2723   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,4]  0.36000  0.8415 -0.7902 2.1760   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,5]  0.16300  0.6768  1.3574 2.2878   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,6]  0.06600  1.0714  2.0517 2.2048   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,7]  0.02567  0.7316  2.1819 2.0304   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,8]  0.01100  0.9621  0.6255 1.9068   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,9]  0.00500  1.2651 -0.3654 3.1680   NA       NA</span></span>
-<span><span class="co">#&gt;             mu[x,10]  0.00133 -0.5347 -1.4855 2.0850   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,1]  1.00000  0.2061  0.1438 0.1315 1.00     1127</span></span>
-<span><span class="co">#&gt;         Omega[x,x,2]  1.00000  0.4708  0.2067 0.5191 1.01      424</span></span>
-<span><span class="co">#&gt;         Omega[x,x,3]  0.66733  0.8199  0.2278 1.9172   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,4]  0.36000  0.9090  0.2282 1.9325   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,5]  0.16300  0.8162  0.2633 1.5670   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,6]  0.06600  0.8439  0.2791 1.8146   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,7]  0.02567  0.6361  0.3245 0.5985   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,8]  0.01100  0.7867  0.3789 0.8046   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,9]  0.00500  0.5650  0.3526 0.3773   NA       NA</span></span>
-<span><span class="co">#&gt;        Omega[x,x,10]  0.00133  0.4579  0.6688 0.3232   NA       NA</span></span>
-<span><span class="co">#&gt;  class_concentration  1.00000  0.5191  0.3547 0.3093 1.01     1318</span></span>
-<span><span class="co">#&gt;            n_classes  1.00000  3.2993  2.0000 1.3318 1.01      539</span></span>
-<span><span class="va">dynamic_occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
-<span><span class="va">dynamic_occupancy</span></span>
-<span><span class="co">#&gt;   n_classes probability</span></span>
-<span><span class="co">#&gt; 1         2 0.332666667</span></span>
-<span><span class="co">#&gt; 2         3 0.307333333</span></span>
-<span><span class="co">#&gt; 3         4 0.197000000</span></span>
-<span><span class="co">#&gt; 4         5 0.097000000</span></span>
-<span><span class="co">#&gt; 5         6 0.040333333</span></span>
-<span><span class="co">#&gt; 6         7 0.014666667</span></span>
-<span><span class="co">#&gt; 7         8 0.006000000</span></span>
-<span><span class="co">#&gt; 8         9 0.003666667</span></span>
-<span><span class="co">#&gt; 9        10 0.001333333</span></span>
-<span><span class="va">dynamic_sim</span> <span class="op">&lt;-</span> <span class="fu">recover_classes</span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span></span>
-<span><span class="va">dynamic_sim</span></span>
-<span><span class="co">#&gt;    variable  dgp   estimate</span></span>
-<span><span class="co">#&gt; 1 n_classes  2.0  2.0000000</span></span>
-<span><span class="co">#&gt; 2 weight[2]  0.4  0.4000000</span></span>
-<span><span class="co">#&gt; 3   mu[x,1] -1.0 -0.7861533</span></span>
-<span><span class="co">#&gt; 4   mu[x,2]  2.0  2.2166363</span></span></code></pre></div>
+<span><span class="co">#&gt;             variable occupied    mean    mode      sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;            weight[1] 1.000000  0.5730  0.6013 0.06782 1.00      695</span></span>
+<span><span class="co">#&gt;            weight[2] 1.000000  0.3507  0.3906 0.06839 1.01      557</span></span>
+<span><span class="co">#&gt;            weight[3] 0.684000  0.0719  0.0198 0.06328   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[4] 0.367333  0.0472  0.0144 0.04991   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[5] 0.173333  0.0372  0.0125 0.04094   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[6] 0.067667  0.0331  0.0130 0.03729   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[7] 0.027000  0.0275  0.0125 0.03115   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[8] 0.010667  0.0219  0.0139 0.03175   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[9] 0.002333  0.0196  0.0132 0.00983   NA       NA</span></span>
+<span><span class="co">#&gt;           weight[10] 0.000667  0.0188  0.0125 0.00884   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,1] 1.000000 -0.7674 -0.7719 0.12718 1.00     1546</span></span>
+<span><span class="co">#&gt;              mu[x,2] 1.000000  2.1701  2.0814 0.47818 1.00      322</span></span>
+<span><span class="co">#&gt;              mu[x,3] 0.684000  0.9659  1.9222 2.28683   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,4] 0.367333  0.7298 -0.5414 2.34710   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,5] 0.173333  0.6924 -0.3899 2.21894   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,6] 0.067667  0.8181  1.2852 2.42207   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,7] 0.027000  0.9137  1.5370 2.22806   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,8] 0.010667  0.9455 -0.1637 2.71074   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,9] 0.002333  2.7561  3.1427 2.73064   NA       NA</span></span>
+<span><span class="co">#&gt;             mu[x,10] 0.000667  1.9343  4.3604 3.44458   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,1] 1.000000  0.2065  0.1378 0.12809 1.00     1194</span></span>
+<span><span class="co">#&gt;         Omega[x,x,2] 1.000000  0.5087  0.2017 0.65946 1.00      500</span></span>
+<span><span class="co">#&gt;         Omega[x,x,3] 0.684000  0.9312  0.2309 2.36465   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,4] 0.367333  0.9504  0.2136 3.00615   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,5] 0.173333  0.9472  0.3246 2.57769   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,6] 0.067667  0.9441  0.3095 2.48992   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,7] 0.027000  0.8027  0.3835 0.87009   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,8] 0.010667  1.2592  0.3448 2.45968   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,9] 0.002333  0.7118  0.4284 0.52714   NA       NA</span></span>
+<span><span class="co">#&gt;        Omega[x,x,10] 0.000667  0.3828  0.5203 0.19518   NA       NA</span></span>
+<span><span class="co">#&gt;  class_concentration 1.000000  0.5346  0.4136 0.31260 1.01     1173</span></span>
+<span><span class="co">#&gt;            n_classes 1.000000  3.3330  3.0000 1.32314 1.01      396</span></span>
+<span><span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
+<span><span class="co">#&gt;   n_classes  probability</span></span>
+<span><span class="co">#&gt; 1         2 0.3160000000</span></span>
+<span><span class="co">#&gt; 2         3 0.3166666667</span></span>
+<span><span class="co">#&gt; 3         4 0.1940000000</span></span>
+<span><span class="co">#&gt; 4         5 0.1056666667</span></span>
+<span><span class="co">#&gt; 5         6 0.0406666667</span></span>
+<span><span class="co">#&gt; 6         7 0.0163333333</span></span>
+<span><span class="co">#&gt; 7         8 0.0083333333</span></span>
+<span><span class="co">#&gt; 8         9 0.0016666667</span></span>
+<span><span class="co">#&gt; 9        10 0.0006666667</span></span>
+<span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    variable  dgp estimate</span></span>
+<span><span class="co">#&gt; 1 n_classes  2.0     3.00</span></span>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.57</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.35</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.77</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.17</span></span></code></pre></div>
 <p>The occupancy distribution is wider than under the sparse finite
-prior: it assigns a posterior probability of 67 percent to three or more
-classes, against 7 percent under the sparse finite prior. This reflects
-the prior, which expects about three occupied classes for 80 deciders
-and remains influential at this sample size. The label-invariant
-comparison of the helper nevertheless recovers the two true groups,
--0.79 and 2.22, because the superfluous classes contain only a few
-deciders. The <code>rhat</code> and the effective sample size of
-<code>n_classes</code>, here 1.012 and 539, decide whether the occupancy
-table is reliable. The largest number of classes in any draw is 10,
-below the cap of 15. The number of occupied classes, the concentration,
-and the co-clustering probabilities do not depend on the class labels
-and are therefore the safest summaries of such a fit; a class that
-exists in only a small share of the draws describes a few deciders, not
-a group in the population. Report the prior on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
-with the analysis, together with the sensitivity to defensible
-alternatives.</p>
+prior and assigns most of its probability to three or more classes. This
+reflects the prior, which expects about three occupied classes for 80
+deciders. The two largest classes nevertheless match the two true
+groups, because the superfluous classes contain only a few deciders.</p>
 </div>
 </div>
 <div class="section level2">
@@ -862,12 +730,11 @@ alternatives.</p>
 </h2>
 <p>Both mechanisms also work for ordered and ranked responses, which the
 vignette <a href="https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html">Model
-specification and variants</a> introduces. They require a panel, because
-a population distribution is estimated from deciders observed
-repeatedly. The following demonstration uses a simulated panel of
-rankings: 100 deciders order three alternatives five times each, with a
-coefficient that varies normally around <code>-1</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+specification and variants</a> introduces. The following demonstration
+uses a simulated panel of rankings: 100 deciders order three
+alternatives five times each, with a coefficient that varies normally
+around <code>-1</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranked_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">rank</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ranked"</span>,</span>
@@ -886,16 +753,15 @@ coefficient that varies normally around <code>-1</code>.</p>
 <span><span class="co">#&gt; Formula: rank ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 2000 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    variable     dgp    mean   mode    sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;       mu[x] -1.0000 -1.1193 -1.097 0.114 1.01      135</span></span>
-<span><span class="co">#&gt;  Omega[x,x]  0.3000  0.5319  0.463 0.155 1.02      102</span></span>
-<span><span class="co">#&gt;  Sigma[B,C]  0.0835 -0.0931 -0.121 0.124 1.00      417</span></span>
-<span><span class="co">#&gt;  Sigma[C,C]  1.7228  1.6428  1.510 0.361 1.00      250</span></span></code></pre></div>
-<p>The posterior means of the population mean and variance deviate from
-their true values by 1 and 1.5 posterior standard deviations. Ordered
-responses accept the same arguments, and latent classes are requested in
-the same way as above, with <code>latent_class_effects</code> and
-<code>classes</code>.</p>
+<span><span class="co">#&gt;    variable    dgp   mean   mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;       mu[x] -1.000 -1.087 -1.068 0.0910 1.01     66.5</span></span>
+<span><span class="co">#&gt;  Omega[x,x]  0.300  0.328  0.287 0.0912 1.01     53.3</span></span>
+<span><span class="co">#&gt;  Sigma[B,C]  0.116  0.156  0.171 0.0494 1.02    170.1</span></span>
+<span><span class="co">#&gt;  Sigma[C,C]  0.109  0.126  0.118 0.0381 1.01     87.2</span></span></code></pre></div>
+<p>The summary shows the population mean and variance beside their true
+values. Ordered responses accept the same arguments, and latent classes
+are requested in the same way as above, with
+<code>latent_class_effects</code> and <code>classes</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
@@ -981,10 +847,6 @@ Rousseau, Judith, and Kerrie Mengersen. 2011. <span>“Asymptotic
 Behaviour of the Posterior Distribution in Overfitted Mixture
 Models.”</span> <em>Journal of the Royal Statistical Society: Series B
 (Statistical Methodology)</em> 73 (5): 689–710. <a href="https://doi.org/10.1111/j.1467-9868.2011.00781.x" class="external-link">https://doi.org/10.1111/j.1467-9868.2011.00781.x</a>.
-</div>
-<div id="ref-Vehtari2026" class="csl-entry">
-Vehtari, Aki, Jonah Gabry, Måns Magnusson, et al. 2026. <em><span class="nocase">loo</span>: Efficient Leave-One-Out Cross-Validation and
-<span>WAIC</span> for Bayesian Models</em>. <a href="https://mc-stan.org/loo/" class="external-link">https://mc-stan.org/loo/</a>.
 </div>
 </div>
 </div>

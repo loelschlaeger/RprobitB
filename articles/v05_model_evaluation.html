@@ -87,6 +87,9 @@ started with RprobitB</a> explains how to fit and read a model, and the
 vignettes <a href="https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html">Model
 specification and variants</a> and <a href="https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html">Modeling
 preference heterogeneity</a> cover the specifications compared here.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="a-nested-model-comparison-for-travel-mode-choices">A nested model comparison for travel mode choices<a class="anchor" aria-label="anchor" href="#a-nested-model-comparison-for-travel-mode-choices"></a>
 </h2>
@@ -96,19 +99,15 @@ had taken: air, train, bus, or car. The vignette <a href="https://loelschlaeger.
 specification and variants</a> fits a model in which terminal waiting
 time, in-vehicle cost, and travel time vary across modes, while
 household income and the size of the traveling party shift the utilities
-of the modes relative to air, the base alternative. Does income change
-the mode choice beyond cost and time? The reduced model below omits the
-two traveler characteristics and the alternative-specific constants.
-<code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> rebuilds the call of the full model with the
-formula changed part by part: <code>. ~ wait + vcost + travel | 0</code>
-keeps the first part and empties the second. A free error covariance
-between four alternatives mixes slowly in a cross section, so the chains
-run 20000 iterations and retain every twentieth draw, 1000 draws in
-total.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TravelMode"</span>, package <span class="op">=</span> <span class="st">"AER"</span><span class="op">)</span></span>
+of the modes relative to air, the base alternative.</p>
+<p>Does income change the mode choice beyond cost and time? The reduced
+model below omits the two traveler characteristics and the
+alternative-specific constants. <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> rebuilds the call
+of the full model with the formula changed part by part:
+<code>. ~ wait + vcost + travel | 0</code> keeps the first part and
+empties the second.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"TravelMode"</span>, package <span class="op">=</span> <span class="st">"AER"</span><span class="op">)</span></span>
 <span><span class="va">TravelMode</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">choice</span> <span class="op">==</span> <span class="st">"yes"</span></span>
 <span><span class="va">TravelMode</span><span class="op">$</span><span class="va">vcost</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">vcost</span> <span class="op">/</span> <span class="fl">1.6196</span></span>
 <span><span class="va">TravelMode</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">TravelMode</span><span class="op">$</span><span class="va">income</span> <span class="op">/</span> <span class="fl">1.6196</span></span>
@@ -131,14 +130,15 @@ parameters, without the error variance that is fixed to identify the
 utility scale, and its <code>nobs</code> attribute counts the
 independent likelihood units, here the 210 travelers with one choice
 each.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -175.6099 (df=17)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">reduced_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -236.754 (df=8)</span></span></code></pre></div>
-<p>The plug-in log-likelihood ignores the posterior uncertainty about
-the parameters. WAIC and PSIS-LOO use all posterior draws and are the
-primary criteria.</p>
+<p>The log-likelihood values can be used to compute AIC and BIC, but it
+ignores the posterior uncertainty about the parameters. WAIC and
+PSIS-LOO instead use all posterior draws and are the primary
+criteria.</p>
 </div>
 <div class="section level2">
 <h2 id="waic-and-psis-loo">WAIC and PSIS-LOO<a class="anchor" aria-label="anchor" href="#waic-and-psis-loo"></a>
@@ -152,11 +152,10 @@ of parameters, and the criterion on the deviance scale. Lower
 introduced WAIC and showed that it asymptotically approximates Bayesian
 cross-validation; <span class="citation">Vehtari et al. (<a href="#ref-Vehtari2017">2017</a>)</span> and <span class="citation">Vehtari et al. (<a href="#ref-Vehtari2024">2024</a>)</span> developed the PSIS-LOO
 approximation and its diagnostics.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">waic_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: </span></span>
 <span><span class="co">#&gt; 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
-<span><span class="va">waic_full</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 1000 by 210 log-likelihood matrix.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -178,16 +177,15 @@ approximation and its diagnostics.</p>
 <span><span class="co">#&gt; waic         483.7 18.3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span></code></pre></div>
-<p>For 9 of the 210 travelers, the contribution to <code>p_waic</code>
-exceeds 0.4, the level above which <span class="citation">Vehtari et al.
-(<a href="#ref-Vehtari2017">2017</a>)</span> consider the WAIC
-approximation unreliable and which the <strong>loo</strong> package
-reports as a warning. PSIS-LOO is preferable in this situation, because
-it comes with a diagnostic per traveler: a Pareto-k value below the
-printed threshold means that the importance sampling for that traveler
-is reliable, and larger values usually belong to travelers whose choices
-have low probability under the model <span class="citation">(<a href="#ref-Vehtari2024">Vehtari et al. 2024</a>)</span>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The <strong>loo</strong> package warns when the contribution of a
+decider to <code>p_waic</code> exceeds 0.4, the level above which <span class="citation">Vehtari et al. (<a href="#ref-Vehtari2017">2017</a>)</span> consider the WAIC approximation
+unreliable; here this concerns a few travelers. PSIS-LOO is preferable
+in this situation, because it comes with a diagnostic per traveler: a
+Pareto-k value below the printed threshold means that the importance
+sampling for that traveler is reliable, and larger values usually belong
+to travelers whose choices have low probability under the model <span class="citation">(<a href="#ref-Vehtari2024">Vehtari et al.
+2024</a>)</span>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loo_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">reduced_model</span><span class="op">)</span></span>
@@ -213,15 +211,14 @@ have low probability under the model <span class="citation">(<a href="#ref-Vehta
 <p>The <strong>loo</strong> package plots the Pareto-k values per
 traveler. Points above the dashed line mark the travelers whose choices
 are hardest to predict from the choices of the other travelers.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">loo_full</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v05_model_evaluation_files/figure-html/loo-plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p><code><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo::loo_compare()</a></code> ranks the models by <code>elpd</code>
 and reports the difference to the best model with its standard
 error.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">travel_comparison</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_full</span>, <span class="va">loo_reduced</span><span class="op">)</span></span>
-<span><span class="va">travel_comparison</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_full</span>, <span class="va">loo_reduced</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   model elpd_diff se_diff p_worse diag_diff       diag_elpd</span></span>
 <span><span class="co">#&gt;  model1       0.0     0.0      NA           3 k_psis &gt; 0.67</span></span>
 <span><span class="co">#&gt;  model2     -47.3    10.9    1.00           1 k_psis &gt; 0.67</span></span>
@@ -229,64 +226,26 @@ error.</p>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
 <span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span></code></pre></div>
-<p>The full model ranks first, and the other model falls short by 47, 4
-times the standard error of the difference: income and party size
-improve the prediction of the mode choice.</p>
+<p>The models are named in the order of the arguments, so
+<code>model1</code> is the full model. It ranks first, and the reduced
+model falls short by several standard errors of the difference: income
+and party size improve the prediction of the mode choice.</p>
 </div>
 <div class="section level2">
 <h2 id="bayes-factors">Bayes factors<a class="anchor" aria-label="anchor" href="#bayes-factors"></a>
 </h2>
 <p><code><a href="../reference/bayes_factor.html">bayes_factor()</a></code> estimates the marginal likelihood of each
 model with the <strong>bridgesampling</strong> package <span class="citation">(<a href="#ref-Gronau2020">Gronau et al. 2020</a>; <a href="#ref-Meng1996">Meng and Wong 1996</a>)</span> and returns their
-ratio; values above one favor the first model. The marginal likelihood
-averages the likelihood over the prior, so Bayes factors depend on the
-priors, and the priors of both models should be chosen deliberately when
-a Bayes factor informs a substantive decision <span class="citation">(<a href="#ref-Kass1995">Kass and Raftery 1995</a>)</span>. The
-implementation requires models without latent classes; their
-normalization does not matter, because all draws are transformed to the
-same normalization before bridge sampling.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">log_bf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bayes_factor.html">bayes_factor</a></span><span class="op">(</span><span class="va">full_model</span>, <span class="va">reduced_model</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">log_bf</span></span>
-<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 23.19522</span></span></code></pre></div>
-<p>The log Bayes factor of about 23 also favors the full model: the data
-are
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mn>23</mn></msup><annotation encoding="application/x-tex">e^{23}</annotation></semantics></math>
-times more probable under it than under the reduced model, although the
-marginal likelihood averages over the prior and thus penalizes the 9
-additional parameters of the full model. Information criteria and Bayes
-factors answer different questions and need not agree; here they do.
-Bridge sampling is a Monte Carlo method, so the estimate should be
-checked before it is reported. <code>repetitions</code> reruns the
-bridge estimate and reports the spread across the runs:</p>
+ratio; values above one favor the first model.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">log_bf_repetitions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bayes_factor.html">bayes_factor</a></span><span class="op">(</span></span>
-<span>  <span class="va">full_model</span>, <span class="va">reduced_model</span>, log <span class="op">=</span> <span class="cn">TRUE</span>, repetitions <span class="op">=</span> <span class="fl">3</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">log_bf_repetitions</span></span>
-<span><span class="co">#&gt; Estimated log Bayes factor (based on medians of log marginal likelihood estimates)</span></span>
-<span><span class="co">#&gt;  in favor of model1 over model2: 23.58904</span></span>
-<span><span class="co">#&gt; Range of estimates: 23.47455 to 23.61555</span></span>
-<span><span class="co">#&gt; Interquartile range: 0.07050</span></span></code></pre></div>
-<p>The three repeated estimates lie within 0.4 log units of the first
-one, so the conclusion does not depend on a single bridge run.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/bayes_factor.html">bayes_factor</a></span><span class="op">(</span><span class="va">full_model</span>, <span class="va">reduced_model</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 23.19522</span></span></code></pre></div>
+<p>The large positive log Bayes factor also favors the full model.</p>
 </div>
 <div class="section level2">
 <h2 id="models-with-random-coefficients">Models with random coefficients<a class="anchor" aria-label="anchor" href="#models-with-random-coefficients"></a>
 </h2>
-<p>For models with random coefficients, the likelihood of a decider is
-the joint probability of their choices on all occasions, integrated over
-the distribution of the random coefficients. The result is a
-multivariate normal probability with one dimension per occasion and
-alternative difference, which <code><a href="http://loelschlaeger.de/oeli/reference/dmvnorm.html" class="external-link">oeli::pmvnorm()</a></code> evaluates
-exactly for up to three dimensions and with the GHK simulator on a fixed
-sequence of quasi-random points otherwise <span class="citation">(<a href="#ref-Hajivassiliou1996">Hajivassiliou et al. 1996</a>; <a href="#ref-Genz2002">Genz and Bretz 2002</a>)</span>.
-<code>ghk_draws</code> sets the number of points; more points reduce the
-simulation error at a proportional cost in computing time. Because every
-retained draw requires one such probability per decider, the fits below
-are thinned to 100 draws in total.</p>
 <p>Does a random price coefficient improve the train model of the
 vignette <a href="https://loelschlaeger.de/RprobitB/articles/v01_get_started.html">Get
 started with RprobitB</a>? The fixed model is fitted first, and
@@ -315,23 +274,18 @@ prediction</a>.</p>
 <span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">train_random</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
-<span><span class="va">train_comparison</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_fixed</span>, <span class="va">loo_random</span><span class="op">)</span></span>
-<span><span class="va">train_comparison</span></span>
+<span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_fixed</span>, <span class="va">loo_random</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   model elpd_diff se_diff p_worse diag_diff      diag_elpd</span></span>
-<span><span class="co">#&gt;  model2       0.0     0.0      NA           6 k_psis &gt; 0.5</span></span>
-<span><span class="co">#&gt;  model1    -158.8    25.4    1.00           1 k_psis &gt; 0.5</span></span>
+<span><span class="co">#&gt;  model2       0.0     0.0      NA           7 k_psis &gt; 0.5</span></span>
+<span><span class="co">#&gt;  model1    -157.7    25.2    1.00           7 k_psis &gt; 0.5</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
 <span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span></code></pre></div>
-<p>Both models are compared per traveler, whose likelihood unit is the
-joint probability of all their choices. The model with the random price
-coefficient ranks first, and the other model falls short by 159 with a
-standard error of 25, that is, by 6 standard errors. Letting the price
-sensitivity vary between travelers thus improves the prediction of a
-traveler’s choices. The Pareto-k diagnostic flags 7 travelers under at
-least one of the two models; their contributions are approximations with
-heavier-tailed importance weights, not wrong numbers.</p>
+<p>The model with the random price coefficient, <code>model2</code>,
+ranks first, and the fixed model falls short by several standard errors
+of the difference. Letting the price sensitivity vary between travelers
+thus improves the prediction of a traveler’s choices.</p>
 </div>
 <div class="section level2">
 <h2 id="ordered-and-ranked-responses">Ordered and ranked responses<a class="anchor" aria-label="anchor" href="#ordered-and-ranked-responses"></a>
@@ -355,22 +309,19 @@ prediction.</p>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">smoking_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">smoking_full</span>, <span class="va">.</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">|</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">smoking_comparison</span> <span class="op">&lt;-</span> <span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span></span>
+<span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">smoking_full</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">smoking_age</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">smoking_comparison</span></span>
 <span><span class="co">#&gt;   model elpd_diff se_diff p_worse       diag_diff diag_elpd</span></span>
 <span><span class="co">#&gt;  model1       0.0     0.0      NA                          </span></span>
-<span><span class="co">#&gt;  model2      -1.0     2.8    0.64 |elpd_diff| &lt; 4</span></span>
+<span><span class="co">#&gt;  model2      -1.0     2.7    0.64 |elpd_diff| &lt; 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
 <span><span class="co">#&gt; or https://mc-stan.org/loo/reference/loo-glossary.html.</span></span></code></pre></div>
-<p>The difference of 1 is smaller than its standard error of 2.8, so the
-exercise dummies do not improve the prediction of how much a student
-smokes. With 47 smokers among the 236 students who answered the
-question, this is the expected outcome. Ranked models are evaluated in
-the same way, with each complete ranking as one likelihood unit.</p>
+<p>The difference is smaller than its standard error, so the exercise
+dummies appear to not improve the prediction of how much a student
+smokes.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
@@ -390,24 +341,11 @@ Croissant, Yves. 2020. <span>“Estimation of Random Utility Models in
 <span>R</span>: The <span class="nocase">mlogit</span> Package.”</span>
 <em>Journal of Statistical Software</em> 95 (11): 1–41. <a href="https://doi.org/10.18637/jss.v095.i11" class="external-link">https://doi.org/10.18637/jss.v095.i11</a>.
 </div>
-<div id="ref-Genz2002" class="csl-entry">
-Genz, Alan, and Frank Bretz. 2002. <span>“Comparison of Methods for the
-Computation of Multivariate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
-Probabilities.”</span> <em>Journal of Computational and Graphical
-Statistics</em> 11 (4): 950–71. <a href="https://doi.org/10.1198/106186002394" class="external-link">https://doi.org/10.1198/106186002394</a>.
-</div>
 <div id="ref-Gronau2020" class="csl-entry">
 Gronau, Quentin F., Henrik Singmann, and Eric-Jan Wagenmakers. 2020.
 <span>“<span class="nocase">bridgesampling</span>: An <span>R</span>
 Package for Estimating Normalizing Constants.”</span> <em>Journal of
 Statistical Software</em> 92 (10): 1–29. <a href="https://doi.org/10.18637/jss.v092.i10" class="external-link">https://doi.org/10.18637/jss.v092.i10</a>.
-</div>
-<div id="ref-Hajivassiliou1996" class="csl-entry">
-Hajivassiliou, Vassilis A., Daniel L. McFadden, and Paul A. Ruud. 1996.
-<span>“Simulation of Multivariate Normal Rectangle Probabilities and
-Their Derivatives: Theoretical and Computational Results.”</span>
-<em>Journal of Econometrics</em> 72 (1-2): 85–134. <a href="https://doi.org/10.1016/0304-4076(94)01716-6" class="external-link">https://doi.org/10.1016/0304-4076(94)01716-6</a>.
 </div>
 <div id="ref-Kass1995" class="csl-entry">
 Kass, Robert E., and Adrian E. Raftery. 1995. <span>“Bayes

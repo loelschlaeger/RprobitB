@@ -24,6 +24,12 @@ and [Modeling preference
 heterogeneity](https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html)
 cover the specifications compared here.
 
+``` r
+
+library(RprobitB)
+set.seed(1)
+```
+
 ## A nested model comparison for travel mode choices
 
 The `TravelMode` data of the **AER** package record which of four modes
@@ -33,20 +39,18 @@ variants](https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html)
 fits a model in which terminal waiting time, in-vehicle cost, and travel
 time vary across modes, while household income and the size of the
 traveling party shift the utilities of the modes relative to air, the
-base alternative. Does income change the mode choice beyond cost and
-time? The reduced model below omits the two traveler characteristics and
-the alternative-specific constants.
+base alternative.
+
+Does income change the mode choice beyond cost and time? The reduced
+model below omits the two traveler characteristics and the
+alternative-specific constants.
 [`update()`](https://rdrr.io/r/stats/update.html) rebuilds the call of
 the full model with the formula changed part by part:
 `. ~ wait + vcost + travel | 0` keeps the first part and empties the
-second. A free error covariance between four alternatives mixes slowly
-in a cross section, so the chains run 20000 iterations and retain every
-twentieth draw, 1000 draws in total.
+second.
 
 ``` r
 
-library(RprobitB)
-set.seed(1)
 data("TravelMode", package = "AER")
 TravelMode$choice <- TravelMode$choice == "yes"
 TravelMode$vcost <- TravelMode$vcost / 1.6196
@@ -81,9 +85,9 @@ logLik(reduced_model)
 #> 'log Lik.' -236.754 (df=8)
 ```
 
-The plug-in log-likelihood ignores the posterior uncertainty about the
-parameters. WAIC and PSIS-LOO use all posterior draws and are the
-primary criteria.
+The log-likelihood values can be used to compute AIC and BIC, but it
+ignores the posterior uncertainty about the parameters. WAIC and
+PSIS-LOO instead use all posterior draws and are the primary criteria.
 
 ## WAIC and PSIS-LOO
 
@@ -101,10 +105,9 @@ developed the PSIS-LOO approximation and its diagnostics.
 
 ``` r
 
-waic_full <- WAIC(full_model)
+WAIC(full_model)
 #> Warning: 
 #> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
-waic_full
 #> 
 #> Computed from 1000 by 210 log-likelihood matrix.
 #> 
@@ -128,14 +131,14 @@ WAIC(reduced_model)
 #> 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 ```
 
-For 9 of the 210 travelers, the contribution to `p_waic` exceeds 0.4,
-the level above which Vehtari et al. ([2017](#ref-Vehtari2017)) consider
-the WAIC approximation unreliable and which the **loo** package reports
-as a warning. PSIS-LOO is preferable in this situation, because it comes
-with a diagnostic per traveler: a Pareto-k value below the printed
-threshold means that the importance sampling for that traveler is
-reliable, and larger values usually belong to travelers whose choices
-have low probability under the model ([Vehtari et al.
+The **loo** package warns when the contribution of a decider to `p_waic`
+exceeds 0.4, the level above which Vehtari et al.
+([2017](#ref-Vehtari2017)) consider the WAIC approximation unreliable;
+here this concerns a few travelers. PSIS-LOO is preferable in this
+situation, because it comes with a diagnostic per traveler: a Pareto-k
+value below the printed threshold means that the importance sampling for
+that traveler is reliable, and larger values usually belong to travelers
+whose choices have low probability under the model ([Vehtari et al.
 2024](#ref-Vehtari2024)).
 
 ``` r
@@ -181,8 +184,7 @@ with its standard error.
 
 ``` r
 
-travel_comparison <- loo::loo_compare(loo_full, loo_reduced)
-travel_comparison
+loo::loo_compare(loo_full, loo_reduced)
 #>   model elpd_diff se_diff p_worse diag_diff       diag_elpd
 #>  model1       0.0     0.0      NA           3 k_psis > 0.67
 #>  model2     -47.3    10.9    1.00           1 k_psis > 0.67
@@ -192,9 +194,10 @@ travel_comparison
 #> or https://mc-stan.org/loo/reference/loo-glossary.html.
 ```
 
-The full model ranks first, and the other model falls short by 47, 4
-times the standard error of the difference: income and party size
-improve the prediction of the mode choice.
+The models are named in the order of the arguments, so `model1` is the
+full model. It ranks first, and the reduced model falls short by several
+standard errors of the difference: income and party size improve the
+prediction of the mode choice.
 
 ## Bayes factors
 
@@ -202,62 +205,18 @@ improve the prediction of the mode choice.
 estimates the marginal likelihood of each model with the
 **bridgesampling** package ([Gronau et al. 2020](#ref-Gronau2020); [Meng
 and Wong 1996](#ref-Meng1996)) and returns their ratio; values above one
-favor the first model. The marginal likelihood averages the likelihood
-over the prior, so Bayes factors depend on the priors, and the priors of
-both models should be chosen deliberately when a Bayes factor informs a
-substantive decision ([Kass and Raftery 1995](#ref-Kass1995)). The
-implementation requires models without latent classes; their
-normalization does not matter, because all draws are transformed to the
-same normalization before bridge sampling.
+favor the first model.
 
 ``` r
 
 set.seed(1)
-log_bf <- bayes_factor(full_model, reduced_model, log = TRUE)
-log_bf
+bayes_factor(full_model, reduced_model, log = TRUE)
 #> Estimated log Bayes factor in favor of model1 over model2: 23.19522
 ```
 
-The log Bayes factor of about 23 also favors the full model: the data
-are $`e^{23}`$ times more probable under it than under the reduced
-model, although the marginal likelihood averages over the prior and thus
-penalizes the 9 additional parameters of the full model. Information
-criteria and Bayes factors answer different questions and need not
-agree; here they do. Bridge sampling is a Monte Carlo method, so the
-estimate should be checked before it is reported. `repetitions` reruns
-the bridge estimate and reports the spread across the runs:
-
-``` r
-
-set.seed(2)
-log_bf_repetitions <- bayes_factor(
-  full_model, reduced_model, log = TRUE, repetitions = 3
-)
-log_bf_repetitions
-#> Estimated log Bayes factor (based on medians of log marginal likelihood estimates)
-#>  in favor of model1 over model2: 23.58904
-#> Range of estimates: 23.47455 to 23.61555
-#> Interquartile range: 0.07050
-```
-
-The three repeated estimates lie within 0.4 log units of the first one,
-so the conclusion does not depend on a single bridge run.
+The large positive log Bayes factor also favors the full model.
 
 ## Models with random coefficients
-
-For models with random coefficients, the likelihood of a decider is the
-joint probability of their choices on all occasions, integrated over the
-distribution of the random coefficients. The result is a multivariate
-normal probability with one dimension per occasion and alternative
-difference, which
-[`oeli::pmvnorm()`](http://loelschlaeger.de/oeli/reference/dmvnorm.md)
-evaluates exactly for up to three dimensions and with the GHK simulator
-on a fixed sequence of quasi-random points otherwise ([Hajivassiliou et
-al. 1996](#ref-Hajivassiliou1996); [Genz and Bretz
-2002](#ref-Genz2002)). `ghk_draws` sets the number of points; more
-points reduce the simulation error at a proportional cost in computing
-time. Because every retained draw requires one such probability per
-decider, the fits below are thinned to 100 draws in total.
 
 Does a random price coefficient improve the train model of the vignette
 [Get started with
@@ -290,25 +249,20 @@ loo_fixed <- loo(train_fixed, progress = FALSE)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_random <- loo(train_random, progress = FALSE)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
-train_comparison <- loo::loo_compare(loo_fixed, loo_random)
-train_comparison
+loo::loo_compare(loo_fixed, loo_random)
 #>   model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>  model2       0.0     0.0      NA           6 k_psis > 0.5
-#>  model1    -158.8    25.4    1.00           1 k_psis > 0.5
+#>  model2       0.0     0.0      NA           7 k_psis > 0.5
+#>  model1    -157.7    25.2    1.00           7 k_psis > 0.5
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
 #> or https://mc-stan.org/loo/reference/loo-glossary.html.
 ```
 
-Both models are compared per traveler, whose likelihood unit is the
-joint probability of all their choices. The model with the random price
-coefficient ranks first, and the other model falls short by 159 with a
-standard error of 25, that is, by 6 standard errors. Letting the price
-sensitivity vary between travelers thus improves the prediction of a
-traveler’s choices. The Pareto-k diagnostic flags 7 travelers under at
-least one of the two models; their contributions are approximations with
-heavier-tailed importance weights, not wrong numbers.
+The model with the random price coefficient, `model2`, ranks first, and
+the fixed model falls short by several standard errors of the
+difference. Letting the price sensitivity vary between travelers thus
+improves the prediction of a traveler’s choices.
 
 ## Ordered and ranked responses
 
@@ -333,24 +287,21 @@ smoking_full <- fit(
   progress = FALSE
 )
 smoking_age <- update(smoking_full, . ~ Age | 0)
-smoking_comparison <- loo::loo_compare(
+loo::loo_compare(
   loo(smoking_full, progress = FALSE), loo(smoking_age, progress = FALSE)
 )
-smoking_comparison
 #>   model elpd_diff se_diff p_worse       diag_diff diag_elpd
 #>  model1       0.0     0.0      NA                          
-#>  model2      -1.0     2.8    0.64 |elpd_diff| < 4
+#>  model2      -1.0     2.7    0.64 |elpd_diff| < 4
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
 #> or https://mc-stan.org/loo/reference/loo-glossary.html.
 ```
 
-The difference of 1 is smaller than its standard error of 2.8, so the
-exercise dummies do not improve the prediction of how much a student
-smokes. With 47 smokers among the 236 students who answered the
-question, this is the expected outcome. Ranked models are evaluated in
-the same way, with each complete ranking as one likelihood unit.
+The difference is smaller than its standard error, so the exercise
+dummies appear to not improve the prediction of how much a student
+smokes.
 
 ## Further reading
 
@@ -368,21 +319,10 @@ Croissant, Yves. 2020. “Estimation of Random Utility Models in R: The
 mlogit Package.” *Journal of Statistical Software* 95 (11): 1–41.
 <https://doi.org/10.18637/jss.v095.i11>.
 
-Genz, Alan, and Frank Bretz. 2002. “Comparison of Methods for the
-Computation of Multivariate $`t`$ Probabilities.” *Journal of
-Computational and Graphical Statistics* 11 (4): 950–71.
-<https://doi.org/10.1198/106186002394>.
-
 Gronau, Quentin F., Henrik Singmann, and Eric-Jan Wagenmakers. 2020.
 “bridgesampling: An R Package for Estimating Normalizing Constants.”
 *Journal of Statistical Software* 92 (10): 1–29.
 <https://doi.org/10.18637/jss.v092.i10>.
-
-Hajivassiliou, Vassilis A., Daniel L. McFadden, and Paul A. Ruud. 1996.
-“Simulation of Multivariate Normal Rectangle Probabilities and Their
-Derivatives: Theoretical and Computational Results.” *Journal of
-Econometrics* 72 (1-2): 85–134.
-<https://doi.org/10.1016/0304-4076(94)01716-6>.
 
 Kass, Robert E., and Adrian E. Raftery. 1995. “Bayes Factors.” *Journal
 of the American Statistical Association* 90 (430): 773–95.

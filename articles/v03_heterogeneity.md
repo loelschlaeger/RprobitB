@@ -17,9 +17,7 @@ Oelschläger ([2026](#ref-Oelschlaeger2026c)) treats the methodological
 background. Each variant is first estimated on simulated data, where the
 estimates can be compared with the parameters that generated them, and
 then applied to data of the **mlogit** package ([Croissant
-2020](#ref-Croissant2020)). Panel data are essential here: the
-population distribution of a coefficient is estimated from deciders
-observed repeatedly, so all simulations use several choices per decider.
+2020](#ref-Croissant2020)).
 
 ``` r
 
@@ -69,8 +67,8 @@ uncorrelated effect has its own variance but no covariance with any
 other effect, which appears as zeros in `Omega`.
 
 The following demonstration combines both choices. The price coefficient
-is negative log-normal and therefore uncorrelated. Travel time and
-comfort receive correlated normal effects with a positive covariance.
+is negative log-normal and uncorrelated. Travel time and comfort receive
+correlated normal effects with a positive covariance.
 
 ``` r
 
@@ -103,14 +101,12 @@ summary(mixing)
 #>  Omega[comfort,comfort]  0.30  0.367  0.348 0.0548 1.22     7.29
 ```
 
-The `dgp` column lists the parameters that generated the data. The
-posterior means of the three population means deviate from their true
-values by at most 0.5 posterior standard deviations. For the price
-coefficient, `mu[price]` is the mean of the latent normal variable, so
-the coefficient that enters the utility is minus its exponential and
-negative for every decider. `time` and `comfort` share the estimated
-covariance `Omega[time,comfort]`, while `price` has no covariance entry
-with either of them.
+The `dgp` column lists the parameters that generated the data. For the
+price coefficient, `mu[price]` is the mean of the latent normal
+variable, so the coefficient that enters the utility is minus its
+exponential and negative for every decider. `time` and `comfort` share
+the estimated covariance `Omega[time,comfort]`, while `price` has no
+covariance entry with either of them.
 
 [`interpret()`](https://loelschlaeger.de/RprobitB/reference/interpret.md)
 converts the coefficients into trade-offs. For a random effect it uses
@@ -119,16 +115,15 @@ minus the exponential of `mu[price]`:
 
 ``` r
 
-mixing_trade <- interpret(mixing, reference = "price")
-mixing_trade
+interpret(mixing, reference = "price")
 #> 1 `time` compensates -2.14 `price` (95% interval -2.48 to -1.83)
 #> 1 `comfort` compensates 1.4 `price` (95% interval 1.14 to 1.66)
 ```
 
 The `dgp_parameters` set the latent mean of the price effect to `-1`, so
-the median price coefficient is `-exp(-1)`, about `-0.37`. One unit of
-time is therefore worth -2.17 units of price and one unit of comfort
-1.36 units. Both values lie inside the 95% credible intervals.
+the true median price coefficient is `-exp(-1)`, about `-0.37`. Dividing
+the true time and comfort coefficients by it gives the true trade-offs,
+with which the posterior means above can be compared.
 
 The panel structure makes individual coefficients estimable.
 `coef(level = "individual")` returns the posterior mean coefficient of
@@ -174,10 +169,7 @@ Contract length and locality receive correlated normal random
 coefficients, the other attributes one coefficient for all households.
 Fixing the price coefficient to `-1` identifies the scale and expresses
 every other coefficient in cents per kWh, that is, directly as a
-willingness to pay. All six attributes must enter the model: suppliers
-with time-of-day or seasonal rates have a price of zero in these data,
-so without their dummies the price coefficient would absorb the effect
-of their zero price.
+willingness to pay.
 
 ``` r
 
@@ -235,10 +227,7 @@ interpret(electricity, effects = c("cl", "loc", "wk"))
 
 On average, households would accept a price about 2 cents per kWh higher
 for a local supplier, and would need a price about 0.22 cents lower for
-each additional year of contract length. The `Omega[...]` variables
-describe how much these valuations vary between households: the standard
-deviation of the locality premium across households is 1.5 cents, which
-is below its mean.
+each additional year of contract length.
 
 ## Latent classes
 
@@ -249,11 +238,10 @@ focus on service. `latent_class_effects` names the effects that differ
 between `classes` latent classes. Every decider belongs to exactly one
 class. The class weights $`w_1, \dots, w_K`$ are the probabilities of
 membership and sum to one, and the class allocation of every decider is
-a latent variable that the sampler draws together with the parameters. A
-class is occupied if at least one decider is allocated to it. Naming a
-random effect in `latent_class_effects` replaces its normal distribution
-by a finite mixture of normals, which yields the latent-class mixed
-multinomial probit model of Oelschläger and Bauer
+a latent variable that the sampler draws together with the parameters.
+Naming a random effect in `latent_class_effects` replaces its normal
+distribution by a finite mixture of normals, which yields the
+latent-class mixed multinomial probit model of Oelschläger and Bauer
 ([2021](#ref-Oelschlaeger2021)). Random effects that are not named keep
 one distribution for all deciders, and a named coefficient that is not
 random takes one value per class and does not vary within it, as in the
@@ -268,32 +256,25 @@ classical latent class model ([Kamakura and Russell
 - `class_update = "dirichlet_process"` for a Dirichlet-process mixture
   whose number of occupied classes is itself random;
 - `class_update = "weight_based"` for the split, remove, and merge
-  heuristic of earlier **RprobitB** versions, which is a search
-  procedure, not a Bayesian model.
+  heuristic.
 
 All four updates are demonstrated on one simulated data set with two
 classes. The fixed-class fit simulates the data; the other three are
 refits through [`update()`](https://rdrr.io/r/stats/update.html), which
-reuses the simulated data, so all updates are compared on identical
-observations.
+reuses the simulated data.
 
 ### A fixed number of classes
 
-For `class_update = "fixed"`, `classes = K` fixes the number of classes,
-and every class stays occupied. The class weights have the prior
+For `class_update = "fixed"`, `classes = K` fixes the number of classes.
+The class weights have the prior
 $`(w_1,\ldots,w_K)\sim\operatorname{Dirichlet}(\delta,\ldots,\delta)`$,
 where the default `class_concentration = 1` is uniform on the weight
 simplex. The class labels are arbitrary: swapping them leaves the
 likelihood unchanged, so the sampler may swap them during a run.
-**RprobitB** leaves the sampler unconstrained and relabels the retained
-draws afterwards. It derives a representative grouping of the deciders
-from the posterior co-clustering matrix, whose entries are the posterior
-probabilities that two deciders belong to the same class ([Dahl
-2006](#ref-Dahl2006)), matches the allocation of every draw to this
-grouping ([Papastamoulis and Iliopoulos 2010](#ref-Papastamoulis2010)),
-and permutes weights, means, covariances, and allocations accordingly.
-The classes are then numbered by decreasing weight, which is a naming
-convention.
+**RprobitB** therefore relabels the retained draws after sampling, so
+that every draw uses the same labels ([Dahl 2006](#ref-Dahl2006);
+[Papastamoulis and Iliopoulos 2010](#ref-Papastamoulis2010)), and
+numbers the classes by decreasing weight.
 
 The following demonstration uses eight occasions per decider and two
 well-separated classes: a majority with coefficients centered at `-1`
@@ -322,11 +303,10 @@ mixture <- fit(
   chains = 2,
   progress = FALSE
 )
-mixture_summary <- summary(mixture, variables = c(
+summary(mixture, variables = c(
   "weight[1]", "weight[2]", "mu[x,1]", "mu[x,2]",
   "Omega[x,x,1]", "Omega[x,x,2]"
 ))
-mixture_summary
 #> Bayesian probit choice model
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 2000 retained per chain, 2 chains
@@ -340,17 +320,11 @@ mixture_summary
 #>  Omega[x,x,2]  0.2  0.491  0.231 0.4813 1.00      297
 ```
 
-The relabeled weights and means can be read class by class. The class
-near `-1` has a posterior mean weight of 0.6 against a population weight
-of `0.6`, and the class near `2` the rest. The largest `rhat` in the
-table is 1.033, and the smallest bulk effective sample size, 177,
-belongs to `mu[x,2]`. Check both for every mixture fit, because
-relabeling cannot compensate for poor mixing or weak class separation.
-
 [`latent_class_diagnostics()`](https://loelschlaeger.de/RprobitB/reference/latent_class_diagnostics.md)
 returns the posterior distribution of the number of occupied classes,
 the membership probabilities of the deciders after relabeling, and the
-co-clustering matrix, which does not depend on the class labels:
+co-clustering matrix. Its entries are the posterior probabilities that
+two deciders belong to the same class:
 
 ``` r
 
@@ -375,87 +349,6 @@ class_diagnostics$co_clustering[1:6, 1:6]
 #> 5 0.01875 0.01375 0.01675 0.01625 1.00000 0.01625
 #> 6 0.98800 0.99150 0.98800 0.98800 0.01625 1.00000
 ```
-
-The three refits below relabel their draws in the same way. When the
-number of classes varies, a class exists only in part of the draws, and
-the `occupied` column of
-[`summary()`](https://rdrr.io/r/base/summary.html) reports this share.
-The refits have no `dgp` column, so a small helper compares them with
-the stored true parameters: the most probable number of occupied classes
-and, after assigning every decider to the true class whose mean is
-closer to their posterior mean coefficient, the share of deciders in the
-second class and the average coefficient in each class.
-
-``` r
-
-truth <- mixture$simulation$dgp_parameters
-class_means <- c(truth$beta[[1]][["x"]], truth$beta[[2]][["x"]])
-recover_classes <- function(x) {
-  occupancy <- latent_class_diagnostics(x)$occupancy
-  individual <- coef(x, level = "individual")[, "x"]
-  upper <- individual > mean(class_means)
-  data.frame(
-    variable = c("n_classes", "weight[2]", "mu[x,1]", "mu[x,2]"),
-    dgp = c(length(truth$weights), truth$weights[2], class_means),
-    estimate = c(
-      occupancy$n_classes[which.max(occupancy$probability)],
-      mean(upper), mean(individual[!upper]), mean(individual[upper])
-    )
-  )
-}
-mixture_sim <- recover_classes(mixture)
-mixture_sim
-#>    variable  dgp   estimate
-#> 1 n_classes  2.0  2.0000000
-#> 2 weight[2]  0.4  0.4000000
-#> 3   mu[x,1] -1.0 -0.7714234
-#> 4   mu[x,2]  2.0  2.1714848
-```
-
-Fitting two filled classes is not evidence that two meaningful
-populations exist. When $`K`$ is not fixed by the research design, fit
-each candidate value to the same data and compare the decider-level
-predictive accuracy with the **loo** package ([Vehtari et al.
-2026](#ref-Vehtari2026)), as the vignette [Bayesian model
-evaluation](https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html)
-describes. The fits are thinned, because each
-[`loo()`](https://loelschlaeger.de/RprobitB/reference/loo.RprobitB_fit.md)
-call evaluates the panel likelihood of every decider under every
-retained draw. This likelihood is a multivariate normal probability that
-is simulated with the GHK simulator, and `ghk_draws = 50` reduces its
-simulation draws from the default 500.
-
-``` r
-
-models_by_K <- lapply(1:3, function(K) {
-  class_effects <- if (K > 1) "x" else character()
-  update(
-    mixture, classes = K, latent_class_effects = class_effects,
-    iterations = 2000, warmup = 1000, thin = 20
-  )
-})
-k_comparison <- loo::loo_compare(
-  lapply(models_by_K, loo, ghk_draws = 50, progress = FALSE)
-)
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
-k_comparison
-#>   model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>  model2       0.0     0.0      NA           1 k_psis > 0.5
-#>  model3      -0.5     0.5    0.88   N < 100 1 k_psis > 0.5
-#>  model1     -11.3     3.5    1.00   N < 100 3 k_psis > 0.5
-#> 
-#> Diagnostic flags present.
-#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
-#> or https://mc-stan.org/loo/reference/loo-glossary.html.
-```
-
-The one-class model falls short of the best model by 11, 3 times the
-standard error of the difference, whereas the two- and the three-class
-model differ by only 0.5 with a standard error of 0.5, so the third
-class adds little. This is the expected result for data generated with
-two classes.
 
 ### Class-specific coefficients
 
@@ -490,19 +383,18 @@ train_classes <- fit(
   chains = 2,
   progress = FALSE
 )
-train_classes_summary <- summary(train_classes, variables = c(
+summary(train_classes, variables = c(
   "weight[1]", "weight[2]", "beta[time,1]", "beta[time,2]"
 ))
-train_classes_summary
 #> Bayesian probit choice model
 #> Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 
 #> Samples: 2500 retained per chain, 2 chains
 #> 
-#>      variable   mean    mode     sd rhat ess_bulk
-#>     weight[1]   0.87   0.886 0.0537 1.01      167
-#>     weight[2]   0.13   0.114 0.0537 1.01      167
-#>  beta[time,1]  -3.56  -3.437 0.6658 1.01      240
-#>  beta[time,2] -21.96 -18.895 7.1465 1.02      101
+#>      variable    mean    mode     sd rhat ess_bulk
+#>     weight[1]   0.864   0.875 0.0519    1      598
+#>     weight[2]   0.136   0.125 0.0519    1      598
+#>  beta[time,1]  -3.461  -3.565 0.6483    1      752
+#>  beta[time,2] -20.544 -18.425 5.3774    1      319
 ```
 
 With the price coefficient fixed at `-1`, the class-specific time
@@ -514,48 +406,79 @@ reports class by class:
 
 time_by_class <- interpret(train_classes, effects = "time")
 time_by_class
-#> Class 1: 1 `time` compensates -3.56 `price` (95% interval -4.86 to -2.26)
-#> Class 2: 1 `time` compensates -22 `price` (95% interval -42.5 to -14)
+#> Class 1: 1 `time` compensates -3.46 `price` (95% interval -4.75 to -2.18)
+#> Class 2: 1 `time` compensates -20.5 `price` (95% interval -36.8 to -13.9)
 ```
 
-The larger class, 87 percent of the travelers, values an hour at 3.6
-euro, the smaller class at 22 euro. The smaller class chooses the faster
-trip almost regardless of its price, a pattern that a single normal
-distribution of the time coefficient would represent as a heavy tail.
-The largest `rhat` of the four variables is 1.019 and the smallest bulk
-effective sample size 101.
+The larger class values an hour at about 3 euro, the smaller class at
+about 21 euro. The smaller class chooses the faster trip almost
+regardless of its price.
 
 ### Weight-based class updates
 
-The weight-based update of Oelschläger and Bauer
-([2021](#ref-Oelschlaeger2021)) is kept for reproducing earlier
-**RprobitB** analyses. Every `buffer` warmup iterations, it removes the
-smallest class if its weight is below `epsmin`, splits the largest class
-if its weight is above `epsmax`, or merges the closest pair of classes
-if the distance of their means is below `deltamin`, at most one
-operation in this order. `weight_based_control` overrides the defaults
-of these constants, and `max_classes` bounds the splitting. These
-dimension changes correspond to no prior on the number of classes, and
-they stop after warmup, so the reported `n_classes` is the outcome of a
-search, not a posterior distribution. For inferential claims, prefer the
-fixed, sparse finite, or Dirichlet-process specifications.
+Oelschläger and Bauer ([2021](#ref-Oelschlaeger2021)) presents a
+weight-based update scheme for latent class analysis. Every `buffer`
+warmup iterations, it removes the smallest class if its weight is below
+`epsmin`, splits the largest class if its weight is above `epsmax`, or
+merges the closest pair of classes if the distance of their means is
+below `deltamin`, at most one operation in this order.
+`weight_based_control` overrides the defaults of these constants, and
+`max_classes` bounds the splitting. These dimension changes correspond
+to no prior on the number of classes, and they stop after warmup, so the
+reported `n_classes` is the outcome of a search, not a posterior
+distribution.
+
+This refit and the two in the following subsections change the class
+update, so [`summary()`](https://rdrr.io/r/base/summary.html) has no
+`dgp` column for them. The helper `recover_classes()` provides the
+comparison with the true values instead. The classes are numbered by
+decreasing weight, so the first class should be the majority with weight
+`0.6` and mean `-1`, and the second class the minority with weight `0.4`
+and mean `2`. The helper puts the posterior means of these four
+variables and the most probable number of occupied classes beside the
+true values. Applied to the fit with two fixed classes, it gives the
+reference for the refits:
+
+``` r
+
+recover_classes <- function(x) {
+  variables <- c("weight[1]", "weight[2]", "mu[x,1]", "mu[x,2]")
+  occupancy <- latent_class_diagnostics(x)$occupancy
+  data.frame(
+    variable = c("n_classes", variables),
+    dgp = c(2, 0.6, 0.4, -1, 2),
+    estimate = round(c(
+      occupancy$n_classes[which.max(occupancy$probability)],
+      coef(x)[variables]
+    ), 2),
+    row.names = NULL
+  )
+}
+recover_classes(mixture)
+#>    variable  dgp estimate
+#> 1 n_classes  2.0     2.00
+#> 2 weight[1]  0.6     0.60
+#> 3 weight[2]  0.4     0.40
+#> 4   mu[x,1] -1.0    -0.76
+#> 5   mu[x,2]  2.0     2.20
+```
+
+The weight-based refit is compared in the same way:
 
 ``` r
 
 weight_based <- update(mixture, class_update = "weight_based")
-weight_based_sim <- recover_classes(weight_based)
-weight_based_sim
-#>    variable  dgp   estimate
-#> 1 n_classes  2.0  2.0000000
-#> 2 weight[2]  0.4  0.4000000
-#> 3   mu[x,1] -1.0 -0.7752978
-#> 4   mu[x,2]  2.0  2.1244682
+recover_classes(weight_based)
+#>    variable  dgp estimate
+#> 1 n_classes  2.0     2.00
+#> 2 weight[1]  0.6     0.60
+#> 3 weight[2]  0.4     0.40
+#> 4   mu[x,1] -1.0    -0.77
+#> 5   mu[x,2]  2.0     2.16
 ```
 
-The run ends with 2 classes, and the share and the class means differ
-from those of the fixed fit by at most 0.05. This is the case the
-heuristic was designed for; the caveats above concern the interpretation
-of its result.
+The run ends with the two classes that generated the data, and their
+weights and means agree closely with those of the fixed fit.
 
 ### Sparse finite mixtures
 
@@ -578,96 +501,57 @@ K\left[1-
 
 which translates $`e_0`$ into a statement about the number of classes.
 At the prior mean $`e_0 = 0.005`$, with $`K = 6`$ and the 80 deciders of
-the simulated data, it gives about 1.1 occupied classes: the prior
-expects close to a single occupied class. The refit sets the upper bound
-to six classes for the two-class data.
+the simulated data, the prior expects close to a single occupied class.
+The refit sets the upper bound to six classes for the two-class data.
 
 ``` r
 
 sparse <- update(mixture, classes = 6, class_update = "sparse")
-sparse_summary <- summary(sparse)
-sparse_summary
+summary(sparse)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 2000 retained per chain, 2 chains
 #> 
-#>             variable occupied     mean     mode      sd rhat ess_bulk
-#>            weight[1]   1.0000  0.60628  0.62109 0.06037 1.00     1324
-#>            weight[2]   1.0000  0.39106  0.38037 0.06108 1.00     1303
-#>            weight[3]   0.0305  0.02573  0.00669 0.03845   NA       NA
-#>            weight[4]   0.0185  0.04021  0.01468 0.04464   NA       NA
-#>            weight[5]   0.0158  0.02666  0.00969 0.02630   NA       NA
-#>            weight[6]   0.0095  0.02675  0.01257 0.02025   NA       NA
-#>              mu[x,1]   1.0000 -0.75757 -0.74992 0.11076 1.00     1487
-#>              mu[x,2]   1.0000  2.14223  2.14647 0.32039 1.01      234
-#>              mu[x,3]   0.0305 -1.38106  1.13623 3.19781   NA       NA
-#>              mu[x,4]   0.0185  1.68662  2.19947 2.10760   NA       NA
-#>              mu[x,5]   0.0158  0.84980 -0.01850 1.92361   NA       NA
-#>              mu[x,6]   0.0095  0.87222  1.56983 2.19091   NA       NA
-#>         Omega[x,x,1]   1.0000  0.19835  0.14044 0.10440 1.01      773
-#>         Omega[x,x,2]   1.0000  0.42822  0.19209 0.44007 1.00      370
-#>         Omega[x,x,3]   0.0305  0.67483  0.24658 0.80323   NA       NA
-#>         Omega[x,x,4]   0.0185  0.68901  0.31632 0.91526   NA       NA
-#>         Omega[x,x,5]   0.0158  0.63857  0.36350 0.60428   NA       NA
-#>         Omega[x,x,6]   0.0095  0.97210  0.33455 1.53646   NA       NA
-#>  class_concentration   1.0000  0.00942  0.00459 0.00654 1.00      308
-#>            n_classes   1.0000  2.07425  2.00000 0.26880 1.00      426
-sparse_occupancy <- latent_class_diagnostics(sparse)$occupancy
-sparse_occupancy
+#>             variable occupied    mean     mode      sd rhat ess_bulk
+#>            weight[1]   1.0000  0.6023  0.61097 0.06241    1     1415
+#>            weight[2]   1.0000  0.3918  0.38866 0.06256    1     1411
+#>            weight[3]   0.0403  0.0434  0.01367 0.04705   NA       NA
+#>            weight[4]   0.0232  0.0657  0.01532 0.08030   NA       NA
+#>            weight[5]   0.0295  0.0489  0.01153 0.06430   NA       NA
+#>            weight[6]   0.0107  0.0569  0.01441 0.06088   NA       NA
+#>              mu[x,1]   1.0000 -0.7648 -0.78131 0.11338    1      901
+#>              mu[x,2]   1.0000  2.1781  2.08785 0.37107    1      215
+#>              mu[x,3]   0.0403  1.6597  2.39758 1.98303   NA       NA
+#>              mu[x,4]   0.0232  0.8302  2.44834 1.73476   NA       NA
+#>              mu[x,5]   0.0295 -0.4664 -1.06433 2.54668   NA       NA
+#>              mu[x,6]   0.0107  1.2251 -0.32311 1.70532   NA       NA
+#>         Omega[x,x,1]   1.0000  0.1933  0.13431 0.09378    1      782
+#>         Omega[x,x,2]   1.0000  0.4830  0.20496 0.46470    1      298
+#>         Omega[x,x,3]   0.0403  0.8478  0.30128 1.61464   NA       NA
+#>         Omega[x,x,4]   0.0232  1.0452  0.26860 2.88996   NA       NA
+#>         Omega[x,x,5]   0.0295  0.8682  0.23290 1.92329   NA       NA
+#>         Omega[x,x,6]   0.0107  0.5064  0.26793 0.44232   NA       NA
+#>  class_concentration   1.0000  0.0103  0.00618 0.00654    1      397
+#>            n_classes   1.0000  2.1037  2.00000 0.31545    1      679
+latent_class_diagnostics(sparse)$occupancy
 #>   n_classes probability
-#> 1         2     0.92750
-#> 2         3     0.07075
-#> 3         4     0.00175
-sparse_sim <- recover_classes(sparse)
-sparse_sim
-#>    variable  dgp   estimate
-#> 1 n_classes  2.0  2.0000000
-#> 2 weight[2]  0.4  0.4000000
-#> 3   mu[x,1] -1.0 -0.7736973
-#> 4   mu[x,2]  2.0  2.1049214
+#> 1         2     0.89950
+#> 2         3     0.09725
+#> 3         4     0.00325
+recover_classes(sparse)
+#>    variable  dgp estimate
+#> 1 n_classes  2.0     2.00
+#> 2 weight[1]  0.6     0.60
+#> 3 weight[2]  0.4     0.39
+#> 4   mu[x,1] -1.0    -0.76
+#> 5   mu[x,2]  2.0     2.18
 ```
 
-Although the prior favors a single class, the posterior assigns a
-probability of 93 percent to exactly two occupied classes, and the class
-means are recovered as by the fixed model, -0.77 and 2.1 against `-1`
-and `2`. The smallest bulk effective sample size, 234, belongs to
-`mu[x,2]`. Both $`K`$ and $`e_0`$ affect the posterior of the number of
-occupied classes, so a sensitivity analysis should vary them. A less
-sparse alternative is
-$`e_0\sim\operatorname{Gamma}(2,4K)`$([Frühwirth-Schnatter and
-Malsiner-Walli 2019](#ref-FruehwirthSchnatter2019)):
-
-``` r
-
-sparse_less <- update(
-  mixture,
-  classes = 6,
-  class_update = "sparse",
-  prior = list(class_concentration = c(shape = 2, rate = 24))
-)
-less_occupancy <- latent_class_diagnostics(sparse_less)$occupancy
-less_occupancy
-#>   n_classes probability
-#> 1         2     0.46275
-#> 2         3     0.34625
-#> 3         4     0.15275
-#> 4         5     0.03450
-#> 5         6     0.00375
-less_sim <- recover_classes(sparse_less)
-less_sim
-#>    variable  dgp  estimate
-#> 1 n_classes  2.0  2.000000
-#> 2 weight[2]  0.4  0.400000
-#> 3   mu[x,1] -1.0 -0.782502
-#> 4   mu[x,2]  2.0  2.141113
-```
-
-With a prior that empties classes less readily, the posterior of the
-number of occupied classes spreads from 2 to 6 and assigns exactly two
-classes a probability of only 46 percent. The class means are still
-recovered, -0.78 and 2.14, because the extra classes contain few
-deciders, but the estimated number of classes has changed with the
-prior. Report the concentration prior together with the occupancy table.
+Although the prior favors a single class, the posterior concentrates on
+two occupied classes, whose weights and means are close to the true
+values. When the number of classes varies, a class exists only in part
+of the draws, and the `occupied` column of
+[`summary()`](https://rdrr.io/r/base/summary.html) reports this share.
 
 ### Dirichlet-process mixtures
 
@@ -676,16 +560,13 @@ controls the prior tendency to open new classes, with the default
 $`\alpha\sim\operatorname{Gamma}(2,4)`$ of mean `0.5`. Conditional on a
 fixed $`\alpha`$, the prior expects
 $`\sum_{i=1}^{N}\alpha/(\alpha+i-1)`$ occupied classes among $`N`$
-deciders, which for $`\alpha = 0.5`$ and 80 deciders is about 3.2.
+deciders, which for $`\alpha = 0.5`$ and 80 deciders is about three.
 **RprobitB** updates $`\alpha`$ with the augmentation of Escobar and
 West ([1995](#ref-Escobar1995)) and the allocations with the algorithm
 of Neal ([2000](#ref-Neal2000)). `max_classes` caps the number of
 classes the sampler may open, and
 [`fit()`](https://loelschlaeger.de/RprobitB/reference/fit.md) warns when
-the draws reach the cap. The number of occupied classes mixes slowly,
-because a decider opens a new class only rarely, so the refit runs
-longer chains than the reference fit, thinned to keep the fitted object
-small.
+the draws reach the cap.
 
 ``` r
 
@@ -693,93 +574,78 @@ dynamic <- update(
   mixture, class_update = "dirichlet_process", max_classes = 15,
   iterations = 30000, warmup = 15000, thin = 10
 )
-dynamic_summary <- summary(dynamic)
-dynamic_summary
+summary(dynamic)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 1500 retained per chain, 2 chains
 #> 
-#>             variable occupied    mean    mode     sd rhat ess_bulk
-#>            weight[1]  1.00000  0.5764  0.6006 0.0683 1.01     1067
-#>            weight[2]  1.00000  0.3494  0.3909 0.0646 1.01      491
-#>            weight[3]  0.66733  0.0713  0.0196 0.0647   NA       NA
-#>            weight[4]  0.36000  0.0474  0.0144 0.0512   NA       NA
-#>            weight[5]  0.16300  0.0384  0.0140 0.0437   NA       NA
-#>            weight[6]  0.06600  0.0324  0.0129 0.0337   NA       NA
-#>            weight[7]  0.02567  0.0276  0.0125 0.0277   NA       NA
-#>            weight[8]  0.01100  0.0246  0.0125 0.0208   NA       NA
-#>            weight[9]  0.00500  0.0225  0.0125 0.0212   NA       NA
-#>           weight[10]  0.00133  0.0187  0.0125 0.0125   NA       NA
-#>              mu[x,1]  1.00000 -0.7651 -0.7793 0.1280 1.00     1894
-#>              mu[x,2]  1.00000  2.2365  2.1718 0.4526 1.01      330
-#>              mu[x,3]  0.66733  1.1656  1.9625 2.2723   NA       NA
-#>              mu[x,4]  0.36000  0.8415 -0.7902 2.1760   NA       NA
-#>              mu[x,5]  0.16300  0.6768  1.3574 2.2878   NA       NA
-#>              mu[x,6]  0.06600  1.0714  2.0517 2.2048   NA       NA
-#>              mu[x,7]  0.02567  0.7316  2.1819 2.0304   NA       NA
-#>              mu[x,8]  0.01100  0.9621  0.6255 1.9068   NA       NA
-#>              mu[x,9]  0.00500  1.2651 -0.3654 3.1680   NA       NA
-#>             mu[x,10]  0.00133 -0.5347 -1.4855 2.0850   NA       NA
-#>         Omega[x,x,1]  1.00000  0.2061  0.1438 0.1315 1.00     1127
-#>         Omega[x,x,2]  1.00000  0.4708  0.2067 0.5191 1.01      424
-#>         Omega[x,x,3]  0.66733  0.8199  0.2278 1.9172   NA       NA
-#>         Omega[x,x,4]  0.36000  0.9090  0.2282 1.9325   NA       NA
-#>         Omega[x,x,5]  0.16300  0.8162  0.2633 1.5670   NA       NA
-#>         Omega[x,x,6]  0.06600  0.8439  0.2791 1.8146   NA       NA
-#>         Omega[x,x,7]  0.02567  0.6361  0.3245 0.5985   NA       NA
-#>         Omega[x,x,8]  0.01100  0.7867  0.3789 0.8046   NA       NA
-#>         Omega[x,x,9]  0.00500  0.5650  0.3526 0.3773   NA       NA
-#>        Omega[x,x,10]  0.00133  0.4579  0.6688 0.3232   NA       NA
-#>  class_concentration  1.00000  0.5191  0.3547 0.3093 1.01     1318
-#>            n_classes  1.00000  3.2993  2.0000 1.3318 1.01      539
-dynamic_occupancy <- latent_class_diagnostics(dynamic)$occupancy
-dynamic_occupancy
-#>   n_classes probability
-#> 1         2 0.332666667
-#> 2         3 0.307333333
-#> 3         4 0.197000000
-#> 4         5 0.097000000
-#> 5         6 0.040333333
-#> 6         7 0.014666667
-#> 7         8 0.006000000
-#> 8         9 0.003666667
-#> 9        10 0.001333333
-dynamic_sim <- recover_classes(dynamic)
-dynamic_sim
-#>    variable  dgp   estimate
-#> 1 n_classes  2.0  2.0000000
-#> 2 weight[2]  0.4  0.4000000
-#> 3   mu[x,1] -1.0 -0.7861533
-#> 4   mu[x,2]  2.0  2.2166363
+#>             variable occupied    mean    mode      sd rhat ess_bulk
+#>            weight[1] 1.000000  0.5730  0.6013 0.06782 1.00      695
+#>            weight[2] 1.000000  0.3507  0.3906 0.06839 1.01      557
+#>            weight[3] 0.684000  0.0719  0.0198 0.06328   NA       NA
+#>            weight[4] 0.367333  0.0472  0.0144 0.04991   NA       NA
+#>            weight[5] 0.173333  0.0372  0.0125 0.04094   NA       NA
+#>            weight[6] 0.067667  0.0331  0.0130 0.03729   NA       NA
+#>            weight[7] 0.027000  0.0275  0.0125 0.03115   NA       NA
+#>            weight[8] 0.010667  0.0219  0.0139 0.03175   NA       NA
+#>            weight[9] 0.002333  0.0196  0.0132 0.00983   NA       NA
+#>           weight[10] 0.000667  0.0188  0.0125 0.00884   NA       NA
+#>              mu[x,1] 1.000000 -0.7674 -0.7719 0.12718 1.00     1546
+#>              mu[x,2] 1.000000  2.1701  2.0814 0.47818 1.00      322
+#>              mu[x,3] 0.684000  0.9659  1.9222 2.28683   NA       NA
+#>              mu[x,4] 0.367333  0.7298 -0.5414 2.34710   NA       NA
+#>              mu[x,5] 0.173333  0.6924 -0.3899 2.21894   NA       NA
+#>              mu[x,6] 0.067667  0.8181  1.2852 2.42207   NA       NA
+#>              mu[x,7] 0.027000  0.9137  1.5370 2.22806   NA       NA
+#>              mu[x,8] 0.010667  0.9455 -0.1637 2.71074   NA       NA
+#>              mu[x,9] 0.002333  2.7561  3.1427 2.73064   NA       NA
+#>             mu[x,10] 0.000667  1.9343  4.3604 3.44458   NA       NA
+#>         Omega[x,x,1] 1.000000  0.2065  0.1378 0.12809 1.00     1194
+#>         Omega[x,x,2] 1.000000  0.5087  0.2017 0.65946 1.00      500
+#>         Omega[x,x,3] 0.684000  0.9312  0.2309 2.36465   NA       NA
+#>         Omega[x,x,4] 0.367333  0.9504  0.2136 3.00615   NA       NA
+#>         Omega[x,x,5] 0.173333  0.9472  0.3246 2.57769   NA       NA
+#>         Omega[x,x,6] 0.067667  0.9441  0.3095 2.48992   NA       NA
+#>         Omega[x,x,7] 0.027000  0.8027  0.3835 0.87009   NA       NA
+#>         Omega[x,x,8] 0.010667  1.2592  0.3448 2.45968   NA       NA
+#>         Omega[x,x,9] 0.002333  0.7118  0.4284 0.52714   NA       NA
+#>        Omega[x,x,10] 0.000667  0.3828  0.5203 0.19518   NA       NA
+#>  class_concentration 1.000000  0.5346  0.4136 0.31260 1.01     1173
+#>            n_classes 1.000000  3.3330  3.0000 1.32314 1.01      396
+latent_class_diagnostics(dynamic)$occupancy
+#>   n_classes  probability
+#> 1         2 0.3160000000
+#> 2         3 0.3166666667
+#> 3         4 0.1940000000
+#> 4         5 0.1056666667
+#> 5         6 0.0406666667
+#> 6         7 0.0163333333
+#> 7         8 0.0083333333
+#> 8         9 0.0016666667
+#> 9        10 0.0006666667
+recover_classes(dynamic)
+#>    variable  dgp estimate
+#> 1 n_classes  2.0     3.00
+#> 2 weight[1]  0.6     0.57
+#> 3 weight[2]  0.4     0.35
+#> 4   mu[x,1] -1.0    -0.77
+#> 5   mu[x,2]  2.0     2.17
 ```
 
-The occupancy distribution is wider than under the sparse finite prior:
-it assigns a posterior probability of 67 percent to three or more
-classes, against 7 percent under the sparse finite prior. This reflects
-the prior, which expects about three occupied classes for 80 deciders
-and remains influential at this sample size. The label-invariant
-comparison of the helper nevertheless recovers the two true groups,
--0.79 and 2.22, because the superfluous classes contain only a few
-deciders. The `rhat` and the effective sample size of `n_classes`, here
-1.012 and 539, decide whether the occupancy table is reliable. The
-largest number of classes in any draw is 10, below the cap of 15. The
-number of occupied classes, the concentration, and the co-clustering
-probabilities do not depend on the class labels and are therefore the
-safest summaries of such a fit; a class that exists in only a small
-share of the draws describes a few deciders, not a group in the
-population. Report the prior on $`\alpha`$ with the analysis, together
-with the sensitivity to defensible alternatives.
+The occupancy distribution is wider than under the sparse finite prior
+and assigns most of its probability to three or more classes. This
+reflects the prior, which expects about three occupied classes for 80
+deciders. The two largest classes nevertheless match the two true
+groups, because the superfluous classes contain only a few deciders.
 
 ## Ordered and ranked responses
 
 Both mechanisms also work for ordered and ranked responses, which the
 vignette [Model specification and
 variants](https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html)
-introduces. They require a panel, because a population distribution is
-estimated from deciders observed repeatedly. The following demonstration
-uses a simulated panel of rankings: 100 deciders order three
-alternatives five times each, with a coefficient that varies normally
-around `-1`.
+introduces. The following demonstration uses a simulated panel of
+rankings: 100 deciders order three alternatives five times each, with a
+coefficient that varies normally around `-1`.
 
 ``` r
 
@@ -801,17 +667,17 @@ summary(ranked_random)
 #> Formula: rank ~ x | 0 | 0 
 #> Samples: 2000 retained per chain, 2 chains
 #> 
-#>    variable     dgp    mean   mode    sd rhat ess_bulk
-#>       mu[x] -1.0000 -1.1193 -1.097 0.114 1.01      135
-#>  Omega[x,x]  0.3000  0.5319  0.463 0.155 1.02      102
-#>  Sigma[B,C]  0.0835 -0.0931 -0.121 0.124 1.00      417
-#>  Sigma[C,C]  1.7228  1.6428  1.510 0.361 1.00      250
+#>    variable    dgp   mean   mode     sd rhat ess_bulk
+#>       mu[x] -1.000 -1.087 -1.068 0.0910 1.01     66.5
+#>  Omega[x,x]  0.300  0.328  0.287 0.0912 1.01     53.3
+#>  Sigma[B,C]  0.116  0.156  0.171 0.0494 1.02    170.1
+#>  Sigma[C,C]  0.109  0.126  0.118 0.0381 1.01     87.2
 ```
 
-The posterior means of the population mean and variance deviate from
-their true values by 1 and 1.5 posterior standard deviations. Ordered
-responses accept the same arguments, and latent classes are requested in
-the same way as above, with `latent_class_effects` and `classes`.
+The summary shows the population mean and variance beside their true
+values. Ordered responses accept the same arguments, and latent classes
+are requested in the same way as above, with `latent_class_effects` and
+`classes`.
 
 ## Further reading
 
@@ -885,7 +751,3 @@ Rousseau, Judith, and Kerrie Mengersen. 2011. “Asymptotic Behaviour of
 the Posterior Distribution in Overfitted Mixture Models.” *Journal of
 the Royal Statistical Society: Series B (Statistical Methodology)* 73
 (5): 689–710. <https://doi.org/10.1111/j.1467-9868.2011.00781.x>.
-
-Vehtari, Aki, Jonah Gabry, Måns Magnusson, et al. 2026. *loo: Efficient
-Leave-One-Out Cross-Validation and WAIC for Bayesian Models*.
-<https://mc-stan.org/loo/>.
