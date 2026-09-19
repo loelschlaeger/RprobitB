@@ -32,6 +32,11 @@ prediction, residuals, and marginal effects. The examples use data sets of
 the **mlogit** package [@Croissant2020], the **choicedata** package
 [@Oelschlaeger2026a], and the **MASS** package [@VenablesRipley2002].
 
+```{r setup}
+library(RprobitB)
+set.seed(1)
+```
+
 ## A random price coefficient
 
 The `Train` data of the **mlogit** package contain about a dozen choices by
@@ -44,13 +49,10 @@ effect, as introduced in the vignette
 [Modeling preference heterogeneity][v03]: every traveler has an individual
 price coefficient, drawn from a normal population distribution whose mean
 and variance are estimated. The individual draws are saved because the
-conditional predictions below use them. Thinning keeps 50 of the 750
-post-warmup draws of each chain, 100 draws in total, which is enough for
-stable posterior means and keeps the predictions below fast.
+conditional predictions below use them, and thinning keeps 100 draws in
+total, which keeps the predictions fast.
 
 ```{r fit}
-library(RprobitB)
-set.seed(1)
 data("Train", package = "mlogit")
 Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
@@ -73,11 +75,8 @@ summary(model)
 ```
 
 `mu[price]` and `Omega[price,price]` are the mean and the variance of the
-price coefficient across the population. The square root of the posterior
-mean of the variance is
-`r round(sqrt(coef(model)["Omega[price,price]"]), 3)`, against a posterior
-mean of `r round(coef(model)["mu[price]"], 3)` for `mu[price]`: price
-sensitivity differs between travelers, which the predictions below take into
+price coefficient across the population. Price sensitivity differs
+considerably between travelers, which the predictions below take into
 account.
 
 ## Population predictions
@@ -86,8 +85,7 @@ By default, `predict()` returns one row per choice occasion with the
 identifiers, the most probable alternative in `.prediction`, and the
 posterior mean probability of every alternative. These population
 predictions integrate over the estimated population distribution of the
-random coefficient, so they apply to any traveler from the population, not
-only to those in the data.
+random coefficient, so they apply to any traveler from the population.
 
 ```{r population}
 population <- predict(model)
@@ -96,8 +94,7 @@ head(population)
 
 `uncertainty = TRUE` adds the posterior standard deviation and an
 equal-tailed credible interval of every probability, here at the 90% level.
-The intervals reflect the posterior uncertainty about the parameters, not
-the randomness of the choice.
+The intervals reflect the posterior uncertainty about the parameters.
 
 ```{r uncertainty}
 head(predict(model, uncertainty = TRUE, level = 0.9))
@@ -125,24 +122,19 @@ is one measure of the gain:
 
 ```{r accuracy}
 observed <- model.frame(model)$choice
-hit_rate <- c(
+c(
   population = mean(population$.prediction == observed, na.rm = TRUE),
   conditional = mean(conditional$.prediction == observed, na.rm = TRUE)
 )
-hit_rate
 ```
 
-The traveler's own choices `r if (diff(hit_rate) > 0) "raise" else "lower"`
-the hit rate from `r round(hit_rate[["population"]], 2)` to
-`r round(hit_rate[["conditional"]], 2)`. The hit rate evaluates the
-predictions at a single threshold, a probability of one half. A ROC curve
+The hit rate evaluates the
+predictions at a single threshold, a probability of one half. An ROC curve
 compares them at every threshold: as the threshold for predicting trip `B`
 decreases from one to zero, the curve plots the share of `B` choices
 predicted correctly against the share of `A` choices wrongly predicted as
-`B`. The area under the curve is the probability that a randomly chosen `B`
-occasion receives a higher `B` probability than a randomly chosen `A`
-occasion. The **plotROC** package [@Sachs2017] draws the curves with
-**ggplot2** [@Wickham2016].
+`B`. The **plotROC** package [@Sachs2017] draws the curves with **ggplot2**
+[@Wickham2016].
 
 ```{r roc, fig.width=6, fig.height=4}
 library(ggplot2)
@@ -168,17 +160,14 @@ roc_plot <- ggplot(
 roc_plot
 ```
 
-```{r roc-auc, include=FALSE}
-roc_auc <- calc_auc(roc_plot)$AUC
-```
-
-The conditional curve lies above the population curve, and the area under
-the curve rises from `r round(roc_auc[1], 2)` to `r round(roc_auc[2], 2)`.
+The conditional curve lies above the population curve and therefore has the
+larger area under the curve, which equals one for a perfect and one half for
+an uninformative prediction.
 
 ## Scenario analysis in a stated choice experiment
 
-A scenario predicts the choice probabilities for modified attributes, the
-typical use of a stated choice experiment. Near Setskog in Norway, 308
+A scenario predicts the choice probabilities for modified attributes. Near 
+Setskog in Norway, 308
 residents were asked six times to choose between two plans for a proposed
 wind-power project and the status quo without the project, alternative `1`
 [@Dugstad2024]. The plans varied the number and height of the turbines, the
@@ -211,21 +200,11 @@ wind <- fit(
 coef(wind)[c("beta[compensation]", "beta[psychological_ownership_2]")]
 ```
 
-```{r wind-signs, include=FALSE}
-wind_draws <- posterior::as_draws_matrix(wind)
-wind_positive <- sprintf(
-  "%.2f", mean(wind_draws[, "beta[compensation]"] > 0)
-)
-wind_negative <- sprintf(
-  "%.2f", mean(wind_draws[, "beta[psychological_ownership_2]"] < 0)
-)
-```
+The compensation coefficient is positive and the ownership coefficient
+negative: compensation makes a plan more attractive, and residents with a
+stronger feeling of ownership are less willing to leave the status quo. 
 
-The posterior probability that the compensation coefficient is positive is
-`r wind_positive`, and that the ownership coefficient of the first plan is
-negative `r wind_negative`: compensation makes a plan more attractive, and
-residents with a stronger feeling of ownership are less willing to leave the
-status quo. What would happen if the municipality doubled the compensation?
+What would happen if the municipality doubled the compensation?
 `newdata` accepts a data frame in the layout of the fitted data, with or
 without the response column. The scenario below doubles the compensation of
 both plans in the first four choice tasks and compares the probability of
@@ -236,21 +215,14 @@ scenario <- model.frame(wind)[1:4, ]
 scenario$choice <- NULL
 scenario$compensation_2 <- 2 * scenario$compensation_2
 scenario$compensation_3 <- 2 * scenario$compensation_3
-status_quo <- cbind(
+cbind(
   before = predict(wind)$probability_1[1:4],
   after = predict(wind, newdata = scenario)$probability_1
 )
-status_quo
 ```
 
-```{r scenario-numbers, include=FALSE}
-status_quo_loss <- 100 * (status_quo[, "before"] - status_quo[, "after"])
-```
-
-The status quo loses between `r round(min(status_quo_loss))` and
-`r round(max(status_quo_loss))` percentage points in the four tasks.
-Compensation matters, but it is not the only factor in the residents'
-acceptance.
+Doubling the compensation lowers the probability of the status quo in all
+four tasks.
 
 ## Out-of-sample prediction and calibration
 
@@ -274,11 +246,9 @@ berserk_formula <- berserk ~ 0 | white + rating + ratingDifference +
   minutesRemaining + streak
 ```
 
-The fit uses the games of the first 300 players. `train_test()`, which
-**RprobitB** re-exports from **choicedata**, splits them by decider, not by
-row: `test_number = 60` puts all games of 60 players into the test set and
-the games of the other players into the training set, so no player
-contributes to both.
+The fit uses the games of the first 300 players. `train_test()` splits them by 
+decider: `test_number = 60` puts all games of 60 players into the test set and
+the games of the other players into the training set.
 
 ```{r lichess}
 data("lichess_berserk_choice", package = "choicedata")
@@ -297,39 +267,24 @@ berserk <- fit(
 coef(berserk)
 ```
 
-```{r berserk-signs, include=FALSE}
-berserk_draws <- posterior::as_draws_matrix(berserk)
-berserk_sign <- c(
-  rating = mean(berserk_draws[, "beta[rating_TRUE]"] > 0),
-  streak = mean(berserk_draws[, "beta[streakTRUE_TRUE]"] < 0),
-  minutes = mean(berserk_draws[, "beta[minutesRemaining_TRUE]"] < 0)
-)
-berserk_sign <- setNames(sprintf("%.2f", berserk_sign), names(berserk_sign))
-```
-
-The posterior probability that the rating coefficient is positive is
-`r berserk_sign[["rating"]]`, that the streak coefficient is negative
-`r berserk_sign[["streak"]]`, and that the coefficient of the remaining time
-is negative `r berserk_sign[["minutes"]]`: stronger players go Berserk more
-often, players on a streak less often, and all players more often towards
-the end of the tournament. How well does the model predict the games of the
-60 players in the test set? `newdata` takes the test set as it is, and the
+The rating coefficient is positive: stronger players go Berserk more often.
+The coefficients of the streak and of the remaining time are negative. How well 
+does the model predict the games of the 60
+players in the test set? `newdata` takes the test set as it is, and the
 predicted alternative is compared with the observed one.
 
 ```{r holdout}
 holdout_prediction <- predict(berserk, newdata = split$test)
 holdout_choice <- as.character(split$test$berserk)
-holdout_accuracy <- c(
+c(
   accuracy = mean(holdout_prediction$.prediction == holdout_choice),
   share_berserk = mean(split$test$berserk)
 )
-holdout_accuracy
 ```
 
-The hit rate is `r round(100 * holdout_accuracy[["accuracy"]])` percent,
-but the rule that never predicts Berserk would already reach
-`r round(100 * (1 - holdout_accuracy[["share_berserk"]]))` percent, so the
-hit rate alone is a weak criterion for an unbalanced binary response. A
+The hit rate is only slightly higher than the share of games without
+Berserk, which the rule that never predicts Berserk would already reach, so
+the hit rate alone is a weak criterion for an unbalanced binary response. A
 calibration analysis assesses the predicted probabilities instead. It
 groups the hold-out games by predicted Berserk probability in intervals of
 width 0.1 and compares the mean predicted probability with the observed
@@ -363,32 +318,10 @@ plot(
 abline(0, 1, lwd = 2, col = "grey50")
 ```
 
-```{r calibration-numbers, include=FALSE}
-percent <- function(x) round(100 * x)
-calibration_gap <- large$observed - large$predicted
-calibration_worst <- which.max(abs(calibration_gap))
-calibration_direction <- if (calibration_gap[calibration_worst] > 0) {
-  "underpredicts"
-} else {
-  "overpredicts"
-}
-calibration_rise <- if (all(diff(large$observed) > 0)) {
-  "from every group to the next"
-} else {
-  "between the extreme groups, but not from every group to the next"
-}
-```
-
-From the group with the lowest predictions to the group with the highest,
-the mean predicted probability rises from `r percent(large$predicted[1])`
-to `r percent(large$predicted[nrow(large)])` percent and the observed rate
-from `r percent(large$observed[1])` to
-`r percent(large$observed[nrow(large)])` percent. The observed rate rises
-`r calibration_rise`, so the model orders the games by their Berserk rate.
-The largest gap between the observed rate and the predicted probability,
-`r percent(max(abs(calibration_gap)))` percentage points, occurs in the
-group `r rownames(large)[calibration_worst]`, where the model
-`r calibration_direction` Berserk.
+The observed Berserk rate rises with the predicted probability, so the model
+orders the games by their Berserk rate. In the group with the highest
+predictions, the observed rate exceeds the predicted probability, so the
+model underpredicts Berserk for these games.
 
 ## Residuals
 
@@ -406,18 +339,12 @@ head(model_residuals)
 by_decider <- tapply(
   model_residuals[, "A"], model.frame(model)$id, mean, na.rm = TRUE
 )
-decider_quantiles <- quantile(by_decider, c(0, 0.25, 0.5, 0.75, 1))
-round(decider_quantiles, 3)
+round(quantile(by_decider, c(0, 0.25, 0.5, 0.75, 1)), 3)
 ```
 
-```{r residuals-numbers, include=FALSE}
-decider_text <- sprintf("%.2f", decider_quantiles)
-```
-
-Half of the travelers have an average residual between
-`r decider_text[2]` and `r decider_text[4]`, and the extremes are
-`r decider_text[1]` and `r decider_text[5]`: for these travelers the model
-predicts trip `A` too often or too rarely across all their questions.
+Most travelers have an average residual close to zero. For the travelers at
+the extremes, the model predicts trip `A` too often or too rarely across all
+their questions.
 Grouping by a covariate checks the functional form instead, here by the
 price of trip `A` in four groups of equal size:
 
@@ -427,14 +354,10 @@ price_group <- cut(
   breaks = quantile(model.frame(model)$price_A, seq(0, 1, 0.25)),
   include.lowest = TRUE
 )
-price_residuals <- tapply(
-  model_residuals[, "A"], price_group, mean, na.rm = TRUE
-)
-round(price_residuals, 3)
+round(tapply(model_residuals[, "A"], price_group, mean, na.rm = TRUE), 3)
 ```
 
-The group averages lie between `r sprintf("%.3f", min(price_residuals))`
-and `r sprintf("%.3f", max(price_residuals))`. A systematic pattern, for
+All four group averages are close to zero. A systematic pattern, for
 example positive residuals at both ends, would indicate a nonlinear price
 effect or an unmodeled preference class.
 
@@ -448,8 +371,8 @@ dominates. `interpret()` therefore differentiates the predicted
 probabilities numerically. `type = "mea"` evaluates the derivative for one
 occasion whose covariates equal the observed averages, reported in the
 column `at`. `type = "ame"` evaluates the derivative for every observed
-occasion and averages, which weights the occasions as they occur in the data
-and is usually the more relevant summary. Both use every posterior draw and
+occasion and averages, which weights the occasions as they occur in the data. 
+Both use every posterior draw and
 therefore come with credible intervals.
 
 ```{r marginal-effects}
@@ -458,14 +381,14 @@ average_effects <- interpret(model, type = "ame")
 average_effects
 ```
 
-With two alternatives, a change in the attributes of one trip shifts
-probability to the other, so the two rows of each covariate have equal size
-and opposite signs. Averaged over the observed occasions, one euro more
+Averaged over the observed occasions, one euro more
 lowers the probability of a trip by about
 `r round(-100 * average_effects$mean[average_effects$covariate == "price"][1])`
 percentage points and one hour more by about
 `r round(-100 * average_effects$mean[average_effects$covariate == "time"][1])`
-percentage points. The `at` argument replaces the averages of selected
+percentage points. 
+
+The `at` argument replaces the averages of selected
 covariates. A much cheaper trip `B` moves its probability close to one,
 where one euro more changes it only marginally:
 
@@ -495,24 +418,13 @@ smoking <- fit(
   chains = 2,
   progress = FALSE
 )
-smoking_prediction <- predict(smoking)
-head(smoking_prediction)
-```
-
-```{r ordered-prediction-numbers, include=FALSE}
-never_predicted <- sum(smoking_prediction$.prediction == "Never")
-never_text <- if (never_predicted == nrow(smoking_prediction)) {
-  sprintf("every one of the %d students", never_predicted)
-} else {
-  sprintf("%d of the %d students", never_predicted, nrow(smoking_prediction))
-}
+head(predict(smoking))
 ```
 
 Every row has four probabilities that sum to one, and `.prediction` names
-the most probable level. Because
-`r round(100 * mean(survey$Smoke == "Never", na.rm = TRUE))` percent of the
-students never smoke, this level is the most probable for `r never_text`,
-and the probabilities are more informative than the predicted level. A
+the most probable level. Because most students never smoke, this level is
+the most probable for almost every student, and the probabilities are more
+informative than the predicted level. A
 scenario works as before. Ten more years of age shift the probability of
 never smoking of the first three students:
 
@@ -521,26 +433,19 @@ students <- model.frame(smoking)[1:3, ]
 students$Smoke <- NULL
 older <- students
 older$Age <- older$Age + 10
-age_scenario <- cbind(
+cbind(
   before = predict(smoking, newdata = students)$probability_Never,
   after = predict(smoking, newdata = older)$probability_Never
 )
-age_scenario
 ```
 
-```{r ordered-scenario-numbers, include=FALSE}
-age_shift <- 100 * (age_scenario[, "after"] - age_scenario[, "before"])
-```
-
-The probability `r if (all(age_shift > 0)) "rises" else "changes"` by
-`r round(min(abs(age_shift)))` to `r round(max(abs(age_shift)))` percentage
-points, in the direction implied by the negative age coefficient.
+The probability rises for all three students, in the direction implied by
+the negative age coefficient.
 
 ## Further reading
 
 Predictions describe what a model expects, not whether it is better than
-another model. That comparison, on the same decider-level scale as the
-hold-out check here, is the subject of the vignette
+another model. That comparison is the subject of the vignette
 [Bayesian model evaluation][v05].
 
 [v01]: https://loelschlaeger.de/RprobitB/articles/v01_get_started.html
