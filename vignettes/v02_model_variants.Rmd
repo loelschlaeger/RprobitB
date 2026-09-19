@@ -87,21 +87,13 @@ scale_z <- update(scale_default, scale = c(z = -1))
 summary(scale_z)
 ```
 
-```{r normalization-deviation, include=FALSE}
-scale_table <- summary(scale_z)$posterior
-scale_deviation <- max(
-  abs(scale_table$mean - scale_table$dgp) / scale_table$sd
-)
-```
-
 Under the default scale, the `dgp` column shows the coefficients as
 specified. `Sigma[B,B]`, the error variance of the utility difference
 between alternative `B` and the base `A`, is fixed to one and therefore not
-listed. Under
-the coefficient normalization, `beta[z]` is fixed to `-1` instead of its
-true `-0.5`, so all utilities are multiplied by `2`: the true `beta[x]`
-becomes `2` and the true error variance `4`. `summary()` converts the true
-values to the normalization of the fit, so the `dgp` column remains
+listed. Under the coefficient normalization, `beta[z]` is fixed to `-1`
+instead of its true `-0.5`, so all utilities are multiplied by `2`: the true
+`beta[x]` becomes `2` and the true error variance `4`. `summary()` converts
+the true values to the normalization of the fit, so the `dgp` column remains
 comparable.
 
 The convergence diagnostics of the two tables differ because `update()`
@@ -121,9 +113,7 @@ and the log-increments between ordered thresholds have a normal prior. The
 section "Prior distribution" of `?fit` lists all components with their
 defaults, which are weakly informative for coefficients and covariances.
 Single components are overridden through a named list, and the complete
-prior of a fit is stored in its `prior` component. The latent-utility data
-augmentation of the sampler goes back to @Albert1993, and @Imai2005a
-developed its marginal augmentation for the multinomial probit model.
+prior of a fit is stored in its `prior` component.
 
 The following demonstration simulates 100 deciders with a true coefficient
 of `-1` under the default prior and then refits the same data under two
@@ -151,19 +141,12 @@ data.frame(
 )
 ```
 
-```{r prior-deviation, include=FALSE}
-prior_deviation <- abs(coef(default_prior) + 1) /
-  summary(default_prior)$posterior$sd
-```
-
-Under the default prior, the posterior mean deviates from the true value by
-`r round(prior_deviation, 1)` posterior standard deviations. The moderate
-prior shifts the posterior mean by about
-`r round(abs(coef(moderate_prior) - coef(default_prior)), 2)` towards the
-prior mean. The tight prior has a standard deviation of `0.1` around `1` and
-moves the posterior mean to `r round(coef(tight_prior), 2)`. A prior on a
-coefficient is unproblematic as long as its variance reflects the actual
-uncertainty about the coefficient.
+The table compares the posterior means under the three priors with the true
+value. The moderate prior shifts the posterior mean only slightly towards the
+prior mean. The tight prior has a standard deviation of `0.1` around `1`,
+outweighs the data, and pulls the posterior mean far away from the true
+value. A prior on a coefficient is unproblematic as long as its variance
+reflects the actual uncertainty about the coefficient.
 
 ## Covariate types and alternative-specific constants
 
@@ -171,11 +154,9 @@ The formula `choice ~ A | B | C` distinguishes three kinds of covariates:
 attributes of the alternatives with one shared coefficient (`A`),
 characteristics of the decider with alternative-specific coefficients (`B`),
 and attributes of the alternatives with alternative-specific coefficients
-(`C`). Alternative-specific constants, one intercept per alternative other
-than the base that captures the utility of the alternative beyond its
-attributes, are included by default and removed with `0` in the second part.
-The following demonstration simulates all three types at once, and
-`summary()` shows the posterior summaries beside the normalized true values.
+(`C`). Alternative-specific constants are included by default and removed with 
+`0` in the second part. The following demonstration simulates all three types at 
+once, and `summary()` shows the posterior summaries beside the true values.
 
 ```{r covariate-types-sim}
 covariate_types <- fit(
@@ -189,38 +170,21 @@ covariate_types <- fit(
 summary(covariate_types)
 ```
 
-```{r covariate-types-deviation, include=FALSE}
-types_table <- summary(covariate_types)$posterior
-types_deviation <- max(
-  abs(types_table$mean - types_table$dgp) / types_table$sd
-)
-types_signs <- all(sign(types_table$mean) == sign(types_table$dgp))
-```
-
-The posterior means of the five coefficients, including the two
-alternative-specific coefficients of `w` and the constant of alternative
-`B`, deviate from the true values by at most `r round(types_deviation, 1)`
-posterior standard deviations, and
-`r if (types_signs) "all five" else "not all"` have the sign of the true
-value. `base` selects the alternative against which the alternative-specific
-coefficients are measured, by default the first in alphabetical order, here
-`A`. Switching the base to `B` changes the parameterization, not the model:
+The summary lists the shared coefficient of `x`, the coefficient of `z` and
+the constant of alternative `B`, and the two alternative-specific
+coefficients of `w`, each beside its true value. `base` selects the
+alternative against which the alternative-specific coefficients are
+measured, by default the first in alphabetical order, here `A`. Switching
+the base to `B` changes only the parameterization, not the model:
 
 ```{r base}
 base_b <- update(covariate_types, base = "B")
 coef(base_b)[c("beta[x]", "beta[z_A]", "beta[ASC_A]")]
 ```
 
-```{r base-shift, include=FALSE}
-base_shift <- abs(
-  coef(base_b)[["beta[x]"]] - coef(covariate_types)[["beta[x]"]]
-)
-```
-
-The shared coefficient of `x` differs from the previous fit by only
-`r sprintf("%.4f", base_shift)`, the Monte Carlo error of two separate
-runs, while the coefficient of `z` and the constant now describe alternative
-`A` relative to `B` and therefore change sign.
+The shared coefficient of `x` is unchanged up to Monte Carlo error, while
+the coefficient of `z` and the constant now describe alternative `A`
+relative to `B` and therefore change sign.
 
 In 1987, 210 travelers between Sydney and Melbourne reported which of four
 modes they had taken: air, train, bus, or car. The `TravelMode` data of the
@@ -239,10 +203,7 @@ travel_formula <- choice ~ wait + vcost + travel | income + size
 
 The first alternative in alphabetical order, `air`, is the base, so the
 constants and the coefficients of income and party size describe the other
-modes relative to flying. A free error covariance between four alternatives
-is weakly identified when every traveler is observed once, and the sampler
-mixes slowly for its entries, so the chains run 20000 iterations and retain
-every twentieth draw.
+modes relative to flying.
 
 ```{r travel}
 data("TravelMode", package = "AER")
@@ -264,55 +225,20 @@ travel <- fit(
 summary(travel)
 ```
 
-```{r travel-diagnostics, include=FALSE}
-travel_table <- summary(travel)$posterior
-travel_sigma <- startsWith(travel_table$variable, "Sigma")
-travel_rhat <- c(
-  beta = max(travel_table$rhat[!travel_sigma]),
-  Sigma = max(travel_table$rhat[travel_sigma])
-)
-travel_slowest <- paste0(
-  "`", travel_table$variable[which.min(travel_table$ess_bulk)], "`"
-)
-travel_cost <- travel_table[travel_table$variable == "beta[vcost]", ]
-travel_cost_ratio <- abs(travel_cost$mean) / travel_cost$sd
-```
-
-At this length, `rhat` is at most `r sprintf("%.3f", travel_rhat[["beta"]])`
-for the coefficients and `r sprintf("%.3f", travel_rhat[["Sigma"]])` for the
-covariance entries, and the smallest bulk effective sample size,
-`r round(min(travel_table$ess_bulk))`, belongs to `r travel_slowest`. The
-fit took `r round(travel$sampler$elapsed[["total"]])` seconds. The three
-attribute coefficients are negative: waiting, cost, and travel time reduce
-the utility of a mode. The cost coefficient lies only
-`r round(travel_cost_ratio, 1)` posterior standard deviations from zero, so
-these data contain little information about a value of time, and a
-compensation with the cost as reference would have an uninformative
-credible interval. The income and party size coefficients are
-alternative-specific and have no direct interpretation on the utility scale,
-so `interpret(type = "mea")` computes marginal effects, the derivatives of
-the choice probabilities with respect to a covariate, for a traveler with
-average covariates:
+The three attribute coefficients are negative: waiting, cost, and travel
+time reduce the utility of a mode. The income and party size coefficients
+are alternative-specific and have no direct interpretation on the utility
+scale, so `interpret(type = "mea")` computes marginal effects, the
+derivatives of the choice probabilities with respect to a covariate, for a
+traveler with average covariates:
 
 ```{r travel-income}
 mode_effects <- interpret(travel, type = "mea")
 mode_effects[mode_effects$covariate == "income", ]
 ```
 
-```{r travel-numbers, include=FALSE}
-income_effect <- function(mode) {
-  row <- mode_effects$covariate == "income" & mode_effects$alternative == mode
-  100 * mode_effects$mean[row]
-}
-direction <- function(x) if (x < 0) "lowers" else "raises"
-```
-
-An additional thousand euro of household income
-`r direction(income_effect("train"))` the probability of the train by about
-`r sprintf("%.1f", abs(income_effect("train")))` percentage points and
-`r direction(income_effect("air"))` that of the plane by about
-`r sprintf("%.1f", abs(income_effect("air")))` points. The four effects sum
-to zero because the four probabilities sum to one.
+A higher household income lowers the probability of the train and raises
+the probabilities of the plane and the car.
 
 ## Individual choice sets
 
@@ -323,7 +249,7 @@ the alternatives. In long format, an occasion lists only the rows of its
 available alternatives, and no further argument is needed. The sampler
 imputes the latent utilities of unavailable alternatives without
 restriction, so they do not affect the choice, and predictions assign them
-probability zero. Ordered and ranked models require complete choice sets.
+probability zero.
 
 Between Montreal and Toronto, travelers can fly, drive, or take the train,
 but not all modes are available on every trip. The `ModeCanada` data of the
@@ -334,10 +260,10 @@ data("ModeCanada", package = "mlogit")
 head(ModeCanada)
 ```
 
-Cost
-(`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and service
-frequency (`freq`) vary across modes; household income and the number of
-urban trip endpoints are trip-specific. The data also contain the bus, which
+Cost (`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and
+service frequency (`freq`) vary across modes; household income and the
+number of urban trip endpoints are trip-specific. The data also contain the
+bus, which
 was chosen on only `r sum(ModeCanada$alt == "bus" & ModeCanada$choice == 1)`
 trips, too few to identify its coefficients and error covariances, so the
 bus rows and the trips on which it was chosen are removed. Cost and income
@@ -377,33 +303,12 @@ canada <- fit(
 summary(canada)
 ```
 
-```{r canada-numbers, include=FALSE}
-canada_table <- summary(canada)$posterior
-canada_slowest <- paste0(
-  "`", canada_table$variable[which.min(canada_table$ess_bulk)], "`"
-)
-time_ratio <- interpret(canada, reference = "ivt", effects = "ovt")
-canada_income <- coef(canada)[c("beta[income_car]", "beta[income_train]")]
-canada_income_sign <- if (all(canada_income < 0)) {
-  "negative"
-} else {
-  "not both negative"
-}
-```
-
-The largest `rhat` is `r sprintf("%.3f", max(canada_table$rhat))`, and the
-smallest bulk effective sample size, `r round(min(canada_table$ess_bulk))`,
-belongs to `r canada_slowest`. A minute out of the vehicle reduces the
-utility about `r round(abs(time_ratio$mean), 1)` times as much as a minute
-in it, with a 95% credible interval from `r round(abs(time_ratio$upper), 1)`
-to `r round(abs(time_ratio$lower), 1)`, and the income coefficients of car
-and train are `r canada_income_sign`: a higher income increases the
-probability of flying.
+The income coefficients of car and train are negative: a higher income
+increases the probability of flying. 
 
 ## Ordered responses
 
-Some responses are ordered levels, not choices between alternatives: never,
-occasionally, regularly, heavily. An ordered model has one latent utility
+Some responses are ordered levels. An ordered model has one latent utility
 per occasion and compares it with increasing thresholds `gamma`; the level
 is the interval into which the utility falls. `alternatives` gives the
 response levels in increasing order. Latent-variable data augmentation
@@ -424,14 +329,9 @@ ordered_sim <- fit(
 summary(ordered_sim)
 ```
 
-```{r ordered-deviation, include=FALSE}
-ordered_table <- summary(ordered_sim)$posterior
-ordered_deviation <- max(abs(ordered_table$mean - ordered_table$dgp))
-```
-
-The posterior means of the coefficient and of the threshold between the
-middle and the high category deviate from their true values by at most
-`r signif(ordered_deviation, 1)`.
+The summary lists the coefficient and the free threshold `gamma[2]` beside
+their true values. The first threshold is fixed to zero and the error
+variance to one, which identifies the level and the scale of the utility.
 
 The `survey` data of the **MASS** package [@VenablesRipley2002] come from
 237 statistics students at the University of Adelaide who reported how often
@@ -455,9 +355,9 @@ smoking <- fit(
 summary(smoking)
 ```
 
-The first threshold is fixed to zero and the error variance to one; the
-remaining thresholds `gamma[2]` and `gamma[3]` are estimated. Each student
-has one latent utility, normally distributed around its systematic part,
+With four levels, the thresholds `gamma[2]` and `gamma[3]` are estimated.
+Each student has one latent utility, normally distributed around its
+systematic part,
 and the thresholds partition it into the four levels. The area under the
 density between two thresholds is the probability of that level. The figure
 shows the density of a student whose systematic utility is zero.
@@ -487,27 +387,15 @@ legend(
 )
 ```
 
-```{r smoking-numbers, include=FALSE}
-smoking_draws <- posterior::as_draws_matrix(smoking)
-smoking_negative <- sprintf("%.2f", mean(smoking_draws[, "beta[Age]"] < 0))
-smokers <- sum(survey$Smoke != "Never", na.rm = TRUE)
-```
-
-The occasional and the regular level together occupy an interval of width
-`r round(coef(smoking)[["gamma[3]"]], 2)` to the right of the first
-threshold, and the two outer levels the unbounded intervals beyond. A
-covariate shifts the density along the utility axis, so one coefficient per
-covariate describes its effect on all four levels. The factor `Exer` enters
+A covariate shifts the density along the utility axis, so one coefficient
+per covariate describes its effect on all four levels. The age coefficient
+is negative: older students report smoking less. The factor `Exer` enters
 through its dummy variables relative to the students who exercise
-frequently. The posterior probability that the age coefficient is negative
-is `r smoking_negative`: older students report smoking less. With
-`r smokers` smokers among the `r nobs(smoking)` students who answered the
-question, the data contain little information about the exercise
-contrasts. What does the age coefficient mean for the probabilities of the
-levels? `interpret(type = "ame")` differentiates the probability of each
-level with respect to age and averages the derivatives over the students;
-the vignette [Posterior prediction][v04] explains marginal effects in more
-detail:
+frequently. `interpret(type = "ame")`
+translates the age coefficient into probabilities: it differentiates the
+probability of each level with respect to age and averages the derivatives
+over the students. The vignette [Posterior prediction][v04] explains
+marginal effects in more detail.
 
 ```{r ordered-interpret}
 age_effects <- interpret(smoking, type = "ame")
@@ -539,23 +427,8 @@ ranked_sim <- fit(
   ),
   chains = 1
 )
-ranked_summary <- summary(
-  ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]")
-)
-ranked_summary
+summary(ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]"))
 ```
-
-```{r ranked-deviation, include=FALSE}
-ranked_table <- ranked_summary$posterior
-ranked_deviation <- round(
-  abs(ranked_table$mean - ranked_table$dgp) / ranked_table$sd, 1
-)
-```
-
-A full ranking contains more information than a single choice. The
-posterior means of the coefficient, the covariance, and the variance deviate
-from their true values by `r ranked_deviation[1]`, `r ranked_deviation[2]`,
-and `r ranked_deviation[3]` posterior standard deviations.
 
 The `Game` data of the **mlogit** package contain complete rankings of six
 gaming platforms by 91 Dutch respondents, together with whether they own
@@ -586,8 +459,7 @@ coef(gaming)[1:6]
 
 The coefficient of `own` is positive: owning a platform raises its rank. The
 alternative-specific constants and the coefficients of `age` and `hours` are
-relative to the base alternative `GameBoy`, the first platform in
-alphabetical order, regardless of the order in `alternatives`. Which
+relative to the base alternative `GameBoy`. Which
 platform gains from additional gaming hours? For a ranked model, the
 marginal effects of `interpret()` refer to the probability of being ranked
 first, here for a respondent of average age who plays the average number of
@@ -606,8 +478,7 @@ pc_hours <- platform_effects$mean[
 
 Heavy gamers prefer the PC: every additional weekly hour raises the
 probability of ranking it first by about `r round(100 * pc_hours, 1)`
-percentage points and lowers the probabilities of the other platforms by the
-same amount in total.
+percentage points.
 
 ## Further reading
 
