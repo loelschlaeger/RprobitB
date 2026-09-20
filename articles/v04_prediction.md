@@ -41,10 +41,10 @@ coefficient is a normal random effect, as introduced in the vignette
 [Modeling preference
 heterogeneity](https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html):
 every traveler has an individual price coefficient, drawn from a normal
-population distribution whose mean and variance are estimated. The
-individual draws are saved because the conditional predictions below use
-them, and thinning keeps 100 draws in total, which keeps the predictions
-fast.
+population distribution whose mean and variance are estimated. The fit
+uses the first 100 travelers. The individual draws are saved because the
+conditional predictions below use them, and thinning keeps 100 draws in
+total, which keeps the predictions fast.
 
 ``` r
 
@@ -53,9 +53,10 @@ Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
 Train$time_A <- Train$time_A / 60
 Train$time_B <- Train$time_B / 60
+train_small <- Train[Train$id %in% unique(Train$id)[1:100], ]
 model <- fit(
   choice ~ price + time + change + factor(comfort) | 0,
-  data = Train,
+  data = train_small,
   random_effects = "price",
   column_decider = "id",
   column_occasion = "choiceid",
@@ -71,13 +72,13 @@ summary(model)
 #> Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 
 #> Samples: 50 retained per chain, 2 chains
 #> 
-#>                variable    mean    mode     sd  rhat ess_bulk
-#>              beta[time] -1.7814 -1.7580 0.1205 1.093     92.5
-#>            beta[change] -0.3376 -0.3500 0.0427 0.988     91.8
-#>  beta[factor(comfort)1] -0.6803 -0.6775 0.0540 1.002    130.6
-#>  beta[factor(comfort)2] -1.9188 -1.9416 0.0993 0.997     81.0
-#>               mu[price] -0.3923 -0.3941 0.0278 1.045     48.7
-#>      Omega[price,price]  0.0966  0.0931 0.0154 1.078     26.9
+#>                variable   mean   mode     sd  rhat ess_bulk
+#>              beta[time] -2.052 -1.994 0.1633 0.997    102.5
+#>            beta[change] -0.358 -0.331 0.0644 1.038     99.3
+#>  beta[factor(comfort)1] -0.659 -0.646 0.0823 1.016     82.5
+#>  beta[factor(comfort)2] -2.124 -2.165 0.1619 1.023     81.4
+#>               mu[price] -0.453 -0.449 0.0490 1.024    102.1
+#>      Omega[price,price]  0.136  0.123 0.0279 1.054     39.2
 ```
 
 `mu[price]` and `Omega[price,price]` are the mean and the variance of
@@ -99,12 +100,12 @@ apply to any traveler from the population.
 population <- predict(model)
 head(population)
 #>   id choiceid .prediction probability_A probability_B
-#> 1  1        1           A     0.8758825     0.1241175
-#> 2  1        2           A     0.7089943     0.2910057
-#> 3  1        3           A     0.8103538     0.1896462
-#> 4  1        4           B     0.1584512     0.8415488
-#> 5  1        5           A     0.6889428     0.3110572
-#> 6  1        6           B     0.1649000     0.8351000
+#> 1  1        1           A     0.8751930     0.1248070
+#> 2  1        2           A     0.7171419     0.2828581
+#> 3  1        3           A     0.8216767     0.1783233
+#> 4  1        4           B     0.1667812     0.8332188
+#> 5  1        5           A     0.7221889     0.2778111
+#> 6  1        6           B     0.1653464     0.8346536
 ```
 
 `uncertainty = TRUE` adds the posterior standard deviation and an
@@ -116,19 +117,19 @@ parameters.
 
 head(predict(model, uncertainty = TRUE, level = 0.9))
 #>   id choiceid .prediction probability_A probability_B       sd_A       sd_B
-#> 1  1        1           A     0.8758825     0.1241175 0.01820053 0.01820053
-#> 2  1        2           A     0.7089943     0.2910057 0.02078762 0.02078762
-#> 3  1        3           A     0.8103538     0.1896462 0.02204639 0.02204639
-#> 4  1        4           B     0.1584512     0.8415488 0.01807750 0.01807750
-#> 5  1        5           A     0.6889428     0.3110572 0.02306812 0.02306812
-#> 6  1        6           B     0.1649000     0.8351000 0.02045077 0.02045077
+#> 1  1        1           A     0.8751930     0.1248070 0.02950544 0.02950544
+#> 2  1        2           A     0.7171419     0.2828581 0.03370647 0.03370647
+#> 3  1        3           A     0.8216767     0.1783233 0.03421977 0.03421977
+#> 4  1        4           B     0.1667812     0.8332188 0.02966028 0.02966028
+#> 5  1        5           A     0.7221889     0.2778111 0.03525608 0.03525608
+#> 6  1        6           B     0.1653464     0.8346536 0.03293069 0.03293069
 #>     lower_A    lower_B   upper_A   upper_B
-#> 1 0.8458549 0.09741844 0.9025816 0.1541451
-#> 2 0.6738162 0.25751461 0.7424854 0.3261838
-#> 3 0.7753907 0.15454084 0.8454592 0.2246093
-#> 4 0.1319420 0.80994462 0.1900554 0.8680580
-#> 5 0.6537258 0.27240732 0.7275927 0.3462742
-#> 6 0.1305137 0.80171684 0.1982832 0.8694863
+#> 1 0.8200832 0.08765568 0.9123443 0.1799168
+#> 2 0.6601476 0.24004918 0.7599508 0.3398524
+#> 3 0.7591170 0.13404372 0.8659563 0.2408830
+#> 4 0.1295135 0.77544068 0.2245593 0.8704865
+#> 5 0.6591562 0.23266991 0.7673301 0.3408438
+#> 6 0.1223764 0.77477653 0.2252235 0.8776236
 ```
 
 ## Conditional predictions for fitted deciders
@@ -147,21 +148,21 @@ for hierarchical Bayesian choice models ([Allenby and Rossi
 
 head(coef(model, level = "individual"))
 #>         price
-#> 1 -0.26940692
-#> 2 -0.75192882
-#> 3 -0.63361658
-#> 4 -0.42940736
-#> 5 -0.01203728
-#> 6 -0.06736097
+#> 1 -0.27257169
+#> 2 -0.81931599
+#> 3 -0.72985640
+#> 4 -0.49340645
+#> 5 -0.01806365
+#> 6 -0.06974627
 conditional <- predict(model, type = "conditional")
 head(conditional)
 #>   id choiceid .prediction probability_A probability_B
-#> 1  1        1           A     0.9472914    0.05270857
-#> 2  1        2           A     0.6403897    0.35961026
-#> 3  1        3           A     0.8512142    0.14878583
-#> 4  1        4           B     0.1582555    0.84174454
-#> 5  1        5           A     0.6095824    0.39041762
-#> 6  1        6           B     0.1071964    0.89280359
+#> 1  1        1           A     0.9547870     0.0452130
+#> 2  1        2           A     0.6144646     0.3855354
+#> 3  1        3           A     0.8702504     0.1297496
+#> 4  1        4           B     0.1800033     0.8199967
+#> 5  1        5           A     0.6239918     0.3760082
+#> 6  1        6           B     0.1060654     0.8939346
 ```
 
 The hit rate, the share of correctly predicted choices in the fitted
@@ -175,7 +176,7 @@ c(
   conditional = mean(conditional$.prediction == observed, na.rm = TRUE)
 )
 #>  population conditional 
-#>   0.7108228   0.7869580
+#>   0.7370968   0.8153226
 ```
 
 The hit rate evaluates the predictions at a single threshold, a
@@ -230,7 +231,8 @@ respondent’s collective psychological ownership of the affected area, a
 standardized score of how strongly they feel that the landscape belongs
 to the residents. The score does not vary across alternatives and
 therefore enters the second part of the formula, which gives it one
-coefficient per plan relative to the status quo:
+coefficient per plan relative to the status quo. The fit uses the first
+150 respondents.
 
 ``` r
 
@@ -241,20 +243,24 @@ wind_formula <- choice ~ turbines + height + powerline + compensation |
 ``` r
 
 data("wind_power_choice", package = "choicedata")
+respondents <- unique(wind_power_choice$respondent)[1:150]
+wind_small <- wind_power_choice[
+  wind_power_choice$respondent %in% respondents,
+]
 wind <- fit(
   formula = wind_formula,
-  data = wind_power_choice,
+  data = wind_small,
   column_decider = "respondent",
   column_occasion = "occasion",
   iterations = 10000,
   warmup = 5000,
-  thin = 5,
-  chains = 2,
+  thin = 10,
+  chains = 1,
   progress = FALSE
 )
 coef(wind)[c("beta[compensation]", "beta[psychological_ownership_2]")]
 #>              beta[compensation] beta[psychological_ownership_2] 
-#>                     0.000903575                    -0.444736414
+#>                     0.001224175                    -0.486325523
 ```
 
 The compensation coefficient is positive and the ownership coefficient
@@ -270,19 +276,20 @@ probability of the status quo before and after.
 
 ``` r
 
-scenario <- model.frame(wind)[1:4, ]
-scenario$choice <- NULL
+tasks <- model.frame(wind)[1:4, ]
+tasks$choice <- NULL
+scenario <- tasks
 scenario$compensation_2 <- 2 * scenario$compensation_2
 scenario$compensation_3 <- 2 * scenario$compensation_3
 cbind(
-  before = predict(wind)$probability_1[1:4],
+  before = predict(wind, newdata = tasks)$probability_1,
   after = predict(wind, newdata = scenario)$probability_1
 )
 #>         before     after
-#> [1,] 0.4102958 0.2813607
-#> [2,] 0.3766450 0.2881957
-#> [3,] 0.3695948 0.3047741
-#> [4,] 0.4362146 0.3807199
+#> [1,] 0.3164275 0.1813277
+#> [2,] 0.2890407 0.1832128
+#> [3,] 0.2924634 0.2202136
+#> [4,] 0.3524318 0.2807522
 ```
 
 Doubling the compensation lowers the probability of the status quo in
@@ -335,11 +342,11 @@ berserk <- fit(
 )
 coef(berserk)
 #>        beta[whiteTRUE_TRUE]           beta[rating_TRUE] 
-#>                2.961391e-02                1.510856e-03 
+#>                0.0326143683                0.0014833175 
 #> beta[ratingDifference_TRUE] beta[minutesRemaining_TRUE] 
-#>                5.454093e-05               -1.800991e-04 
+#>                0.0000604789               -0.0001783328 
 #>       beta[streakTRUE_TRUE]              beta[ASC_TRUE] 
-#>               -7.983852e-02               -3.271449e+00
+#>               -0.0734418466               -3.2266432134
 ```
 
 The rating coefficient is positive: stronger players go Berserk more
@@ -382,10 +389,10 @@ calibration <- data.frame(
 large <- calibration[calibration$games >= 50, ]
 round(large, 2)
 #>           games predicted observed
-#> (0.1,0.2]    56      0.14     0.18
-#> (0.2,0.3]   199      0.25     0.26
-#> (0.3,0.4]    75      0.35     0.33
-#> (0.4,0.5]    83      0.43     0.57
+#> (0.1,0.2]    57      0.14     0.18
+#> (0.2,0.3]   202      0.25     0.25
+#> (0.3,0.4]    74      0.35     0.35
+#> (0.4,0.5]    81      0.43     0.57
 ```
 
 The calibration plot shows the same table. Points on the diagonal mean
@@ -427,18 +434,18 @@ shows whose choices the model reproduces:
 model_residuals <- residuals(model)
 head(model_residuals)
 #>              A          B
-#> 1:1  0.1241175 -0.1241175
-#> 1:2  0.2910057 -0.2910057
-#> 1:3  0.1896462 -0.1896462
-#> 1:4 -0.1584512  0.1584512
-#> 1:5 -0.6889428  0.6889428
-#> 1:6 -0.1649000  0.1649000
+#> 1:1  0.1248070 -0.1248070
+#> 1:2  0.2828581 -0.2828581
+#> 1:3  0.1783233 -0.1783233
+#> 1:4 -0.1667812  0.1667812
+#> 1:5 -0.7221889  0.7221889
+#> 1:6 -0.1653464  0.1653464
 by_decider <- tapply(
   model_residuals[, "A"], model.frame(model)$id, mean, na.rm = TRUE
 )
 round(quantile(by_decider, c(0, 0.25, 0.5, 0.75, 1)), 3)
 #>     0%    25%    50%    75%   100% 
-#> -0.337 -0.070  0.001  0.088  0.347
+#> -0.337 -0.066 -0.005  0.067  0.341
 ```
 
 Most travelers have an average residual close to zero. For the travelers
@@ -455,8 +462,8 @@ price_group <- cut(
   include.lowest = TRUE
 )
 round(tapply(model_residuals[, "A"], price_group, mean, na.rm = TRUE), 3)
-#> [0.454,11.3]  (11.3,14.7]  (14.7,18.2]  (18.2,56.7] 
-#>        0.008        0.004       -0.011        0.017
+#> [0.454,11.2]  (11.2,14.5]  (14.5,18.2]  (18.2,56.7] 
+#>        0.027        0.001        0.006       -0.013
 ```
 
 All four group averages are close to zero. A systematic pattern, for
@@ -483,29 +490,29 @@ use every posterior draw and therefore come with credible intervals.
 interpret(model, type = "mea")
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
-#>  covariate alternative     at   mean     sd  lower  upper
-#>       time           A  2.125 -0.711 0.0481 -0.799 -0.595
-#>       time           B  2.119 -0.711 0.0481 -0.799 -0.595
-#>     change           A  0.664 -0.135 0.0170 -0.167 -0.100
-#>     change           B  0.681 -0.135 0.0170 -0.167 -0.100
-#>      price           A 15.283 -0.156 0.0111 -0.178 -0.136
-#>      price           B 15.280 -0.156 0.0111 -0.178 -0.136
+#>  covariate alternative     at   mean     sd  lower   upper
+#>       time           A  2.115 -0.818 0.0651 -0.932 -0.6820
+#>       time           B  2.105 -0.818 0.0651 -0.932 -0.6820
+#>     change           A  0.652 -0.143 0.0257 -0.189 -0.0993
+#>     change           B  0.679 -0.143 0.0257 -0.189 -0.0993
+#>      price           A 15.452 -0.181 0.0195 -0.214 -0.1416
+#>      price           B 15.523 -0.181 0.0195 -0.214 -0.1416
 average_effects <- interpret(model, type = "ame")
 average_effects
 #> Average marginal effects on the choice probabilities
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative    mean      sd   lower   upper
-#>       time           A -0.4347 0.02632 -0.4763 -0.3683
-#>       time           B -0.4347 0.02632 -0.4763 -0.3683
-#>     change           A -0.0824 0.01006 -0.1023 -0.0613
-#>     change           B -0.0824 0.01006 -0.1023 -0.0613
-#>      price           A -0.0813 0.00391 -0.0879 -0.0737
-#>      price           B -0.0813 0.00391 -0.0879 -0.0737
+#>       time           A -0.4594 0.03390 -0.5165 -0.3905
+#>       time           B -0.4594 0.03390 -0.5165 -0.3905
+#>     change           A -0.0802 0.01421 -0.1082 -0.0556
+#>     change           B -0.0802 0.01421 -0.1082 -0.0556
+#>      price           A -0.0845 0.00629 -0.0942 -0.0695
+#>      price           B -0.0845 0.00629 -0.0942 -0.0695
 ```
 
 Averaged over the observed occasions, one euro more lowers the
 probability of a trip by about 8 percentage points and one hour more by
-about 43 percentage points.
+about 46 percentage points.
 
 The `at` argument replaces the averages of selected covariates. A much
 cheaper trip `B` moves its probability close to one, where one euro more
@@ -517,12 +524,12 @@ interpret(model, type = "mea", at = c(price_A = 30, price_B = 10))
 #> Marginal effects at the given covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative     at      mean       sd     lower     upper
-#>       time           A  2.125 -0.051552 0.005575 -0.061439 -0.040998
-#>       time           B  2.119 -0.051552 0.005575 -0.061439 -0.040998
-#>     change           A  0.664 -0.009766 0.001483 -0.012510 -0.007030
-#>     change           B  0.681 -0.009766 0.001483 -0.012510 -0.007030
-#>      price           A 30.000 -0.000284 0.000037 -0.000362 -0.000219
-#>      price           B 10.000 -0.000284 0.000037 -0.000362 -0.000219
+#>       time           A  2.115 -0.051682 7.76e-03 -0.068827 -0.038071
+#>       time           B  2.105 -0.051682 7.76e-03 -0.068827 -0.038071
+#>     change           A  0.652 -0.009066 2.20e-03 -0.014098 -0.005643
+#>     change           B  0.679 -0.009066 2.20e-03 -0.014098 -0.005643
+#>      price           A 30.000 -0.000196 3.82e-05 -0.000272 -0.000136
+#>      price           B 10.000 -0.000196 3.82e-05 -0.000272 -0.000136
 ```
 
 ## Predictions for ordered responses
@@ -545,26 +552,23 @@ smoking <- fit(
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
-  iterations = 1500,
-  warmup = 750,
-  chains = 2,
-  progress = FALSE
+  chains = 1
 )
 head(predict(smoking))
 #>   deciderID .prediction probability_Never probability_Occas probability_Regul
-#> 1         1       Never         0.8392239        0.07204511        0.05614407
-#> 2         2       Never         0.7527884        0.09583825        0.08622349
-#> 3         3       Never         0.7467756        0.09736055        0.08826398
-#> 4         4       Never         0.7767584        0.08946511        0.07800041
-#> 5         5       Never         0.8745686        0.05939572        0.04338494
-#> 6         6       Never         0.8579448        0.06550893        0.04939381
+#> 1         1       Never         0.8358773        0.07273358        0.05782938
+#> 2         2       Never         0.7509908        0.09619336        0.08774535
+#> 3         3       Never         0.7450431        0.09768752        0.08978420
+#> 4         4       Never         0.7747124        0.08993552        0.07952548
+#> 5         5       Never         0.8713554        0.06021064        0.04495582
+#> 6         6       Never         0.8546495        0.06626961        0.05102753
 #>   probability_Heavy
-#> 1        0.03258692
-#> 2        0.06514990
-#> 3        0.06759988
-#> 4        0.05577611
-#> 5        0.02265073
-#> 6        0.02715244
+#> 1        0.03355972
+#> 2        0.06507050
+#> 3        0.06748514
+#> 4        0.05582658
+#> 5        0.02347817
+#> 6        0.02805336
 ```
 
 Every row has four probabilities that sum to one, and `.prediction`
@@ -585,9 +589,9 @@ cbind(
   after = predict(smoking, newdata = older)$probability_Never
 )
 #>         before     after
-#> [1,] 0.8392239 0.8997050
-#> [2,] 0.7527884 0.8329323
-#> [3,] 0.7467756 0.8282103
+#> [1,] 0.8358773 0.8966960
+#> [2,] 0.7509908 0.8304116
+#> [3,] 0.7450431 0.8257215
 ```
 
 The probability rises for all three students, in the direction implied

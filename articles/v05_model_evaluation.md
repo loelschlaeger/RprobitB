@@ -61,9 +61,9 @@ full_model <- fit(
   format = "long",
   column_decider = "individual",
   column_alternative = "mode",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 20,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 30,
   chains = 2,
   progress = FALSE
 )
@@ -80,9 +80,9 @@ each.
 ``` r
 
 logLik(full_model)
-#> 'log Lik.' -175.6099 (df=17)
+#> 'log Lik.' -175.5503 (df=17)
 logLik(reduced_model)
-#> 'log Lik.' -236.754 (df=8)
+#> 'log Lik.' -238.4357 (df=8)
 ```
 
 The log-likelihood values can be used to compute AIC and BIC, but it
@@ -109,24 +109,24 @@ WAIC(full_model)
 #> Warning: 
 #> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
-#> Computed from 1000 by 210 log-likelihood matrix.
+#> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -193.8 15.9
-#> p_waic        19.2  3.5
-#> waic         387.7 31.7
+#> elpd_waic   -193.7 15.9
+#> p_waic        19.0  3.6
+#> waic         387.4 31.7
 #> 
 #> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 WAIC(reduced_model)
 #> Warning: 
 #> 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
-#> Computed from 1000 by 210 log-likelihood matrix.
+#> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -241.8  9.2
-#> p_waic        12.6  1.9
-#> waic         483.7 18.3
+#> elpd_waic   -240.3  9.0
+#> p_waic        12.6  1.8
+#> waic         480.6 18.1
 #> 
 #> 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 ```
@@ -149,20 +149,20 @@ loo_reduced <- loo(reduced_model)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_full
 #> 
-#> Computed from 1000 by 210 log-likelihood matrix.
+#> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo   -194.7 16.1
-#> p_loo        20.1  3.8
-#> looic       389.4 32.2
+#> elpd_loo   -194.1 15.9
+#> p_loo        19.4  3.7
+#> looic       388.1 31.8
 #> ------
 #> MCSE of elpd_loo is NA.
 #> MCSE and ESS estimates assume independent draws (r_eff=1).
 #> 
 #> Pareto k diagnostic values:
 #>                           Count Pct.    Min. ESS
-#> (-Inf, 0.67]   (good)     207   98.6%   127     
-#>    (0.67, 1]   (bad)        3    1.4%   <NA>    
+#> (-Inf, 0.57]   (good)     202   96.2%   26      
+#>    (0.57, 1]   (bad)        8    3.8%   <NA>    
 #>     (1, Inf)   (very bad)   0    0.0%   <NA>    
 #> See help('pareto-k-diagnostic') for details.
 ```
@@ -186,8 +186,8 @@ with its standard error.
 
 loo::loo_compare(loo_full, loo_reduced)
 #>   model elpd_diff se_diff p_worse diag_diff       diag_elpd
-#>  model1       0.0     0.0      NA           3 k_psis > 0.67
-#>  model2     -47.3    10.9    1.00           1 k_psis > 0.67
+#>  model1       0.0     0.0      NA           8 k_psis > 0.57
+#>  model2     -46.2    10.6    1.00           1 k_psis > 0.57
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -211,7 +211,7 @@ favor the first model.
 
 set.seed(1)
 bayes_factor(full_model, reduced_model, log = TRUE)
-#> Estimated log Bayes factor in favor of model1 over model2: 23.19522
+#> Estimated log Bayes factor in favor of model1 over model2: 25.54224
 ```
 
 The large positive log Bayes factor also favors the full model.
@@ -221,7 +221,7 @@ The large positive log Bayes factor also favors the full model.
 Does a random price coefficient improve the train model of the vignette
 [Get started with
 RprobitB](https://loelschlaeger.de/RprobitB/articles/v01_get_started.html)?
-The fixed model is fitted first, and
+The fixed model is fitted first, on the first 100 travelers, and
 [`update()`](https://rdrr.io/r/stats/update.html) gives the price
 coefficient a normal random effect, as in the vignette [Posterior
 prediction](https://loelschlaeger.de/RprobitB/articles/v04_prediction.html).
@@ -233,14 +233,15 @@ Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
 Train$time_A <- Train$time_A / 60
 Train$time_B <- Train$time_B / 60
+train_small <- Train[Train$id %in% unique(Train$id)[1:100], ]
 train_fixed <- fit(
   choice ~ price + time + change + factor(comfort) | 0,
-  data = Train,
+  data = train_small,
   column_decider = "id",
   column_occasion = "choiceid",
-  iterations = 6000,
-  warmup = 3000,
-  thin = 60,
+  iterations = 2000,
+  warmup = 1000,
+  thin = 20,
   chains = 2,
   progress = FALSE
 )
@@ -251,8 +252,8 @@ loo_random <- loo(train_random, progress = FALSE)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo::loo_compare(loo_fixed, loo_random)
 #>   model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>  model2       0.0     0.0      NA           7 k_psis > 0.5
-#>  model1    -157.7    25.2    1.00           7 k_psis > 0.5
+#>  model2       0.0     0.0      NA           6 k_psis > 0.5
+#>  model1     -67.4    17.0    1.00           7 k_psis > 0.5
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -281,10 +282,7 @@ smoking_full <- fit(
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
-  iterations = 2000,
-  warmup = 1000,
-  chains = 2,
-  progress = FALSE
+  chains = 1
 )
 smoking_age <- update(smoking_full, . ~ Age | 0)
 loo::loo_compare(
@@ -292,7 +290,7 @@ loo::loo_compare(
 )
 #>   model elpd_diff se_diff p_worse       diag_diff diag_elpd
 #>  model1       0.0     0.0      NA                          
-#>  model2      -1.0     2.7    0.64 |elpd_diff| < 4
+#>  model2      -1.5     2.7    0.71 |elpd_diff| < 4
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)

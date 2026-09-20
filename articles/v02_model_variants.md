@@ -272,35 +272,35 @@ travel <- fit(
   format = "long",
   column_decider = "individual",
   column_alternative = "mode",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 20,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 30,
   chains = 2,
   progress = FALSE
 )
 summary(travel)
 #> Bayesian probit choice model
 #> Formula: choice ~ wait + vcost + travel | income + size | 0 
-#> Samples: 500 retained per chain, 2 chains
+#> Samples: 100 retained per chain, 2 chains
 #> 
 #>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[wait] -0.04190 -0.04068 0.006463 1.004      366
-#>         beta[vcost] -0.00933 -0.00961 0.006023 1.001      871
-#>        beta[travel] -0.00228 -0.00207 0.000502 1.005      543
-#>    beta[income_bus] -0.01968 -0.01784 0.011561 1.001      664
-#>    beta[income_car] -0.00781 -0.00743 0.011476 1.001      747
-#>  beta[income_train] -0.05558 -0.05255 0.014245 1.000      560
-#>      beta[size_bus]  0.32076  0.34302 0.159507 1.001      620
-#>      beta[size_car]  0.44812  0.39388 0.140953 0.999      653
-#>    beta[size_train]  0.54106  0.56530 0.162805 1.000      603
-#>       beta[ASC_bus] -0.30811 -0.38835 0.494884 1.006      454
-#>       beta[ASC_car] -2.39816 -2.37504 0.689873 1.000      378
-#>     beta[ASC_train]  0.16482  0.04990 0.468125 1.004      580
-#>      Sigma[bus,car]  0.79569  0.72354 0.206590 1.001      299
-#>      Sigma[car,car]  1.28001  0.98104 0.506336 1.002      358
-#>    Sigma[bus,train]  0.86838  0.87828 0.196564 1.019      322
-#>    Sigma[car,train]  0.86047  0.77014 0.354483 1.007      297
-#>  Sigma[train,train]  1.35717  1.21939 0.447659 1.004      445
+#>          beta[wait] -0.04164 -0.03720 0.006775 1.017     77.4
+#>         beta[vcost] -0.00938 -0.01035 0.005862 0.998    145.5
+#>        beta[travel] -0.00224 -0.00224 0.000487 1.001    144.8
+#>    beta[income_bus] -0.01979 -0.02220 0.012352 1.012    141.9
+#>    beta[income_car] -0.00835 -0.00755 0.012596 1.002    160.7
+#>  beta[income_train] -0.05509 -0.05118 0.014180 1.000    112.4
+#>      beta[size_bus]  0.31010  0.31186 0.162549 1.002    130.5
+#>      beta[size_car]  0.44952  0.39732 0.142918 0.997    168.7
+#>    beta[size_train]  0.53463  0.54936 0.174662 1.005    128.3
+#>       beta[ASC_bus] -0.30036 -0.42453 0.516963 1.000    118.1
+#>       beta[ASC_car] -2.40052 -2.31544 0.764007 0.997    100.9
+#>     beta[ASC_train]  0.15563  0.11309 0.505604 1.000    132.7
+#>      Sigma[bus,car]  0.80195  0.82875 0.193637 1.002    156.1
+#>      Sigma[car,car]  1.27942  1.00714 0.473404 0.999    152.5
+#>    Sigma[bus,train]  0.81874  0.80954 0.170358 1.002    107.9
+#>    Sigma[car,train]  0.79510  0.73887 0.303172 1.001    120.7
+#>  Sigma[train,train]  1.26410  1.04110 0.407119 1.006     92.1
 ```
 
 The three attribute coefficients are negative: waiting, cost, and travel
@@ -317,10 +317,10 @@ mode_effects[mode_effects$covariate == "income", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative   at     mean      sd    lower    upper
-#>     income         air 21.3  0.00963 0.00351  0.00302  0.01665
-#>     income         bus 21.3  0.00134 0.00246 -0.00335  0.00626
-#>     income         car 21.3  0.00883 0.00376  0.00166  0.01656
-#>     income       train 21.3 -0.01981 0.00444 -0.02911 -0.01176
+#>     income         air 21.3  0.01004 0.00359  0.00237  0.01727
+#>     income         bus 21.3  0.00123 0.00258 -0.00338  0.00723
+#>     income         car 21.3  0.00831 0.00370  0.00115  0.01578
+#>     income       train 21.3 -0.01957 0.00461 -0.02969 -0.01088
 ```
 
 A higher household income lowers the probability of the train and raises
@@ -364,7 +364,8 @@ the bus, which was chosen on only 16 trips, too few to identify its
 coefficients and error covariances, so the bus rows and the trips on
 which it was chosen are removed. Cost and income are converted from
 Canadian dollars to euro, and trips with a single remaining alternative
-are dropped.
+are dropped. The first 1000 of the remaining trips keep the computation
+short.
 
 ``` r
 
@@ -376,10 +377,13 @@ canada_data <- ModeCanada[
 ]
 set_size <- table(canada_data$case)
 canada_data <- canada_data[set_size[as.character(canada_data$case)] > 1, ]
+canada_data <- canada_data[
+  canada_data$case %in% unique(canada_data$case)[1:1000],
+]
 table(table(canada_data$case))
 #> 
-#>    2    3 
-#>  713 3593
+#>   2   3 
+#> 283 717
 ```
 
 The choice sets are read from the rows of each trip. Every trip is one
@@ -395,30 +399,30 @@ canada <- fit(
   format = "long",
   column_decider = "case",
   column_alternative = "alt",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 10,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 15,
   chains = 2,
   progress = FALSE
 )
 summary(canada)
 #> Bayesian probit choice model
 #> Formula: choice ~ cost + ivt + ovt + freq | income + urban | 0 
-#> Samples: 1000 retained per chain, 2 chains
+#> Samples: 200 retained per chain, 2 chains
 #> 
-#>            variable     mean     mode       sd rhat ess_bulk
-#>          beta[cost] -0.03984 -0.04029 0.003431 1.06     40.8
-#>           beta[ivt] -0.00525 -0.00516 0.000411 1.01    299.0
-#>           beta[ovt] -0.01652 -0.01653 0.001180 1.00    611.6
-#>          beta[freq]  0.04246  0.04245 0.002401 1.00   1072.3
-#>    beta[income_car] -0.02041 -0.01987 0.002796 1.01    594.5
-#>  beta[income_train] -0.03635 -0.03641 0.003607 1.01    436.9
-#>     beta[urban_car] -0.26051 -0.24476 0.050660 1.00    806.9
-#>   beta[urban_train]  0.13590  0.14618 0.058486 1.00    569.0
-#>       beta[ASC_car] -0.58504 -0.54078 0.283682 1.07     37.9
-#>     beta[ASC_train] -0.25283 -0.26986 0.287186 1.08     23.4
-#>    Sigma[car,train]  0.56636  0.56680 0.099594 1.07     41.8
-#>  Sigma[train,train]  1.40236  1.34601 0.225902 1.01    166.5
+#>            variable     mean     mode      sd  rhat ess_bulk
+#>          beta[cost] -0.03748 -0.03534 0.00661 1.022     35.2
+#>           beta[ivt] -0.00612 -0.00637 0.00101 1.010     52.2
+#>           beta[ovt] -0.01636 -0.01691 0.00227 1.006    169.2
+#>          beta[freq]  0.02765  0.02812 0.00619 1.002    291.1
+#>    beta[income_car] -0.01952 -0.01695 0.00664 1.000    147.2
+#>  beta[income_train] -0.03391 -0.03423 0.00908 1.000     67.6
+#>     beta[urban_car] -0.45757 -0.49471 0.13714 0.997    322.7
+#>   beta[urban_train]  0.69477  0.68066 0.24552 1.017     69.5
+#>       beta[ASC_car] -0.57016 -0.50992 0.58632 1.046     30.8
+#>     beta[ASC_train] -0.40043 -0.40793 0.56410 1.042     34.9
+#>    Sigma[car,train]  0.34909  0.38206 0.17175 0.999     61.5
+#>  Sigma[train,train]  1.17064  0.84779 0.52808 0.999     48.2
 ```
 
 The income coefficients of car and train are negative: a higher income
@@ -610,16 +614,17 @@ gaming <- fit(
   choice_type = "ranked",
   delimiter = ".",
   column_decider = NULL,
-  iterations = 2000,
-  warmup = 1000,
+  iterations = 1000,
+  warmup = 500,
+  thin = 20,
   chains = 2,
   progress = FALSE
 )
 coef(gaming)[1:6]
 #>             beta[own]    beta[age.GameCube]          beta[age.PC] 
-#>          0.8614642753          0.0071039586          0.0633536522 
+#>          0.8619815687          0.0091536760          0.0673902405 
 #> beta[age.PlayStation]  beta[age.PSPortable]        beta[age.Xbox] 
-#>          0.0324054727          0.0006079602          0.0225638508
+#>          0.0329406655          0.0001773868          0.0226327519
 ```
 
 The coefficient of `own` is positive: owning a platform raises its rank.
@@ -638,16 +643,16 @@ platform_effects[platform_effects$covariate == "hours", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative   at     mean      sd    lower     upper
-#>      hours     GameBoy 3.88 -0.00213 0.00132 -0.00542 -0.000292
-#>      hours    GameCube 3.88 -0.00557 0.00386 -0.01375  0.001710
-#>      hours          PC 3.88  0.03477 0.01172  0.01299  0.059899
-#>      hours PlayStation 3.88 -0.00435 0.00761 -0.01968  0.010315
-#>      hours  PSPortable 3.88 -0.00898 0.00375 -0.01727 -0.002997
-#>      hours        Xbox 3.88 -0.01374 0.00760 -0.03012  0.000192
+#>      hours     GameBoy 3.88 -0.00247 0.00149 -0.00611 -0.000335
+#>      hours    GameCube 3.88 -0.00568 0.00370 -0.01266  0.000220
+#>      hours          PC 3.88  0.03680 0.01203  0.01667  0.061455
+#>      hours PlayStation 3.88 -0.00486 0.00765 -0.01937  0.006334
+#>      hours  PSPortable 3.88 -0.00911 0.00388 -0.01571 -0.002515
+#>      hours        Xbox 3.88 -0.01469 0.00818 -0.03039 -0.001673
 ```
 
 Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about 3.5 percentage points.
+probability of ranking it first by about 3.7 percentage points.
 
 ## Further reading
 

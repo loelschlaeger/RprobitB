@@ -102,18 +102,20 @@ travelers. Here the price coefficient is a normal random effect, as
 introduced in the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html">Modeling
 preference heterogeneity</a>: every traveler has an individual price
 coefficient, drawn from a normal population distribution whose mean and
-variance are estimated. The individual draws are saved because the
-conditional predictions below use them, and thinning keeps 100 draws in
-total, which keeps the predictions fast.</p>
+variance are estimated. The fit uses the first 100 travelers. The
+individual draws are saved because the conditional predictions below use
+them, and thinning keeps 100 draws in total, which keeps the predictions
+fast.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_A</span> <span class="op">/</span> <span class="fl">60</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">time_B</span> <span class="op">/</span> <span class="fl">60</span></span>
+<span><span class="va">train_small</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">[</span><span class="va">Train</span><span class="op">$</span><span class="va">id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">Train</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, <span class="op">]</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">price</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> <span class="va">change</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">comfort</span><span class="op">)</span> <span class="op">|</span> <span class="fl">0</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">Train</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">train_small</span>,</span>
 <span>  random_effects <span class="op">=</span> <span class="st">"price"</span>,</span>
 <span>  column_decider <span class="op">=</span> <span class="st">"id"</span>,</span>
 <span>  column_occasion <span class="op">=</span> <span class="st">"choiceid"</span>,</span>
@@ -129,13 +131,13 @@ total, which keeps the predictions fast.</p>
 <span><span class="co">#&gt; Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 50 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                variable    mean    mode     sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;              beta[time] -1.7814 -1.7580 0.1205 1.093     92.5</span></span>
-<span><span class="co">#&gt;            beta[change] -0.3376 -0.3500 0.0427 0.988     91.8</span></span>
-<span><span class="co">#&gt;  beta[factor(comfort)1] -0.6803 -0.6775 0.0540 1.002    130.6</span></span>
-<span><span class="co">#&gt;  beta[factor(comfort)2] -1.9188 -1.9416 0.0993 0.997     81.0</span></span>
-<span><span class="co">#&gt;               mu[price] -0.3923 -0.3941 0.0278 1.045     48.7</span></span>
-<span><span class="co">#&gt;      Omega[price,price]  0.0966  0.0931 0.0154 1.078     26.9</span></span></code></pre></div>
+<span><span class="co">#&gt;                variable   mean   mode     sd  rhat ess_bulk</span></span>
+<span><span class="co">#&gt;              beta[time] -2.052 -1.994 0.1633 0.997    102.5</span></span>
+<span><span class="co">#&gt;            beta[change] -0.358 -0.331 0.0644 1.038     99.3</span></span>
+<span><span class="co">#&gt;  beta[factor(comfort)1] -0.659 -0.646 0.0823 1.016     82.5</span></span>
+<span><span class="co">#&gt;  beta[factor(comfort)2] -2.124 -2.165 0.1619 1.023     81.4</span></span>
+<span><span class="co">#&gt;               mu[price] -0.453 -0.449 0.0490 1.024    102.1</span></span>
+<span><span class="co">#&gt;      Omega[price,price]  0.136  0.123 0.0279 1.054     39.2</span></span></code></pre></div>
 <p><code>mu[price]</code> and <code>Omega[price,price]</code> are the
 mean and the variance of the price coefficient across the population.
 Price sensitivity differs considerably between travelers, which the
@@ -154,12 +156,12 @@ traveler from the population.</p>
 <code class="sourceCode R"><span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B</span></span>
-<span><span class="co">#&gt; 1  1        1           A     0.8758825     0.1241175</span></span>
-<span><span class="co">#&gt; 2  1        2           A     0.7089943     0.2910057</span></span>
-<span><span class="co">#&gt; 3  1        3           A     0.8103538     0.1896462</span></span>
-<span><span class="co">#&gt; 4  1        4           B     0.1584512     0.8415488</span></span>
-<span><span class="co">#&gt; 5  1        5           A     0.6889428     0.3110572</span></span>
-<span><span class="co">#&gt; 6  1        6           B     0.1649000     0.8351000</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  1        1           A     0.8751930     0.1248070</span></span>
+<span><span class="co">#&gt; 2  1        2           A     0.7171419     0.2828581</span></span>
+<span><span class="co">#&gt; 3  1        3           A     0.8216767     0.1783233</span></span>
+<span><span class="co">#&gt; 4  1        4           B     0.1667812     0.8332188</span></span>
+<span><span class="co">#&gt; 5  1        5           A     0.7221889     0.2778111</span></span>
+<span><span class="co">#&gt; 6  1        6           B     0.1653464     0.8346536</span></span></code></pre></div>
 <p><code>uncertainty = TRUE</code> adds the posterior standard deviation
 and an equal-tailed credible interval of every probability, here at the
 90% level. The intervals reflect the posterior uncertainty about the
@@ -167,19 +169,19 @@ parameters.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, uncertainty <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B       sd_A       sd_B</span></span>
-<span><span class="co">#&gt; 1  1        1           A     0.8758825     0.1241175 0.01820053 0.01820053</span></span>
-<span><span class="co">#&gt; 2  1        2           A     0.7089943     0.2910057 0.02078762 0.02078762</span></span>
-<span><span class="co">#&gt; 3  1        3           A     0.8103538     0.1896462 0.02204639 0.02204639</span></span>
-<span><span class="co">#&gt; 4  1        4           B     0.1584512     0.8415488 0.01807750 0.01807750</span></span>
-<span><span class="co">#&gt; 5  1        5           A     0.6889428     0.3110572 0.02306812 0.02306812</span></span>
-<span><span class="co">#&gt; 6  1        6           B     0.1649000     0.8351000 0.02045077 0.02045077</span></span>
+<span><span class="co">#&gt; 1  1        1           A     0.8751930     0.1248070 0.02950544 0.02950544</span></span>
+<span><span class="co">#&gt; 2  1        2           A     0.7171419     0.2828581 0.03370647 0.03370647</span></span>
+<span><span class="co">#&gt; 3  1        3           A     0.8216767     0.1783233 0.03421977 0.03421977</span></span>
+<span><span class="co">#&gt; 4  1        4           B     0.1667812     0.8332188 0.02966028 0.02966028</span></span>
+<span><span class="co">#&gt; 5  1        5           A     0.7221889     0.2778111 0.03525608 0.03525608</span></span>
+<span><span class="co">#&gt; 6  1        6           B     0.1653464     0.8346536 0.03293069 0.03293069</span></span>
 <span><span class="co">#&gt;     lower_A    lower_B   upper_A   upper_B</span></span>
-<span><span class="co">#&gt; 1 0.8458549 0.09741844 0.9025816 0.1541451</span></span>
-<span><span class="co">#&gt; 2 0.6738162 0.25751461 0.7424854 0.3261838</span></span>
-<span><span class="co">#&gt; 3 0.7753907 0.15454084 0.8454592 0.2246093</span></span>
-<span><span class="co">#&gt; 4 0.1319420 0.80994462 0.1900554 0.8680580</span></span>
-<span><span class="co">#&gt; 5 0.6537258 0.27240732 0.7275927 0.3462742</span></span>
-<span><span class="co">#&gt; 6 0.1305137 0.80171684 0.1982832 0.8694863</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.8200832 0.08765568 0.9123443 0.1799168</span></span>
+<span><span class="co">#&gt; 2 0.6601476 0.24004918 0.7599508 0.3398524</span></span>
+<span><span class="co">#&gt; 3 0.7591170 0.13404372 0.8659563 0.2408830</span></span>
+<span><span class="co">#&gt; 4 0.1295135 0.77544068 0.2245593 0.8704865</span></span>
+<span><span class="co">#&gt; 5 0.6591562 0.23266991 0.7673301 0.3408438</span></span>
+<span><span class="co">#&gt; 6 0.1223764 0.77477653 0.2252235 0.8776236</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conditional-predictions-for-fitted-deciders">Conditional predictions for fitted deciders<a class="anchor" aria-label="anchor" href="#conditional-predictions-for-fitted-deciders"></a>
@@ -196,21 +198,21 @@ main argument for hierarchical Bayesian choice models <span class="citation">(<a
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span>, level <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         price</span></span>
-<span><span class="co">#&gt; 1 -0.26940692</span></span>
-<span><span class="co">#&gt; 2 -0.75192882</span></span>
-<span><span class="co">#&gt; 3 -0.63361658</span></span>
-<span><span class="co">#&gt; 4 -0.42940736</span></span>
-<span><span class="co">#&gt; 5 -0.01203728</span></span>
-<span><span class="co">#&gt; 6 -0.06736097</span></span>
+<span><span class="co">#&gt; 1 -0.27257169</span></span>
+<span><span class="co">#&gt; 2 -0.81931599</span></span>
+<span><span class="co">#&gt; 3 -0.72985640</span></span>
+<span><span class="co">#&gt; 4 -0.49340645</span></span>
+<span><span class="co">#&gt; 5 -0.01806365</span></span>
+<span><span class="co">#&gt; 6 -0.06974627</span></span>
 <span><span class="va">conditional</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"conditional"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">conditional</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B</span></span>
-<span><span class="co">#&gt; 1  1        1           A     0.9472914    0.05270857</span></span>
-<span><span class="co">#&gt; 2  1        2           A     0.6403897    0.35961026</span></span>
-<span><span class="co">#&gt; 3  1        3           A     0.8512142    0.14878583</span></span>
-<span><span class="co">#&gt; 4  1        4           B     0.1582555    0.84174454</span></span>
-<span><span class="co">#&gt; 5  1        5           A     0.6095824    0.39041762</span></span>
-<span><span class="co">#&gt; 6  1        6           B     0.1071964    0.89280359</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  1        1           A     0.9547870     0.0452130</span></span>
+<span><span class="co">#&gt; 2  1        2           A     0.6144646     0.3855354</span></span>
+<span><span class="co">#&gt; 3  1        3           A     0.8702504     0.1297496</span></span>
+<span><span class="co">#&gt; 4  1        4           B     0.1800033     0.8199967</span></span>
+<span><span class="co">#&gt; 5  1        5           A     0.6239918     0.3760082</span></span>
+<span><span class="co">#&gt; 6  1        6           B     0.1060654     0.8939346</span></span></code></pre></div>
 <p>The hit rate, the share of correctly predicted choices in the fitted
 data, is one measure of the gain:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -220,7 +222,7 @@ data, is one measure of the gain:</p>
 <span>  conditional <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">conditional</span><span class="op">$</span><span class="va">.prediction</span> <span class="op">==</span> <span class="va">observed</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;  population conditional </span></span>
-<span><span class="co">#&gt;   0.7108228   0.7869580</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.7370968   0.8153226</span></span></code></pre></div>
 <p>The hit rate evaluates the predictions at a single threshold, a
 probability of one half. An ROC curve compares them at every threshold:
 as the threshold for predicting trip <code>B</code> decreases from one
@@ -269,26 +271,31 @@ respondent’s collective psychological ownership of the affected area, a
 standardized score of how strongly they feel that the landscape belongs
 to the residents. The score does not vary across alternatives and
 therefore enters the second part of the formula, which gives it one
-coefficient per plan relative to the status quo:</p>
+coefficient per plan relative to the status quo. The fit uses the first
+150 respondents.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wind_formula</span> <span class="op">&lt;-</span> <span class="va">choice</span> <span class="op">~</span> <span class="va">turbines</span> <span class="op">+</span> <span class="va">height</span> <span class="op">+</span> <span class="va">powerline</span> <span class="op">+</span> <span class="va">compensation</span> <span class="op">|</span></span>
 <span>  <span class="va">psychological_ownership</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"wind_power_choice"</span>, package <span class="op">=</span> <span class="st">"choicedata"</span><span class="op">)</span></span>
+<span><span class="va">respondents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">wind_power_choice</span><span class="op">$</span><span class="va">respondent</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">150</span><span class="op">]</span></span>
+<span><span class="va">wind_small</span> <span class="op">&lt;-</span> <span class="va">wind_power_choice</span><span class="op">[</span></span>
+<span>  <span class="va">wind_power_choice</span><span class="op">$</span><span class="va">respondent</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">respondents</span>,</span>
+<span><span class="op">]</span></span>
 <span><span class="va">wind</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  formula <span class="op">=</span> <span class="va">wind_formula</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">wind_power_choice</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">wind_small</span>,</span>
 <span>  column_decider <span class="op">=</span> <span class="st">"respondent"</span>,</span>
 <span>  column_occasion <span class="op">=</span> <span class="st">"occasion"</span>,</span>
 <span>  iterations <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  warmup <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  thin <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  thin <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[compensation]"</span>, <span class="st">"beta[psychological_ownership_2]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;              beta[compensation] beta[psychological_ownership_2] </span></span>
-<span><span class="co">#&gt;                     0.000903575                    -0.444736414</span></span></code></pre></div>
+<span><span class="co">#&gt;                     0.001224175                    -0.486325523</span></span></code></pre></div>
 <p>The compensation coefficient is positive and the ownership
 coefficient negative: compensation makes a plan more attractive, and
 residents with a stronger feeling of ownership are less willing to leave
@@ -299,19 +306,20 @@ data, with or without the response column. The scenario below doubles
 the compensation of both plans in the first four choice tasks and
 compares the probability of the status quo before and after.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span></span>
-<span><span class="va">scenario</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<code class="sourceCode R"><span><span class="va">tasks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span></span>
+<span><span class="va">tasks</span><span class="op">$</span><span class="va">choice</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">scenario</span> <span class="op">&lt;-</span> <span class="va">tasks</span></span>
 <span><span class="va">scenario</span><span class="op">$</span><span class="va">compensation_2</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">scenario</span><span class="op">$</span><span class="va">compensation_2</span></span>
 <span><span class="va">scenario</span><span class="op">$</span><span class="va">compensation_3</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">scenario</span><span class="op">$</span><span class="va">compensation_3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
-<span>  before <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,</span>
+<span>  before <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span>, newdata <span class="op">=</span> <span class="va">tasks</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span>,</span>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span>, newdata <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
-<span><span class="co">#&gt; [1,] 0.4102958 0.2813607</span></span>
-<span><span class="co">#&gt; [2,] 0.3766450 0.2881957</span></span>
-<span><span class="co">#&gt; [3,] 0.3695948 0.3047741</span></span>
-<span><span class="co">#&gt; [4,] 0.4362146 0.3807199</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 0.3164275 0.1813277</span></span>
+<span><span class="co">#&gt; [2,] 0.2890407 0.1832128</span></span>
+<span><span class="co">#&gt; [3,] 0.2924634 0.2202136</span></span>
+<span><span class="co">#&gt; [4,] 0.3524318 0.2807522</span></span></code></pre></div>
 <p>Doubling the compensation lowers the probability of the status quo in
 all four tasks.</p>
 </div>
@@ -357,11 +365,11 @@ set and the games of the other players into the training set.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">berserk</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        beta[whiteTRUE_TRUE]           beta[rating_TRUE] </span></span>
-<span><span class="co">#&gt;                2.961391e-02                1.510856e-03 </span></span>
+<span><span class="co">#&gt;                0.0326143683                0.0014833175 </span></span>
 <span><span class="co">#&gt; beta[ratingDifference_TRUE] beta[minutesRemaining_TRUE] </span></span>
-<span><span class="co">#&gt;                5.454093e-05               -1.800991e-04 </span></span>
+<span><span class="co">#&gt;                0.0000604789               -0.0001783328 </span></span>
 <span><span class="co">#&gt;       beta[streakTRUE_TRUE]              beta[ASC_TRUE] </span></span>
-<span><span class="co">#&gt;               -7.983852e-02               -3.271449e+00</span></span></code></pre></div>
+<span><span class="co">#&gt;               -0.0734418466               -3.2266432134</span></span></code></pre></div>
 <p>The rating coefficient is positive: stronger players go Berserk more
 often. The coefficients of the streak and of the remaining time are
 negative. How well does the model predict the games of the 60 players in
@@ -396,10 +404,10 @@ games are dropped.</p>
 <span><span class="va">large</span> <span class="op">&lt;-</span> <span class="va">calibration</span><span class="op">[</span><span class="va">calibration</span><span class="op">$</span><span class="va">games</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">large</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           games predicted observed</span></span>
-<span><span class="co">#&gt; (0.1,0.2]    56      0.14     0.18</span></span>
-<span><span class="co">#&gt; (0.2,0.3]   199      0.25     0.26</span></span>
-<span><span class="co">#&gt; (0.3,0.4]    75      0.35     0.33</span></span>
-<span><span class="co">#&gt; (0.4,0.5]    83      0.43     0.57</span></span></code></pre></div>
+<span><span class="co">#&gt; (0.1,0.2]    57      0.14     0.18</span></span>
+<span><span class="co">#&gt; (0.2,0.3]   202      0.25     0.25</span></span>
+<span><span class="co">#&gt; (0.3,0.4]    74      0.35     0.35</span></span>
+<span><span class="co">#&gt; (0.4,0.5]    81      0.43     0.57</span></span></code></pre></div>
 <p>The calibration plot shows the same table. Points on the diagonal
 mean that the predicted probability equals the observed rate, and the
 point sizes are proportional to the number of games in a group.</p>
@@ -433,18 +441,18 @@ choices the model reproduces:</p>
 <code class="sourceCode R"><span><span class="va">model_residuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">model_residuals</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              A          B</span></span>
-<span><span class="co">#&gt; 1:1  0.1241175 -0.1241175</span></span>
-<span><span class="co">#&gt; 1:2  0.2910057 -0.2910057</span></span>
-<span><span class="co">#&gt; 1:3  0.1896462 -0.1896462</span></span>
-<span><span class="co">#&gt; 1:4 -0.1584512  0.1584512</span></span>
-<span><span class="co">#&gt; 1:5 -0.6889428  0.6889428</span></span>
-<span><span class="co">#&gt; 1:6 -0.1649000  0.1649000</span></span>
+<span><span class="co">#&gt; 1:1  0.1248070 -0.1248070</span></span>
+<span><span class="co">#&gt; 1:2  0.2828581 -0.2828581</span></span>
+<span><span class="co">#&gt; 1:3  0.1783233 -0.1783233</span></span>
+<span><span class="co">#&gt; 1:4 -0.1667812  0.1667812</span></span>
+<span><span class="co">#&gt; 1:5 -0.7221889  0.7221889</span></span>
+<span><span class="co">#&gt; 1:6 -0.1653464  0.1653464</span></span>
 <span><span class="va">by_decider</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span></span>
 <span>  <span class="va">model_residuals</span><span class="op">[</span>, <span class="st">"A"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">$</span><span class="va">id</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">by_decider</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     0%    25%    50%    75%   100% </span></span>
-<span><span class="co">#&gt; -0.337 -0.070  0.001  0.088  0.347</span></span></code></pre></div>
+<span><span class="co">#&gt; -0.337 -0.066 -0.005  0.067  0.341</span></span></code></pre></div>
 <p>Most travelers have an average residual close to zero. For the
 travelers at the extremes, the model predicts trip <code>A</code> too
 often or too rarely across all their questions. Grouping by a covariate
@@ -457,8 +465,8 @@ checks the functional form instead, here by the price of trip
 <span>  include.lowest <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">model_residuals</span><span class="op">[</span>, <span class="st">"A"</span><span class="op">]</span>, <span class="va">price_group</span>, <span class="va">mean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [0.454,11.3]  (11.3,14.7]  (14.7,18.2]  (18.2,56.7] </span></span>
-<span><span class="co">#&gt;        0.008        0.004       -0.011        0.017</span></span></code></pre></div>
+<span><span class="co">#&gt; [0.454,11.2]  (11.2,14.5]  (14.5,18.2]  (18.2,56.7] </span></span>
+<span><span class="co">#&gt;        0.027        0.001        0.006       -0.013</span></span></code></pre></div>
 <p>All four group averages are close to zero. A systematic pattern, for
 example positive residuals at both ends, would indicate a nonlinear
 price effect or an unmodeled preference class.</p>
@@ -482,27 +490,27 @@ intervals.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mea"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
-<span><span class="co">#&gt;  covariate alternative     at   mean     sd  lower  upper</span></span>
-<span><span class="co">#&gt;       time           A  2.125 -0.711 0.0481 -0.799 -0.595</span></span>
-<span><span class="co">#&gt;       time           B  2.119 -0.711 0.0481 -0.799 -0.595</span></span>
-<span><span class="co">#&gt;     change           A  0.664 -0.135 0.0170 -0.167 -0.100</span></span>
-<span><span class="co">#&gt;     change           B  0.681 -0.135 0.0170 -0.167 -0.100</span></span>
-<span><span class="co">#&gt;      price           A 15.283 -0.156 0.0111 -0.178 -0.136</span></span>
-<span><span class="co">#&gt;      price           B 15.280 -0.156 0.0111 -0.178 -0.136</span></span>
+<span><span class="co">#&gt;  covariate alternative     at   mean     sd  lower   upper</span></span>
+<span><span class="co">#&gt;       time           A  2.115 -0.818 0.0651 -0.932 -0.6820</span></span>
+<span><span class="co">#&gt;       time           B  2.105 -0.818 0.0651 -0.932 -0.6820</span></span>
+<span><span class="co">#&gt;     change           A  0.652 -0.143 0.0257 -0.189 -0.0993</span></span>
+<span><span class="co">#&gt;     change           B  0.679 -0.143 0.0257 -0.189 -0.0993</span></span>
+<span><span class="co">#&gt;      price           A 15.452 -0.181 0.0195 -0.214 -0.1416</span></span>
+<span><span class="co">#&gt;      price           B 15.523 -0.181 0.0195 -0.214 -0.1416</span></span>
 <span><span class="va">average_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"ame"</span><span class="op">)</span></span>
 <span><span class="va">average_effects</span></span>
 <span><span class="co">#&gt; Average marginal effects on the choice probabilities</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
 <span><span class="co">#&gt;  covariate alternative    mean      sd   lower   upper</span></span>
-<span><span class="co">#&gt;       time           A -0.4347 0.02632 -0.4763 -0.3683</span></span>
-<span><span class="co">#&gt;       time           B -0.4347 0.02632 -0.4763 -0.3683</span></span>
-<span><span class="co">#&gt;     change           A -0.0824 0.01006 -0.1023 -0.0613</span></span>
-<span><span class="co">#&gt;     change           B -0.0824 0.01006 -0.1023 -0.0613</span></span>
-<span><span class="co">#&gt;      price           A -0.0813 0.00391 -0.0879 -0.0737</span></span>
-<span><span class="co">#&gt;      price           B -0.0813 0.00391 -0.0879 -0.0737</span></span></code></pre></div>
+<span><span class="co">#&gt;       time           A -0.4594 0.03390 -0.5165 -0.3905</span></span>
+<span><span class="co">#&gt;       time           B -0.4594 0.03390 -0.5165 -0.3905</span></span>
+<span><span class="co">#&gt;     change           A -0.0802 0.01421 -0.1082 -0.0556</span></span>
+<span><span class="co">#&gt;     change           B -0.0802 0.01421 -0.1082 -0.0556</span></span>
+<span><span class="co">#&gt;      price           A -0.0845 0.00629 -0.0942 -0.0695</span></span>
+<span><span class="co">#&gt;      price           B -0.0845 0.00629 -0.0942 -0.0695</span></span></code></pre></div>
 <p>Averaged over the observed occasions, one euro more lowers the
 probability of a trip by about 8 percentage points and one hour more by
-about 43 percentage points.</p>
+about 46 percentage points.</p>
 <p>The <code>at</code> argument replaces the averages of selected
 covariates. A much cheaper trip <code>B</code> moves its probability
 close to one, where one euro more changes it only marginally:</p>
@@ -511,12 +519,12 @@ close to one, where one euro more changes it only marginally:</p>
 <span><span class="co">#&gt; Marginal effects at the given covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
 <span><span class="co">#&gt;  covariate alternative     at      mean       sd     lower     upper</span></span>
-<span><span class="co">#&gt;       time           A  2.125 -0.051552 0.005575 -0.061439 -0.040998</span></span>
-<span><span class="co">#&gt;       time           B  2.119 -0.051552 0.005575 -0.061439 -0.040998</span></span>
-<span><span class="co">#&gt;     change           A  0.664 -0.009766 0.001483 -0.012510 -0.007030</span></span>
-<span><span class="co">#&gt;     change           B  0.681 -0.009766 0.001483 -0.012510 -0.007030</span></span>
-<span><span class="co">#&gt;      price           A 30.000 -0.000284 0.000037 -0.000362 -0.000219</span></span>
-<span><span class="co">#&gt;      price           B 10.000 -0.000284 0.000037 -0.000362 -0.000219</span></span></code></pre></div>
+<span><span class="co">#&gt;       time           A  2.115 -0.051682 7.76e-03 -0.068827 -0.038071</span></span>
+<span><span class="co">#&gt;       time           B  2.105 -0.051682 7.76e-03 -0.068827 -0.038071</span></span>
+<span><span class="co">#&gt;     change           A  0.652 -0.009066 2.20e-03 -0.014098 -0.005643</span></span>
+<span><span class="co">#&gt;     change           B  0.679 -0.009066 2.20e-03 -0.014098 -0.005643</span></span>
+<span><span class="co">#&gt;      price           A 30.000 -0.000196 3.82e-05 -0.000272 -0.000136</span></span>
+<span><span class="co">#&gt;      price           B 10.000 -0.000196 3.82e-05 -0.000272 -0.000136</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="predictions-for-ordered-responses">Predictions for ordered responses<a class="anchor" aria-label="anchor" href="#predictions-for-ordered-responses"></a>
@@ -536,26 +544,23 @@ their age and exercise habits.</p>
 <span>  alternatives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Occas"</span>, <span class="st">"Regul"</span>, <span class="st">"Heavy"</span><span class="op">)</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ordered"</span>,</span>
 <span>  column_decider <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  iterations <span class="op">=</span> <span class="fl">1500</span>,</span>
-<span>  warmup <span class="op">=</span> <span class="fl">750</span>,</span>
-<span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  chains <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   deciderID .prediction probability_Never probability_Occas probability_Regul</span></span>
-<span><span class="co">#&gt; 1         1       Never         0.8392239        0.07204511        0.05614407</span></span>
-<span><span class="co">#&gt; 2         2       Never         0.7527884        0.09583825        0.08622349</span></span>
-<span><span class="co">#&gt; 3         3       Never         0.7467756        0.09736055        0.08826398</span></span>
-<span><span class="co">#&gt; 4         4       Never         0.7767584        0.08946511        0.07800041</span></span>
-<span><span class="co">#&gt; 5         5       Never         0.8745686        0.05939572        0.04338494</span></span>
-<span><span class="co">#&gt; 6         6       Never         0.8579448        0.06550893        0.04939381</span></span>
+<span><span class="co">#&gt; 1         1       Never         0.8358773        0.07273358        0.05782938</span></span>
+<span><span class="co">#&gt; 2         2       Never         0.7509908        0.09619336        0.08774535</span></span>
+<span><span class="co">#&gt; 3         3       Never         0.7450431        0.09768752        0.08978420</span></span>
+<span><span class="co">#&gt; 4         4       Never         0.7747124        0.08993552        0.07952548</span></span>
+<span><span class="co">#&gt; 5         5       Never         0.8713554        0.06021064        0.04495582</span></span>
+<span><span class="co">#&gt; 6         6       Never         0.8546495        0.06626961        0.05102753</span></span>
 <span><span class="co">#&gt;   probability_Heavy</span></span>
-<span><span class="co">#&gt; 1        0.03258692</span></span>
-<span><span class="co">#&gt; 2        0.06514990</span></span>
-<span><span class="co">#&gt; 3        0.06759988</span></span>
-<span><span class="co">#&gt; 4        0.05577611</span></span>
-<span><span class="co">#&gt; 5        0.02265073</span></span>
-<span><span class="co">#&gt; 6        0.02715244</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        0.03355972</span></span>
+<span><span class="co">#&gt; 2        0.06507050</span></span>
+<span><span class="co">#&gt; 3        0.06748514</span></span>
+<span><span class="co">#&gt; 4        0.05582658</span></span>
+<span><span class="co">#&gt; 5        0.02347817</span></span>
+<span><span class="co">#&gt; 6        0.02805336</span></span></code></pre></div>
 <p>Every row has four probabilities that sum to one, and
 <code>.prediction</code> names the most probable level. Because most
 students never smoke, this level is the most probable for almost every
@@ -572,9 +577,9 @@ probability of never smoking of the first three students:</p>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span>, newdata <span class="op">=</span> <span class="va">older</span><span class="op">)</span><span class="op">$</span><span class="va">probability_Never</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
-<span><span class="co">#&gt; [1,] 0.8392239 0.8997050</span></span>
-<span><span class="co">#&gt; [2,] 0.7527884 0.8329323</span></span>
-<span><span class="co">#&gt; [3,] 0.7467756 0.8282103</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 0.8358773 0.8966960</span></span>
+<span><span class="co">#&gt; [2,] 0.7509908 0.8304116</span></span>
+<span><span class="co">#&gt; [3,] 0.7450431 0.8257215</span></span></code></pre></div>
 <p>The probability rises for all three students, in the direction
 implied by the negative age coefficient.</p>
 </div>

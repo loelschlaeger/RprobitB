@@ -113,6 +113,7 @@ Values greater than one favor <code>model1</code>; values below one favor <code>
 <span class="r-in"><span><span class="va">correct_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">z</span> <span class="op">|</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, z <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  iterations <span class="op">=</span> <span class="fl">500</span>,</span></span>
 <span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">simulated_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">correct_model</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
@@ -121,12 +122,13 @@ Values greater than one favor <code>model1</code>; values below one favor <code>
 <span class="r-in"><span><span class="va">misspecified_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">simulated_data</span>,</span></span>
+<span class="r-in"><span>  iterations <span class="op">=</span> <span class="fl">500</span>,</span></span>
 <span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### A Bayes factor greater than one favors the correct first model</span></span></span>
 <span class="r-in"><span><span class="fu">bayes_factor</span><span class="op">(</span><span class="va">correct_model</span>, <span class="va">misspecified_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated Bayes factor in favor of model1 over model2: 7.55958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated Bayes factor in favor of model1 over model2: 8.13416</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
