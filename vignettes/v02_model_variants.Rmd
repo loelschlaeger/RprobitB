@@ -216,9 +216,9 @@ travel <- fit(
   format = "long",
   column_decider = "individual",
   column_alternative = "mode",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 20,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 30,
   chains = 2,
   progress = FALSE
 )
@@ -268,7 +268,8 @@ was chosen on only `r sum(ModeCanada$alt == "bus" & ModeCanada$choice == 1)`
 trips, too few to identify its coefficients and error covariances, so the
 bus rows and the trips on which it was chosen are removed. Cost and income
 are converted from Canadian dollars to euro, and trips with a single
-remaining alternative are dropped.
+remaining alternative are dropped. The first 1000 of the remaining trips
+keep the computation short.
 
 ```{r canada-data}
 ModeCanada$cost <- ModeCanada$cost / 1.6151
@@ -279,6 +280,9 @@ canada_data <- ModeCanada[
 ]
 set_size <- table(canada_data$case)
 canada_data <- canada_data[set_size[as.character(canada_data$case)] > 1, ]
+canada_data <- canada_data[
+  canada_data$case %in% unique(canada_data$case)[1:1000],
+]
 table(table(canada_data$case))
 ```
 
@@ -294,9 +298,9 @@ canada <- fit(
   format = "long",
   column_decider = "case",
   column_alternative = "alt",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 10,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 15,
   chains = 2,
   progress = FALSE
 )
@@ -449,8 +453,9 @@ gaming <- fit(
   choice_type = "ranked",
   delimiter = ".",
   column_decider = NULL,
-  iterations = 2000,
-  warmup = 1000,
+  iterations = 1000,
+  warmup = 500,
+  thin = 20,
   chains = 2,
   progress = FALSE
 )

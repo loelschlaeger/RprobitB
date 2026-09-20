@@ -46,6 +46,7 @@ set.seed(1)
 correct_model <- fit(
   choice ~ x + z | 0,
   dgp_parameters = list(beta = c(x = 1, z = 0.5)),
+  iterations = 500,
   chains = 1
 )
 simulated_data <- as.data.frame(correct_model$data)
@@ -54,6 +55,7 @@ simulated_data <- as.data.frame(correct_model$data)
 misspecified_model <- fit(
   choice ~ x | 0,
   data = simulated_data,
+  iterations = 500,
   chains = 1
 )
 

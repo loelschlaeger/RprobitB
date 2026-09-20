@@ -43,18 +43,22 @@ export(update_s)
 export(update_z)
 importFrom(Rcpp,sourceCpp)
 importFrom(Rdpack,reprompt)
-importFrom(choicedata,choice_data)
-importFrom(choicedata,train_test)
+importFrom(choicedata,
+  choice_data,
+  train_test
+)
 importFrom(loo,loo)
 importFrom(posterior,as_draws)
-importFrom(stats,coef)
-importFrom(stats,confint)
-importFrom(stats,formula)
-importFrom(stats,logLik)
-importFrom(stats,model.frame)
-importFrom(stats,nobs)
-importFrom(stats,predict)
-importFrom(stats,residuals)
-importFrom(stats,update)
-importFrom(stats,vcov)
+importFrom(stats,
+  coef,
+  confint,
+  formula,
+  logLik,
+  model.frame,
+  nobs,
+  predict,
+  residuals,
+  update,
+  vcov
+)
 useDynLib(RprobitB, .registration=TRUE)

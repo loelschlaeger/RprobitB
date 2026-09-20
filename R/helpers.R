@@ -647,7 +647,7 @@ as_choice_parameters <- function(object, draws = NULL) {
 
 probability_draws <- function(
   object, prediction_data, type = "population", ghk_draws = 500L,
-  progress = FALSE
+  progress = FALSE, parallel = TRUE
 ) {
   draws <- seq_len(prod(dim(object$draws)[1:2]))
   alternatives <- as.character(object$model$alternatives)
@@ -658,38 +658,41 @@ probability_draws <- function(
 
   # population probabilities integrate over the random coefficients
   if (!identical(type, "conditional") || !any(random | lc)) {
-    block_size <- ceiling(length(draws) / 20)
+    block_size <- if (parallel) ceiling(length(draws) / 20) else length(draws)
     blocks <- split(draws, ceiling(seq_along(draws) / block_size))
     probabilities <- progressr::with_progress(
       {
         progressor <- progressr::progressor(steps = length(blocks))
-        future.apply::future_lapply(
-          blocks,
-          function(block) {
-            values <- choicedata::compute_choice_probabilities(
-              choice_parameters = parameters[block],
-              choice_data = prediction_data,
-              choice_effects = effects,
-              choice_only = FALSE,
-              input_checks = FALSE,
-              aggregate = "occasion",
-              ghk_draws = ghk_draws
+        block_probabilities <- function(block) {
+          values <- choicedata::compute_choice_probabilities(
+            choice_parameters = parameters[block],
+            choice_data = prediction_data,
+            choice_effects = effects,
+            choice_only = FALSE,
+            input_checks = FALSE,
+            aggregate = "occasion",
+            ghk_draws = ghk_draws
+          )
+          for (j in seq_along(values)) {
+            values[[j]] <- as.matrix(
+              values[[j]][, alternatives, drop = FALSE]
             )
-            for (j in seq_along(values)) {
-              values[[j]] <- as.matrix(
-                values[[j]][, alternatives, drop = FALSE]
-              )
-            }
-            progressor(
-              message = paste0(
-                "Choice probabilities of draws ", block[1L], " to ",
-                block[length(block)]
-              )
+          }
+          progressor(
+            message = paste0(
+              "Choice probabilities of draws ", block[1L], " to ",
+              block[length(block)]
             )
-            values
-          },
-          future.seed = TRUE
-        )
+          )
+          values
+        }
+        if (parallel) {
+          future.apply::future_lapply(
+            blocks, block_probabilities, future.seed = TRUE
+          )
+        } else {
+          lapply(blocks, block_probabilities)
+        }
       },
       enable = progress
     )

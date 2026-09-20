@@ -48,9 +48,10 @@ coefficient for all travelers. Here the price coefficient is a normal random
 effect, as introduced in the vignette
 [Modeling preference heterogeneity][v03]: every traveler has an individual
 price coefficient, drawn from a normal population distribution whose mean
-and variance are estimated. The individual draws are saved because the
-conditional predictions below use them, and thinning keeps 100 draws in
-total, which keeps the predictions fast.
+and variance are estimated. The fit uses the first 100 travelers. The
+individual draws are saved because the conditional predictions below use
+them, and thinning keeps 100 draws in total, which keeps the predictions
+fast.
 
 ```{r fit}
 data("Train", package = "mlogit")
@@ -58,9 +59,10 @@ Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
 Train$time_A <- Train$time_A / 60
 Train$time_B <- Train$time_B / 60
+train_small <- Train[Train$id %in% unique(Train$id)[1:100], ]
 model <- fit(
   choice ~ price + time + change + factor(comfort) | 0,
-  data = Train,
+  data = train_small,
   random_effects = "price",
   column_decider = "id",
   column_occasion = "choiceid",
@@ -177,7 +179,7 @@ collective psychological ownership of the affected area, a standardized
 score of how strongly they feel that the landscape belongs to the residents.
 The score does not vary across alternatives and therefore enters the second
 part of the formula, which gives it one coefficient per plan relative to the
-status quo:
+status quo. The fit uses the first 150 respondents.
 
 ```{r wind-formula}
 wind_formula <- choice ~ turbines + height + powerline + compensation |
@@ -186,15 +188,19 @@ wind_formula <- choice ~ turbines + height + powerline + compensation |
 
 ```{r wind}
 data("wind_power_choice", package = "choicedata")
+respondents <- unique(wind_power_choice$respondent)[1:150]
+wind_small <- wind_power_choice[
+  wind_power_choice$respondent %in% respondents,
+]
 wind <- fit(
   formula = wind_formula,
-  data = wind_power_choice,
+  data = wind_small,
   column_decider = "respondent",
   column_occasion = "occasion",
   iterations = 10000,
   warmup = 5000,
-  thin = 5,
-  chains = 2,
+  thin = 10,
+  chains = 1,
   progress = FALSE
 )
 coef(wind)[c("beta[compensation]", "beta[psychological_ownership_2]")]
@@ -211,12 +217,13 @@ both plans in the first four choice tasks and compares the probability of
 the status quo before and after.
 
 ```{r scenario}
-scenario <- model.frame(wind)[1:4, ]
-scenario$choice <- NULL
+tasks <- model.frame(wind)[1:4, ]
+tasks$choice <- NULL
+scenario <- tasks
 scenario$compensation_2 <- 2 * scenario$compensation_2
 scenario$compensation_3 <- 2 * scenario$compensation_3
 cbind(
-  before = predict(wind)$probability_1[1:4],
+  before = predict(wind, newdata = tasks)$probability_1,
   after = predict(wind, newdata = scenario)$probability_1
 )
 ```
@@ -413,10 +420,7 @@ smoking <- fit(
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
-  iterations = 1500,
-  warmup = 750,
-  chains = 2,
-  progress = FALSE
+  chains = 1
 )
 head(predict(smoking))
 ```

@@ -332,6 +332,8 @@ interpret <- function(
     )
   }
 
+  prediction <- as_prediction_data(object, frame)
+
   # every covariate and alternative is differentiated independently
   rows <- progressr::with_progress(
     {
@@ -340,17 +342,19 @@ interpret <- function(
         marginals,
         function(marginal) {
           selected <- if (marginal$varying && long) {
-            which(frame[[roles$column_alternative]] == marginal$alternative)
+            which(
+              prediction[[roles$column_alternative]] == marginal$alternative
+            )
           } else {
-            seq_len(nrow(frame))
+            seq_len(nrow(prediction))
           }
-          values <- frame[[marginal$column]][selected]
-          step <- 1e-3 * stats::sd(frame[[marginal$column]])
+          values <- prediction[[marginal$column]][selected]
+          step <- 1e-3 * stats::sd(prediction[[marginal$column]])
           if (!is.finite(step) || step == 0) step <- 1e-3
           shifted <- lapply(c(1, -1), function(sign) {
-            data <- frame
+            data <- prediction
             data[[marginal$column]][selected] <- values + sign * step
-            probability_draws(object, as_prediction_data(object, data))
+            probability_draws(object, data, parallel = FALSE)
           })
           derivative <- vapply(seq_along(shifted[[1L]]), function(draw) {
             difference <- shifted[[1L]][[draw]][, marginal$alternative] -

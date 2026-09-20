@@ -84,15 +84,16 @@ receive correlated normal effects with a positive covariance.
 mixing <- fit(
   choice ~ price + time + comfort | 0,
   random_effects = c(price = "ln-", time = "cn", comfort = "cn"),
-  n_deciders = 400,
-  n_occasions = 12,
+  n_deciders = 100,
+  n_occasions = 10,
   dgp_parameters = list(
     beta = c(price = -1, time = -0.8, comfort = 0.5),
     Omega = rbind(c(0.25, 0, 0), c(0, 0.4, 0.2), c(0, 0.2, 0.3))
   ),
-  iterations = 2000,
-  warmup = 1000,
-  chains = 2,
+  iterations = 4000,
+  warmup = 2000,
+  thin = 2,
+  chains = 1,
   save_individual_draws = TRUE
 )
 summary(mixing)
@@ -121,7 +122,7 @@ which the posterior means above can be compared.
 The panel structure makes individual coefficients estimable.
 `coef(level = "individual")` returns the posterior mean coefficient of every
 decider, on the latent normal scale for log-normal effects. The histogram
-shows the price coefficient of each of the 400 deciders, all negative as the
+shows the price coefficient of each of the 100 deciders, all negative as the
 log-normal specification enforces, with the left tail containing the
 deciders who react most strongly to a higher price.
 
@@ -151,22 +152,24 @@ Contract length and locality receive correlated normal random coefficients,
 the other attributes one coefficient for all households. Fixing the price
 coefficient to `-1` identifies the scale and expresses every other
 coefficient in cents per kWh, that is, directly as a willingness to pay.
+The fit uses the first 100 households to keep the computation short.
 
 ```{r electricity}
 data("Electricity", package = "mlogit")
 names(Electricity) <- sub("([a-z]+)([1-4])$", "\\1_\\2", names(Electricity))
 Electricity$occasion <- ave(Electricity$id, Electricity$id, FUN = seq_along)
+households <- Electricity[Electricity$id %in% unique(Electricity$id)[1:100], ]
 electricity <- fit(
   choice ~ pf + cl + loc + wk + tod + seas | 0,
-  data = Electricity,
+  data = households,
   random_effects = c("cl", "loc"),
   column_decider = "id",
   column_occasion = "occasion",
   scale = c(pf = -1),
-  iterations = 3000,
-  warmup = 1500,
+  iterations = 4000,
+  warmup = 2000,
   thin = 2,
-  chains = 2,
+  chains = 1,
   save_individual_draws = TRUE,
   progress = FALSE
 )
@@ -231,9 +234,7 @@ weight.
 
 The following demonstration uses eight occasions per decider and two
 well-separated classes: a majority with coefficients centered at `-1` and a
-minority centered at `2`. The class-specific means and variances mix slowly,
-so the two chains run twenty thousand iterations each and retain every fifth
-draw.
+minority centered at `2`.
 
 ```{r classes}
 mixture <- fit(
@@ -241,7 +242,7 @@ mixture <- fit(
   random_effects = "x",
   latent_class_effects = "x",
   classes = 2,
-  n_deciders = 80,
+  n_deciders = 100,
   n_occasions = 8,
   save_individual_draws = TRUE,
   dgp_parameters = list(
@@ -249,9 +250,7 @@ mixture <- fit(
     Omega = list(matrix(0.2), matrix(0.2)),
     weights = c(0.6, 0.4)
   ),
-  iterations = 20000,
-  warmup = 10000,
-  thin = 5,
+  iterations = 1500,
   chains = 2,
   progress = FALSE
 )
@@ -277,7 +276,7 @@ class_diagnostics$co_clustering[1:6, 1:6]
 
 Do the train travelers of the vignette [Get started with RprobitB][v01] all
 trade time against money at the same rate, or are there classes with
-different values of time? The fit below uses the first 100 travelers, fixes
+different values of time? The fit below uses the first 60 travelers, fixes
 the price coefficient to `-1`, and gives the time coefficient two
 class-specific values through `latent_class_effects` without a random
 effect, so each class has its own value of travel time and the remaining
@@ -289,7 +288,7 @@ Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
 Train$time_A <- Train$time_A / 60
 Train$time_B <- Train$time_B / 60
-train_small <- Train[Train$id %in% unique(Train$id)[1:100], ]
+train_small <- Train[Train$id %in% unique(Train$id)[1:60], ]
 train_classes <- fit(
   choice ~ price + time + change + factor(comfort) | 0,
   data = train_small,
@@ -298,9 +297,7 @@ train_classes <- fit(
   column_decider = "id",
   column_occasion = "choiceid",
   scale = c(price = -1),
-  iterations = 10000,
-  warmup = 5000,
-  thin = 2,
+  iterations = 1500,
   chains = 2,
   progress = FALSE
 )
@@ -390,7 +387,7 @@ K\left[1-
 \]
 
 which translates $e_0$ into a statement about the number of classes. At the
-prior mean $e_0 = 0.005$, with $K = 6$ and the 80 deciders of the simulated
+prior mean $e_0 = 0.005$, with $K = 6$ and the 100 deciders of the simulated
 data, the prior expects close to a single occupied class. The refit sets the
 upper bound to six classes for the two-class data.
 
@@ -413,7 +410,7 @@ For `class_update = "dirichlet_process"`, the precision $\alpha$ controls
 the prior tendency to open new classes, with the default
 $\alpha\sim\operatorname{Gamma}(2,4)$ of mean `0.5`. Conditional on a fixed
 $\alpha$, the prior expects $\sum_{i=1}^{N}\alpha/(\alpha+i-1)$ occupied
-classes among $N$ deciders, which for $\alpha = 0.5$ and 80 deciders is
+classes among $N$ deciders, which for $\alpha = 0.5$ and 100 deciders is
 about three. **RprobitB**
 updates $\alpha$ with the augmentation of @Escobar1995 and the allocations
 with the algorithm of @Neal2000. `max_classes` caps the number of classes
@@ -422,7 +419,7 @@ the sampler may open, and `fit()` warns when the draws reach the cap.
 ```{r dirichlet}
 dynamic <- update(
   mixture, class_update = "dirichlet_process", max_classes = 15,
-  iterations = 30000, warmup = 15000, thin = 10
+  iterations = 1000
 )
 summary(dynamic)
 latent_class_diagnostics(dynamic)$occupancy
@@ -431,7 +428,7 @@ recover_classes(dynamic)
 
 The occupancy distribution is wider than under the sparse finite prior and
 assigns most of its probability to three or more classes. This reflects the
-prior, which expects about three occupied classes for 80 deciders. The two
+prior, which expects about three occupied classes for 100 deciders. The two
 largest classes nevertheless match the two true groups, because the
 superfluous classes contain only a few deciders.
 
@@ -452,9 +449,8 @@ ranked_random <- fit(
   n_occasions = 5,
   n_alternatives = 3,
   dgp_parameters = list(beta = c(x = -1), Omega = matrix(0.3)),
-  iterations = 4000,
-  warmup = 2000,
-  chains = 2,
+  iterations = 2000,
+  chains = 1,
   progress = FALSE
 )
 summary(ranked_random)

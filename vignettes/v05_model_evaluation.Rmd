@@ -66,9 +66,9 @@ full_model <- fit(
   format = "long",
   column_decider = "individual",
   column_alternative = "mode",
-  iterations = 20000,
-  warmup = 10000,
-  thin = 20,
+  iterations = 6000,
+  warmup = 3000,
+  thin = 30,
   chains = 2,
   progress = FALSE
 )
@@ -156,9 +156,9 @@ The large positive log Bayes factor also favors the full model.
 ## Models with random coefficients
 
 Does a random price coefficient improve the train model of the vignette
-[Get started with RprobitB][v01]? The fixed model is fitted first, and
-`update()` gives the price coefficient a normal random effect, as in the
-vignette [Posterior prediction][v04].
+[Get started with RprobitB][v01]? The fixed model is fitted first, on the
+first 100 travelers, and `update()` gives the price coefficient a normal
+random effect, as in the vignette [Posterior prediction][v04].
 
 ```{r train}
 data("Train", package = "mlogit")
@@ -166,14 +166,15 @@ Train$price_A <- Train$price_A / 100 / 2.20371
 Train$price_B <- Train$price_B / 100 / 2.20371
 Train$time_A <- Train$time_A / 60
 Train$time_B <- Train$time_B / 60
+train_small <- Train[Train$id %in% unique(Train$id)[1:100], ]
 train_fixed <- fit(
   choice ~ price + time + change + factor(comfort) | 0,
-  data = Train,
+  data = train_small,
   column_decider = "id",
   column_occasion = "choiceid",
-  iterations = 6000,
-  warmup = 3000,
-  thin = 60,
+  iterations = 2000,
+  warmup = 1000,
+  thin = 20,
   chains = 2,
   progress = FALSE
 )
@@ -204,10 +205,7 @@ smoking_full <- fit(
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
-  iterations = 2000,
-  warmup = 1000,
-  chains = 2,
-  progress = FALSE
+  chains = 1
 )
 smoking_age <- update(smoking_full, . ~ Age | 0)
 loo::loo_compare(
