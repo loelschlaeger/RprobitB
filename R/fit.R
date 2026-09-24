@@ -887,6 +887,12 @@ fit <- function(
         as.character(data[[response]]), levels = alternatives, ordered = TRUE
       )
     }
+    decider_order <- order(
+      match(data[[column_decider]], unique(data[[column_decider]])),
+      method = "radix"
+    )
+    data <- data[decider_order, , drop = FALSE]
+    rownames(data) <- NULL
     choice_data <- choicedata::choice_data(
       data_frame = data,
       format = format,
