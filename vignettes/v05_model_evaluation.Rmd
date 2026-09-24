@@ -193,21 +193,21 @@ traveler's choices.
 ## Ordered and ranked responses
 
 The criteria are not specific to unordered choices. The ordered model of the
-vignette [Model specification and variants][v02] asked whether older
-students smoke less; the comparison below asks whether the exercise dummies
-improve the prediction.
+vignette [Model specification and variants][v02] relates how much a student
+smokes to age and exercise; the comparison below asks whether the exercise
+dummies improve the prediction.
 
 ```{r ordered-comparison}
 data("survey", package = "MASS")
 smoking_full <- fit(
-  Smoke ~ Age + Exer | 0,
+  Smoke ~ Age + Exer,
   data = survey,
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
   chains = 1
 )
-smoking_age <- update(smoking_full, . ~ Age | 0)
+smoking_age <- update(smoking_full, . ~ Age)
 loo::loo_compare(
   loo(smoking_full, progress = FALSE), loo(smoking_age, progress = FALSE)
 )

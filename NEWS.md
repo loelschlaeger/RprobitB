@@ -1,3 +1,7 @@
+# RprobitB 2.0.1
+
+* Ordered choice models now include an intercept by default.
+
 # RprobitB 2.0.0
 
 * Replaced the former multi-step workflow with `fit()`, which accepts an

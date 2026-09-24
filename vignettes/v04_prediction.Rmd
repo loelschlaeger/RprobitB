@@ -415,7 +415,7 @@ exercise habits.
 ```{r ordered-prediction}
 data("survey", package = "MASS")
 smoking <- fit(
-  Smoke ~ Age + Exer | 0,
+  Smoke ~ Age + Exer,
   data = survey,
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
@@ -443,8 +443,8 @@ cbind(
 )
 ```
 
-The probability rises for all three students, in the direction implied by
-the negative age coefficient.
+The probabilities change only slightly, because the age coefficient is
+small.
 
 ## Further reading
 

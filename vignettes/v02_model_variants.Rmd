@@ -315,27 +315,30 @@ increases the probability of flying.
 Some responses are ordered levels. An ordered model has one latent utility
 per occasion and compares it with increasing thresholds `gamma`; the level
 is the interval into which the utility falls. `alternatives` gives the
-response levels in increasing order. Latent-variable data augmentation
+response levels in increasing order. The utility includes an intercept
+`ASC` by default, as unordered models include alternative-specific
+constants, and `| 0` removes it. Latent-variable data augmentation
 provides a direct Bayesian treatment of ordered probit models
 [@Albert1993]. The following demonstration estimates a simulated
-three-category model and reports the coefficient and the free threshold
-beside their true values.
+three-category model and reports the intercept, the coefficient, and the
+free threshold beside their true values.
 
 ```{r ordered-sim}
 ordered_sim <- fit(
-  choice ~ x | 0,
+  choice ~ x,
   alternatives = c("low", "middle", "high"),
   choice_type = "ordered",
   n_deciders = 500,
-  dgp_parameters = list(beta = c(x = 1), gamma = c(0, 1)),
+  dgp_parameters = list(beta = c(ASC = 0.5, x = 1), gamma = c(0, 1)),
   chains = 1
 )
 summary(ordered_sim)
 ```
 
-The summary lists the coefficient and the free threshold `gamma[2]` beside
-their true values. The first threshold is fixed to zero and the error
-variance to one, which identifies the level and the scale of the utility.
+The summary lists the intercept, the coefficient, and the free threshold
+`gamma[2]` beside their true values. The first threshold is fixed to zero
+and the error variance to one, which identifies the scale of the utility
+and the level of the thresholds.
 
 The `survey` data of the **MASS** package [@VenablesRipley2002] come from
 237 statistics students at the University of Adelaide who reported how often
@@ -349,7 +352,7 @@ data("survey", package = "MASS")
 levels(survey$Smoke)
 smoking_levels <- c("Never", "Occas", "Regul", "Heavy")
 smoking <- fit(
-  Smoke ~ Age + Exer | 0,
+  Smoke ~ Age + Exer,
   data = survey,
   alternatives = smoking_levels,
   choice_type = "ordered",
@@ -393,9 +396,10 @@ legend(
 
 A covariate shifts the density along the utility axis, so one coefficient
 per covariate describes its effect on all four levels. The age coefficient
-is negative: older students report smoking less. The factor `Exer` enters
-through its dummy variables relative to the students who exercise
-frequently. `interpret(type = "ame")`
+is small and its credible interval includes zero: the age of a student does
+not affect how much they smoke. The factor `Exer` enters through its dummy
+variables relative to the students who exercise frequently; both
+coefficients are negative but uncertain. `interpret(type = "ame")`
 translates the age coefficient into probabilities: it differentiates the
 probability of each level with respect to age and averages the derivatives
 over the students. The vignette [Posterior prediction][v04] explains
@@ -406,9 +410,9 @@ age_effects <- interpret(smoking, type = "ame")
 age_effects
 ```
 
-One more year of age raises the probability of never smoking by about
-`r round(100 * age_effects$mean[age_effects$alternative == "Never"], 1)`
-percentage points and lowers the probabilities of the other three levels.
+One more year of age changes the probability of never smoking by less than
+one percentage point, and the credible intervals of all four effects
+include zero.
 
 ## Ranked responses
 
