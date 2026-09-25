@@ -164,8 +164,56 @@ summary.RprobitB_fit <- function(
     posterior <- cbind(posterior[1L], occupied = occupied, posterior[-1L])
   }
   if (!is.null(object$simulation)) {
-    dgp <- unname(object$simulation$dgp[variables])
-    posterior <- cbind(posterior[1L], dgp = dgp, posterior[-1L])
+    dgp <- object$simulation$dgp
+    pattern <- "^(weight|mu|Omega|beta)\\[.*[\\[,][0-9]+\\]$"
+    class_of <- function(names) {
+      as.integer(sub("^.*[\\[,]([0-9]+)\\]$", "\\1", names))
+    }
+    stem_of <- function(names) sub("[0-9]+\\]$", "", names)
+    specific <- grepl(pattern, names(dgp))
+    estimates <- apply(object$draws, 3L, mean, na.rm = TRUE)
+    estimates <- estimates[grepl(pattern, names(estimates))]
+    class_dgp <- rep(NA_integer_, length(dgp))
+    class_dgp[specific] <- class_of(names(dgp)[specific])
+    class_est <- class_of(names(estimates))
+    classes_dgp <- sort(unique(class_dgp[specific]))
+    classes_est <- sort(unique(class_est))
+    if (length(classes_dgp) > 1L && identical(classes_dgp, classes_est)) {
+      distance <- matrix(0, length(classes_dgp), length(classes_est))
+      for (i in seq_along(classes_dgp)) {
+        for (j in seq_along(classes_est)) {
+          in_dgp <- specific & class_dgp == classes_dgp[i]
+          in_est <- class_est == classes_est[j]
+          stems <- intersect(
+            stem_of(names(dgp)[in_dgp]), stem_of(names(estimates)[in_est])
+          )
+          means <- grepl("^(mu|beta)\\[", stems)
+          if (any(means)) stems <- stems[means]
+          from_dgp <- dgp[in_dgp][match(stems, stem_of(names(dgp)[in_dgp]))]
+          from_est <- estimates[in_est][
+            match(stems, stem_of(names(estimates)[in_est]))
+          ]
+          distance[i, j] <- sum((from_dgp - from_est)^2)
+        }
+      }
+      distance[is.na(distance)] <- Inf
+      matched <- rep(NA_integer_, length(classes_dgp))
+      for (step in seq_along(classes_dgp)) {
+        best <- which(distance == min(distance), arr.ind = TRUE)[1L, ]
+        matched[best[1L]] <- classes_est[best[2L]]
+        distance[best[1L], ] <- Inf
+        distance[, best[2L]] <- Inf
+      }
+      relabeled <- names(dgp)
+      relabeled[specific] <- paste0(
+        stem_of(names(dgp)[specific]),
+        matched[match(class_dgp[specific], classes_dgp)], "]"
+      )
+      names(dgp) <- relabeled
+    }
+    posterior <- cbind(
+      posterior[1L], dgp = unname(dgp[variables]), posterior[-1L]
+    )
   }
 
   # the summary object
