@@ -221,7 +221,11 @@ An \code{RprobitB_fit} object, which is a \code{list} with the components:
 \itemize{
 \item \code{call}: the matched call.
 \item \code{data}: the data used.
-\item \code{model}: the model specification.
+\item \code{model}: the model specification. If \code{class_update} changes the number
+of classes, \code{model$latent_classes$history} holds the number of classes
+at every iteration of every chain, and for \code{"weight_based"},
+\code{model$latent_classes$changes} holds the change of the heuristic at an
+iteration (0 none, 1 removal, 2 split, 3 merge).
 \item \code{prior}: the prior specification.
 \item \code{draws}: the posterior draws.
 \item \code{sampler}: iterations, warmup, thinning, chains, and elapsed times.

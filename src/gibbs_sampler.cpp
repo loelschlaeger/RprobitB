@@ -1531,6 +1531,7 @@ Rcpp::List gibbs_sampler (
   }
   arma::mat d_draws = arma::zeros<arma::mat>(R, J - 2);
   arma::vec class_sequence(R, arma::fill::zeros);
+  arma::vec update_sequence(R, arma::fill::zeros);
   arma::vec delta_draws(R, arma::fill::zeros);
 
   // initialize Gibbs sampler
@@ -1957,6 +1958,7 @@ Rcpp::List gibbs_sampler (
           Rcpp::as<arma::mat>(update["b"]), Rcpp::as<arma::mat>(update["Omega"])
         );
         C = static_cast<int>(s.n_elem);
+        update_sequence[r] = Rcpp::as<double>(update["update_type"]);
         z = allocate_classes(
           s, log_likelihood_mixture(
             beta.rows(cs), b.rows(cs), block(Omega, cs), lambda,
@@ -2163,6 +2165,7 @@ Rcpp::List gibbs_sampler (
     Rcpp::Named("Sigma") = Sigma_draws,
     Rcpp::Named("d") = d_draws,
     Rcpp::Named("class_sequence") = class_sequence,
+    Rcpp::Named("update_sequence") = update_sequence,
     Rcpp::Named("delta") = delta_draws
   );
   if (save_beta_draws) out["beta"] = beta_draws;

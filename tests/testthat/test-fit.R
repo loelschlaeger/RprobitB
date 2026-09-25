@@ -226,6 +226,14 @@ test_that("fit handles empirical and simulated data", {
       deltamin = 0.1, deltashift = 0.5
     )
   )
+  expect_identical(
+    dim(weight_based_mixture$model$latent_classes$history),
+    c(
+      weight_based_mixture$sampler$iterations,
+      weight_based_mixture$sampler$chains
+    )
+  )
+  expect_true(all(weight_based_mixture$model$latent_classes$changes %in% 0:3))
   weight_based_draws <- posterior::as_draws_matrix(
     weight_based_mixture$draws
   )[, "n_classes"]

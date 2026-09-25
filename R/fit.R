@@ -164,7 +164,11 @@
 #'
 #' - `call`: the matched call.
 #' - `data`: the data used.
-#' - `model`: the model specification.
+#' - `model`: the model specification. If `class_update` changes the number
+#'   of classes, `model$latent_classes$history` holds the number of classes
+#'   at every iteration of every chain, and for `"weight_based"`,
+#'   `model$latent_classes$changes` holds the change of the heuristic at an
+#'   iteration (0 none, 1 removal, 2 split, 3 merge).
 #' - `prior`: the prior specification.
 #' - `draws`: the posterior draws.
 #' - `sampler`: iterations, warmup, thinning, chains, and elapsed times.
@@ -1508,7 +1512,8 @@ fit <- function(
       if (!sampler_data$P_l) samples$lambda <- NULL
       if (!sampler_data$P_r) samples[c("b", "Omega", "beta")] <- NULL
       if (!sampler_data$P_r && !sampler_data$P_l) {
-        samples[c("s", "z", "class_sequence", "delta")] <- NULL
+        samples[c("s", "z", "class_sequence", "update_sequence", "delta")] <-
+          NULL
       }
       if (!isTRUE(prior_sampler$sample_delta)) samples$delta <- NULL
       if (!sampler_data$ordered) samples$d <- NULL
@@ -1680,6 +1685,18 @@ fit <- function(
   )
   if (identical(class_update, "weight_based")) {
     model_classes$control <- weight_based_control
+  }
+  if (changing_dimension) {
+    model_classes$history <- vapply(
+      chain_results, function(x) as.integer(x$samples$class_sequence),
+      integer(iterations)
+    )
+    if (identical(class_update, "weight_based")) {
+      model_classes$changes <- vapply(
+        chain_results, function(x) as.integer(x$samples$update_sequence),
+        integer(iterations)
+      )
+    }
   }
   model <- list(
     formula = choice_formula$formula,
