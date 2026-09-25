@@ -2,6 +2,9 @@
 
 * Ordered choice models now include an intercept by default.
 
+* The occupancy table of `latent_class_diagnostics()` lists every number of
+  classes from one to the maximum, including numbers with probability zero.
+
 # RprobitB 2.0.0
 
 * Replaced the former multi-step workflow with `fit()`, which accepts an

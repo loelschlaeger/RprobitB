@@ -172,7 +172,8 @@ test_that("latent_class_diagnostics is label invariant", {
   permuted_diagnostics <- latent_class_diagnostics(permuted)
   expect_named(diagnostics, c("occupancy", "co_clustering", "membership"))
   expect_equal(sum(diagnostics$occupancy$probability), 1)
-  expect_identical(diagnostics$occupancy$n_classes, 2L)
+  expect_identical(diagnostics$occupancy$n_classes, 1:2)
+  expect_identical(diagnostics$occupancy$probability[2], 1)
   expect_equal(unname(diag(diagnostics$co_clustering)), rep(1, 8L))
   expect_equal(unname(rowSums(diagnostics$membership)), rep(1, 8L))
   expect_equal(

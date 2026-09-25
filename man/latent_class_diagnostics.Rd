@@ -15,10 +15,12 @@ a Dirichlet-process mixture, or a weight-based heuristic fit.}
 A list with three elements:
 \itemize{
 \item \code{occupancy}: a \code{data.frame} with the columns \code{n_classes} and
-\code{probability}. It gives the share of draws in which exactly \code{n_classes}
-classes contain at least one decider, so it answers how many classes
-the data support. For a fixed mixture, the number of classes is fixed,
-and the table shows how often one of them stays empty.
+\code{probability}, with one row for every number of classes from one to the
+maximum number of classes of the model. It gives the share of draws in
+which exactly \code{n_classes} classes contain at least one decider, so it
+answers how many classes the data support. For a fixed mixture, the
+number of classes is fixed, and the table shows how often one of them
+stays empty.
 \item \code{co_clustering}: a square matrix with one row and one column per
 decider. Entry \verb{[i, j]} is the share of draws in which deciders \code{i} and
 \code{j} are in the same class, so it answers whether two deciders behave

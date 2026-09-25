@@ -235,10 +235,12 @@ print.summary.RprobitB_fit <- function(x, digits = 3L, ...) {
 #' @return A list with three elements:
 #'
 #' - `occupancy`: a `data.frame` with the columns `n_classes` and
-#'   `probability`. It gives the share of draws in which exactly `n_classes`
-#'   classes contain at least one decider, so it answers how many classes
-#'   the data support. For a fixed mixture, the number of classes is fixed,
-#'   and the table shows how often one of them stays empty.
+#'   `probability`, with one row for every number of classes from one to the
+#'   maximum number of classes of the model. It gives the share of draws in
+#'   which exactly `n_classes` classes contain at least one decider, so it
+#'   answers how many classes the data support. For a fixed mixture, the
+#'   number of classes is fixed, and the table shows how often one of them
+#'   stays empty.
 #' - `co_clustering`: a square matrix with one row and one column per
 #'   decider. Entry `[i, j]` is the share of draws in which deciders `i` and
 #'   `j` are in the same class, so it answers whether two deciders behave
@@ -307,8 +309,8 @@ latent_class_diagnostics <- function(object) {
   occupied <- colSums(apply(allocation, 1L, tabulate, nbins = classes) > 0L)
   counts <- tabulate(occupied, nbins = classes)
   occupancy <- data.frame(
-    n_classes = which(counts > 0L),
-    probability = counts[counts > 0L] / nrow(allocation)
+    n_classes = seq_len(classes),
+    probability = counts / nrow(allocation)
   )
   list(
     occupancy = occupancy,
