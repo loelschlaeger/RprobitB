@@ -1549,27 +1549,26 @@ Rcpp::List gibbs_sampler (
   arma::vec gamma;
   const int rowsU = ordered ? 1 : (J - 1);
   if (P_f > 0) {
-    alpha = mu_alpha_0;
+    alpha = oeli::rmvnorm(mu_alpha_0, Sigma_alpha_0);
   } else {
     alpha.reset();
   }
   if (ordered) {
     Sigma = arma::ones<arma::mat>(1, 1);
     Sigma_inv = arma::ones<arma::mat>(1, 1);
+    d = oeli::rmvnorm(mu_d_0, Sigma_d_0);
+    gamma = d_to_gamma(d);
   } else {
     Sigma = arma::eye(J - 1, J - 1);
     Sigma_inv = arma::eye(J - 1, J - 1);
-  }
-  if (ordered) {
-    d = mu_d_0;
-    gamma = d_to_gamma(d);
-  } else {
     d.reset();
   }
   if (mixture) {
     s = arma::ones<arma::vec>(C) / static_cast<double>(C);
     z.set_size(N);
-    for (int n = 0; n < N; ++n) z[n] = static_cast<double>((n % C) + 1);
+    for (int n = 0; n < N; ++n) {
+      z[n] = static_cast<double>(sample_allocation(s));
+    }
     m = update_m(C, z, false);
   } else {
     s.set_size(0);
@@ -1613,16 +1612,21 @@ Rcpp::List gibbs_sampler (
   if (P_r > 0) {
     arma::mat b_cs(P_cs, C);
     arma::mat Omega_cs(P_cs * P_cs, C);
-    const arma::vec mean_cs = mu_b_0.elem(cs);
-    const arma::mat V_cs = V_Omega_0.submat(cs, cs);
-    for (int c = 0; c < C; ++c) {
-      Omega_cs.col(c) = arma::vectorise(V_cs);
-      if (P_cs > 0) {
-        b_cs.col(c) = C > 1 ? oeli::rmvnorm(mean_cs, V_cs) : mean_cs;
+    if (P_cs > 0) {
+      const arma::vec mean_cs = mu_b_0.elem(cs);
+      const arma::mat Sigma_cs = Sigma_b_0.submat(cs, cs);
+      const arma::mat V_cs = V_Omega_0.submat(cs, cs);
+      for (int c = 0; c < C; ++c) {
+        b_cs.col(c) = oeli::rmvnorm(mean_cs, Sigma_cs);
+        Omega_cs.col(c) = arma::vectorise(V_cs);
       }
     }
-    b_co = mu_b_0.elem(co);
-    Omega_co = V_Omega_0.submat(co, co);
+    if (P_co > 0) {
+      const arma::vec mean_co = mu_b_0.elem(co);
+      const arma::mat Sigma_co = Sigma_b_0.submat(co, co);
+      b_co = oeli::rmvnorm(mean_co, Sigma_co);
+      Omega_co = V_Omega_0.submat(co, co);
+    }
     assemble(b_cs, Omega_cs);
     for (int n = 0; n < N; ++n) {
       int ci = std::max(
@@ -1632,10 +1636,8 @@ Rcpp::List gibbs_sampler (
     }
   }
   if (P_l > 0) {
-    const arma::mat identity = arma::eye(P_l, P_l);
     for (int c = 0; c < C; ++c) {
-      lambda.col(c) =
-        C > 1 ? oeli::rmvnorm(mu_lambda_0, identity) : mu_lambda_0;
+      lambda.col(c) = oeli::rmvnorm(mu_lambda_0, Sigma_lambda_0);
     }
   }
   U = arma::zeros<arma::mat>(rowsU, NT);
