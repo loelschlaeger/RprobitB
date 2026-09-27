@@ -9,6 +9,9 @@
   coefficients and thresholds, with the deciders allocated to the classes at
   random, instead of at the prior means, so that the chains start dispersed.
 
+* Cap the progress updates to prevent that many fast updates freeze the RStudio 
+  console.
+
 # RprobitB 2.0.0
 
 * Replaced the former multi-step workflow with `fit()`, which accepts an

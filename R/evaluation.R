@@ -237,11 +237,11 @@ bayes_factor <- function(
   # which evaluates the log posterior at half of the draws and at as many
   # proposals per repetition
   draws_total <- prod(dim(model1$draws)[1:2]) + prod(dim(model2$draws)[1:2])
+  steps <- ceiling(draws_total * (1 + repetitions) / 2)
+  evaluations <- 0L
   bridges <- progressr::with_progress(
     {
-      progressor <- progressr::progressor(
-        steps = ceiling(draws_total * (1 + repetitions) / 2)
-      )
+      progressor <- progressr::progressor(steps = steps)
       bridges <- list()
       for (name in names(models)) {
         object <- models[[name]]
@@ -328,7 +328,14 @@ bayes_factor <- function(
 
         # compute unnormalized log posterior density
         log_posterior <- function(theta, ...) {
-          progressor(message = paste0("Bridge sampling (", name, ")"))
+          evaluations <<- evaluations + 1L
+          amount <- progress_amount(evaluations, steps)
+          if (amount > 0) {
+            progressor(
+              amount = amount,
+              message = paste0("Bridge sampling (", name, ")")
+            )
+          }
           optimization <- template
           optimization[free] <- theta
           proposal <- tryCatch(
