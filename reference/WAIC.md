@@ -65,7 +65,7 @@ WAIC(model)
 #> Computed from 500 by 100 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -185.5 12.2
-#> p_waic         0.8  0.2
-#> waic         371.0 24.3
+#> elpd_waic   -185.5 12.1
+#> p_waic         0.7  0.2
+#> waic         370.9 24.1
 ```

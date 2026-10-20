@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Probit models for discrete choice data">
-<meta name="description" content="Fits Bayesian probit models for binary, multinomial, ordered, and ranked choices in cross-sectional and panel data. Correlated or uncorrelated normal and log-normal random coefficients, finite mixtures, sparse finite mixtures, and Dirichlet process mixtures describe preference heterogeneity. Multiple Gibbs chains produce posterior draws for diagnostics and choice prediction. Empirical model data can be supplied as a data frame or simulated from the requested specification. For an overarching treatment of the methodology, see Oelschlaeger (2026) &lt;https://pub.uni-bielefeld.de/record/3014719&gt;. The latent-class model is described in Oelschlaeger and Bauer (2021) &lt;https://trid.trb.org/view/1759753&gt;.">
-<meta property="og:description" content="Fits Bayesian probit models for binary, multinomial, ordered, and ranked choices in cross-sectional and panel data. Correlated or uncorrelated normal and log-normal random coefficients, finite mixtures, sparse finite mixtures, and Dirichlet process mixtures describe preference heterogeneity. Multiple Gibbs chains produce posterior draws for diagnostics and choice prediction. Empirical model data can be supplied as a data frame or simulated from the requested specification. For an overarching treatment of the methodology, see Oelschlaeger (2026) &lt;https://pub.uni-bielefeld.de/record/3014719&gt;. The latent-class model is described in Oelschlaeger and Bauer (2021) &lt;https://trid.trb.org/view/1759753&gt;.">
+<meta name="description" content="Fits Bayesian probit models for binary, multinomial, ordered, and ranked choices in cross-sectional and panel data. Correlated or uncorrelated normal and log-normal random coefficients, finite mixtures, sparse finite mixtures, and Dirichlet process mixtures describe preference heterogeneity. Multiple Gibbs chains produce posterior draws for diagnostics and choice prediction. Choice data can be supplied as a data frame or simulated from the requested specification. For an overarching treatment of the methodology, see Oelschlaeger (2026) &lt;https://pub.uni-bielefeld.de/record/3014719&gt;. The latent-class model is described in Oelschlaeger and Bauer (2021) &lt;https://trid.trb.org/view/1759753&gt;.">
+<meta property="og:description" content="Fits Bayesian probit models for binary, multinomial, ordered, and ranked choices in cross-sectional and panel data. Correlated or uncorrelated normal and log-normal random coefficients, finite mixtures, sparse finite mixtures, and Dirichlet process mixtures describe preference heterogeneity. Multiple Gibbs chains produce posterior draws for diagnostics and choice prediction. Choice data can be supplied as a data frame or simulated from the requested specification. For an overarching treatment of the methodology, see Oelschlaeger (2026) &lt;https://pub.uni-bielefeld.de/record/3014719&gt;. The latent-class model is described in Oelschlaeger and Bauer (2021) &lt;https://trid.trb.org/view/1759753&gt;.">
 <meta property="og:image" content="https://loelschlaeger.de/RprobitB/logo.png">
 </head>
 <body>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
 </div>
 <!-- badges: start -->
 
-<p>Discrete choice models explain decisions between mutually exclusive alternatives through the utility a decider attaches to each of them. <strong>RprobitB</strong> estimates such models in a Bayesian probit framework, for binary, multinomial, ordered, and ranked responses, observed once per decider or repeatedly in panel data. Preferences may vary across the population, either through random coefficients or latent classes. The posterior draws obtained from the Gibbs sampler support choice prediction, marginal effects, and model comparison by information criteria and Bayes factors.</p>
+<p>Discrete choice models explain decisions between mutually exclusive alternatives through the utility a decider attaches to each of them. <strong>RprobitB</strong> estimates such models in a Bayesian probit framework, for binary, multinomial, ordered, and ranked responses, observed once per decider or repeatedly in panel data. Preferences may vary across the population, through random coefficients, latent classes, or both. The posterior draws obtained from the Gibbs sampler support choice prediction, marginal effects, and model comparison by information criteria and Bayes factors.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -115,11 +115,11 @@
 <span><span class="co">#&gt; Samples: 500 retained per chain, 4 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                variable   mean   mode      sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;             beta[price] -0.197 -0.199 0.00895 1.00      437</span></span>
-<span><span class="co">#&gt;              beta[time] -1.052 -1.052 0.09190 1.00      652</span></span>
-<span><span class="co">#&gt;            beta[change] -0.202 -0.207 0.03463 1.00      748</span></span>
-<span><span class="co">#&gt;  beta[factor(comfort)1] -0.397 -0.398 0.04403 1.00      672</span></span>
-<span><span class="co">#&gt;  beta[factor(comfort)2] -1.335 -1.344 0.07909 1.01      602</span></span></code></pre></div>
+<span><span class="co">#&gt;             beta[price] -0.195 -0.195 0.00891 1.00      477</span></span>
+<span><span class="co">#&gt;              beta[time] -1.052 -1.054 0.09191 1.00      635</span></span>
+<span><span class="co">#&gt;            beta[change] -0.202 -0.205 0.03546 1.00      714</span></span>
+<span><span class="co">#&gt;  beta[factor(comfort)1] -0.397 -0.402 0.04602 1.01      685</span></span>
+<span><span class="co">#&gt;  beta[factor(comfort)2] -1.331 -1.325 0.08050 1.00      678</span></span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> displays the results via <a href="https://mc-stan.org/bayesplot/" class="external-link"><strong>bayesplot</strong></a>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">train_model</span>, type <span class="op">=</span> <span class="st">"interval"</span><span class="op">)</span></span></code></pre></div>
@@ -128,16 +128,16 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">compensation</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">train_model</span>, reference <span class="op">=</span> <span class="st">"price"</span><span class="op">)</span></span>
 <span><span class="va">compensation</span></span>
-<span><span class="co">#&gt; 1 `time` compensates -5.35 `price` (95% interval -6.14 to -4.53)</span></span>
-<span><span class="co">#&gt; 1 `change` compensates -1.03 `price` (95% interval -1.35 to -0.698)</span></span>
-<span><span class="co">#&gt; 1 `factor(comfort)1` compensates -2.02 `price` (95% interval -2.44 to -1.6)</span></span>
-<span><span class="co">#&gt; 1 `factor(comfort)2` compensates -6.8 `price` (95% interval -7.57 to -6.05)</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 `time` compensates -5.38 `price` (95% interval -6.22 to -4.55)</span></span>
+<span><span class="co">#&gt; 1 `change` compensates -1.04 `price` (95% interval -1.39 to -0.679)</span></span>
+<span><span class="co">#&gt; 1 `factor(comfort)1` compensates -2.03 `price` (95% interval -2.46 to -1.58)</span></span>
+<span><span class="co">#&gt; 1 `factor(comfort)2` compensates -6.82 `price` (95% interval -7.62 to -6.04)</span></span></code></pre></div>
 <p>Read this way, deciders would pay</p>
 <ul>
-<li>5.35 euro to save one hour of travel time,</li>
-<li>1.03 euro to avoid one change of train,</li>
-<li>2.02 euro for the highest comfort class instead of the middle one, and</li>
-<li>6.8 euro for the highest comfort class instead of the lowest.</li>
+<li>5.38 euro to save one hour of travel time,</li>
+<li>1.04 euro to avoid one change of train,</li>
+<li>2.03 euro for the highest comfort class instead of the middle one, and</li>
+<li>6.82 euro for the highest comfort class instead of the lowest.</li>
 </ul>
 <p>The fitted model can also be used to predict choices for trips that the data do not contain. Below, trip <code>"B"</code> saves an hour over trip <code>"A"</code> and charges a premium of 2, 5, or 8 euro for it:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -149,16 +149,16 @@
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">train_model</span>, newdata <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id choiceid .prediction probability_A probability_B</span></span>
-<span><span class="co">#&gt; 1  1        1           B     0.2557624     0.7442376</span></span>
-<span><span class="co">#&gt; 2  2        1           B     0.4725960     0.5274040</span></span>
-<span><span class="co">#&gt; 3  3        1           A     0.6980868     0.3019132</span></span></code></pre></div>
-<p>The prediction turns where the premium passes the 5.35 euro that the hour is worth: the faster trip is the predicted choice at 2 euro, the two are almost tied at 5 euro, and the slower trip wins at 8 euro.</p>
+<span><span class="co">#&gt; 1  1        1           B     0.2551518     0.7448482</span></span>
+<span><span class="co">#&gt; 2  2        1           B     0.4703257     0.5296743</span></span>
+<span><span class="co">#&gt; 3  3        1           A     0.6947358     0.3052642</span></span></code></pre></div>
+<p>The prediction turns where the premium passes the 5.38 euro that the hour is worth: the faster trip is the predicted choice at 2 euro, the two are almost tied at 5 euro, and the slower trip wins at 8 euro.</p>
 <p>Besides prices, are the other three choice attributes worth modeling at all? <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> refits the model with a changed specification on the same data, and <code><a href="reference/bayes_factor.html">bayes_factor()</a></code> compares the two:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train_model_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">train_model</span>, <span class="va">.</span> <span class="op">~</span> <span class="va">price</span><span class="op">)</span> <span class="co"># using only price</span></span>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bayes_factor.html">bayes_factor</a></span><span class="op">(</span><span class="va">train_model</span>, <span class="va">train_model_small</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">comparison</span></span>
-<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 150.68432</span></span></code></pre></div>
+<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 150.68215</span></span></code></pre></div>
 <p>The log Bayes factor of 151 is decisive: travel time, changes, and comfort carry information about the choices that the price alone does not.</p>
 </div>
 <div class="section level2">
@@ -184,28 +184,29 @@
 <li>
 <strong><a href="https://loelschlaeger.de/RprobitB/articles/v05_model_evaluation.html">Bayesian model evaluation</a></strong> covers model comparison via WAIC, PSIS-LOO, and Bayes factors.</li>
 </ul>
-<p>Posterior draws are stored in the <a href="https://mc-stan.org/posterior/" class="external-link"><strong>posterior</strong></a> format. Chains run in parallel through a <a href="https://doi.org/10.32614/RJ-2021-048" class="external-link"><strong>future</strong></a> plan. The examples use data sets of the <a href="https://CRAN.R-project.org/package=mlogit" class="external-link"><strong>mlogit</strong></a>, <a href="https://CRAN.R-project.org/package=AER" class="external-link"><strong>AER</strong></a>, <a href="https://CRAN.R-project.org/package=MASS" class="external-link"><strong>MASS</strong></a>, and <a href="https://github.com/loelschlaeger/choicedata" class="external-link"><strong>choicedata</strong></a> packages, which are introduced in the vignettes.</p>
+<p>Posterior draws are stored in the <a href="https://mc-stan.org/posterior/" class="external-link"><strong>posterior</strong></a> format. Chains can run in parallel through a <a href="https://doi.org/10.32614/RJ-2021-048" class="external-link"><strong>future</strong></a> plan. The examples use data sets of the <a href="https://CRAN.R-project.org/package=mlogit" class="external-link"><strong>mlogit</strong></a>, <a href="https://CRAN.R-project.org/package=AER" class="external-link"><strong>AER</strong></a>, <a href="https://CRAN.R-project.org/package=MASS" class="external-link"><strong>MASS</strong></a>, and <a href="https://github.com/loelschlaeger/choicedata" class="external-link"><strong>choicedata</strong></a> packages, which are introduced in the vignettes.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"RprobitB"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Um Paket 'RprobitB' in Publikationen zu zitieren, nutzen Sie bitte:</span></span>
+<span><span class="co">#&gt; To cite package 'RprobitB' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Oelschläger L (2026). _RprobitB: Bayesian Probit Choice Modeling_. R</span></span>
-<span><span class="co">#&gt;   package version 2.0.0, &lt;https://loelschlaeger.de/RprobitB/&gt;.</span></span>
+<span><span class="co">#&gt;   Oelschläger L, Bauer D (2026). _RprobitB: Bayesian Probit Choice</span></span>
+<span><span class="co">#&gt;   Modeling_. R package version 2.0.1,</span></span>
+<span><span class="co">#&gt;   &lt;https://loelschlaeger.de/RprobitB/&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Ein BibTeX-Eintrag für LaTeX-Benutzer ist</span></span>
+<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   @Manual{,</span></span>
 <span><span class="co">#&gt;     title = {RprobitB: Bayesian Probit Choice Modeling},</span></span>
-<span><span class="co">#&gt;     author = {Lennart Oelschläger},</span></span>
+<span><span class="co">#&gt;     author = {Lennart Oelschläger and Dietmar Bauer},</span></span>
 <span><span class="co">#&gt;     year = {2026},</span></span>
-<span><span class="co">#&gt;     note = {R package version 2.0.0},</span></span>
+<span><span class="co">#&gt;     note = {R package version 2.0.1},</span></span>
 <span><span class="co">#&gt;     url = {https://loelschlaeger.de/RprobitB/},</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
-<p>The broader methodological foundation is described in Oelschläger (2026), <em>Overcoming Challenges in Modeling Choice Behavior Heterogeneity</em>, doctoral dissertation, Bielefeld University, <a href="https://pub.uni-bielefeld.de/record/3014719" class="external-link uri">https://pub.uni-bielefeld.de/record/3014719</a>. The latent-class mixed multinomial probit model is introduced in Oelschläger and Bauer (2021), <em>Bayes Estimation of Latent Class Mixed Multinomial Probit Models</em>, TRB Annual Meeting 2021, <a href="https://trid.trb.org/view/1759753" class="external-link uri">https://trid.trb.org/view/1759753</a>.</p>
+<p>The broader methodological foundation is described in Oelschläger (2026), <em>Overcoming Challenges in Modeling Choice Behavior Heterogeneity</em>, doctoral dissertation, Bielefeld University, <a href="https://pub.uni-bielefeld.de/record/3014719" class="external-link uri">https://pub.uni-bielefeld.de/record/3014719</a>. The latent-class mixed multinomial probit model is described in Oelschläger and Bauer (2021), <em>Bayes Estimation of Latent Class Mixed Multinomial Probit Models</em>, TRB Annual Meeting 2021, <a href="https://trid.trb.org/view/1759753" class="external-link uri">https://trid.trb.org/view/1759753</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -237,7 +238,8 @@
 <ul class="list-unstyled">
 <li>
 <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-5421-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li><a href="authors.html">More about authors...</a></li>
+<li>
+<a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-2920-7032" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -255,7 +257,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

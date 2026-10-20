@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.0" id="rprobitb-200">RprobitB 2.0.0<a class="anchor" aria-label="anchor" href="#rprobitb-200"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.0.1" id="rprobitb-201">RprobitB 2.0.1<a class="anchor" aria-label="anchor" href="#rprobitb-201"></a></h2>
+<ul><li><p><code><a href="../reference/bayes_factor.html">bayes_factor()</a></code> now accepts models with a fixed number of up to six latent classes.</p></li>
+<li><p>Ordered choice models now include an intercept by default.</p></li>
+<li><p>The occupancy table of <code><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics()</a></code> lists every number of classes from one to the maximum, including numbers with probability zero.</p></li>
+<li><p>Every chain starts at a draw from the prior distributions of the coefficients and thresholds, with the deciders allocated to the classes at random, instead of at the prior means, so that the chains start dispersed.</p></li>
+<li><p>Cap the progress updates to prevent that many fast updates freeze the RStudio console.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="rprobitb-200">RprobitB 2.0.0<a class="anchor" aria-label="anchor" href="#rprobitb-200"></a></h2><p class="text-muted">CRAN release: 2026-09-20</p>
 <ul><li><p>Replaced the former multi-step workflow with <code><a href="../reference/fit.html">fit()</a></code>, which accepts an empirical data frame or simulates data when <code>data = NULL</code>.</p></li>
 <li><p>Added correlated and uncorrelated normal, positive log-normal, and negative log-normal random effects through named <code>random_effects</code> specifications.</p></li>
 <li><p>Added <code>latent_class_effects</code> to <code><a href="../reference/fit.html">fit()</a></code>, which names the effects that differ between the latent classes.</p></li>
@@ -113,7 +121,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

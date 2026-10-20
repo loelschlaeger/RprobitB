@@ -56,7 +56,7 @@ update_d(d, y, sys, mu_d_0, Sigma_d_0, Tvec, step_scale)
 - N:
 
   \[`integer(1)`\]  
-  Number of independent sampling units.
+  Number of residual vectors summed in the scatter matrix `S`.
 
 - S:
 
@@ -109,7 +109,7 @@ The functions return one sampler update or transformation:
 
 - `log_likelihood_ordered()`: one numeric log-likelihood value.
 
-- `update_d()`: a numeric vector of updated log-increments.
+- `update_d()`: a `J - 2` by 1 numeric matrix of updated log-increments.
 
 ## References
 

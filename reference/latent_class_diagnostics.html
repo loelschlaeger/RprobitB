@@ -13,7 +13,7 @@ probability of every decider belonging to each relabeled class."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,13 +70,14 @@ a Dirichlet-process mixture, or a weight-based heuristic fit.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with three elements:</p><ul><li><p><code>occupancy</code>: a <code>data.frame</code> with the columns <code>n_classes</code> and
-<code>probability</code>. It gives the share of draws in which exactly <code>n_classes</code>
-classes contain at least one decider, so it answers how many classes
-the data support. For a fixed mixture, the number of classes is fixed,
-and the table shows how often one of them stays empty.</p></li>
+<code>probability</code>, with one row for every number of classes from one to the
+maximum number of classes of the model. It gives the share of draws in
+which exactly <code>n_classes</code> classes contain at least one decider, so it
+indicates how many classes the data support under the chosen prior. For
+a fixed mixture, the sampler keeps all classes occupied.</p></li>
 <li><p><code>co_clustering</code>: a square matrix with one row and one column per
 decider. Entry <code>[i, j]</code> is the share of draws in which deciders <code>i</code> and
-<code>j</code> are in the same class, so it answers whether two deciders behave
+<code>j</code> are in the same class, so it indicates whether two deciders behave
 alike. It does not depend on how the classes are labeled.</p></li>
 <li><p><code>membership</code>: a matrix with one row per decider and one column per
 class, <code>class_1</code> to <code>class_&lt;maximum&gt;</code>. Entry <code>[i, k]</code> is the share of
@@ -117,32 +118,36 @@ Cambridge University Press.
 <span class="r-in"><span>  n_occasions <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The retained draws reach the maximum of 10 latent classes.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Increase `max_classes` and refit to check the bound.</span>
 <span class="r-in"><span><span class="va">diagnostics</span> <span class="op">&lt;-</span> <span class="fu">latent_class_diagnostics</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">diagnostics</span><span class="op">$</span><span class="va">occupancy</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   n_classes probability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         2       0.148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         3       0.218</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         4       0.246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         5       0.162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         6       0.120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         7       0.066</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         8       0.028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         9       0.012</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    n_classes probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          1       0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          2       0.066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          3       0.182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          4       0.204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          5       0.164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          6       0.142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          7       0.110</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          8       0.060</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          9       0.044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10        10       0.028</span>
 <span class="r-in"><span><span class="va">diagnostics</span><span class="op">$</span><span class="va">co_clustering</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1     2     3     4     5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.000 0.086 0.094 0.092 0.500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.086 1.000 0.838 0.818 0.178</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.094 0.838 1.000 0.844 0.188</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.092 0.818 0.844 1.000 0.184</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.500 0.178 0.188 0.184 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.000 0.004 0.012 0.016 0.562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.004 1.000 0.774 0.764 0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.012 0.774 1.000 0.832 0.166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.016 0.764 0.832 1.000 0.164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.562 0.154 0.166 0.164 1.000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">diagnostics</span><span class="op">$</span><span class="va">membership</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   class_1 class_2 class_3 class_4 class_5 class_6 class_7 class_8 class_9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0.086   0.712   0.124   0.050   0.022   0.000   0.006   0.000       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0.872   0.002   0.044   0.050   0.010   0.020   0.002   0.000       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0.892   0.004   0.054   0.034   0.006   0.010   0.000   0.000       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0.858   0.004   0.056   0.044   0.012   0.022   0.004   0.000       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.196   0.652   0.058   0.062   0.020   0.004   0.004   0.004       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0.846   0.002   0.044   0.066   0.020   0.022   0.000   0.000       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0.004   0.756   0.150   0.030   0.034   0.018   0.006   0.002   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0.832   0.002   0.074   0.040   0.028   0.010   0.002   0.004   0.008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0.900   0.006   0.034   0.026   0.014   0.014   0.002   0.002   0.002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0.878   0.010   0.032   0.056   0.010   0.006   0.004   0.004   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.166   0.682   0.084   0.018   0.024   0.018   0.008   0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0.736   0.002   0.126   0.048   0.044   0.022   0.010   0.010   0.002</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   class_10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        0</span>
@@ -157,7 +162,7 @@ Cambridge University Press.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

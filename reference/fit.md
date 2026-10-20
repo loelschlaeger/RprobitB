@@ -71,9 +71,10 @@ fit(
 - alternatives:
 
   \[[`character()`](https://rdrr.io/r/base/character.html) \| `NULL`\]  
-  Alternative labels. Required if `choice_type = "ordered"`, then in
-  increasing order of the response levels. Otherwise, `NULL` takes them
-  from `data` or, if `data = NULL`, uses capital letters.
+  Alternative labels. Required if `choice_type = "ordered"` and `data`
+  is supplied, then in increasing order of the response levels.
+  Otherwise, `NULL` takes them from `data` or, if `data = NULL`, uses
+  capital letters.
 
 - base:
 
@@ -81,8 +82,9 @@ fit(
   The alternative whose utility is subtracted from all others, see the
   details on the normalization. Coefficients that vary across
   alternatives are then expressed relative to it, and none is estimated
-  for it. `NULL` uses the first model alternative. Not used if
-  `choice_type = "ordered"`, which has a single utility per occasion.
+  for it. `NULL` uses the first alternative in alphabetical order. Not
+  used if `choice_type = "ordered"`, which has a single utility per
+  occasion.
 
 - choice_type:
 
@@ -139,11 +141,12 @@ fit(
 
   \[`NULL` \| named `numeric(1)`\]  
   Utility scale normalization, see the details on the normalization.
-  `NULL` fixes the error variance of the first utility difference to
-  one. Otherwise one named value:
+  `NULL` fixes the error variance of the first utility difference, or of
+  the single utility if `choice_type = "ordered"`, to one. Otherwise one
+  named value:
 
-  - `c(<effect> = <value>)` fixes a non-random coefficient, e.g.
-    `scale = c(price = -1)`.
+  - `c(<effect> = <value>)` fixes a non-random coefficient without
+    latent classes, e.g. `scale = c(price = -1)`.
 
   - `c("Sigma_<alternative>,<alternative>" = <value>)` fixes the error
     variance of the utility difference between a non-base alternative
@@ -239,8 +242,8 @@ fit(
   are required for `coef(level = "individual")` and
   `predict(type = "conditional")`.
 
-  Enable this only when you need them, because they dominate the memory
-  the fitted object occupies.
+  Enable this only when you need them, because they can dominate the
+  memory the fitted object occupies.
 
 - n_deciders:
 
@@ -304,7 +307,11 @@ An `RprobitB_fit` object, which is a `list` with the components:
 
 - `data`: the data used.
 
-- `model`: the model specification.
+- `model`: the model specification. If `class_update` changes the number
+  of classes, `model$latent_classes$history` holds the number of classes
+  at every iteration of every chain, and for `"weight_based"`,
+  `model$latent_classes$changes` holds the change of the heuristic at an
+  iteration (0 none, 1 removal, 2 split, 3 merge).
 
 - `prior`: the prior specification.
 
@@ -324,8 +331,8 @@ variance of the first utility difference at one and draws the error
 covariance by the marginal data augmentation of Imai and van Dyk (2005),
 which expands the scale of the latent utilities in every iteration and
 returns to the fixed one afterwards, so that the covariance and the
-coefficients move freely. Every retained draw is then rescaled to the
-normalization in `scale`.
+coefficients move more freely. Every retained draw is then rescaled to
+the normalization in `scale`.
 
 ## Individual choice sets
 
@@ -347,9 +354,10 @@ A mixture model divides the deciders into `classes` latent classes and
 allocates every decider to exactly one of them. `latent_class_effects`
 decides which mixture model this is:
 
-- A random effect named there follows a class-specific normal
-  distribution. This is the latent class mixed probit model, reported as
-  `mu[<effect>,<class>]` and `Omega[<effect>,<effect>,<class>]`.
+- A random effect named there follows a class-specific normal or
+  log-normal distribution. This is the latent class mixed probit model,
+  reported as `mu[<effect>,<class>]` and
+  `Omega[<effect>,<effect>,<class>]`.
 
 - An effect that is named there but has no random effect is a single
   coefficient per class. This is the classical latent class model,
@@ -364,13 +372,13 @@ decides which mixture model this is:
 
 - `"sparse"` starts from `classes` classes, deliberately more than
   expected, and empties the superfluous ones through a small symmetric
-  Dirichlet weight prior (Rousseau and Mengersen 2011;
-  Frühwirth-Schnatter and Malsiner-Walli 2019).
+  Dirichlet weight prior (Rousseau and Mengersen 2011; Malsiner-Walli et
+  al. 2016; Frühwirth-Schnatter and Malsiner-Walli 2019).
 
 - `"dirichlet_process"` creates and removes occupied classes with
   Neal's (2000) auxiliary-parameter allocation update, up to
-  `max_classes`. Its precision hyperparameter is updated with the
-  beta-gamma augmentation of Escobar and West (1995).
+  `max_classes`. With a gamma hyperprior, its precision is updated with
+  the beta-gamma augmentation of Escobar and West (1995).
 
 - `"weight_based"` splits, removes, and merges classes during warmup and
   then keeps their number fixed. Every `buffer` iterations it removes
@@ -400,8 +408,8 @@ The prior is conjugate where available; the finite-mixture concentration
 is updated by a log-scale Metropolis-Hastings step when it has a gamma
 hyperprior. `prior` is a named list that overrides the following
 defaults, where `P_f`, `P_l`, and `P_r` count the fixed effects without
-latent classes, the latent class effects, and the random effects, and
-`J` the alternatives:
+latent classes, the fixed effects with latent classes, and the random
+effects, and `J` the alternatives:
 
 - `fixed_mean` \[`numeric(P_f)`\] and `fixed_covariance`
   \[`matrix(P_f, P_f)`\]: normal prior for the fixed coefficients
@@ -487,8 +495,9 @@ The following rules apply:
     `random_effects = c("I(A1^2 + A2 * 2)" = "cn")`.
 
 6.  Ordered choice models have a single utility per choice occasion.
-    Their covariates must be placed in the first part and ASCs must be
-    removed, e.g., `choice ~ age + income | 0`.
+    Their covariates must be placed in the first part, e.g.,
+    `choice ~ age + income`. The intercept (named `"ASC"`) is included
+    by default and removed by `0` in the second part.
 
 ## Specifying random effects
 
@@ -534,6 +543,12 @@ Escobar MD, West M (1995). “Bayesian Density Estimation and Inference
 Using Mixtures.” *Journal of the American Statistical Association*,
 **90**(430), 577–588.
 [doi:10.1080/01621459.1995.10476550](https://doi.org/10.1080/01621459.1995.10476550)
+.
+
+Malsiner-Walli G, Frühwirth-Schnatter S, Grün B (2016). “Model-Based
+Clustering Based on Sparse Finite Gaussian Mixtures.” *Statistics and
+Computing*, **26**(1–2), 303–324.
+[doi:10.1007/s11222-014-9500-2](https://doi.org/10.1007/s11222-014-9500-2)
 .
 
 Frühwirth-Schnatter S, Malsiner-Walli G (2019). “From Here to Infinity:
@@ -604,17 +619,17 @@ summary(model)
 #> Bayesian probit choice model
 #> Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>                variable  mean  mode    sd rhat ess_bulk
-#>              beta[time] -5.36 -5.33 0.457 1.00    162.2
-#>            beta[change] -1.05 -1.04 0.172 1.01    160.2
-#>  beta[factor(comfort)1] -1.99 -2.05 0.222 1.04     44.4
-#>  beta[factor(comfort)2] -6.80 -6.81 0.405 1.00    101.3
-#>              Sigma[B,B] 26.00 25.34 2.316 1.01    124.4
+#>                variable  mean  mode    sd  rhat ess_bulk
+#>              beta[time] -5.41 -5.43 0.443 1.001    216.3
+#>            beta[change] -1.03 -1.04 0.183 1.000    187.4
+#>  beta[factor(comfort)1] -2.00 -1.96 0.211 0.999    239.0
+#>  beta[factor(comfort)2] -6.74 -6.61 0.401 0.999    216.4
+#>              Sigma[B,B] 25.95 24.78 2.600 1.020     79.4
 interpret(model)
-#> 1 `time` compensates -5.36 `price` (95% interval -6.2 to -4.42)
-#> 1 `change` compensates -1.05 `price` (95% interval -1.39 to -0.716)
-#> 1 `factor(comfort)1` compensates -1.99 `price` (95% interval -2.41 to -1.57)
-#> 1 `factor(comfort)2` compensates -6.8 `price` (95% interval -7.6 to -6.02)
+#> 1 `time` compensates -5.41 `price` (95% interval -6.3 to -4.58)
+#> 1 `change` compensates -1.03 `price` (95% interval -1.37 to -0.666)
+#> 1 `factor(comfort)1` compensates -2 `price` (95% interval -2.42 to -1.59)
+#> 1 `factor(comfort)2` compensates -6.74 `price` (95% interval -7.54 to -6.01)
 ### Simulate choice data and compare the estimates with the truth
 set.seed(1)
 simulated <- fit(
@@ -637,13 +652,13 @@ summary(simulated)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | y | 0 
 #> Samples: 1000 retained per chain, 1 chain
-#>     variable    dgp  mean   mode    sd rhat ess_bulk
-#>      beta[x]  1.000  1.24  1.378 0.195 1.30      2.8
-#>    beta[y_B] -1.000 -1.08 -0.970 0.211 1.06     11.0
-#>  beta[ASC_B] -0.893 -0.96 -0.968 0.379 1.05     47.6
+#>     variable    dgp   mean   mode    sd rhat ess_bulk
+#>      beta[x]  1.000  0.947  0.965 0.138 1.01     22.8
+#>    beta[y_B] -1.000 -0.862 -0.820 0.139 1.12     10.2
+#>  beta[ASC_B] -0.283 -0.482 -0.461 0.291 1.10     22.2
 confint(simulated)
-#>                   2.5%      97.5%
-#> beta[x]      0.8751327  1.5579284
-#> beta[y_B]   -1.4893335 -0.7338935
-#> beta[ASC_B] -1.7009446 -0.2294631
+#>                  2.5%       97.5%
+#> beta[x]      0.693401  1.23161457
+#> beta[y_B]   -1.127044 -0.57930993
+#> beta[ASC_B] -1.103121  0.04561364
 ```

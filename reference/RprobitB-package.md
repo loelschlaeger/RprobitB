@@ -32,13 +32,13 @@ scale, see the normalization details in
 Posterior draws come from a Gibbs sampler that augments the latent
 utilities (Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van
 Dyk 2005). Heterogeneity can follow a finite mixture, a sparse
-overfitted finite mixture (Rousseau and Mengersen 2011;
-Frühwirth-Schnatter and Malsiner-Walli 2019), or a Dirichlet process
-mixture with Neal's (2000) auxiliary-parameter allocation update and the
-precision update of Escobar and West (1995). Independent chains run
-through the [**future**](https://future.futureverse.org/) framework, and
-retained draws use the [**posterior**](https://mc-stan.org/posterior/)
-format.
+overfitted finite mixture (Rousseau and Mengersen 2011; Malsiner-Walli
+et al. 2016; Frühwirth-Schnatter and Malsiner-Walli 2019), or a
+Dirichlet process mixture with Neal's (2000) auxiliary-parameter
+allocation update and the precision update of Escobar and West (1995).
+Independent chains run through the
+[**future**](https://future.futureverse.org/) framework, and retained
+draws use the [**posterior**](https://mc-stan.org/posterior/) format.
 
 ### Evaluation
 
@@ -68,6 +68,12 @@ Escobar MD, West M (1995). “Bayesian Density Estimation and Inference
 Using Mixtures.” *Journal of the American Statistical Association*,
 **90**(430), 577–588.
 [doi:10.1080/01621459.1995.10476550](https://doi.org/10.1080/01621459.1995.10476550)
+.
+
+Malsiner-Walli G, Frühwirth-Schnatter S, Grün B (2016). “Model-Based
+Clustering Based on Sparse Finite Gaussian Mixtures.” *Statistics and
+Computing*, **26**(1–2), 303–324.
+[doi:10.1007/s11222-014-9500-2](https://doi.org/10.1007/s11222-014-9500-2)
 .
 
 Frühwirth-Schnatter S, Malsiner-Walli G (2019). “From Here to Infinity:
@@ -148,7 +154,5 @@ Authors:
 - Lennart Oelschläger <oelschlaeger.lennart@gmail.com>
   ([ORCID](https://orcid.org/0000-0001-5421-9313))
 
-Other contributors:
-
 - Dietmar Bauer <dietmar.bauer@uni-bielefeld.de>
-  ([ORCID](https://orcid.org/0000-0003-2920-7032)) \[contributor\]
+  ([ORCID](https://orcid.org/0000-0003-2920-7032))

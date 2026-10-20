@@ -176,12 +176,12 @@ summary(model)
 #> Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 
 #> Samples: 1000 retained per chain, 2 chains
 #> 
-#>                variable   mean   mode      sd rhat ess_bulk
-#>             beta[price] -0.196 -0.196 0.00873 1.01      349
-#>              beta[time] -1.054 -1.047 0.09503 1.00      596
-#>            beta[change] -0.201 -0.208 0.03580 1.01      657
-#>  beta[factor(comfort)1] -0.396 -0.396 0.04300 1.00      800
-#>  beta[factor(comfort)2] -1.338 -1.320 0.07954 1.01      553
+#>                variable   mean   mode      sd  rhat ess_bulk
+#>             beta[price] -0.196 -0.198 0.00921 1.001      421
+#>              beta[time] -1.048 -1.056 0.09590 1.000      573
+#>            beta[change] -0.200 -0.197 0.03647 1.002      765
+#>  beta[factor(comfort)1] -0.393 -0.390 0.04422 0.999      598
+#>  beta[factor(comfort)2] -1.330 -1.336 0.07933 1.000      617
 ```
 
 The coefficients of price, travel time, and number of changes are
@@ -205,10 +205,10 @@ in units of a reference effect, here the price:
 
 compensation <- interpret(model, reference = "price")
 compensation
-#> 1 `time` compensates -5.38 `price` (95% interval -6.18 to -4.51)
-#> 1 `change` compensates -1.03 `price` (95% interval -1.37 to -0.677)
-#> 1 `factor(comfort)1` compensates -2.02 `price` (95% interval -2.42 to -1.62)
-#> 1 `factor(comfort)2` compensates -6.83 `price` (95% interval -7.6 to -6.09)
+#> 1 `time` compensates -5.36 `price` (95% interval -6.26 to -4.51)
+#> 1 `change` compensates -1.02 `price` (95% interval -1.39 to -0.663)
+#> 1 `factor(comfort)1` compensates -2.01 `price` (95% interval -2.44 to -1.59)
+#> 1 `factor(comfort)2` compensates -6.81 `price` (95% interval -7.59 to -6.1)
 ```
 
 One additional hour of travel time is compensated by a price that is
@@ -250,11 +250,11 @@ summary(
 #> Samples: 1000 retained per chain, 2 chains
 #> 
 #>                variable   mean     q5    q95 mcse_mean ess_bulk ess_tail
-#>             beta[price] -0.196 -0.210 -0.182  0.000468      349      811
-#>              beta[time] -1.054 -1.209 -0.897  0.003890      596      923
-#>            beta[change] -0.201 -0.260 -0.141  0.001397      657     1251
-#>  beta[factor(comfort)1] -0.396 -0.469 -0.323  0.001520      800     1186
-#>  beta[factor(comfort)2] -1.338 -1.469 -1.207  0.003376      553     1056
+#>             beta[price] -0.196 -0.211 -0.181  0.000449      421      909
+#>              beta[time] -1.048 -1.202 -0.892  0.004010      573      937
+#>            beta[change] -0.200 -0.261 -0.139  0.001319      765     1284
+#>  beta[factor(comfort)1] -0.393 -0.466 -0.322  0.001810      598     1177
+#>  beta[factor(comfort)2] -1.330 -1.466 -1.200  0.003196      617     1221
 ```
 
 [`coef()`](https://rdrr.io/r/stats/coef.html) and
@@ -268,16 +268,16 @@ posterior probability `level`.
 
 coef(model)
 #>            beta[price]             beta[time]           beta[change] 
-#>             -0.1961137             -1.0541476             -0.2013516 
+#>             -0.1955574             -1.0482702             -0.2001250 
 #> beta[factor(comfort)1] beta[factor(comfort)2] 
-#>             -0.3961042             -1.3382782
+#>             -0.3925523             -1.3295514
 confint(model, level = 0.9)
 #>                                5%        95%
-#> beta[price]            -0.2101777 -0.1819134
-#> beta[time]             -1.2093530 -0.8967781
-#> beta[change]           -0.2596503 -0.1410680
-#> beta[factor(comfort)1] -0.4688508 -0.3233941
-#> beta[factor(comfort)2] -1.4687676 -1.2068223
+#> beta[price]            -0.2108779 -0.1806201
+#> beta[time]             -1.2022030 -0.8915060
+#> beta[change]           -0.2610748 -0.1393063
+#> beta[factor(comfort)1] -0.4662688 -0.3215728
+#> beta[factor(comfort)2] -1.4655563 -1.1999422
 ```
 
 [`vcov()`](https://rdrr.io/r/stats/vcov.html) returns the posterior
@@ -287,17 +287,17 @@ covariance matrix of the parameters:
 
 round(vcov(model), 5)
 #>                        beta[price] beta[time] beta[change]
-#> beta[price]                0.00008    0.00037      0.00008
-#> beta[time]                 0.00037    0.00903      0.00083
-#> beta[change]               0.00008    0.00083      0.00128
-#> beta[factor(comfort)1]     0.00014    0.00123      0.00024
-#> beta[factor(comfort)2]     0.00031    0.00301      0.00061
+#> beta[price]                0.00008    0.00038      0.00009
+#> beta[time]                 0.00038    0.00920      0.00077
+#> beta[change]               0.00009    0.00077      0.00133
+#> beta[factor(comfort)1]     0.00013    0.00104      0.00025
+#> beta[factor(comfort)2]     0.00032    0.00258      0.00064
 #>                        beta[factor(comfort)1] beta[factor(comfort)2]
-#> beta[price]                           0.00014                0.00031
-#> beta[time]                            0.00123                0.00301
-#> beta[change]                          0.00024                0.00061
-#> beta[factor(comfort)1]                0.00185                0.00216
-#> beta[factor(comfort)2]                0.00216                0.00633
+#> beta[price]                           0.00013                0.00032
+#> beta[time]                            0.00104                0.00258
+#> beta[change]                          0.00025                0.00064
+#> beta[factor(comfort)1]                0.00196                0.00228
+#> beta[factor(comfort)2]                0.00228                0.00629
 ```
 
 An interval plot displays the marginal posteriors: the thick bars cover
@@ -313,7 +313,7 @@ plot(model, type = "interval")
 ## Graphical convergence diagnostics
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) delegates to
-**bayesplot** ([Gabry and Mahr 2025](#ref-Gabry2025)). Trace plots show
+**bayesplot** ([Gabry and Mahr 2026](#ref-Gabry2025)). Trace plots show
 the draws of each chain against their index, and density overlays
 compare the marginal posteriors of the chains; there are two chains here
 because [`fit()`](https://loelschlaeger.de/RprobitB/reference/fit.md)
@@ -395,11 +395,11 @@ posterior::summarise_draws(draws, "mean", "quantile2")
 #> # A tibble: 6 × 4
 #>   variable                 mean     q5    q95
 #>   <chr>                   <dbl>  <dbl>  <dbl>
-#> 1 beta[price]            -0.196 -0.210 -0.182
-#> 2 beta[time]             -1.05  -1.21  -0.897
-#> 3 beta[change]           -0.201 -0.260 -0.141
-#> 4 beta[factor(comfort)1] -0.396 -0.469 -0.323
-#> 5 beta[factor(comfort)2] -1.34  -1.47  -1.21 
+#> 1 beta[price]            -0.196 -0.211 -0.181
+#> 2 beta[time]             -1.05  -1.20  -0.892
+#> 3 beta[change]           -0.200 -0.261 -0.139
+#> 4 beta[factor(comfort)1] -0.393 -0.466 -0.322
+#> 5 beta[factor(comfort)2] -1.33  -1.47  -1.20 
 #> 6 Sigma[B,B]              1      1      1
 ```
 
@@ -503,7 +503,7 @@ Croissant, Yves. 2020. “Estimation of Random Utility Models in R: The
 mlogit Package.” *Journal of Statistical Software* 95 (11): 1–41.
 <https://doi.org/10.18637/jss.v095.i11>.
 
-Gabry, Jonah, and Tristan Mahr. 2025. *bayesplot: Plotting for Bayesian
+Gabry, Jonah, and Tristan Mahr. 2026. *bayesplot: Plotting for Bayesian
 Models*. <https://mc-stan.org/bayesplot/>.
 
 Imai, Kosuke, and David A. van Dyk. 2005. “A Bayesian Analysis of the

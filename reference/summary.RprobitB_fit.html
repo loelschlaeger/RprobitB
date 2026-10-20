@@ -9,7 +9,7 @@ parameters with selectable statistics."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,10 @@ Optional unique probabilities for posterior quantiles.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Every statistic describes the marginal posterior of one variable and is
-computed from the retained draws of all chains:</p><ul><li><p><code>mean</code>: the average of the draws, the usual point estimate.</p></li>
+computed from the retained draws of all chains. For a class that is empty
+in some draws, the column <code>occupied</code> gives the share of draws in which it
+is occupied, <code>mcse_*</code>, <code>rhat</code>, and <code>ess_*</code> are <code>NA</code>, and the other
+statistics use only these draws. The statistics are:</p><ul><li><p><code>mean</code>: the average of the draws, the usual point estimate.</p></li>
 <li><p><code>median</code>: the median value of the draws. If it differs clearly from the
 mean, the posterior is skewed.</p></li>
 <li><p><code>mode</code>: the most probable value. For continuous draws, it is the peak
@@ -104,17 +107,18 @@ active class count, it is the most frequent value.</p></li>
 <li><p><code>sd</code>: the standard deviation of the draws, the posterior uncertainty of
 the parameter.</p></li>
 <li><p><code>q&lt;100 * p&gt;</code>: the quantile of probability <code>p</code>. With
-<code>probs = c(0.025, 0.975)</code>, the two columns are the limits of the 95%
-credible interval.</p></li>
+<code>probs = c(0.025, 0.975)</code>, the two columns are the limits of the
+equal-tailed 95% credible interval.</p></li>
 <li><p><code>mcse_mean</code>, <code>mcse_median</code>, <code>mcse_sd</code>: the Monte Carlo standard errors
 of the mean, median, and standard deviation, the sampling error of
 these estimates that more iterations would reduce. Good values are
 below a tenth of <code>sd</code>; larger values mean that the reported digits are
 not yet reliable and the sampler should run longer.</p></li>
-<li><p><code>rhat</code>: the rank-normalized, folded split-R-hat of Vehtari et al.
-(2021). It compares the variance between the halves of all chains with
+<li><p><code>rhat</code>: the larger of the rank-normalized split-R-hat and its folded
+version of Vehtari et al. (2021). It compares the variance between
+the halves of all chains with
 the variance within them. With a single chain, it compares the two
-halves of that chain. Good values are at most 1.01; larger values mean
+halves of that chain. Good values are at most 1.01; larger values indicate
 that the chains have not mixed and the sampler should run longer, see
 <code>plot(type = "trace")</code>.</p></li>
 <li><p><code>ess_bulk</code>: the effective sample size for the center of the posterior,
@@ -122,8 +126,8 @@ the number of independent draws that carry the same information as the
 correlated draws. Good values are at least 100 per chain; smaller values
 mean that the sampler should run longer.</p></li>
 <li><p><code>ess_tail</code>: the smaller of the effective sample sizes of the 5% and 95%
-quantiles. It governs the precision of quantiles, credible intervals,
-and the standard deviation. The same rule applies: at least 100 per
+quantiles. It governs the precision of extreme quantiles and credible
+intervals. The same rule applies: at least 100 per
 chain is good.</p></li>
 </ul></div>
     <div class="section level2">
@@ -146,7 +150,7 @@ chain is good.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formula: choice ~ x | 0 | 0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples: 500 retained per chain, 1 chain</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  variable dgp mean mode    sd rhat ess_bulk</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x]   1  1.4  1.5 0.243 1.11     21.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x]   1  1.4 1.49 0.245 1.12     21.1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -154,7 +158,7 @@ chain is good.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

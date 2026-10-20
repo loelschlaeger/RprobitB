@@ -39,7 +39,7 @@ standard way to ask a fitted model for the covariance of its parameters.
 set.seed(1)
 model <- fit(choice ~ x + y | 0, chains = 1)
 vcov(model)
-#>          beta[x]   beta[y]
-#> beta[x] 0.338998 0.5167580
-#> beta[y] 0.516758 0.9846016
+#>            beta[x]    beta[y]
+#> beta[x] 0.04715651 0.05396832
+#> beta[y] 0.05396832 0.11722367
 ```

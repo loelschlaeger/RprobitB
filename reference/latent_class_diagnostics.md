@@ -25,15 +25,16 @@ latent_class_diagnostics(object)
 A list with three elements:
 
 - `occupancy`: a `data.frame` with the columns `n_classes` and
-  `probability`. It gives the share of draws in which exactly
-  `n_classes` classes contain at least one decider, so it answers how
-  many classes the data support. For a fixed mixture, the number of
-  classes is fixed, and the table shows how often one of them stays
-  empty.
+  `probability`, with one row for every number of classes from one to
+  the maximum number of classes of the model. It gives the share of
+  draws in which exactly `n_classes` classes contain at least one
+  decider, so it indicates how many classes the data support under the
+  chosen prior. For a fixed mixture, the sampler keeps all classes
+  occupied.
 
 - `co_clustering`: a square matrix with one row and one column per
   decider. Entry `[i, j]` is the share of draws in which deciders `i`
-  and `j` are in the same class, so it answers whether two deciders
+  and `j` are in the same class, so it indicates whether two deciders
   behave alike. It does not depend on how the classes are labeled.
 
 - `membership`: a matrix with one row per decider and one column per
@@ -76,32 +77,36 @@ model <- fit(
   n_occasions = 5,
   chains = 1
 )
+#> Warning: The retained draws reach the maximum of 10 latent classes.
+#> ℹ Increase `max_classes` and refit to check the bound.
 diagnostics <- latent_class_diagnostics(model)
 diagnostics$occupancy
-#>   n_classes probability
-#> 1         2       0.148
-#> 2         3       0.218
-#> 3         4       0.246
-#> 4         5       0.162
-#> 5         6       0.120
-#> 6         7       0.066
-#> 7         8       0.028
-#> 8         9       0.012
+#>    n_classes probability
+#> 1          1       0.000
+#> 2          2       0.066
+#> 3          3       0.182
+#> 4          4       0.204
+#> 5          5       0.164
+#> 6          6       0.142
+#> 7          7       0.110
+#> 8          8       0.060
+#> 9          9       0.044
+#> 10        10       0.028
 diagnostics$co_clustering[1:5, 1:5]
 #>       1     2     3     4     5
-#> 1 1.000 0.086 0.094 0.092 0.500
-#> 2 0.086 1.000 0.838 0.818 0.178
-#> 3 0.094 0.838 1.000 0.844 0.188
-#> 4 0.092 0.818 0.844 1.000 0.184
-#> 5 0.500 0.178 0.188 0.184 1.000
+#> 1 1.000 0.004 0.012 0.016 0.562
+#> 2 0.004 1.000 0.774 0.764 0.154
+#> 3 0.012 0.774 1.000 0.832 0.166
+#> 4 0.016 0.764 0.832 1.000 0.164
+#> 5 0.562 0.154 0.166 0.164 1.000
 head(diagnostics$membership)
 #>   class_1 class_2 class_3 class_4 class_5 class_6 class_7 class_8 class_9
-#> 1   0.086   0.712   0.124   0.050   0.022   0.000   0.006   0.000       0
-#> 2   0.872   0.002   0.044   0.050   0.010   0.020   0.002   0.000       0
-#> 3   0.892   0.004   0.054   0.034   0.006   0.010   0.000   0.000       0
-#> 4   0.858   0.004   0.056   0.044   0.012   0.022   0.004   0.000       0
-#> 5   0.196   0.652   0.058   0.062   0.020   0.004   0.004   0.004       0
-#> 6   0.846   0.002   0.044   0.066   0.020   0.022   0.000   0.000       0
+#> 1   0.004   0.756   0.150   0.030   0.034   0.018   0.006   0.002   0.000
+#> 2   0.832   0.002   0.074   0.040   0.028   0.010   0.002   0.004   0.008
+#> 3   0.900   0.006   0.034   0.026   0.014   0.014   0.002   0.002   0.002
+#> 4   0.878   0.010   0.032   0.056   0.010   0.006   0.004   0.004   0.000
+#> 5   0.166   0.682   0.084   0.018   0.024   0.018   0.008   0.000   0.000
+#> 6   0.736   0.002   0.126   0.048   0.044   0.022   0.010   0.010   0.002
 #>   class_10
 #> 1        0
 #> 2        0

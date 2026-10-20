@@ -9,7 +9,7 @@ choices in cross-sectional and panel data."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,13 +77,13 @@ up to level and scale, see the normalization details in <code><a href="fit.html"
 
 <p>Posterior draws come from a Gibbs sampler that augments the latent utilities
 (Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van Dyk 2005).
-Heterogeneity can follow a finite mixture, a sparse overfitted finite
-mixture (Rousseau and Mengersen 2011; Frühwirth-Schnatter and Malsiner-Walli
-2019), or a Dirichlet process mixture with Neal's (2000) auxiliary-parameter
-allocation update and the precision update of Escobar and West (1995).
-Independent chains run through the
-<a href="https://future.futureverse.org/" class="external-link"><strong>future</strong></a> framework, and retained
-draws use the <a href="https://mc-stan.org/posterior/" class="external-link"><strong>posterior</strong></a> format.</p>
+Heterogeneity can follow a finite mixture, a sparse overfitted finite mixture
+(Rousseau and Mengersen 2011; Malsiner-Walli et al. 2016; Frühwirth-Schnatter
+and Malsiner-Walli 2019), or a Dirichlet process mixture with Neal's (2000)
+auxiliary-parameter allocation update and the precision update of Escobar and
+West (1995). Independent chains run through the
+<a href="https://future.futureverse.org/" class="external-link"><strong>future</strong></a> framework, and retained draws
+use the <a href="https://mc-stan.org/posterior/" class="external-link"><strong>posterior</strong></a> format.</p>
 </div>
 
 <div class="section">
@@ -110,6 +110,11 @@ Gabry (2017), and Bayes factors use bridge sampling (Gronau et al. 2017).</p>
 “Bayesian Density Estimation and Inference Using Mixtures.”
 <em>Journal of the American Statistical Association</em>, <b>90</b>(430), 577–588.
 <a href="https://doi.org/10.1080/01621459.1995.10476550" class="external-link">doi:10.1080/01621459.1995.10476550</a>
+.</p>
+<p>Malsiner-Walli G, Frühwirth-Schnatter S, Grün B (2016).
+“Model-Based Clustering Based on Sparse Finite Gaussian Mixtures.”
+<em>Statistics and Computing</em>, <b>26</b>(1–2), 303–324.
+<a href="https://doi.org/10.1007/s11222-014-9500-2" class="external-link">doi:10.1007/s11222-014-9500-2</a>
 .</p>
 <p>Frühwirth-Schnatter S, Malsiner-Walli G (2019).
 “From Here to Infinity: Sparse Finite versus Dirichlet Process Mixtures in Model-Based Clustering.”
@@ -171,7 +176,7 @@ Cambridge University Press, Cambridge.
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p><strong>Maintainer</strong>: Lennart Oelschläger <a href="mailto:oelschlaeger.lennart@gmail.com">oelschlaeger.lennart@gmail.com</a> (<a href="https://orcid.org/0000-0001-5421-9313" class="external-link">ORCID</a>)</p>
 <p>Authors:</p><ul><li><p>Lennart Oelschläger <a href="mailto:oelschlaeger.lennart@gmail.com">oelschlaeger.lennart@gmail.com</a> (<a href="https://orcid.org/0000-0001-5421-9313" class="external-link">ORCID</a>)</p></li>
-</ul><p>Other contributors:</p><ul><li><p>Dietmar Bauer <a href="mailto:dietmar.bauer@uni-bielefeld.de">dietmar.bauer@uni-bielefeld.de</a> (<a href="https://orcid.org/0000-0003-2920-7032" class="external-link">ORCID</a>) [contributor]</p></li>
+<li><p>Dietmar Bauer <a href="mailto:dietmar.bauer@uni-bielefeld.de">dietmar.bauer@uni-bielefeld.de</a> (<a href="https://orcid.org/0000-0003-2920-7032" class="external-link">ORCID</a>)</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -179,7 +184,7 @@ Cambridge University Press, Cambridge.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

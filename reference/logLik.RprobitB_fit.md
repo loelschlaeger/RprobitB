@@ -43,5 +43,5 @@ model <- fit(
   choice ~ x | 0, dgp_parameters = list(beta = c(x = 1)), chains = 1
 )
 logLik(model)
-#> 'log Lik.' -36.04087 (df=1)
+#> 'log Lik.' -36.04092 (df=1)
 ```

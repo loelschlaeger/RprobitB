@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -151,16 +151,16 @@ normalization differs between the two fits.</p>
 <span><span class="co">#&gt; Formula: choice ~ x + z | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;  variable  dgp   mean   mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;   beta[x]  1.0  1.124  1.079 0.1055    1     36.2</span></span>
-<span><span class="co">#&gt;   beta[z] -0.5 -0.617 -0.604 0.0877    1     51.1</span></span>
+<span><span class="co">#&gt;   beta[x]  1.0  1.126  1.152 0.1141 1.02     40.4</span></span>
+<span><span class="co">#&gt;   beta[z] -0.5 -0.602 -0.598 0.0843 1.03     40.1</span></span>
 <span><span class="va">scale_z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">scale_default</span>, scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>z <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">scale_z</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x + z | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;    variable dgp mean mode    sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     beta[x]   2 1.87 1.80 0.229 1.01      115</span></span>
-<span><span class="co">#&gt;  Sigma[B,B]   4 2.94 2.33 0.932 1.04       47</span></span></code></pre></div>
+<span><span class="co">#&gt;     beta[x]   2 1.85 1.84 0.225 1.02     90.4</span></span>
+<span><span class="co">#&gt;  Sigma[B,B]   4 2.61 2.26 0.736 1.06     48.5</span></span></code></pre></div>
 <p>Under the default scale, the <code>dgp</code> column shows the
 coefficients as specified. <code>Sigma[B,B]</code>, the error variance
 of the utility difference between alternative <code>B</code> and the
@@ -222,8 +222,8 @@ with variance <code>0.5</code> and a tight one with variance
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;  variable dgp  mean   mode    sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;   beta[x]  -1 -1.02 -0.986 0.163 1.02     46.3</span></span>
+<span><span class="co">#&gt;  variable dgp mean  mode    sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;   beta[x]  -1 -1.2 -1.27 0.207 1.03     26.4</span></span>
 <span><span class="va">moderate_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
 <span>  <span class="va">default_prior</span>, prior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fixed_mean <span class="op">=</span> <span class="fl">1</span>, fixed_covariance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -236,7 +236,7 @@ with variance <code>0.5</code> and a tight one with variance
 <span>  row.names <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   variable dgp   default   moderate     tight</span></span>
-<span><span class="co">#&gt; 1  beta[x]  -1 -1.016823 -0.9577477 0.1240365</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  beta[x]  -1 -1.203842 -0.9940194 0.1229609</span></span></code></pre></div>
 <p>The table compares the posterior means under the three priors with
 the true value. The moderate prior shifts the posterior mean only
 slightly towards the prior mean. The tight prior has a standard
@@ -271,12 +271,12 @@ values.</p>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: choice ~ x | z | w </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;     variable   dgp   mean   mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;      beta[x]  0.50  0.510  0.512 0.0593 1.01       87</span></span>
-<span><span class="co">#&gt;    beta[z_B] -0.50 -0.512 -0.527 0.0730 1.01      117</span></span>
-<span><span class="co">#&gt;  beta[ASC_B]  0.25  0.234  0.236 0.0680 1.01      147</span></span>
-<span><span class="co">#&gt;    beta[w_A] -0.50 -0.433 -0.427 0.0649 1.00      160</span></span>
-<span><span class="co">#&gt;    beta[w_B]  0.50  0.306  0.282 0.0702 1.00      146</span></span></code></pre></div>
+<span><span class="co">#&gt;     variable   dgp   mean   mode     sd  rhat ess_bulk</span></span>
+<span><span class="co">#&gt;      beta[x]  0.50  0.470  0.469 0.0520 1.001    128.9</span></span>
+<span><span class="co">#&gt;    beta[z_B] -0.50 -0.345 -0.329 0.0764 1.027     68.2</span></span>
+<span><span class="co">#&gt;  beta[ASC_B]  0.25  0.227  0.230 0.0692 0.999    195.1</span></span>
+<span><span class="co">#&gt;    beta[w_A] -0.50 -0.490 -0.470 0.0687 0.999    160.6</span></span>
+<span><span class="co">#&gt;    beta[w_B]  0.50  0.543  0.546 0.0721 1.006    135.9</span></span></code></pre></div>
 <p>The summary lists the shared coefficient of <code>x</code>, the
 coefficient of <code>z</code> and the constant of alternative
 <code>B</code>, and the two alternative-specific coefficients of
@@ -289,7 +289,7 @@ parameterization, not the model:</p>
 <code class="sourceCode R"><span><span class="va">base_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">covariate_types</span>, base <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">base_b</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"beta[z_A]"</span>, <span class="st">"beta[ASC_A]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;     beta[x]   beta[z_A] beta[ASC_A] </span></span>
-<span><span class="co">#&gt;   0.5193362   0.5230973  -0.2385689</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.4746928   0.3349223  -0.2234325</span></span></code></pre></div>
 <p>The shared coefficient of <code>x</code> is unchanged up to Monte
 Carlo error, while the coefficient of <code>z</code> and the constant
 now describe alternative <code>A</code> relative to <code>B</code> and
@@ -335,23 +335,23 @@ describe the other modes relative to flying.</p>
 <span><span class="co">#&gt; Samples: 100 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;            variable     mean     mode       sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;          beta[wait] -0.04164 -0.03720 0.006775 1.017     77.4</span></span>
-<span><span class="co">#&gt;         beta[vcost] -0.00938 -0.01035 0.005862 0.998    145.5</span></span>
-<span><span class="co">#&gt;        beta[travel] -0.00224 -0.00224 0.000487 1.001    144.8</span></span>
-<span><span class="co">#&gt;    beta[income_bus] -0.01979 -0.02220 0.012352 1.012    141.9</span></span>
-<span><span class="co">#&gt;    beta[income_car] -0.00835 -0.00755 0.012596 1.002    160.7</span></span>
-<span><span class="co">#&gt;  beta[income_train] -0.05509 -0.05118 0.014180 1.000    112.4</span></span>
-<span><span class="co">#&gt;      beta[size_bus]  0.31010  0.31186 0.162549 1.002    130.5</span></span>
-<span><span class="co">#&gt;      beta[size_car]  0.44952  0.39732 0.142918 0.997    168.7</span></span>
-<span><span class="co">#&gt;    beta[size_train]  0.53463  0.54936 0.174662 1.005    128.3</span></span>
-<span><span class="co">#&gt;       beta[ASC_bus] -0.30036 -0.42453 0.516963 1.000    118.1</span></span>
-<span><span class="co">#&gt;       beta[ASC_car] -2.40052 -2.31544 0.764007 0.997    100.9</span></span>
-<span><span class="co">#&gt;     beta[ASC_train]  0.15563  0.11309 0.505604 1.000    132.7</span></span>
-<span><span class="co">#&gt;      Sigma[bus,car]  0.80195  0.82875 0.193637 1.002    156.1</span></span>
-<span><span class="co">#&gt;      Sigma[car,car]  1.27942  1.00714 0.473404 0.999    152.5</span></span>
-<span><span class="co">#&gt;    Sigma[bus,train]  0.81874  0.80954 0.170358 1.002    107.9</span></span>
-<span><span class="co">#&gt;    Sigma[car,train]  0.79510  0.73887 0.303172 1.001    120.7</span></span>
-<span><span class="co">#&gt;  Sigma[train,train]  1.26410  1.04110 0.407119 1.006     92.1</span></span></code></pre></div>
+<span><span class="co">#&gt;          beta[wait] -0.04170 -0.03770 0.006276 1.024     85.8</span></span>
+<span><span class="co">#&gt;         beta[vcost] -0.01019 -0.01043 0.006035 1.017    218.1</span></span>
+<span><span class="co">#&gt;        beta[travel] -0.00234 -0.00228 0.000477 0.997    140.5</span></span>
+<span><span class="co">#&gt;    beta[income_bus] -0.01937 -0.02206 0.012379 0.998    193.2</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.00827 -0.00948 0.011904 1.007    185.0</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.05439 -0.05161 0.014400 1.022    136.9</span></span>
+<span><span class="co">#&gt;      beta[size_bus]  0.30867  0.33864 0.170632 0.995    163.2</span></span>
+<span><span class="co">#&gt;      beta[size_car]  0.46220  0.41894 0.137625 1.004    121.9</span></span>
+<span><span class="co">#&gt;    beta[size_train]  0.55684  0.49506 0.157059 0.998    159.1</span></span>
+<span><span class="co">#&gt;       beta[ASC_bus] -0.27292 -0.34044 0.530872 1.025     79.6</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -2.37693 -2.48845 0.727407 1.022     75.6</span></span>
+<span><span class="co">#&gt;     beta[ASC_train]  0.16750  0.22844 0.493696 1.025    100.8</span></span>
+<span><span class="co">#&gt;      Sigma[bus,car]  0.81164  0.75407 0.198171 0.998     73.5</span></span>
+<span><span class="co">#&gt;      Sigma[car,car]  1.31994  1.09571 0.427862 1.003    109.2</span></span>
+<span><span class="co">#&gt;    Sigma[bus,train]  0.87544  0.83972 0.194091 1.050    120.6</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.89804  0.82013 0.332554 1.005    106.3</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.35777  1.15071 0.446422 1.034     88.5</span></span></code></pre></div>
 <p>The three attribute coefficients are negative: waiting, cost, and
 travel time reduce the utility of a mode. The income and party size
 coefficients are alternative-specific and have no direct interpretation
@@ -364,10 +364,10 @@ respect to a covariate, for a traveler with average covariates:</p>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
 <span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower    upper</span></span>
-<span><span class="co">#&gt;     income         air 21.3  0.01004 0.00359  0.00237  0.01727</span></span>
-<span><span class="co">#&gt;     income         bus 21.3  0.00123 0.00258 -0.00338  0.00723</span></span>
-<span><span class="co">#&gt;     income         car 21.3  0.00831 0.00370  0.00115  0.01578</span></span>
-<span><span class="co">#&gt;     income       train 21.3 -0.01957 0.00461 -0.02969 -0.01088</span></span></code></pre></div>
+<span><span class="co">#&gt;     income         air 21.3  0.00940 0.00360  0.00196  0.01594</span></span>
+<span><span class="co">#&gt;     income         bus 21.3  0.00134 0.00222 -0.00335  0.00519</span></span>
+<span><span class="co">#&gt;     income         car 21.3  0.00873 0.00340  0.00160  0.01504</span></span>
+<span><span class="co">#&gt;     income       train 21.3 -0.01947 0.00422 -0.02856 -0.01209</span></span></code></pre></div>
 <p>A higher household income lowers the probability of the train and
 raises the probabilities of the plane and the car.</p>
 </div>
@@ -447,19 +447,19 @@ to <code>air</code>.</p>
 <span><span class="co">#&gt; Formula: choice ~ cost + ivt + ovt + freq | income + urban | 0 </span></span>
 <span><span class="co">#&gt; Samples: 200 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;            variable     mean     mode      sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;          beta[cost] -0.03748 -0.03534 0.00661 1.022     35.2</span></span>
-<span><span class="co">#&gt;           beta[ivt] -0.00612 -0.00637 0.00101 1.010     52.2</span></span>
-<span><span class="co">#&gt;           beta[ovt] -0.01636 -0.01691 0.00227 1.006    169.2</span></span>
-<span><span class="co">#&gt;          beta[freq]  0.02765  0.02812 0.00619 1.002    291.1</span></span>
-<span><span class="co">#&gt;    beta[income_car] -0.01952 -0.01695 0.00664 1.000    147.2</span></span>
-<span><span class="co">#&gt;  beta[income_train] -0.03391 -0.03423 0.00908 1.000     67.6</span></span>
-<span><span class="co">#&gt;     beta[urban_car] -0.45757 -0.49471 0.13714 0.997    322.7</span></span>
-<span><span class="co">#&gt;   beta[urban_train]  0.69477  0.68066 0.24552 1.017     69.5</span></span>
-<span><span class="co">#&gt;       beta[ASC_car] -0.57016 -0.50992 0.58632 1.046     30.8</span></span>
-<span><span class="co">#&gt;     beta[ASC_train] -0.40043 -0.40793 0.56410 1.042     34.9</span></span>
-<span><span class="co">#&gt;    Sigma[car,train]  0.34909  0.38206 0.17175 0.999     61.5</span></span>
-<span><span class="co">#&gt;  Sigma[train,train]  1.17064  0.84779 0.52808 0.999     48.2</span></span></code></pre></div>
+<span><span class="co">#&gt;            variable     mean     mode       sd  rhat ess_bulk</span></span>
+<span><span class="co">#&gt;          beta[cost] -0.03614 -0.03529 0.006487 1.012     40.1</span></span>
+<span><span class="co">#&gt;           beta[ivt] -0.00631 -0.00594 0.000915 1.002     55.7</span></span>
+<span><span class="co">#&gt;           beta[ovt] -0.01667 -0.01658 0.002220 1.023    179.4</span></span>
+<span><span class="co">#&gt;          beta[freq]  0.02712  0.02743 0.006130 0.998    328.7</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.01988 -0.01955 0.006597 1.007    144.3</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.03481 -0.03255 0.008165 1.006     87.6</span></span>
+<span><span class="co">#&gt;     beta[urban_car] -0.44231 -0.45658 0.149197 1.001    135.6</span></span>
+<span><span class="co">#&gt;   beta[urban_train]  0.72395  0.60698 0.262505 1.009     58.0</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -0.47693 -0.43504 0.532641 1.033     31.3</span></span>
+<span><span class="co">#&gt;     beta[ASC_train] -0.29753 -0.19986 0.526724 1.017     37.0</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.41255  0.38586 0.222533 1.026     47.9</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.32069  0.98664 0.572940 1.011     46.1</span></span></code></pre></div>
 <p>The income coefficients of car and train are negative: a higher
 income increases the probability of flying.</p>
 </div>
@@ -470,30 +470,34 @@ income increases the probability of flying.</p>
 utility per occasion and compares it with increasing thresholds
 <code>gamma</code>; the level is the interval into which the utility
 falls. <code>alternatives</code> gives the response levels in increasing
-order. Latent-variable data augmentation provides a direct Bayesian
-treatment of ordered probit models <span class="citation">(<a href="#ref-Albert1993">Albert and Chib 1993</a>)</span>. The following
-demonstration estimates a simulated three-category model and reports the
-coefficient and the free threshold beside their true values.</p>
+order. The utility includes an intercept <code>ASC</code> by default, as
+unordered models include alternative-specific constants, and
+<code>| 0</code> removes it. Latent-variable data augmentation provides
+a direct Bayesian treatment of ordered probit models <span class="citation">(<a href="#ref-Albert1993">Albert and Chib
+1993</a>)</span>. The following demonstration estimates a simulated
+three-category model and reports the intercept, the coefficient, and the
+free threshold beside their true values.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ordered_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
-<span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span>,</span>
 <span>  alternatives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"middle"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ordered"</span>,</span>
 <span>  n_deciders <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  dgp_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>ASC <span class="op">=</span> <span class="fl">0.5</span>, x <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ordered_sim</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
-<span><span class="co">#&gt; Formula: choice ~ x | 0 | 0 </span></span>
+<span><span class="co">#&gt; Formula: choice ~ x | 1 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;  variable dgp  mean  mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;   beta[x]   1 1.067 1.091 0.0768 1.04     74.7</span></span>
-<span><span class="co">#&gt;  gamma[2]   1 0.926 0.891 0.0624 1.05    144.1</span></span></code></pre></div>
-<p>The summary lists the coefficient and the free threshold
-<code>gamma[2]</code> beside their true values. The first threshold is
-fixed to zero and the error variance to one, which identifies the level
-and the scale of the utility.</p>
+<span><span class="co">#&gt;   variable dgp  mean  mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;  beta[ASC] 0.5 0.502 0.504 0.0604 1.01    105.8</span></span>
+<span><span class="co">#&gt;    beta[x] 1.0 1.179 1.175 0.0858 1.01     84.2</span></span>
+<span><span class="co">#&gt;   gamma[2] 1.0 1.168 1.155 0.0703 1.01     55.6</span></span></code></pre></div>
+<p>The summary lists the intercept, the coefficient, and the free
+threshold <code>gamma[2]</code> beside their true values. The first
+threshold is fixed to zero and the error variance to one, which
+identifies the scale of the utility and the level of the thresholds.</p>
 <p>The <code>survey</code> data of the <strong>MASS</strong> package
 <span class="citation">(<a href="#ref-VenablesRipley2002">Venables and
 Ripley 2002</a>)</span> come from 237 statistics students at the
@@ -509,7 +513,7 @@ order from never to heavy. The other survey questions are not used;
 <span><span class="co">#&gt; [1] "Heavy" "Never" "Occas" "Regul"</span></span>
 <span><span class="va">smoking_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never"</span>, <span class="st">"Occas"</span>, <span class="st">"Regul"</span>, <span class="st">"Heavy"</span><span class="op">)</span></span>
 <span><span class="va">smoking</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
-<span>  <span class="va">Smoke</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">+</span> <span class="va">Exer</span> <span class="op">|</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">Smoke</span> <span class="op">~</span> <span class="va">Age</span> <span class="op">+</span> <span class="va">Exer</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">survey</span>,</span>
 <span>  alternatives <span class="op">=</span> <span class="va">smoking_levels</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ordered"</span>,</span>
@@ -518,14 +522,15 @@ order from never to heavy. The other survey questions are not used;
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
-<span><span class="co">#&gt; Formula: Smoke ~ Age + Exer | 0 | 0 </span></span>
+<span><span class="co">#&gt; Formula: Smoke ~ Age + Exer | 1 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
-<span><span class="co">#&gt;        variable    mean   mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;       beta[Age] -0.0286 -0.028 0.0058    1      144</span></span>
-<span><span class="co">#&gt;  beta[ExerNone] -0.1815 -0.127 0.2977    1      219</span></span>
-<span><span class="co">#&gt;  beta[ExerSome] -0.4658 -0.480 0.1888    1      114</span></span>
-<span><span class="co">#&gt;        gamma[2]  0.3777  0.401 0.0824    1      108</span></span>
-<span><span class="co">#&gt;        gamma[3]  0.8967  0.837 0.1332    1      155</span></span></code></pre></div>
+<span><span class="co">#&gt;        variable    mean     mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;       beta[ASC] -0.8022 -0.92416 0.3146 1.01    180.8</span></span>
+<span><span class="co">#&gt;       beta[Age]  0.0062  0.00648 0.0132 1.00    194.1</span></span>
+<span><span class="co">#&gt;  beta[ExerNone] -0.1532 -0.23088 0.3150 1.01    180.9</span></span>
+<span><span class="co">#&gt;  beta[ExerSome] -0.3647 -0.41140 0.2075 1.00    120.2</span></span>
+<span><span class="co">#&gt;        gamma[2]  0.3772  0.34075 0.0763 1.02     80.8</span></span>
+<span><span class="co">#&gt;        gamma[3]  0.8885  0.90415 0.1254 1.05     38.7</span></span></code></pre></div>
 <p>With four levels, the thresholds <code>gamma[2]</code> and
 <code>gamma[3]</code> are estimated. Each student has one latent
 utility, normally distributed around its systematic part, and the
@@ -558,27 +563,28 @@ shows the density of a student whose systematic utility is zero.</p>
 <p><img src="v02_model_variants_files/figure-html/ordered-figure-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>A covariate shifts the density along the utility axis, so one
 coefficient per covariate describes its effect on all four levels. The
-age coefficient is negative: older students report smoking less. The
-factor <code>Exer</code> enters through its dummy variables relative to
-the students who exercise frequently.
-<code>interpret(type = "ame")</code> translates the age coefficient into
-probabilities: it differentiates the probability of each level with
-respect to age and averages the derivatives over the students. The
-vignette <a href="https://loelschlaeger.de/RprobitB/articles/v04_prediction.html">Posterior
+age coefficient is small and its credible interval includes zero: the
+age of a student does not affect how much they smoke. The factor
+<code>Exer</code> enters through its dummy variables relative to the
+students who exercise frequently; both coefficients are negative but
+uncertain. <code>interpret(type = "ame")</code> translates the age
+coefficient into probabilities: it differentiates the probability of
+each level with respect to age and averages the derivatives over the
+students. The vignette <a href="https://loelschlaeger.de/RprobitB/articles/v04_prediction.html">Posterior
 prediction</a> explains marginal effects in more detail.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">age_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">smoking</span>, type <span class="op">=</span> <span class="st">"ame"</span><span class="op">)</span></span>
 <span><span class="va">age_effects</span></span>
 <span><span class="co">#&gt; Average marginal effects on the choice probabilities</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
-<span><span class="co">#&gt;  covariate alternative     mean       sd    lower    upper</span></span>
-<span><span class="co">#&gt;        Age       Never  0.00817 0.001405  0.00529  0.01078</span></span>
-<span><span class="co">#&gt;        Age       Occas -0.00234 0.000657 -0.00370 -0.00118</span></span>
-<span><span class="co">#&gt;        Age       Regul -0.00285 0.000693 -0.00430 -0.00162</span></span>
-<span><span class="co">#&gt;        Age       Heavy -0.00297 0.000760 -0.00453 -0.00162</span></span></code></pre></div>
-<p>One more year of age raises the probability of never smoking by about
-0.8 percentage points and lowers the probabilities of the other three
-levels.</p>
+<span><span class="co">#&gt;  covariate alternative      mean      sd    lower   upper</span></span>
+<span><span class="co">#&gt;        Age       Never -0.001664 0.00364 -0.00820 0.00565</span></span>
+<span><span class="co">#&gt;        Age       Occas  0.000486 0.00116 -0.00190 0.00258</span></span>
+<span><span class="co">#&gt;        Age       Regul  0.000587 0.00127 -0.00202 0.00298</span></span>
+<span><span class="co">#&gt;        Age       Heavy  0.000591 0.00128 -0.00192 0.00300</span></span></code></pre></div>
+<p>One more year of age changes the probability of never smoking by less
+than one percentage point, and the credible intervals of all four
+effects include zero.</p>
 </div>
 <div class="section level2">
 <h2 id="ranked-responses">Ranked responses<a class="anchor" aria-label="anchor" href="#ranked-responses"></a>
@@ -606,9 +612,9 @@ covariance parameters with the true values.</p>
 <span><span class="co">#&gt; Formula: rank ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;    variable dgp  mean  mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     beta[x] 1.0 1.227 1.225 0.0945 1.04     33.7</span></span>
-<span><span class="co">#&gt;  Sigma[C,B] 0.2 0.179 0.145 0.1598 1.02     52.0</span></span>
-<span><span class="co">#&gt;  Sigma[C,C] 1.0 1.644 1.607 0.3746 1.00     60.3</span></span></code></pre></div>
+<span><span class="co">#&gt;     beta[x] 1.0 1.008 1.002 0.0832 1.04     20.7</span></span>
+<span><span class="co">#&gt;  Sigma[C,B] 0.2 0.181 0.173 0.1071 1.01     92.1</span></span>
+<span><span class="co">#&gt;  Sigma[C,C] 1.0 0.901 0.875 0.1956 1.02    100.6</span></span></code></pre></div>
 <p>The <code>Game</code> data of the <strong>mlogit</strong> package
 contain complete rankings of six gaming platforms by 91 Dutch
 respondents, together with whether they own each platform
@@ -637,9 +643,9 @@ response in the formula is <code>ch</code> and
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">gaming</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
 <span><span class="co">#&gt;             beta[own]    beta[age.GameCube]          beta[age.PC] </span></span>
-<span><span class="co">#&gt;          0.8619815687          0.0091536760          0.0673902405 </span></span>
+<span><span class="co">#&gt;           0.849181460           0.004979543           0.078245099 </span></span>
 <span><span class="co">#&gt; beta[age.PlayStation]  beta[age.PSPortable]        beta[age.Xbox] </span></span>
-<span><span class="co">#&gt;          0.0329406655          0.0001773868          0.0226327519</span></span></code></pre></div>
+<span><span class="co">#&gt;           0.020707752          -0.000725962           0.007326761</span></span></code></pre></div>
 <p>The coefficient of <code>own</code> is positive: owning a platform
 raises its rank. The alternative-specific constants and the coefficients
 of <code>age</code> and <code>hours</code> are relative to the base
@@ -654,14 +660,14 @@ hours:</p>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
 <span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower     upper</span></span>
-<span><span class="co">#&gt;      hours     GameBoy 3.88 -0.00247 0.00149 -0.00611 -0.000335</span></span>
-<span><span class="co">#&gt;      hours    GameCube 3.88 -0.00568 0.00370 -0.01266  0.000220</span></span>
-<span><span class="co">#&gt;      hours          PC 3.88  0.03680 0.01203  0.01667  0.061455</span></span>
-<span><span class="co">#&gt;      hours PlayStation 3.88 -0.00486 0.00765 -0.01937  0.006334</span></span>
-<span><span class="co">#&gt;      hours  PSPortable 3.88 -0.00911 0.00388 -0.01571 -0.002515</span></span>
-<span><span class="co">#&gt;      hours        Xbox 3.88 -0.01469 0.00818 -0.03039 -0.001673</span></span></code></pre></div>
+<span><span class="co">#&gt;      hours     GameBoy 3.88 -0.00242 0.00153 -0.00579 -0.000265</span></span>
+<span><span class="co">#&gt;      hours    GameCube 3.88 -0.00461 0.00361 -0.01050  0.000757</span></span>
+<span><span class="co">#&gt;      hours          PC 3.88  0.03299 0.01316  0.01169  0.061941</span></span>
+<span><span class="co">#&gt;      hours PlayStation 3.88 -0.00498 0.00666 -0.01740  0.005442</span></span>
+<span><span class="co">#&gt;      hours  PSPortable 3.88 -0.00858 0.00317 -0.01686 -0.002878</span></span>
+<span><span class="co">#&gt;      hours        Xbox 3.88 -0.01239 0.00710 -0.02720 -0.001858</span></span></code></pre></div>
 <p>Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about 3.7 percentage points.</p>
+probability of ranking it first by about 3.3 percentage points.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
@@ -720,7 +726,7 @@ Statistics with s</em>. 4th ed. Springer.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

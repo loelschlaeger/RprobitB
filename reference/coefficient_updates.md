@@ -1,7 +1,7 @@
 # Update coefficient distributions
 
-Low-level Gibbs sampler kernels for coefficient means and covariance
-matrices.
+Low-level Gibbs sampler kernels for coefficients, their class means, and
+covariance matrices.
 
 ## Usage
 
@@ -103,8 +103,8 @@ update_Omega(beta, b, z, m, n_Omega_0, V_Omega_0, correlated = NULL)
 
   \[`logical(P)` \| `NULL`\]  
   Which random effects are correlated. Covariances between the other
-  effects are zero. By default (`NULL`), all random effects are
-  correlated.
+  effects are zero. In `update_Omega()`, the default (`NULL`) correlates
+  all random effects.
 
 - b:
 

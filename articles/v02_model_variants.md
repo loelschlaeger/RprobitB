@@ -84,16 +84,16 @@ summary(scale_default)
 #> Formula: choice ~ x + z | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>  variable  dgp   mean   mode     sd rhat ess_bulk
-#>   beta[x]  1.0  1.124  1.079 0.1055    1     36.2
-#>   beta[z] -0.5 -0.617 -0.604 0.0877    1     51.1
+#>   beta[x]  1.0  1.126  1.152 0.1141 1.02     40.4
+#>   beta[z] -0.5 -0.602 -0.598 0.0843 1.03     40.1
 scale_z <- update(scale_default, scale = c(z = -1))
 summary(scale_z)
 #> Bayesian probit choice model
 #> Formula: choice ~ x + z | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>    variable dgp mean mode    sd rhat ess_bulk
-#>     beta[x]   2 1.87 1.80 0.229 1.01      115
-#>  Sigma[B,B]   4 2.94 2.33 0.932 1.04       47
+#>     beta[x]   2 1.85 1.84 0.225 1.02     90.4
+#>  Sigma[B,B]   4 2.61 2.26 0.736 1.06     48.5
 ```
 
 Under the default scale, the `dgp` column shows the coefficients as
@@ -159,8 +159,8 @@ summary(default_prior)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>  variable dgp  mean   mode    sd rhat ess_bulk
-#>   beta[x]  -1 -1.02 -0.986 0.163 1.02     46.3
+#>  variable dgp mean  mode    sd rhat ess_bulk
+#>   beta[x]  -1 -1.2 -1.27 0.207 1.03     26.4
 moderate_prior <- update(
   default_prior, prior = list(fixed_mean = 1, fixed_covariance = matrix(0.5))
 )
@@ -173,7 +173,7 @@ data.frame(
   row.names = NULL
 )
 #>   variable dgp   default   moderate     tight
-#> 1  beta[x]  -1 -1.016823 -0.9577477 0.1240365
+#> 1  beta[x]  -1 -1.203842 -0.9940194 0.1229609
 ```
 
 The table compares the posterior means under the three priors with the
@@ -210,12 +210,12 @@ summary(covariate_types)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | z | w 
 #> Samples: 500 retained per chain, 1 chain
-#>     variable   dgp   mean   mode     sd rhat ess_bulk
-#>      beta[x]  0.50  0.510  0.512 0.0593 1.01       87
-#>    beta[z_B] -0.50 -0.512 -0.527 0.0730 1.01      117
-#>  beta[ASC_B]  0.25  0.234  0.236 0.0680 1.01      147
-#>    beta[w_A] -0.50 -0.433 -0.427 0.0649 1.00      160
-#>    beta[w_B]  0.50  0.306  0.282 0.0702 1.00      146
+#>     variable   dgp   mean   mode     sd  rhat ess_bulk
+#>      beta[x]  0.50  0.470  0.469 0.0520 1.001    128.9
+#>    beta[z_B] -0.50 -0.345 -0.329 0.0764 1.027     68.2
+#>  beta[ASC_B]  0.25  0.227  0.230 0.0692 0.999    195.1
+#>    beta[w_A] -0.50 -0.490 -0.470 0.0687 0.999    160.6
+#>    beta[w_B]  0.50  0.543  0.546 0.0721 1.006    135.9
 ```
 
 The summary lists the shared coefficient of `x`, the coefficient of `z`
@@ -231,7 +231,7 @@ model:
 base_b <- update(covariate_types, base = "B")
 coef(base_b)[c("beta[x]", "beta[z_A]", "beta[ASC_A]")]
 #>     beta[x]   beta[z_A] beta[ASC_A] 
-#>   0.5193362   0.5230973  -0.2385689
+#>   0.4746928   0.3349223  -0.2234325
 ```
 
 The shared coefficient of `x` is unchanged up to Monte Carlo error,
@@ -284,23 +284,23 @@ summary(travel)
 #> Samples: 100 retained per chain, 2 chains
 #> 
 #>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[wait] -0.04164 -0.03720 0.006775 1.017     77.4
-#>         beta[vcost] -0.00938 -0.01035 0.005862 0.998    145.5
-#>        beta[travel] -0.00224 -0.00224 0.000487 1.001    144.8
-#>    beta[income_bus] -0.01979 -0.02220 0.012352 1.012    141.9
-#>    beta[income_car] -0.00835 -0.00755 0.012596 1.002    160.7
-#>  beta[income_train] -0.05509 -0.05118 0.014180 1.000    112.4
-#>      beta[size_bus]  0.31010  0.31186 0.162549 1.002    130.5
-#>      beta[size_car]  0.44952  0.39732 0.142918 0.997    168.7
-#>    beta[size_train]  0.53463  0.54936 0.174662 1.005    128.3
-#>       beta[ASC_bus] -0.30036 -0.42453 0.516963 1.000    118.1
-#>       beta[ASC_car] -2.40052 -2.31544 0.764007 0.997    100.9
-#>     beta[ASC_train]  0.15563  0.11309 0.505604 1.000    132.7
-#>      Sigma[bus,car]  0.80195  0.82875 0.193637 1.002    156.1
-#>      Sigma[car,car]  1.27942  1.00714 0.473404 0.999    152.5
-#>    Sigma[bus,train]  0.81874  0.80954 0.170358 1.002    107.9
-#>    Sigma[car,train]  0.79510  0.73887 0.303172 1.001    120.7
-#>  Sigma[train,train]  1.26410  1.04110 0.407119 1.006     92.1
+#>          beta[wait] -0.04170 -0.03770 0.006276 1.024     85.8
+#>         beta[vcost] -0.01019 -0.01043 0.006035 1.017    218.1
+#>        beta[travel] -0.00234 -0.00228 0.000477 0.997    140.5
+#>    beta[income_bus] -0.01937 -0.02206 0.012379 0.998    193.2
+#>    beta[income_car] -0.00827 -0.00948 0.011904 1.007    185.0
+#>  beta[income_train] -0.05439 -0.05161 0.014400 1.022    136.9
+#>      beta[size_bus]  0.30867  0.33864 0.170632 0.995    163.2
+#>      beta[size_car]  0.46220  0.41894 0.137625 1.004    121.9
+#>    beta[size_train]  0.55684  0.49506 0.157059 0.998    159.1
+#>       beta[ASC_bus] -0.27292 -0.34044 0.530872 1.025     79.6
+#>       beta[ASC_car] -2.37693 -2.48845 0.727407 1.022     75.6
+#>     beta[ASC_train]  0.16750  0.22844 0.493696 1.025    100.8
+#>      Sigma[bus,car]  0.81164  0.75407 0.198171 0.998     73.5
+#>      Sigma[car,car]  1.31994  1.09571 0.427862 1.003    109.2
+#>    Sigma[bus,train]  0.87544  0.83972 0.194091 1.050    120.6
+#>    Sigma[car,train]  0.89804  0.82013 0.332554 1.005    106.3
+#>  Sigma[train,train]  1.35777  1.15071 0.446422 1.034     88.5
 ```
 
 The three attribute coefficients are negative: waiting, cost, and travel
@@ -317,10 +317,10 @@ mode_effects[mode_effects$covariate == "income", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative   at     mean      sd    lower    upper
-#>     income         air 21.3  0.01004 0.00359  0.00237  0.01727
-#>     income         bus 21.3  0.00123 0.00258 -0.00338  0.00723
-#>     income         car 21.3  0.00831 0.00370  0.00115  0.01578
-#>     income       train 21.3 -0.01957 0.00461 -0.02969 -0.01088
+#>     income         air 21.3  0.00940 0.00360  0.00196  0.01594
+#>     income         bus 21.3  0.00134 0.00222 -0.00335  0.00519
+#>     income         car 21.3  0.00873 0.00340  0.00160  0.01504
+#>     income       train 21.3 -0.01947 0.00422 -0.02856 -0.01209
 ```
 
 A higher household income lowers the probability of the train and raises
@@ -410,19 +410,19 @@ summary(canada)
 #> Formula: choice ~ cost + ivt + ovt + freq | income + urban | 0 
 #> Samples: 200 retained per chain, 2 chains
 #> 
-#>            variable     mean     mode      sd  rhat ess_bulk
-#>          beta[cost] -0.03748 -0.03534 0.00661 1.022     35.2
-#>           beta[ivt] -0.00612 -0.00637 0.00101 1.010     52.2
-#>           beta[ovt] -0.01636 -0.01691 0.00227 1.006    169.2
-#>          beta[freq]  0.02765  0.02812 0.00619 1.002    291.1
-#>    beta[income_car] -0.01952 -0.01695 0.00664 1.000    147.2
-#>  beta[income_train] -0.03391 -0.03423 0.00908 1.000     67.6
-#>     beta[urban_car] -0.45757 -0.49471 0.13714 0.997    322.7
-#>   beta[urban_train]  0.69477  0.68066 0.24552 1.017     69.5
-#>       beta[ASC_car] -0.57016 -0.50992 0.58632 1.046     30.8
-#>     beta[ASC_train] -0.40043 -0.40793 0.56410 1.042     34.9
-#>    Sigma[car,train]  0.34909  0.38206 0.17175 0.999     61.5
-#>  Sigma[train,train]  1.17064  0.84779 0.52808 0.999     48.2
+#>            variable     mean     mode       sd  rhat ess_bulk
+#>          beta[cost] -0.03614 -0.03529 0.006487 1.012     40.1
+#>           beta[ivt] -0.00631 -0.00594 0.000915 1.002     55.7
+#>           beta[ovt] -0.01667 -0.01658 0.002220 1.023    179.4
+#>          beta[freq]  0.02712  0.02743 0.006130 0.998    328.7
+#>    beta[income_car] -0.01988 -0.01955 0.006597 1.007    144.3
+#>  beta[income_train] -0.03481 -0.03255 0.008165 1.006     87.6
+#>     beta[urban_car] -0.44231 -0.45658 0.149197 1.001    135.6
+#>   beta[urban_train]  0.72395  0.60698 0.262505 1.009     58.0
+#>       beta[ASC_car] -0.47693 -0.43504 0.532641 1.033     31.3
+#>     beta[ASC_train] -0.29753 -0.19986 0.526724 1.017     37.0
+#>    Sigma[car,train]  0.41255  0.38586 0.222533 1.026     47.9
+#>  Sigma[train,train]  1.32069  0.98664 0.572940 1.011     46.1
 ```
 
 The income coefficients of car and train are negative: a higher income
@@ -433,35 +433,39 @@ increases the probability of flying.
 Some responses are ordered levels. An ordered model has one latent
 utility per occasion and compares it with increasing thresholds `gamma`;
 the level is the interval into which the utility falls. `alternatives`
-gives the response levels in increasing order. Latent-variable data
-augmentation provides a direct Bayesian treatment of ordered probit
+gives the response levels in increasing order. The utility includes an
+intercept `ASC` by default, as unordered models include
+alternative-specific constants, and `| 0` removes it. Latent-variable
+data augmentation provides a direct Bayesian treatment of ordered probit
 models ([Albert and Chib 1993](#ref-Albert1993)). The following
 demonstration estimates a simulated three-category model and reports the
-coefficient and the free threshold beside their true values.
+intercept, the coefficient, and the free threshold beside their true
+values.
 
 ``` r
 
 ordered_sim <- fit(
-  choice ~ x | 0,
+  choice ~ x,
   alternatives = c("low", "middle", "high"),
   choice_type = "ordered",
   n_deciders = 500,
-  dgp_parameters = list(beta = c(x = 1), gamma = c(0, 1)),
+  dgp_parameters = list(beta = c(ASC = 0.5, x = 1), gamma = c(0, 1)),
   chains = 1
 )
 summary(ordered_sim)
 #> Bayesian probit choice model
-#> Formula: choice ~ x | 0 | 0 
+#> Formula: choice ~ x | 1 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>  variable dgp  mean  mode     sd rhat ess_bulk
-#>   beta[x]   1 1.067 1.091 0.0768 1.04     74.7
-#>  gamma[2]   1 0.926 0.891 0.0624 1.05    144.1
+#>   variable dgp  mean  mode     sd rhat ess_bulk
+#>  beta[ASC] 0.5 0.502 0.504 0.0604 1.01    105.8
+#>    beta[x] 1.0 1.179 1.175 0.0858 1.01     84.2
+#>   gamma[2] 1.0 1.168 1.155 0.0703 1.01     55.6
 ```
 
-The summary lists the coefficient and the free threshold `gamma[2]`
-beside their true values. The first threshold is fixed to zero and the
-error variance to one, which identifies the level and the scale of the
-utility.
+The summary lists the intercept, the coefficient, and the free threshold
+`gamma[2]` beside their true values. The first threshold is fixed to
+zero and the error variance to one, which identifies the scale of the
+utility and the level of the thresholds.
 
 The `survey` data of the **MASS** package ([Venables and Ripley
 2002](#ref-VenablesRipley2002)) come from 237 statistics students at the
@@ -480,7 +484,7 @@ levels(survey$Smoke)
 #> [1] "Heavy" "Never" "Occas" "Regul"
 smoking_levels <- c("Never", "Occas", "Regul", "Heavy")
 smoking <- fit(
-  Smoke ~ Age + Exer | 0,
+  Smoke ~ Age + Exer,
   data = survey,
   alternatives = smoking_levels,
   choice_type = "ordered",
@@ -489,14 +493,15 @@ smoking <- fit(
 )
 summary(smoking)
 #> Bayesian probit choice model
-#> Formula: Smoke ~ Age + Exer | 0 | 0 
+#> Formula: Smoke ~ Age + Exer | 1 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>        variable    mean   mode     sd rhat ess_bulk
-#>       beta[Age] -0.0286 -0.028 0.0058    1      144
-#>  beta[ExerNone] -0.1815 -0.127 0.2977    1      219
-#>  beta[ExerSome] -0.4658 -0.480 0.1888    1      114
-#>        gamma[2]  0.3777  0.401 0.0824    1      108
-#>        gamma[3]  0.8967  0.837 0.1332    1      155
+#>        variable    mean     mode     sd rhat ess_bulk
+#>       beta[ASC] -0.8022 -0.92416 0.3146 1.01    180.8
+#>       beta[Age]  0.0062  0.00648 0.0132 1.00    194.1
+#>  beta[ExerNone] -0.1532 -0.23088 0.3150 1.01    180.9
+#>  beta[ExerSome] -0.3647 -0.41140 0.2075 1.00    120.2
+#>        gamma[2]  0.3772  0.34075 0.0763 1.02     80.8
+#>        gamma[3]  0.8885  0.90415 0.1254 1.05     38.7
 ```
 
 With four levels, the thresholds `gamma[2]` and `gamma[3]` are
@@ -536,12 +541,14 @@ legend(
 
 A covariate shifts the density along the utility axis, so one
 coefficient per covariate describes its effect on all four levels. The
-age coefficient is negative: older students report smoking less. The
-factor `Exer` enters through its dummy variables relative to the
-students who exercise frequently. `interpret(type = "ame")` translates
-the age coefficient into probabilities: it differentiates the
-probability of each level with respect to age and averages the
-derivatives over the students. The vignette [Posterior
+age coefficient is small and its credible interval includes zero: the
+age of a student does not affect how much they smoke. The factor `Exer`
+enters through its dummy variables relative to the students who exercise
+frequently; both coefficients are negative but uncertain.
+`interpret(type = "ame")` translates the age coefficient into
+probabilities: it differentiates the probability of each level with
+respect to age and averages the derivatives over the students. The
+vignette [Posterior
 prediction](https://loelschlaeger.de/RprobitB/articles/v04_prediction.html)
 explains marginal effects in more detail.
 
@@ -551,16 +558,16 @@ age_effects <- interpret(smoking, type = "ame")
 age_effects
 #> Average marginal effects on the choice probabilities
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
-#>  covariate alternative     mean       sd    lower    upper
-#>        Age       Never  0.00817 0.001405  0.00529  0.01078
-#>        Age       Occas -0.00234 0.000657 -0.00370 -0.00118
-#>        Age       Regul -0.00285 0.000693 -0.00430 -0.00162
-#>        Age       Heavy -0.00297 0.000760 -0.00453 -0.00162
+#>  covariate alternative      mean      sd    lower   upper
+#>        Age       Never -0.001664 0.00364 -0.00820 0.00565
+#>        Age       Occas  0.000486 0.00116 -0.00190 0.00258
+#>        Age       Regul  0.000587 0.00127 -0.00202 0.00298
+#>        Age       Heavy  0.000591 0.00128 -0.00192 0.00300
 ```
 
-One more year of age raises the probability of never smoking by about
-0.8 percentage points and lowers the probabilities of the other three
-levels.
+One more year of age changes the probability of never smoking by less
+than one percentage point, and the credible intervals of all four
+effects include zero.
 
 ## Ranked responses
 
@@ -589,9 +596,9 @@ summary(ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]"))
 #> Formula: rank ~ x | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>    variable dgp  mean  mode     sd rhat ess_bulk
-#>     beta[x] 1.0 1.227 1.225 0.0945 1.04     33.7
-#>  Sigma[C,B] 0.2 0.179 0.145 0.1598 1.02     52.0
-#>  Sigma[C,C] 1.0 1.644 1.607 0.3746 1.00     60.3
+#>     beta[x] 1.0 1.008 1.002 0.0832 1.04     20.7
+#>  Sigma[C,B] 0.2 0.181 0.173 0.1071 1.01     92.1
+#>  Sigma[C,C] 1.0 0.901 0.875 0.1956 1.02    100.6
 ```
 
 The `Game` data of the **mlogit** package contain complete rankings of
@@ -622,9 +629,9 @@ gaming <- fit(
 )
 coef(gaming)[1:6]
 #>             beta[own]    beta[age.GameCube]          beta[age.PC] 
-#>          0.8619815687          0.0091536760          0.0673902405 
+#>           0.849181460           0.004979543           0.078245099 
 #> beta[age.PlayStation]  beta[age.PSPortable]        beta[age.Xbox] 
-#>          0.0329406655          0.0001773868          0.0226327519
+#>           0.020707752          -0.000725962           0.007326761
 ```
 
 The coefficient of `own` is positive: owning a platform raises its rank.
@@ -643,16 +650,16 @@ platform_effects[platform_effects$covariate == "hours", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative   at     mean      sd    lower     upper
-#>      hours     GameBoy 3.88 -0.00247 0.00149 -0.00611 -0.000335
-#>      hours    GameCube 3.88 -0.00568 0.00370 -0.01266  0.000220
-#>      hours          PC 3.88  0.03680 0.01203  0.01667  0.061455
-#>      hours PlayStation 3.88 -0.00486 0.00765 -0.01937  0.006334
-#>      hours  PSPortable 3.88 -0.00911 0.00388 -0.01571 -0.002515
-#>      hours        Xbox 3.88 -0.01469 0.00818 -0.03039 -0.001673
+#>      hours     GameBoy 3.88 -0.00242 0.00153 -0.00579 -0.000265
+#>      hours    GameCube 3.88 -0.00461 0.00361 -0.01050  0.000757
+#>      hours          PC 3.88  0.03299 0.01316  0.01169  0.061941
+#>      hours PlayStation 3.88 -0.00498 0.00666 -0.01740  0.005442
+#>      hours  PSPortable 3.88 -0.00858 0.00317 -0.01686 -0.002878
+#>      hours        Xbox 3.88 -0.01239 0.00710 -0.02720 -0.001858
 ```
 
 Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about 3.7 percentage points.
+probability of ranking it first by about 3.3 percentage points.
 
 ## Further reading
 

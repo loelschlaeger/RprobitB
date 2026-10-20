@@ -104,7 +104,7 @@ A `data.frame` of class `RprobitB_interpretation` with one row per
 quantity and the columns `mean`, `sd`, `lower`, and `upper` of its
 posterior distribution. Compensations have a column `effect` and, for a
 mixture model, a column `class`; marginal effects have the columns
-`covariate` and `alternative`.
+`covariate` and `alternative`, and for `type = "mea"` the column `at`.
 
 ## Compensations
 
@@ -156,20 +156,20 @@ model <- fit(
 interpret(
   model, type = "compensation", effects = c("travel_bus", "travel_air")
 )
-#> 1 `travel_bus` compensates -0.26 `vcost` (95% interval -0.451 to -0.143)
-#> 1 `travel_air` compensates -1.18 `vcost` (95% interval -2.13 to -0.57)
+#> 1 `travel_bus` compensates -0.301 `vcost` (95% interval -0.607 to -0.18)
+#> 1 `travel_air` compensates -1.42 `vcost` (95% interval -3.11 to -0.84)
 
 ### the marginal effects at the average covariates, and for a short flight
 interpret(model, type = "mea", at = c(travel_air = 40))
 #> Marginal effects at the given covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative    at      mean       sd     lower     upper
-#>      vcost         air  52.6 -0.003552 0.001247 -0.006297 -0.001661
-#>      vcost         bus  20.7 -0.001582 0.001040 -0.004136 -0.000535
-#>      vcost         car  13.0 -0.003741 0.001817 -0.007971 -0.001693
-#>      vcost       train  31.7 -0.003956 0.002487 -0.010021 -0.001285
-#>     travel         air  40.0 -0.003739 0.000325 -0.004306 -0.003128
-#>     travel         bus 629.5 -0.000359 0.000157 -0.000694 -0.000155
-#>     travel         car 573.2 -0.000742 0.000189 -0.001129 -0.000425
-#>     travel       train 608.3 -0.000819 0.000258 -0.001333 -0.000458
+#>      vcost         air  52.6 -0.002850 0.000815 -0.004317 -0.001134
+#>      vcost         bus  20.7 -0.001231 0.000669 -0.002688 -0.000240
+#>      vcost         car  13.0 -0.002450 0.000769 -0.003730 -0.000874
+#>      vcost       train  31.7 -0.002658 0.001196 -0.005184 -0.000690
+#>     travel         air  40.0 -0.003663 0.000327 -0.004232 -0.002991
+#>     travel         bus 629.5 -0.000342 0.000185 -0.000728 -0.000102
+#>     travel         car 573.2 -0.000646 0.000165 -0.000957 -0.000384
+#>     travel       train 608.3 -0.000756 0.000316 -0.001407 -0.000345
 ```

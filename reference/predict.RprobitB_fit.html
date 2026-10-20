@@ -9,7 +9,7 @@ draws and predicts the alternative with the largest mean probability."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ every row a choice occasion of its own decider.</p></dd>
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>[<code>character(1)</code>]<br>
 Which coefficients to predict with:</p><ul><li><p><code>"population"</code> integrates over the estimated population distribution
-of the random coefficients and applies to any decider.</p></li>
+of the random coefficients and latent classes and applies to any decider.</p></li>
 <li><p><code>"conditional"</code> uses the posterior random coefficients and class
 allocations of the deciders that were observed when fitting the model,
 which <code>newdata</code> must then name.</p></li>
@@ -150,42 +150,42 @@ Cambridge University Press, Cambridge.
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   deciderID .prediction probability_A probability_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B     0.2716447     0.7283553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B     0.1381003     0.8618997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A     0.7816489     0.2183511</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B     0.4160989     0.5839011</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A     0.7414271     0.2585729</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A     0.7780650     0.2219350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B     0.2339449     0.7660551</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B     0.1165867     0.8834133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A     0.8158130     0.1841870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B     0.3933205     0.6066795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A     0.7786822     0.2213178</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A     0.8126050     0.1873950</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"conditional"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   deciderID .prediction probability_A probability_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B     0.3317774     0.6682226</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B     0.0743488     0.9256512</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A     0.8276006     0.1723994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B     0.4118027     0.5881973</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A     0.7659119     0.2340881</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A     0.8195899     0.1804101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B    0.33861304     0.6613870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B    0.04162912     0.9583709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A    0.87322328     0.1267767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B    0.38083540     0.6191646</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A    0.83490952     0.1650905</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A    0.87691676     0.1230832</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, uncertainty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   deciderID .prediction probability_A probability_B       sd_A       sd_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B     0.2716447     0.7283553 0.08554722 0.08554722</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B     0.1381003     0.8618997 0.11074690 0.11074690</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A     0.7816489     0.2183511 0.09953263 0.09953263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B     0.4160989     0.5839011 0.03427251 0.03427251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A     0.7414271     0.2585729 0.08931334 0.08931334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A     0.7780650     0.2219350 0.09871652 0.09871652</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      lower_A    lower_B   upper_A   upper_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.13559732 0.57757557 0.4224244 0.8644027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.01138985 0.61909101 0.3809090 0.9886102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.59434396 0.07155514 0.9284449 0.4056560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.35737357 0.52629718 0.4737028 0.6426264</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.58216748 0.11876899 0.8812310 0.4178325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.59327933 0.07548036 0.9245196 0.4067207</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1           B     0.2339449     0.7660551 0.09173230 0.09173230</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2           B     0.1165867     0.8834133 0.10253290 0.10253290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         3           A     0.8158130     0.1841870 0.09909139 0.09909139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         4           B     0.3933205     0.6066795 0.04492932 0.04492932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         5           A     0.7786822     0.2213178 0.09398348 0.09398348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         6           A     0.8126050     0.1873950 0.09874129 0.09874129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       lower_A    lower_B   upper_A   upper_B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.077389421 0.57827805 0.4217219 0.9226106</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.003576592 0.61116874 0.3888313 0.9964234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.591543731 0.03369682 0.9663032 0.4084563</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.301614977 0.52965708 0.4703429 0.6983850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.581647759 0.06451891 0.9354811 0.4183522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.590683220 0.03593066 0.9640693 0.4093168</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### new choice occasions</span></span></span>
 <span class="r-in"><span><span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>deciderID <span class="op">=</span> <span class="fl">21</span><span class="op">:</span><span class="fl">22</span>, x_A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, x_B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   deciderID .prediction probability_A probability_B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        21           A     0.7608952     0.2391048</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        22           B     0.2391048     0.7608952</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        21           A      0.796969      0.203031</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        22           B      0.203031      0.796969</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -193,7 +193,7 @@ Cambridge University Press, Cambridge.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

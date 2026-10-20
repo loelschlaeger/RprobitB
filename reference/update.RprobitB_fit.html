@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,9 +81,9 @@ stands for the choice data of <code>object</code>.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Arguments that are not specified are taken from <code>object</code>.</p>
-<p>The model formula is updated part by part, so <code>. ~ . + income</code> extends the
-covariates that are constant across alternatives and leaves the other two
-formula parts unchanged.</p>
+<p>The model formula is updated part by part, so <code>. ~ . | . + income</code> extends
+the covariates that are constant across alternatives and leaves the other
+two formula parts unchanged.</p>
 <p>The choice data of <code>object</code> are reused, also if they were simulated, which
 makes the updated model comparable to <code>object</code>. Supply <code>data</code> to fit the
 updated model to other choice data.</p>
@@ -101,9 +101,9 @@ updated model to other choice data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bayesian probit choice model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formula: choice ~ x + y | 0 | 0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples: 500 retained per chain, 1 chain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  variable  dgp   mean   mode    sd  rhat ess_bulk</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x]  1.0  0.913  0.950 0.174 1.002     55.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[y] -0.5 -0.573 -0.518 0.138 0.998     80.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  variable  dgp   mean   mode    sd rhat ess_bulk</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x]  1.0  0.972  0.894 0.181 1.03     29.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[y] -0.5 -0.588 -0.661 0.139 1.02     65.5</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### drop `y` from the formula, the other formula parts stay as they are</span></span></span>
 <span class="r-in"><span><span class="va">model_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">.</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span></span></span>
@@ -111,8 +111,8 @@ updated model to other choice data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bayesian probit choice model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formula: choice ~ x | 0 | 0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples: 500 retained per chain, 1 chain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  variable  mean mode   sd rhat ess_bulk</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x] 0.754 0.76 0.13 1.06     50.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  variable  mean mode    sd rhat ess_bulk</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   beta[x] 0.726 0.74 0.148 1.03     64.4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### let the coefficient of `x` vary across deciders instead</span></span></span>
 <span class="r-in"><span><span class="va">model_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">model</span>, random_effects <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span></span></span>
@@ -121,9 +121,9 @@ updated model to other choice data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formula: choice ~ x + y | 0 | 0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Samples: 500 retained per chain, 1 chain</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    variable   mean   mode    sd rhat ess_bulk</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     beta[y] -0.692 -0.672 0.176 1.01    48.98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       mu[x]  1.186  1.116 0.279 1.26     3.44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Omega[x,x]  0.618  0.347 0.507 1.25     4.42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     beta[y] -0.793 -0.573 0.306 1.21     3.90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       mu[x]  1.375  1.066 0.502 1.37     2.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Omega[x,x]  1.036  0.296 1.347 1.35     4.69</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -131,7 +131,7 @@ updated model to other choice data.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -9,7 +9,7 @@ utilities, and ordered-response thresholds."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@ Prior scale matrix for the error covariance.</p></dd>
 
 <dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>[<code>integer(1)</code>]<br>
-Number of independent sampling units.</p></dd>
+Number of residual vectors summed in the scatter matrix <code>S</code>.</p></dd>
 
 
 <dt id="arg-s">S<a class="anchor" aria-label="anchor" href="#arg-s"></a></dt>
@@ -147,7 +147,7 @@ utility matrices.</p></li>
 <li><p><code>d_to_gamma()</code>: a numeric column matrix containing ordered thresholds
 and their infinite bounds.</p></li>
 <li><p><code>log_likelihood_ordered()</code>: one numeric log-likelihood value.</p></li>
-<li><p><code>update_d()</code>: a numeric vector of updated log-increments.</p></li>
+<li><p><code>update_d()</code>: a <code>J - 2</code> by 1 numeric matrix of updated log-increments.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -211,7 +211,7 @@ and their infinite bounds.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -1,6 +1,28 @@
 # Changelog
 
+## RprobitB 2.0.1
+
+- [`bayes_factor()`](https://loelschlaeger.de/RprobitB/reference/bayes_factor.md)
+  now accepts models with a fixed number of up to six latent classes.
+
+- Ordered choice models now include an intercept by default.
+
+- The occupancy table of
+  [`latent_class_diagnostics()`](https://loelschlaeger.de/RprobitB/reference/latent_class_diagnostics.md)
+  lists every number of classes from one to the maximum, including
+  numbers with probability zero.
+
+- Every chain starts at a draw from the prior distributions of the
+  coefficients and thresholds, with the deciders allocated to the
+  classes at random, instead of at the prior means, so that the chains
+  start dispersed.
+
+- Cap the progress updates to prevent that many fast updates freeze the
+  RStudio console.
+
 ## RprobitB 2.0.0
+
+CRAN release: 2026-09-20
 
 - Replaced the former multi-step workflow with
   [`fit()`](https://loelschlaeger.de/RprobitB/reference/fit.md), which

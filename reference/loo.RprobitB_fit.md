@@ -41,7 +41,7 @@ loo(x, ghk_draws = 500L, progress = interactive(), ...)
 
 A `psis_loo` object from [**loo**](https://mc-stan.org/loo/). It
 contains estimates and standard errors as well as one Pareto-k
-diagnostic per independent likelihood unit.
+diagnostic per decider.
 
 ## References
 
@@ -68,9 +68,9 @@ loo(model)
 #> Computed from 500 by 100 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo   -185.5 12.2
-#> p_loo         0.8  0.2
-#> looic       371.0 24.3
+#> elpd_loo   -185.5 12.1
+#> p_loo         0.7  0.2
+#> looic       371.0 24.1
 #> ------
 #> MCSE of elpd_loo is 0.0.
 #> MCSE and ESS estimates assume independent draws (r_eff=1).

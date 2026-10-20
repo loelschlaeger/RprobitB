@@ -52,7 +52,10 @@ A `summary.RprobitB_fit` object.
 ## Details
 
 Every statistic describes the marginal posterior of one variable and is
-computed from the retained draws of all chains:
+computed from the retained draws of all chains. For a class that is
+empty in some draws, the column `occupied` gives the share of draws in
+which it is occupied, `mcse_*`, `rhat`, and `ess_*` are `NA`, and the
+other statistics use only these draws. The statistics are:
 
 - `mean`: the average of the draws, the usual point estimate.
 
@@ -67,8 +70,8 @@ computed from the retained draws of all chains:
   of the parameter.
 
 - `q<100 * p>`: the quantile of probability `p`. With
-  `probs = c(0.025, 0.975)`, the two columns are the limits of the 95%
-  credible interval.
+  `probs = c(0.025, 0.975)`, the two columns are the limits of the
+  equal-tailed 95% credible interval.
 
 - `mcse_mean`, `mcse_median`, `mcse_sd`: the Monte Carlo standard errors
   of the mean, median, and standard deviation, the sampling error of
@@ -76,12 +79,12 @@ computed from the retained draws of all chains:
   below a tenth of `sd`; larger values mean that the reported digits are
   not yet reliable and the sampler should run longer.
 
-- `rhat`: the rank-normalized, folded split-R-hat of Vehtari et al.
-  (2021). It compares the variance between the halves of all chains with
-  the variance within them. With a single chain, it compares the two
-  halves of that chain. Good values are at most 1.01; larger values mean
-  that the chains have not mixed and the sampler should run longer, see
-  `plot(type = "trace")`.
+- `rhat`: the larger of the rank-normalized split-R-hat and its folded
+  version of Vehtari et al. (2021). It compares the variance between the
+  halves of all chains with the variance within them. With a single
+  chain, it compares the two halves of that chain. Good values are at
+  most 1.01; larger values indicate that the chains have not mixed and
+  the sampler should run longer, see `plot(type = "trace")`.
 
 - `ess_bulk`: the effective sample size for the center of the posterior,
   the number of independent draws that carry the same information as the
@@ -89,9 +92,9 @@ computed from the retained draws of all chains:
   values mean that the sampler should run longer.
 
 - `ess_tail`: the smaller of the effective sample sizes of the 5% and
-  95% quantiles. It governs the precision of quantiles, credible
-  intervals, and the standard deviation. The same rule applies: at least
-  100 per chain is good.
+  95% quantiles. It governs the precision of extreme quantiles and
+  credible intervals. The same rule applies: at least 100 per chain is
+  good.
 
 ## References
 
@@ -113,5 +116,5 @@ summary(model)
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>  variable dgp mean mode    sd rhat ess_bulk
-#>   beta[x]   1  1.4  1.5 0.243 1.11     21.2
+#>   beta[x]   1  1.4 1.49 0.245 1.12     21.1
 ```

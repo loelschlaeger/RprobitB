@@ -80,9 +80,9 @@ each.
 ``` r
 
 logLik(full_model)
-#> 'log Lik.' -175.5503 (df=17)
+#> 'log Lik.' -175.7391 (df=17)
 logLik(reduced_model)
-#> 'log Lik.' -238.4357 (df=8)
+#> 'log Lik.' -238.2957 (df=8)
 ```
 
 The log-likelihood values can be used to compute AIC and BIC, but it
@@ -112,23 +112,23 @@ WAIC(full_model)
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -193.7 15.9
-#> p_waic        19.0  3.6
-#> waic         387.4 31.7
+#> elpd_waic   -194.9 15.9
+#> p_waic        20.3  3.6
+#> waic         389.8 31.7
 #> 
 #> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 WAIC(reduced_model)
 #> Warning: 
-#> 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -240.3  9.0
-#> p_waic        12.6  1.8
-#> waic         480.6 18.1
+#> elpd_waic   -240.6  9.0
+#> p_waic        13.7  1.9
+#> waic         481.2 18.0
 #> 
-#> 8 (3.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 ```
 
 The **loo** package warns when the contribution of a decider to `p_waic`
@@ -146,24 +146,23 @@ whose choices have low probability under the model ([Vehtari et al.
 loo_full <- loo(full_model)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_reduced <- loo(reduced_model)
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_full
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo   -194.1 15.9
-#> p_loo        19.4  3.7
-#> looic       388.1 31.8
+#> elpd_loo   -195.3 15.9
+#> p_loo        20.6  3.7
+#> looic       390.6 31.9
 #> ------
 #> MCSE of elpd_loo is NA.
 #> MCSE and ESS estimates assume independent draws (r_eff=1).
 #> 
 #> Pareto k diagnostic values:
 #>                           Count Pct.    Min. ESS
-#> (-Inf, 0.57]   (good)     202   96.2%   26      
-#>    (0.57, 1]   (bad)        8    3.8%   <NA>    
-#>     (1, Inf)   (very bad)   0    0.0%   <NA>    
+#> (-Inf, 0.57]   (good)     203   96.7%   54      
+#>    (0.57, 1]   (bad)        6    2.9%   <NA>    
+#>     (1, Inf)   (very bad)   1    0.5%   <NA>    
 #> See help('pareto-k-diagnostic') for details.
 ```
 
@@ -186,8 +185,8 @@ with its standard error.
 
 loo::loo_compare(loo_full, loo_reduced)
 #>   model elpd_diff se_diff p_worse diag_diff       diag_elpd
-#>  model1       0.0     0.0      NA           8 k_psis > 0.57
-#>  model2     -46.2    10.6    1.00           1 k_psis > 0.57
+#>  model1       0.0     0.0      NA           7 k_psis > 0.57
+#>  model2     -45.4    10.5    1.00
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -211,7 +210,23 @@ favor the first model.
 
 set.seed(1)
 bayes_factor(full_model, reduced_model, log = TRUE)
-#> Estimated log Bayes factor in favor of model1 over model2: 25.54224
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Estimated log Bayes factor in favor of model1 over model2: 21.24877
 ```
 
 The large positive log Bayes factor also favors the full model.
@@ -252,8 +267,8 @@ loo_random <- loo(train_random, progress = FALSE)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo::loo_compare(loo_fixed, loo_random)
 #>   model elpd_diff se_diff p_worse diag_diff      diag_elpd
-#>  model2       0.0     0.0      NA           6 k_psis > 0.5
-#>  model1     -67.4    17.0    1.00           7 k_psis > 0.5
+#>  model2       0.0     0.0      NA           2 k_psis > 0.5
+#>  model1     -67.5    17.0    1.00           2 k_psis > 0.5
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -270,27 +285,28 @@ improves the prediction of a traveler’s choices.
 The criteria are not specific to unordered choices. The ordered model of
 the vignette [Model specification and
 variants](https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html)
-asked whether older students smoke less; the comparison below asks
-whether the exercise dummies improve the prediction.
+relates how much a student smokes to age and exercise; the comparison
+below asks whether the exercise dummies improve the prediction.
 
 ``` r
 
 data("survey", package = "MASS")
 smoking_full <- fit(
-  Smoke ~ Age + Exer | 0,
+  Smoke ~ Age + Exer,
   data = survey,
   alternatives = c("Never", "Occas", "Regul", "Heavy"),
   choice_type = "ordered",
   column_decider = NULL,
   chains = 1
 )
-smoking_age <- update(smoking_full, . ~ Age | 0)
+smoking_age <- update(smoking_full, . ~ Age)
 loo::loo_compare(
   loo(smoking_full, progress = FALSE), loo(smoking_age, progress = FALSE)
 )
-#>   model elpd_diff se_diff p_worse       diag_diff diag_elpd
-#>  model1       0.0     0.0      NA                          
-#>  model2      -1.5     2.7    0.71 |elpd_diff| < 4
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
+#>   model elpd_diff se_diff p_worse       diag_diff       diag_elpd
+#>  model2       0.0     0.0      NA                                
+#>  model1      -0.5     1.8    0.62 |elpd_diff| < 4 1 k_psis > 0.63
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)

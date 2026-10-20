@@ -27,7 +27,7 @@ Both are reported with their posterior uncertainty."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">RprobitB</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -158,7 +158,7 @@ Number of significant digits to print.</p></dd>
 quantity and the columns <code>mean</code>, <code>sd</code>, <code>lower</code>, and <code>upper</code> of its
 posterior distribution. Compensations have a column <code>effect</code> and, for a
 mixture model, a column <code>class</code>; marginal effects have the columns
-<code>covariate</code> and <code>alternative</code>.</p>
+<code>covariate</code> and <code>alternative</code>, and for <code>type = "mea"</code> the column <code>at</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="compensations">Compensations<a class="anchor" aria-label="anchor" href="#compensations"></a></h2>
@@ -209,22 +209,22 @@ the average of the covariates.</p></li>
 <span class="r-in"><span><span class="fu">interpret</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">model</span>, type <span class="op">=</span> <span class="st">"compensation"</span>, effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"travel_bus"</span>, <span class="st">"travel_air"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 `travel_bus` compensates -0.26 `vcost` (95% interval -0.451 to -0.143)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 `travel_air` compensates -1.18 `vcost` (95% interval -2.13 to -0.57)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 `travel_bus` compensates -0.301 `vcost` (95% interval -0.607 to -0.18)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 `travel_air` compensates -1.42 `vcost` (95% interval -3.11 to -0.84)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### the marginal effects at the average covariates, and for a short flight</span></span></span>
 <span class="r-in"><span><span class="fu">interpret</span><span class="op">(</span><span class="va">model</span>, type <span class="op">=</span> <span class="st">"mea"</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>travel_air <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Marginal effects at the given covariate values</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Change in the probability of the alternative per unit of the covariate, with 95% interval </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  covariate alternative    at      mean       sd     lower     upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         air  52.6 -0.003552 0.001247 -0.006297 -0.001661</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         bus  20.7 -0.001582 0.001040 -0.004136 -0.000535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         car  13.0 -0.003741 0.001817 -0.007971 -0.001693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost       train  31.7 -0.003956 0.002487 -0.010021 -0.001285</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         air  40.0 -0.003739 0.000325 -0.004306 -0.003128</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         bus 629.5 -0.000359 0.000157 -0.000694 -0.000155</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         car 573.2 -0.000742 0.000189 -0.001129 -0.000425</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     travel       train 608.3 -0.000819 0.000258 -0.001333 -0.000458</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         air  52.6 -0.002850 0.000815 -0.004317 -0.001134</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         bus  20.7 -0.001231 0.000669 -0.002688 -0.000240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost         car  13.0 -0.002450 0.000769 -0.003730 -0.000874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      vcost       train  31.7 -0.002658 0.001196 -0.005184 -0.000690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         air  40.0 -0.003663 0.000327 -0.004232 -0.002991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         bus 629.5 -0.000342 0.000185 -0.000728 -0.000102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     travel         car 573.2 -0.000646 0.000165 -0.000957 -0.000384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     travel       train 608.3 -0.000756 0.000316 -0.001407 -0.000345</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -232,7 +232,7 @@ the average of the covariates.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>.</p>
+  <p>Developed by <a href="https://loelschlaeger.de" class="external-link">Lennart Oelschläger</a>, <a href="https://de.wikipedia.org/wiki/Dietmar_Bauer" class="external-link">Dietmar Bauer</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

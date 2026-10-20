@@ -42,9 +42,9 @@ is `FALSE`.
 
 Arguments that are not specified are taken from `object`.
 
-The model formula is updated part by part, so `. ~ . + income` extends
-the covariates that are constant across alternatives and leaves the
-other two formula parts unchanged.
+The model formula is updated part by part, so `. ~ . | . + income`
+extends the covariates that are constant across alternatives and leaves
+the other two formula parts unchanged.
 
 The choice data of `object` are reused, also if they were simulated,
 which makes the updated model comparable to `object`. Supply `data` to
@@ -63,9 +63,9 @@ summary(model)
 #> Bayesian probit choice model
 #> Formula: choice ~ x + y | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>  variable  dgp   mean   mode    sd  rhat ess_bulk
-#>   beta[x]  1.0  0.913  0.950 0.174 1.002     55.3
-#>   beta[y] -0.5 -0.573 -0.518 0.138 0.998     80.2
+#>  variable  dgp   mean   mode    sd rhat ess_bulk
+#>   beta[x]  1.0  0.972  0.894 0.181 1.03     29.2
+#>   beta[y] -0.5 -0.588 -0.661 0.139 1.02     65.5
 
 ### drop `y` from the formula, the other formula parts stay as they are
 model_2 <- update(model, . ~ . - y)
@@ -73,8 +73,8 @@ summary(model_2)
 #> Bayesian probit choice model
 #> Formula: choice ~ x | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
-#>  variable  mean mode   sd rhat ess_bulk
-#>   beta[x] 0.754 0.76 0.13 1.06     50.4
+#>  variable  mean mode    sd rhat ess_bulk
+#>   beta[x] 0.726 0.74 0.148 1.03     64.4
 
 ### let the coefficient of `x` vary across deciders instead
 model_3 <- update(model, random_effects = "x")
@@ -83,7 +83,7 @@ summary(model_3)
 #> Formula: choice ~ x + y | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>    variable   mean   mode    sd rhat ess_bulk
-#>     beta[y] -0.692 -0.672 0.176 1.01    48.98
-#>       mu[x]  1.186  1.116 0.279 1.26     3.44
-#>  Omega[x,x]  0.618  0.347 0.507 1.25     4.42
+#>     beta[y] -0.793 -0.573 0.306 1.21     3.90
+#>       mu[x]  1.375  1.066 0.502 1.37     2.35
+#>  Omega[x,x]  1.036  0.296 1.347 1.35     4.69
 ```

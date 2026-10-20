@@ -1,9 +1,8 @@
 # Compare models with a Bayes factor
 
-Estimates both marginal likelihoods with bridge sampling and compares
-the first model with the second model using
-[`bridgesampling::bridge_sampler()`](https://rdrr.io/pkg/bridgesampling/man/bridge_sampler.html)
-and
+Estimates both marginal likelihoods with bridge sampling (Meng and Wong
+1996; Frühwirth-Schnatter 2004) and compares the first model with the
+second model using
 [`bridgesampling::bf()`](https://rdrr.io/pkg/bridgesampling/man/bf.html).
 
 ## Usage
@@ -34,7 +33,7 @@ bayes_factor(
 - repetitions:
 
   \[`integer(1)`\]  
-  Number of independent bridge-sampling repetitions.
+  Number of bridge-sampling repetitions.
 
 - ghk_draws:
 
@@ -52,14 +51,38 @@ bayes_factor(
 
 A `bf_bridge` object from
 [**bridgesampling**](https://CRAN.R-project.org/package=bridgesampling).
-Values greater than one favor `model1`; values below one favor `model2`.
+Values greater than one (zero if `log = TRUE`) favor `model1`; smaller
+values favor `model2`.
 
 ## References
+
+Meng X, Wong WH (1996). “Simulating Ratios of Normalizing Constants via
+a Simple Identity: A Theoretical Exploration.” *Statistica Sinica*,
+**6**(4), 831–860.
+<https://www3.stat.sinica.edu.tw/statistica/j6n4/j6n43/j6n43.htm>.
+
+Frühwirth-Schnatter S (2004). “Estimating Marginal Likelihoods for
+Mixture and Markov Switching Models Using Bridge Sampling Techniques.”
+*The Econometrics Journal*, **7**(1), 143–167.
+[doi:10.1111/j.1368-423X.2004.00125.x](https://doi.org/10.1111/j.1368-423X.2004.00125.x)
+.
 
 Gronau QF, Singmann H, Wagenmakers E (2020). “bridgesampling: An R
 Package for Estimating Normalizing Constants.” *Journal of Statistical
 Software*, **92**(10), 1–29.
 [doi:10.18637/jss.v092.i10](https://doi.org/10.18637/jss.v092.i10) .
+
+Celeux G, Frühwirth-Schnatter S, Robert CP (2019). “Model Selection for
+Mixture Models – Perspectives and Strategies.” In Frühwirth-Schnatter S,
+Celeux G, Robert CP (eds.), *Handbook of Mixture Analysis*, 117–154.
+Chapman and Hall/CRC.
+[doi:10.1201/9780429055911-7](https://doi.org/10.1201/9780429055911-7) .
+
+Frühwirth-Schnatter S (2019). “Keeping the Balance – Bridge Sampling for
+Marginal Likelihood Estimation in Finite Mixture, Mixture of Experts and
+Markov Mixture Models.” *Brazilian Journal of Probability and
+Statistics*, **33**(4), 706–733.
+[doi:10.1214/19-BJPS446](https://doi.org/10.1214/19-BJPS446) .
 
 ## Examples
 
@@ -84,5 +107,5 @@ misspecified_model <- fit(
 
 ### A Bayes factor greater than one favors the correct first model
 bayes_factor(correct_model, misspecified_model)
-#> Estimated Bayes factor in favor of model1 over model2: 8.13416
+#> Estimated Bayes factor in favor of model1 over model2: 8.12778
 ```
