@@ -17,7 +17,7 @@ alternatives through the utility a decider attaches to each of them.
 **RprobitB** estimates such models in a Bayesian probit framework, for
 binary, multinomial, ordered, and ranked responses, observed once per
 decider or repeatedly in panel data. Preferences may vary across the
-population, either through random coefficients or latent classes. The
+population, through random coefficients, latent classes, or both. The
 posterior draws obtained from the Gibbs sampler support choice
 prediction, marginal effects, and model comparison by information
 criteria and Bayes factors.
@@ -87,11 +87,11 @@ summary(train_model)
 #> Samples: 500 retained per chain, 4 chains
 #> 
 #>                variable   mean   mode      sd rhat ess_bulk
-#>             beta[price] -0.197 -0.199 0.00895 1.00      437
-#>              beta[time] -1.052 -1.052 0.09190 1.00      652
-#>            beta[change] -0.202 -0.207 0.03463 1.00      748
-#>  beta[factor(comfort)1] -0.397 -0.398 0.04403 1.00      672
-#>  beta[factor(comfort)2] -1.335 -1.344 0.07909 1.01      602
+#>             beta[price] -0.195 -0.195 0.00891 1.00      477
+#>              beta[time] -1.052 -1.054 0.09191 1.00      635
+#>            beta[change] -0.202 -0.205 0.03546 1.00      714
+#>  beta[factor(comfort)1] -0.397 -0.402 0.04602 1.01      685
+#>  beta[factor(comfort)2] -1.331 -1.325 0.08050 1.00      678
 ```
 
 `plot()` displays the results via
@@ -111,18 +111,18 @@ coefficients can be interpreted as trade-offs:
 ``` r
 compensation <- interpret(train_model, reference = "price")
 compensation
-#> 1 `time` compensates -5.35 `price` (95% interval -6.14 to -4.53)
-#> 1 `change` compensates -1.03 `price` (95% interval -1.35 to -0.698)
-#> 1 `factor(comfort)1` compensates -2.02 `price` (95% interval -2.44 to -1.6)
-#> 1 `factor(comfort)2` compensates -6.8 `price` (95% interval -7.57 to -6.05)
+#> 1 `time` compensates -5.38 `price` (95% interval -6.22 to -4.55)
+#> 1 `change` compensates -1.04 `price` (95% interval -1.39 to -0.679)
+#> 1 `factor(comfort)1` compensates -2.03 `price` (95% interval -2.46 to -1.58)
+#> 1 `factor(comfort)2` compensates -6.82 `price` (95% interval -7.62 to -6.04)
 ```
 
 Read this way, deciders would pay
 
-- 5.35 euro to save one hour of travel time,
-- 1.03 euro to avoid one change of train,
-- 2.02 euro for the highest comfort class instead of the middle one, and
-- 6.8 euro for the highest comfort class instead of the lowest.
+- 5.38 euro to save one hour of travel time,
+- 1.04 euro to avoid one change of train,
+- 2.03 euro for the highest comfort class instead of the middle one, and
+- 6.82 euro for the highest comfort class instead of the lowest.
 
 The fitted model can also be used to predict choices for trips that the
 data do not contain. Below, trip `"B"` saves an hour over trip `"A"` and
@@ -137,12 +137,12 @@ scenario <- data.frame(
 )
 predict(train_model, newdata = scenario)
 #>   id choiceid .prediction probability_A probability_B
-#> 1  1        1           B     0.2557624     0.7442376
-#> 2  2        1           B     0.4725960     0.5274040
-#> 3  3        1           A     0.6980868     0.3019132
+#> 1  1        1           B     0.2551518     0.7448482
+#> 2  2        1           B     0.4703257     0.5296743
+#> 3  3        1           A     0.6947358     0.3052642
 ```
 
-The prediction turns where the premium passes the 5.35 euro that the
+The prediction turns where the premium passes the 5.38 euro that the
 hour is worth: the faster trip is the predicted choice at 2 euro, the
 two are almost tied at 5 euro, and the slower trip wins at 8 euro.
 
@@ -154,7 +154,7 @@ same data, and `bayes_factor()` compares the two:
 train_model_small <- update(train_model, . ~ price) # using only price
 comparison <- bayes_factor(train_model, train_model_small, log = TRUE)
 comparison
-#> Estimated log Bayes factor in favor of model1 over model2: 150.68432
+#> Estimated log Bayes factor in favor of model1 over model2: 150.68215
 ```
 
 The log Bayes factor of 151 is decisive: travel time, changes, and
@@ -197,8 +197,8 @@ Five vignettes cover the details:
   covers model comparison via WAIC, PSIS-LOO, and Bayes factors.
 
 Posterior draws are stored in the
-[**posterior**](https://mc-stan.org/posterior/) format. Chains run in
-parallel through a [**future**](https://doi.org/10.32614/RJ-2021-048)
+[**posterior**](https://mc-stan.org/posterior/) format. Chains can run
+in parallel through a [**future**](https://doi.org/10.32614/RJ-2021-048)
 plan. The examples use data sets of the
 [**mlogit**](https://CRAN.R-project.org/package=mlogit),
 [**AER**](https://CRAN.R-project.org/package=AER),
@@ -210,18 +210,19 @@ which are introduced in the vignettes.
 
 ``` r
 citation("RprobitB")
-#> Um Paket 'RprobitB' in Publikationen zu zitieren, nutzen Sie bitte:
+#> To cite package 'RprobitB' in publications use:
 #> 
-#>   Oelschläger L (2026). _RprobitB: Bayesian Probit Choice Modeling_. R
-#>   package version 2.0.0, <https://loelschlaeger.de/RprobitB/>.
+#>   Oelschläger L, Bauer D (2026). _RprobitB: Bayesian Probit Choice
+#>   Modeling_. R package version 2.0.1,
+#>   <https://loelschlaeger.de/RprobitB/>.
 #> 
-#> Ein BibTeX-Eintrag für LaTeX-Benutzer ist
+#> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {RprobitB: Bayesian Probit Choice Modeling},
-#>     author = {Lennart Oelschläger},
+#>     author = {Lennart Oelschläger and Dietmar Bauer},
 #>     year = {2026},
-#>     note = {R package version 2.0.0},
+#>     note = {R package version 2.0.1},
 #>     url = {https://loelschlaeger.de/RprobitB/},
 #>   }
 ```
@@ -230,6 +231,6 @@ The broader methodological foundation is described in Oelschläger
 (2026), *Overcoming Challenges in Modeling Choice Behavior
 Heterogeneity*, doctoral dissertation, Bielefeld University,
 <https://pub.uni-bielefeld.de/record/3014719>. The latent-class mixed
-multinomial probit model is introduced in Oelschläger and Bauer (2021),
+multinomial probit model is described in Oelschläger and Bauer (2021),
 *Bayes Estimation of Latent Class Mixed Multinomial Probit Models*, TRB
 Annual Meeting 2021, <https://trid.trb.org/view/1759753>.

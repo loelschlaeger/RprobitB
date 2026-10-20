@@ -24,7 +24,10 @@
 #'
 #' @details
 #' Every statistic describes the marginal posterior of one variable and is
-#' computed from the retained draws of all chains:
+#' computed from the retained draws of all chains. For a class that is empty
+#' in some draws, the column `occupied` gives the share of draws in which it
+#' is occupied, `mcse_*`, `rhat`, and `ess_*` are `NA`, and the other
+#' statistics use only these draws. The statistics are:
 #'
 #' - `mean`: the average of the draws, the usual point estimate.
 #' - `median`: the median value of the draws. If it differs clearly from the
@@ -35,17 +38,18 @@
 #' - `sd`: the standard deviation of the draws, the posterior uncertainty of
 #'   the parameter.
 #' - `q<100 * p>`: the quantile of probability `p`. With
-#'   `probs = c(0.025, 0.975)`, the two columns are the limits of the 95%
-#'   credible interval.
+#'   `probs = c(0.025, 0.975)`, the two columns are the limits of the
+#'   equal-tailed 95% credible interval.
 #' - `mcse_mean`, `mcse_median`, `mcse_sd`: the Monte Carlo standard errors
 #'   of the mean, median, and standard deviation, the sampling error of
 #'   these estimates that more iterations would reduce. Good values are
 #'   below a tenth of `sd`; larger values mean that the reported digits are
 #'   not yet reliable and the sampler should run longer.
-#' - `rhat`: the rank-normalized, folded split-R-hat of Vehtari et al.
-#'   (2021). It compares the variance between the halves of all chains with
+#' - `rhat`: the larger of the rank-normalized split-R-hat and its folded
+#'   version of Vehtari et al. (2021). It compares the variance between
+#'   the halves of all chains with
 #'   the variance within them. With a single chain, it compares the two
-#'   halves of that chain. Good values are at most 1.01; larger values mean
+#'   halves of that chain. Good values are at most 1.01; larger values indicate
 #'   that the chains have not mixed and the sampler should run longer, see
 #'   `plot(type = "trace")`.
 #' - `ess_bulk`: the effective sample size for the center of the posterior,
@@ -53,8 +57,8 @@
 #'   correlated draws. Good values are at least 100 per chain; smaller values
 #'   mean that the sampler should run longer.
 #' - `ess_tail`: the smaller of the effective sample sizes of the 5% and 95%
-#'   quantiles. It governs the precision of quantiles, credible intervals,
-#'   and the standard deviation. The same rule applies: at least 100 per
+#'   quantiles. It governs the precision of extreme quantiles and credible
+#'   intervals. The same rule applies: at least 100 per
 #'   chain is good.
 #'
 #' @references
@@ -286,12 +290,11 @@ print.summary.RprobitB_fit <- function(x, digits = 3L, ...) {
 #'   `probability`, with one row for every number of classes from one to the
 #'   maximum number of classes of the model. It gives the share of draws in
 #'   which exactly `n_classes` classes contain at least one decider, so it
-#'   answers how many classes the data support. For a fixed mixture, the
-#'   number of classes is fixed, and the table shows how often one of them
-#'   stays empty.
+#'   indicates how many classes the data support under the chosen prior. For
+#'   a fixed mixture, the sampler keeps all classes occupied.
 #' - `co_clustering`: a square matrix with one row and one column per
 #'   decider. Entry `[i, j]` is the share of draws in which deciders `i` and
-#'   `j` are in the same class, so it answers whether two deciders behave
+#'   `j` are in the same class, so it indicates whether two deciders behave
 #'   alike. It does not depend on how the classes are labeled.
 #' - `membership`: a matrix with one row per decider and one column per
 #'   class, `class_1` to `class_<maximum>`. Entry `[i, k]` is the share of

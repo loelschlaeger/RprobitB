@@ -28,7 +28,7 @@ alternatives through the utility a decider attaches to each of them.
 **RprobitB** estimates such models in a Bayesian probit framework, for
 binary, multinomial, ordered, and ranked responses, observed once per
 decider or repeatedly in panel data. Preferences may vary across the
-population, either through random coefficients or latent classes. The posterior 
+population, through random coefficients, latent classes, or both. The posterior 
 draws obtained from the Gibbs sampler support choice prediction, marginal 
 effects, and model comparison by information criteria and Bayes factors.
 
@@ -172,10 +172,11 @@ Five vignettes cover the details:
   covers model comparison via WAIC, PSIS-LOO, and Bayes factors.
 
 Posterior draws are stored in the
-[**posterior**](https://mc-stan.org/posterior/) format. Chains run in parallel 
-through a [**future**](https://doi.org/10.32614/RJ-2021-048) plan. The examples 
-use data sets of the [**mlogit**](https://CRAN.R-project.org/package=mlogit),
-[**AER**](https://CRAN.R-project.org/package=AER), 
+[**posterior**](https://mc-stan.org/posterior/) format. Chains can run in
+parallel through a [**future**](https://doi.org/10.32614/RJ-2021-048) plan. The
+examples use data sets of the
+[**mlogit**](https://CRAN.R-project.org/package=mlogit),
+[**AER**](https://CRAN.R-project.org/package=AER),
 [**MASS**](https://CRAN.R-project.org/package=MASS), and
 [**choicedata**](https://github.com/loelschlaeger/choicedata) packages, which
 are introduced in the vignettes.
@@ -190,6 +191,6 @@ The broader methodological foundation is described in Oelschläger (2026),
 *Overcoming Challenges in Modeling Choice Behavior Heterogeneity*, doctoral
 dissertation, Bielefeld University,
 <https://pub.uni-bielefeld.de/record/3014719>. The latent-class mixed
-multinomial probit model is introduced in Oelschläger and Bauer (2021),
+multinomial probit model is described in Oelschläger and Bauer (2021),
 *Bayes Estimation of Latent Class Mixed Multinomial Probit Models*, TRB
 Annual Meeting 2021, <https://trid.trb.org/view/1759753>.

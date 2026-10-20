@@ -329,11 +329,11 @@ transform_chain_draws <- function(
     position <- (scale$index - 1L) * (J - 1L) + scale$index
     utility_scale <- sqrt(scale$value / samples$Sigma[, position])
   }
-  if (any(lognormal) && any(!is.finite(utility_scale) | utility_scale <= 0)) {
+  if (any(!is.finite(utility_scale) | utility_scale <= 0)) {
     cli::cli_abort(
       paste(
-        "Log-normal random effects require a positive utility-scale",
-        "normalization."
+        "The coefficient fixed in {.arg scale} must have the sign of its value",
+        "in every draw."
       ),
       call = NULL
     )

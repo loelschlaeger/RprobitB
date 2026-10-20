@@ -141,9 +141,9 @@ nobs.RprobitB_fit <- function(object, ...) {
 #' @details
 #' Arguments that are not specified are taken from `object`.
 #'
-#' The model formula is updated part by part, so `. ~ . + income` extends the
-#' covariates that are constant across alternatives and leaves the other two
-#' formula parts unchanged.
+#' The model formula is updated part by part, so `. ~ . | . + income` extends
+#' the covariates that are constant across alternatives and leaves the other
+#' two formula parts unchanged.
 #'
 #' The choice data of `object` are reused, also if they were simulated, which
 #' makes the updated model comparable to `object`. Supply `data` to fit the
@@ -233,10 +233,20 @@ update.RprobitB_fit <- function(object, formula., ..., evaluate = TRUE) {
   }
   model_call$classes <- model$latent_classes$initial
   model_call$class_update <- model$latent_classes$update
-  changing_classes <- model$latent_classes$update %in%
-    c("dirichlet_process", "weight_based")
-  if (changing_classes) model_call$max_classes <- model$latent_classes$maximum
-  model_call$weight_based_control <- model$latent_classes$control
+  update_to <- if ("class_update" %in% names(extras)) {
+    eval(extras$class_update, parent.frame())
+  } else {
+    model$latent_classes$update
+  }
+  dynamic <- c("dirichlet_process", "weight_based")
+  model_call$max_classes <- if (
+    all(c(model$latent_classes$update, update_to) %in% dynamic)
+  ) {
+    model$latent_classes$maximum
+  }
+  model_call$weight_based_control <- if (identical(update_to, "weight_based")) {
+    model$latent_classes$control
+  }
   model_call$iterations <- sampler$iterations
   if (!is.null(model_call$warmup)) model_call$warmup <- sampler$warmup
   model_call$thin <- sampler$thin

@@ -25,7 +25,7 @@ Show progress?}
 \value{
 A \code{psis_loo} object from \href{https://mc-stan.org/loo/}{\strong{loo}}. It
 contains estimates and standard errors as well as one Pareto-k diagnostic per
-independent likelihood unit.
+decider.
 }
 \description{
 Computes Pareto-smoothed importance-sampling leave-one-out cross-validation

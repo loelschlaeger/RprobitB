@@ -44,7 +44,7 @@ Prior degrees of freedom for the error covariance.}
 Prior scale matrix for the error covariance.}
 
 \item{N}{[\code{integer(1)}]\cr
-Number of independent sampling units.}
+Number of residual vectors summed in the scatter matrix \code{S}.}
 
 \item{S}{[\code{matrix(J - 1, J - 1)}]\cr
 Error scatter matrix.}
@@ -78,7 +78,7 @@ utility matrices.
 \item \code{d_to_gamma()}: a numeric column matrix containing ordered thresholds
 and their infinite bounds.
 \item \code{log_likelihood_ordered()}: one numeric log-likelihood value.
-\item \code{update_d()}: a numeric vector of updated log-increments.
+\item \code{update_d()}: a \code{J - 2} by 1 numeric matrix of updated log-increments.
 }
 }
 \description{

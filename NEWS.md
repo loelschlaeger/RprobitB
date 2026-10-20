@@ -1,5 +1,8 @@
 # RprobitB 2.0.1
 
+* `bayes_factor()` now accepts models with a fixed number of up to six latent
+  classes.
+
 * Ordered choice models now include an intercept by default.
 
 * The occupancy table of `latent_class_diagnostics()` lists every number of

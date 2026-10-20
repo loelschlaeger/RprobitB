@@ -55,15 +55,15 @@ Names of covariates whose effects differ between latent classes, see the
 details on specifying latent class effects.}
 
 \item{alternatives}{[\code{character()} | \code{NULL}]\cr
-Alternative labels. Required if \code{choice_type = "ordered"}, then in
-increasing order of the response levels. Otherwise, \code{NULL} takes them
-from \code{data} or, if \code{data = NULL}, uses capital letters.}
+Alternative labels. Required if \code{choice_type = "ordered"} and \code{data} is
+supplied, then in increasing order of the response levels. Otherwise,
+\code{NULL} takes them from \code{data} or, if \code{data = NULL}, uses capital letters.}
 
 \item{base}{[\code{character(1)} | \code{NULL}]\cr
 The alternative whose utility is subtracted from all others, see the
 details on the normalization. Coefficients that vary across
 alternatives are then expressed relative to it, and none is estimated
-for it. \code{NULL} uses the first model alternative. Not used if
+for it. \code{NULL} uses the first alternative in alphabetical order. Not used if
 \code{choice_type = "ordered"}, which has a single utility per occasion.}
 
 \item{choice_type}{[\code{character(1)}]\cr
@@ -103,10 +103,12 @@ Delimiter separating alternative identifiers from covariate names when
 
 \item{scale}{[\code{NULL} | named \code{numeric(1)}]\cr
 Utility scale normalization, see the details on the normalization. \code{NULL}
-fixes the error variance of the first utility difference to one.
+fixes the error variance of the first utility difference, or of the
+single utility if \code{choice_type = "ordered"}, to one.
 Otherwise one named value:
 \itemize{
-\item \verb{c(<effect> = <value>)} fixes a non-random coefficient, e.g.
+\item \verb{c(<effect> = <value>)} fixes a non-random coefficient without latent
+classes, e.g.
 \code{scale = c(price = -1)}.
 \item \verb{c("Sigma_<alternative>,<alternative>" = <value>)} fixes the error
 variance of the utility difference between a non-base alternative and the
@@ -175,7 +177,7 @@ Retain the posterior draws of the individual random coefficients?
 They are required for \code{coef(level = "individual")} and
 \code{predict(type = "conditional")}.
 
-Enable this only when you need them, because they dominate the memory
+Enable this only when you need them, because they can dominate the memory
 the fitted object occupies.}
 
 \item{n_deciders}{[\code{integer(1)}]\cr
@@ -248,7 +250,7 @@ of the first utility difference at one and draws the error covariance by
 the marginal data augmentation of Imai and van Dyk (2005), which expands
 the scale of the latent utilities in every iteration and returns to the
 fixed one afterwards, so that the covariance and the coefficients move
-freely. Every retained draw is then rescaled to the normalization in
+more freely. Every retained draw is then rescaled to the normalization in
 \code{scale}.
 }
 
@@ -273,7 +275,7 @@ A mixture model divides the deciders into \code{classes} latent classes and
 allocates every decider to exactly one of them. \code{latent_class_effects}
 decides which mixture model this is:
 \itemize{
-\item A random effect named there follows a class-specific normal
+\item A random effect named there follows a class-specific normal or log-normal
 distribution. This is the latent class mixed probit model, reported as
 \verb{mu[<effect>,<class>]} and \verb{Omega[<effect>,<effect>,<class>]}.
 \item An effect that is named there but has no random effect is a single
@@ -290,11 +292,11 @@ reported as \verb{beta[<effect>,<class>]}.
 finite-mixture posterior given that all of them are used.
 \item \code{"sparse"} starts from \code{classes} classes, deliberately more than
 expected, and empties the superfluous ones through a small symmetric
-Dirichlet weight prior (Rousseau and Mengersen 2011;
-Frühwirth-Schnatter and Malsiner-Walli 2019).
+Dirichlet weight prior (Rousseau and Mengersen 2011; Malsiner-Walli et
+al. 2016; Frühwirth-Schnatter and Malsiner-Walli 2019).
 \item \code{"dirichlet_process"} creates and removes occupied classes with
 Neal's (2000) auxiliary-parameter allocation update, up to
-\code{max_classes}. Its precision hyperparameter is updated with the
+\code{max_classes}. With a gamma hyperprior, its precision is updated with the
 beta-gamma augmentation of Escobar and West (1995).
 \item \code{"weight_based"} splits, removes, and merges classes during warmup
 and then keeps their number fixed. Every \code{buffer} iterations it removes the
@@ -327,8 +329,8 @@ The prior is conjugate where available; the finite-mixture concentration is
 updated by a log-scale Metropolis-Hastings step when it has a gamma
 hyperprior. \code{prior} is a named list that overrides the following defaults,
 where \code{P_f}, \code{P_l}, and \code{P_r} count the fixed effects without latent
-classes, the latent class effects, and the random effects, and \code{J} the
-alternatives:
+classes, the fixed effects with latent classes, and the random effects,
+and \code{J} the alternatives:
 \itemize{
 \item \code{fixed_mean} [\code{numeric(P_f)}] and \code{fixed_covariance}
 [\code{matrix(P_f, P_f)}]: normal prior for the fixed coefficients without
@@ -479,6 +481,8 @@ confint(simulated)
 \insertRef{Dahl2006}{RprobitB}
 
 \insertRef{Escobar1995}{RprobitB}
+
+\insertRef{MalsinerWalli2016}{RprobitB}
 
 \insertRef{FruehwirthSchnatter2019}{RprobitB}
 

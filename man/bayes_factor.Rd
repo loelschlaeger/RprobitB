@@ -21,7 +21,7 @@ Fitted models to compare.}
 Return the logarithm of the Bayes factor?}
 
 \item{repetitions}{[\code{integer(1)}]\cr
-Number of independent bridge-sampling repetitions.}
+Number of bridge-sampling repetitions.}
 
 \item{ghk_draws}{[\code{integer(1)}]\cr
 Number of draws of the GHK simulator for multivariate normal probabilities
@@ -33,12 +33,13 @@ Show progress?}
 \value{
 A \code{bf_bridge} object from
 \href{https://CRAN.R-project.org/package=bridgesampling}{\strong{bridgesampling}}.
-Values greater than one favor \code{model1}; values below one favor \code{model2}.
+Values greater than one (zero if \code{log = TRUE}) favor \code{model1}; smaller
+values favor \code{model2}.
 }
 \description{
-Estimates both marginal likelihoods with bridge sampling and compares the
-first model with the second model using \code{\link[bridgesampling:bridge_sampler]{bridgesampling::bridge_sampler()}}
-and \code{\link[bridgesampling:bf]{bridgesampling::bf()}}.
+Estimates both marginal likelihoods with bridge sampling (Meng and Wong
+1996; Frühwirth-Schnatter 2004) and compares the first model with the second
+model using \code{\link[bridgesampling:bf]{bridgesampling::bf()}}.
 }
 \examples{
 ### Simulate and fit the correctly specified model
@@ -63,6 +64,14 @@ misspecified_model <- fit(
 bayes_factor(correct_model, misspecified_model)
 }
 \references{
+\insertRef{Meng1996}{RprobitB}
+
+\insertRef{FruehwirthSchnatter2004}{RprobitB}
+
 \insertRef{Gronau2020}{RprobitB}
+
+\insertRef{Celeux2019}{RprobitB}
+
+\insertRef{FruehwirthSchnatter2019b}{RprobitB}
 }
 \keyword{models}

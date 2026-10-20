@@ -28,7 +28,7 @@ every row a choice occasion of its own decider.}
 Which coefficients to predict with:
 \itemize{
 \item \code{"population"} integrates over the estimated population distribution
-of the random coefficients and applies to any decider.
+of the random coefficients and latent classes and applies to any decider.
 \item \code{"conditional"} uses the posterior random coefficients and class
 allocations of the deciders that were observed when fitting the model,
 which \code{newdata} must then name.

@@ -34,13 +34,13 @@ up to level and scale, see the normalization details in \code{\link[=fit]{fit()}
 
 Posterior draws come from a Gibbs sampler that augments the latent utilities
 (Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van Dyk 2005).
-Heterogeneity can follow a finite mixture, a sparse overfitted finite
-mixture (Rousseau and Mengersen 2011; Frühwirth-Schnatter and Malsiner-Walli
-2019), or a Dirichlet process mixture with Neal's (2000) auxiliary-parameter
-allocation update and the precision update of Escobar and West (1995).
-Independent chains run through the
-\href{https://future.futureverse.org/}{\strong{future}} framework, and retained
-draws use the \href{https://mc-stan.org/posterior/}{\strong{posterior}} format.
+Heterogeneity can follow a finite mixture, a sparse overfitted finite mixture
+(Rousseau and Mengersen 2011; Malsiner-Walli et al. 2016; Frühwirth-Schnatter
+and Malsiner-Walli 2019), or a Dirichlet process mixture with Neal's (2000)
+auxiliary-parameter allocation update and the precision update of Escobar and
+West (1995). Independent chains run through the
+\href{https://future.futureverse.org/}{\strong{future}} framework, and retained draws
+use the \href{https://mc-stan.org/posterior/}{\strong{posterior}} format.
 }
 
 \subsection{Evaluation}{
@@ -57,6 +57,8 @@ Gabry (2017), and Bayes factors use bridge sampling (Gronau et al. 2017).
 \insertRef{Albert1993}{RprobitB}
 
 \insertRef{Escobar1995}{RprobitB}
+
+\insertRef{MalsinerWalli2016}{RprobitB}
 
 \insertRef{FruehwirthSchnatter2019}{RprobitB}
 
@@ -93,11 +95,7 @@ Useful links:
 Authors:
 \itemize{
   \item Lennart Oelschläger \email{oelschlaeger.lennart@gmail.com} (\href{https://orcid.org/0000-0001-5421-9313}{ORCID})
-}
-
-Other contributors:
-\itemize{
-  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID}) [contributor]
+  \item Dietmar Bauer \email{dietmar.bauer@uni-bielefeld.de} (\href{https://orcid.org/0000-0003-2920-7032}{ORCID})
 }
 
 }

@@ -18,12 +18,11 @@ A list with three elements:
 \code{probability}, with one row for every number of classes from one to the
 maximum number of classes of the model. It gives the share of draws in
 which exactly \code{n_classes} classes contain at least one decider, so it
-answers how many classes the data support. For a fixed mixture, the
-number of classes is fixed, and the table shows how often one of them
-stays empty.
+indicates how many classes the data support under the chosen prior. For
+a fixed mixture, the sampler keeps all classes occupied.
 \item \code{co_clustering}: a square matrix with one row and one column per
 decider. Entry \verb{[i, j]} is the share of draws in which deciders \code{i} and
-\code{j} are in the same class, so it answers whether two deciders behave
+\code{j} are in the same class, so it indicates whether two deciders behave
 alike. It does not depend on how the classes are labeled.
 \item \code{membership}: a matrix with one row per decider and one column per
 class, \code{class_1} to \verb{class_<maximum>}. Entry \verb{[i, k]} is the share of

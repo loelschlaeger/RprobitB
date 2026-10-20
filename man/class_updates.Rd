@@ -131,7 +131,7 @@ beta <- matrix(c(-1, -1.2, -0.8, 1, 1.3, 0.9), nrow = 1)
 b <- matrix(c(-1, 1), nrow = 1)
 Omega <- matrix(c(0.2, 0.2), nrow = 1)
 
-### the weights, the allocations, and the class sizes are drawn in turn
+### the weights, the allocations, and the class sizes are updated in turn
 s <- update_s(delta = 1, m = c(3, 3))
 z <- update_z(s, beta, b, Omega)
 m <- update_m(C = 2, z = z)

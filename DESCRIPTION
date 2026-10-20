@@ -9,7 +9,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5421-9313")),
     person("Dietmar", "Bauer", 
            email = "dietmar.bauer@uni-bielefeld.de", 
-           role = "ctb",
+           role = "aut",
            comment = c(ORCID = "0000-0003-2920-7032")))
 Description:
     Fits Bayesian probit models for binary, multinomial, ordered, and ranked
@@ -17,7 +17,7 @@ Description:
     and log-normal random coefficients, finite mixtures, sparse finite
     mixtures, and Dirichlet process mixtures describe preference
     heterogeneity. Multiple Gibbs chains produce posterior draws for
-    diagnostics and choice prediction. Empirical model data can be 
+    diagnostics and choice prediction. Choice data can be 
     supplied as a data frame or simulated from the requested specification.
     For an overarching treatment of the methodology, see Oelschlaeger (2026)
     <https://pub.uni-bielefeld.de/record/3014719>. The latent-class model is
@@ -37,14 +37,14 @@ Imports:
     Formula,
     future.apply,
     loo,
-    oeli (>= 0.7.8),
+    oeli (>= 0.7.9),
     posterior,
     progressr,
     Rdpack,
     Rcpp,
     stats
 LinkingTo:
-    oeli (>= 0.7.8),
+    oeli (>= 0.7.9),
     Rcpp,
     RcppArmadillo,
     testthat

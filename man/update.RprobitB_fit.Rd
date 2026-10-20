@@ -29,9 +29,9 @@ Refits a choice model with a modified specification.
 \details{
 Arguments that are not specified are taken from \code{object}.
 
-The model formula is updated part by part, so \code{. ~ . + income} extends the
-covariates that are constant across alternatives and leaves the other two
-formula parts unchanged.
+The model formula is updated part by part, so \code{. ~ . | . + income} extends
+the covariates that are constant across alternatives and leaves the other
+two formula parts unchanged.
 
 The choice data of \code{object} are reused, also if they were simulated, which
 makes the updated model comparable to \code{object}. Supply \code{data} to fit the

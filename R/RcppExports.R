@@ -95,7 +95,7 @@
 #' b <- matrix(c(-1, 1), nrow = 1)
 #' Omega <- matrix(c(0.2, 0.2), nrow = 1)
 #'
-#' ### the weights, the allocations, and the class sizes are drawn in turn
+#' ### the weights, the allocations, and the class sizes are updated in turn
 #' s <- update_s(delta = 1, m = c(3, 3))
 #' z <- update_z(s, beta, b, Omega)
 #' m <- update_m(C = 2, z = z)
@@ -140,8 +140,8 @@ update_coefficient <- function(mu_beta_0, Sigma_beta_0_inv, XSigX, XSigU) {
 #' Update coefficient distributions
 #'
 #' @description
-#' Low-level Gibbs sampler kernels for coefficient means and covariance
-#' matrices.
+#' Low-level Gibbs sampler kernels for coefficients, their class means, and
+#' covariance matrices.
 #'
 #' @param bar_b_c \[`numeric(P)`\]\cr
 #' Average individual coefficient vector in one class.
@@ -181,7 +181,8 @@ update_coefficient <- function(mu_beta_0, Sigma_beta_0_inv, XSigX, XSigU) {
 #'
 #' @param correlated \[`logical(P)` | `NULL`\]\cr
 #' Which random effects are correlated. Covariances between the other
-#' effects are zero. By default (`NULL`), all random effects are correlated.
+#' effects are zero. In `update_Omega()`, the default (`NULL`) correlates all
+#' random effects.
 #'
 #' @param b \[`matrix(P, C)`\]\cr
 #' Class means in columns.
@@ -304,7 +305,7 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #' Prior scale matrix for the error covariance.
 #'
 #' @param N \[`integer(1)`\]\cr
-#' Number of independent sampling units.
+#' Number of residual vectors summed in the scatter matrix `S`.
 #'
 #' @param S \[`matrix(J - 1, J - 1)`\]\cr
 #' Error scatter matrix.
@@ -352,7 +353,7 @@ update_classes_dp <- function(beta, z, b, Omega, delta, mu_b_0, Sigma_b_0, n_Ome
 #' - `d_to_gamma()`: a numeric column matrix containing ordered thresholds
 #'   and their infinite bounds.
 #' - `log_likelihood_ordered()`: one numeric log-likelihood value.
-#' - `update_d()`: a numeric vector of updated log-increments.
+#' - `update_d()`: a `J - 2` by 1 numeric matrix of updated log-increments.
 #'
 #' @references
 #' \insertRef{Robert1995}{RprobitB}

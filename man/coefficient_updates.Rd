@@ -70,7 +70,8 @@ Prior scale matrix for class covariances.}
 
 \item{correlated}{[\code{logical(P)} | \code{NULL}]\cr
 Which random effects are correlated. Covariances between the other
-effects are zero. By default (\code{NULL}), all random effects are correlated.}
+effects are zero. In \code{update_Omega()}, the default (\code{NULL}) correlates all
+random effects.}
 
 \item{b}{[\code{matrix(P, C)}]\cr
 Class means in columns.}
@@ -86,8 +87,8 @@ The functions return one sampler update:
 }
 }
 \description{
-Low-level Gibbs sampler kernels for coefficient means and covariance
-matrices.
+Low-level Gibbs sampler kernels for coefficients, their class means, and
+covariance matrices.
 }
 \examples{
 ### four deciders with one random coefficient in two classes

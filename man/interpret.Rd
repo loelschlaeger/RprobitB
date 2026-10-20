@@ -67,7 +67,7 @@ A \code{data.frame} of class \code{RprobitB_interpretation} with one row per
 quantity and the columns \code{mean}, \code{sd}, \code{lower}, and \code{upper} of its
 posterior distribution. Compensations have a column \code{effect} and, for a
 mixture model, a column \code{class}; marginal effects have the columns
-\code{covariate} and \code{alternative}.
+\code{covariate} and \code{alternative}, and for \code{type = "mea"} the column \code{at}.
 }
 \description{
 This function translates the posterior draws to scales that are easier to

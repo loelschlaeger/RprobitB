@@ -127,9 +127,10 @@ test_that("bayes_factor compares models by bridge sampling", {
     choice ~ x | 0,
     latent_class_effects = "x",
     classes = 2L,
-    n_deciders = 4L,
-    iterations = 10L,
-    warmup = 5L,
+    n_deciders = 8L,
+    n_occasions = 2L,
+    iterations = 100L,
+    warmup = 50L,
     chains = 1L,
     progress = FALSE
   )
@@ -143,6 +144,37 @@ test_that("bayes_factor compares models by bridge sampling", {
   expect_true(is.finite(result$bf))
   expect_gt(result$bf, 0)
   expect_true(is.finite(mixed_result$bf))
-  expect_error(bayes_factor(model, mixture), "model2")
+  mixture_result <- suppressWarnings(
+    bayes_factor(mixture, model, log = TRUE, progress = FALSE)
+  )
+  expect_s3_class(mixture_result, "bf_bridge")
+  expect_true(is.finite(mixture_result$bf))
+  mixture3 <- fit(
+    choice ~ x | 0,
+    latent_class_effects = "x",
+    classes = 3L,
+    n_deciders = 9L,
+    n_occasions = 2L,
+    iterations = 100L,
+    warmup = 50L,
+    chains = 1L,
+    progress = FALSE
+  )
+  mixture3_result <- suppressWarnings(
+    bayes_factor(mixture3, mixture, log = TRUE, progress = FALSE)
+  )
+  expect_true(is.finite(mixture3_result$bf))
+  sparse <- fit(
+    choice ~ x | 0,
+    latent_class_effects = "x",
+    classes = 2L,
+    class_update = "sparse",
+    n_deciders = 4L,
+    iterations = 10L,
+    warmup = 5L,
+    chains = 1L,
+    progress = FALSE
+  )
+  expect_error(bayes_factor(model, sparse), "model2")
   expect_error(bayes_factor(model, model, ghk_draws = 1L), "ghk_draws")
 })

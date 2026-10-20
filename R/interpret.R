@@ -52,7 +52,7 @@
 #' quantity and the columns `mean`, `sd`, `lower`, and `upper` of its
 #' posterior distribution. Compensations have a column `effect` and, for a
 #' mixture model, a column `class`; marginal effects have the columns
-#' `covariate` and `alternative`.
+#' `covariate` and `alternative`, and for `type = "mea"` the column `at`.
 #'
 #' @section Compensations:
 #' The utility of an alternative is linear in the covariates, so an increase

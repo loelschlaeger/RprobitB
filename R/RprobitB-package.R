@@ -26,13 +26,13 @@
 #' ## Estimation
 #' Posterior draws come from a Gibbs sampler that augments the latent utilities
 #' (Albert and Chib 1993; McCulloch and Rossi 1994; Imai and van Dyk 2005).
-#' Heterogeneity can follow a finite mixture, a sparse overfitted finite
-#' mixture (Rousseau and Mengersen 2011; Frühwirth-Schnatter and Malsiner-Walli
-#' 2019), or a Dirichlet process mixture with Neal's (2000) auxiliary-parameter
-#' allocation update and the precision update of Escobar and West (1995).
-#' Independent chains run through the
-#' [**future**](https://future.futureverse.org/) framework, and retained
-#' draws use the [**posterior**](https://mc-stan.org/posterior/) format.
+#' Heterogeneity can follow a finite mixture, a sparse overfitted finite mixture
+#' (Rousseau and Mengersen 2011; Malsiner-Walli et al. 2016; Frühwirth-Schnatter
+#' and Malsiner-Walli 2019), or a Dirichlet process mixture with Neal's (2000)
+#' auxiliary-parameter allocation update and the precision update of Escobar and
+#' West (1995). Independent chains run through the
+#' [**future**](https://future.futureverse.org/) framework, and retained draws
+#' use the [**posterior**](https://mc-stan.org/posterior/) format.
 #'
 #' ## Evaluation
 #' [predict()], [residuals()], [logLik()], [WAIC()], [loo()], and
@@ -46,6 +46,8 @@
 #' \insertRef{Albert1993}{RprobitB}
 #'
 #' \insertRef{Escobar1995}{RprobitB}
+#'
+#' \insertRef{MalsinerWalli2016}{RprobitB}
 #'
 #' \insertRef{FruehwirthSchnatter2019}{RprobitB}
 #'

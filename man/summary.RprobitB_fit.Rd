@@ -38,7 +38,10 @@ parameters with selectable statistics.
 }
 \details{
 Every statistic describes the marginal posterior of one variable and is
-computed from the retained draws of all chains:
+computed from the retained draws of all chains. For a class that is empty
+in some draws, the column \code{occupied} gives the share of draws in which it
+is occupied, \verb{mcse_*}, \code{rhat}, and \verb{ess_*} are \code{NA}, and the other
+statistics use only these draws. The statistics are:
 \itemize{
 \item \code{mean}: the average of the draws, the usual point estimate.
 \item \code{median}: the median value of the draws. If it differs clearly from the
@@ -49,17 +52,18 @@ active class count, it is the most frequent value.
 \item \code{sd}: the standard deviation of the draws, the posterior uncertainty of
 the parameter.
 \item \verb{q<100 * p>}: the quantile of probability \code{p}. With
-\code{probs = c(0.025, 0.975)}, the two columns are the limits of the 95\%
-credible interval.
+\code{probs = c(0.025, 0.975)}, the two columns are the limits of the
+equal-tailed 95\% credible interval.
 \item \code{mcse_mean}, \code{mcse_median}, \code{mcse_sd}: the Monte Carlo standard errors
 of the mean, median, and standard deviation, the sampling error of
 these estimates that more iterations would reduce. Good values are
 below a tenth of \code{sd}; larger values mean that the reported digits are
 not yet reliable and the sampler should run longer.
-\item \code{rhat}: the rank-normalized, folded split-R-hat of Vehtari et al.
-(2021). It compares the variance between the halves of all chains with
+\item \code{rhat}: the larger of the rank-normalized split-R-hat and its folded
+version of Vehtari et al. (2021). It compares the variance between
+the halves of all chains with
 the variance within them. With a single chain, it compares the two
-halves of that chain. Good values are at most 1.01; larger values mean
+halves of that chain. Good values are at most 1.01; larger values indicate
 that the chains have not mixed and the sampler should run longer, see
 \code{plot(type = "trace")}.
 \item \code{ess_bulk}: the effective sample size for the center of the posterior,
@@ -67,8 +71,8 @@ the number of independent draws that carry the same information as the
 correlated draws. Good values are at least 100 per chain; smaller values
 mean that the sampler should run longer.
 \item \code{ess_tail}: the smaller of the effective sample sizes of the 5\% and 95\%
-quantiles. It governs the precision of quantiles, credible intervals,
-and the standard deviation. The same rule applies: at least 100 per
+quantiles. It governs the precision of extreme quantiles and credible
+intervals. The same rule applies: at least 100 per
 chain is good.
 }
 }
