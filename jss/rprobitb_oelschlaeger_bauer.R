@@ -213,31 +213,15 @@ price_lognormal <- update(
 ###################################################
 ### code chunk number 21: price-mixing-figure
 ###################################################
-population_density <- function(x, draws, effect, type = "n") {
-  b <- draws[, sprintf("mu[%s]", effect)]
-  s <- sqrt(draws[, sprintf("Omega[%s,%s]", effect, effect)])
-  density <- switch(type,
-    "n" = function(d) dnorm(x, b[d], s[d]),
-    "ln-" = function(d) dlnorm(-x, b[d], s[d])
-  )
-  rowMeans(sapply(seq_along(b), density))
-}
-price_grid <- seq(-3, 1, length.out = 400)
-price_normal_density <- population_density(
-  price_grid, posterior::as_draws_matrix(price_normal$draws), "price"
-)
-price_lognormal_density <- population_density(
-  price_grid, posterior::as_draws_matrix(price_lognormal$draws), "price",
-  type = "ln-"
-)
+normal <- plot(price_normal, type = "mixture")$data
+lognormal <- plot(price_lognormal, type = "mixture")$data
 op <- par(mar = c(4, 4, 0.5, 0.5))
 plot(
-  price_grid, price_normal_density, type = "l", lwd = 2,
-  ylim = c(0, max(price_normal_density, price_lognormal_density)),
-  xlab = "price coefficient",
-  ylab = "density"
+  normal$value, normal$density, type = "l", lwd = 2,
+  ylim = c(0, 3 * max(normal$density)),
+  xlab = "price coefficient", ylab = "density"
 )
-lines(price_grid, price_lognormal_density, lwd = 2, lty = 2)
+lines(lognormal$value, lognormal$density, lwd = 2, lty = 2)
 abline(v = 0, lty = 3)
 legend(
   "topleft", legend = c("normal", "negative log-normal"),
@@ -250,11 +234,9 @@ par(op)
 ### code chunk number 22: mixed-compensation
 ###################################################
 models <- mget(c("model_train", "price_normal", "price_lognormal"))
-time_compensation <- sapply(models, function(m) {
-  time <- interpret(m, reference = "price", effects = "time")
-  unlist(as.data.frame(time)[-1])
-})
-print(time_compensation, digits = 3)
+times <- lapply(models, interpret, reference = "price", effects = "time")
+value_of_time <- sapply(times, function(x) unlist(as.data.frame(x)[-1]))
+print(value_of_time, digits = 3)
 
 
 ###################################################
@@ -494,7 +476,19 @@ sapply(berserk_split, nrow)
 
 
 ###################################################
-### code chunk number 38: berserk-fit
+### code chunk number 38: berserk-games-figure
+###################################################
+games_per_player <- table(berserk_data$deciderID)
+op <- par(mar = c(4, 4, 0.5, 0.5))
+hist(
+  games_per_player, breaks = 0:max(games_per_player), col = "gray85",
+  border = "white", main = "", xlab = "games per player", ylab = "players"
+)
+par(op)
+
+
+###################################################
+### code chunk number 39: berserk-fit
 ###################################################
 berserk_fixed <- fit(
   berserk ~ 0 | white + rating + ratingDifference + minutesRemaining +
@@ -510,7 +504,7 @@ round(cbind(mean = coef(berserk), confint(berserk, level = 0.9)), 3)
 
 
 ###################################################
-### code chunk number 39: holdout
+### code chunk number 40: holdout
 ###################################################
 known <- berserk_split$test$deciderID %in%
   berserk_split$train$deciderID
@@ -523,7 +517,7 @@ head(holdout_conditional, 3)
 
 
 ###################################################
-### code chunk number 40: roc-curve
+### code chunk number 41: roc-curve
 ###################################################
 library("ggplot2")
 library("plotROC")
@@ -551,7 +545,7 @@ print(roc_plot)
 
 
 ###################################################
-### code chunk number 41: ordered-grid
+### code chunk number 42: ordered-grid
 ###################################################
 health_grid <- expand.grid(
   age = c(0, seq(min(Health$age), max(Health$age))), income = 0,
@@ -568,7 +562,7 @@ subset(
 
 
 ###################################################
-### code chunk number 42: ordered-prediction-figure
+### code chunk number 43: ordered-prediction-figure
 ###################################################
 op <- par(mar = c(4, 4, 0.5, 0.5))
 plot(
@@ -596,20 +590,20 @@ par(op)
 
 
 ###################################################
-### code chunk number 43: residuals
+### code chunk number 44: residuals
 ###################################################
 train_residuals <- residuals(model_train)
 head(train_residuals, 3)
 
 
 ###################################################
-### code chunk number 44: loglik
+### code chunk number 45: loglik
 ###################################################
 sapply(models, logLik)
 
 
 ###################################################
-### code chunk number 45: loo
+### code chunk number 46: loo
 ###################################################
 train_loo <- lapply(models, loo)
 loo_comparison <- loo::loo_compare(train_loo)
@@ -617,7 +611,7 @@ loo_comparison
 
 
 ###################################################
-### code chunk number 46: elpd-differences-figure
+### code chunk number 47: elpd-differences-figure
 ###################################################
 elpd_difference <- train_loo$price_normal$pointwise[, "elpd_loo"] -
   train_loo$model_train$pointwise[, "elpd_loo"]
@@ -633,13 +627,21 @@ par(op)
 
 
 ###################################################
-### code chunk number 47: bf
+### code chunk number 48: loo-classes (eval = FALSE)
+###################################################
+## classes_loo <- lapply(mget(c("electricity", "electricity_classes")), loo)
+## classes_comparison <- loo::loo_compare(classes_loo)
+## classes_comparison
+
+
+###################################################
+### code chunk number 49: bf
 ###################################################
 log_bf <- bayes_factor(price_normal, model_train, log = TRUE)
 log_bf
 
 
 ###################################################
-### code chunk number 48: cleanup
+### code chunk number 50: cleanup
 ###################################################
 future::plan(future::sequential)
