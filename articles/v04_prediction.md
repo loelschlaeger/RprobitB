@@ -29,11 +29,11 @@ set.seed(1)
 
 ## A random price coefficient
 
-The `Train` data of the **mlogit** package contain about a dozen choices
-by each of 235 Dutch travelers between two hypothetical train trips that
-differ in price, travel time, number of changes, and comfort class
-([Ben-Akiva et al. 1993](#ref-BenAkiva1993)). As in the vignette [Get
-started with
+The `Train` data of the **mlogit** package contain 5 to 19 choices,
+about a dozen on average, by each of 235 Dutch travelers between two
+hypothetical train trips that differ in price, travel time, number of
+changes, or comfort class ([Ben-Akiva et al. 1993](#ref-BenAkiva1993)).
+As in the vignette [Get started with
 RprobitB](https://loelschlaeger.de/RprobitB/articles/v01_get_started.html),
 the prices are converted to euro and the travel times to hours. That
 vignette fits one price coefficient for all travelers. Here the price
@@ -73,11 +73,11 @@ summary(model)
 #> Samples: 50 retained per chain, 2 chains
 #> 
 #>                variable   mean   mode     sd  rhat ess_bulk
-#>              beta[time] -2.061 -2.096 0.2040 0.997     80.6
+#>              beta[time] -2.061 -2.096 0.2040 0.998     80.6
 #>            beta[change] -0.348 -0.347 0.0581 1.019    124.6
 #>  beta[factor(comfort)1] -0.675 -0.702 0.0880 0.997     81.7
-#>  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.992     95.8
-#>               mu[price] -0.470 -0.492 0.0461 1.012     99.2
+#>  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.993     95.8
+#>               mu[price] -0.470 -0.492 0.0461 1.011     99.2
 #>      Omega[price,price]  0.137  0.121 0.0320 1.017     35.6
 ```
 
@@ -134,15 +134,15 @@ head(predict(model, uncertainty = TRUE, level = 0.9))
 
 ## Conditional predictions for fitted deciders
 
-The dozen choices of a traveler are informative about their individual
-price coefficient. `coef(level = "individual")` returns the posterior
-mean of every traveler’s coefficient, and
-`predict(type = "conditional")` uses the individual draws instead of the
-population distribution. Conditional predictions exist only for the
-deciders in the fitted data, and they are usually sharper because they
-use the decider’s own choices. This partial pooling is the main argument
-for hierarchical Bayesian choice models ([Allenby and Rossi
-1998](#ref-Allenby1998); [Huber and Train 2001](#ref-Huber2001)).
+The choices of a traveler are informative about their individual price
+coefficient. `coef(level = "individual")` returns the posterior mean of
+every traveler’s coefficient, and `predict(type = "conditional")` uses
+the individual draws instead of the population distribution. Conditional
+predictions exist only for the deciders in the fitted data, and they are
+usually sharper because they use the decider’s own choices. This partial
+pooling is an important argument for hierarchical choice models
+([Allenby and Rossi 1998](#ref-Allenby1998); [Huber and Train
+2001](#ref-Huber2001)).
 
 ``` r
 
@@ -220,12 +220,12 @@ half for an uninformative prediction.
 
 ## Scenario analysis in a stated choice experiment
 
-A scenario predicts the choice probabilities for modified attributes.
-Near Setskog in Norway, 308 residents were asked six times to choose
-between two plans for a proposed wind-power project and the status quo
+A scenario predicts the choice probabilities for modified attributes. In
+Norway, 308 residents were asked six times to choose between two plans
+for a proposed wind-power project near Setskog and the status quo
 without the project, alternative `1` ([Dugstad et al.
 2024](#ref-Dugstad2024)). The plans varied the number and height of the
-turbines, the routing of the power line, and an annual reduction in
+turbines, the placement of the power line, and an annual reduction in
 municipal taxes offered as compensation. The study also measured each
 respondent’s collective psychological ownership of the affected area, a
 standardized score of how strongly they feel that the landscape belongs
@@ -260,7 +260,7 @@ wind <- fit(
 )
 coef(wind)[c("beta[compensation]", "beta[psychological_ownership_2]")]
 #>              beta[compensation] beta[psychological_ownership_2] 
-#>                     0.001323216                    -0.484861950
+#>                     0.001332594                    -0.489664755
 ```
 
 The compensation coefficient is positive and the ownership coefficient
@@ -286,10 +286,10 @@ cbind(
   after = predict(wind, newdata = scenario)$probability_1
 )
 #>         before     after
-#> [1,] 0.3166753 0.1740325
-#> [2,] 0.2841614 0.1715989
-#> [3,] 0.2929244 0.2167170
-#> [4,] 0.3511169 0.2747030
+#> [1,] 0.3173732 0.1766767
+#> [2,] 0.2801607 0.1683189
+#> [3,] 0.2923128 0.2170501
+#> [4,] 0.3477941 0.2717084
 ```
 
 Doubling the compensation lowers the probability of the status quo in
@@ -342,11 +342,11 @@ berserk <- fit(
 )
 coef(berserk)
 #>        beta[whiteTRUE_TRUE]           beta[rating_TRUE] 
-#>                2.828675e-02                1.460691e-03 
+#>                3.726942e-02                1.496726e-03 
 #> beta[ratingDifference_TRUE] beta[minutesRemaining_TRUE] 
-#>                6.888317e-05               -1.958756e-04 
+#>                6.338037e-05               -1.794785e-04 
 #>       beta[streakTRUE_TRUE]              beta[ASC_TRUE] 
-#>               -7.880141e-02               -3.172163e+00
+#>               -7.105214e-02               -3.250510e+00
 ```
 
 The rating coefficient is positive: stronger players go Berserk more
@@ -389,15 +389,15 @@ calibration <- data.frame(
 large <- calibration[calibration$games >= 50, ]
 round(large, 2)
 #>           games predicted observed
-#> (0.1,0.2]    58      0.14     0.17
-#> (0.2,0.3]   196      0.25     0.25
-#> (0.3,0.4]    80      0.35     0.35
-#> (0.4,0.5]    81      0.43     0.57
+#> (0.1,0.2]    57      0.14     0.18
+#> (0.2,0.3]   194      0.25     0.25
+#> (0.3,0.4]    79      0.35     0.34
+#> (0.4,0.5]    84      0.43     0.57
 ```
 
 The calibration plot shows the same table. Points on the diagonal mean
 that the predicted probability equals the observed rate, and the point
-sizes are proportional to the number of games in a group.
+sizes grow with the number of games in a group.
 
 ``` r
 
@@ -452,7 +452,7 @@ Most travelers have an average residual close to zero. For the travelers
 at the extremes, the model predicts trip `A` too often or too rarely
 across all their questions. Grouping by a covariate checks the
 functional form instead, here by the price of trip `A` in four groups of
-equal size:
+about equal size:
 
 ``` r
 
@@ -467,7 +467,7 @@ round(tapply(model_residuals[, "A"], price_group, mean, na.rm = TRUE), 3)
 ```
 
 All four group averages are close to zero. A systematic pattern, for
-example positive residuals at both ends, would indicate a nonlinear
+example positive residuals at both ends, could indicate a nonlinear
 price effect or an unmodeled preference class.
 
 ## Marginal effects
@@ -511,12 +511,13 @@ average_effects
 ```
 
 Averaged over the observed occasions, one euro more lowers the
-probability of a trip by about 9 percentage points and one hour more by
-about 46 percentage points.
+probability of a trip by about 9 percentage points, and it falls at a
+rate of about 46 percentage points per hour of travel time.
 
 The `at` argument replaces the averages of selected covariates. A much
-cheaper trip `B` moves its probability close to one, where one euro more
-changes it only marginally:
+cheaper trip `B` moves its probability close to the share of travelers
+with a negative price coefficient, where one euro more changes it only
+marginally:
 
 ``` r
 
@@ -556,27 +557,27 @@ smoking <- fit(
 )
 head(predict(smoking))
 #>   deciderID .prediction probability_Never probability_Occas probability_Regul
-#> 1         1       Never         0.8562408        0.06475144        0.05073226
-#> 2         2       Never         0.7956245        0.08255546        0.07279669
-#> 3         3       Never         0.7965730        0.08223363        0.07243314
-#> 4         4       Never         0.7914499        0.08388835        0.07437814
-#> 5         5       Never         0.8484086        0.06746885        0.05373528
-#> 6         6       Never         0.8524846        0.06610157        0.05217742
+#> 1         1       Never         0.8504143        0.06673166        0.05376339
+#> 2         2       Never         0.7999456        0.08111407        0.07254879
+#> 3         3       Never         0.8012933        0.08066875        0.07205920
+#> 4         4       Never         0.7941322        0.08296075        0.07464705
+#> 5         5       Never         0.8394208        0.07046222        0.05775976
+#> 6         6       Never         0.8450430        0.06860171        0.05571883
 #>   probability_Heavy
-#> 1        0.02827552
-#> 2        0.04902336
-#> 3        0.04876022
-#> 4        0.05028357
-#> 5        0.03038726
-#> 6        0.02923643
+#> 1        0.02909066
+#> 2        0.04639158
+#> 3        0.04597872
+#> 4        0.04825995
+#> 5        0.03235718
+#> 6        0.03063642
 ```
 
 Every row has four probabilities that sum to one, and `.prediction`
 names the most probable level. Because most students never smoke, this
-level is the most probable for almost every student, and the
-probabilities are more informative than the predicted level. A scenario
-works as before. Ten more years of age shift the probability of never
-smoking of the first three students:
+level is the most probable for every student, and the probabilities are
+more informative than the predicted level. A scenario works as before.
+Ten more years of age shift the probability of never smoking of the
+first three students:
 
 ``` r
 
@@ -589,9 +590,9 @@ cbind(
   after = predict(smoking, newdata = older)$probability_Never
 )
 #>         before     after
-#> [1,] 0.8562408 0.8404168
-#> [2,] 0.7956245 0.7784639
-#> [3,] 0.7965730 0.7797745
+#> [1,] 0.8504143 0.8288174
+#> [2,] 0.7999456 0.7769138
+#> [3,] 0.8012933 0.7786074
 ```
 
 The probabilities change only slightly, because the age coefficient is

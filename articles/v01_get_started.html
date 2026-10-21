@@ -145,16 +145,17 @@ differences with respect to a base alternative and fixes the scale by
 restricting either one error variance or one coefficient. These two
 restrictions are the normalization of the model. The coefficient vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\beta_n</annotation></semantics></math>
-is common to all deciders unless random effects are specified, in which
-case the coefficients of every decider are drawn from a population
-distribution whose parameters are estimated. The vignette <a href="https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html">Model
+is common to all deciders unless random effects or latent classes are
+specified, in which case the coefficients of every decider are drawn
+from a population distribution whose parameters are estimated. The
+vignette <a href="https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html">Model
 specification and variants</a> describes the normalization and the prior
 distribution, and the vignette <a href="https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html">Modeling
 preference heterogeneity</a> the specification of heterogeneous
-coefficients. Bayesian estimation of the multinomial probit model goes
-back to <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch1994">1994</a>)</span> and <span class="citation"><span class="nocase">Imai and van Dyk</span> (<a href="#ref-Imai2005a">2005</a>)</span>, and <span class="citation">Oelschläger (<a href="#ref-Oelschlaeger2026c">2026</a>)</span> gives a unified account
-of the heterogeneity models that <strong>RprobitB</strong>
-implements.</p>
+coefficients. Bayesian estimation of the multinomial probit model in
+<strong>RprobitB</strong> builds on <span class="citation">Albert and
+Chib (<a href="#ref-Albert1993">1993</a>)</span>, <span class="citation">McCulloch and Rossi (<a href="#ref-McCulloch1994">1994</a>)</span>, and <span class="citation"><span class="nocase">Imai and van Dyk</span> (<a href="#ref-Imai2005a">2005</a>)</span>, and <span class="citation">Oelschläger (<a href="#ref-Oelschlaeger2026c">2026</a>)</span> discusses the
+heterogeneity models on which <strong>RprobitB</strong> builds.</p>
 </div>
 <div class="section level2">
 <h2 id="a-stated-choice-experiment-on-train-trips">A stated choice experiment on train trips<a class="anchor" aria-label="anchor" href="#a-stated-choice-experiment-on-train-trips"></a>
@@ -163,8 +164,8 @@ implements.</p>
 national railways presented 235 travelers with pairs of hypothetical
 train trips and asked which trip of each pair they would choose <span class="citation">(<a href="#ref-BenAkiva1993">Ben-Akiva et al.
 1993</a>)</span>. The two trips of a pair differ in price, travel time,
-number of changes, and comfort class, and every traveler evaluated about
-twelve pairs. The <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant
+number of changes, or comfort class, and the travelers evaluated about
+twelve pairs on average. The <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant
 2020</a>)</span> provides the 2929 choices as the data set
 <code>Train</code>. The data are in wide format: one row per choice
 occasion, with the attributes of trip <code>A</code> in the columns
@@ -203,9 +204,9 @@ common to both alternatives, which places them in the first part of the
 formula. The second part takes characteristics of the decider and the
 alternative-specific constants; here it contains only the <code>0</code>
 that removes the constants, which is appropriate because the labels
-<code>A</code> and <code>B</code> of the two trips were assigned
-arbitrarily and carry no utility of their own. The comfort class is
-stored as an integer but is a categorical variable with three levels;
+<code>A</code> and <code>B</code> of the two trips are generic and are
+not expected to carry utility of their own. The comfort class is stored
+as an integer but is a categorical variable with three levels;
 <code>factor(comfort)</code> expands it into dummy variables, as in
 <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. The arguments <code>column_decider</code> and
 <code>column_occasion</code> identify the traveler and the choice
@@ -293,8 +294,8 @@ diagnostics recommended by <span class="citation">Vehtari et al. (<a href="#ref-
 <ul>
 <li>
 <code>rhat</code> compares the variance between the chains with the
-variance within the chains and equals one when all chains sample the
-same distribution.</li>
+variance within the chains and is close to one when all chains sample
+the same distribution.</li>
 <li>
 <code>ess_bulk</code> is the effective sample size for the bulk of
 the posterior distribution, that is, for its central part around the
@@ -387,11 +388,11 @@ stationary without trend, and the densities of the chains coincide.</p>
 <p>Rank plots are a more sensitive check <span class="citation">(<a href="#ref-Vehtari2021">Vehtari et al. 2021</a>)</span>. The draws of
 all chains are pooled and ranked, and the histogram of the ranks is
 drawn for every chain. If all chains sample the same distribution, every
-chain receives ranks from the whole range with equal frequency, and the
-histograms are uniform. A chain that remains in a subregion of the
-posterior, for example because it has not yet left the region of its
-starting values, receives predominantly small or large ranks, and its
-histogram is peaked at one end.</p>
+chain receives ranks from the whole range with about equal frequency,
+and the histograms are close to uniform. A chain that remains in a
+subregion of the posterior, for example because it has not yet left the
+region of its starting values, receives ranks from only part of the
+range, and its histogram is not uniform.</p>
 <p>Autocorrelation plots show, for every chain, the correlation between
 draws that are
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
@@ -479,10 +480,11 @@ and <code><a href="https://rdrr.io/r/stats/nobs.html" class="external-link">nobs
 </h2>
 <p>The chains of a fit are independent of each other, so
 <strong>RprobitB</strong> can run them in parallel on several cores,
-which reduces the computing time in proportion to the number of chains.
-The package does not select a parallel backend itself. The chains run
-through the <strong>future</strong> framework <span class="citation">(<a href="#ref-Bengtsson2021">Bengtsson 2021</a>)</span>, so a plan set
-before fitting is used automatically.</p>
+which can reduce the computing time by up to a factor equal to the
+number of chains. The package does not select a parallel backend itself.
+The chains run through the <strong>future</strong> framework <span class="citation">(<a href="#ref-Bengtsson2021">Bengtsson
+2021</a>)</span>, so a plan set before fitting is used
+automatically.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">multisession</a></span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="co"># run chains on four cores</span></span>
 <span><span class="va">parallel_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
@@ -523,6 +525,11 @@ factors.</li>
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Albert1993" class="csl-entry">
+Albert, James H., and Siddhartha Chib. 1993. <span>“Bayesian Analysis of
+Binary and Polychotomous Response Data.”</span> <em>Journal of the
+American Statistical Association</em> 88 (422): 669–79. <a href="https://doi.org/10.1080/01621459.1993.10476321" class="external-link">https://doi.org/10.1080/01621459.1993.10476321</a>.
+</div>
 <div id="ref-BenAkiva1993" class="csl-entry">
 Ben-Akiva, Moshe, Denis Bolduc, and Mark Bradley. 1993.
 <span>“Estimation of Travel Choice Models with Randomly Distributed

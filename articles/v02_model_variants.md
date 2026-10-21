@@ -49,15 +49,15 @@ alphabetical order, and fixes one parameter through `scale`:
   error differences is reported as `Sigma[<alternative>,<alternative>]`,
   with rows and columns named by the alternatives other than the base.
   For three alternatives `A`, `B`, and `C` with base `A`, its entries
-  are `Sigma[B,B]`, `Sigma[C,B]`, and `Sigma[C,C]`.
+  are `Sigma[B,B]`, `Sigma[B,C]`, and `Sigma[C,C]`.
 - `scale = c(z = -1)` fixes the coefficient of `z` to `-1` instead, so
   that all other coefficients are measured in units of it. With a price
   coefficient fixed in this way, the other coefficients are
   willingness-to-pay values.
 
-The sampler draws all parameters without restriction and rescales every
-retained draw afterwards. Variables that the normalization fixes remain
-in the draws but are omitted from
+The sampler draws all parameters under the default scale and rescales
+every retained draw afterwards. Variables that the normalization fixes
+remain in the draws but are omitted from
 [`summary()`](https://rdrr.io/r/base/summary.html),
 [`coef()`](https://rdrr.io/r/stats/coef.html), and
 [`vcov()`](https://rdrr.io/r/stats/vcov.html).
@@ -283,24 +283,24 @@ summary(travel)
 #> Formula: choice ~ wait + vcost + travel | income + size | 0 
 #> Samples: 100 retained per chain, 2 chains
 #> 
-#>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[wait] -0.04170 -0.03770 0.006276 1.024     85.8
-#>         beta[vcost] -0.01019 -0.01043 0.006035 1.017    218.1
-#>        beta[travel] -0.00234 -0.00228 0.000477 0.997    140.5
-#>    beta[income_bus] -0.01937 -0.02206 0.012379 0.998    193.2
-#>    beta[income_car] -0.00827 -0.00948 0.011904 1.007    185.0
-#>  beta[income_train] -0.05439 -0.05161 0.014400 1.022    136.9
-#>      beta[size_bus]  0.30867  0.33864 0.170632 0.995    163.2
-#>      beta[size_car]  0.46220  0.41894 0.137625 1.004    121.9
-#>    beta[size_train]  0.55684  0.49506 0.157059 0.998    159.1
-#>       beta[ASC_bus] -0.27292 -0.34044 0.530872 1.025     79.6
-#>       beta[ASC_car] -2.37693 -2.48845 0.727407 1.022     75.6
-#>     beta[ASC_train]  0.16750  0.22844 0.493696 1.025    100.8
-#>      Sigma[bus,car]  0.81164  0.75407 0.198171 0.998     73.5
-#>      Sigma[car,car]  1.31994  1.09571 0.427862 1.003    109.2
-#>    Sigma[bus,train]  0.87544  0.83972 0.194091 1.050    120.6
-#>    Sigma[car,train]  0.89804  0.82013 0.332554 1.005    106.3
-#>  Sigma[train,train]  1.35777  1.15071 0.446422 1.034     88.5
+#>            variable     mean     mode      sd  rhat ess_bulk
+#>          beta[wait] -0.04188 -0.04006 0.00652 1.046    112.9
+#>         beta[vcost] -0.01007 -0.00885 0.00572 1.012    138.6
+#>        beta[travel] -0.00229 -0.00212 0.00048 1.006    170.0
+#>    beta[income_bus] -0.01997 -0.02326 0.01341 1.014    154.1
+#>    beta[income_car] -0.00777 -0.00383 0.01248 1.002    125.3
+#>  beta[income_train] -0.05500 -0.05437 0.01580 1.010    156.1
+#>      beta[size_bus]  0.31953  0.33854 0.17308 1.004     96.0
+#>      beta[size_car]  0.46445  0.46630 0.15032 1.008    143.4
+#>    beta[size_train]  0.55137  0.50749 0.16320 0.998    173.4
+#>       beta[ASC_bus] -0.31978 -0.30292 0.49109 1.020    174.1
+#>       beta[ASC_car] -2.44535 -2.47761 0.65390 1.023    105.3
+#>     beta[ASC_train]  0.13314  0.09080 0.47702 1.003    176.1
+#>      Sigma[bus,car]  0.79268  0.74525 0.19456 1.013     89.2
+#>      Sigma[car,car]  1.26997  1.01145 0.46387 1.014     91.8
+#>    Sigma[bus,train]  0.85220  0.76111 0.22212 1.023     62.5
+#>    Sigma[car,train]  0.84464  0.70134 0.33300 1.005     94.4
+#>  Sigma[train,train]  1.30340  1.07223 0.44668 1.002     72.0
 ```
 
 The three attribute coefficients are negative: waiting, cost, and travel
@@ -316,11 +316,11 @@ mode_effects <- interpret(travel, type = "mea")
 mode_effects[mode_effects$covariate == "income", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
-#>  covariate alternative   at     mean      sd    lower    upper
-#>     income         air 21.3  0.00940 0.00360  0.00196  0.01594
-#>     income         bus 21.3  0.00134 0.00222 -0.00335  0.00519
-#>     income         car 21.3  0.00873 0.00340  0.00160  0.01504
-#>     income       train 21.3 -0.01947 0.00422 -0.02856 -0.01209
+#>  covariate alternative   at     mean      sd    lower   upper
+#>     income         air 21.3  0.00970 0.00405  0.00300  0.0177
+#>     income         bus 21.3  0.00129 0.00254 -0.00329  0.0064
+#>     income         car 21.3  0.00876 0.00395  0.00182  0.0161
+#>     income       train 21.3 -0.01976 0.00503 -0.02951 -0.0109
 ```
 
 A higher household income lowers the probability of the train and raises
@@ -337,10 +337,10 @@ sampler imputes the latent utilities of unavailable alternatives without
 restriction, so they do not affect the choice, and predictions assign
 them probability zero.
 
-Between Montreal and Toronto, travelers can fly, drive, or take the
+In the Montreal-Toronto corridor, travelers can fly, drive, or take the
 train, but not all modes are available on every trip. The `ModeCanada`
-data of the **mlogit** package cover 4324 trips in this corridor ([Bhat
-1995](#ref-Bhat1995)).
+data of the **mlogit** package cover 4324 trips in this corridor from
+the survey analyzed by Bhat ([1995](#ref-Bhat1995)).
 
 ``` r
 
@@ -360,12 +360,12 @@ head(ModeCanada)
 Cost (`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and
 service frequency (`freq`) vary across modes; household income and the
 number of urban trip endpoints are trip-specific. The data also contain
-the bus, which was chosen on only 16 trips, too few to identify its
-coefficients and error covariances, so the bus rows and the trips on
-which it was chosen are removed. Cost and income are converted from
-Canadian dollars to euro, and trips with a single remaining alternative
-are dropped. The first 1000 of the remaining trips keep the computation
-short.
+the bus, which was chosen on only 16 trips, too few to estimate its
+coefficients and error covariances reliably, so the bus rows and the
+trips on which it was chosen are removed. Cost and income are converted
+from Canadian dollars to euro, and trips with a single remaining
+alternative are dropped. The first 1000 of the remaining trips keep the
+computation short.
 
 ``` r
 
@@ -387,9 +387,9 @@ table(table(canada_data$case))
 ```
 
 The choice sets are read from the rows of each trip. Every trip is one
-decider, and the model has the same structure as the travel mode model
-above: three attributes of type `A`, two trip characteristics of type
-`B`, and the constants, all relative to `air`.
+decider, and the model has a structure similar to the travel mode model
+above: four attributes of type `A`, two trip characteristics of type
+`B`, and the constants, the latter two relative to `air`.
 
 ``` r
 
@@ -411,18 +411,18 @@ summary(canada)
 #> Samples: 200 retained per chain, 2 chains
 #> 
 #>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[cost] -0.03614 -0.03529 0.006487 1.012     40.1
-#>           beta[ivt] -0.00631 -0.00594 0.000915 1.002     55.7
-#>           beta[ovt] -0.01667 -0.01658 0.002220 1.023    179.4
-#>          beta[freq]  0.02712  0.02743 0.006130 0.998    328.7
-#>    beta[income_car] -0.01988 -0.01955 0.006597 1.007    144.3
-#>  beta[income_train] -0.03481 -0.03255 0.008165 1.006     87.6
-#>     beta[urban_car] -0.44231 -0.45658 0.149197 1.001    135.6
-#>   beta[urban_train]  0.72395  0.60698 0.262505 1.009     58.0
-#>       beta[ASC_car] -0.47693 -0.43504 0.532641 1.033     31.3
-#>     beta[ASC_train] -0.29753 -0.19986 0.526724 1.017     37.0
-#>    Sigma[car,train]  0.41255  0.38586 0.222533 1.026     47.9
-#>  Sigma[train,train]  1.32069  0.98664 0.572940 1.011     46.1
+#>          beta[cost] -0.03861 -0.04294 0.006221 1.167     9.21
+#>           beta[ivt] -0.00597 -0.00585 0.000901 1.079    48.36
+#>           beta[ovt] -0.01643 -0.01617 0.002106 1.015   148.74
+#>          beta[freq]  0.02727  0.02711 0.005576 0.998   297.30
+#>    beta[income_car] -0.01877 -0.02007 0.006493 1.023   112.36
+#>  beta[income_train] -0.03183 -0.02892 0.008030 1.035    97.02
+#>     beta[urban_car] -0.46648 -0.53531 0.139539 1.042   125.89
+#>   beta[urban_train]  0.66458  0.63736 0.225104 1.028    65.27
+#>       beta[ASC_car] -0.69174 -0.56908 0.557235 1.178     8.68
+#>     beta[ASC_train] -0.53208 -0.32726 0.566234 1.198     7.68
+#>    Sigma[car,train]  0.35176  0.28137 0.183704 1.147    13.48
+#>  Sigma[train,train]  1.10065  0.92096 0.461415 1.118    24.22
 ```
 
 The income coefficients of car and train are negative: a higher income
@@ -542,9 +542,9 @@ legend(
 A covariate shifts the density along the utility axis, so one
 coefficient per covariate describes its effect on all four levels. The
 age coefficient is small and its credible interval includes zero: the
-age of a student does not affect how much they smoke. The factor `Exer`
-enters through its dummy variables relative to the students who exercise
-frequently; both coefficients are negative but uncertain.
+age of a student does not clearly affect how much they smoke. The factor
+`Exer` enters through its dummy variables relative to the students who
+exercise frequently; both coefficients are negative but uncertain.
 `interpret(type = "ame")` translates the age coefficient into
 probabilities: it differentiates the probability of each level with
 respect to age and averages the derivatives over the students. The
@@ -591,13 +591,13 @@ ranked_sim <- fit(
   ),
   chains = 1
 )
-summary(ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]"))
+summary(ranked_sim, variables = c("beta[x]", "Sigma[B,C]", "Sigma[C,C]"))
 #> Bayesian probit choice model
 #> Formula: rank ~ x | 0 | 0 
 #> Samples: 500 retained per chain, 1 chain
 #>    variable dgp  mean  mode     sd rhat ess_bulk
 #>     beta[x] 1.0 1.008 1.002 0.0832 1.04     20.7
-#>  Sigma[C,B] 0.2 0.181 0.173 0.1071 1.01     92.1
+#>  Sigma[B,C] 0.2 0.181 0.173 0.1071 1.01     92.1
 #>  Sigma[C,C] 1.0 0.901 0.875 0.1956 1.02    100.6
 ```
 
@@ -658,8 +658,9 @@ platform_effects[platform_effects$covariate == "hours", ]
 #>      hours        Xbox 3.88 -0.01239 0.00710 -0.02720 -0.001858
 ```
 
-Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about 3.3 percentage points.
+The PC gains from additional gaming hours: at the average covariates,
+one more weekly hour raises the probability of ranking it first by about
+3.3 percentage points.
 
 ## Further reading
 

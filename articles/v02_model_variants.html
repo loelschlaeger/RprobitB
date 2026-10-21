@@ -119,14 +119,14 @@ the error differences is reported as
 and columns named by the alternatives other than the base. For three
 alternatives <code>A</code>, <code>B</code>, and <code>C</code> with
 base <code>A</code>, its entries are <code>Sigma[B,B]</code>,
-<code>Sigma[C,B]</code>, and <code>Sigma[C,C]</code>.</li>
+<code>Sigma[B,C]</code>, and <code>Sigma[C,C]</code>.</li>
 <li>
 <code>scale = c(z = -1)</code> fixes the coefficient of
 <code>z</code> to <code>-1</code> instead, so that all other
 coefficients are measured in units of it. With a price coefficient fixed
 in this way, the other coefficients are willingness-to-pay values.</li>
 </ul>
-<p>The sampler draws all parameters without restriction and rescales
+<p>The sampler draws all parameters under the default scale and rescales
 every retained draw afterwards. Variables that the normalization fixes
 remain in the draws but are omitted from <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>,
 <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>, and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code>.</p>
@@ -334,24 +334,24 @@ describe the other modes relative to flying.</p>
 <span><span class="co">#&gt; Formula: choice ~ wait + vcost + travel | income + size | 0 </span></span>
 <span><span class="co">#&gt; Samples: 100 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;            variable     mean     mode       sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;          beta[wait] -0.04170 -0.03770 0.006276 1.024     85.8</span></span>
-<span><span class="co">#&gt;         beta[vcost] -0.01019 -0.01043 0.006035 1.017    218.1</span></span>
-<span><span class="co">#&gt;        beta[travel] -0.00234 -0.00228 0.000477 0.997    140.5</span></span>
-<span><span class="co">#&gt;    beta[income_bus] -0.01937 -0.02206 0.012379 0.998    193.2</span></span>
-<span><span class="co">#&gt;    beta[income_car] -0.00827 -0.00948 0.011904 1.007    185.0</span></span>
-<span><span class="co">#&gt;  beta[income_train] -0.05439 -0.05161 0.014400 1.022    136.9</span></span>
-<span><span class="co">#&gt;      beta[size_bus]  0.30867  0.33864 0.170632 0.995    163.2</span></span>
-<span><span class="co">#&gt;      beta[size_car]  0.46220  0.41894 0.137625 1.004    121.9</span></span>
-<span><span class="co">#&gt;    beta[size_train]  0.55684  0.49506 0.157059 0.998    159.1</span></span>
-<span><span class="co">#&gt;       beta[ASC_bus] -0.27292 -0.34044 0.530872 1.025     79.6</span></span>
-<span><span class="co">#&gt;       beta[ASC_car] -2.37693 -2.48845 0.727407 1.022     75.6</span></span>
-<span><span class="co">#&gt;     beta[ASC_train]  0.16750  0.22844 0.493696 1.025    100.8</span></span>
-<span><span class="co">#&gt;      Sigma[bus,car]  0.81164  0.75407 0.198171 0.998     73.5</span></span>
-<span><span class="co">#&gt;      Sigma[car,car]  1.31994  1.09571 0.427862 1.003    109.2</span></span>
-<span><span class="co">#&gt;    Sigma[bus,train]  0.87544  0.83972 0.194091 1.050    120.6</span></span>
-<span><span class="co">#&gt;    Sigma[car,train]  0.89804  0.82013 0.332554 1.005    106.3</span></span>
-<span><span class="co">#&gt;  Sigma[train,train]  1.35777  1.15071 0.446422 1.034     88.5</span></span></code></pre></div>
+<span><span class="co">#&gt;            variable     mean     mode      sd  rhat ess_bulk</span></span>
+<span><span class="co">#&gt;          beta[wait] -0.04188 -0.04006 0.00652 1.046    112.9</span></span>
+<span><span class="co">#&gt;         beta[vcost] -0.01007 -0.00885 0.00572 1.012    138.6</span></span>
+<span><span class="co">#&gt;        beta[travel] -0.00229 -0.00212 0.00048 1.006    170.0</span></span>
+<span><span class="co">#&gt;    beta[income_bus] -0.01997 -0.02326 0.01341 1.014    154.1</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.00777 -0.00383 0.01248 1.002    125.3</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.05500 -0.05437 0.01580 1.010    156.1</span></span>
+<span><span class="co">#&gt;      beta[size_bus]  0.31953  0.33854 0.17308 1.004     96.0</span></span>
+<span><span class="co">#&gt;      beta[size_car]  0.46445  0.46630 0.15032 1.008    143.4</span></span>
+<span><span class="co">#&gt;    beta[size_train]  0.55137  0.50749 0.16320 0.998    173.4</span></span>
+<span><span class="co">#&gt;       beta[ASC_bus] -0.31978 -0.30292 0.49109 1.020    174.1</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -2.44535 -2.47761 0.65390 1.023    105.3</span></span>
+<span><span class="co">#&gt;     beta[ASC_train]  0.13314  0.09080 0.47702 1.003    176.1</span></span>
+<span><span class="co">#&gt;      Sigma[bus,car]  0.79268  0.74525 0.19456 1.013     89.2</span></span>
+<span><span class="co">#&gt;      Sigma[car,car]  1.26997  1.01145 0.46387 1.014     91.8</span></span>
+<span><span class="co">#&gt;    Sigma[bus,train]  0.85220  0.76111 0.22212 1.023     62.5</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.84464  0.70134 0.33300 1.005     94.4</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.30340  1.07223 0.44668 1.002     72.0</span></span></code></pre></div>
 <p>The three attribute coefficients are negative: waiting, cost, and
 travel time reduce the utility of a mode. The income and party size
 coefficients are alternative-specific and have no direct interpretation
@@ -363,11 +363,11 @@ respect to a covariate, for a traveler with average covariates:</p>
 <span><span class="va">mode_effects</span><span class="op">[</span><span class="va">mode_effects</span><span class="op">$</span><span class="va">covariate</span> <span class="op">==</span> <span class="st">"income"</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt; Marginal effects at the average covariate values</span></span>
 <span><span class="co">#&gt; Change in the probability of the alternative per unit of the covariate, with 95% interval </span></span>
-<span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower    upper</span></span>
-<span><span class="co">#&gt;     income         air 21.3  0.00940 0.00360  0.00196  0.01594</span></span>
-<span><span class="co">#&gt;     income         bus 21.3  0.00134 0.00222 -0.00335  0.00519</span></span>
-<span><span class="co">#&gt;     income         car 21.3  0.00873 0.00340  0.00160  0.01504</span></span>
-<span><span class="co">#&gt;     income       train 21.3 -0.01947 0.00422 -0.02856 -0.01209</span></span></code></pre></div>
+<span><span class="co">#&gt;  covariate alternative   at     mean      sd    lower   upper</span></span>
+<span><span class="co">#&gt;     income         air 21.3  0.00970 0.00405  0.00300  0.0177</span></span>
+<span><span class="co">#&gt;     income         bus 21.3  0.00129 0.00254 -0.00329  0.0064</span></span>
+<span><span class="co">#&gt;     income         car 21.3  0.00876 0.00395  0.00182  0.0161</span></span>
+<span><span class="co">#&gt;     income       train 21.3 -0.01976 0.00503 -0.02951 -0.0109</span></span></code></pre></div>
 <p>A higher household income lowers the probability of the train and
 raises the probabilities of the plane and the car.</p>
 </div>
@@ -382,10 +382,10 @@ rows of its available alternatives, and no further argument is needed.
 The sampler imputes the latent utilities of unavailable alternatives
 without restriction, so they do not affect the choice, and predictions
 assign them probability zero.</p>
-<p>Between Montreal and Toronto, travelers can fly, drive, or take the
-train, but not all modes are available on every trip. The
+<p>In the Montreal-Toronto corridor, travelers can fly, drive, or take
+the train, but not all modes are available on every trip. The
 <code>ModeCanada</code> data of the <strong>mlogit</strong> package
-cover 4324 trips in this corridor <span class="citation">(<a href="#ref-Bhat1995">Bhat 1995</a>)</span>.</p>
+cover 4324 trips in this corridor from the survey analyzed by <span class="citation">Bhat (<a href="#ref-Bhat1995">1995</a>)</span>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ModeCanada"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ModeCanada</span><span class="op">)</span></span>
@@ -402,12 +402,12 @@ cover 4324 trips in this corridor <span class="citation">(<a href="#ref-Bhat1995
 out-of-vehicle time (<code>ovt</code>), and service frequency
 (<code>freq</code>) vary across modes; household income and the number
 of urban trip endpoints are trip-specific. The data also contain the
-bus, which was chosen on only 16 trips, too few to identify its
-coefficients and error covariances, so the bus rows and the trips on
-which it was chosen are removed. Cost and income are converted from
-Canadian dollars to euro, and trips with a single remaining alternative
-are dropped. The first 1000 of the remaining trips keep the computation
-short.</p>
+bus, which was chosen on only 16 trips, too few to estimate its
+coefficients and error covariances reliably, so the bus rows and the
+trips on which it was chosen are removed. Cost and income are converted
+from Canadian dollars to euro, and trips with a single remaining
+alternative are dropped. The first 1000 of the remaining trips keep the
+computation short.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">cost</span> <span class="op">/</span> <span class="fl">1.6151</span></span>
 <span><span class="va">ModeCanada</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">ModeCanada</span><span class="op">$</span><span class="va">income</span> <span class="op">/</span> <span class="fl">1.6151</span></span>
@@ -425,10 +425,10 @@ short.</p>
 <span><span class="co">#&gt;   2   3 </span></span>
 <span><span class="co">#&gt; 283 717</span></span></code></pre></div>
 <p>The choice sets are read from the rows of each trip. Every trip is
-one decider, and the model has the same structure as the travel mode
-model above: three attributes of type <code>A</code>, two trip
-characteristics of type <code>B</code>, and the constants, all relative
-to <code>air</code>.</p>
+one decider, and the model has a structure similar to the travel mode
+model above: four attributes of type <code>A</code>, two trip
+characteristics of type <code>B</code>, and the constants, the latter
+two relative to <code>air</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">canada</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">cost</span> <span class="op">+</span> <span class="va">ivt</span> <span class="op">+</span> <span class="va">ovt</span> <span class="op">+</span> <span class="va">freq</span> <span class="op">|</span> <span class="va">income</span> <span class="op">+</span> <span class="va">urban</span>,</span>
@@ -448,18 +448,18 @@ to <code>air</code>.</p>
 <span><span class="co">#&gt; Samples: 200 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;            variable     mean     mode       sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;          beta[cost] -0.03614 -0.03529 0.006487 1.012     40.1</span></span>
-<span><span class="co">#&gt;           beta[ivt] -0.00631 -0.00594 0.000915 1.002     55.7</span></span>
-<span><span class="co">#&gt;           beta[ovt] -0.01667 -0.01658 0.002220 1.023    179.4</span></span>
-<span><span class="co">#&gt;          beta[freq]  0.02712  0.02743 0.006130 0.998    328.7</span></span>
-<span><span class="co">#&gt;    beta[income_car] -0.01988 -0.01955 0.006597 1.007    144.3</span></span>
-<span><span class="co">#&gt;  beta[income_train] -0.03481 -0.03255 0.008165 1.006     87.6</span></span>
-<span><span class="co">#&gt;     beta[urban_car] -0.44231 -0.45658 0.149197 1.001    135.6</span></span>
-<span><span class="co">#&gt;   beta[urban_train]  0.72395  0.60698 0.262505 1.009     58.0</span></span>
-<span><span class="co">#&gt;       beta[ASC_car] -0.47693 -0.43504 0.532641 1.033     31.3</span></span>
-<span><span class="co">#&gt;     beta[ASC_train] -0.29753 -0.19986 0.526724 1.017     37.0</span></span>
-<span><span class="co">#&gt;    Sigma[car,train]  0.41255  0.38586 0.222533 1.026     47.9</span></span>
-<span><span class="co">#&gt;  Sigma[train,train]  1.32069  0.98664 0.572940 1.011     46.1</span></span></code></pre></div>
+<span><span class="co">#&gt;          beta[cost] -0.03861 -0.04294 0.006221 1.167     9.21</span></span>
+<span><span class="co">#&gt;           beta[ivt] -0.00597 -0.00585 0.000901 1.079    48.36</span></span>
+<span><span class="co">#&gt;           beta[ovt] -0.01643 -0.01617 0.002106 1.015   148.74</span></span>
+<span><span class="co">#&gt;          beta[freq]  0.02727  0.02711 0.005576 0.998   297.30</span></span>
+<span><span class="co">#&gt;    beta[income_car] -0.01877 -0.02007 0.006493 1.023   112.36</span></span>
+<span><span class="co">#&gt;  beta[income_train] -0.03183 -0.02892 0.008030 1.035    97.02</span></span>
+<span><span class="co">#&gt;     beta[urban_car] -0.46648 -0.53531 0.139539 1.042   125.89</span></span>
+<span><span class="co">#&gt;   beta[urban_train]  0.66458  0.63736 0.225104 1.028    65.27</span></span>
+<span><span class="co">#&gt;       beta[ASC_car] -0.69174 -0.56908 0.557235 1.178     8.68</span></span>
+<span><span class="co">#&gt;     beta[ASC_train] -0.53208 -0.32726 0.566234 1.198     7.68</span></span>
+<span><span class="co">#&gt;    Sigma[car,train]  0.35176  0.28137 0.183704 1.147    13.48</span></span>
+<span><span class="co">#&gt;  Sigma[train,train]  1.10065  0.92096 0.461415 1.118    24.22</span></span></code></pre></div>
 <p>The income coefficients of car and train are negative: a higher
 income increases the probability of flying.</p>
 </div>
@@ -564,7 +564,7 @@ shows the density of a student whose systematic utility is zero.</p>
 <p>A covariate shifts the density along the utility axis, so one
 coefficient per covariate describes its effect on all four levels. The
 age coefficient is small and its credible interval includes zero: the
-age of a student does not affect how much they smoke. The factor
+age of a student does not clearly affect how much they smoke. The factor
 <code>Exer</code> enters through its dummy variables relative to the
 students who exercise frequently; both coefficients are negative but
 uncertain. <code>interpret(type = "ame")</code> translates the age
@@ -607,13 +607,13 @@ covariance parameters with the true values.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ranked_sim</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"Sigma[C,B]"</span>, <span class="st">"Sigma[C,C]"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ranked_sim</span>, variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[x]"</span>, <span class="st">"Sigma[B,C]"</span>, <span class="st">"Sigma[C,C]"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
 <span><span class="co">#&gt; Formula: rank ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;    variable dgp  mean  mode     sd rhat ess_bulk</span></span>
 <span><span class="co">#&gt;     beta[x] 1.0 1.008 1.002 0.0832 1.04     20.7</span></span>
-<span><span class="co">#&gt;  Sigma[C,B] 0.2 0.181 0.173 0.1071 1.01     92.1</span></span>
+<span><span class="co">#&gt;  Sigma[B,C] 0.2 0.181 0.173 0.1071 1.01     92.1</span></span>
 <span><span class="co">#&gt;  Sigma[C,C] 1.0 0.901 0.875 0.1956 1.02    100.6</span></span></code></pre></div>
 <p>The <code>Game</code> data of the <strong>mlogit</strong> package
 contain complete rankings of six gaming platforms by 91 Dutch
@@ -666,8 +666,9 @@ hours:</p>
 <span><span class="co">#&gt;      hours PlayStation 3.88 -0.00498 0.00666 -0.01740  0.005442</span></span>
 <span><span class="co">#&gt;      hours  PSPortable 3.88 -0.00858 0.00317 -0.01686 -0.002878</span></span>
 <span><span class="co">#&gt;      hours        Xbox 3.88 -0.01239 0.00710 -0.02720 -0.001858</span></span></code></pre></div>
-<p>Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about 3.3 percentage points.</p>
+<p>The PC gains from additional gaming hours: at the average covariates,
+one more weekly hour raises the probability of ranking it first by about
+3.3 percentage points.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>

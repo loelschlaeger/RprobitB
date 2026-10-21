@@ -80,9 +80,9 @@ each.
 ``` r
 
 logLik(full_model)
-#> 'log Lik.' -175.7391 (df=17)
+#> 'log Lik.' -175.1807 (df=17)
 logLik(reduced_model)
-#> 'log Lik.' -238.2957 (df=8)
+#> 'log Lik.' -238.829 (df=8)
 ```
 
 The log-likelihood values can be used to compute AIC and BIC, but it
@@ -107,28 +107,28 @@ developed the PSIS-LOO approximation and its diagnostics.
 
 WAIC(full_model)
 #> Warning: 
-#> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -194.9 15.9
-#> p_waic        20.3  3.6
-#> waic         389.8 31.7
+#> elpd_waic   -194.8 16.2
+#> p_waic        20.9  3.9
+#> waic         389.6 32.5
 #> 
-#> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 WAIC(reduced_model)
 #> Warning: 
-#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -240.6  9.0
-#> p_waic        13.7  1.9
-#> waic         481.2 18.0
+#> elpd_waic   -238.2  9.0
+#> p_waic        11.8  1.9
+#> waic         476.5 17.9
 #> 
-#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 ```
 
 The **loo** package warns when the contribution of a decider to `p_waic`
@@ -138,7 +138,7 @@ here this concerns a few travelers. PSIS-LOO is preferable in this
 situation, because it comes with a diagnostic per traveler: a Pareto-k
 value below the printed threshold means that the importance sampling for
 that traveler is reliable, and larger values usually belong to travelers
-whose choices have low probability under the model ([Vehtari et al.
+with a strong influence on the posterior ([Vehtari et al.
 2024](#ref-Vehtari2024)).
 
 ``` r
@@ -146,29 +146,31 @@ whose choices have low probability under the model ([Vehtari et al.
 loo_full <- loo(full_model)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_reduced <- loo(reduced_model)
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_full
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo   -195.3 15.9
-#> p_loo        20.6  3.7
-#> looic       390.6 31.9
+#> elpd_loo   -195.0 16.3
+#> p_loo        21.1  4.0
+#> looic       390.1 32.5
 #> ------
 #> MCSE of elpd_loo is NA.
 #> MCSE and ESS estimates assume independent draws (r_eff=1).
 #> 
 #> Pareto k diagnostic values:
 #>                           Count Pct.    Min. ESS
-#> (-Inf, 0.57]   (good)     203   96.7%   54      
+#> (-Inf, 0.57]   (good)     203   96.7%   47      
 #>    (0.57, 1]   (bad)        6    2.9%   <NA>    
 #>     (1, Inf)   (very bad)   1    0.5%   <NA>    
 #> See help('pareto-k-diagnostic') for details.
 ```
 
 The **loo** package plots the Pareto-k values per traveler. Points above
-the dashed line mark the travelers whose choices are hardest to predict
-from the choices of the other travelers.
+the dashed line mark the travelers whose leave-one-out estimates are
+unreliable, often those whose choices are hard to predict from the
+choices of the other travelers.
 
 ``` r
 
@@ -186,7 +188,7 @@ with its standard error.
 loo::loo_compare(loo_full, loo_reduced)
 #>   model elpd_diff se_diff p_worse diag_diff       diag_elpd
 #>  model1       0.0     0.0      NA           7 k_psis > 0.57
-#>  model2     -45.4    10.5    1.00
+#>  model2     -43.5    10.9    1.00           2 k_psis > 0.57
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -195,38 +197,23 @@ loo::loo_compare(loo_full, loo_reduced)
 
 The models are named in the order of the arguments, so `model1` is the
 full model. It ranks first, and the reduced model falls short by several
-standard errors of the difference: income and party size improve the
-prediction of the mode choice.
+standard errors of the difference: income, party size, and the
+alternative-specific constants together improve the prediction of the
+mode choice.
 
 ## Bayes factors
 
 [`bayes_factor()`](https://loelschlaeger.de/RprobitB/reference/bayes_factor.md)
-estimates the marginal likelihood of each model with the
-**bridgesampling** package ([Gronau et al. 2020](#ref-Gronau2020); [Meng
-and Wong 1996](#ref-Meng1996)) and returns their ratio; values above one
-favor the first model.
+estimates the marginal likelihood of each model by bridge sampling
+([Gronau et al. 2020](#ref-Gronau2020); [Meng and Wong
+1996](#ref-Meng1996)) and returns their ratio; values above one favor
+the first model.
 
 ``` r
 
 set.seed(1)
 bayes_factor(full_model, reduced_model, log = TRUE)
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Warning: effective sample size calculation failed in iterative's scheme
-#> uncertainty calculation
-#> Estimated log Bayes factor in favor of model1 over model2: 21.24877
+#> Estimated log Bayes factor in favor of model1 over model2: 22.34780
 ```
 
 The large positive log Bayes factor also favors the full model.
@@ -280,7 +267,7 @@ the fixed model falls short by several standard errors of the
 difference. Letting the price sensitivity vary between travelers thus
 improves the prediction of a traveler’s choices.
 
-## Ordered and ranked responses
+## Ordered responses
 
 The criteria are not specific to unordered choices. The ordered model of
 the vignette [Model specification and

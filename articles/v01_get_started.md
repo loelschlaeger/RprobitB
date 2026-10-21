@@ -50,19 +50,20 @@ the level by taking utility differences with respect to a base
 alternative and fixes the scale by restricting either one error variance
 or one coefficient. These two restrictions are the normalization of the
 model. The coefficient vector $`\beta_n`$ is common to all deciders
-unless random effects are specified, in which case the coefficients of
-every decider are drawn from a population distribution whose parameters
-are estimated. The vignette [Model specification and
+unless random effects or latent classes are specified, in which case the
+coefficients of every decider are drawn from a population distribution
+whose parameters are estimated. The vignette [Model specification and
 variants](https://loelschlaeger.de/RprobitB/articles/v02_model_variants.html)
 describes the normalization and the prior distribution, and the vignette
 [Modeling preference
 heterogeneity](https://loelschlaeger.de/RprobitB/articles/v03_heterogeneity.html)
 the specification of heterogeneous coefficients. Bayesian estimation of
-the multinomial probit model goes back to McCulloch and Rossi
-([1994](#ref-McCulloch1994)) and Imai and van Dyk
+the multinomial probit model in **RprobitB** builds on Albert and Chib
+([1993](#ref-Albert1993)), McCulloch and Rossi
+([1994](#ref-McCulloch1994)), and Imai and van Dyk
 ([2005](#ref-Imai2005a)), and Oelschläger
-([2026](#ref-Oelschlaeger2026c)) gives a unified account of the
-heterogeneity models that **RprobitB** implements.
+([2026](#ref-Oelschlaeger2026c)) discusses the heterogeneity models on
+which **RprobitB** builds.
 
 ## A stated choice experiment on train trips
 
@@ -70,14 +71,14 @@ In 1987, a stated choice experiment commissioned by the Dutch national
 railways presented 235 travelers with pairs of hypothetical train trips
 and asked which trip of each pair they would choose ([Ben-Akiva et al.
 1993](#ref-BenAkiva1993)). The two trips of a pair differ in price,
-travel time, number of changes, and comfort class, and every traveler
-evaluated about twelve pairs. The **mlogit** package ([Croissant
-2020](#ref-Croissant2020)) provides the 2929 choices as the data set
-`Train`. The data are in wide format: one row per choice occasion, with
-the attributes of trip `A` in the columns ending in `_A` and those of
-trip `B` in the columns ending in `_B`. Prices are recorded in cents of
-Dutch guilders and travel times in minutes; both are converted to euro
-and hours below.
+travel time, number of changes, or comfort class, and the travelers
+evaluated about twelve pairs on average. The **mlogit** package
+([Croissant 2020](#ref-Croissant2020)) provides the 2929 choices as the
+data set `Train`. The data are in wide format: one row per choice
+occasion, with the attributes of trip `A` in the columns ending in `_A`
+and those of trip `B` in the columns ending in `_B`. Prices are recorded
+in cents of Dutch guilders and travel times in minutes; both are
+converted to euro and hours below.
 
 ``` r
 
@@ -117,8 +118,8 @@ common to both alternatives, which places them in the first part of the
 formula. The second part takes characteristics of the decider and the
 alternative-specific constants; here it contains only the `0` that
 removes the constants, which is appropriate because the labels `A` and
-`B` of the two trips were assigned arbitrarily and carry no utility of
-their own. The comfort class is stored as an integer but is a
+`B` of the two trips are generic and are not expected to carry utility
+of their own. The comfort class is stored as an integer but is a
 categorical variable with three levels; `factor(comfort)` expands it
 into dummy variables, as in [`lm()`](https://rdrr.io/r/stats/lm.html).
 The arguments `column_decider` and `column_occasion` identify the
@@ -219,7 +220,7 @@ The last two columns of the summary table are the convergence
 diagnostics recommended by Vehtari et al. ([2021](#ref-Vehtari2021)):
 
 - `rhat` compares the variance between the chains with the variance
-  within the chains and equals one when all chains sample the same
+  within the chains and is close to one when all chains sample the same
   distribution.
 - `ess_bulk` is the effective sample size for the bulk of the posterior
   distribution, that is, for its central part around the median as
@@ -338,10 +339,11 @@ Rank plots are a more sensitive check ([Vehtari et al.
 2021](#ref-Vehtari2021)). The draws of all chains are pooled and ranked,
 and the histogram of the ranks is drawn for every chain. If all chains
 sample the same distribution, every chain receives ranks from the whole
-range with equal frequency, and the histograms are uniform. A chain that
-remains in a subregion of the posterior, for example because it has not
-yet left the region of its starting values, receives predominantly small
-or large ranks, and its histogram is peaked at one end.
+range with about equal frequency, and the histograms are close to
+uniform. A chain that remains in a subregion of the posterior, for
+example because it has not yet left the region of its starting values,
+receives ranks from only part of the range, and its histogram is not
+uniform.
 
 Autocorrelation plots show, for every chain, the correlation between
 draws that are $`k`$ iterations apart as a function of the lag $`k`$.
@@ -442,11 +444,11 @@ head(model.frame(model))
 ## Parallel chains
 
 The chains of a fit are independent of each other, so **RprobitB** can
-run them in parallel on several cores, which reduces the computing time
-in proportion to the number of chains. The package does not select a
-parallel backend itself. The chains run through the **future** framework
-([Bengtsson 2021](#ref-Bengtsson2021)), so a plan set before fitting is
-used automatically.
+run them in parallel on several cores, which can reduce the computing
+time by up to a factor equal to the number of chains. The package does
+not select a parallel backend itself. The chains run through the
+**future** framework ([Bengtsson 2021](#ref-Bengtsson2021)), so a plan
+set before fitting is used automatically.
 
 ``` r
 
@@ -482,6 +484,11 @@ In interactive sessions, all chains report their progress through the
   model comparison by WAIC, PSIS-LOO, and Bayes factors.
 
 ## References
+
+Albert, James H., and Siddhartha Chib. 1993. “Bayesian Analysis of
+Binary and Polychotomous Response Data.” *Journal of the American
+Statistical Association* 88 (422): 669–79.
+<https://doi.org/10.1080/01621459.1993.10476321>.
 
 Ben-Akiva, Moshe, Denis Bolduc, and Mark Bradley. 1993. “Estimation of
 Travel Choice Models with Randomly Distributed Values of Time.”

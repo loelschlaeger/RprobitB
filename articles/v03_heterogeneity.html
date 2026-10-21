@@ -88,10 +88,10 @@ in two ways, which can be combined: random coefficients follow a
 continuous distribution over the population, and latent classes divide
 the deciders into groups. Both are requested through arguments of
 <code><a href="../reference/fit.html">fit()</a></code>. <span class="citation">Oelschläger (<a href="#ref-Oelschlaeger2026c">2026</a>)</span> treats the methodological
-background. Each variant is first estimated on simulated data, where the
-estimates can be compared with the parameters that generated them, and
-then applied to data of the <strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant
-2020</a>)</span>.</p>
+background. Random coefficients and latent classes are first estimated
+on simulated data, where the estimates can be compared with the
+parameters that generated them, and then applied to data of the
+<strong>mlogit</strong> package <span class="citation">(<a href="#ref-Croissant2020">Croissant 2020</a>)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loelschlaeger.de/RprobitB/">RprobitB</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
@@ -164,9 +164,9 @@ distribution. A normal coefficient can take any value, which suits an
 attribute that some deciders like and others dislike. A log-normal
 coefficient is the exponential of a normal variable and therefore always
 positive, or, with the trailing minus, always negative. It suits an
-attribute whose sign is fixed by theory: a higher price does not raise
-the utility of any decider. Log-normal effects are estimated on the
-latent normal scale, so <code>mu</code>, <code>Omega</code>, and the
+attribute whose sign is fixed by theory: a higher price is not expected
+to raise the utility of any decider. Log-normal effects are estimated on
+the latent normal scale, so <code>mu</code>, <code>Omega</code>, and the
 individual draws refer to the normal variable whose exponential enters
 the utility. The second choice is whether an effect is correlated with
 the other correlated effects. Deciders who value travel time may also
@@ -223,9 +223,9 @@ for the log-normal price is minus the exponential of
 <span><span class="co">#&gt; 1 `comfort` compensates 1.48 `price` (95% interval 0.965 to 2.21)</span></span></code></pre></div>
 <p>The <code>dgp_parameters</code> set the latent mean of the price
 effect to <code>-1</code>, so the true median price coefficient is
-<code>-exp(-1)</code>, about <code>-0.37</code>. Dividing the true time
-and comfort coefficients by it gives the true trade-offs, with which the
-posterior means above can be compared.</p>
+<code>-exp(-1)</code>, about <code>-0.37</code>. Dividing the negated
+true time and comfort coefficients by it gives the true trade-offs, with
+which the posterior means above can be compared.</p>
 <p>The panel structure makes individual coefficients estimable.
 <code>coef(level = "individual")</code> returns the posterior mean
 coefficient of every decider, on the latent normal scale for log-normal
@@ -293,28 +293,28 @@ computation short.</p>
 <span><span class="co">#&gt; Formula: choice ~ pf + cl + loc + wk + tod + seas | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 1000 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;        variable   mean    mode     sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;        beta[wk]  1.624  1.5764 0.1391 1.003    159.7</span></span>
-<span><span class="co">#&gt;       beta[tod] -8.980 -9.0026 0.1567 1.003    128.6</span></span>
-<span><span class="co">#&gt;      beta[seas] -9.266 -9.2319 0.1518 1.012    245.2</span></span>
-<span><span class="co">#&gt;          mu[cl] -0.276 -0.2658 0.0609 1.011    523.3</span></span>
-<span><span class="co">#&gt;         mu[loc]  2.017  1.9528 0.2421 0.999    271.7</span></span>
-<span><span class="co">#&gt;    Omega[cl,cl]  0.293  0.2564 0.0666 1.002    228.7</span></span>
-<span><span class="co">#&gt;   Omega[cl,loc]  0.113  0.0905 0.1085 0.999    312.9</span></span>
-<span><span class="co">#&gt;  Omega[loc,loc]  2.276  2.3401 0.5982 1.002    209.5</span></span>
-<span><span class="co">#&gt;      Sigma[2,2]  7.522  7.0696 1.3642 1.016     63.1</span></span>
-<span><span class="co">#&gt;      Sigma[2,3]  2.546  2.6579 0.9192 1.031     18.7</span></span>
-<span><span class="co">#&gt;      Sigma[3,3]  5.704  5.2130 1.1423 1.013     66.0</span></span>
-<span><span class="co">#&gt;      Sigma[2,4]  3.811  3.6332 0.9793 1.017     54.8</span></span>
-<span><span class="co">#&gt;      Sigma[3,4]  1.974  1.6923 0.8011 1.099     12.5</span></span>
-<span><span class="co">#&gt;      Sigma[4,4]  6.025  5.7407 1.3194 1.009     59.7</span></span></code></pre></div>
+<span><span class="co">#&gt;        beta[wk]  1.627  1.6840 0.1519 1.006   161.65</span></span>
+<span><span class="co">#&gt;       beta[tod] -8.986 -8.9637 0.1507 1.002   144.42</span></span>
+<span><span class="co">#&gt;      beta[seas] -9.260 -9.2397 0.1571 1.002   149.04</span></span>
+<span><span class="co">#&gt;          mu[cl] -0.282 -0.2576 0.0597 0.999   418.63</span></span>
+<span><span class="co">#&gt;         mu[loc]  2.007  1.9973 0.2404 1.002   301.81</span></span>
+<span><span class="co">#&gt;    Omega[cl,cl]  0.291  0.2939 0.0631 1.000   202.01</span></span>
+<span><span class="co">#&gt;   Omega[cl,loc]  0.117  0.0826 0.1111 0.999   327.63</span></span>
+<span><span class="co">#&gt;  Omega[loc,loc]  2.193  2.0267 0.6389 1.003   153.12</span></span>
+<span><span class="co">#&gt;      Sigma[2,2]  6.871  6.3217 1.1552 1.082    12.00</span></span>
+<span><span class="co">#&gt;      Sigma[2,3]  2.184  2.1077 0.7864 1.047    44.29</span></span>
+<span><span class="co">#&gt;      Sigma[3,3]  5.589  5.3450 1.1481 1.000    82.03</span></span>
+<span><span class="co">#&gt;      Sigma[2,4]  3.458  3.2415 0.9377 1.131     6.27</span></span>
+<span><span class="co">#&gt;      Sigma[3,4]  2.063  1.9800 0.8144 1.012    24.39</span></span>
+<span><span class="co">#&gt;      Sigma[4,4]  6.030  5.3189 1.3320 1.027    42.21</span></span></code></pre></div>
 <p>Because the price coefficient is fixed, <code><a href="../reference/interpret.html">interpret()</a></code>
 reports the coefficients directly as willingness to pay in cents per
 kWh, with credible intervals:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">electricity</span>, effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cl"</span>, <span class="st">"loc"</span>, <span class="st">"wk"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 1 `cl` compensates -0.276 `pf` (95% interval -0.398 to -0.165)</span></span>
-<span><span class="co">#&gt; 1 `loc` compensates 2.02 `pf` (95% interval 1.55 to 2.5)</span></span>
-<span><span class="co">#&gt; 1 `wk` compensates 1.62 `pf` (95% interval 1.38 to 1.92)</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 `cl` compensates -0.282 `pf` (95% interval -0.404 to -0.169)</span></span>
+<span><span class="co">#&gt; 1 `loc` compensates 2.01 `pf` (95% interval 1.59 to 2.51)</span></span>
+<span><span class="co">#&gt; 1 `wk` compensates 1.63 `pf` (95% interval 1.35 to 1.93)</span></span></code></pre></div>
 <p>On average, households would accept a price about 2 cents per kWh
 higher for a local supplier, and would need a price about 0.28 cents
 lower for each additional year of contract length.</p>
@@ -405,12 +405,12 @@ well-separated classes: a majority with coefficients centered at
 <span><span class="co">#&gt; Samples: 750 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      variable  dgp   mean   mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     weight[1]  0.6  0.599  0.612 0.0558 1.02    228.0</span></span>
-<span><span class="co">#&gt;     weight[2]  0.4  0.401  0.388 0.0558 1.02    228.0</span></span>
-<span><span class="co">#&gt;       mu[x,1] -1.0 -0.970 -0.956 0.1171 1.03    117.4</span></span>
-<span><span class="co">#&gt;       mu[x,2]  2.0  2.016  1.980 0.3179 1.07     33.6</span></span>
-<span><span class="co">#&gt;  Omega[x,x,1]  0.2  0.278  0.183 0.1465 1.03     34.9</span></span>
-<span><span class="co">#&gt;  Omega[x,x,2]  0.2  0.505  0.248 0.4485 1.04     24.6</span></span></code></pre></div>
+<span><span class="co">#&gt;     weight[1]  0.6  0.618  0.623 0.0552 1.01    312.7</span></span>
+<span><span class="co">#&gt;     weight[2]  0.4  0.382  0.377 0.0552 1.01    312.7</span></span>
+<span><span class="co">#&gt;       mu[x,1] -1.0 -1.135 -1.115 0.1187 1.03     85.3</span></span>
+<span><span class="co">#&gt;       mu[x,2]  2.0  1.832  1.815 0.2969 1.14     14.7</span></span>
+<span><span class="co">#&gt;  Omega[x,x,1]  0.2  0.275  0.207 0.1386 1.02     43.4</span></span>
+<span><span class="co">#&gt;  Omega[x,x,2]  0.2  0.362  0.177 0.2800 1.07     25.4</span></span></code></pre></div>
 <p><code><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics()</a></code> returns the posterior
 distribution of the number of occupied classes, the membership
 probabilities of the deciders after relabeling, and the co-clustering
@@ -423,21 +423,21 @@ belong to the same class:</p>
 <span><span class="co">#&gt; 1         1           0</span></span>
 <span><span class="co">#&gt; 2         2           1</span></span>
 <span><span class="va">class_diagnostics</span><span class="op">$</span><span class="va">membership</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt;       class_1     class_2</span></span>
-<span><span class="co">#&gt; 1 0.996000000 0.004000000</span></span>
-<span><span class="co">#&gt; 2 0.005333333 0.994666667</span></span>
-<span><span class="co">#&gt; 3 0.006666667 0.993333333</span></span>
-<span><span class="co">#&gt; 4 0.994000000 0.006000000</span></span>
-<span><span class="co">#&gt; 5 0.054666667 0.945333333</span></span>
-<span><span class="co">#&gt; 6 0.994666667 0.005333333</span></span>
+<span><span class="co">#&gt;        class_1     class_2</span></span>
+<span><span class="co">#&gt; 1 0.9920000000 0.008000000</span></span>
+<span><span class="co">#&gt; 2 0.9973333333 0.002666667</span></span>
+<span><span class="co">#&gt; 3 0.0006666667 0.999333333</span></span>
+<span><span class="co">#&gt; 4 0.9540000000 0.046000000</span></span>
+<span><span class="co">#&gt; 5 0.0453333333 0.954666667</span></span>
+<span><span class="co">#&gt; 6 0.9980000000 0.002000000</span></span>
 <span><span class="va">class_diagnostics</span><span class="op">$</span><span class="va">co_clustering</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
-<span><span class="co">#&gt;             1           2          3          4          5          6</span></span>
-<span><span class="co">#&gt; 1 1.000000000 0.009333333 0.01066667 0.99000000 0.05866667 0.99200000</span></span>
-<span><span class="co">#&gt; 2 0.009333333 1.000000000 0.98800000 0.01133333 0.94133333 0.01066667</span></span>
-<span><span class="co">#&gt; 3 0.010666667 0.988000000 1.00000000 0.01266667 0.94000000 0.01200000</span></span>
-<span><span class="co">#&gt; 4 0.990000000 0.011333333 0.01266667 1.00000000 0.06066667 0.98866667</span></span>
-<span><span class="co">#&gt; 5 0.058666667 0.941333333 0.94000000 0.06066667 1.00000000 0.06000000</span></span>
-<span><span class="co">#&gt; 6 0.992000000 0.010666667 0.01200000 0.98866667 0.06000000 1.00000000</span></span></code></pre></div>
+<span><span class="co">#&gt;             1           2           3          4          5           6</span></span>
+<span><span class="co">#&gt; 1 1.000000000 0.989333333 0.008666667 0.94733333 0.05333333 0.990000000</span></span>
+<span><span class="co">#&gt; 2 0.989333333 1.000000000 0.003333333 0.95266667 0.04800000 0.995333333</span></span>
+<span><span class="co">#&gt; 3 0.008666667 0.003333333 1.000000000 0.04666667 0.95400000 0.002666667</span></span>
+<span><span class="co">#&gt; 4 0.947333333 0.952666667 0.046666667 1.00000000 0.09133333 0.952000000</span></span>
+<span><span class="co">#&gt; 5 0.053333333 0.048000000 0.954000000 0.09133333 1.00000000 0.047333333</span></span>
+<span><span class="co">#&gt; 6 0.990000000 0.995333333 0.002666667 0.95200000 0.04733333 1.000000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="class-specific-coefficients">Class-specific coefficients<a class="anchor" aria-label="anchor" href="#class-specific-coefficients"></a>
@@ -476,22 +476,22 @@ common to both classes.</p>
 <span><span class="co">#&gt; Formula: choice ~ price + time + change + factor(comfort) | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 750 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;      variable    mean    mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;     weight[1]   0.737   0.747 0.0838 1.04     51.9</span></span>
-<span><span class="co">#&gt;     weight[2]   0.263   0.253 0.0838 1.04     51.9</span></span>
-<span><span class="co">#&gt;  beta[time,1]  -2.452  -2.292 0.9905 1.04    127.1</span></span>
-<span><span class="co">#&gt;  beta[time,2] -17.957 -16.472 3.1601 1.06     38.8</span></span></code></pre></div>
+<span><span class="co">#&gt;      variable   mean    mode     sd rhat ess_bulk</span></span>
+<span><span class="co">#&gt;     weight[1]   0.76   0.763 0.0827 1.03     80.2</span></span>
+<span><span class="co">#&gt;     weight[2]   0.24   0.237 0.0827 1.03     80.2</span></span>
+<span><span class="co">#&gt;  beta[time,1]  -2.70  -2.689 0.9932 1.02    116.3</span></span>
+<span><span class="co">#&gt;  beta[time,2] -19.16 -18.465 4.2328 1.07     30.9</span></span></code></pre></div>
 <p>With the price coefficient fixed at <code>-1</code>, the
-class-specific time coefficients are values of travel time in euro per
-hour, which <code><a href="../reference/interpret.html">interpret()</a></code> reports class by class:</p>
+class-specific time coefficients give the values of travel time in euro
+per hour, which <code><a href="../reference/interpret.html">interpret()</a></code> reports class by class:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time_by_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">train_classes</span>, effects <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
 <span><span class="va">time_by_class</span></span>
-<span><span class="co">#&gt; Class 1: 1 `time` compensates -2.45 `price` (95% interval -4.39 to -0.457)</span></span>
-<span><span class="co">#&gt; Class 2: 1 `time` compensates -18 `price` (95% interval -25.1 to -12.9)</span></span></code></pre></div>
-<p>The larger class values an hour at about 2 euro, the smaller class at
-about 18 euro. The smaller class chooses the faster trip almost
-regardless of its price.</p>
+<span><span class="co">#&gt; Class 1: 1 `time` compensates -2.7 `price` (95% interval -4.69 to -0.617)</span></span>
+<span><span class="co">#&gt; Class 2: 1 `time` compensates -19.2 `price` (95% interval -29 to -12.5)</span></span></code></pre></div>
+<p>The larger class values an hour at about 3 euro, the smaller class at
+about 19 euro. The smaller class is willing to pay much more for a
+faster trip.</p>
 </div>
 <div class="section level3">
 <h3 id="weight-based-class-updates">Weight-based class updates<a class="anchor" aria-label="anchor" href="#weight-based-class-updates"></a>
@@ -536,10 +536,10 @@ refits:</p>
 <span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">mixture</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    variable  dgp estimate</span></span>
 <span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
-<span><span class="co">#&gt; 2 weight[1]  0.6     0.60</span></span>
-<span><span class="co">#&gt; 3 weight[2]  0.4     0.40</span></span>
-<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.97</span></span>
-<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.02</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.62</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.38</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -1.13</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     1.83</span></span></code></pre></div>
 <p>The weight-based refit is compared in the same way:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weight_based</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mixture</span>, class_update <span class="op">=</span> <span class="st">"weight_based"</span><span class="op">)</span></span>
@@ -547,9 +547,9 @@ refits:</p>
 <span><span class="co">#&gt;    variable  dgp estimate</span></span>
 <span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
 <span><span class="co">#&gt; 2 weight[1]  0.6     0.59</span></span>
-<span><span class="co">#&gt; 3 weight[2]  0.4     0.41</span></span>
-<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.97</span></span>
-<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.07</span></span></code></pre></div>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.36</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -1.12</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     1.86</span></span></code></pre></div>
 <p>The run ends with the two classes that generated the data, and their
 weights and means agree closely with those of the fixed fit.</p>
 </div>
@@ -562,7 +562,8 @@ permits empty classes, and places the symmetric Dirichlet prior with a
 small concentration
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mn>0</mn></msub><annotation encoding="application/x-tex">e_0</annotation></semantics></math>
 on the weights, which favors emptying redundant classes <span class="citation">(<a href="#ref-Rousseau2011">Rousseau and Mengersen
-2011</a>; <a href="#ref-FruehwirthSchnatter2019">Frühwirth-Schnatter and
+2011</a>; <a href="#ref-MalsinerWalli2016">Malsiner-Walli et al.
+2016</a>; <a href="#ref-FruehwirthSchnatter2019">Frühwirth-Schnatter and
 Malsiner-Walli 2019</a>)</span>. The default
 <code>class_concentration = c(shape = 1, rate = 200)</code> is the gamma
 hyperprior
@@ -594,41 +595,41 @@ the two-class data.</p>
 <span><span class="co">#&gt; Samples: 750 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;             variable occupied     mean     mode      sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;            weight[1]  1.00000  0.60878  0.62153 0.05298 1.00   316.69</span></span>
-<span><span class="co">#&gt;            weight[2]  1.00000  0.39005  0.37736 0.05273 1.00   337.03</span></span>
-<span><span class="co">#&gt;            weight[3]  0.02133  0.02858  0.01073 0.02138   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[4]  0.00733  0.01301  0.00363 0.02024   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[5]  0.00467  0.01266  0.00564 0.01420   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[6]  0.00133  0.00423  0.00731 0.00436   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,1]  1.00000 -0.95243 -0.95808 0.12464 1.03    92.87</span></span>
-<span><span class="co">#&gt;              mu[x,2]  1.00000  2.13124  2.11263 0.35323 1.16     9.74</span></span>
-<span><span class="co">#&gt;              mu[x,3]  0.02133  0.40818  0.39094 1.19553   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,4]  0.00733  2.32226  0.97869 2.43339   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,5]  0.00467 -0.54511  0.20298 1.04749   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,6]  0.00133 -0.81074 -2.33580 2.16523   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,1]  1.00000  0.28914  0.21966 0.15896 1.07    40.23</span></span>
-<span><span class="co">#&gt;         Omega[x,x,2]  1.00000  0.42953  0.22110 0.33864 1.05    29.34</span></span>
-<span><span class="co">#&gt;         Omega[x,x,3]  0.02133  0.71605  0.28818 1.05517   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,4]  0.00733  0.98367  0.45090 1.44551   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,5]  0.00467  0.95121  0.61553 0.68835   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,6]  0.00133  1.34552  1.73501 0.55299   NA       NA</span></span>
-<span><span class="co">#&gt;  class_concentration  1.00000  0.01055  0.00548 0.00622 1.05    31.31</span></span>
-<span><span class="co">#&gt;            n_classes  1.00000  2.03467  2.00000 0.18300 1.01   266.40</span></span>
+<span><span class="co">#&gt;            weight[1]  1.00000  0.61802  0.62838 0.05178 1.01    729.1</span></span>
+<span><span class="co">#&gt;            weight[2]  1.00000  0.37856  0.37186 0.05368 1.02    349.1</span></span>
+<span><span class="co">#&gt;            weight[3]  0.03467  0.05224  0.01974 0.04147   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[4]  0.03333  0.03626  0.01349 0.04866   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[5]  0.00533  0.00956  0.00195 0.01504   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[6]  0.00133  0.00340  0.00219 0.00173   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,1]  1.00000 -1.14030 -1.15168 0.12543 1.03     96.7</span></span>
+<span><span class="co">#&gt;              mu[x,2]  1.00000  1.89668  1.78273 0.27343 1.27      5.7</span></span>
+<span><span class="co">#&gt;              mu[x,3]  0.03467  1.09325  1.42932 1.09009   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,4]  0.03333 -0.24880 -0.24878 1.53157   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,5]  0.00533  1.29557  2.55815 2.41940   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,6]  0.00133 -0.08372  1.04971 1.60921   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,1]  1.00000  0.28842  0.20069 0.12886 1.02     58.5</span></span>
+<span><span class="co">#&gt;         Omega[x,x,2]  1.00000  0.42168  0.18883 0.42827 1.16     10.4</span></span>
+<span><span class="co">#&gt;         Omega[x,x,3]  0.03467  0.42224  0.24757 0.30951   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,4]  0.03333  0.78478  0.21063 1.57086   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,5]  0.00533  0.56200  0.61469 0.33339   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,6]  0.00133  2.08182  3.91833 2.60743   NA       NA</span></span>
+<span><span class="co">#&gt;  class_concentration  1.00000  0.00979  0.00516 0.00658 1.06     28.7</span></span>
+<span><span class="co">#&gt;            n_classes  1.00000  2.07467  2.00000 0.26294 1.01    131.9</span></span>
 <span><span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
 <span><span class="co">#&gt;   n_classes probability</span></span>
 <span><span class="co">#&gt; 1         1  0.00000000</span></span>
-<span><span class="co">#&gt; 2         2  0.96533333</span></span>
-<span><span class="co">#&gt; 3         3  0.03466667</span></span>
+<span><span class="co">#&gt; 2         2  0.92533333</span></span>
+<span><span class="co">#&gt; 3         3  0.07466667</span></span>
 <span><span class="co">#&gt; 4         4  0.00000000</span></span>
 <span><span class="co">#&gt; 5         5  0.00000000</span></span>
 <span><span class="co">#&gt; 6         6  0.00000000</span></span>
 <span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    variable  dgp estimate</span></span>
 <span><span class="co">#&gt; 1 n_classes  2.0     2.00</span></span>
-<span><span class="co">#&gt; 2 weight[1]  0.6     0.61</span></span>
-<span><span class="co">#&gt; 3 weight[2]  0.4     0.39</span></span>
-<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.95</span></span>
-<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.13</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.62</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.38</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -1.14</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     1.90</span></span></code></pre></div>
 <p>Although the prior favors a single class, the posterior concentrates
 on two occupied classes, whose weights and means are close to the true
 values. When the number of classes varies, a class exists only in part
@@ -653,7 +654,7 @@ deciders, which for
 and 100 deciders is about three. <strong>RprobitB</strong> updates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 with the augmentation of <span class="citation">Escobar and West (<a href="#ref-Escobar1995">1995</a>)</span> and the allocations with the
-algorithm of <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span>. <code>max_classes</code> caps the
+auxiliary-parameter algorithm of <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span>. <code>max_classes</code> caps the
 number of classes the sampler may open, and <code><a href="../reference/fit.html">fit()</a></code> warns
 when the draws reach the cap.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -667,63 +668,75 @@ when the draws reach the cap.</p>
 <span><span class="co">#&gt; Samples: 500 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;             variable occupied    mean    mode      sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;            weight[1]    1.000  0.5685  0.5958 0.05849 1.09    82.57</span></span>
-<span><span class="co">#&gt;            weight[2]    1.000  0.3537  0.3901 0.06813 1.19     8.41</span></span>
-<span><span class="co">#&gt;            weight[3]    0.742  0.0635  0.0168 0.06162   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[4]    0.451  0.0443  0.0141 0.04632   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[5]    0.224  0.0322  0.0108 0.03460   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[6]    0.106  0.0242  0.0100 0.02979   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[7]    0.041  0.0185  0.0100 0.01459   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[8]    0.012  0.0158  0.0102 0.00793   NA       NA</span></span>
-<span><span class="co">#&gt;            weight[9]    0.004  0.0100  0.0100 0.00000   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,1]    1.000 -0.9258 -0.9635 0.13235 1.06    52.42</span></span>
-<span><span class="co">#&gt;              mu[x,2]    1.000  2.2077  2.3205 0.38147 1.38     4.74</span></span>
-<span><span class="co">#&gt;              mu[x,3]    0.742  0.1650  1.9745 2.40162   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,4]    0.451 -0.2067 -0.7589 2.40757   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,5]    0.224  0.3518  1.5561 2.36452   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,6]    0.106  0.1140  1.1443 2.56043   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,7]    0.041  0.5399  1.7911 2.93945   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,8]    0.012 -1.2729 -3.0764 2.64053   NA       NA</span></span>
-<span><span class="co">#&gt;              mu[x,9]    0.004  0.1918  2.5965 4.25500   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,1]    1.000  0.2387  0.1741 0.12861 1.14    42.60</span></span>
-<span><span class="co">#&gt;         Omega[x,x,2]    1.000  0.5320  0.2344 0.57860 1.16    15.86</span></span>
-<span><span class="co">#&gt;         Omega[x,x,3]    0.742  0.6916  0.2411 0.93024   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,4]    0.451  0.7536  0.2373 2.28477   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,5]    0.224  0.8659  0.2684 1.61849   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,6]    0.106  0.6208  0.2596 1.06427   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,7]    0.041  0.6214  0.2427 0.64990   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,8]    0.012  1.5313  0.4921 2.05348   NA       NA</span></span>
-<span><span class="co">#&gt;         Omega[x,x,9]    0.004  0.5778  0.4473 0.24483   NA       NA</span></span>
-<span><span class="co">#&gt;  class_concentration    1.000  0.5463  0.4323 0.32123 1.04   132.92</span></span>
-<span><span class="co">#&gt;            n_classes    1.000  3.5800  3.0000 1.41972 1.10    23.33</span></span>
+<span><span class="co">#&gt;            weight[1]    1.000  0.5323  0.6083 0.10986 1.27     5.92</span></span>
+<span><span class="co">#&gt;            weight[2]    1.000  0.3571  0.3644 0.11937 1.28     5.72</span></span>
+<span><span class="co">#&gt;            weight[3]    0.805  0.0641  0.0200 0.06084   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[4]    0.605  0.0476  0.0158 0.05773   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[5]    0.429  0.0278  0.0104 0.02612   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[6]    0.289  0.0318  0.0135 0.02854   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[7]    0.181  0.0257  0.0107 0.02989   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[8]    0.122  0.0205  0.0100 0.02223   NA       NA</span></span>
+<span><span class="co">#&gt;            weight[9]    0.069  0.0170  0.0100 0.01546   NA       NA</span></span>
+<span><span class="co">#&gt;           weight[10]    0.031  0.0174  0.0101 0.00999   NA       NA</span></span>
+<span><span class="co">#&gt;           weight[11]    0.011  0.0136  0.0100 0.00809   NA       NA</span></span>
+<span><span class="co">#&gt;           weight[12]    0.006  0.0117  0.0100 0.00408   NA       NA</span></span>
+<span><span class="co">#&gt;           weight[13]    0.002  0.0100  0.0100 0.00000   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,1]    1.000 -1.1148 -1.1781 0.17049 1.05    62.54</span></span>
+<span><span class="co">#&gt;              mu[x,2]    1.000  1.8692  2.1421 0.64724 1.32     7.39</span></span>
+<span><span class="co">#&gt;              mu[x,3]    0.805 -0.2369  1.6009 3.31953   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,4]    0.605 -0.3603 -0.8308 3.25487   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,5]    0.429 -1.1368 -0.8213 3.79477   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,6]    0.289 -0.4837  1.9800 3.29194   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,7]    0.181 -0.7671 -0.9556 2.73932   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,8]    0.122 -0.6547 -0.8231 3.69232   NA       NA</span></span>
+<span><span class="co">#&gt;              mu[x,9]    0.069 -0.4186  1.0988 3.06803   NA       NA</span></span>
+<span><span class="co">#&gt;             mu[x,10]    0.031 -0.6543 -1.8369 3.29058   NA       NA</span></span>
+<span><span class="co">#&gt;             mu[x,11]    0.011 -0.6973  0.8497 3.60567   NA       NA</span></span>
+<span><span class="co">#&gt;             mu[x,12]    0.006  0.9367 -1.4803 5.11586   NA       NA</span></span>
+<span><span class="co">#&gt;             mu[x,13]    0.002  0.0697  2.2815 3.14027   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,1]    1.000  0.3126  0.1990 0.30804 1.07    27.11</span></span>
+<span><span class="co">#&gt;         Omega[x,x,2]    1.000  1.3438  0.2239 2.25255 1.40     4.44</span></span>
+<span><span class="co">#&gt;         Omega[x,x,3]    0.805  1.0208  0.3007 1.75722   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,4]    0.605  1.0156  0.2233 2.91330   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,5]    0.429  1.2465  0.3244 2.67494   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,6]    0.289  0.9747  0.2875 2.02209   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,7]    0.181  1.0192  0.2788 4.25513   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,8]    0.122  1.4017  0.3535 4.82466   NA       NA</span></span>
+<span><span class="co">#&gt;         Omega[x,x,9]    0.069  0.6399  0.2752 0.78157   NA       NA</span></span>
+<span><span class="co">#&gt;        Omega[x,x,10]    0.031  0.5897  0.3287 0.56743   NA       NA</span></span>
+<span><span class="co">#&gt;        Omega[x,x,11]    0.011  0.8239  0.2859 1.13439   NA       NA</span></span>
+<span><span class="co">#&gt;        Omega[x,x,12]    0.006  0.6240  0.3273 0.44771   NA       NA</span></span>
+<span><span class="co">#&gt;        Omega[x,x,13]    0.002  0.3609  0.4205 0.08452   NA       NA</span></span>
+<span><span class="co">#&gt;  class_concentration    1.000  0.6665  0.4540 0.39941 1.04    32.94</span></span>
+<span><span class="co">#&gt;            n_classes    1.000  4.5500  3.0000 2.22856 1.10    15.57</span></span>
 <span><span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
 <span><span class="co">#&gt;    n_classes probability</span></span>
 <span><span class="co">#&gt; 1          1       0.000</span></span>
-<span><span class="co">#&gt; 2          2       0.258</span></span>
-<span><span class="co">#&gt; 3          3       0.291</span></span>
-<span><span class="co">#&gt; 4          4       0.227</span></span>
-<span><span class="co">#&gt; 5          5       0.118</span></span>
-<span><span class="co">#&gt; 6          6       0.065</span></span>
-<span><span class="co">#&gt; 7          7       0.029</span></span>
-<span><span class="co">#&gt; 8          8       0.008</span></span>
-<span><span class="co">#&gt; 9          9       0.004</span></span>
-<span><span class="co">#&gt; 10        10       0.000</span></span>
-<span><span class="co">#&gt; 11        11       0.000</span></span>
-<span><span class="co">#&gt; 12        12       0.000</span></span>
-<span><span class="co">#&gt; 13        13       0.000</span></span>
+<span><span class="co">#&gt; 2          2       0.195</span></span>
+<span><span class="co">#&gt; 3          3       0.200</span></span>
+<span><span class="co">#&gt; 4          4       0.176</span></span>
+<span><span class="co">#&gt; 5          5       0.140</span></span>
+<span><span class="co">#&gt; 6          6       0.108</span></span>
+<span><span class="co">#&gt; 7          7       0.059</span></span>
+<span><span class="co">#&gt; 8          8       0.053</span></span>
+<span><span class="co">#&gt; 9          9       0.038</span></span>
+<span><span class="co">#&gt; 10        10       0.020</span></span>
+<span><span class="co">#&gt; 11        11       0.005</span></span>
+<span><span class="co">#&gt; 12        12       0.004</span></span>
+<span><span class="co">#&gt; 13        13       0.002</span></span>
 <span><span class="co">#&gt; 14        14       0.000</span></span>
 <span><span class="co">#&gt; 15        15       0.000</span></span>
 <span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">dynamic</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    variable  dgp estimate</span></span>
 <span><span class="co">#&gt; 1 n_classes  2.0     3.00</span></span>
-<span><span class="co">#&gt; 2 weight[1]  0.6     0.57</span></span>
-<span><span class="co">#&gt; 3 weight[2]  0.4     0.35</span></span>
-<span><span class="co">#&gt; 4   mu[x,1] -1.0    -0.93</span></span>
-<span><span class="co">#&gt; 5   mu[x,2]  2.0     2.21</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 weight[1]  0.6     0.53</span></span>
+<span><span class="co">#&gt; 3 weight[2]  0.4     0.36</span></span>
+<span><span class="co">#&gt; 4   mu[x,1] -1.0    -1.11</span></span>
+<span><span class="co">#&gt; 5   mu[x,2]  2.0     1.87</span></span></code></pre></div>
 <p>The occupancy distribution is wider than under the sparse finite
 prior and assigns most of its probability to three or more classes. This
 reflects the prior, which expects about three occupied classes for 100
-deciders. The two largest classes nevertheless match the two true
+deciders. The two largest classes nevertheless resemble the two true
 groups, because the superfluous classes contain only a few deciders.</p>
 </div>
 </div>
@@ -754,10 +767,10 @@ around <code>-1</code>.</p>
 <span><span class="co">#&gt; Formula: rank ~ x | 0 | 0 </span></span>
 <span><span class="co">#&gt; Samples: 1000 retained per chain, 1 chain</span></span>
 <span><span class="co">#&gt;    variable    dgp   mean   mode     sd rhat ess_bulk</span></span>
-<span><span class="co">#&gt;       mu[x] -1.000 -1.080 -1.082 0.0965 1.02     43.6</span></span>
-<span><span class="co">#&gt;  Omega[x,x]  0.300  0.319  0.315 0.0952 1.04     41.4</span></span>
-<span><span class="co">#&gt;  Sigma[B,C] -0.112 -0.271 -0.233 0.1778 1.00    128.8</span></span>
-<span><span class="co">#&gt;  Sigma[C,C]  3.001  3.516  3.104 0.7839 1.01     65.7</span></span></code></pre></div>
+<span><span class="co">#&gt;       mu[x] -1.000 -0.985 -0.975 0.0949 1.00     37.2</span></span>
+<span><span class="co">#&gt;  Omega[x,x]  0.300  0.352  0.330 0.0986 1.03     30.1</span></span>
+<span><span class="co">#&gt;  Sigma[B,C] -0.150 -0.172 -0.197 0.0796 1.01     50.9</span></span>
+<span><span class="co">#&gt;  Sigma[C,C]  0.487  0.488  0.461 0.1162 1.02     57.1</span></span></code></pre></div>
 <p>The summary shows the population mean and variance beside their true
 values. Ordered responses accept the same arguments, and latent classes
 are requested in the same way as above, with
@@ -818,6 +831,12 @@ Classical and Bayesian Estimates of Individual Mean Partworths.”</span>
 Kamakura, Wagner A., and Gary J. Russell. 1989. <span>“A Probabilistic
 Choice Model for Market Segmentation and Elasticity Structure.”</span>
 <em>Journal of Marketing Research</em> 26 (4): 379–90.
+</div>
+<div id="ref-MalsinerWalli2016" class="csl-entry">
+Malsiner-Walli, Gertraud, Sylvia Frühwirth-Schnatter, and Bettina Grün.
+2016. <span>“Model-Based Clustering Based on Sparse Finite
+<span>G</span>aussian Mixtures.”</span> <em>Statistics and
+Computing</em> 26 (1–2): 303–24. <a href="https://doi.org/10.1007/s11222-014-9500-2" class="external-link">https://doi.org/10.1007/s11222-014-9500-2</a>.
 </div>
 <div id="ref-Neal2000" class="csl-entry">
 Neal, Radford M. 2000. <span>“Markov Chain Sampling Methods for
