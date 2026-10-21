@@ -108,6 +108,19 @@ exponential and negative for every decider. `time` and `comfort` share
 the estimated covariance `Omega[time,comfort]`, while `price` has no
 covariance entry with either of them.
 
+The mixing distribution of an effect is the distribution of its
+coefficient in the population. `plot(type = "mixture")` draws its
+estimate, the density that `mu` and `Omega` imply, averaged over the
+retained draws. For simulated data, dashed lines add the mixing
+distributions that generated them:
+
+``` r
+
+plot(mixing, type = "mixture")
+```
+
+![](v03_heterogeneity_files/figure-html/mixing-plot-1.png)
+
 [`interpret()`](https://loelschlaeger.de/RprobitB/reference/interpret.md)
 converts the coefficients into trade-offs. For a random effect it uses
 the coefficient of the median decider, which for the log-normal price is
@@ -230,6 +243,32 @@ On average, households would accept a price about 2 cents per kWh higher
 for a local supplier, and would need a price about 0.28 cents lower for
 each additional year of contract length.
 
+The estimated mixing distributions show how these valuations vary
+between households:
+
+``` r
+
+plot(electricity, type = "mixture") +
+  ggplot2::geom_vline(xintercept = 0, linetype = "dotted") +
+  ggplot2::labs(x = "willingness to pay in cents per kWh")
+```
+
+![](v03_heterogeneity_files/figure-html/electricity-plot-1.png)
+
+``` r
+
+draws <- posterior::as_draws_matrix(electricity)
+longer <- mean(pnorm(
+  0, draws[, "mu[cl]"], sqrt(draws[, "Omega[cl,cl]"]), lower.tail = FALSE
+))
+distant <- mean(pnorm(0, draws[, "mu[loc]"], sqrt(draws[, "Omega[loc,loc]"])))
+```
+
+Although the average household prefers shorter contracts, the estimated
+mixing distribution assigns a positive valuation of contract length to
+about 30 percent of the households, and about 9 percent prefer a
+supplier that is not local.
+
 ## Latent classes
 
 A single normal distribution is a strong assumption about the
@@ -316,6 +355,17 @@ summary(mixture, variables = c(
 #>  Omega[x,x,1]  0.2  0.275  0.207 0.1386 1.02     43.4
 #>  Omega[x,x,2]  0.2  0.362  0.177 0.2800 1.07     25.4
 ```
+
+For an effect with latent classes, the mixing distribution is the
+mixture of the class-specific normal distributions, weighted by the
+class weights:
+
+``` r
+
+plot(mixture, type = "mixture")
+```
+
+![](v03_heterogeneity_files/figure-html/classes-plot-1.png)
 
 [`latent_class_diagnostics()`](https://loelschlaeger.de/RprobitB/reference/latent_class_diagnostics.md)
 returns the posterior distribution of the number of occupied classes,
@@ -653,6 +703,22 @@ and assigns most of its probability to three or more classes. This
 reflects the prior, which expects about three occupied classes for 100
 deciders. The two largest classes nevertheless resemble the two true
 groups, because the superfluous classes contain only a few deciders.
+
+The estimated mixing distributions of the three refits also show the two
+groups that generated the data:
+
+``` r
+
+bayesplot::bayesplot_grid(
+  plot(weight_based, type = "mixture"),
+  plot(sparse, type = "mixture"),
+  plot(dynamic, type = "mixture"),
+  titles = c("weight-based", "sparse", "Dirichlet process"),
+  grid_args = list(nrow = 1)
+)
+```
+
+![](v03_heterogeneity_files/figure-html/refits-plot-1.png)
 
 ## Ordered and ranked responses
 

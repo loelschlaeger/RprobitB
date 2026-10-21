@@ -40,6 +40,7 @@
     <li><a class="dropdown-item" href="../articles/v05_model_evaluation.html">Bayesian model evaluation</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -213,11 +214,19 @@ is minus its exponential and negative for every decider.
 <code>time</code> and <code>comfort</code> share the estimated
 covariance <code>Omega[time,comfort]</code>, while <code>price</code>
 has no covariance entry with either of them.</p>
+<p>The mixing distribution of an effect is the distribution of its
+coefficient in the population. <code>plot(type = "mixture")</code> draws
+its estimate, the density that <code>mu</code> and <code>Omega</code>
+imply, averaged over the retained draws. For simulated data, dashed
+lines add the mixing distributions that generated them:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixing</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="v03_heterogeneity_files/figure-html/mixing-plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p><code><a href="../reference/interpret.html">interpret()</a></code> converts the coefficients into trade-offs.
 For a random effect it uses the coefficient of the median decider, which
 for the log-normal price is minus the exponential of
 <code>mu[price]</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">mixing</span>, reference <span class="op">=</span> <span class="st">"price"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1 `time` compensates -2.33 `price` (95% interval -3.57 to -1.62)</span></span>
 <span><span class="co">#&gt; 1 `comfort` compensates 1.48 `price` (95% interval 0.965 to 2.21)</span></span></code></pre></div>
@@ -233,7 +242,7 @@ effects. The histogram shows the price coefficient of each of the 100
 deciders, all negative as the log-normal specification enforces, with
 the left tail containing the deciders who react most strongly to a
 higher price.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mixing</span>, level <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        price        time    comfort</span></span>
@@ -269,7 +278,7 @@ Fixing the price coefficient to <code>-1</code> identifies the scale and
 expresses every other coefficient in cents per kWh, that is, directly as
 a willingness to pay. The fit uses the first 100 households to keep the
 computation short.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Electricity"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Electricity</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"([a-z]+)([1-4])$"</span>, <span class="st">"\\1_\\2"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Electricity</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">Electricity</span><span class="op">$</span><span class="va">occasion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html" class="external-link">ave</a></span><span class="op">(</span><span class="va">Electricity</span><span class="op">$</span><span class="va">id</span>, <span class="va">Electricity</span><span class="op">$</span><span class="va">id</span>, FUN <span class="op">=</span> <span class="va">seq_along</span><span class="op">)</span></span>
@@ -310,7 +319,7 @@ computation short.</p>
 <p>Because the price coefficient is fixed, <code><a href="../reference/interpret.html">interpret()</a></code>
 reports the coefficients directly as willingness to pay in cents per
 kWh, with credible intervals:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">electricity</span>, effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cl"</span>, <span class="st">"loc"</span>, <span class="st">"wk"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1 `cl` compensates -0.282 `pf` (95% interval -0.404 to -0.169)</span></span>
 <span><span class="co">#&gt; 1 `loc` compensates 2.01 `pf` (95% interval 1.59 to 2.51)</span></span>
@@ -318,6 +327,23 @@ kWh, with credible intervals:</p>
 <p>On average, households would accept a price about 2 cents per kWh
 higher for a local supplier, and would need a price about 0.28 cents
 lower for each additional year of contract length.</p>
+<p>The estimated mixing distributions show how these valuations vary
+between households:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">electricity</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"willingness to pay in cents per kWh"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="v03_heterogeneity_files/figure-html/electricity-plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_matrix.html" class="external-link">as_draws_matrix</a></span><span class="op">(</span><span class="va">electricity</span><span class="op">)</span></span>
+<span><span class="va">longer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span></span>
+<span>  <span class="fl">0</span>, <span class="va">draws</span><span class="op">[</span>, <span class="st">"mu[cl]"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">draws</span><span class="op">[</span>, <span class="st">"Omega[cl,cl]"</span><span class="op">]</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">distant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">draws</span><span class="op">[</span>, <span class="st">"mu[loc]"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">draws</span><span class="op">[</span>, <span class="st">"Omega[loc,loc]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Although the average household prefers shorter contracts, the
+estimated mixing distribution assigns a positive valuation of contract
+length to about 30 percent of the households, and about 9 percent prefer
+a supplier that is not local.</p>
 </div>
 </div>
 <div class="section level2">
@@ -378,7 +404,7 @@ sampling, so that every draw uses the same labels <span class="citation">(<a hre
 <p>The following demonstration uses eight occasions per decider and two
 well-separated classes: a majority with coefficients centered at
 <code>-1</code> and a minority centered at <code>2</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">choice</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  random_effects <span class="op">=</span> <span class="st">"x"</span>,</span>
@@ -411,12 +437,18 @@ well-separated classes: a majority with coefficients centered at
 <span><span class="co">#&gt;       mu[x,2]  2.0  1.832  1.815 0.2969 1.14     14.7</span></span>
 <span><span class="co">#&gt;  Omega[x,x,1]  0.2  0.275  0.207 0.1386 1.02     43.4</span></span>
 <span><span class="co">#&gt;  Omega[x,x,2]  0.2  0.362  0.177 0.2800 1.07     25.4</span></span></code></pre></div>
+<p>For an effect with latent classes, the mixing distribution is the
+mixture of the class-specific normal distributions, weighted by the
+class weights:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixture</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="v03_heterogeneity_files/figure-html/classes-plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p><code><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics()</a></code> returns the posterior
 distribution of the number of occupied classes, the membership
 probabilities of the deciders after relabeling, and the co-clustering
 matrix. Its entries are the posterior probabilities that two deciders
 belong to the same class:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">class_diagnostics</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">mixture</span><span class="op">)</span></span>
 <span><span class="va">class_diagnostics</span><span class="op">$</span><span class="va">occupancy</span></span>
 <span><span class="co">#&gt;   n_classes probability</span></span>
@@ -450,7 +482,7 @@ and gives the time coefficient two class-specific values through
 <code>latent_class_effects</code> without a random effect, so each class
 has its own value of travel time and the remaining coefficients are
 common to both classes.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Train"</span>, package <span class="op">=</span> <span class="st">"mlogit"</span><span class="op">)</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_A</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
 <span><span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">&lt;-</span> <span class="va">Train</span><span class="op">$</span><span class="va">price_B</span> <span class="op">/</span> <span class="fl">100</span> <span class="op">/</span> <span class="fl">2.20371</span></span>
@@ -484,7 +516,7 @@ common to both classes.</p>
 <p>With the price coefficient fixed at <code>-1</code>, the
 class-specific time coefficients give the values of travel time in euro
 per hour, which <code><a href="../reference/interpret.html">interpret()</a></code> reports class by class:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time_by_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret.html">interpret</a></span><span class="op">(</span><span class="va">train_classes</span>, effects <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
 <span><span class="va">time_by_class</span></span>
 <span><span class="co">#&gt; Class 1: 1 `time` compensates -2.7 `price` (95% interval -4.69 to -0.617)</span></span>
@@ -519,7 +551,7 @@ helper puts the posterior means of these four variables and the most
 probable number of occupied classes beside the true values. Applied to
 the fit with two fixed classes, it gives the reference for the
 refits:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">recover_classes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">variables</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weight[1]"</span>, <span class="st">"weight[2]"</span>, <span class="st">"mu[x,1]"</span>, <span class="st">"mu[x,2]"</span><span class="op">)</span></span>
 <span>  <span class="va">occupancy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latent_class_diagnostics.html">latent_class_diagnostics</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">occupancy</span></span>
@@ -541,7 +573,7 @@ refits:</p>
 <span><span class="co">#&gt; 4   mu[x,1] -1.0    -1.13</span></span>
 <span><span class="co">#&gt; 5   mu[x,2]  2.0     1.83</span></span></code></pre></div>
 <p>The weight-based refit is compared in the same way:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weight_based</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mixture</span>, class_update <span class="op">=</span> <span class="st">"weight_based"</span><span class="op">)</span></span>
 <span><span class="fu">recover_classes</span><span class="op">(</span><span class="va">weight_based</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    variable  dgp estimate</span></span>
@@ -587,7 +619,7 @@ with
 and the 100 deciders of the simulated data, the prior expects close to a
 single occupied class. The refit sets the upper bound to six classes for
 the two-class data.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sparse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mixture</span>, classes <span class="op">=</span> <span class="fl">6</span>, class_update <span class="op">=</span> <span class="st">"sparse"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sparse</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian probit choice model</span></span>
@@ -657,7 +689,7 @@ with the augmentation of <span class="citation">Escobar and West (<a href="#ref-
 auxiliary-parameter algorithm of <span class="citation">Neal (<a href="#ref-Neal2000">2000</a>)</span>. <code>max_classes</code> caps the
 number of classes the sampler may open, and <code><a href="../reference/fit.html">fit()</a></code> warns
 when the draws reach the cap.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dynamic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span></span>
 <span>  <span class="va">mixture</span>, class_update <span class="op">=</span> <span class="st">"dirichlet_process"</span>, max_classes <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  iterations <span class="op">=</span> <span class="fl">1000</span></span>
@@ -738,6 +770,17 @@ prior and assigns most of its probability to three or more classes. This
 reflects the prior, which expects about three occupied classes for 100
 deciders. The two largest classes nevertheless resemble the two true
 groups, because the superfluous classes contain only a few deciders.</p>
+<p>The estimated mixing distributions of the three refits also show the
+two groups that generated the data:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot_grid.html" class="external-link">bayesplot_grid</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">weight_based</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sparse</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dynamic</span>, type <span class="op">=</span> <span class="st">"mixture"</span><span class="op">)</span>,</span>
+<span>  titles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weight-based"</span>, <span class="st">"sparse"</span>, <span class="st">"Dirichlet process"</span><span class="op">)</span>,</span>
+<span>  grid_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="v03_heterogeneity_files/figure-html/refits-plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -749,7 +792,7 @@ specification and variants</a> introduces. The following demonstration
 uses a simulated panel of rankings: 100 deciders order three
 alternatives five times each, with a coefficient that varies normally
 around <code>-1</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ranked_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>  <span class="va">rank</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="fl">0</span>,</span>
 <span>  choice_type <span class="op">=</span> <span class="st">"ranked"</span>,</span>
