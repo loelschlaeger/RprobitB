@@ -39,19 +39,18 @@ set.seed(1)
 
 ## A random price coefficient
 
-The `Train` data of the **mlogit** package contain about a dozen choices by
-each of 235 Dutch travelers between two hypothetical train trips that differ
-in price, travel time, number of changes, and comfort class [@BenAkiva1993].
-As in the vignette [Get started with RprobitB][v01], the prices are converted
-to euro and the travel times to hours. That vignette fits one price
-coefficient for all travelers. Here the price coefficient is a normal random
-effect, as introduced in the vignette
-[Modeling preference heterogeneity][v03]: every traveler has an individual
-price coefficient, drawn from a normal population distribution whose mean
-and variance are estimated. The fit uses the first 100 travelers. The
-individual draws are saved because the conditional predictions below use
-them, and thinning keeps 100 draws in total, which keeps the predictions
-fast.
+The `Train` data of the **mlogit** package contain 5 to 19 choices, about a
+dozen on average, by each of 235 Dutch travelers between two hypothetical train
+trips that differ in price, travel time, number of changes, or comfort class
+[@BenAkiva1993]. As in the vignette [Get started with RprobitB][v01], the prices
+are converted to euro and the travel times to hours. That vignette fits one
+price coefficient for all travelers. Here the price coefficient is a normal
+random effect, as introduced in the vignette [Modeling preference
+heterogeneity][v03]: every traveler has an individual price coefficient, drawn
+from a normal population distribution whose mean and variance are estimated. The
+fit uses the first 100 travelers. The individual draws are saved because the
+conditional predictions below use them, and thinning keeps 100 draws in total,
+which keeps the predictions fast.
 
 ```{r fit}
 data("Train", package = "mlogit")
@@ -104,13 +103,13 @@ head(predict(model, uncertainty = TRUE, level = 0.9))
 
 ## Conditional predictions for fitted deciders
 
-The dozen choices of a traveler are informative about their individual
+The choices of a traveler are informative about their individual
 price coefficient. `coef(level = "individual")` returns the posterior mean
 of every traveler's coefficient, and `predict(type = "conditional")` uses
 the individual draws instead of the population distribution. Conditional
 predictions exist only for the deciders in the fitted data, and they are
 usually sharper because they use the decider's own choices. This partial
-pooling is the main argument for hierarchical Bayesian choice models
+pooling is an important argument for hierarchical choice models
 [@Allenby1998; @Huber2001].
 
 ```{r conditional}
@@ -168,12 +167,12 @@ an uninformative prediction.
 
 ## Scenario analysis in a stated choice experiment
 
-A scenario predicts the choice probabilities for modified attributes. Near 
-Setskog in Norway, 308
-residents were asked six times to choose between two plans for a proposed
-wind-power project and the status quo without the project, alternative `1`
+A scenario predicts the choice probabilities for modified attributes. In
+Norway, 308 residents were asked six times to choose between two plans for a
+proposed wind-power project near Setskog and the status quo without the
+project, alternative `1`
 [@Dugstad2024]. The plans varied the number and height of the turbines, the
-routing of the power line, and an annual reduction in municipal taxes
+placement of the power line, and an annual reduction in municipal taxes
 offered as compensation. The study also measured each respondent's
 collective psychological ownership of the affected area, a standardized
 score of how strongly they feel that the landscape belongs to the residents.
@@ -311,8 +310,8 @@ round(large, 2)
 ```
 
 The calibration plot shows the same table. Points on the diagonal mean that
-the predicted probability equals the observed rate, and the point sizes are
-proportional to the number of games in a group.
+the predicted probability equals the observed rate, and the point sizes
+grow with the number of games in a group.
 
 ```{r calibration-plot, fig.width=5, fig.height=5}
 plot(
@@ -353,7 +352,7 @@ Most travelers have an average residual close to zero. For the travelers at
 the extremes, the model predicts trip `A` too often or too rarely across all
 their questions.
 Grouping by a covariate checks the functional form instead, here by the
-price of trip `A` in four groups of equal size:
+price of trip `A` in four groups of about equal size:
 
 ```{r residuals-covariate}
 price_group <- cut(
@@ -365,7 +364,7 @@ round(tapply(model_residuals[, "A"], price_group, mean, na.rm = TRUE), 3)
 ```
 
 All four group averages are close to zero. A systematic pattern, for
-example positive residuals at both ends, would indicate a nonlinear price
+example positive residuals at both ends, could indicate a nonlinear price
 effect or an unmodeled preference class.
 
 ## Marginal effects
@@ -391,13 +390,14 @@ average_effects
 Averaged over the observed occasions, one euro more
 lowers the probability of a trip by about
 `r round(-100 * average_effects$mean[average_effects$covariate == "price"][1])`
-percentage points and one hour more by about
+percentage points, and it falls at a rate of about
 `r round(-100 * average_effects$mean[average_effects$covariate == "time"][1])`
-percentage points. 
+percentage points per hour of travel time. 
 
 The `at` argument replaces the averages of selected
-covariates. A much cheaper trip `B` moves its probability close to one,
-where one euro more changes it only marginally:
+covariates. A much cheaper trip `B` moves its probability close to the share of
+travelers with a negative price coefficient, where one euro more changes it
+only marginally:
 
 ```{r marginal-effects-at}
 interpret(model, type = "mea", at = c(price_A = 30, price_B = 10))
@@ -427,7 +427,7 @@ head(predict(smoking))
 
 Every row has four probabilities that sum to one, and `.prediction` names
 the most probable level. Because most students never smoke, this level is
-the most probable for almost every student, and the probabilities are more
+the most probable for every student, and the probabilities are more
 informative than the predicted level. A
 scenario works as before. Ten more years of age shift the probability of
 never smoking of the first three students:

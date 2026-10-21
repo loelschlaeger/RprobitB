@@ -50,32 +50,31 @@ all other alternatives,
 
 $$\Pr(y_{nt} = j) = \Pr(U_{ntj} > U_{ntl} \text{ for all } l \neq j),$$
 
-which is a function of the covariates $X_{nt}$ of the occasion, the
-coefficients $\beta_n$, and the covariance matrix $\Sigma$. The choice 
-probabilities are invariant to
-adding a constant to all utilities and to multiplying all utilities by a
-positive number, so neither the level nor the scale of the utilities is
+which is a function of the covariates $X_{nt}$ of the occasion, the coefficients
+$\beta_n$, and the covariance matrix $\Sigma$. The choice probabilities are
+invariant to adding a constant to all utilities and to multiplying all utilities
+by a positive number, so neither the level nor the scale of the utilities is
 identified. **RprobitB** removes the level by taking utility differences with
 respect to a base alternative and fixes the scale by restricting either one
-error variance or one coefficient. These two restrictions are the
-normalization of the model. The coefficient vector
-$\beta_n$ is common to all deciders unless random effects are specified, in
-which case the coefficients of every decider are drawn from a population
-distribution whose parameters are estimated. The vignette
-[Model specification and variants][v02] describes the normalization and the
-prior distribution, and the vignette [Modeling preference heterogeneity][v03]
-the specification of heterogeneous coefficients. Bayesian estimation of the
-multinomial probit model goes back to @McCulloch1994 and @Imai2005a, and
-@Oelschlaeger2026c gives a unified account of the heterogeneity models that
-**RprobitB** implements.
+error variance or one coefficient. These two restrictions are the normalization
+of the model. The coefficient vector $\beta_n$ is common to all deciders unless
+random effects or latent classes are specified, in which case the coefficients
+of every decider are drawn from a population distribution whose parameters are
+estimated. The vignette [Model specification and variants][v02] describes the
+normalization and the prior distribution, and the vignette [Modeling preference
+heterogeneity][v03] the specification of heterogeneous coefficients. Bayesian
+estimation of the multinomial probit model in **RprobitB** builds on
+@Albert1993, @McCulloch1994, and @Imai2005a, and
+@Oelschlaeger2026c discusses the heterogeneity models on which
+**RprobitB** builds.
 
 ## A stated choice experiment on train trips
 
 In 1987, a stated choice experiment commissioned by the Dutch national
 railways presented 235 travelers with pairs of hypothetical train trips and
 asked which trip of each pair they would choose [@BenAkiva1993]. The two
-trips of a pair differ in price, travel time, number of changes, and comfort
-class, and every traveler evaluated about twelve pairs. The **mlogit**
+trips of a pair differ in price, travel time, number of changes, or comfort
+class, and the travelers evaluated about twelve pairs on average. The **mlogit**
 package [@Croissant2020] provides the 2929 choices as the data set `Train`.
 The data are in wide format: one row per choice occasion, with the
 attributes of trip `A` in the columns ending in `_A` and those of trip `B`
@@ -105,8 +104,8 @@ attributes of the trips with one coefficient common to both alternatives, which
 places them in the first part of the formula. The second part takes
 characteristics of the decider and the alternative-specific constants; here it
 contains only the `0` that removes the constants, which is appropriate because
-the labels `A` and `B` of the two trips were assigned arbitrarily and carry no
-utility of their own. The comfort class is stored as an integer but is a
+the labels `A` and `B` of the two trips are generic and are not expected to
+carry utility of their own. The comfort class is stored as an integer but is a
 categorical variable with three levels; `factor(comfort)` expands it into dummy
 variables, as in `lm()`. The arguments `column_decider` and `column_occasion`
 identify the traveler and the choice occasion.
@@ -183,7 +182,7 @@ The last two columns of the summary table are the convergence diagnostics
 recommended by @Vehtari2021:
 
 - `rhat` compares the variance between the chains with the variance within
-  the chains and equals one when all chains sample the same distribution.
+  the chains and is close to one when all chains sample the same distribution.
 - `ess_bulk` is the effective sample size for the bulk of the posterior
   distribution, that is, for its central part around the median as opposed
   to its tails. Consecutive draws of a chain are correlated, and the
@@ -246,11 +245,11 @@ plot(model, type = "density", variables = c("beta[price]", "beta[time]"))
 Rank plots are a more sensitive check [@Vehtari2021]. The draws of all
 chains are pooled and ranked, and the histogram of the ranks is drawn for
 every chain. If all chains sample the same distribution, every chain
-receives ranks from the whole range with equal frequency, and the histograms
-are uniform. A chain that remains in a subregion of the posterior, for
-example because it has not yet left the region of its starting values,
-receives predominantly small or large ranks, and its histogram is peaked at
-one end.
+receives ranks from the whole range with about equal frequency, and the
+histograms are close to uniform. A chain that remains in a subregion of the
+posterior, for example because it has not yet left the region of its starting
+values, receives ranks from only part of the range, and its histogram is not
+uniform.
 
 Autocorrelation plots show, for every chain, the correlation between draws
 that are $k$ iterations apart as a function of the lag $k$. Consecutive
@@ -304,9 +303,9 @@ head(model.frame(model))
 
 ## Parallel chains
 
-The chains of a fit are independent of each other, so **RprobitB** can run
-them in parallel on several cores, which reduces the computing time in
-proportion to the number of chains. The package does not select a parallel
+The chains of a fit are independent of each other, so **RprobitB** can run them
+in parallel on several cores, which can reduce the computing time by up to a
+factor equal to the number of chains. The package does not select a parallel
 backend itself. The chains run through the **future** framework
 [@Bengtsson2021], so a plan set before fitting is used automatically.
 

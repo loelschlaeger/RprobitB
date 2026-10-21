@@ -111,8 +111,8 @@ approximation unreliable; here this concerns a few travelers. PSIS-LOO is
 preferable in this situation,
 because it comes with a diagnostic per traveler: a Pareto-k value below the
 printed threshold means that the importance sampling for that traveler is
-reliable, and larger values usually belong to travelers whose choices have
-low probability under the model [@Vehtari2024].
+reliable, and larger values usually belong to travelers with a strong influence
+on the posterior [@Vehtari2024].
 
 ```{r loo}
 loo_full <- loo(full_model)
@@ -121,8 +121,9 @@ loo_full
 ```
 
 The **loo** package plots the Pareto-k values per traveler. Points above
-the dashed line mark the travelers whose choices are hardest to predict from
-the choices of the other travelers.
+the dashed line mark the travelers whose leave-one-out estimates are
+unreliable, often those whose choices are hard to predict from the choices of
+the other travelers.
 
 ```{r loo-plot}
 plot(loo_full)
@@ -137,13 +138,14 @@ loo::loo_compare(loo_full, loo_reduced)
 
 The models are named in the order of the arguments, so `model1` is the full
 model. It ranks first, and the reduced model falls short by several
-standard errors of the difference: income and party size improve the
-prediction of the mode choice.
+standard errors of the difference: income, party size, and the
+alternative-specific constants together improve the prediction of the mode
+choice.
 
 ## Bayes factors
 
-`bayes_factor()` estimates the marginal likelihood of each model with the
-**bridgesampling** package [@Gronau2020; @Meng1996] and returns their
+`bayes_factor()` estimates the marginal likelihood of each model by bridge
+sampling [@Gronau2020; @Meng1996] and returns their
 ratio; values above one favor the first model.
 
 ```{r bf}
@@ -190,7 +192,7 @@ several standard errors of the difference. Letting the price
 sensitivity vary between travelers thus improves the prediction of a
 traveler's choices.
 
-## Ordered and ranked responses
+## Ordered responses
 
 The criteria are not specific to unordered choices. The ordered model of the
 vignette [Model specification and variants][v02] relates how much a student

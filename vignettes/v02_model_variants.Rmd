@@ -56,14 +56,14 @@ default the first in alphabetical order, and fixes one parameter through
   one. This is the default. The covariance matrix of the error differences is
   reported as `Sigma[<alternative>,<alternative>]`, with rows and columns
   named by the alternatives other than the base. For three alternatives `A`,
-  `B`, and `C` with base `A`, its entries are `Sigma[B,B]`, `Sigma[C,B]`, and
+  `B`, and `C` with base `A`, its entries are `Sigma[B,B]`, `Sigma[B,C]`, and
   `Sigma[C,C]`.
 - `scale = c(z = -1)` fixes the coefficient of `z` to `-1` instead, so that
   all other coefficients are measured in units of it. With a price
   coefficient fixed in this way, the other coefficients are willingness-to-pay
   values.
 
-The sampler draws all parameters without restriction and rescales every
+The sampler draws all parameters under the default scale and rescales every
 retained draw afterwards. Variables that the normalization fixes remain in
 the draws but are omitted from `summary()`, `coef()`, and `vcov()`.
 
@@ -251,25 +251,25 @@ imputes the latent utilities of unavailable alternatives without
 restriction, so they do not affect the choice, and predictions assign them
 probability zero.
 
-Between Montreal and Toronto, travelers can fly, drive, or take the train,
+In the Montreal-Toronto corridor, travelers can fly, drive, or take the train,
 but not all modes are available on every trip. The `ModeCanada` data of the
-**mlogit** package cover 4324 trips in this corridor [@Bhat1995].
+**mlogit** package cover 4324 trips in this corridor from the survey
+analyzed by @Bhat1995.
 
 ```{r canada-load}
 data("ModeCanada", package = "mlogit")
 head(ModeCanada)
 ```
 
-Cost (`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and
-service frequency (`freq`) vary across modes; household income and the
-number of urban trip endpoints are trip-specific. The data also contain the
-bus, which
-was chosen on only `r sum(ModeCanada$alt == "bus" & ModeCanada$choice == 1)`
-trips, too few to identify its coefficients and error covariances, so the
-bus rows and the trips on which it was chosen are removed. Cost and income
-are converted from Canadian dollars to euro, and trips with a single
-remaining alternative are dropped. The first 1000 of the remaining trips
-keep the computation short.
+Cost (`cost`), in-vehicle time (`ivt`), out-of-vehicle time (`ovt`), and service
+frequency (`freq`) vary across modes; household income and the number of urban
+trip endpoints are trip-specific. The data also contain the bus, which was
+chosen on only `r sum(ModeCanada$alt == "bus" & ModeCanada$choice == 1)` trips,
+too few to estimate its coefficients and error covariances reliably, so the bus
+rows and the trips on which it was chosen are removed. Cost and income are
+converted from Canadian dollars to euro, and trips with a single remaining
+alternative are dropped. The first 1000 of the remaining trips keep the
+computation short.
 
 ```{r canada-data}
 ModeCanada$cost <- ModeCanada$cost / 1.6151
@@ -287,9 +287,9 @@ table(table(canada_data$case))
 ```
 
 The choice sets are read from the rows of each trip. Every trip is one
-decider, and the model has the same structure as the travel mode model
-above: three attributes of type `A`, two trip characteristics of type `B`,
-and the constants, all relative to `air`.
+decider, and the model has a structure similar to the travel mode model
+above: four attributes of type `A`, two trip characteristics of type `B`,
+and the constants, the latter two relative to `air`.
 
 ```{r canada}
 canada <- fit(
@@ -394,16 +394,15 @@ legend(
 )
 ```
 
-A covariate shifts the density along the utility axis, so one coefficient
-per covariate describes its effect on all four levels. The age coefficient
-is small and its credible interval includes zero: the age of a student does
-not affect how much they smoke. The factor `Exer` enters through its dummy
-variables relative to the students who exercise frequently; both
-coefficients are negative but uncertain. `interpret(type = "ame")`
-translates the age coefficient into probabilities: it differentiates the
-probability of each level with respect to age and averages the derivatives
-over the students. The vignette [Posterior prediction][v04] explains
-marginal effects in more detail.
+A covariate shifts the density along the utility axis, so one coefficient per
+covariate describes its effect on all four levels. The age coefficient is small
+and its credible interval includes zero: the age of a student does not clearly
+affect how much they smoke. The factor `Exer` enters through its dummy variables
+relative to the students who exercise frequently; both coefficients are negative
+but uncertain. `interpret(type = "ame")` translates the age coefficient into
+probabilities: it differentiates the probability of each level with respect to
+age and averages the derivatives over the students. The vignette [Posterior
+prediction][v04] explains marginal effects in more detail.
 
 ```{r ordered-interpret}
 age_effects <- interpret(smoking, type = "ame")
@@ -435,7 +434,7 @@ ranked_sim <- fit(
   ),
   chains = 1
 )
-summary(ranked_sim, variables = c("beta[x]", "Sigma[C,B]", "Sigma[C,C]"))
+summary(ranked_sim, variables = c("beta[x]", "Sigma[B,C]", "Sigma[C,C]"))
 ```
 
 The `Game` data of the **mlogit** package contain complete rankings of six
@@ -485,9 +484,9 @@ pc_hours <- platform_effects$mean[
 ]
 ```
 
-Heavy gamers prefer the PC: every additional weekly hour raises the
-probability of ranking it first by about `r round(100 * pc_hours, 1)`
-percentage points.
+The PC gains from additional gaming hours: at the average covariates, one
+more weekly hour raises the probability of ranking it first by about
+`r round(100 * pc_hours, 1)` percentage points.
 
 ## Further reading
 

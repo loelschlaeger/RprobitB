@@ -28,9 +28,10 @@ coefficients differ between deciders in two ways, which can be combined:
 random coefficients follow a continuous distribution over the population,
 and latent classes divide the deciders into groups. Both are requested
 through arguments of `fit()`. @Oelschlaeger2026c treats the methodological
-background. Each variant is first estimated on simulated data, where the
-estimates can be compared with the parameters that generated them, and then
-applied to data of the **mlogit** package [@Croissant2020].
+background. Random coefficients and latent classes are first estimated on
+simulated data, where the estimates can be compared with the parameters that
+generated them, and then applied to data of the **mlogit** package
+[@Croissant2020].
 
 ```{r setup}
 library(RprobitB)
@@ -62,19 +63,19 @@ alternative-specific constants:
 | `"cln-"` | correlated log-normal | negative |
 | `"ln-"` | uncorrelated log-normal | negative |
 
-The six values combine two choices. The first is the shape of the
-distribution. A normal coefficient can take any value, which suits an
-attribute that some deciders like and others dislike. A log-normal
-coefficient is the exponential of a normal variable and therefore always
-positive, or, with the trailing minus, always negative. It suits an attribute
-whose sign is fixed by theory: a higher price does not raise the utility of
-any decider. Log-normal effects are estimated on the latent normal scale, so
-`mu`, `Omega`, and the individual draws refer to the normal variable whose
-exponential enters the utility. The second choice is whether an effect is
-correlated with the other correlated effects. Deciders who value travel time
-may also value comfort, and the `c` prefix adds the covariance between such
-effects to the model. An uncorrelated effect has its own variance but no
-covariance with any other effect, which appears as zeros in `Omega`.
+The six values combine two choices. The first is the shape of the distribution.
+A normal coefficient can take any value, which suits an attribute that some
+deciders like and others dislike. A log-normal coefficient is the exponential of
+a normal variable and therefore always positive, or, with the trailing minus,
+always negative. It suits an attribute whose sign is fixed by theory: a higher
+price is not expected to raise the utility of any decider. Log-normal effects
+are estimated on the latent normal scale, so `mu`, `Omega`, and the individual
+draws refer to the normal variable whose exponential enters the utility. The
+second choice is whether an effect is correlated with the other correlated
+effects. Deciders who value travel time may also value comfort, and the `c`
+prefix adds the covariance between such effects to the model. An uncorrelated
+effect has its own variance but no covariance with any other effect, which
+appears as zeros in `Omega`.
 
 The following demonstration combines both choices. The price coefficient is
 negative log-normal and uncorrelated. Travel time and comfort
@@ -116,7 +117,7 @@ interpret(mixing, reference = "price")
 
 The `dgp_parameters` set the latent mean of the price effect to `-1`, so
 the true median price coefficient is `-exp(-1)`, about `-0.37`. Dividing the
-true time and comfort coefficients by it gives the true trade-offs, with
+negated true time and comfort coefficients by it gives the true trade-offs, with
 which the posterior means above can be compared.
 
 The panel structure makes individual coefficients estimable.
@@ -307,7 +308,8 @@ summary(train_classes, variables = c(
 ```
 
 With the price coefficient fixed at `-1`, the class-specific time
-coefficients are values of travel time in euro per hour, which `interpret()`
+coefficients give the values of travel time in euro per hour, which
+`interpret()`
 reports class by class:
 
 ```{r train-classes-interpret}
@@ -317,8 +319,8 @@ time_by_class
 
 The larger class values an hour at about
 `r round(abs(time_by_class$mean[1]))` euro, the smaller class at about
-`r round(abs(time_by_class$mean[2]))` euro. The smaller class chooses the
-faster trip almost regardless of its price.
+`r round(abs(time_by_class$mean[2]))` euro. The smaller class is willing to
+pay much more for a faster trip.
 
 ### Weight-based class updates
 
@@ -375,7 +377,7 @@ and means agree closely with those of the fixed fit.
 A sparse finite mixture fixes a generous upper bound $K$, permits empty
 classes, and places the symmetric Dirichlet prior with a small concentration
 $e_0$ on the weights, which favors emptying redundant classes
-[@Rousseau2011; @FruehwirthSchnatter2019]. The default
+[@Rousseau2011; @MalsinerWalli2016; @FruehwirthSchnatter2019]. The default
 `class_concentration = c(shape = 1, rate = 200)` is the gamma hyperprior
 $e_0\sim\operatorname{Gamma}(1,200)$ with mean `0.005`. Under a fixed
 $e_0$, the prior expected number of occupied classes among $N$ deciders is
@@ -406,15 +408,15 @@ reports this share.
 
 ### Dirichlet-process mixtures
 
-For `class_update = "dirichlet_process"`, the precision $\alpha$ controls
-the prior tendency to open new classes, with the default
+For `class_update = "dirichlet_process"`, the precision $\alpha$ controls the
+prior tendency to open new classes, with the default
 $\alpha\sim\operatorname{Gamma}(2,4)$ of mean `0.5`. Conditional on a fixed
-$\alpha$, the prior expects $\sum_{i=1}^{N}\alpha/(\alpha+i-1)$ occupied
-classes among $N$ deciders, which for $\alpha = 0.5$ and 100 deciders is
-about three. **RprobitB**
-updates $\alpha$ with the augmentation of @Escobar1995 and the allocations
-with the algorithm of @Neal2000. `max_classes` caps the number of classes
-the sampler may open, and `fit()` warns when the draws reach the cap.
+$\alpha$, the prior expects $\sum_{i=1}^{N}\alpha/(\alpha+i-1)$ occupied classes
+among $N$ deciders, which for $\alpha = 0.5$ and 100 deciders is about three.
+**RprobitB** updates $\alpha$ with the augmentation of @Escobar1995 and the
+allocations with the auxiliary-parameter algorithm of @Neal2000. `max_classes`
+caps the number of classes the sampler may open, and `fit()` warns when the
+draws reach the cap.
 
 ```{r dirichlet}
 dynamic <- update(
@@ -429,7 +431,7 @@ recover_classes(dynamic)
 The occupancy distribution is wider than under the sparse finite prior and
 assigns most of its probability to three or more classes. This reflects the
 prior, which expects about three occupied classes for 100 deciders. The two
-largest classes nevertheless match the two true groups, because the
+largest classes nevertheless resemble the two true groups, because the
 superfluous classes contain only a few deciders.
 
 ## Ordered and ranked responses
