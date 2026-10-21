@@ -36,6 +36,7 @@ Imports:
     cli,
     Formula,
     future.apply,
+    ggplot2,
     loo,
     oeli (>= 0.7.9),
     posterior,
@@ -50,7 +51,6 @@ LinkingTo:
     testthat
 Suggests:
     AER,
-    ggplot2,
     gridExtra,
     knitr,
     MASS,

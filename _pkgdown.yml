@@ -16,11 +16,6 @@ template:
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
 
-navbar:
-  structure:
-    left: [intro, reference, articles]
-    right: [search, github]
-
 reference:
 - title: Fit models
   desc: Fit empirical data or simulate and fit a specified model.

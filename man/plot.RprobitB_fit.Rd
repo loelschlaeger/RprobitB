@@ -7,7 +7,7 @@
 \method{plot}{RprobitB_fit}(
   x,
   y = NULL,
-  type = c("trace", "rank", "acf", "density", "interval", "pairs"),
+  type = c("trace", "rank", "acf", "density", "interval", "pairs", "mixture"),
   variables = NULL,
   ...
 )
@@ -28,21 +28,30 @@ The plot to create:
 \item \code{"density"} overlays the marginal posterior density of each chain.
 \item \code{"interval"} draws posterior point estimates with credible intervals.
 \item \code{"pairs"} draws bivariate scatter plots of the variables.
+\item \code{"mixture"} draws the estimated mixing distribution of every random
+effect, the population density of its coefficient averaged over the
+retained draws. For an effect with latent classes, it is the mixture of
+the class densities. For simulated data, a dashed line adds the mixing
+distribution that generated them.
 }}
 
 \item{variables}{[\code{character()} | \code{NULL}]\cr
 Posterior variables to include. \code{NULL} includes all varying model
-parameters and excludes individual coefficients and latent allocations.}
+parameters and excludes individual coefficients and latent allocations.
+For \code{type = "mixture"}, the names of random effects as in \verb{mu[<effect>]},
+and \code{NULL} includes all random effects.}
 
 \item{...}{Further arguments passed to the selected
-\href{https://mc-stan.org/bayesplot/}{\strong{bayesplot}} function.}
+\href{https://mc-stan.org/bayesplot/}{\strong{bayesplot}} function. Not used for
+\code{type = "mixture"}.}
 }
 \value{
 A \code{ggplot} object or, for a pairs plot, a \code{bayesplot_grid} object.
 }
 \description{
 Creates a standard posterior diagnostic or uncertainty plot with
-\href{https://mc-stan.org/bayesplot/}{\strong{bayesplot}}.
+\href{https://mc-stan.org/bayesplot/}{\strong{bayesplot}}, or draws the estimated
+mixing distributions of the random effects.
 }
 \examples{
 set.seed(1)
@@ -60,5 +69,13 @@ plot(model, type = "acf")
 plot(model, type = "density")
 plot(model, type = "interval")
 plot(model, type = "pairs")
+
+### estimated mixing distribution of a random coefficient
+mixed <- fit(
+  choice ~ x | 0, random_effects = "x",
+  dgp_parameters = list(beta = c(x = 1), Omega = matrix(0.5)),
+  chains = 1, n_occasions = 10
+)
+plot(mixed, type = "mixture")
 }
 \keyword{hplot}

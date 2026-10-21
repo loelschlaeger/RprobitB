@@ -107,6 +107,15 @@ negative for every decider. `time` and `comfort` share the estimated
 covariance `Omega[time,comfort]`, while `price` has no covariance entry with
 either of them.
 
+The mixing distribution of an effect is the distribution of its coefficient
+in the population. `plot(type = "mixture")` draws its estimate, the density
+that `mu` and `Omega` imply, averaged over the retained draws. For simulated
+data, dashed lines add the mixing distributions that generated them:
+
+```{r mixing-plot, fig.height = 3}
+plot(mixing, type = "mixture")
+```
+
 `interpret()` converts the coefficients into trade-offs. For a random effect
 it uses the coefficient of the median decider, which for the log-normal
 price is minus the exponential of `mu[price]`:
@@ -191,6 +200,25 @@ local supplier, and would need a price about
 `r round(abs(coef(electricity)[["mu[cl]"]]), 2)` cents lower for each
 additional year of contract length.
 
+The estimated mixing distributions show how these valuations vary between
+households:
+
+```{r electricity-plot, fig.height = 3}
+plot(electricity, type = "mixture") +
+  ggplot2::geom_vline(xintercept = 0, linetype = "dotted") +
+  ggplot2::labs(x = "willingness to pay in cents per kWh")
+draws <- posterior::as_draws_matrix(electricity)
+longer <- mean(pnorm(
+  0, draws[, "mu[cl]"], sqrt(draws[, "Omega[cl,cl]"]), lower.tail = FALSE
+))
+distant <- mean(pnorm(0, draws[, "mu[loc]"], sqrt(draws[, "Omega[loc,loc]"])))
+```
+
+Although the average household prefers shorter contracts, the estimated
+mixing distribution assigns a positive valuation of contract length to about
+`r round(100 * longer)` percent of the households, and about
+`r round(100 * distant)` percent prefer a supplier that is not local.
+
 ## Latent classes
 
 A single normal distribution is a strong assumption about the distribution
@@ -259,6 +287,13 @@ summary(mixture, variables = c(
   "weight[1]", "weight[2]", "mu[x,1]", "mu[x,2]",
   "Omega[x,x,1]", "Omega[x,x,2]"
 ))
+```
+
+For an effect with latent classes, the mixing distribution is the mixture of
+the class-specific normal distributions, weighted by the class weights:
+
+```{r classes-plot, fig.height = 3.2}
+plot(mixture, type = "mixture")
 ```
 
 `latent_class_diagnostics()` returns the posterior distribution of the
@@ -433,6 +468,19 @@ assigns most of its probability to three or more classes. This reflects the
 prior, which expects about three occupied classes for 100 deciders. The two
 largest classes nevertheless resemble the two true groups, because the
 superfluous classes contain only a few deciders.
+
+The estimated mixing distributions of the three refits also show the two
+groups that generated the data:
+
+```{r refits-plot, fig.height = 3}
+bayesplot::bayesplot_grid(
+  plot(weight_based, type = "mixture"),
+  plot(sparse, type = "mixture"),
+  plot(dynamic, type = "mixture"),
+  titles = c("weight-based", "sparse", "Dirichlet process"),
+  grid_args = list(nrow = 1)
+)
+```
 
 ## Ordered and ranked responses
 

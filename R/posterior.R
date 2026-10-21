@@ -170,16 +170,14 @@ summary.RprobitB_fit <- function(
   if (!is.null(object$simulation)) {
     dgp <- object$simulation$dgp
     pattern <- "^(weight|mu|Omega|beta)\\[.*[\\[,][0-9]+\\]$"
-    class_of <- function(names) {
-      as.integer(sub("^.*[\\[,]([0-9]+)\\]$", "\\1", names))
-    }
+    number <- "^.*[\\[,]([0-9]+)\\]$"
     stem_of <- function(names) sub("[0-9]+\\]$", "", names)
     specific <- grepl(pattern, names(dgp))
     estimates <- apply(object$draws, 3L, mean, na.rm = TRUE)
     estimates <- estimates[grepl(pattern, names(estimates))]
     class_dgp <- rep(NA_integer_, length(dgp))
-    class_dgp[specific] <- class_of(names(dgp)[specific])
-    class_est <- class_of(names(estimates))
+    class_dgp[specific] <- as.integer(sub(number, "\\1", names(dgp)[specific]))
+    class_est <- as.integer(sub(number, "\\1", names(estimates)))
     classes_dgp <- sort(unique(class_dgp[specific]))
     classes_est <- sort(unique(class_est))
     if (length(classes_dgp) > 1L && identical(classes_dgp, classes_est)) {
@@ -588,7 +586,8 @@ as_draws.RprobitB_fit <- function(x, ...) {
 #'
 #' @description
 #' Creates a standard posterior diagnostic or uncertainty plot with
-#' [**bayesplot**](https://mc-stan.org/bayesplot/).
+#' [**bayesplot**](https://mc-stan.org/bayesplot/), or draws the estimated
+#' mixing distributions of the random effects.
 #'
 #' @param x \[`RprobitB_fit`\]\cr
 #' Fitted choice model.
@@ -605,13 +604,21 @@ as_draws.RprobitB_fit <- function(x, ...) {
 #' - `"density"` overlays the marginal posterior density of each chain.
 #' - `"interval"` draws posterior point estimates with credible intervals.
 #' - `"pairs"` draws bivariate scatter plots of the variables.
+#' - `"mixture"` draws the estimated mixing distribution of every random
+#'   effect, the population density of its coefficient averaged over the
+#'   retained draws. For an effect with latent classes, it is the mixture of
+#'   the class densities. For simulated data, a dashed line adds the mixing
+#'   distribution that generated them.
 #'
 #' @param variables \[`character()` | `NULL`\]\cr
 #' Posterior variables to include. `NULL` includes all varying model
 #' parameters and excludes individual coefficients and latent allocations.
+#' For `type = "mixture"`, the names of random effects as in `mu[<effect>]`,
+#' and `NULL` includes all random effects.
 #'
 #' @param ... Further arguments passed to the selected
-#' [**bayesplot**](https://mc-stan.org/bayesplot/) function.
+#' [**bayesplot**](https://mc-stan.org/bayesplot/) function. Not used for
+#' `type = "mixture"`.
 #'
 #' @return A `ggplot` object or, for a pairs plot, a `bayesplot_grid` object.
 #'
@@ -634,10 +641,18 @@ as_draws.RprobitB_fit <- function(x, ...) {
 #' plot(model, type = "density")
 #' plot(model, type = "interval")
 #' plot(model, type = "pairs")
+#'
+#' ### estimated mixing distribution of a random coefficient
+#' mixed <- fit(
+#'   choice ~ x | 0, random_effects = "x",
+#'   dgp_parameters = list(beta = c(x = 1), Omega = matrix(0.5)),
+#'   chains = 1, n_occasions = 10
+#' )
+#' plot(mixed, type = "mixture")
 
 plot.RprobitB_fit <- function(
   x, y = NULL,
-  type = c("trace", "rank", "acf", "density", "interval", "pairs"),
+  type = c("trace", "rank", "acf", "density", "interval", "pairs", "mixture"),
   variables = NULL, ...
 ) {
   check_fit(x, "x")
@@ -646,10 +661,94 @@ plot.RprobitB_fit <- function(
   oeli::input_check_response(
     checkmate::check_choice(
       type,
-      choices = c("trace", "rank", "acf", "density", "interval", "pairs")
+      choices = c(
+        "trace", "rank", "acf", "density", "interval", "pairs", "mixture"
+      )
     ),
     "type"
   )
+
+  ### estimated mixing distributions of the random effects
+  if (identical(type, "mixture")) {
+    effects <- x$model$effects
+    random <- !is.na(effects$mixing)
+    mixing <- stats::setNames(
+      as.character(effects$mixing[random]), effects$effect_name[random]
+    )
+    if (!length(mixing)) {
+      cli::cli_abort("The model has no random effects.", call = NULL)
+    }
+    if (is.null(variables)) variables <- names(mixing)
+    oeli::input_check_response(
+      checkmate::check_subset(variables, choices = names(mixing)), "variables"
+    )
+    draws <- unclass(posterior::as_draws_matrix(x$draws))
+    dgp <- x$simulation$dgp
+    values <- rbind(draws, dgp[colnames(draws)])
+    origin <- rep(
+      c("estimated", "true"), c(nrow(draws), nrow(values) - nrow(draws))
+    )
+    curves <- do.call(rbind, lapply(variables, function(effect) {
+      classes <- if (sprintf("mu[%s]", effect) %in% colnames(draws)) {
+        ""
+      } else {
+        sprintf(",%d", seq_len(sum(startsWith(colnames(draws), "weight["))))
+      }
+      weight <- if (identical(classes, "")) 1 else {
+        values[, sprintf("weight[%s]", substring(classes, 2L))]
+      }
+      components <- stats::na.omit(data.frame(
+        curve = origin,
+        mu = c(values[, sprintf("mu[%s%s]", effect, classes)]),
+        omega = c(values[, sprintf("Omega[%s,%s%s]", effect, effect, classes)]),
+        weight = c(weight)
+      ))
+      components <- components[
+        !components$curve %in% components$curve[components$omega <= 0],
+      ]
+      estimated <- components[components$curve == "estimated", ]
+      sigma <- sqrt(estimated$omega)
+      z <- seq(
+        min(estimated$mu - 5 * sigma), max(estimated$mu + 5 * sigma),
+        length.out = 500L
+      )
+      cdf <- sapply(
+        z, oeli::pmixnorm_cpp, mean = rbind(estimated$mu),
+        Sigma = rbind(estimated$omega), proportions = estimated$weight
+      )
+      z <- seq(
+        z[which.max(cdf >= 0.001)], z[which.max(cdf >= 0.999)],
+        length.out = 200L
+      )
+      shape <- sub("^c", "", mixing[[effect]])
+      value <- switch(shape, "n" = z, "ln" = exp(z), "ln-" = -exp(z))
+      scale <- if (identical(shape, "n")) 1 else exp(z)
+      density <- sapply(split(components, components$curve), function(part) {
+        sapply(
+          z, oeli::dmixnorm_cpp, mean = rbind(part$mu),
+          Sigma = rbind(part$omega), proportions = part$weight
+        ) / scale
+      })
+      data.frame(
+        effect = effect, value = value,
+        curve = rep(colnames(density), each = length(z)),
+        density = c(density)
+      )
+    }))
+    curves$effect <- factor(curves$effect, levels = variables)
+    curves$curve <- factor(curves$curve, levels = c("estimated", "true"))
+    value <- density <- curve <- effect <- NULL
+    plot <- ggplot2::ggplot(
+      curves, ggplot2::aes(x = value, y = density, linetype = curve)
+    ) +
+      ggplot2::geom_line() +
+      ggplot2::facet_wrap(ggplot2::vars(effect), scales = "free") +
+      ggplot2::labs(x = "coefficient", y = "density", linetype = NULL) +
+      bayesplot::bayesplot_theme_get()
+    legend <- if (all(curves$curve == "estimated")) "none" else "bottom"
+    return(plot + ggplot2::theme(legend.position = legend))
+  }
+
   available <- dimnames(x$draws)$variable
   if (is.null(variables)) {
     variables <- posterior_variables(x)

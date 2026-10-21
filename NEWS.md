@@ -1,5 +1,8 @@
 # RprobitB 2.0.1
 
+* `plot()` has the new option `type = "mixture"`, which draws the estimated 
+  mixing distributions of the random effects.
+
 * `bayes_factor()` now accepts models with a fixed number of up to six latent
   classes.
 
