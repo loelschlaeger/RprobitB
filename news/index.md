@@ -2,6 +2,8 @@
 
 ## RprobitB 2.0.1
 
+CRAN release: 2026-10-21
+
 - [`plot()`](https://rdrr.io/r/graphics/plot.default.html) has the new
   option `type = "mixture"`, which draws the estimated mixing
   distributions of the random effects.
