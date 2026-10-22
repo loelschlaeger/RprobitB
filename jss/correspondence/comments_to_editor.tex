@@ -1,0 +1,311 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fullpage}
+\usepackage{setspace}
+\setstretch{1.2}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{../ref.bib}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, allcolors=blue}
+
+\newcommand{\pkg}[1]{#1}
+\newcommand{\proglang}[1]{\textsf{#1}}
+
+\begin{document}
+
+\noindent \textbf{Responses to the editorial comments on the previous submission
+``RprobitB: Bayes Estimation of Choice Behavior Heterogeneity in R'' (JSS 4817),
+which accompany the new submission ``RprobitB: Bayesian Probit Choice Models
+with Preference Heterogeneity in R''}\\
+
+We thank the editors for their comments on our previous submission. We have
+since rewritten the manuscript and revised the \proglang{R} package
+\texttt{\{RprobitB\}} \parencite{Oelschlaeger2026d}. Below, we quote each
+comment and state how it is addressed. The software changes are listed at the
+end of this document.
+\\
+
+\noindent \textbf{Responses to the editorial report}:
+
+\begin{enumerate}
+    \item Comment: The introduction indicates that a number of other software
+    packages provide related functionality. It would seem that the specific
+    added functionality of RprobitB compared to other packages is ``LC'' and
+    ``LC update'', i.e., weight-based class updates as well as a Dirichlet
+    process mixture approach. However, this aspect of the implementation is not
+    sufficiently well discussed or presented using applications to be
+    convincing.
+    \item[] Response: We now state the contribution of the package more clearly
+    and have improved the comparison with competing packages. We also discuss
+    the latent class models in more detail and have reworked their application.
+
+    Section~1 describes how competing packages model preference heterogeneity.
+    The selection is guided by two central aspects of \texttt{\{RprobitB\}},
+    namely probit models and preference heterogeneity. For preference
+    heterogeneity, we include the established open-source packages
+    \texttt{\{mlogit\}}, \texttt{\{gmnl\}}, \texttt{\{logitr\}},
+    \texttt{\{apollo\}}, and \texttt{Biogeme}, which model it mostly via logit
+    models. For probit models, we include \texttt{\{bayesm\}} and
+    \texttt{\{MNP\}} for Bayesian estimation, \texttt{\{Rchoice\}} for random
+    coefficients in binary and ordered models, and \texttt{\{Rprobit\}}, the
+    frequentist counterpart of \texttt{\{RprobitB\}}. Table~1 shows for each of
+    them whether it offers probit models, Bayesian estimation, random
+    coefficients, latent classes, and inference on the number of classes.
+
+    As Table~1 shows, \texttt{\{RprobitB\}} is, to the best of our knowledge,
+    the only package that estimates multinomial probit models with random
+    coefficients and correlated errors in a Bayesian framework, and the only one
+    that infers the number of latent classes of such a model from the data;
+    \texttt{\{bayesm\}} does so for logit models. The added functionality is not
+    limited to the latent classes: for these probit models, the package offers
+    normal and log-normal mixing distributions (Sections~2.4, 5.1, and 5.3),
+    inference on individual deciders and conditional predictions (Sections~5.2
+    and 7.1), and model comparison (Section~8).
+
+    The latent class functionality is now discussed in detail in Sections~2.5,
+    3.2, and 3.3 (see our responses to the next three comments). The application
+    in Section~5.4 now uses the \texttt{Electricity} data, for which a single
+    normal mixing distribution cannot represent a skewed or multimodal valuation
+    of a local supplier. The Dirichlet process mixture and the sparse finite
+    mixture infer the number of occupied classes, and
+    \texttt{latent\_class\_diagnostics()} reports its posterior distribution.
+    The weight-based heuristic is demonstrated on simulated data with a trimodal
+    mixing distribution (Figure~5). Further applications cover a stated choice
+    experiment on train trips (Sections~3.5, 4, 5.3, 7.3, and 8), the
+    \texttt{Health} data for ordered responses (Sections~6.1 and 7.2), the
+    \texttt{Game} data for ranked responses (Section~6.2), and Berserk decisions
+    in an online chess tournament for conditional predictions (Section~7.1).
+    \item Comment: The weighted-based class updates approach seem to have only
+    been proposed by the authors in a conference publication and still lacks a
+    sufficient statistical basis. It would seem that this is a rather ad-hoc
+    approach for estimating the number of classes requiring various tuning
+    parameters where no insights are provided for the reader how to choose or
+    select them and what their impact is from a theoretical perspective
+    regarding a constraint estimation or from a Bayesian point of view how this
+    could be translated to a prior.
+    \item[] Response: We agree that the weight-based heuristic lacks a formal
+    statistical basis. It is therefore no longer the main contribution of the
+    package, and the manuscript presents it as one of four treatments of the
+    number of classes, which the argument \texttt{class\_update} of
+    \texttt{fit()} selects (Sections~2.5 and 3.3): (i) a fixed number of classes
+    (\texttt{"fixed"}); (ii) an overfitted finite mixture with a sparse
+    Dirichlet prior on the class weights
+    \parencite{Rousseau2011,MalsinerWalli2016,FruehwirthSchnatter2019}
+    (\texttt{"sparse"}); (iii) a Dirichlet process mixture
+    \parencite{Escobar1995}, sampled by Algorithm~8 of \textcite{Neal2000}
+    (\texttt{"dirichlet\_process"}); and (iv) the heuristic of
+    \textcite{Oelschlaeger2021} (\texttt{"weight\_based"}).
+
+    From a Bayesian point of view, options (ii) and (iii) address the same task
+    through a prior. In the sparse finite mixture, a sparse prior on the class
+    weights empties the classes that the data do not require, similar to the
+    removal of small classes by the heuristic, and the Dirichlet process mixture
+    makes the number of occupied classes part of the posterior. We therefore
+    recommend these options for inference on latent classes, and the heuristic
+    primarily for the approximation of non-normal mixing distributions by a
+    mixture of normal distributions \parencite{Oelschlaeger2026c}. We do not
+    attach a prior interpretation to the heuristic. It changes the number of
+    classes only during the warmup (Section~5.4). Afterwards, each chain keeps
+    the number of classes it has reached. The retained draws thus come from an
+    ordinary finite mixture with this number of classes and do not reflect the
+    uncertainty about the number of classes, which options (ii) and (iii)
+    capture.
+
+    Section~5.4 states the main tuning parameters and their defaults, which
+    worked well in our simulations: a class is removed if its weight falls below
+    \texttt{epsmin = 0.01} and split if its weight exceeds
+    \texttt{epsmax = 0.7}, two classes are merged if their means are closer than
+    \texttt{deltamin = 0.1}, and at most one change occurs per
+    \texttt{buffer = 50} iterations. Suitable values also depend on the specific
+    application, which makes general recommendations difficult. Larger values of
+    \texttt{epsmin} and \texttt{deltamin} tend to reduce the number of classes.
+    Since only splits add classes, no class is added while all weights stay
+    below \texttt{epsmax}, and a smaller \texttt{epsmax} tends to increase the
+    number of classes. In a simulation with three equally weighted classes, the
+    heuristic converges to three classes when starting from one and from ten
+    initial classes (Figure~5).
+    \item Comment: Related work on finite and infinite mixture models would
+    indicate that in particular the Dirichlet parameter delta for finite
+    mixtures and the precision parameter for DPMs would seem influential (see
+    for example Fr\"uhwirth-Schnatter and Malsiner-Walli, 2019). In the current
+    exposition it remains unclear how the model could be estimated if the number
+    of classes should be a-priori specified to be filled and for example
+    model-selection based on information criteria performed in the finite case,
+    or a sparse finite mixture approach pursued or how the precision parameter
+    is to be selected in DPMs. It would seem important to provide more
+    theoretical as well as practical guidance on how to specify and apply the
+    mixture approach in practice.
+    \item[] Response: The manuscript now addresses the three approaches
+    mentioned in the comment, both methodologically (Sections~2.5, 3.2, and 3.3)
+    and in an application to the same data (Sections~5.4 and 8.2). As
+    Section~3.2 and Table~4 state, the class weights of a finite mixture have a
+    symmetric Dirichlet prior with concentration parameter $\delta$, which by
+    default equals 1 for \texttt{"fixed"} and \texttt{"weight\_based"}, making
+    the prior uniform on the simplex.
+
+    With \texttt{class\_update = "fixed"}, the number of classes is specified a
+    priori, and the sampler targets the posterior restricted to allocations
+    without empty classes (Section~3.3). Model selection then compares fits with
+    different numbers of classes: \texttt{AIC()} and \texttt{BIC()} use
+    \texttt{logLik()}; \texttt{WAIC()} and \texttt{loo()} compute WAIC and
+    PSIS-LOO at the decider level; and \texttt{bayes\_factor()} estimates Bayes
+    factors (Section~8). For the \texttt{Electricity} data, PSIS-LOO favors two
+    classes over one.
+
+    With \texttt{class\_update = "sparse"}, the specified number of classes is
+    an upper bound, and $\delta$ has a gamma hyperprior with shape~1 and
+    rate~200, as in \textcite{FruehwirthSchnatter2019}. With six potential
+    classes, the sparse finite mixture places a posterior probability of
+    91~percent on two occupied classes (Section~5.4).
+
+    With \texttt{class\_update = "dirichlet\_process"}, $\delta$ is the
+    concentration, or precision, parameter of the process. The sampler updates
+    it by the augmentation of \textcite{Escobar1995} under their gamma
+    hyperprior with shape~2 and rate~4. For the 361 households, the prior
+    expected number of occupied classes is about 3.9 at the prior mean
+    $\delta = 0.5$ (Section~5.4), and the posterior places 47~percent on two
+    classes and 53~percent on three or more. For the sparse finite mixture with
+    six potential classes, the prior expected number of occupied classes is only
+    about 1.2 at the prior mean $\delta = 0.005$. Under the matching of
+    \textcite{FruehwirthSchnatter2019}, this corresponds to a Dirichlet process
+    whose concentration has prior mean 0.03 instead of 0.5. With this matched
+    hyperprior, the Dirichlet process places 87~percent on two classes, close to
+    the 91~percent of the sparse finite mixture. The following code reproduces
+    it from \texttt{electricity\_classes} of Section~5.4:
+\begin{verbatim}
+set.seed(1)
+matched <- update(electricity_classes,
+  class_update = "dirichlet_process",
+  prior = list(class_concentration = c(shape = 1, rate = 200 / 6)))
+subset(latent_class_diagnostics(matched)$occupancy, n_classes == 2)
+#>   n_classes probability
+#> 2         2   0.8686667
+\end{verbatim}
+    The difference between the two mixtures is thus mainly due to their
+    hyperpriors, in line with the finding of \textcite{FruehwirthSchnatter2019}
+    that the hyperprior influences the cluster solution far more than the choice
+    between the two mixtures. In practice, we recommend checking the number of
+    occupied classes under a second hyperprior, which can be set through
+    \texttt{prior}.
+    \item Comment: Label switching also seems to be only resolved using a
+    constraint on the class weights. Given the large literature on resolving
+    this issue for Bayesian mixture models and the failure of using only a
+    constraint on one specific parameter in some cases this seems not
+    satisfactory.
+    \item[] Response: The constraint on the class weights has been removed.
+    Following the literature on label switching
+    \parencite[e.g.,][]{Stephens2000}, the sampler imposes no ordering
+    constraint, and the retained draws are relabeled after sampling
+    (Section~3.3). A reference allocation is selected by the least-squares
+    criterion of \textcite{Dahl2006} with respect to the posterior co-clustering
+    matrix, and each draw is permuted to agree with it by the equivalence
+    classes representatives algorithm of \textcite{Papastamoulis2010}. The
+    reference is then reset to the most frequent relabeled class of every
+    decider until it is stable, and all class-specific parameters and the
+    allocations are permuted accordingly. Since the relabeling is based on the
+    allocations of all deciders, it does not require the classes to be separated
+    in one particular parameter, whereas an ordering constraint does. The
+    classes are then numbered by decreasing posterior mean weight. In the
+    simulation of Section~3.4, whose three classes have equal weights and
+    therefore cannot be identified by an ordering constraint on the weights, the
+    relabeled class weights and means are close to their true values, with a
+    rank-normalized $\hat{R}$ \parencite{Vehtari2021} of at most 1.01.
+    \item Comment: We decided not to send the submission into full review
+    because in its current form the chances for successful publication are
+    deemed too low. The package provides a nice set of functionality making use
+    of R's classes and methods system and building on infrastructure available,
+    e.g., for formulas. However, it is not sufficiently well outlined how the
+    package provides additional functionality compared to other packages and the
+    potential additional functionality is not well enough theoretically
+    explained, the statistical details and their implementation presented and
+    their use illustrated in practice.
+    \item[] Response: The package retains its S3 classes and methods and its
+    formula interface. The additional functionality compared to other packages
+    is outlined in Section~1 and Table~1 (see our response to the first
+    comment). It is explained theoretically in Section~2, which defines the
+    model class with random coefficients, latent classes, and ordered and ranked
+    responses, together with the likelihood. The statistical details and their
+    implementation are presented in Section~3: the function \texttt{fit()} and
+    its arguments (Section~3.1 and Table~3), the prior distributions with their
+    defaults (Section~3.2 and Table~4), the main blocks of the Gibbs sampler,
+    the treatment of the number of classes, and the relabeling (Section~3.3). A
+    simulation checks whether the sampler recovers the parameters of a known
+    data generating process (Section~3.4). The use in practice is demonstrated
+    in the applications listed in our response to the first comment, always with
+    code illustrations, from the interpretation of the estimates (Section~4) to
+    model evaluation (Section~8).
+\end{enumerate}
+
+\noindent \textbf{Responses to the specific comments}:
+
+\begin{enumerate}
+    \item Comment: The NAMESPACE contains
+\begin{verbatim}
+S3method(AIC,RprobitB_fit) S3method(BIC,RprobitB_fit)
+\end{verbatim}
+    raising the question why the logLik method does not return a logLik object
+    where AIC and BIC methods are readily available for.
+    \item[] Response: \texttt{logLik()} now returns a \texttt{logLik} object
+    with the number of parameters and the number of observations as attributes.
+    The functions \texttt{AIC()} and \texttt{BIC()} of \texttt{\{stats\}}
+    therefore apply directly, and the package no longer defines its own
+    \texttt{AIC} and \texttt{BIC} methods. Section~8.1 applies
+    \texttt{logLik()}, which evaluates the log-likelihood at the posterior means
+    of the population parameters.
+    \item Comment: The harmonic mean estimator has been pointed out to be
+    problematic for estimating the marginal likelihood. This aspect should be
+    also discussed and covered.
+    \item[] Response: We agree and have removed the harmonic mean estimator from
+    the package. As \textcite{FruehwirthSchnatter2004} points out, it is a
+    reciprocal importance sampling estimator with the prior as importance
+    density and therefore unreliable whenever the prior has heavier tails than
+    the posterior. The marginal likelihood is now estimated by bridge sampling
+    \parencite{Meng1996}, which is much more robust to the tail behavior of the
+    importance density \parencite{FruehwirthSchnatter2004}. Section~8.3 applies
+    it to the train models, with a result in line with the PSIS-LOO comparison
+    of Section~8.2. For models without latent classes, the package uses
+    \texttt{\{bridgesampling\}} \parencite{Gronau2020} with a normal importance
+    density fitted to the population parameters on an unconstrained scale. Since
+    a single normal importance density is unsuitable for the multimodal
+    posterior of a mixture \parencite{FruehwirthSchnatter2004}, the importance
+    density of a model with a fixed number of up to six latent classes averages
+    a normal density, fitted to the relabeled draws, over all permutations of
+    the class labels, following the idea of full permutation bridge sampling
+    \parencite{Celeux2019,FruehwirthSchnatter2019b}.
+\end{enumerate}
+
+\noindent \textbf{Changes from \texttt{\{RprobitB\}} 1.1.0 to
+\texttt{\{RprobitB\}} 2.0.1:}
+
+\begin{itemize}
+\item The single function \texttt{fit()} replaces the multi-step workflow. It
+accepts data in wide or long layout and simulates data if \texttt{data = NULL}.
+Data handling and simulation are provided by the companion package
+\texttt{\{choicedata\}} \parencite{Oelschlaeger2026a}.
+\item Random effects are specified by name through \texttt{random\_effects},
+with correlated or uncorrelated normal, log-normal, and negative log-normal
+mixing distributions. The argument \texttt{latent\_class\_effects} names the
+effects that differ between the latent classes.
+\item With \texttt{class\_update}, the number of classes is fixed or adapted
+during the warmup by the weight-based heuristic, or a sparse finite or a
+Dirichlet process mixture infers the number of occupied classes. The function
+\texttt{latent\_class\_diagnostics()} summarizes its posterior and the class
+memberships.
+\item \texttt{interpret()} computes compensations between effects, such as the
+willingness to pay, and marginal effects, each with posterior uncertainty.
+\item \texttt{predict()} accounts for posterior uncertainty and provides
+conditional predictions given the choice history of a decider.
+\texttt{residuals()} is new, and \texttt{update()} is adapted to \texttt{fit()}.
+\item The retained draws are stored as a \texttt{draws\_array} object of
+\texttt{\{posterior\}}. The function \texttt{summary()} reports the convergence
+diagnostics of \textcite{Vehtari2021}, \texttt{plot()} uses
+\texttt{\{bayesplot\}}, and chains can run in parallel via \texttt{\{future\}}.
+\item The \proglang{C++} implementation of the Gibbs sampler is more efficient.
+For instance, the models of Sections~3.5 and 5.1 run about two times faster than
+with version 1.1.0.
+\end{itemize}
+
+\noindent \textbf{References:}
+
+\printbibliography[heading=none]
+
+\end{document}
