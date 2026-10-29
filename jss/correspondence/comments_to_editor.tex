@@ -4,6 +4,7 @@
 \setstretch{1.2}
 \usepackage[backend=biber,style=authoryear]{biblatex}
 \addbibresource{../ref.bib}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true, allcolors=blue}
 
@@ -19,21 +20,39 @@ with Preference Heterogeneity in R''}\\
 
 We thank the editors for their comments on our previous submission. We have
 since rewritten the manuscript and revised the \proglang{R} package
-\texttt{\{RprobitB\}} \parencite{Oelschlaeger2026d}. Below, we quote each
-comment and state how it is addressed. The software changes are listed at the
-end of this document.
+\texttt{\{RprobitB\}} \parencite{Oelschlaeger2026d}. The main changes
+incorporated are:
+
+\begin{itemize}
+    \item We added material related to the choice of the number of classes
+    for the latent class models. In the new version we now include a total of
+    four different algorithms for selecting the number of classes. These also
+    include the usage of sparse finite mixtures and Dirichlet processes, as
+    suggested in the comments to our previous version.
+    \item We added a number of application examples, both simulated data sets
+    as well as real-world data sets available in other \proglang{R} packages.
+    \item We changed the algorithm for relabeling the classes as suggested in
+    the editorial report on our previous submission.
+\end{itemize}
+
+We very much hope that the new version has a better chance of being
+published, as we have incorporated many changes, substantially rewriting the
+paper and taking the many useful comments into account.
+
+Below, we quote each comment (in blue) and state how it is addressed. The
+software changes are listed at the end of this document.
 \\
 
-\noindent \textbf{Responses to the editorial report}:
+\noindent \textbf{Detailed responses to the editorial report}:
 
 \begin{enumerate}
-    \item Comment: The introduction indicates that a number of other software
-    packages provide related functionality. It would seem that the specific
-    added functionality of RprobitB compared to other packages is ``LC'' and
-    ``LC update'', i.e., weight-based class updates as well as a Dirichlet
-    process mixture approach. However, this aspect of the implementation is not
-    sufficiently well discussed or presented using applications to be
-    convincing.
+    \item \textcolor{blue}{Comment: The introduction indicates that a number
+    of other software packages provide related functionality. It would seem
+    that the specific added functionality of RprobitB compared to other
+    packages is ``LC'' and ``LC update'', i.e., weight-based class updates as
+    well as a Dirichlet process mixture approach. However, this aspect of the
+    implementation is not sufficiently well discussed or presented using
+    applications to be convincing.}
     \item[] Response: We now state the contribution of the package more clearly
     and have improved the comparison with competing packages. We also discuss
     the latent class models in more detail and have reworked their application.
@@ -43,13 +62,14 @@ end of this document.
     namely probit models and preference heterogeneity. For preference
     heterogeneity, we include the established open-source packages
     \texttt{\{mlogit\}}, \texttt{\{gmnl\}}, \texttt{\{logitr\}},
-    \texttt{\{apollo\}}, and \texttt{Biogeme}, which model it mostly via logit
+    \texttt{\{apollo\}}, and \texttt{Biogeme}, which are focused on logit
     models. For probit models, we include \texttt{\{bayesm\}} and
     \texttt{\{MNP\}} for Bayesian estimation, \texttt{\{Rchoice\}} for random
     coefficients in binary and ordered models, and \texttt{\{Rprobit\}}, the
-    frequentist counterpart of \texttt{\{RprobitB\}}. Table~1 shows for each of
-    them whether it offers probit models, Bayesian estimation, random
-    coefficients, latent classes, and inference on the number of classes.
+    frequentist counterpart of \texttt{\{RprobitB\}}. The revised Table~1 shows
+    for each of them whether it offers probit models, Bayesian estimation,
+    random coefficients, latent classes, and inference on the number of
+    classes.
 
     As Table~1 shows, \texttt{\{RprobitB\}} is, to the best of our knowledge,
     the only package that estimates multinomial probit models with random
@@ -74,14 +94,14 @@ end of this document.
     \texttt{Health} data for ordered responses (Sections~6.1 and 7.2), the
     \texttt{Game} data for ranked responses (Section~6.2), and Berserk decisions
     in an online chess tournament for conditional predictions (Section~7.1).
-    \item Comment: The weighted-based class updates approach seem to have only
-    been proposed by the authors in a conference publication and still lacks a
-    sufficient statistical basis. It would seem that this is a rather ad-hoc
-    approach for estimating the number of classes requiring various tuning
-    parameters where no insights are provided for the reader how to choose or
-    select them and what their impact is from a theoretical perspective
-    regarding a constraint estimation or from a Bayesian point of view how this
-    could be translated to a prior.
+    \item \textcolor{blue}{Comment: The weighted-based class updates approach
+    seem to have only been proposed by the authors in a conference publication
+    and still lacks a sufficient statistical basis. It would seem that this is
+    a rather ad-hoc approach for estimating the number of classes requiring
+    various tuning parameters where no insights are provided for the reader
+    how to choose or select them and what their impact is from a theoretical
+    perspective regarding a constraint estimation or from a Bayesian point of
+    view how this could be translated to a prior.}
     \item[] Response: We agree that the weight-based heuristic lacks a formal
     statistical basis. It is therefore no longer the main contribution of the
     package, and the manuscript presents it as one of four treatments of the
@@ -110,30 +130,23 @@ end of this document.
     uncertainty about the number of classes, which options (ii) and (iii)
     capture.
 
-    Section~5.4 states the main tuning parameters and their defaults, which
-    worked well in our simulations: a class is removed if its weight falls below
-    \texttt{epsmin = 0.01} and split if its weight exceeds
-    \texttt{epsmax = 0.7}, two classes are merged if their means are closer than
-    \texttt{deltamin = 0.1}, and at most one change occurs per
-    \texttt{buffer = 50} iterations. Suitable values also depend on the specific
-    application, which makes general recommendations difficult. Larger values of
-    \texttt{epsmin} and \texttt{deltamin} tend to reduce the number of classes.
-    Since only splits add classes, no class is added while all weights stay
-    below \texttt{epsmax}, and a smaller \texttt{epsmax} tends to increase the
-    number of classes. In a simulation with three equally weighted classes, the
-    heuristic converges to three classes when starting from one and from ten
-    initial classes (Figure~5).
-    \item Comment: Related work on finite and infinite mixture models would
-    indicate that in particular the Dirichlet parameter delta for finite
-    mixtures and the precision parameter for DPMs would seem influential (see
-    for example Fr\"uhwirth-Schnatter and Malsiner-Walli, 2019). In the current
-    exposition it remains unclear how the model could be estimated if the number
-    of classes should be a-priori specified to be filled and for example
-    model-selection based on information criteria performed in the finite case,
-    or a sparse finite mixture approach pursued or how the precision parameter
-    is to be selected in DPMs. It would seem important to provide more
-    theoretical as well as practical guidance on how to specify and apply the
-    mixture approach in practice.
+    Section~5.4 (p.~23) states the main tuning parameters and their defaults,
+    which worked well in our simulations. In a simulation with three equally
+    weighted classes, the heuristic converges to three classes when starting
+    from one and from ten initial classes (Figure~5). Due to the new material
+    providing alternative forms to decide on the number of classes, the
+    significance of these heuristic choices is much reduced.
+    \item \textcolor{blue}{Comment: Related work on finite and infinite mixture
+    models would indicate that in particular the Dirichlet parameter delta for
+    finite mixtures and the precision parameter for DPMs would seem
+    influential (see for example Fr\"uhwirth-Schnatter and Malsiner-Walli,
+    2019). In the current exposition it remains unclear how the model could be
+    estimated if the number of classes should be a-priori specified to be
+    filled and for example model-selection based on information criteria
+    performed in the finite case, or a sparse finite mixture approach pursued
+    or how the precision parameter is to be selected in DPMs. It would seem
+    important to provide more theoretical as well as practical guidance on how
+    to specify and apply the mixture approach in practice.}
     \item[] Response: The manuscript now addresses the three approaches
     mentioned in the comment, both methodologically (Sections~2.5, 3.2, and 3.3)
     and in an application to the same data (Sections~5.4 and 8.2). As
@@ -186,11 +199,11 @@ subset(latent_class_diagnostics(matched)$occupancy, n_classes == 2)
     between the two mixtures. In practice, we recommend checking the number of
     occupied classes under a second hyperprior, which can be set through
     \texttt{prior}.
-    \item Comment: Label switching also seems to be only resolved using a
-    constraint on the class weights. Given the large literature on resolving
-    this issue for Bayesian mixture models and the failure of using only a
-    constraint on one specific parameter in some cases this seems not
-    satisfactory.
+    \item \textcolor{blue}{Comment: Label switching also seems to be only
+    resolved using a constraint on the class weights. Given the large
+    literature on resolving this issue for Bayesian mixture models and the
+    failure of using only a constraint on one specific parameter in some cases
+    this seems not satisfactory.}
     \item[] Response: The constraint on the class weights has been removed.
     Following the literature on label switching
     \parencite[e.g.,][]{Stephens2000}, the sampler imposes no ordering
@@ -209,15 +222,16 @@ subset(latent_class_diagnostics(matched)$occupancy, n_classes == 2)
     therefore cannot be identified by an ordering constraint on the weights, the
     relabeled class weights and means are close to their true values, with a
     rank-normalized $\hat{R}$ \parencite{Vehtari2021} of at most 1.01.
-    \item Comment: We decided not to send the submission into full review
-    because in its current form the chances for successful publication are
-    deemed too low. The package provides a nice set of functionality making use
-    of R's classes and methods system and building on infrastructure available,
-    e.g., for formulas. However, it is not sufficiently well outlined how the
-    package provides additional functionality compared to other packages and the
-    potential additional functionality is not well enough theoretically
-    explained, the statistical details and their implementation presented and
-    their use illustrated in practice.
+    \item \textcolor{blue}{Comment: We decided not to send the submission into
+    full review because in its current form the chances for successful
+    publication are deemed too low. The package provides a nice set of
+    functionality making use of R's classes and methods system and building on
+    infrastructure available, e.g., for formulas. However, it is not
+    sufficiently well outlined how the package provides additional
+    functionality compared to other packages and the potential additional
+    functionality is not well enough theoretically explained, the statistical
+    details and their implementation presented and their use illustrated in
+    practice.}
     \item[] Response: The package retains its S3 classes and methods and its
     formula interface. The additional functionality compared to other packages
     is outlined in Section~1 and Table~1 (see our response to the first
@@ -238,12 +252,13 @@ subset(latent_class_diagnostics(matched)$occupancy, n_classes == 2)
 \noindent \textbf{Responses to the specific comments}:
 
 \begin{enumerate}
-    \item Comment: The NAMESPACE contains
+    \item \textcolor{blue}{Comment: The NAMESPACE contains}
 \begin{verbatim}
 S3method(AIC,RprobitB_fit) S3method(BIC,RprobitB_fit)
 \end{verbatim}
-    raising the question why the logLik method does not return a logLik object
-    where AIC and BIC methods are readily available for.
+    \textcolor{blue}{raising the question why the logLik method does not
+    return a logLik object where AIC and BIC methods are readily available
+    for.}
     \item[] Response: \texttt{logLik()} now returns a \texttt{logLik} object
     with the number of parameters and the number of observations as attributes.
     The functions \texttt{AIC()} and \texttt{BIC()} of \texttt{\{stats\}}
@@ -251,9 +266,9 @@ S3method(AIC,RprobitB_fit) S3method(BIC,RprobitB_fit)
     \texttt{AIC} and \texttt{BIC} methods. Section~8.1 applies
     \texttt{logLik()}, which evaluates the log-likelihood at the posterior means
     of the population parameters.
-    \item Comment: The harmonic mean estimator has been pointed out to be
-    problematic for estimating the marginal likelihood. This aspect should be
-    also discussed and covered.
+    \item \textcolor{blue}{Comment: The harmonic mean estimator has been
+    pointed out to be problematic for estimating the marginal likelihood. This
+    aspect should be also discussed and covered.}
     \item[] Response: We agree and have removed the harmonic mean estimator from
     the package. As \textcite{FruehwirthSchnatter2004} points out, it is a
     reciprocal importance sampling estimator with the prior as importance
@@ -273,6 +288,7 @@ S3method(AIC,RprobitB_fit) S3method(BIC,RprobitB_fit)
     \parencite{Celeux2019,FruehwirthSchnatter2019b}.
 \end{enumerate}
 
+\newpage
 \noindent \textbf{Changes from \texttt{\{RprobitB\}} 1.1.0 to
 \texttt{\{RprobitB\}} 2.0.1:}
 

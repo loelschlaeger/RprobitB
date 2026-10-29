@@ -32,10 +32,10 @@ Heterogeneity in R}
 \Shorttitle{\pkg{RprobitB}: Bayesian Probit Choice Models in \proglang{R}}
 
 \Abstract{
-The \proglang{R} package \pkg{RprobitB} provides efficient Bayesian estimation
-of multinomial probit models for discrete choice data, with a focus on
-unobserved preference heterogeneity. Heterogeneity is modeled through random
-coefficients with normal or log-normal mixing distributions and through latent
+The \proglang{R} package \pkg{RprobitB} provides numerically efficient Bayesian
+estimation of the multinomial probit model for discrete choice data, with a
+focus on unobserved preference heterogeneity. Heterogeneity is modeled by random
+coefficients with normal or log-normal mixing distributions and by latent
 classes, whose number is fixed in advance or inferred from the data by sparse
 finite or Dirichlet process mixtures. Estimation is based on a Gibbs sampler
 with data augmentation, which avoids the costly evaluation of the probit
@@ -86,17 +86,17 @@ preferences in a population of deciders from observed choices.
 
 Statistical inference on choices among a discrete set of alternatives
 traditionally builds upon random utility models \citep{Train2009}. The utility
-of an alternative is a linear combination of covariates plus a random error, the
-decider chooses the alternative with the largest utility, and only this choice
-is observed. The multinomial logit model has closed-form choice probabilities
-but implies the independence of irrelevant alternatives, whereas the multinomial
-probit model assumes jointly normal errors, which may be correlated across
-alternatives and thereby allow flexible substitution patterns. However, its
-choice probabilities are multivariate normal integrals without a closed form,
-which maximum likelihood estimation must simulate, for instance with the
-Geweke--Hajivassiliou--Keane simulator \citep{Hajivassiliou1996}, or
-approximate, for instance with the Solow--Joe approximation \citep{Solow1990,
-Joe1995}.
+of an alternative is modeled as a linear combination of covariates plus a random
+error, the decider chooses the alternative with the largest utility, and only
+this choice is observed. The multinomial logit model has closed-form choice
+probabilities but implies the independence of irrelevant alternatives, whereas
+the multinomial probit model assumes jointly normal errors, which may be
+correlated across alternatives and thereby allow flexible substitution patterns.
+However, its choice probabilities are multivariate normal integrals without a
+closed form, which maximum likelihood estimation must simulate, for instance
+with the Geweke--Hajivassiliou--Keane simulator \citep{Hajivassiliou1996}, or
+approximate, for instance with the Solow--Joe approximation
+\citep{Solow1990, Joe1995}.
 
 Unobserved preference heterogeneity is commonly modeled through random
 coefficients that take decider-specific values from a mixing distribution. This
@@ -226,7 +226,8 @@ Section~\ref{sec:heterogeneity} models preference heterogeneity through random
 coefficients and latent classes, whose number is fixed or inferred from the
 data. Section~\ref{sec:ordered_ranked} treats ordered and ranked responses,
 Sections~\ref{sec:prediction} and~\ref{sec:evaluation} cover prediction,
-residuals, and model comparison, and Section~\ref{sec:summary} concludes.
+residuals, and model comparison, and Section~\ref{sec:summary} concludes the
+paper.
 
 \section{The probit model} \label{sec:model}
 
@@ -436,22 +437,22 @@ is
   \qquad P = P_f + P_l + P_r.
 \end{equation}
 %
-If $P_l > 0$ but $P_r = 0$, (\ref{eq:partition}) is the classical
-latent class model, in which all heterogeneity is due to the class membership
+If $P_l > 0$ but $P_r = 0$, (\ref{eq:partition}) is the classical latent class
+model, in which all heterogeneity is due to the class membership
 \citep{Kamakura1989, Greene2003}. If instead $P_r > 0$, it is the latent class
-mixed probit model of \citet{Oelschlaeger2021}. The number of classes is
-either fixed by the argument \code{classes} of \fct{fit}, or the number of
-occupied classes is inferred from the data. The argument \code{class_update}
-selects between a finite mixture whose classes all stay occupied
-(\code{"fixed"}), an overfitted finite mixture with a sparse prior on the
-weights that empties superfluous classes (\code{"sparse"};
+mixed probit model of \citet{Oelschlaeger2021}. The number of classes is either
+fixed by the argument \code{classes} of \fct{fit}, or the number of occupied
+classes is inferred from the data. The argument \code{class_update} selects
+between a finite mixture whose classes all stay occupied (\code{"fixed"}), an
+overfitted finite mixture with a sparse prior on the weights that empties
+superfluous classes (\code{"sparse"};
 \citealp{Rousseau2011, MalsinerWalli2016, FruehwirthSchnatter2019}), a Dirichlet
 process mixture whose number of occupied classes is random
 (\code{"dirichlet_process"}; \citealp{Escobar1995, Neal2000}), and the
 weight-based remove, split, and merge heuristic of \citet{Oelschlaeger2021}
 (\code{"weight_based"}). Section~\ref{sec:estimation} describes the
-corresponding sampler steps, and Section~\ref{sec:heterogeneity} applies all
-four updating schemes.
+corresponding sampler steps, and Section~\ref{sec:latent_classes} applies all
+four updating schemes to empirical and simulated data.
 
 \subsection{Ordered and ranked responses} \label{sec:model:ordered_ranked}
 
@@ -803,20 +804,20 @@ the classes are numbered by decreasing posterior mean weight.
 
 With \code{data = NULL}, \fct{fit} simulates the choices from the specified
 model before it fits the model, which can be used to verify that the sampler
-recovers the parameters of a known data generating process (DGP). We simulate
-400 deciders who choose 20 times among bus, car, and train and who belong to one
-of three latent classes. The formula contains the three covariate types of
-Section~\ref{sec:model:formula}: the price with one coefficient for all
-alternatives, which we specify as a normal random effect whose mean and variance
-differ between the classes, the income of the decider with one coefficient per
-alternative, and the travel time, whose values and coefficients both differ
-between the alternatives. We collect the parameters of the DGP in a list
-containing, for each class, the coefficients \code{beta}, whose entry
-\code{price} is the mean of the random price coefficient, and the variance
-\code{Omega} of this coefficient, as well as the class \code{weights} and the
-covariance matrix \code{Sigma} of the three errors. Covariates that are not
-supplied through the argument \code{covariates} are drawn from a standard normal
-distribution.
+recovers the parameters of a known data generating process (DGP). As a
+demonstration example below, we simulate 400 deciders who choose 20 times among
+bus, car, and train and who belong to one of three latent classes. The formula
+contains the three covariate types of Section~\ref{sec:model:formula}: the price
+with one coefficient for all alternatives, which we specify as a normal random
+effect whose mean and variance differ between the classes, the income of the
+decider with one coefficient per alternative, and the travel time, whose values
+and coefficients both differ between the alternatives. We collect the parameters
+of the DGP in a list containing, for each class, the coefficients \code{beta},
+whose entry \code{price} is the mean of the random price coefficient, and the
+variance \code{Omega} of this coefficient, as well as the class \code{weights}
+and the covariance matrix \code{Sigma} of the three errors. Covariates that are
+not supplied through the argument \code{covariates} are drawn from a standard
+normal distribution.
 %
 <<simulation-dgp>>=
 common <- c(
@@ -988,12 +989,12 @@ is the central difference
 \pi_j\big(X_{nt}^{-h}, \vartheta^{(d)}\big)}{2h},
 \end{equation}
 %
-where $h$ is a small step size. The marginal
-effect at the average (MEA, \code{type = "mea"}) evaluates
-(\ref{eq:marginal_effect}) at one artificial occasion whose covariates
-are the averages or, for factors, the modes of the observed ones, and the
-average marginal effect (AME, \code{type = "ame"}) averages it over all observed
-choice occasions:
+where $h$ is a small step size; effects of $x$ on the probabilities of the other
+alternatives are not computed. The marginal effect at the average (MEA,
+\code{type = "mea"}) evaluates (\ref{eq:marginal_effect}) at one artificial
+occasion whose covariates are the averages or, for factors, the modes of the
+observed ones, and the average marginal effect (AME, \code{type = "ame"})
+averages it over all observed choice occasions:
 %
 <<train-mea>>=
 train_mea <- interpret(model_train, type = "mea")
@@ -1142,11 +1143,11 @@ p(\beta_n \mid y, \vartheta) \propto \phi(\beta_n \mid b, \Omega) \prod_{t =
 1}^{T_n} \Prob(y_{nt} \mid X_{nt}, \theta_n, \tilde{\Sigma}).
 \end{equation}
 %
-Equation~\ref{eq:individual_posterior} is the conditional distribution of the
+Equation~(\ref{eq:individual_posterior}) is the conditional distribution of the
 coefficients given the decider's choices \citep[Chapter~11]{Train2009}, in
-contrast to the unconditional population distribution of
-(\ref{eq:random}). \code{coef(level = "individual")} returns the
-posterior means of the individual coefficients, one row per household:
+contrast to the unconditional population distribution of (\ref{eq:random}).
+\code{coef(level = "individual")} returns the posterior means of the individual
+coefficients, one row per household:
 %
 <<household-coefficients>>=
 household_coefficients <- coef(electricity, level = "individual")
@@ -1470,24 +1471,24 @@ summary(satisfaction)
 The summary lists the coefficients, the free thresholds \code{gamma[2]} to
 \code{gamma[4]}, and the mean and the variance of the random intercept,
 \code{mu[ASC]} and \code{Omega[ASC,ASC]}. The first threshold is fixed at zero
-and the error variance at one. The probability of a higher satisfaction level
-decreases with age and with the degree of handicap and increases with income and
-for married persons. With a random intercept variance of 0.86 and an error
-variance of one, persistent differences between persons account for about 46
-percent of the unexplained variation in the latent utility. The repeated
-responses of the same persons identify these differences, which capture
-determinants that the covariates omit, such as chronic conditions or individual
-standards of judging one's health. Figure~\ref{fig:thresholds} shows how the
-thresholds translate the latent utility of a married person with mean income and
-no handicap into the five levels: an age of 64 instead of 25 years shifts the
-density to the left and moves probability from the two highest to the two lowest
-levels. The thresholds are unequally spaced: level 2 covers the widest bounded
-interval of the latent utility and is the most probable level at both ages,
-whereas level 3 covers a narrow interval and is less probable than the highest
-level at 25 years. Section~\ref{sec:new_covariates} predicts the probability of
-the highest level over the age range of the sample.
+and the error variance at one. According to the model, the probability of a
+higher satisfaction level decreases with age and with the degree of handicap and
+increases with income and for married persons. With a random intercept variance
+of 0.86 and an error variance of one, persistent differences between persons
+account for about 46 percent of the unexplained variation in the latent utility.
+The repeated responses of the same persons identify these differences, which
+capture determinants that the covariates omit, such as chronic conditions or
+individual standards of judging one's health. Figure~\ref{fig:thresholds} shows
+how the thresholds translate the latent utility of a married person with mean
+income and no handicap into the five levels: an age of 64 instead of 25 years
+shifts the density to the left and moves probability from the two highest to the
+two lowest levels. The thresholds are unequally spaced: level 2 covers the
+widest bounded interval of the latent utility and is the most probable level at
+both ages, whereas level 3 covers a narrow interval and is less probable than
+the highest level at 25 years. Section~\ref{sec:new_covariates} predicts the
+probability of the highest level over the age range of the sample.
 %
-<<ordered-thresholds, fig=TRUE, echo=FALSE, width=6, height=2.8>>=
+<<ordered-thresholds, fig=TRUE, echo=FALSE, width=6, height=2.5>>=
 satisfaction_coef <- coef(satisfaction)
 intercept_variance <- satisfaction_coef[["Omega[ASC,ASC]"]]
 utility_young <- satisfaction_coef[["mu[ASC]"]] +
@@ -1583,8 +1584,8 @@ lines), and 95\% credible intervals (thin lines).}
 \label{fig:gaming_intervals}
 \end{figure}
 %
-Respondents rank the platforms they own higher than those they do not own. The
-ownership coefficient has a posterior mean of
+According to the model, respondents rank the platforms they own higher than
+those they do not own. The ownership coefficient has a posterior mean of
 \Sexpr{sprintf("%.2f", coef(gaming_rank)[["beta[own]"]])} and a 95\% credible
 interval from 0.53 to 1.20. Respondents who play more hours rank the PC and, to
 a lesser extent, the PlayStation higher relative to the GameBoy: the posterior
@@ -1699,7 +1700,7 @@ berserk_split <- train_test(
 sapply(berserk_split, nrow)
 @
 %
-<<berserk-games-figure, fig=TRUE, echo=FALSE, width=6, height=2.1>>=
+<<berserk-games-figure, fig=TRUE, echo=FALSE, width=6, height=1.9>>=
 games_per_player <- table(berserk_data$deciderID)
 op <- par(mar = c(4, 4, 0.5, 0.5))
 hist(
@@ -1742,13 +1743,13 @@ berserk <- update(
 round(cbind(mean = coef(berserk), confint(berserk, level = 0.9)), 3)
 @
 %
-Players go Berserk more often with the white pieces, which have the advantage of
-the first move, when their rating is high, when it exceeds that of the opponent,
-and late in the tournament, while a winning streak has no clear effect. Among
-the standardized covariates, the rating difference clearly has the strongest
-effect. The negative mean \code{mu[ASC_TRUE]} of the propensity reflects that 74
-percent of the games are played without Berserk, and the propensity varies
-considerably between players, as indicated by the variance
+According to the model, players go Berserk more often with the white pieces,
+which have the advantage of the first move, when their rating is high, when it
+exceeds that of the opponent, and late in the tournament, while a winning streak
+has no clear effect. Among the standardized covariates, the rating difference
+clearly has the strongest effect. The negative mean \code{mu[ASC_TRUE]} of the
+propensity reflects that 74 percent of the games are played without Berserk, and
+the propensity varies considerably between players, as indicated by the variance
 \code{Omega[ASC_TRUE,ASC_TRUE]} of about
 \Sexpr{sprintf("%.1f", coef(berserk)[["Omega[ASC_TRUE,ASC_TRUE]"]])}. The model
 without a random effect predicts each hold-out game by its population
