@@ -133,9 +133,9 @@ independent likelihood units, here the 210 travelers with one choice
 each.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -175.1807 (df=17)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -175.7391 (df=17)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">reduced_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -238.829 (df=8)</span></span></code></pre></div>
+<span><span class="co">#&gt; 'log Lik.' -238.2957 (df=8)</span></span></code></pre></div>
 <p>The log-likelihood values can be used to compute AIC and BIC, but it
 ignores the posterior uncertainty about the parameters. WAIC and
 PSIS-LOO instead use all posterior draws and are the primary
@@ -156,28 +156,28 @@ approximation and its diagnostics.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: </span></span>
-<span><span class="co">#&gt; 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
+<span><span class="co">#&gt; 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 200 by 210 log-likelihood matrix.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_waic   -194.8 16.2</span></span>
-<span><span class="co">#&gt; p_waic        20.9  3.9</span></span>
-<span><span class="co">#&gt; waic         389.6 32.5</span></span>
+<span><span class="co">#&gt; elpd_waic   -194.9 15.9</span></span>
+<span><span class="co">#&gt; p_waic        20.3  3.6</span></span>
+<span><span class="co">#&gt; waic         389.8 31.7</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
+<span><span class="co">#&gt; 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
 <span><span class="fu"><a href="../reference/WAIC.html">WAIC</a></span><span class="op">(</span><span class="va">reduced_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: </span></span>
-<span><span class="co">#&gt; 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
+<span><span class="co">#&gt; 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 200 by 210 log-likelihood matrix.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_waic   -238.2  9.0</span></span>
-<span><span class="co">#&gt; p_waic        11.8  1.9</span></span>
-<span><span class="co">#&gt; waic         476.5 17.9</span></span>
+<span><span class="co">#&gt; elpd_waic   -240.6  9.0</span></span>
+<span><span class="co">#&gt; p_waic        13.7  1.9</span></span>
+<span><span class="co">#&gt; waic         481.2 18.0</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span></code></pre></div>
+<span><span class="co">#&gt; 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.</span></span></code></pre></div>
 <p>The <strong>loo</strong> package warns when the contribution of a
 decider to <code>p_waic</code> exceeds 0.4, the level above which <span class="citation">Vehtari et al. (<a href="#ref-Vehtari2017">2017</a>)</span> consider the WAIC approximation
 unreliable; here this concerns a few travelers. PSIS-LOO is preferable
@@ -190,22 +190,21 @@ to travelers with a strong influence on the posterior <span class="citation">(<a
 <code class="sourceCode R"><span><span class="va">loo_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">full_model</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.RprobitB_fit.html">loo</a></span><span class="op">(</span><span class="va">reduced_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_full</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Computed from 200 by 210 log-likelihood matrix.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          Estimate   SE</span></span>
-<span><span class="co">#&gt; elpd_loo   -195.0 16.3</span></span>
-<span><span class="co">#&gt; p_loo        21.1  4.0</span></span>
-<span><span class="co">#&gt; looic       390.1 32.5</span></span>
+<span><span class="co">#&gt; elpd_loo   -195.3 15.9</span></span>
+<span><span class="co">#&gt; p_loo        20.6  3.7</span></span>
+<span><span class="co">#&gt; looic       390.6 31.9</span></span>
 <span><span class="co">#&gt; ------</span></span>
 <span><span class="co">#&gt; MCSE of elpd_loo is NA.</span></span>
 <span><span class="co">#&gt; MCSE and ESS estimates assume independent draws (r_eff=1).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
 <span><span class="co">#&gt;                           Count Pct.    Min. ESS</span></span>
-<span><span class="co">#&gt; (-Inf, 0.57]   (good)     203   96.7%   47      </span></span>
+<span><span class="co">#&gt; (-Inf, 0.57]   (good)     203   96.7%   54      </span></span>
 <span><span class="co">#&gt;    (0.57, 1]   (bad)        6    2.9%   &lt;NA&gt;    </span></span>
 <span><span class="co">#&gt;     (1, Inf)   (very bad)   1    0.5%   &lt;NA&gt;    </span></span>
 <span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
@@ -223,7 +222,7 @@ error.</p>
 <code class="sourceCode R"><span><span class="fu">loo</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/loo/reference/loo_compare.html" class="external-link">loo_compare</a></span><span class="op">(</span><span class="va">loo_full</span>, <span class="va">loo_reduced</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   model elpd_diff se_diff p_worse diag_diff       diag_elpd</span></span>
 <span><span class="co">#&gt;  model1       0.0     0.0      NA           7 k_psis &gt; 0.57</span></span>
-<span><span class="co">#&gt;  model2     -43.5    10.9    1.00           2 k_psis &gt; 0.57</span></span>
+<span><span class="co">#&gt;  model2     -45.4    10.5    1.00</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
@@ -243,7 +242,23 @@ ratio; values above one favor the first model.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/bayes_factor.html">bayes_factor</a></span><span class="op">(</span><span class="va">full_model</span>, <span class="va">reduced_model</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 22.34780</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Warning: effective sample size calculation failed in iterative's scheme</span></span>
+<span><span class="co">#&gt; uncertainty calculation</span></span>
+<span><span class="co">#&gt; Estimated log Bayes factor in favor of model1 over model2: 21.24877</span></span></code></pre></div>
 <p>The large positive log Bayes factor also favors the full model.</p>
 </div>
 <div class="section level2">

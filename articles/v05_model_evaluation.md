@@ -80,9 +80,9 @@ each.
 ``` r
 
 logLik(full_model)
-#> 'log Lik.' -175.1807 (df=17)
+#> 'log Lik.' -175.7391 (df=17)
 logLik(reduced_model)
-#> 'log Lik.' -238.829 (df=8)
+#> 'log Lik.' -238.2957 (df=8)
 ```
 
 The log-likelihood values can be used to compute AIC and BIC, but it
@@ -107,28 +107,28 @@ developed the PSIS-LOO approximation and its diagnostics.
 
 WAIC(full_model)
 #> Warning: 
-#> 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -194.8 16.2
-#> p_waic        20.9  3.9
-#> waic         389.6 32.5
+#> elpd_waic   -194.9 15.9
+#> p_waic        20.3  3.6
+#> waic         389.8 31.7
 #> 
-#> 12 (5.7%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 9 (4.3%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 WAIC(reduced_model)
 #> Warning: 
-#> 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>           Estimate   SE
-#> elpd_waic   -238.2  9.0
-#> p_waic        11.8  1.9
-#> waic         476.5 17.9
+#> elpd_waic   -240.6  9.0
+#> p_waic        13.7  1.9
+#> waic         481.2 18.0
 #> 
-#> 6 (2.9%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+#> 10 (4.8%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 ```
 
 The **loo** package warns when the contribution of a decider to `p_waic`
@@ -146,22 +146,21 @@ with a strong influence on the posterior ([Vehtari et al.
 loo_full <- loo(full_model)
 #> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_reduced <- loo(reduced_model)
-#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_full
 #> 
 #> Computed from 200 by 210 log-likelihood matrix.
 #> 
 #>          Estimate   SE
-#> elpd_loo   -195.0 16.3
-#> p_loo        21.1  4.0
-#> looic       390.1 32.5
+#> elpd_loo   -195.3 15.9
+#> p_loo        20.6  3.7
+#> looic       390.6 31.9
 #> ------
 #> MCSE of elpd_loo is NA.
 #> MCSE and ESS estimates assume independent draws (r_eff=1).
 #> 
 #> Pareto k diagnostic values:
 #>                           Count Pct.    Min. ESS
-#> (-Inf, 0.57]   (good)     203   96.7%   47      
+#> (-Inf, 0.57]   (good)     203   96.7%   54      
 #>    (0.57, 1]   (bad)        6    2.9%   <NA>    
 #>     (1, Inf)   (very bad)   1    0.5%   <NA>    
 #> See help('pareto-k-diagnostic') for details.
@@ -188,7 +187,7 @@ with its standard error.
 loo::loo_compare(loo_full, loo_reduced)
 #>   model elpd_diff se_diff p_worse diag_diff       diag_elpd
 #>  model1       0.0     0.0      NA           7 k_psis > 0.57
-#>  model2     -43.5    10.9    1.00           2 k_psis > 0.57
+#>  model2     -45.4    10.5    1.00
 #> 
 #> Diagnostic flags present.
 #> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
@@ -213,7 +212,23 @@ the first model.
 
 set.seed(1)
 bayes_factor(full_model, reduced_model, log = TRUE)
-#> Estimated log Bayes factor in favor of model1 over model2: 22.34780
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Warning: effective sample size calculation failed in iterative's scheme
+#> uncertainty calculation
+#> Estimated log Bayes factor in favor of model1 over model2: 21.24877
 ```
 
 The large positive log Bayes factor also favors the full model.

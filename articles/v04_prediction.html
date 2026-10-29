@@ -133,11 +133,11 @@ fast.</p>
 <span><span class="co">#&gt; Samples: 50 retained per chain, 2 chains</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                variable   mean   mode     sd  rhat ess_bulk</span></span>
-<span><span class="co">#&gt;              beta[time] -2.061 -2.096 0.2040 0.998     80.6</span></span>
+<span><span class="co">#&gt;              beta[time] -2.061 -2.096 0.2040 0.997     80.6</span></span>
 <span><span class="co">#&gt;            beta[change] -0.348 -0.347 0.0581 1.019    124.6</span></span>
 <span><span class="co">#&gt;  beta[factor(comfort)1] -0.675 -0.702 0.0880 0.997     81.7</span></span>
-<span><span class="co">#&gt;  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.993     95.8</span></span>
-<span><span class="co">#&gt;               mu[price] -0.470 -0.492 0.0461 1.011     99.2</span></span>
+<span><span class="co">#&gt;  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.992     95.8</span></span>
+<span><span class="co">#&gt;               mu[price] -0.470 -0.492 0.0461 1.012     99.2</span></span>
 <span><span class="co">#&gt;      Omega[price,price]  0.137  0.121 0.0320 1.017     35.6</span></span></code></pre></div>
 <p><code>mu[price]</code> and <code>Omega[price,price]</code> are the
 mean and the variance of the price coefficient across the population.
@@ -296,7 +296,7 @@ coefficient per plan relative to the status quo. The fit uses the first
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">wind</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"beta[compensation]"</span>, <span class="st">"beta[psychological_ownership_2]"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;              beta[compensation] beta[psychological_ownership_2] </span></span>
-<span><span class="co">#&gt;                     0.001332594                    -0.489664755</span></span></code></pre></div>
+<span><span class="co">#&gt;                     0.001323216                    -0.484861950</span></span></code></pre></div>
 <p>The compensation coefficient is positive and the ownership
 coefficient negative: compensation makes a plan more attractive, and
 residents with a stronger feeling of ownership are less willing to leave
@@ -317,10 +317,10 @@ compares the probability of the status quo before and after.</p>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">wind</span>, newdata <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">$</span><span class="va">probability_1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
-<span><span class="co">#&gt; [1,] 0.3173732 0.1766767</span></span>
-<span><span class="co">#&gt; [2,] 0.2801607 0.1683189</span></span>
-<span><span class="co">#&gt; [3,] 0.2923128 0.2170501</span></span>
-<span><span class="co">#&gt; [4,] 0.3477941 0.2717084</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 0.3166753 0.1740325</span></span>
+<span><span class="co">#&gt; [2,] 0.2841614 0.1715989</span></span>
+<span><span class="co">#&gt; [3,] 0.2929244 0.2167170</span></span>
+<span><span class="co">#&gt; [4,] 0.3511169 0.2747030</span></span></code></pre></div>
 <p>Doubling the compensation lowers the probability of the status quo in
 all four tasks.</p>
 </div>
@@ -366,11 +366,11 @@ set and the games of the other players into the training set.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">berserk</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        beta[whiteTRUE_TRUE]           beta[rating_TRUE] </span></span>
-<span><span class="co">#&gt;                3.726942e-02                1.496726e-03 </span></span>
+<span><span class="co">#&gt;                2.828675e-02                1.460691e-03 </span></span>
 <span><span class="co">#&gt; beta[ratingDifference_TRUE] beta[minutesRemaining_TRUE] </span></span>
-<span><span class="co">#&gt;                6.338037e-05               -1.794785e-04 </span></span>
+<span><span class="co">#&gt;                6.888317e-05               -1.958756e-04 </span></span>
 <span><span class="co">#&gt;       beta[streakTRUE_TRUE]              beta[ASC_TRUE] </span></span>
-<span><span class="co">#&gt;               -7.105214e-02               -3.250510e+00</span></span></code></pre></div>
+<span><span class="co">#&gt;               -7.880141e-02               -3.172163e+00</span></span></code></pre></div>
 <p>The rating coefficient is positive: stronger players go Berserk more
 often. The coefficients of the streak and of the remaining time are
 negative. How well does the model predict the games of the 60 players in
@@ -405,10 +405,10 @@ games are dropped.</p>
 <span><span class="va">large</span> <span class="op">&lt;-</span> <span class="va">calibration</span><span class="op">[</span><span class="va">calibration</span><span class="op">$</span><span class="va">games</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">large</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           games predicted observed</span></span>
-<span><span class="co">#&gt; (0.1,0.2]    57      0.14     0.18</span></span>
-<span><span class="co">#&gt; (0.2,0.3]   194      0.25     0.25</span></span>
-<span><span class="co">#&gt; (0.3,0.4]    79      0.35     0.34</span></span>
-<span><span class="co">#&gt; (0.4,0.5]    84      0.43     0.57</span></span></code></pre></div>
+<span><span class="co">#&gt; (0.1,0.2]    58      0.14     0.17</span></span>
+<span><span class="co">#&gt; (0.2,0.3]   196      0.25     0.25</span></span>
+<span><span class="co">#&gt; (0.3,0.4]    80      0.35     0.35</span></span>
+<span><span class="co">#&gt; (0.4,0.5]    81      0.43     0.57</span></span></code></pre></div>
 <p>The calibration plot shows the same table. Points on the diagonal
 mean that the predicted probability equals the observed rate, and the
 point sizes grow with the number of games in a group.</p>
@@ -550,19 +550,19 @@ their age and exercise habits.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   deciderID .prediction probability_Never probability_Occas probability_Regul</span></span>
-<span><span class="co">#&gt; 1         1       Never         0.8504143        0.06673166        0.05376339</span></span>
-<span><span class="co">#&gt; 2         2       Never         0.7999456        0.08111407        0.07254879</span></span>
-<span><span class="co">#&gt; 3         3       Never         0.8012933        0.08066875        0.07205920</span></span>
-<span><span class="co">#&gt; 4         4       Never         0.7941322        0.08296075        0.07464705</span></span>
-<span><span class="co">#&gt; 5         5       Never         0.8394208        0.07046222        0.05775976</span></span>
-<span><span class="co">#&gt; 6         6       Never         0.8450430        0.06860171        0.05571883</span></span>
+<span><span class="co">#&gt; 1         1       Never         0.8562408        0.06475144        0.05073226</span></span>
+<span><span class="co">#&gt; 2         2       Never         0.7956245        0.08255546        0.07279669</span></span>
+<span><span class="co">#&gt; 3         3       Never         0.7965730        0.08223363        0.07243314</span></span>
+<span><span class="co">#&gt; 4         4       Never         0.7914499        0.08388835        0.07437814</span></span>
+<span><span class="co">#&gt; 5         5       Never         0.8484086        0.06746885        0.05373528</span></span>
+<span><span class="co">#&gt; 6         6       Never         0.8524846        0.06610157        0.05217742</span></span>
 <span><span class="co">#&gt;   probability_Heavy</span></span>
-<span><span class="co">#&gt; 1        0.02909066</span></span>
-<span><span class="co">#&gt; 2        0.04639158</span></span>
-<span><span class="co">#&gt; 3        0.04597872</span></span>
-<span><span class="co">#&gt; 4        0.04825995</span></span>
-<span><span class="co">#&gt; 5        0.03235718</span></span>
-<span><span class="co">#&gt; 6        0.03063642</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        0.02827552</span></span>
+<span><span class="co">#&gt; 2        0.04902336</span></span>
+<span><span class="co">#&gt; 3        0.04876022</span></span>
+<span><span class="co">#&gt; 4        0.05028357</span></span>
+<span><span class="co">#&gt; 5        0.03038726</span></span>
+<span><span class="co">#&gt; 6        0.02923643</span></span></code></pre></div>
 <p>Every row has four probabilities that sum to one, and
 <code>.prediction</code> names the most probable level. Because most
 students never smoke, this level is the most probable for every student,
@@ -579,9 +579,9 @@ never smoking of the first three students:</p>
 <span>  after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">smoking</span>, newdata <span class="op">=</span> <span class="va">older</span><span class="op">)</span><span class="op">$</span><span class="va">probability_Never</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;         before     after</span></span>
-<span><span class="co">#&gt; [1,] 0.8504143 0.8288174</span></span>
-<span><span class="co">#&gt; [2,] 0.7999456 0.7769138</span></span>
-<span><span class="co">#&gt; [3,] 0.8012933 0.7786074</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 0.8562408 0.8404168</span></span>
+<span><span class="co">#&gt; [2,] 0.7956245 0.7784639</span></span>
+<span><span class="co">#&gt; [3,] 0.7965730 0.7797745</span></span></code></pre></div>
 <p>The probabilities change only slightly, because the age coefficient
 is small.</p>
 </div>
