@@ -8,7 +8,10 @@ decider or repeatedly in panel data. Preferences may vary across the
 population, through random coefficients, latent classes, or both. The
 posterior draws obtained from the Gibbs sampler support choice
 prediction, marginal effects, and model comparison by information
-criteria and Bayes factors.
+criteria and Bayes factors. The frequentist counterpart
+[**Rprobit**](https://CRAN.R-project.org/package=Rprobit) estimates
+multinomial probit models with normal mixing distributions by maximum
+likelihood.
 
 ## Installation
 

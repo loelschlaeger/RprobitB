@@ -39,6 +39,10 @@ allocation update and the precision update of Escobar and West (1995).
 Independent chains run through the
 [**future**](https://future.futureverse.org/) framework, and retained
 draws use the [**posterior**](https://mc-stan.org/posterior/) format.
+The frequentist counterpart
+[**Rprobit**](https://CRAN.R-project.org/package=Rprobit) (Bauer et al.
+2026) estimates multinomial probit models with normal mixing
+distributions by maximum likelihood.
 
 ### Evaluation
 
@@ -63,6 +67,11 @@ Response Data.” *Journal of the American Statistical Association*,
 **88**(422), 669–679.
 [doi:10.1080/01621459.1993.10476321](https://doi.org/10.1080/01621459.1993.10476321)
 .
+
+Bauer D, Batram M, Büscher S, Oelschläger L, Bui TT (2026). *Rprobit:
+Estimation of Multinomial Probit Models*.
+[doi:10.32614/CRAN.package.Rprobit](https://doi.org/10.32614/CRAN.package.Rprobit)
+. R package version 1.0.0, <https://CRAN.R-project.org/package=Rprobit>.
 
 Escobar MD, West M (1995). “Bayesian Density Estimation and Inference
 Using Mixtures.” *Journal of the American Statistical Association*,

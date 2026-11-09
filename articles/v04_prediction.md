@@ -76,7 +76,7 @@ summary(model)
 #>              beta[time] -2.061 -2.096 0.2040 0.997     80.6
 #>            beta[change] -0.348 -0.347 0.0581 1.019    124.6
 #>  beta[factor(comfort)1] -0.675 -0.702 0.0880 0.997     81.7
-#>  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.992     95.8
+#>  beta[factor(comfort)2] -2.155 -2.134 0.1921 0.993     95.8
 #>               mu[price] -0.470 -0.492 0.0461 1.012     99.2
 #>      Omega[price,price]  0.137  0.121 0.0320 1.017     35.6
 ```
@@ -260,7 +260,7 @@ wind <- fit(
 )
 coef(wind)[c("beta[compensation]", "beta[psychological_ownership_2]")]
 #>              beta[compensation] beta[psychological_ownership_2] 
-#>                     0.001323216                    -0.484861950
+#>                     0.001287875                    -0.473183047
 ```
 
 The compensation coefficient is positive and the ownership coefficient
@@ -286,10 +286,10 @@ cbind(
   after = predict(wind, newdata = scenario)$probability_1
 )
 #>         before     after
-#> [1,] 0.3166753 0.1740325
-#> [2,] 0.2841614 0.1715989
-#> [3,] 0.2929244 0.2167170
-#> [4,] 0.3511169 0.2747030
+#> [1,] 0.3155332 0.1697058
+#> [2,] 0.2895484 0.1793794
+#> [3,] 0.2888617 0.2105436
+#> [4,] 0.3569234 0.2801886
 ```
 
 Doubling the compensation lowers the probability of the status quo in
@@ -342,11 +342,11 @@ berserk <- fit(
 )
 coef(berserk)
 #>        beta[whiteTRUE_TRUE]           beta[rating_TRUE] 
-#>                2.828675e-02                1.460691e-03 
+#>                3.609257e-02                1.488397e-03 
 #> beta[ratingDifference_TRUE] beta[minutesRemaining_TRUE] 
-#>                6.888317e-05               -1.958756e-04 
+#>                5.763634e-05               -1.772997e-04 
 #>       beta[streakTRUE_TRUE]              beta[ASC_TRUE] 
-#>               -7.880141e-02               -3.172163e+00
+#>               -6.486007e-02               -3.236366e+00
 ```
 
 The rating coefficient is positive: stronger players go Berserk more
@@ -389,10 +389,10 @@ calibration <- data.frame(
 large <- calibration[calibration$games >= 50, ]
 round(large, 2)
 #>           games predicted observed
-#> (0.1,0.2]    58      0.14     0.17
-#> (0.2,0.3]   196      0.25     0.25
-#> (0.3,0.4]    80      0.35     0.35
-#> (0.4,0.5]    81      0.43     0.57
+#> (0.1,0.2]    57      0.14     0.18
+#> (0.2,0.3]   195      0.25     0.25
+#> (0.3,0.4]    77      0.35     0.34
+#> (0.4,0.5]    85      0.43     0.58
 ```
 
 The calibration plot shows the same table. Points on the diagonal mean
@@ -557,19 +557,19 @@ smoking <- fit(
 )
 head(predict(smoking))
 #>   deciderID .prediction probability_Never probability_Occas probability_Regul
-#> 1         1       Never         0.8562408        0.06475144        0.05073226
-#> 2         2       Never         0.7956245        0.08255546        0.07279669
-#> 3         3       Never         0.7965730        0.08223363        0.07243314
-#> 4         4       Never         0.7914499        0.08388835        0.07437814
-#> 5         5       Never         0.8484086        0.06746885        0.05373528
-#> 6         6       Never         0.8524846        0.06610157        0.05217742
+#> 1         1       Never         0.8547541        0.06372879        0.05261305
+#> 2         2       Never         0.7880746        0.08281041        0.07746361
+#> 3         3       Never         0.7892846        0.08243413        0.07702582
+#> 4         4       Never         0.7828525        0.08436372        0.07933882
+#> 5         5       Never         0.8459112        0.06678683        0.05584097
+#> 6         6       Never         0.8504555        0.06525876        0.05418388
 #>   probability_Heavy
-#> 1        0.02827552
-#> 2        0.04902336
-#> 3        0.04876022
-#> 4        0.05028357
-#> 5        0.03038726
-#> 6        0.02923643
+#> 1        0.02890403
+#> 2        0.05165140
+#> 3        0.05125547
+#> 4        0.05344498
+#> 5        0.03146095
+#> 6        0.03010184
 ```
 
 Every row has four probabilities that sum to one, and `.prediction`
@@ -590,9 +590,9 @@ cbind(
   after = predict(smoking, newdata = older)$probability_Never
 )
 #>         before     after
-#> [1,] 0.8562408 0.8404168
-#> [2,] 0.7956245 0.7784639
-#> [3,] 0.7965730 0.7797745
+#> [1,] 0.8547541 0.8372456
+#> [2,] 0.7880746 0.7673958
+#> [3,] 0.7892846 0.7689138
 ```
 
 The probabilities change only slightly, because the age coefficient is

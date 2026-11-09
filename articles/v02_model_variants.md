@@ -284,23 +284,23 @@ summary(travel)
 #> Samples: 100 retained per chain, 2 chains
 #> 
 #>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[wait] -0.04170 -0.03770 0.006276 1.024     85.8
-#>         beta[vcost] -0.01019 -0.01043 0.006035 1.017    218.1
-#>        beta[travel] -0.00234 -0.00228 0.000477 0.997    140.5
-#>    beta[income_bus] -0.01937 -0.02206 0.012379 0.998    193.2
-#>    beta[income_car] -0.00827 -0.00948 0.011904 1.007    185.0
-#>  beta[income_train] -0.05439 -0.05161 0.014400 1.022    136.9
-#>      beta[size_bus]  0.30867  0.33864 0.170632 0.995    163.2
-#>      beta[size_car]  0.46220  0.41894 0.137625 1.004    121.9
-#>    beta[size_train]  0.55684  0.49506 0.157059 0.998    159.1
-#>       beta[ASC_bus] -0.27292 -0.34044 0.530872 1.025     79.6
-#>       beta[ASC_car] -2.37693 -2.48845 0.727407 1.022     75.6
-#>     beta[ASC_train]  0.16750  0.22844 0.493696 1.025    100.8
-#>      Sigma[bus,car]  0.81164  0.75407 0.198171 0.998     73.5
-#>      Sigma[car,car]  1.31994  1.09571 0.427862 1.003    109.2
-#>    Sigma[bus,train]  0.87544  0.83972 0.194091 1.050    120.6
-#>    Sigma[car,train]  0.89804  0.82013 0.332554 1.005    106.3
-#>  Sigma[train,train]  1.35777  1.15071 0.446422 1.034     88.5
+#>          beta[wait] -0.04129 -0.04078 0.007295 1.031     88.2
+#>         beta[vcost] -0.00972 -0.00706 0.006177 1.005    168.8
+#>        beta[travel] -0.00230 -0.00233 0.000456 0.996    164.0
+#>    beta[income_bus] -0.02062 -0.02165 0.013018 1.028     60.7
+#>    beta[income_car] -0.00813 -0.00684 0.012335 1.014    106.9
+#>  beta[income_train] -0.05584 -0.05847 0.015065 0.999     96.6
+#>      beta[size_bus]  0.32354  0.35595 0.166787 0.998    173.6
+#>      beta[size_car]  0.46253  0.42134 0.147545 1.016    122.4
+#>    beta[size_train]  0.54311  0.52023 0.161184 1.015     88.9
+#>       beta[ASC_bus] -0.25308 -0.24366 0.606162 1.001    120.6
+#>       beta[ASC_car] -2.36997 -2.27974 0.852155 1.019     84.0
+#>     beta[ASC_train]  0.20988  0.30005 0.542243 1.011    110.6
+#>      Sigma[bus,car]  0.81325  0.81155 0.199661 1.003     96.1
+#>      Sigma[car,car]  1.30459  1.12847 0.449376 0.997    102.5
+#>    Sigma[bus,train]  0.87490  0.81052 0.198671 1.013    110.0
+#>    Sigma[car,train]  0.85899  0.78774 0.327932 1.015    103.0
+#>  Sigma[train,train]  1.34805  1.03097 0.472235 1.018     91.9
 ```
 
 The three attribute coefficients are negative: waiting, cost, and travel
@@ -317,10 +317,10 @@ mode_effects[mode_effects$covariate == "income", ]
 #> Marginal effects at the average covariate values
 #> Change in the probability of the alternative per unit of the covariate, with 95% interval 
 #>  covariate alternative   at     mean      sd    lower    upper
-#>     income         air 21.3  0.00940 0.00360  0.00196  0.01594
-#>     income         bus 21.3  0.00134 0.00222 -0.00335  0.00519
-#>     income         car 21.3  0.00873 0.00340  0.00160  0.01504
-#>     income       train 21.3 -0.01947 0.00422 -0.02856 -0.01209
+#>     income         air 21.3  0.00978 0.00349  0.00373  0.01665
+#>     income         bus 21.3  0.00126 0.00246 -0.00362  0.00657
+#>     income         car 21.3  0.00882 0.00387  0.00218  0.01634
+#>     income       train 21.3 -0.01986 0.00452 -0.02947 -0.01285
 ```
 
 A higher household income lowers the probability of the train and raises
@@ -410,19 +410,19 @@ summary(canada)
 #> Formula: choice ~ cost + ivt + ovt + freq | income + urban | 0 
 #> Samples: 200 retained per chain, 2 chains
 #> 
-#>            variable     mean     mode       sd  rhat ess_bulk
-#>          beta[cost] -0.03614 -0.03529 0.006487 1.012     40.1
-#>           beta[ivt] -0.00631 -0.00594 0.000915 1.002     55.7
-#>           beta[ovt] -0.01667 -0.01658 0.002220 1.023    179.4
-#>          beta[freq]  0.02712  0.02743 0.006130 0.998    328.7
-#>    beta[income_car] -0.01988 -0.01955 0.006597 1.007    144.3
-#>  beta[income_train] -0.03481 -0.03255 0.008165 1.006     87.6
-#>     beta[urban_car] -0.44231 -0.45658 0.149197 1.001    135.6
-#>   beta[urban_train]  0.72395  0.60698 0.262505 1.009     58.0
-#>       beta[ASC_car] -0.47693 -0.43504 0.532641 1.033     31.3
-#>     beta[ASC_train] -0.29753 -0.19986 0.526724 1.017     37.0
-#>    Sigma[car,train]  0.41255  0.38586 0.222533 1.026     47.9
-#>  Sigma[train,train]  1.32069  0.98664 0.572940 1.011     46.1
+#>            variable     mean    mode      sd rhat ess_bulk
+#>          beta[cost] -0.03952 -0.0389 0.00632 1.25     6.87
+#>           beta[ivt] -0.00605 -0.0061 0.00105 1.15     9.86
+#>           beta[ovt] -0.01670 -0.0162 0.00213 1.00   317.00
+#>          beta[freq]  0.02788  0.0273 0.00570 1.00   239.79
+#>    beta[income_car] -0.01891 -0.0176 0.00667 1.04    95.34
+#>  beta[income_train] -0.03347 -0.0322 0.00942 1.09    18.82
+#>     beta[urban_car] -0.46574 -0.5321 0.14256 1.02   273.08
+#>   beta[urban_train]  0.72591  0.5541 0.28259 1.07    26.70
+#>       beta[ASC_car] -0.74244 -1.1220 0.59121 1.25     6.87
+#>     beta[ASC_train] -0.57682 -0.8149 0.52447 1.26     6.50
+#>    Sigma[car,train]  0.35719  0.3408 0.16967 1.09    25.98
+#>  Sigma[train,train]  1.22647  0.8064 0.68250 1.12    13.24
 ```
 
 The income coefficients of car and train are negative: a higher income

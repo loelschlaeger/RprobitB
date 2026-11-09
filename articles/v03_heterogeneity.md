@@ -209,21 +209,21 @@ summary(electricity)
 #> Bayesian probit choice model
 #> Formula: choice ~ pf + cl + loc + wk + tod + seas | 0 | 0 
 #> Samples: 1000 retained per chain, 1 chain
-#>        variable   mean    mode     sd  rhat ess_bulk
-#>        beta[wk]  1.624  1.5764 0.1391 1.003    159.7
-#>       beta[tod] -8.980 -9.0026 0.1567 1.003    128.6
-#>      beta[seas] -9.266 -9.2319 0.1518 1.012    245.2
-#>          mu[cl] -0.276 -0.2658 0.0609 1.011    523.3
-#>         mu[loc]  2.017  1.9528 0.2421 0.999    271.7
-#>    Omega[cl,cl]  0.293  0.2564 0.0666 1.002    228.7
-#>   Omega[cl,loc]  0.113  0.0905 0.1085 0.999    312.9
-#>  Omega[loc,loc]  2.276  2.3401 0.5982 1.002    209.5
-#>      Sigma[2,2]  7.522  7.0696 1.3642 1.016     63.1
-#>      Sigma[2,3]  2.546  2.6579 0.9192 1.031     18.7
-#>      Sigma[3,3]  5.704  5.2130 1.1423 1.013     66.0
-#>      Sigma[2,4]  3.811  3.6332 0.9793 1.017     54.8
-#>      Sigma[3,4]  1.974  1.6923 0.8011 1.099     12.5
-#>      Sigma[4,4]  6.025  5.7407 1.3194 1.009     59.7
+#>        variable   mean   mode     sd rhat ess_bulk
+#>        beta[wk]  1.630  1.625 0.1428 1.00    205.1
+#>       beta[tod] -9.017 -9.027 0.1518 1.00    210.0
+#>      beta[seas] -9.272 -9.232 0.1537 1.01    146.7
+#>          mu[cl] -0.281 -0.282 0.0632 1.00    297.0
+#>         mu[loc]  2.023  1.983 0.2381 1.00    287.1
+#>    Omega[cl,cl]  0.300  0.293 0.0684 1.00    178.9
+#>   Omega[cl,loc]  0.108  0.098 0.1122 1.00    313.4
+#>  Omega[loc,loc]  2.267  2.093 0.6786 1.02    140.2
+#>      Sigma[2,2]  7.462  6.918 1.3687 1.00     47.1
+#>      Sigma[2,3]  2.009  1.866 0.7401 1.04     22.7
+#>      Sigma[3,3]  5.485  5.021 1.1418 1.01    101.9
+#>      Sigma[2,4]  4.060  4.168 1.0430 1.01     54.9
+#>      Sigma[3,4]  1.980  2.040 0.7511 1.01     45.8
+#>      Sigma[4,4]  6.413  6.079 1.3494 1.03     67.9
 ```
 
 Because the price coefficient is fixed,
@@ -234,9 +234,9 @@ kWh, with credible intervals:
 ``` r
 
 interpret(electricity, effects = c("cl", "loc", "wk"))
-#> 1 `cl` compensates -0.276 `pf` (95% interval -0.398 to -0.165)
-#> 1 `loc` compensates 2.02 `pf` (95% interval 1.55 to 2.5)
-#> 1 `wk` compensates 1.62 `pf` (95% interval 1.38 to 1.92)
+#> 1 `cl` compensates -0.281 `pf` (95% interval -0.407 to -0.167)
+#> 1 `loc` compensates 2.02 `pf` (95% interval 1.57 to 2.55)
+#> 1 `wk` compensates 1.63 `pf` (95% interval 1.38 to 1.94)
 ```
 
 On average, households would accept a price about 2 cents per kWh higher
@@ -348,12 +348,12 @@ summary(mixture, variables = c(
 #> Samples: 750 retained per chain, 2 chains
 #> 
 #>      variable  dgp   mean   mode     sd rhat ess_bulk
-#>     weight[1]  0.6  0.599  0.612 0.0558 1.02    228.0
-#>     weight[2]  0.4  0.401  0.388 0.0558 1.02    228.0
-#>       mu[x,1] -1.0 -0.970 -0.956 0.1171 1.03    117.4
-#>       mu[x,2]  2.0  2.016  1.980 0.3179 1.07     33.6
-#>  Omega[x,x,1]  0.2  0.278  0.183 0.1465 1.03     34.9
-#>  Omega[x,x,2]  0.2  0.505  0.248 0.4485 1.04     24.6
+#>     weight[1]  0.6  0.615  0.615 0.0551 1.01   264.74
+#>     weight[2]  0.4  0.385  0.385 0.0551 1.01   264.74
+#>       mu[x,1] -1.0 -0.993 -0.974 0.1065 1.02   118.37
+#>       mu[x,2]  2.0  1.951  1.928 0.3029 1.08    39.07
+#>  Omega[x,x,1]  0.2  0.205  0.148 0.0994 1.01    77.91
+#>  Omega[x,x,2]  0.2  0.429  0.199 0.4127 1.25     7.33
 ```
 
 For an effect with latent classes, the mixing distribution is the
@@ -382,20 +382,20 @@ class_diagnostics$occupancy
 #> 2         2           1
 class_diagnostics$membership[1:6, ]
 #>       class_1     class_2
-#> 1 0.996000000 0.004000000
-#> 2 0.005333333 0.994666667
-#> 3 0.006666667 0.993333333
-#> 4 0.994000000 0.006000000
-#> 5 0.054666667 0.945333333
-#> 6 0.994666667 0.005333333
+#> 1 0.995333333 0.004666667
+#> 2 0.996000000 0.004000000
+#> 3 0.982000000 0.018000000
+#> 4 0.006666667 0.993333333
+#> 5 0.017333333 0.982666667
+#> 6 0.997333333 0.002666667
 class_diagnostics$co_clustering[1:6, 1:6]
-#>             1           2          3          4          5          6
-#> 1 1.000000000 0.009333333 0.01066667 0.99000000 0.05866667 0.99200000
-#> 2 0.009333333 1.000000000 0.98800000 0.01133333 0.94133333 0.01066667
-#> 3 0.010666667 0.988000000 1.00000000 0.01266667 0.94000000 0.01200000
-#> 4 0.990000000 0.011333333 0.01266667 1.00000000 0.06066667 0.98866667
-#> 5 0.058666667 0.941333333 0.94000000 0.06066667 1.00000000 0.06000000
-#> 6 0.992000000 0.010666667 0.01200000 0.98866667 0.06000000 1.00000000
+#>            1          2          3           4          5           6
+#> 1 1.00000000 0.99133333 0.97866667 0.011333333 0.02200000 0.992666667
+#> 2 0.99133333 1.00000000 0.98466667 0.010666667 0.02133333 0.993333333
+#> 3 0.97866667 0.98466667 1.00000000 0.024666667 0.03533333 0.983333333
+#> 4 0.01133333 0.01066667 0.02466667 1.000000000 0.97733333 0.009333333
+#> 5 0.02200000 0.02133333 0.03533333 0.977333333 1.00000000 0.020000000
+#> 6 0.99266667 0.99333333 0.98333333 0.009333333 0.02000000 1.000000000
 ```
 
 ### Class-specific coefficients
@@ -437,10 +437,10 @@ summary(train_classes, variables = c(
 #> Samples: 750 retained per chain, 2 chains
 #> 
 #>      variable    mean    mode     sd rhat ess_bulk
-#>     weight[1]   0.737   0.747 0.0838 1.04     51.9
-#>     weight[2]   0.263   0.253 0.0838 1.04     51.9
-#>  beta[time,1]  -2.452  -2.292 0.9905 1.04    127.1
-#>  beta[time,2] -17.957 -16.472 3.1601 1.06     38.8
+#>     weight[1]   0.766   0.788 0.0936 1.02     69.5
+#>     weight[2]   0.234   0.212 0.0936 1.02     69.5
+#>  beta[time,1]  -2.825  -2.980 1.0695 1.01     77.9
+#>  beta[time,2] -19.827 -17.744 5.3470 1.05     36.3
 ```
 
 With the price coefficient fixed at `-1`, the class-specific time
@@ -452,12 +452,12 @@ reports class by class:
 
 time_by_class <- interpret(train_classes, effects = "time")
 time_by_class
-#> Class 1: 1 `time` compensates -2.45 `price` (95% interval -4.39 to -0.457)
-#> Class 2: 1 `time` compensates -18 `price` (95% interval -25.1 to -12.9)
+#> Class 1: 1 `time` compensates -2.83 `price` (95% interval -4.78 to -0.548)
+#> Class 2: 1 `time` compensates -19.8 `price` (95% interval -36.6 to -12.5)
 ```
 
-The larger class values an hour at about 2 euro, the smaller class at
-about 18 euro. The smaller class is willing to pay much more for a
+The larger class values an hour at about 3 euro, the smaller class at
+about 20 euro. The smaller class is willing to pay much more for a
 faster trip.
 
 ### Weight-based class updates
@@ -503,10 +503,10 @@ recover_classes <- function(x) {
 recover_classes(mixture)
 #>    variable  dgp estimate
 #> 1 n_classes  2.0     2.00
-#> 2 weight[1]  0.6     0.60
-#> 3 weight[2]  0.4     0.40
-#> 4   mu[x,1] -1.0    -0.97
-#> 5   mu[x,2]  2.0     2.02
+#> 2 weight[1]  0.6     0.61
+#> 3 weight[2]  0.4     0.39
+#> 4   mu[x,1] -1.0    -0.99
+#> 5   mu[x,2]  2.0     1.95
 ```
 
 The weight-based refit is compared in the same way:
@@ -517,10 +517,10 @@ weight_based <- update(mixture, class_update = "weight_based")
 recover_classes(weight_based)
 #>    variable  dgp estimate
 #> 1 n_classes  2.0     2.00
-#> 2 weight[1]  0.6     0.59
-#> 3 weight[2]  0.4     0.41
+#> 2 weight[1]  0.6     0.62
+#> 3 weight[2]  0.4     0.38
 #> 4   mu[x,1] -1.0    -0.97
-#> 5   mu[x,2]  2.0     2.07
+#> 5   mu[x,2]  2.0     1.97
 ```
 
 The run ends with the two classes that generated the data, and their
@@ -561,41 +561,41 @@ summary(sparse)
 #> Samples: 750 retained per chain, 2 chains
 #> 
 #>             variable occupied     mean     mode      sd rhat ess_bulk
-#>            weight[1]  1.00000  0.60878  0.62153 0.05298 1.00   316.69
-#>            weight[2]  1.00000  0.39005  0.37736 0.05273 1.00   337.03
-#>            weight[3]  0.02133  0.02858  0.01073 0.02138   NA       NA
-#>            weight[4]  0.00733  0.01301  0.00363 0.02024   NA       NA
-#>            weight[5]  0.00467  0.01266  0.00564 0.01420   NA       NA
-#>            weight[6]  0.00133  0.00423  0.00731 0.00436   NA       NA
-#>              mu[x,1]  1.00000 -0.95243 -0.95808 0.12464 1.03    92.87
-#>              mu[x,2]  1.00000  2.13124  2.11263 0.35323 1.16     9.74
-#>              mu[x,3]  0.02133  0.40818  0.39094 1.19553   NA       NA
-#>              mu[x,4]  0.00733  2.32226  0.97869 2.43339   NA       NA
-#>              mu[x,5]  0.00467 -0.54511  0.20298 1.04749   NA       NA
-#>              mu[x,6]  0.00133 -0.81074 -2.33580 2.16523   NA       NA
-#>         Omega[x,x,1]  1.00000  0.28914  0.21966 0.15896 1.07    40.23
-#>         Omega[x,x,2]  1.00000  0.42953  0.22110 0.33864 1.05    29.34
-#>         Omega[x,x,3]  0.02133  0.71605  0.28818 1.05517   NA       NA
-#>         Omega[x,x,4]  0.00733  0.98367  0.45090 1.44551   NA       NA
-#>         Omega[x,x,5]  0.00467  0.95121  0.61553 0.68835   NA       NA
-#>         Omega[x,x,6]  0.00133  1.34552  1.73501 0.55299   NA       NA
-#>  class_concentration  1.00000  0.01055  0.00548 0.00622 1.05    31.31
-#>            n_classes  1.00000  2.03467  2.00000 0.18300 1.01   266.40
+#>            weight[1]  1.00000  0.61835  0.61433 0.05193 1.00    443.5
+#>            weight[2]  1.00000  0.37919  0.38413 0.05271 1.00    388.7
+#>            weight[3]  0.02067  0.04197  0.00889 0.05361   NA       NA
+#>            weight[4]  0.02600  0.02985  0.00773 0.03217   NA       NA
+#>            weight[5]  0.01533  0.02698  0.00978 0.02468   NA       NA
+#>            weight[6]  0.00133  0.01523  0.02010 0.00691   NA       NA
+#>              mu[x,1]  1.00000 -0.98887 -0.97461 0.10705 1.04     90.6
+#>              mu[x,2]  1.00000  1.97024  1.99895 0.29271 1.11     16.8
+#>              mu[x,3]  0.02067  1.98734  1.05723 1.92562   NA       NA
+#>              mu[x,4]  0.02600  1.79189  2.42213 1.80330   NA       NA
+#>              mu[x,5]  0.01533  0.68890  1.44201 1.23744   NA       NA
+#>              mu[x,6]  0.00133 -0.76099 -0.55953 0.28602   NA       NA
+#>         Omega[x,x,1]  1.00000  0.22229  0.17942 0.10520 1.05     51.6
+#>         Omega[x,x,2]  1.00000  0.48744  0.21460 0.41360 1.18      8.3
+#>         Omega[x,x,3]  0.02067  0.69516  0.30733 0.81896   NA       NA
+#>         Omega[x,x,4]  0.02600  0.65970  0.35119 0.48719   NA       NA
+#>         Omega[x,x,5]  0.01533  1.17043  0.44045 1.38167   NA       NA
+#>         Omega[x,x,6]  0.00133  0.25652  0.31853 0.08805   NA       NA
+#>  class_concentration  1.00000  0.00911  0.00615 0.00520 1.03     44.5
+#>            n_classes  1.00000  2.06333  2.00000 0.25955 1.01    162.8
 latent_class_diagnostics(sparse)$occupancy
-#>   n_classes probability
-#> 1         1  0.00000000
-#> 2         2  0.96533333
-#> 3         3  0.03466667
-#> 4         4  0.00000000
-#> 5         5  0.00000000
-#> 6         6  0.00000000
+#>   n_classes  probability
+#> 1         1 0.0000000000
+#> 2         2 0.9400000000
+#> 3         3 0.0573333333
+#> 4         4 0.0020000000
+#> 5         5 0.0006666667
+#> 6         6 0.0000000000
 recover_classes(sparse)
 #>    variable  dgp estimate
 #> 1 n_classes  2.0     2.00
-#> 2 weight[1]  0.6     0.61
-#> 3 weight[2]  0.4     0.39
-#> 4   mu[x,1] -1.0    -0.95
-#> 5   mu[x,2]  2.0     2.13
+#> 2 weight[1]  0.6     0.62
+#> 3 weight[2]  0.4     0.38
+#> 4   mu[x,1] -1.0    -0.99
+#> 5   mu[x,2]  2.0     1.97
 ```
 
 Although the prior favors a single class, the posterior concentrates on
@@ -631,59 +631,71 @@ summary(dynamic)
 #> Samples: 500 retained per chain, 2 chains
 #> 
 #>             variable occupied    mean    mode      sd rhat ess_bulk
-#>            weight[1]    1.000  0.5685  0.5958 0.05849 1.09    82.57
-#>            weight[2]    1.000  0.3537  0.3901 0.06813 1.19     8.41
-#>            weight[3]    0.742  0.0635  0.0168 0.06162   NA       NA
-#>            weight[4]    0.451  0.0443  0.0141 0.04632   NA       NA
-#>            weight[5]    0.224  0.0322  0.0108 0.03460   NA       NA
-#>            weight[6]    0.106  0.0242  0.0100 0.02979   NA       NA
-#>            weight[7]    0.041  0.0185  0.0100 0.01459   NA       NA
-#>            weight[8]    0.012  0.0158  0.0102 0.00793   NA       NA
-#>            weight[9]    0.004  0.0100  0.0100 0.00000   NA       NA
-#>              mu[x,1]    1.000 -0.9258 -0.9635 0.13235 1.06    52.42
-#>              mu[x,2]    1.000  2.2077  2.3205 0.38147 1.38     4.74
-#>              mu[x,3]    0.742  0.1650  1.9745 2.40162   NA       NA
-#>              mu[x,4]    0.451 -0.2067 -0.7589 2.40757   NA       NA
-#>              mu[x,5]    0.224  0.3518  1.5561 2.36452   NA       NA
-#>              mu[x,6]    0.106  0.1140  1.1443 2.56043   NA       NA
-#>              mu[x,7]    0.041  0.5399  1.7911 2.93945   NA       NA
-#>              mu[x,8]    0.012 -1.2729 -3.0764 2.64053   NA       NA
-#>              mu[x,9]    0.004  0.1918  2.5965 4.25500   NA       NA
-#>         Omega[x,x,1]    1.000  0.2387  0.1741 0.12861 1.14    42.60
-#>         Omega[x,x,2]    1.000  0.5320  0.2344 0.57860 1.16    15.86
-#>         Omega[x,x,3]    0.742  0.6916  0.2411 0.93024   NA       NA
-#>         Omega[x,x,4]    0.451  0.7536  0.2373 2.28477   NA       NA
-#>         Omega[x,x,5]    0.224  0.8659  0.2684 1.61849   NA       NA
-#>         Omega[x,x,6]    0.106  0.6208  0.2596 1.06427   NA       NA
-#>         Omega[x,x,7]    0.041  0.6214  0.2427 0.64990   NA       NA
-#>         Omega[x,x,8]    0.012  1.5313  0.4921 2.05348   NA       NA
-#>         Omega[x,x,9]    0.004  0.5778  0.4473 0.24483   NA       NA
-#>  class_concentration    1.000  0.5463  0.4323 0.32123 1.04   132.92
-#>            n_classes    1.000  3.5800  3.0000 1.41972 1.10    23.33
+#>            weight[1]    1.000  0.5674  0.6140 0.08093 1.18     8.66
+#>            weight[2]    1.000  0.3219  0.3686 0.06864 1.05    46.30
+#>            weight[3]    0.753  0.0719  0.0179 0.06182   NA       NA
+#>            weight[4]    0.538  0.0581  0.0170 0.06005   NA       NA
+#>            weight[5]    0.353  0.0375  0.0124 0.03904   NA       NA
+#>            weight[6]    0.201  0.0374  0.0114 0.04670   NA       NA
+#>            weight[7]    0.104  0.0271  0.0100 0.03513   NA       NA
+#>            weight[8]    0.048  0.0213  0.0102 0.01886   NA       NA
+#>            weight[9]    0.021  0.0219  0.0113 0.01887   NA       NA
+#>           weight[10]    0.005  0.0320  0.0252 0.01924   NA       NA
+#>           weight[11]    0.004  0.0100  0.0100 0.00000   NA       NA
+#>           weight[12]    0.002  0.0150  0.0100 0.00707   NA       NA
+#>           weight[13]    0.001  0.0100  0.0100      NA   NA       NA
+#>              mu[x,1]    1.000 -0.9901 -0.9625 0.13175 1.03    85.78
+#>              mu[x,2]    1.000  1.9511  1.9086 0.37249 1.14    18.81
+#>              mu[x,3]    0.753  1.4727  1.8602 2.44370   NA       NA
+#>              mu[x,4]    0.538  0.9529  1.9814 2.45653   NA       NA
+#>              mu[x,5]    0.353  0.5896 -0.9046 2.57491   NA       NA
+#>              mu[x,6]    0.201  0.7554  1.2375 2.44746   NA       NA
+#>              mu[x,7]    0.104  0.3069 -0.4801 2.72347   NA       NA
+#>              mu[x,8]    0.048  0.7130  2.6610 2.58592   NA       NA
+#>              mu[x,9]    0.021  0.7823 -0.8749 2.97902   NA       NA
+#>             mu[x,10]    0.005  0.3475 -1.1589 3.78488   NA       NA
+#>             mu[x,11]    0.004  3.1974  5.6614 3.19311   NA       NA
+#>             mu[x,12]    0.002  2.0908  6.0268 5.58832   NA       NA
+#>             mu[x,13]    0.001  1.9332  1.9332      NA   NA       NA
+#>         Omega[x,x,1]    1.000  0.2029  0.1460 0.12252 1.02    55.94
+#>         Omega[x,x,2]    1.000  0.5947  0.2151 0.56409 1.22     7.62
+#>         Omega[x,x,3]    0.753  0.6521  0.2248 0.99887   NA       NA
+#>         Omega[x,x,4]    0.538  1.1820  0.5089 9.50227   NA       NA
+#>         Omega[x,x,5]    0.353  0.7916  0.2739 1.44138   NA       NA
+#>         Omega[x,x,6]    0.201  0.7411  0.2451 1.07469   NA       NA
+#>         Omega[x,x,7]    0.104  0.8198  0.2583 1.27842   NA       NA
+#>         Omega[x,x,8]    0.048  0.5669  0.2561 0.50974   NA       NA
+#>         Omega[x,x,9]    0.021  0.8982  0.4377 0.71027   NA       NA
+#>        Omega[x,x,10]    0.005  0.2674  0.2338 0.05980   NA       NA
+#>        Omega[x,x,11]    0.004  1.5863  0.3630 2.44078   NA       NA
+#>        Omega[x,x,12]    0.002  0.5082  0.8981 0.55351   NA       NA
+#>        Omega[x,x,13]    0.001  0.4603  0.4603      NA   NA       NA
+#>  class_concentration    1.000  0.6018  0.3300 0.36393 1.05    48.96
+#>            n_classes    1.000  4.0300  2.0000 1.83316 1.14    11.67
 latent_class_diagnostics(dynamic)$occupancy
 #>    n_classes probability
 #> 1          1       0.000
-#> 2          2       0.258
-#> 3          3       0.291
-#> 4          4       0.227
-#> 5          5       0.118
-#> 6          6       0.065
-#> 7          7       0.029
-#> 8          8       0.008
-#> 9          9       0.004
-#> 10        10       0.000
-#> 11        11       0.000
-#> 12        12       0.000
-#> 13        13       0.000
+#> 2          2       0.247
+#> 3          3       0.215
+#> 4          4       0.185
+#> 5          5       0.152
+#> 6          6       0.097
+#> 7          7       0.056
+#> 8          8       0.027
+#> 9          9       0.016
+#> 10        10       0.001
+#> 11        11       0.002
+#> 12        12       0.001
+#> 13        13       0.001
 #> 14        14       0.000
 #> 15        15       0.000
 recover_classes(dynamic)
 #>    variable  dgp estimate
-#> 1 n_classes  2.0     3.00
+#> 1 n_classes  2.0     2.00
 #> 2 weight[1]  0.6     0.57
-#> 3 weight[2]  0.4     0.35
-#> 4   mu[x,1] -1.0    -0.93
-#> 5   mu[x,2]  2.0     2.21
+#> 3 weight[2]  0.4     0.32
+#> 4   mu[x,1] -1.0    -0.99
+#> 5   mu[x,2]  2.0     1.95
 ```
 
 The occupancy distribution is wider than under the sparse finite prior
@@ -735,11 +747,11 @@ summary(ranked_random)
 #> Bayesian probit choice model
 #> Formula: rank ~ x | 0 | 0 
 #> Samples: 1000 retained per chain, 1 chain
-#>    variable    dgp   mean   mode     sd rhat ess_bulk
-#>       mu[x] -1.000 -1.080 -1.082 0.0965 1.02     43.6
-#>  Omega[x,x]  0.300  0.319  0.315 0.0952 1.04     41.4
-#>  Sigma[B,C] -0.112 -0.271 -0.233 0.1778 1.00    128.8
-#>  Sigma[C,C]  3.001  3.516  3.104 0.7839 1.01     65.7
+#>    variable    dgp   mean   mode     sd  rhat ess_bulk
+#>       mu[x] -1.000 -0.992 -0.963 0.0883 1.010     33.5
+#>  Omega[x,x]  0.300  0.396  0.357 0.0957 1.048     17.4
+#>  Sigma[B,C] -0.205 -0.244 -0.211 0.0758 0.999     96.7
+#>  Sigma[C,C]  0.408  0.555  0.482 0.1272 1.049     30.8
 ```
 
 The summary shows the population mean and variance beside their true
