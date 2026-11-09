@@ -32,7 +32,11 @@
 #' auxiliary-parameter allocation update and the precision update of Escobar and
 #' West (1995). Independent chains run through the
 #' [**future**](https://future.futureverse.org/) framework, and retained draws
-#' use the [**posterior**](https://mc-stan.org/posterior/) format.
+#' use the [**posterior**](https://mc-stan.org/posterior/) format. The
+#' frequentist counterpart
+#' [**Rprobit**](https://CRAN.R-project.org/package=Rprobit) (Bauer et al.
+#' 2026) estimates multinomial probit models with normal mixing distributions
+#' by maximum likelihood.
 #'
 #' ## Evaluation
 #' [predict()], [residuals()], [logLik()], [WAIC()], [loo()], and
@@ -44,6 +48,8 @@
 #'
 #' @references
 #' \insertRef{Albert1993}{RprobitB}
+#'
+#' \insertRef{Bauer2026}{RprobitB}
 #'
 #' \insertRef{Escobar1995}{RprobitB}
 #'

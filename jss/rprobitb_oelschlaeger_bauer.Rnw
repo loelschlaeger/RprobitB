@@ -205,7 +205,7 @@ multinomial models of \pkg{mlogit}, \pkg{bayesm}, and \pkg{MNP}
 \citep{Imai2005b, Imai2026} have fixed coefficients, and \pkg{apollo},
 \pkg{Biogeme}, and \pkg{Rchoice} \citep{Sarrias2016} offer random coefficients
 for binary and ordered responses only. The frequentist counterpart of
-\pkg{RprobitB} is \pkg{Rprobit} \citep{Bauer2024}. It estimates multinomial
+\pkg{RprobitB} is \pkg{Rprobit} \citep{Bauer2026}. It estimates multinomial
 probit models with normal mixing distributions by maximum likelihood or by the
 maximum approximate composite marginal likelihood approach of \citet{Bhat2011},
 with analytic approximations of the normal probabilities such as the Solow--Joe

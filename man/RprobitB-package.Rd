@@ -40,7 +40,11 @@ and Malsiner-Walli 2019), or a Dirichlet process mixture with Neal's (2000)
 auxiliary-parameter allocation update and the precision update of Escobar and
 West (1995). Independent chains run through the
 \href{https://future.futureverse.org/}{\strong{future}} framework, and retained draws
-use the \href{https://mc-stan.org/posterior/}{\strong{posterior}} format.
+use the \href{https://mc-stan.org/posterior/}{\strong{posterior}} format. The
+frequentist counterpart
+\href{https://CRAN.R-project.org/package=Rprobit}{\strong{Rprobit}} (Bauer et al.
+2026) estimates multinomial probit models with normal mixing distributions
+by maximum likelihood.
 }
 
 \subsection{Evaluation}{
@@ -55,6 +59,8 @@ Gabry (2017), and Bayes factors use bridge sampling (Gronau et al. 2017).
 }
 \references{
 \insertRef{Albert1993}{RprobitB}
+
+\insertRef{Bauer2026}{RprobitB}
 
 \insertRef{Escobar1995}{RprobitB}
 
